@@ -1,0 +1,324 @@
+<?php
+
+namespace App\Http\Controllers\SmartPica;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
+use DB;
+
+class TransactionPicaController extends Controller
+{
+    //
+
+    function AddDataTransactionPica(Request $d)
+    {
+        $dataInputer = $d;
+
+        $dataMasterTahun = $dataInputer->dataMaster['tahun'];
+        $dataMasterBulan = $dataInputer->dataMaster['bulan'];
+        $dataMasterWeek = $dataInputer->dataMaster['week'];
+        $dataMasterSite = $dataInputer->dataMaster['site'];
+        $dataMasterLeadKpi = $dataInputer->dataMaster['lead_kpi'];
+        $dataMasterActual = $dataInputer->dataMaster['actual'];
+        $dataMasterTarget = $dataInputer->dataMaster['target'];
+        $dataMasterApPica = $dataInputer->dataMaster['ap_pica'];
+        $dataMasterProblem = $dataInputer->dataMaster['problem'];
+        $dataMasterKategori = $dataInputer->dataMaster['kategori'];
+        $dataMasterEstimasiPica = $dataInputer->dataMaster['estimasi_pica'];
+
+
+        $dataWhy1 = $dataInputer->dataWhy1;
+        $dataWhy2 = $dataInputer->dataWhy2;
+        $dataWhy3 = $dataInputer->dataWhy3;
+        $dataWhy4 = $dataInputer->dataWhy4;
+        $dataWhy5 = $dataInputer->dataWhy5;
+
+
+        $inputs = [
+            $dataMasterTahun,
+            $dataMasterBulan,
+            $dataMasterWeek,
+            $dataMasterSite,
+            $dataMasterLeadKpi,
+            $dataMasterActual,
+            $dataMasterTarget,
+            $dataMasterApPica,
+            $dataMasterProblem,
+            $dataMasterKategori,
+            $dataMasterEstimasiPica
+        ];
+
+        foreach ($inputs as $input) {
+            if (!$this->validateInput($input)) {
+                return [
+                    'message' => "Error Input Data Master",
+                    'code' => 500
+                ];
+            }
+        }
+
+        $dataWhyArrays = [$dataWhy1, $dataWhy2, $dataWhy3, $dataWhy4, $dataWhy5];
+
+        foreach ($dataWhyArrays as $dataWhyArray) {
+            if (is_array($dataWhyArray) || is_object($dataWhyArray)) {
+                foreach ($dataWhyArray as $object) {
+                    if ($object === null) {
+                        continue;
+                    }
+
+                    if (!$this->validateObject($object)) {
+                        return [
+                            'message' => "Error Input Data Why",
+                            'code' => 500
+                        ];
+                    }
+                }
+            }
+        }
+        $getData = DB::select('select * from vw_master_nodoc where statusx = 0');
+
+        $dataDocumentNumeber = $getData[0]->nodoc;
+
+        $dataNIK = '1020125';
+        DB::beginTransaction();
+        try {
+            $idMaster = DB::table('master_pica')->insertGetId([
+                'nik' => $dataNIK,
+                'nodocpica' => $dataDocumentNumeber,
+                'tahun' => $dataMasterTahun,
+                'bulan' => $dataMasterBulan,
+                'week' => 3,
+                'site' => $dataMasterSite,
+                'id_kpi' => $dataMasterLeadKpi,
+                'problem' => $dataMasterProblem,
+                'id_kategory' => $dataMasterKategori,
+                'ap_pica' => $dataMasterApPica,
+                'actual_master' => $dataMasterActual,
+                'target_master' => $dataMasterTarget,
+                'solution_estimation' => $dataMasterEstimasiPica,
+                'created_at' => now(),
+                'updated_at' => now(),
+                'updated_by' => 'admin',
+                'created_by' => 'admin',
+                'approval' => 'pending',
+                'status' => 'open'
+            ]);
+
+
+
+            if ($idMaster) {
+                $dataWhy1 = $dataInputer->dataWhy1 ?? [];
+                if (is_array($dataWhy1) && !empty($dataWhy1)) {
+                    foreach ($dataWhy1 as $data) {
+
+                        DB::table('pica_why1')->insert([
+                            'id_master' => $idMaster, // Adjust as per your application logic
+                            'nik_master' => $dataNIK, // Adjust as per your application logic
+                            'nodocpica' => $dataDocumentNumeber, // Adjust as per your application logic
+                            'index_w1' => $data['w1'],
+                            'why' => $data['masalah'],
+                            'id_kategory' => $data['kategori'],
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                            'updated_by' => 'admin', // Example value, replace with actual value
+                            'created_by' => 'admin', // Example value, replace with actual value
+                        ]);
+                    }
+                }
+
+                $dataWhy2 = $dataInputer->dataWhy2 ?? [];
+                if (is_array($dataWhy2) && !empty($dataWhy2)) {
+                    foreach ($dataWhy2 as $data) {
+
+                        DB::table('pica_why2')->insert([
+                            'id_master' => $idMaster, // Adjust as per your application logic
+                            'nik_master' => $dataNIK, // Adjust as per your application logic
+                            'nodocpica' => $dataDocumentNumeber, // Adjust as per your application logic
+                            'index_w1' => $data['w1'],
+                            'index_w2' => $data['w2'],
+                            'why' => $data['masalah'],
+                            'id_kategory' => $data['kategori'],
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                            'updated_by' => 'admin', // Example value, replace with actual value
+                            'created_by' => 'admin', // Example value, replace with actual value
+                        ]);
+                    }
+                }
+
+                $dataWhy3 = $dataInputer->dataWhy3 ?? [];
+                if (is_array($dataWhy3) && !empty($dataWhy3)) {
+                    foreach ($dataWhy3 as $data) {
+
+                        DB::table('pica_why3')->insert([
+                            'id_master' => $idMaster, // Adjust as per your application logic
+                            'nik_master' => $dataNIK, // Adjust as per your application logic
+                            'nodocpica' => $dataDocumentNumeber, // Adjust as per your application logic
+                            'index_w1' => $data['w1'],
+                            'index_w2' => $data['w2'],
+                            'index_w3' => $data['w3'],
+                            'why' => $data['masalah'],
+                            'id_kategory' => $data['kategori'],
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                            'updated_by' => 'admin', // Example value, replace with actual value
+                            'created_by' => 'admin', // Example value, replace with actual value
+                        ]);
+                    }
+                }
+
+                $dataWhy4 = $dataInputer->dataWhy4 ?? [];
+                if (is_array($dataWhy4) && !empty($dataWhy4)) {
+                    foreach ($dataWhy4 as $data) {
+
+                        DB::table('pica_why4')->insert([
+                            'id_master' => $idMaster, // Adjust as per your application logic
+                            'nik_master' => $dataNIK, // Adjust as per your application logic
+                            'nodocpica' => $dataDocumentNumeber, // Adjust as per your application logic
+                            'index_w1' => $data['w1'],
+                            'index_w2' => $data['w2'],
+                            'index_w3' => $data['w3'],
+                            'index_w4' => $data['w4'],
+                            'why' => $data['masalah'],
+                            'id_kategory' => $data['kategori'],
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                            'updated_by' => 'admin', // Example value, replace with actual value
+                            'created_by' => 'admin', // Example value, replace with actual value
+                        ]);
+                    }
+                }
+
+                $dataWhy5 = $dataInputer->dataWhy5 ?? [];
+                if (is_array($dataWhy5) && !empty($dataWhy5)) {
+                    foreach ($dataWhy5 as $data) {
+
+                        DB::table('pica_why5')->insert([
+                            'id_master' => $idMaster, // Adjust as per your application logic
+                            'nik_master' => $dataNIK, // Adjust as per your application logic
+                            'nodocpica' => $dataDocumentNumeber, // Adjust as per your application logic
+                            'index_w1' => $data['w1'],
+                            'index_w2' => $data['w2'],
+                            'index_w3' => $data['w3'],
+                            'index_w4' => $data['w4'],
+                            'index_w5' => $data['w5'],
+                            'why' => $data['masalah'],
+                            'id_kategory' => $data['kategori'],
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                            'updated_by' => 'admin', // Example value, replace with actual value
+                            'created_by' => 'admin', // Example value, replace with actual value
+                        ]);
+                    }
+                }
+            }
+
+            DB::commit();
+
+            return [
+                'message' => "Done save semua data why",
+                'code' => 200,
+                'nodoc' => $dataDocumentNumeber
+            ];
+
+        } catch (QueryException $e) {
+            // Rollback the transaction on error
+            DB::rollBack();
+            return [
+                'message' => 'Failed to insert records' . $e->getMessage(),
+                'code' => 500
+            ];
+        }
+
+
+
+    }
+
+    function validateObject($object)
+    {
+        foreach ($object as $key => $value) {
+            if (!$this->validateInput($value)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    function validateInput($input)
+    {
+        $queryPattern = "/select|insert|update|delete|drop|alter|truncate|exec|union|sql/i";
+        if (preg_match($queryPattern, $input)) {
+            return false;
+        }
+        return true;
+    }
+
+    function addDataStepTransactionPica(Request $q)
+    {
+        DB::beginTransaction();
+        try {
+            foreach ($q->data as $d) {
+                $dataObject = $d['dataSolution'];
+                if ($this->isValidData($dataObject)) {
+                    foreach ($dataObject as $item) {
+                        DB::table('new_pica_step')->insert([
+                            'id_master' => $d['idMaster'], // Adjust as per your application logic
+                            'nik_master' => $d['nikMaster'], // Adjust as per your application logic
+                            'nodocpica' => $d['nodocWhy'],
+                            'position_why' => $d['idWhy'],
+                            'identity_why' => $d['identityWhy'],
+                            'action' => $item['action'],
+                            'note_step' => $item['note'],
+                            'ap_tod' => $item['ap_tod'],
+                            'dic' => $item['dic'],
+                            'pic' => $item['pic'],
+                            'due_date' => $item['dueDate'],
+                            'created_at' => now(),
+                            'created_by' => 'admin', // Example value, replace with actual value
+                        ]);
+                    }
+                } else {
+                    return [
+                        'message' => 'Failed to insert records - mohon hilangi spesial character',
+                        'code' => 500
+                    ];
+                }
+            }
+        } catch (QueryException $e) {
+            // Rollback the transaction on error
+            DB::rollBack();
+            return [
+                'message' => 'Failed to insert records' . $e->getMessage(),
+                'code' => 500
+            ];
+        }
+
+        DB::commit();
+
+        return [
+            'message' => "Done Solution Tersimpan",
+            'code' => 200
+        ];
+    }
+
+    function isValidData($data)
+    {
+        // Define a pattern that allows only alphanumeric characters and some special characters like spaces, hyphens, underscores, etc.
+        $pattern = '/<script.*?>|<\/script>|--|;|#|\/\*|\*\/|UNION|SELECT|INSERT|DELETE|UPDATE|DROP|;|\bOR\b|\bAND\b/i';
+
+        foreach ($data as $item) {
+            foreach ($item as $key => $value) {
+                // Skip validation for date fields
+                if (stripos($key, 'date') !== false) {
+                    continue;
+                }
+                if (preg_match($pattern, $value)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+}
+
