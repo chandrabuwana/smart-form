@@ -7,6 +7,8 @@ use App\Http\Controllers\Master\DashboardController;
 use App\Http\Controllers\SmartPica\DashboarController;
 use App\Http\Controllers\SmartPica\HelperController;
 use App\Http\Controllers\SmartPica\TransactionPicaController;
+use App\Http\Controllers\Login\LoginKaryawanController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -17,23 +19,40 @@ use App\Http\Controllers\SmartPica\TransactionPicaController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+Route::group(['middleware' => ['check.auth']], function () {
+    Route::get('/', function () {
+        return view('welcome');
+    });
+    
+    Route::get('/helper-download-pdf/{docno}', [HelperPdfMobilisasiFormController::class, 'DownloadPDFHelperPdf']);
+    Route::get('/landing-page-dashboard', [DashboardController::class, 'DashboardIndex']);
+    
+    Route::get('/add-smart-pica', [DashboarController::class, 'IndexFormAdd'])->name("add-smart-pica");
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/smart-pica', [DashboarController::class, 'IndexSmartPicaDashboard'])->name("dashboard-smart-pica");
+Route::get('/update-progress', [DashboarController::class, 'IndexUpdateProgress'])->name(("dashboard-update-progress-smartpica"));
+Route::get('/add-step-smart-pica/{id}', [DashboarController::class, 'IndexFormStepPica']);
+Route::get('/view-data-detail-pica/{id}', [DashboarController::class, 'IndexViewDataDetailPica']);
+
+
+
+Route::POST('/helper-kpi-lead-datalist', [HelperController::class, 'HelperSelect2PicaKPILead']);
+Route::POST('/helper-week', [HelperController::class, 'HelperSelectWeek']);
+Route::POST('/helper-department', [HelperController::class, 'HelperSelect2PicaKDept']);
+Route::POST('/helper-karyawan', [HelperController::class, 'HelperSelect2PicaKaryawanByDept']);
+Route::GET('/helper-data-pica', [HelperController::class, 'HelperDataTablePica']);
+Route::GET('/helper-data-update-progress', [HelperController::class, 'HelperDataTableStepSolutionPica']);
+Route::GET('/helper-data-history-progress', [HelperController::class, 'HelperDataTableHistoryProgressPica']);
+
+
+Route::POST('/add-transaction', [TransactionPicaController::class, 'AddDataTransactionPica']);
+Route::POST('/add-step-transaction', [TransactionPicaController::class, 'addDataStepTransactionPica']);
+Route::POST('/add-progress-history-transaction', [TransactionPicaController::class, 'addTransactionProgressStepSolutionPica']);
+
 });
 
-Route::get('/helper-download-pdf/{docno}',  [HelperPdfMobilisasiFormController::class, 'DownloadPDFHelperPdf']);
-Route::get('/landing-page-dashboard', [DashboardController::class, 'DashboardIndex']);
+Route::get('/login', [LoginKaryawanController::class, 'IndexLoginKaryawan']);
+Route::post('/login', [LoginKaryawanController::class, 'ProcessLogin'])->name("login");
+Route::get('/logout', [LoginKaryawanController::class, 'LogoutAuthenticationProcess'])->name("logout");
 
 
-Route::get('/smart-pica', [DashboarController::class, 'IndexSmartPicaDashboard']);
-Route::get('/add-smart-pica', [DashboarController::class, 'IndexFormAdd']);
-Route::get('/add-step-smart-pica/{id}', [DashboarController::class, 'IndexFormStepPica']);
-
-Route::POST('/helper-kpi-lead-datalist', [HelperController::class,'HelperSelect2PicaKPILead']);
-Route::POST('/helper-week', [HelperController::class,'HelperSelectWeek']);
-Route::POST('/helper-department', [HelperController::class,'HelperSelect2PicaKDept']);
-Route::POST('/helper-karyawan', [HelperController::class,'HelperSelect2PicaKaryawanByDept']);
-
-Route::POST('/add-transaction', [TransactionPicaController::class,'AddDataTransactionPica']);
-Route::POST('/add-step-transaction', [TransactionPicaController::class,'addDataStepTransactionPica']);

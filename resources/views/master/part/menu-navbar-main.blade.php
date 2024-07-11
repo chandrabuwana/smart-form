@@ -11,17 +11,50 @@
          </a>
      </div>
      <hr class="horizontal light mt-0 mb-2">
-     <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
+     <div class="collapse navbar-collapse w-auto " id="sidenav-collapse-main">
          <ul class="navbar-nav">
+             <li class="nav-item">
+                 <a class="nav-link text-white active bg-gradient-primary" href="#" id="menuSmartPica">
+                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                         <i class="fa fa-sitemap"></i>
+                     </div>
+                     <span class="nav-link-text ms-1">Smart Pica</span>
+                 </a>
+                 <ul class="submenu navbar-nav">
+                     <li class="nav-item">
+                         <a class="nav-link text-white " href="{{ route('dashboard-smart-pica') }}" id="dahsboardPica">
+                             <div class="text-white text-center d-flex align-items-center justify-content-center">
+                             </div>
+                             <span class="nav-link-text">Dashboard</span>
+                         </a>
+                     </li>
+                     <li class="nav-item">
+                         <a class="nav-link text-white " href="{{ route('add-smart-pica') }}" id="dahsboardPica">
+                             <div class="text-white text-center d-flex align-items-center justify-content-center">
+                             </div>
+                             <span class="nav-link-text">Add Pica</span>
+                         </a>
+                     </li>
+                     <li class="nav-item">
+                         <a class="nav-link text-white " href="{{ route('dashboard-update-progress-smartpica') }}"
+                             id="progressPica">
+                             <div class="text-white text-center d-flex align-items-center justify-content-center">
+                             </div>
+                             <span class="nav-link-text">Update Progress</span>
+                         </a>
+                     </li>
+                 </ul>
+             </li>
              <li class="nav-item">
                  <a class="nav-link text-white active bg-gradient-primary" href="../pages/dashboard.html">
                      <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                         <i class="material-icons opacity-10">dashboard</i>
+                         <i class="fa fa-truck"></i>
                      </div>
-                     <span class="nav-link-text ms-1">PICA</span>
+                     <span class="nav-link-text ms-1">Dashboard</span>
                  </a>
              </li>
          </ul>
+
      </div>
      <div class="sidenav-footer position-absolute w-100 bottom-0 ">
          {{-- <div class="mx-3">

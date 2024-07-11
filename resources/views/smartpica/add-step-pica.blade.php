@@ -92,7 +92,7 @@
                         <div class="col-auto my-auto ms-3">
                             <div class="h-100">
                                 <p class="mb-0 fw-bold text-sm">
-                                    Creator : Abiyoga Hendra Wijaya
+                                    Creator : {{ session('username') }}
                                     {{-- session()->get('name') . ' - ' . session()->get('dept') . ' - ' . session()->get('site') --}}
                                 </p>
                             </div>
@@ -301,8 +301,8 @@
                                                 <label class="ms-0" for="pc_ap_pica_{{ $i }}">AP/TOD</label>
                                                 <select class="form-control" name="pc_ap_pica_{{ $i }}"
                                                     required>
-                                                    <option value="pc">AP</option>
-                                                    <option value="ap">TOD</option>
+                                                    <option value="ap">AP</option>
+                                                    <option value="tod">TOD</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -408,6 +408,14 @@
     </script>
     <script type="text/javascript">
         $(document).ready(function() {
+
+            var targetString = "add-step-smart-pica";
+
+            var currentUrl = window.location.href;
+            if (currentUrl.includes(targetString)) {
+                $("#progressPica").closest('.submenu').show();
+            }
+
             function initializeSelect2(elementId, placeholderText, ajaxUrl, dataDepartmentId) {
                 $('#' + elementId).select2({
                     theme: 'bootstrap-5', // Menggunakan tema Bootstrap 5

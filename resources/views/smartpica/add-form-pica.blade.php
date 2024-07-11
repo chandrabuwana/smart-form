@@ -68,7 +68,7 @@
                         <div class="col-auto my-auto ms-3">
                             <div class="h-100">
                                 <p class="mb-0 fw-bold text-sm">
-                                    Creator : Abiyoga Hendra Wijaya
+                                    Creator : {{session('username')}}
                                     {{-- session()->get('name') . ' - ' . session()->get('dept') . ' - ' . session()->get('site') --}}
                                 </p>
                             </div>
@@ -322,6 +322,7 @@
                 dataType: 'json',
                 data: function(params) {
                     return {
+                        _token: "{{csrf_token()}}",
                         query: params.term, // search term
                     };
                 },

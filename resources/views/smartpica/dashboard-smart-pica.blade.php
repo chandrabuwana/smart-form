@@ -15,33 +15,30 @@
                 </div>
                 <div class="card-body px-0 pb-2">
                     <div class="d-flex align-items-center">
-                        <a href="/add-smart-pica"><button
-                                class="btn btn-primary ms-auto uploadBtn" id="buttonSubmitDataPICA">
+                        <a href="{{ route('add-smart-pica') }}"><button class="btn btn-primary ms-auto uploadBtn">
                                 Add PICA</button></a>
                     </div>
                     <div class="table-responsive p-0">
-                        <table id="dataListFormMobilisasi" data-toggle="table"
-                            data-ajax="dataListFormMobilisasiGenerateData"
-                            data-query-params="dataListFormMobilisasiParamsGenerate" data-side-pagination="server"
+                        <table id="dataListFormPica" data-toggle="table" data-ajax="dataListFormPicaGenerateData"
+                            data-query-params="dataListFormPicaParamsGenerate" data-side-pagination="server"
                             data-page-list="[10, 25, 50, 100, all]" data-sortable="true"
                             data-content-type="application/json" data-data-type="json" data-pagination="true"
-                            data-unique-id="nodoc">
+                            data-unique-id="nodocpica">
                             <thead>
                                 <tr>
-                                    <th data-field="id" data-align="left" data-halign="text-center" data-sortable="true">ID
+                                    <th data-field="nodocpica" data-align="left" data-halign="text-center"
+                                        data-sortable="true">No. Document
                                     </th>
-                                    <th data-field="nodoc" data-align="left" data-halign="center" data-sortable="true">No.
-                                        Dokumen
+                                    <th data-field="status" data-formatter="statusFormater" data-align="center"
+                                        data-halign="center" data-sortable="true">Status
                                     </th>
-                                    <!-- <th data-field="eqpMdl" data-align="left" data-halign="center">Equipment Model</th> -->
-                                    <th data-field="brand" data-align="left" data-halign="center">Brand</th>
-                                    <!-- <th data-field="type" data-align="left" data-halign="center">Type</th> -->
-                                    <th data-field="noLmbng" data-align="left" data-halign="center">No. Lambung</th>
-                                    <th data-field="qty" data-align="right" data-halign="center">Qty</th>
-                                    <th data-field="startDate" data-formatter="dataTableDateFormater" data-align="center"
-                                        data-halign="center" data-sortable="true">Start Date</th>
+                                    <th data-field="tahun_bulan" data-align="center" data-halign="center">Date</th>
+                                    <th data-field="site" data-align="center" data-halign="center">Site</th>
+                                    <th data-field="kp_name" data-align="left" data-halign="center">Kategori</th>
+                                    <th data-field="problem" data-align="left" data-halign="center">Problem</th>
+                                    {{-- <th data-field="lea_name" data-align="left" data-halign="center">KPI</th> --}}
                                     <th data-halign="center" data-align="center"
-                                        data-formatter="dataListFormMobilisasiActionFormater">Action
+                                        data-formatter="dataListFormPicaActionFormater">Action
                                     </th>
                                 </tr>
                             </thead>
@@ -66,15 +63,42 @@
 
         }
 
-        function dataListFormMobilisasiActionFormater(value, row, index) {
-            return `
-                    <a class="like" onclick="PrintPdfFormMobilisasi(this)" title="Like">
-                        <i class="fa fa-file-text"> PDF</i>
-                    </a>
-                `
+        function statusFormater(value, row, index) {
+            if (value == 1) {
+                return `<button type="button" class="btn btn-primary btn-sm">Step Not Yet</button>`
+            } else if (value == 2) {
+                return `<button type="button" class="btn btn-danger btn-sm">Not Any Progress</button>`
+            } else if (value == 3) {
+                return `<button type="button" class="btn btn-warning btn-sm">On Progress</button>`
+            } else if (value == 4) {
+                return `<button type="button" class="btn btn-success btn-sm">Closed</button>`
+            } else {
+                return `<button type="button" class="btn btn-secondary btn-sm">?</button>`
+            }
         }
 
-        function dataListFormMobilisasiParamsGenerate(params) {
+        function dataListFormPicaActionFormater(value, row, index) {
+            console.log(row);
+            let data = `
+                    <button onclick="RedirectViewPica(this)"><a class="like"  title="Like">
+                        <i class="fa fa-eye">View</i>
+                    </a></button>
+                `
+            if (row.status == 1) {
+                data += `<button onclick="redirectToAddStepPica(this)"><a class="like" title="Like">
+                        <i class="fa fa-plus">Step</i>
+                    </a></button>`
+            }
+            return data;
+        }
+
+        function redirectToAddStepPica(obj) {
+            var indexDt = $(obj).closest('tr').data('index');
+            window.location.href = "/add-step-smart-pica/" + $('#dataListFormPica').bootstrapTable('getData')[indexDt]
+                .nodocpica;
+        }
+
+        function dataListFormPicaParamsGenerate(params) {
 
             params.search = {
                 'CARNAME': "",
@@ -90,16 +114,21 @@
             return params;
         }
 
-        function dataListFormMobilisasiSearchGenerate(obj) {
-            $('#dataListFormMobilisasi').bootstrapTable('refresh');
-            $("#dataListFormMobilisasi").bootstrapTable("uncheckAll");
+        function RedirectViewPica(obj) {
+            var indexDt = $(obj).closest('tr').data('index');
+            window.location.href = "/view-data-detail-pica/" + $('#dataListFormPica').bootstrapTable('getData')[indexDt]
+                .nodocpica
         }
 
-        function dataListFormMobilisasiGenerateData(params) {
-            var url = '/picsedit/get-data-list-form-mobilisasi'
-            $.get(url + '?' + $.param(params.data)).then(function(res) {
+        function dataListFormPicaSearchGenerate(obj) {
+            $('#dataListFormPica').bootstrapTable('refresh');
+            $("#dataListFormPica").bootstrapTable("uncheckAll");
+        }
 
-                params.success(JSON.parse(res))
+        function dataListFormPicaGenerateData(params) {
+            var url = '/helper-data-pica'
+            $.get(url + '?' + $.param(params.data)).then(function(res) {
+                params.success(res)
             })
         }
     </script>

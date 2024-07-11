@@ -4,12 +4,13 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    
     <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('master/img/apple-icon.png') }}">
     <link rel="icon" type="image/png" href="{{ asset('img/logo.png') }}">
     <title>
         BINA SARANA SUKSES SMART DASHBOARD
     </title>
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
     <!--     Fonts and icons     -->
     <link rel="stylesheet" type="text/css"
         href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
@@ -53,6 +54,22 @@
     <script src="{{ asset('master/js/plugins/smooth-scrollbar.min.js') }}"></script>
     <script src="{{ asset('master/js/plugins/chartjs.min.js') }}"></script>
     <script>
+        $(document).ready(function() {
+            $("#menuSmartPica").on("click", function(e) {
+                e.preventDefault();
+                $(this).next(".submenu").slideToggle();
+            });
+            var currentUrl = window.location.href;
+            $('.nav-link').each(function() {
+                if (this.href === currentUrl) {
+                    $(this).addClass('bg-gradient-danger');
+                    // Ensure the parent submenu is visible
+                    $(this).closest('.submenu').show();
+                    // Add a class to the parent nav-item to keep the submenu open
+                    $(this).closest('.nav-item').addClass('active');
+                }
+            });
+        });
         var win = navigator.platform.indexOf('Win') > -1;
         if (win && document.querySelector('#sidenav-scrollbar')) {
             var options = {

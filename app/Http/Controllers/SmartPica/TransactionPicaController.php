@@ -99,10 +99,10 @@ class TransactionPicaController extends Controller
                 'solution_estimation' => $dataMasterEstimasiPica,
                 'created_at' => now(),
                 'updated_at' => now(),
-                'updated_by' => 'admin',
-                'created_by' => 'admin',
+                'updated_by' => session("user_id"),
+                'created_by' => session("user_id"),
                 'approval' => 'pending',
-                'status' => 'open'
+                'status' => 1
             ]);
 
 
@@ -121,8 +121,8 @@ class TransactionPicaController extends Controller
                             'id_kategory' => $data['kategori'],
                             'created_at' => now(),
                             'updated_at' => now(),
-                            'updated_by' => 'admin', // Example value, replace with actual value
-                            'created_by' => 'admin', // Example value, replace with actual value
+                            'updated_by' => session("user_id"), // Example value, replace with actual value
+                            'created_by' => session("user_id"), // Example value, replace with actual value
                         ]);
                     }
                 }
@@ -141,8 +141,8 @@ class TransactionPicaController extends Controller
                             'id_kategory' => $data['kategori'],
                             'created_at' => now(),
                             'updated_at' => now(),
-                            'updated_by' => 'admin', // Example value, replace with actual value
-                            'created_by' => 'admin', // Example value, replace with actual value
+                            'updated_by' => session("user_id"), // Example value, replace with actual value
+                            'created_by' => session("user_id"), // Example value, replace with actual value
                         ]);
                     }
                 }
@@ -162,8 +162,8 @@ class TransactionPicaController extends Controller
                             'id_kategory' => $data['kategori'],
                             'created_at' => now(),
                             'updated_at' => now(),
-                            'updated_by' => 'admin', // Example value, replace with actual value
-                            'created_by' => 'admin', // Example value, replace with actual value
+                            'updated_by' => session("user_id"), // Example value, replace with actual value
+                            'created_by' => session("user_id"), // Example value, replace with actual value
                         ]);
                     }
                 }
@@ -184,8 +184,8 @@ class TransactionPicaController extends Controller
                             'id_kategory' => $data['kategori'],
                             'created_at' => now(),
                             'updated_at' => now(),
-                            'updated_by' => 'admin', // Example value, replace with actual value
-                            'created_by' => 'admin', // Example value, replace with actual value
+                            'updated_by' => session("user_id"), // Example value, replace with actual value
+                            'created_by' => session("user_id"), // Example value, replace with actual value
                         ]);
                     }
                 }
@@ -207,8 +207,8 @@ class TransactionPicaController extends Controller
                             'id_kategory' => $data['kategori'],
                             'created_at' => now(),
                             'updated_at' => now(),
-                            'updated_by' => 'admin', // Example value, replace with actual value
-                            'created_by' => 'admin', // Example value, replace with actual value
+                            'updated_by' => session("user_id"), // Example value, replace with actual value
+                            'created_by' => session("user_id"), // Example value, replace with actual value
                         ]);
                     }
                 }
@@ -256,12 +256,18 @@ class TransactionPicaController extends Controller
 
     function addDataStepTransactionPica(Request $q)
     {
+        $nodocpica = "";
+        $nik_master = "";
         DB::beginTransaction();
         try {
             foreach ($q->data as $d) {
                 $dataObject = $d['dataSolution'];
                 if ($this->isValidData($dataObject)) {
                     foreach ($dataObject as $item) {
+                        if ($nodocpica == "") {
+                            $nodocpica = $d['nodocWhy'];
+                            $nik_master = $d['nikMaster'];
+                        }
                         DB::table('new_pica_step')->insert([
                             'id_master' => $d['idMaster'], // Adjust as per your application logic
                             'nik_master' => $d['nikMaster'], // Adjust as per your application logic
@@ -275,7 +281,7 @@ class TransactionPicaController extends Controller
                             'pic' => $item['pic'],
                             'due_date' => $item['dueDate'],
                             'created_at' => now(),
-                            'created_by' => 'admin', // Example value, replace with actual value
+                            'created_by' => session("user_id"), // Example value, replace with actual value
                         ]);
                     }
                 } else {
@@ -285,6 +291,14 @@ class TransactionPicaController extends Controller
                     ];
                 }
             }
+
+
+            DB::table('master_pica')
+                ->where('nodocpica', $nodocpica)
+                ->where('nik', $nik_master)
+                ->update(['status' => 2]);
+
+
         } catch (QueryException $e) {
             // Rollback the transaction on error
             DB::rollBack();
@@ -319,6 +333,73 @@ class TransactionPicaController extends Controller
             }
         }
         return true;
+    }
+
+
+    function addTransactionProgressStepSolutionPica(Request $d)
+    {
+        $params = $d->only(['noteProgress', 'ccpLink', 'progress']);
+
+        if ($this->checkForSQLInjection($params)) {
+            return response()->json(['error' => 'SQL Injection detected!'], 400);
+        }
+        DB::beginTransaction();
+
+        try {
+            DB::table('history_progress_solution')->insert([
+                'id_master' => $d->idMaster,
+                'id_solution' => $d->idSolution,
+                'nik_master' => $d->nikMaster,
+                'nodocpica' => $d->nodocpica,
+                'position_why' => $d->positionWhy,
+                'identity_why' => $d->identityWhy,
+                'note_progress' => $d->noteProgress,
+                'ccp' => $d->ccpLink,
+                'progress' => $d->progress,
+                'created_at' => now(),
+                'created_by' => session("user_id")
+            ]);
+        } catch (QueryException $e) {
+            // Rollback the transaction on error
+            DB::rollBack();
+            return [
+                'message' => 'Failed to insert records' . $e->getMessage(),
+                'code' => 500
+            ];
+        }
+
+
+        DB::table('master_pica')
+            ->where('nodocpica', $d->nodocpica)
+            ->where('nik', $d->nikMaster)
+            ->update(['status' => 3]);
+
+        DB::commit();
+
+        return [
+            'message' => "Done Progress Tersimpan",
+            'code' => 200
+        ];
+
+    }
+
+    public function checkForSQLInjection(array $params)
+    {
+        // Common SQL Injection patterns
+        $patterns = [
+            '/(\b)(SELECT|INSERT|UPDATE|DELETE|DROP|UNION|OR|AND|NOT)(\b)/i', // SQL Keywords
+            '/(\b)(--|#|\/\*|\*\/|;)(\b)/' // SQL Comment Syntax
+        ];
+
+        foreach ($params as $key => $value) {
+            foreach ($patterns as $pattern) {
+                if (preg_match($pattern, $value)) {
+                    return true; // Injection detected
+                }
+            }
+        }
+
+        return false; // No injection detected
     }
 }
 

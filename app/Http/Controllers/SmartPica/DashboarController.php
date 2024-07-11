@@ -5,6 +5,7 @@ namespace App\Http\Controllers\SmartPica;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use DB;
+use Illuminate\Support\Facades\Auth;
 
 class DashboarController extends Controller
 {
@@ -12,6 +13,7 @@ class DashboarController extends Controller
 
     function IndexSmartPicaDashboard()
     {
+
 
         return view("smartpica/dashboard-smart-pica");
     }
@@ -126,6 +128,56 @@ class DashboarController extends Controller
         return array_filter($array, function ($obj) use ($index1, $index2, $index3, $index4) {
             return $obj->index_w1 === $index1 && $obj->index_w2 === $index2 && $obj->index_w3 === $index3 && $obj->index_w4 === $index4;
         });
+    }
+
+    function IndexViewDataDetailPica(string $id)
+    {
+
+        // $id = 'PICA-2024-07-04-1';
+
+        $dataMaster = DB::select("select m.* , kl.lea_name, site.Nama nama_site, karyawan.nama nama_karyawan  from master_pica m join kpi_lea kl on m.id_kpi = kl.lea_id join HRD.dbo.tsite site on m.site = site.KodeST join HRD.dbo.TKaryawan karyawan on karyawan.NIK = m.nik where nodocpica = '$id'");
+
+        $dataPicaW1 = DB::select("select * from pica_why1 w join kategori_problem k on w.id_kategory = k.kp_id where nodocpica = '$id'");
+        $dataPicaW2 = DB::select("select * from pica_why2 w join kategori_problem k on w.id_kategory = k.kp_id where nodocpica = '$id'");
+        $dataPicaW3 = DB::select("select * from pica_why3 w join kategori_problem k on w.id_kategory = k.kp_id where nodocpica = '$id'");
+        $dataPicaW4 = DB::select("select * from pica_why4 w join kategori_problem k on w.id_kategory = k.kp_id where nodocpica = '$id'");
+        $dataPicaW5 = DB::select("select * from pica_why5 w join kategori_problem k on w.id_kategory = k.kp_id where nodocpica = '$id'");
+
+
+
+
+        $solution = DB::select("SELECT nodocpica,
+                        id_master,
+                        nik_master,
+                        id, 
+                        CASE 
+                            WHEN action = 'ca' THEN 'Corrective'
+                            WHEN action = 'pa' THEN 'Preventive'
+                            ELSE action 
+                        END AS action, 
+                        note_step, 
+                        upper(ap_tod) ap_tod, 
+                        upper(dic) dic,
+                        pic, 
+                       FORMAT(due_date, 'dd MMMM yyyy', 'en-US') AS due_date, position_why, identity_why, k.nama nama_pic FROM [PICA_BETA].[dbo].[new_pica_step] n join hrd.dbo.TKaryawan k on n.pic = k.NIK where nodocpica = '$id'");
+
+        $dataFinal = [
+            'dataMaster' => $dataMaster[0],
+            'dataPicaW1' => $dataPicaW1,
+            'dataPicaW2' => $dataPicaW2,
+            'dataPicaW3' => $dataPicaW3,
+            'dataPicaW4' => $dataPicaW4,
+            'dataPicaW5' => $dataPicaW5,
+            'solution' => $solution,
+        ];
+
+        return view("smartpica/view-data-pica", $dataFinal);
+    }
+
+    function IndexUpdateProgress()
+    {
+
+        return view("smartpica/update-progress");
     }
 
 }

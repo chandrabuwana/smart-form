@@ -118,12 +118,12 @@ class HelperController extends Controller
 
     public function GetQueryDataTablePica(string $query, Request $req)
     {
-
-        $dataSort = null;
-        $dataSearch = null;
-        $dataOrder = null;
-        $dataLimit = null;
-        $dataOffset = null;
+        if (isset($req->search['IDSOLUTION']) && $req->search['IDSOLUTION'] != null) {
+            $query = $query . "where id_solution = '" . $req->search['IDSOLUTION'] . "' ";
+        }
+        if (isset($req->search['NODOCPICA']) && $req->search['NODOCPICA'] != null) {
+            $query = $query . " AND nodocpica = '" . $req->search['NODOCPICA'] . "' ";
+        }
 
         if (isset($req["sort"]) && $req["sort"] != null) {
             $query = $query . ' ORDER BY ' . $req["sort"] . ' ' . $req["order"];
@@ -142,9 +142,107 @@ class HelperController extends Controller
 
     function HelperDataTablePica(Request $table)
     {
-        $query = "";
-        $countDataUser = DB::select('select count(*) jumlah FROM hdr_transaction');
-        $newQuery = $this->GetQueryDataTable($query, $table);
+        $query = "select nik, nodocpica, CONCAT(FORMAT(DATEFROMPARTS(tahun, bulan, 1), 'MMMM'), ' - ', tahun) AS tahun_bulan, week, site, id_kpi, status, problem, kp_name, lea_name from PICA_BETA.dbo.master_pica m join kategori_problem k
+                    on k.kp_id = m.id_kategory join kpi_lea kl on kl.lea_id = m.id_kpi ";
+        $countDataUser = DB::select('select count(*) jumlah FROM master_pica');
+        $newQuery = $this->GetQueryDataTablePica($query, $table);
+
+        $dataUser = DB::select($newQuery);
+
+        return response()->json([
+            'total' => $countDataUser[0]->jumlah,
+            'totalNotFiltered' => $countDataUser[0]->jumlah,
+            "rows" => $dataUser,
+        ]);
+    }
+
+    function HelperDataTableStepSolutionPica(Request $table)
+    {
+        $nik = session("user_id");
+        $query = "WITH dataProgress AS (
+                    SELECT 
+                        id_solution,
+                        nodocpica,
+                        progress,
+                        ROW_NUMBER() OVER (PARTITION BY id_solution, nodocpica ORDER BY progress DESC) AS rn,
+                         CASE 
+                            WHEN TRY_CAST(
+                                    SUBSTRING(progress, 
+                                            PATINDEX('%[0-9]%', progress), 
+                                            LEN(progress) - PATINDEX('%[0-9]%', progress) + 1
+                                    ) AS INT
+                                ) = 0 THEN 'not yet'
+                            WHEN TRY_CAST(
+                                    SUBSTRING(progress, 
+                                            PATINDEX('%[0-9]%', progress), 
+                                            LEN(progress) - PATINDEX('%[0-9]%', progress) + 1
+                                    ) AS INT
+                                ) BETWEEN 1 AND 99 THEN 'on progress'
+                            WHEN TRY_CAST(
+                                    SUBSTRING(progress, 
+                                            PATINDEX('%[0-9]%', progress), 
+                                            LEN(progress) - PATINDEX('%[0-9]%', progress) + 1
+                                    ) AS INT
+                                ) = 100 THEN 'close'
+                            ELSE 'unknown' -- Jika nilai tidak bisa dikonversi atau tidak sesuai
+                        END AS status
+                    FROM 
+                        history_progress_solution
+                )
+                SELECT 
+                    step_pica.nodocpica,
+                    step_pica.id_master,
+                    ISNULL(dp.progress, 0) AS progress,
+                    step_pica.nik_master,
+                    dp.status,
+                    step_pica.id, 
+                    CASE 
+                        WHEN step_pica.action = 'ca' THEN 'Corrective'
+                        WHEN step_pica.action = 'pa' THEN 'Preventive'
+                        ELSE step_pica.action 
+                    END AS action, 
+                    step_pica.note_step, 
+                    UPPER(step_pica.ap_tod) AS ap_tod, 
+                    step_pica.pic, 
+                    step_pica.due_date, 
+                    step_pica.position_why, 
+                    step_pica.identity_why
+                FROM 
+                    new_pica_step step_pica
+                LEFT JOIN 
+                    dataProgress dp ON dp.id_solution = step_pica.id
+                        AND dp.nodocpica = step_pica.nodocpica
+                        AND dp.rn = 1 where step_pica.pic = '$nik' ";
+        $countDataUser = DB::select('select count(*) jumlah FROM new_pica_step');
+        $newQuery = $this->GetQueryDataTablePica($query, $table);
+
+        $dataUser = DB::select($newQuery);
+
+        return response()->json([
+            'total' => $countDataUser[0]->jumlah,
+            'totalNotFiltered' => $countDataUser[0]->jumlah,
+            "rows" => $dataUser,
+        ]);
+    }
+
+    function HelperDataTableHistoryProgressPica(Request $table)
+    {
+        // dd($table);
+        // dd($table->search['IDSOLUTION']);
+        $query = " SELECT [id]
+                    ,[id_solution]
+                    ,[id_master]
+                    ,[nik_master]
+                    ,[nodocpica]
+                    ,[position_why]
+                    ,[identity_why]
+                    ,[note_progress]
+                    ,[ccp]
+                    ,[progress]
+                    ,[created_at]
+                FROM [PICA_BETA].[dbo].[history_progress_solution] ";
+        $countDataUser = DB::select('select count(*) jumlah FROM history_progress_solution');
+        $newQuery = $this->GetQueryDataTablePica($query, $table);
 
         $dataUser = DB::select($newQuery);
 
