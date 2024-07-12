@@ -19,12 +19,12 @@ use App\Http\Controllers\Login\LoginKaryawanController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+Route::get('/helper-download-pdf/{docno}', [HelperPdfMobilisasiFormController::class, 'DownloadPDFHelperPdf']);
 Route::group(['middleware' => ['check.auth']], function () {
     Route::get('/', function () {
         return view('welcome');
     });
     
-    Route::get('/helper-download-pdf/{docno}', [HelperPdfMobilisasiFormController::class, 'DownloadPDFHelperPdf']);
     Route::get('/landing-page-dashboard', [DashboardController::class, 'DashboardIndex']);
     
     Route::get('/add-smart-pica', [DashboarController::class, 'IndexFormAdd'])->name("add-smart-pica");
