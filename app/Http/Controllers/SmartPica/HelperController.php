@@ -165,7 +165,7 @@ class HelperController extends Controller
                         nodocpica,
                         progress,
                         ROW_NUMBER() OVER (PARTITION BY id_solution, nodocpica ORDER BY progress DESC) AS rn,
-                         CASE 
+                        CASE 
                             WHEN TRY_CAST(
                                     SUBSTRING(progress, 
                                             PATINDEX('%[0-9]%', progress), 
@@ -184,7 +184,7 @@ class HelperController extends Controller
                                             LEN(progress) - PATINDEX('%[0-9]%', progress) + 1
                                     ) AS INT
                                 ) = 100 THEN 'close'
-                            ELSE 'unknown' -- Jika nilai tidak bisa dikonversi atau tidak sesuai
+                            ELSE 'not yet'
                         END AS status
                     FROM 
                         history_progress_solution
@@ -192,9 +192,9 @@ class HelperController extends Controller
                 SELECT 
                     step_pica.nodocpica,
                     step_pica.id_master,
-                    ISNULL(dp.progress, 0) AS progress,
+                    ISNULL(dp.progress, '0') AS progress,
+                    upper(ISNULL(dp.status, 'not yet')) AS status,
                     step_pica.nik_master,
-                    dp.status,
                     step_pica.id, 
                     CASE 
                         WHEN step_pica.action = 'ca' THEN 'Corrective'

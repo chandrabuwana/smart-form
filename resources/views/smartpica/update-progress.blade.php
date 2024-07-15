@@ -33,7 +33,7 @@
                                     <th data-field="nodocpica" data-align="left" data-halign="text-center"
                                         data-sortable="true">No. Document
                                     </th>
-                                    <th data-field="-" data-align="center" data-halign="center" data-sortable="true">Status
+                                    <th data-field="status" data-align="center" data-halign="center" data-sortable="true">Status
                                     </th>
                                     <th data-field="action" data-align="center" data-halign="center">Action</th>
                                     <th data-field="note_step" data-align="left" data-halign="center">Step Solution</th>

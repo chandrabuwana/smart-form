@@ -210,7 +210,7 @@
                     </div>
                     <div class="card-footer">
                         <div class="d-flex align-items-center">
-                            <div class="input-group input-group-static my-4">
+                            <div class="input-group input-group-static my-4" style="display: none">
                                 <label class="form-label">Pilih Jumlah Estimasi dari Solusi Step PICA
                                     diatas</label>
                                 <div class="col-md-2">

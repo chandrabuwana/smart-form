@@ -334,9 +334,12 @@
                                             </div>
                                         </div>
                                         <div class="col-md-4">
-                                            <div class="input-group input-group-static my-4">
-                                                <input class="form-control" type="text" placeholder="DD/MM/YYYY"
-                                                    name="DueDate" required id="DueDate">
+                                            <label for="DueDate_{{ $i }}" class="">Due Date
+                                                (PIC)</label>
+                                            <div class="input-group input-group-static my-2">
+                                                <input class="form-control due-date-picker" type="text"
+                                                placeholder="DD/MM/YYYY" name="DueDate_{{ $i }}" required
+                                                id="DueDate_{{ $i }}">
                                             </div>
                                         </div>
                                     </div>
@@ -378,13 +381,15 @@
             $('#DueDate').val('');
         }
 
-        $('#DueDate').datepicker({
-            dateFormat: 'd MM yy',
-            monthNames: [
-                'January', 'February', 'March', 'April', 'May', 'June',
-                'July', 'August', 'September', 'October', 'November', 'December'
-            ],
-            dayNamesMin: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+        $('.due-date-picker').each(function() {
+            $(this).datepicker({
+                dateFormat: 'd MM yy',
+                monthNames: [
+                    'January', 'February', 'March', 'April', 'May', 'June',
+                    'July', 'August', 'September', 'October', 'November', 'December'
+                ],
+                dayNamesMin: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
+            });
         });
 
         function OpenModal(obj, key) {
@@ -477,7 +482,7 @@
                         ap_tod: $(`select[name="pc_ap_pica_${i}"]`).val(),
                         dic: $(`#dicID_${i}`).val(),
                         pic: $(`#picID_${i}`).val(),
-                        dueDate: $(`#DueDate`).val(),
+                        dueDate: $(`#DueDate_${i}`).val(),
 
                     };
 
