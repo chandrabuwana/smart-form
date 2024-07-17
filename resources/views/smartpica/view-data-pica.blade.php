@@ -4,6 +4,74 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.css">
     <link rel="stylesheet" href="https://unpkg.com/treeflex/dist/css/treeflex.css">
     <style>
+        /* make the nodes round and change their background-color */
+        .window {
+            font-weight: bold;
+            cursor: pointer;
+            border: 1px solid #346789;
+            box-shadow: 2px 2px 10px #aaa;
+            -o-box-shadow: 2px 2px 10px #aaa;
+            -webkit-box-shadow: 2px 2px 10px #aaa;
+            -moz-box-shadow: 2px 2px 10px #aaa;
+            -moz-border-radius: 0.5em;
+            border-radius: 0.5em;
+            /*
+                                                                                                                                                                                                    opacity:0.8;
+                                                                                                                                                                                                    filter:alpha(opacity=80);
+                                                                                                                                                                                                    */
+            width: 30em;
+            height: auto;
+            padding: 0.5em 0em;
+            text-align: center;
+            z-index: 20;
+            position: absolute;
+            background-color: #eeeeef;
+            color: black;
+            font-family: helvetica;
+            font-size: 0.9em;
+            word-wrap: break-word;
+        }
+
+
+        .window:hover {
+            box-shadow: 2px 2px 10px #444;
+            -o-box-shadow: 2px 2px 10px #444;
+            -webkit-box-shadow: 2px 2px 10px #444;
+            -moz-box-shadow: 2px 2px 10px #444;
+            /*
+                                                                                                                                                                                            opacity:0.6;
+                                                                                                                                                                                            filter:alpha(opacity=60);
+                                                                                                                                                                                            */
+        }
+
+        /*
+                                                                                                                                                                                        .window > div {
+                                                                                                                                                                                            margin-top: 19%;
+                                                                                                                                                                                            margin-bottom: 19%;
+                                                                                                                                                                                        }
+                                                                                                                                                                                        */
+
+        .hidden {
+            display: none;
+        }
+
+        .collapser {
+            cursor: pointer;
+            border: 1px dotted gray;
+            z-index: 21;
+        }
+
+        .errorWindow {
+            border: 2px solid red;
+        }
+
+        #treemain {
+            height: 500000px;
+            width: 100%;
+            position: relative;
+            overflow: auto;
+        }
+
         .scrollable-div {
             width: 100%;
             height: 400px;
@@ -177,374 +245,43 @@
                                 <div class="scrollable-div border" id="scrollableDiv">
                                     <div class="zoomable-content" id="zoomableContent">
                                         <!-- Add your large content here -->
+
                                         <div style="width: 100000px; height: 1500px;" id="dataWHYYYYY">
-                                            <div class="tf-tree tf-gap-lg" style="padding-top: 100px">
-                                                <ul id="tree-container" style="margin: 20px">
-                                                    @foreach ($dataPicaW1 as $key => $w1)
-                                                        <li>
-                                                            <span class="tf-nc" style="width:20vw">
-                                                                <legend style="width: auto">Why 1 - {{$key+1}}</legend>
-                                                                <div class="row">
-                                                                    <div class="col-12 my-2">
-                                                                        <div class="row">
-                                                                            <div class="col-4">Kategori </div>
-                                                                            <div class="col">: {{$w1->kp_name}}</div>
-                                                                        </div>
+                                            <div class="" style="padding-top: 100px">
+
+                                                {{-- <ul id="tree-container" style="margin: 20px">
+                                                    
+                                                </ul> --}}
+                                                <div id="treemain">
+                                                    <div id="node_0" class="window hidden" data-id="0"
+                                                        data-parent="" data-first-child="1" data-next-sibling="">
+                                                        Root Problem
+                                                    </div>
+                                                    {{-- @foreach ($dataPicaW1 as $key => $w1)
+                                                        <div id="node_1" class="window hidden" data-id="1"
+                                                            data-parent="0" data-first-child="4" data-next-sibling="2">
+                                                            <div class="row" style="margin: 10px">
+                                                                <div class="col-12 my-2">
+                                                                    <div class="row">
+                                                                        <div class="col-4">Kategori </div>
+                                                                        <div class="col">: {{ $w1->kp_name }}</div>
                                                                     </div>
                                                                 </div>
-                                                                <div class="row">
-                                                                    <div class="col-12">
-                                                                        <div class="row">
-                                                                            <div
-                                                                            class="input-group input-group-static">
-                                                                            <label
-                                                                                for="input-why">-- WHY -- </label>
+                                                            </div>
+                                                            <div class="row" style="margin: 10px">
+                                                                <div class="col-12">
+                                                                    <div class="row">
+                                                                        <div class="input-group input-group-static">
+                                                                            <label for="input-why">-- WHY -- </label>
                                                                             <textarea type="textarea" id="input-why" rows="2" disabled class="form-control">{{ $w1->why }}</textarea>
                                                                         </div>
-                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                            </span>
-                                                            @if (count($dataPicaW2) > 0)
-                                                                <ul>
-                                                                    @foreach ($dataPicaW2 as $i=>$w2)
-                                                                        @if ($w1->index_w1 == $w2->index_w1)
-                                                                            <li>
-                                                                                <span class="tf-nc">
-                                                                                    <legend style="width: auto">Why 2 - {{$i + 1}}</legend>
-                                                                                        <div class="row">
-                                                                                            <div class="col-12 my-2">
-                                                                                                <div class="row">
-                                                                                                    <div class="col-4">Kategori </div>
-                                                                                                    <div class="col">: {{$w2->kp_name}}</div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                        <div class="row">
-                                                                                            <div class="col-12">
-                                                                                                <div class="row">
-                                                                                                    <div
-                                                                                                    class="input-group input-group-static">
-                                                                                                    <label
-                                                                                                        for="input-why">-- WHY -- </label>
-                                                                                                    <textarea type="textarea" id="input-why" rows="2" disabled class="form-control">{{ $w2->why }}</textarea>
-                                                                                                </div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                </span>
-                                                                                @if (count($dataPicaW3) > 0)
-                                                                                    <ul>
-                                                                                        @foreach ($dataPicaW3 as $j=>$w3)
-                                                                                            @if ($w2->index_w1 == $w3->index_w1 && $w2->index_w2 == $w3->index_w2)
-                                                                                                <li>
-                                                                                                    <span class="tf-nc">
-                                                                                                        <legend style="width: auto">Why 3 - {{$j+1}}</legend>
-                                                                                                        <div class="row">
-                                                                                                            <div class="col-12 my-2">
-                                                                                                                <div class="row">
-                                                                                                                    <div class="col-4">Kategori </div>
-                                                                                                                    <div class="col">: {{$w3->kp_name}}</div>
-                                                                                                                </div>
-                                                                                                            </div>
-                                                                                                        </div>
-                                                                                                        <div class="row">
-                                                                                                            <div class="col-12">
-                                                                                                                <div class="row">
-                                                                                                                    <div
-                                                                                                                    class="input-group input-group-static">
-                                                                                                                    <label
-                                                                                                                        for="input-why">-- WHY -- </label>
-                                                                                                                    <textarea type="textarea" id="input-why" rows="2" disabled class="form-control">{{ $w3->why }}</textarea>
-                                                                                                                </div>
-                                                                                                                </div>
-                                                                                                            </div>
-                                                                                                        </div>
-                                                                                                    </span>
-                                                                                                    @if (count($dataPicaW4) > 0)
-                                                                                                        <ul>
-                                                                                                            @foreach ($dataPicaW4 as $k=>$w4)
-                                                                                                                @if ($w3->index_w1 == $w4->index_w1 && $w3->index_w2 == $w4->index_w2 && $w3->index_w3 == $w4->index_w3)
-                                                                                                                    <li>
-                                                                                                                        <span
-                                                                                                                            class="tf-nc">
-                                                                                                                            <legend style="width: auto">Why 4 - {{$k +1}}</legend>
-                                                                                                                            <div class="row">
-                                                                                                                                <div class="col-12 my-2">
-                                                                                                                                    <div class="row">
-                                                                                                                                        <div class="col-4">Kategori </div>
-                                                                                                                                        <div class="col">: {{$w4->kp_name}}</div>
-                                                                                                                                    </div>
-                                                                                                                                </div>
-                                                                                                                            </div>
-                                                                                                                            <div class="row">
-                                                                                                                                <div class="col-12">
-                                                                                                                                    <div class="row">
-                                                                                                                                        <div
-                                                                                                                                        class="input-group input-group-static">
-                                                                                                                                        <label
-                                                                                                                                            for="input-why">-- WHY -- </label>
-                                                                                                                                        <textarea type="textarea" id="input-why" rows="2" disabled class="form-control">{{ $w4->why }}</textarea>
-                                                                                                                                    </div>
-                                                                                                                                    </div>
-                                                                                                                                </div>
-                                                                                                                            </div>
-                                                                                                                        </span>
-                                                                                                                        @if (count($dataPicaW5) > 0)
-                                                                                                                            <ul>
-                                                                                                                                @foreach ($dataPicaW5 as $l=>$w5)
-                                                                                                                                    @if (
-                                                                                                                                        $w4->index_w1 == $w5->index_w1 &&
-                                                                                                                                            $w4->index_w2 == $w5->index_w2 &&
-                                                                                                                                            $w4->index_w3 == $w5->index_w3 &&
-                                                                                                                                            $w4->index_w4 == $w5->index_w4)
-                                                                                                                                        <li>
-                                                                                                                                            <span
-                                                                                                                                                class="tf-nc">
-                                                                                                                                                <legend style="width: auto">Why 5 - {{$l+1}}</legend>
-                                                                                                                                                <div class="row">
-                                                                                                                                                    <div class="col-12 my-2">
-                                                                                                                                                        <div class="row">
-                                                                                                                                                            <div class="col-4">Kategori </div>
-                                                                                                                                                            <div class="col">: {{$w5->kp_name}}</div>
-                                                                                                                                                        </div>
-                                                                                                                                                    </div>
-                                                                                                                                                </div>
-                                                                                                                                                <div class="row">
-                                                                                                                                                    <div class="col-12">
-                                                                                                                                                        <div class="row">
-                                                                                                                                                            <div
-                                                                                                                                                            class="input-group input-group-static">
-                                                                                                                                                            <label
-                                                                                                                                                                for="input-why">-- WHY -- </label>
-                                                                                                                                                            <textarea type="textarea" id="input-why" rows="2" disabled class="form-control">{{ $w5->why }}</textarea>
-                                                                                                                                                        </div>
-                                                                                                                                                        </div>
-                                                                                                                                                    </div>
-                                                                                                                                                </div>
-                                                                                                                                            </span>
-                                                                                                                                            <ul>
-                                                                                                                                                @foreach ($solution as $item)
-                                                                                                                                                    @if ($item->identity_why == $w5->identity && $item->position_why == $w5->id)
-                                                                                                                                                        <li>
-                                                                                                                                                            <span class="tf-nc" style="width: 20vw">
-                                                                                                                                                                <legend
-                                                                                                                                                                    style="width: auto">
-                                                                                                                                                                    Solution : {{$item->action}}
-                                                                                                                                                                </legend>
-                                                                                                                                                                <div class="row">
-                                                                                                                                                                    <div class="col-12">
-                                                                                                                                                                        <div class="row">
-                                                                                                                                                                            <div class="col-4">Nama</div>
-                                                                                                                                                                            <div class="col">: {{$item->nama_pic}}</div>
-                                                                                                                                                                        </div>
-                                                                                                                                                                    </div>
-                                                                                                                                                                </div>
-                                                                                                                                                                <div class="row">
-                                                                                                                                                                    <div class="col-12">
-                                                                                                                                                                        <div class="row">
-                                                                                                                                                                            <div class="col-4">Department</div>
-                                                                                                                                                                            <div class="col">: {{$item->dic}}</div>
-                                                                                                                                                                        </div>
-                                                                                                                                                                    </div>
-                                                                                                                                                                </div>
-                                                                                                                                                                <div class="row">
-                                                                                                                                                                    <div class="col-12">
-                                                                                                                                                                        <div class="row">
-                                                                                                                                                                            <div class="col-4">Due Date</div>
-                                                                                                                                                                            <div class="col">: {{$item->due_date}}</div>
-                                                                                                                                                                        </div>
-                                                                                                                                                                    </div>
-                                                                                                                                                                </div>
-                                                                                                                                                                <div class="row">
-                                                                                                                                                                    <div class="col-12">
-                                                                                                                                                                        <div class="row" style="margin-top: 10px">
-                                                                                                                                                                            <div
-                                                                                                                                                                            class="input-group input-group-static">
-                                                                                                                                                                            <label
-                                                                                                                                                                                for="input-why">-- Note -- </label>
-                                                                                                                                                                            <textarea type="textarea" id="input-why" rows="2" disabled class="form-control">{{ $item->note_step }}</textarea>
-                                                                                                                                                                        </div>
-                                                                                                                                                                        </div>
-                                                                                                                                                                    </div>
-                                                                                                                                                                </div>
-                                                                                                                                                            </span>
-                                                                                                                                                        </li>
-                                                                                                                                                    @endif
-                                                                                                                                                @endforeach
-                                                                                                                                            </ul>
-                                                                                                                                        </li>
-                                                                                                                                    @endif
-                                                                                                                                @endforeach
-                                                                                                                                @foreach ($solution as $item)
-                                                                                                                                @if ($item->identity_why == $w4->identity && $item->position_why == $w4->id)
-                                                                                                                                    <li>
-                                                                                                                                        <span class="tf-nc" style="width: 20vw">
-                                                                                                                                            <legend
-                                                                                                                                                style="width: auto">
-                                                                                                                                                Solution : {{$item->action}}
-                                                                                                                                            </legend>
-                                                                                                                                            <div class="row">
-                                                                                                                                                <div class="col-12">
-                                                                                                                                                    <div class="row">
-                                                                                                                                                        <div class="col-4">Nama</div>
-                                                                                                                                                        <div class="col">: {{$item->nama_pic}}</div>
-                                                                                                                                                    </div>
-                                                                                                                                                </div>
-                                                                                                                                            </div>
-                                                                                                                                            <div class="row">
-                                                                                                                                                <div class="col-12">
-                                                                                                                                                    <div class="row">
-                                                                                                                                                        <div class="col-4">Department</div>
-                                                                                                                                                        <div class="col">: {{$item->dic}}</div>
-                                                                                                                                                    </div>
-                                                                                                                                                </div>
-                                                                                                                                            </div>
-                                                                                                                                            <div class="row">
-                                                                                                                                                <div class="col-12">
-                                                                                                                                                    <div class="row">
-                                                                                                                                                        <div class="col-4">Due Date</div>
-                                                                                                                                                        <div class="col">: {{$item->due_date}}</div>
-                                                                                                                                                    </div>
-                                                                                                                                                </div>
-                                                                                                                                            </div>
-                                                                                                                                            <div class="row">
-                                                                                                                                                <div class="col-12">
-                                                                                                                                                    <div class="row" style="margin-top: 10px">
-                                                                                                                                                        <div
-                                                                                                                                                        class="input-group input-group-static">
-                                                                                                                                                        <label
-                                                                                                                                                            for="input-why">-- Note -- </label>
-                                                                                                                                                        <textarea type="textarea" id="input-why" rows="2" disabled class="form-control">{{ $item->note_step }}</textarea>
-                                                                                                                                                    </div>
-                                                                                                                                                    </div>
-                                                                                                                                                </div>
-                                                                                                                                            </div>
-                                                                                                                                        </span>
-                                                                                                                                    </li>
-                                                                                                                                @endif
-                                                                                                                                @endforeach
-                                                                                                                            </ul>
-                                                                                                                        @endif
-                                                                                                                    </li>
-                                                                                                                @endif
-                                                                                                            @endforeach
-                                                                                                            @foreach ($solution as $item)
-                                                                                                            @if ($item->identity_why == $w3->identity && $item->position_why == $w3->id)
-                                                                                                                <li>
-                                                                                                                    <span class="tf-nc" style="width: 20vw">
-                                                                                                                        <legend
-                                                                                                                            style="width: auto">
-                                                                                                                            Solution : {{$item->action}}
-                                                                                                                        </legend>
-                                                                                                                        <div class="row">
-                                                                                                                            <div class="col-12">
-                                                                                                                                <div class="row">
-                                                                                                                                    <div class="col-4">Nama</div>
-                                                                                                                                    <div class="col">: {{$item->nama_pic}}</div>
-                                                                                                                                </div>
-                                                                                                                            </div>
-                                                                                                                        </div>
-                                                                                                                        <div class="row">
-                                                                                                                            <div class="col-12">
-                                                                                                                                <div class="row">
-                                                                                                                                    <div class="col-4">Department</div>
-                                                                                                                                    <div class="col">: {{$item->dic}}</div>
-                                                                                                                                </div>
-                                                                                                                            </div>
-                                                                                                                        </div>
-                                                                                                                        <div class="row">
-                                                                                                                            <div class="col-12">
-                                                                                                                                <div class="row">
-                                                                                                                                    <div class="col-4">Due Date</div>
-                                                                                                                                    <div class="col">: {{$item->due_date}}</div>
-                                                                                                                                </div>
-                                                                                                                            </div>
-                                                                                                                        </div>
-                                                                                                                        <div class="row">
-                                                                                                                            <div class="col-12">
-                                                                                                                                <div class="row" style="margin-top: 10px">
-                                                                                                                                    <div
-                                                                                                                                    class="input-group input-group-static">
-                                                                                                                                    <label
-                                                                                                                                        for="input-why">-- Note -- </label>
-                                                                                                                                    <textarea type="textarea" id="input-why" rows="2" disabled class="form-control">{{ $item->note_step }}</textarea>
-                                                                                                                                </div>
-                                                                                                                                </div>
-                                                                                                                            </div>
-                                                                                                                        </div>
-                                                                                                                    </span>
-                                                                                                                </li>
-                                                                                                            @endif
-                                                                                                        @endforeach
-                                                                                                        </ul>
-                                                                                                    @endif
-                                                                                                </li>
-                                                                                            @endif
-                                                                                        @endforeach
-                                                                                    </ul>
-                                                                                @else
-                                                                                    <ul>
-                                                                                        @foreach ($solution as $item)
-                                                                                            @if ($item->identity_why == $w2->identity && $item->position_why == $w2->id)
-                                                                                                <li>
-                                                                                                    <span class="tf-nc" style="width: 20vw">
-                                                                                                        <legend
-                                                                                                            style="width: auto">
-                                                                                                            Solution : {{$item->action}}
-                                                                                                        </legend>
-                                                                                                        <div class="row">
-                                                                                                            <div class="col-12">
-                                                                                                                <div class="row">
-                                                                                                                    <div class="col-4">Nama</div>
-                                                                                                                    <div class="col">: {{$item->nama_pic}}</div>
-                                                                                                                </div>
-                                                                                                            </div>
-                                                                                                        </div>
-                                                                                                        <div class="row">
-                                                                                                            <div class="col-12">
-                                                                                                                <div class="row">
-                                                                                                                    <div class="col-4">Department</div>
-                                                                                                                    <div class="col">: {{$item->dic}}</div>
-                                                                                                                </div>
-                                                                                                            </div>
-                                                                                                        </div>
-                                                                                                        <div class="row">
-                                                                                                            <div class="col-12">
-                                                                                                                <div class="row">
-                                                                                                                    <div class="col-4">Due Date</div>
-                                                                                                                    <div class="col">: {{$item->due_date}}</div>
-                                                                                                                </div>
-                                                                                                            </div>
-                                                                                                        </div>
-                                                                                                        <div class="row">
-                                                                                                            <div class="col-12">
-                                                                                                                <div class="row" style="margin-top: 10px">
-                                                                                                                    <div
-                                                                                                                    class="input-group input-group-static">
-                                                                                                                    <label
-                                                                                                                        for="input-why">-- Note -- </label>
-                                                                                                                    <textarea type="textarea" id="input-why" rows="2" disabled class="form-control">{{ $item->note_step }}</textarea>
-                                                                                                                </div>
-                                                                                                                </div>
-                                                                                                            </div>
-                                                                                                        </div>
-                                                                                                    </span>
-                                                                                                </li>
-                                                                                            @endif
-                                                                                        @endforeach
+                                                            </div>
+                                                        </div>
+                                                    @endforeach --}}
 
-                                                                                    </ul>
-                                                                                @endif
-
-                                                                            </li>
-                                                                        @endif
-                                                                    @endforeach
-                                                                </ul>
-                                                            @endif
-                                                        </li>
-                                                    @endforeach
-                                                </ul>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -580,6 +317,10 @@
 
 
 @section('custom-js')
+    <script src="{{ asset('master/js/jquery.jsPlumb-1.4.1-all-min.js') }}"></script>
+    <script src="{{ asset('master/js/jsplumb-tree.js') }}"></script>
+
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {
@@ -952,4 +693,341 @@
             }
         });
     </script>
+
+    <script type="text/javascript">
+        function findPosition(params, ...dataSets) {
+            for (let data of dataSets) {
+                let result = data.find(item => {
+                    let match = Object.keys(params).every(key => item[key] === params[key]);
+                    return match;
+                });
+                if (result) {
+                    return result.position;
+                }
+            }
+            return 'Position not found';
+        }
+        $(document).ready(function() {
+            let dataWhy1 = <?php echo json_encode($dataPicaW1); ?>;
+            let dataWhy2 = <?php echo json_encode($dataPicaW2); ?>;
+            let dataWhy3 = <?php echo json_encode($dataPicaW3); ?>;
+            let dataWhy4 = <?php echo json_encode($dataPicaW4); ?>;
+            let dataWhy5 = <?php echo json_encode($dataPicaW5); ?>;
+            var urutan_node = 1;
+            var dataUrutanDivWhy1 = [];
+            var dataUrutanDivWhy2 = [];
+            var dataUrutanDivWhy3 = [];
+            var dataUrutanDivWhy4 = [];
+            var dataUrutanDivWhy5 = [];
+
+            for (let i = 0; i < dataWhy1.length; i++) {
+                let dataDIVNode = `
+                <div id="node_${urutan_node}" class="window hidden" data-id="${urutan_node}"
+                    data-parent="0" data-first-child="" data-next-sibling="${(dataWhy1.length - 1) != i ? i+2 : ""}">
+                    <div class="row" style="margin: 10px">
+                        <div class="col-12 my-2">
+                            <div class="row">
+                                <div class="col-4">Kategori </div>
+                                <div class="col">: ${ dataWhy1[i].kp_name }</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin: 10px">
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="input-group input-group-static">
+                                    <label for="input-why">-- WHY -- </label>
+                                    <textarea type="textarea" id="input-why" rows="2" disabled class="form-control">${ dataWhy1[i].why }</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                `;
+                let dataTMPDIVPosition = {
+                    w1: dataWhy1[i].index_w1,
+                    position: urutan_node
+                }
+                urutan_node += 1;
+                dataUrutanDivWhy1.push(dataTMPDIVPosition);
+                $('#treemain').append(dataDIVNode);
+            }
+
+            var dataBaruW1 = 0;
+            for (let i = 0; i < dataWhy2.length; i++) {
+                let dataParams = {
+                    w1: dataWhy2[i].index_w1
+                }
+                let dataPositionW1 = findPosition(dataParams, dataUrutanDivWhy1);
+                if (dataBaruW1 != dataWhy2[i].index_w1) {
+                    dataBaruW1 = dataWhy2[i].index_w1
+                    $(`#node_${dataPositionW1}`).attr('data-first-child', urutan_node);
+                } else {
+                    $(`#node_${urutan_node-1}`).attr('data-next-sibling', urutan_node);
+                }
+                let dataDIVNode = `
+                    <div id="node_${urutan_node}" class="window hidden" data-id="${urutan_node}"
+                        data-parent="${dataPositionW1}" data-first-child="" data-next-sibling="">
+                        <div class="row" style="margin: 10px">
+                            <div class="col-12 my-2">
+                                <div class="row">
+                                    <div class="col-4">Kategori </div>
+                                    <div class="col">: ${ dataWhy2[i].kp_name }</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="margin: 10px">
+                            <div class="col-12">
+                                <div class="row">
+                                    <div class="input-group input-group-static">
+                                        <label for="input-why">-- WHY -- </label>
+                                        <textarea type="textarea" id="input-why" rows="2" disabled class="form-control">${ dataWhy2[i].why }</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                let dataTMPDIVPosition = {
+                    w1: dataWhy2[i].index_w1,
+                    w2: dataWhy2[i].index_w2,
+                    position: urutan_node
+                }
+                urutan_node += 1;
+                dataUrutanDivWhy2.push(dataTMPDIVPosition);
+                $('#treemain').append(dataDIVNode);
+            }
+
+            var dataBaruW1 = 0;
+            var dataBaruW2 = 0;
+            for (let i = 0; i < dataWhy3.length; i++) {
+                let dataParams = {
+                    w1: dataWhy3[i].index_w1,
+                    w2: dataWhy3[i].index_w2
+                }
+                let dataPositionW2 = findPosition(dataParams, dataUrutanDivWhy2);
+                if (dataBaruW1 != dataWhy3[i].index_w1 || dataBaruW2 != dataWhy3[i].index_w2) {
+                    dataBaruW1 = dataWhy3[i].index_w1
+                    dataBaruW2 = dataWhy3[i].index_w2
+                    $(`#node_${dataPositionW2}`).attr('data-first-child', urutan_node);
+                } else {
+                    $(`#node_${urutan_node-1}`).attr('data-next-sibling', urutan_node);
+                }
+                let dataDIVNode = `
+                    <div id="node_${urutan_node}" class="window hidden" data-id="${urutan_node}"
+                        data-parent="${dataPositionW2}" data-first-child="" data-next-sibling="">
+                        <div class="row" style="margin: 10px">
+                            <div class="col-12 my-2">
+                                <div class="row">
+                                    <div class="col-4">Kategori </div>
+                                    <div class="col">: ${ dataWhy3[i].kp_name }</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="margin: 10px">
+                            <div class="col-12">
+                                <div class="row">
+                                    <div class="input-group input-group-static">
+                                        <label for="input-why">-- WHY -- </label>
+                                        <textarea type="textarea" id="input-why" rows="2" disabled class="form-control">${ dataWhy3[i].why }</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                let dataTMPDIVPosition = {
+                    w1: dataWhy3[i].index_w1,
+                    w2: dataWhy3[i].index_w2,
+                    w3: dataWhy3[i].index_w3,
+                    position: urutan_node
+                }
+                urutan_node += 1;
+                dataUrutanDivWhy3.push(dataTMPDIVPosition);
+                $('#treemain').append(dataDIVNode);
+            }
+
+            var dataBaruW1 = 0;
+            var dataBaruW2 = 0;
+            var dataBaruW3 = 0;
+            for (let i = 0; i < dataWhy4.length; i++) {
+                let dataParams = {
+                    w1: dataWhy4[i].index_w1,
+                    w2: dataWhy4[i].index_w2,
+                    w3: dataWhy4[i].index_w3
+                }
+                let dataPositionW3 = findPosition(dataParams, dataUrutanDivWhy3);
+                if (dataBaruW1 != dataWhy4[i].index_w1 || dataBaruW2 != dataWhy4[i].index_w2 || dataBaruW3 != dataWhy4[i].index_w3) {
+                    dataBaruW1 = dataWhy4[i].index_w1
+                    dataBaruW2 = dataWhy4[i].index_w2
+                    dataBaruW3 = dataWhy4[i].index_w3
+                    $(`#node_${dataPositionW3}`).attr('data-first-child', urutan_node);
+                } else {
+                    $(`#node_${urutan_node-1}`).attr('data-next-sibling', urutan_node);
+                }
+                let dataDIVNode = `
+                    <div id="node_${urutan_node}" class="window hidden" data-id="${urutan_node}"
+                        data-parent="${dataPositionW3}" data-first-child="" data-next-sibling="">
+                        <div class="row" style="margin: 10px">
+                            <div class="col-12 my-2">
+                                <div class="row">
+                                    <div class="col-4">Kategori </div>
+                                    <div class="col">: ${ dataWhy4[i].kp_name }</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="margin: 10px">
+                            <div class="col-12">
+                                <div class="row">
+                                    <div class="input-group input-group-static">
+                                        <label for="input-why">-- WHY -- </label>
+                                        <textarea type="textarea" id="input-why" rows="2" disabled class="form-control">${ dataWhy4[i].why }</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                let dataTMPDIVPosition = {
+                    w1: dataWhy4[i].index_w1,
+                    w2: dataWhy4[i].index_w2,
+                    w3: dataWhy4[i].index_w3,
+                    w4: dataWhy4[i].index_w4,
+                    position: urutan_node
+                }
+                urutan_node += 1;
+                dataUrutanDivWhy4.push(dataTMPDIVPosition);
+                $('#treemain').append(dataDIVNode);
+            }
+
+            var dataBaruW1 = 0;
+            var dataBaruW2 = 0;
+            var dataBaruW3 = 0;
+            var dataBaruW4 = 0;
+            for (let i = 0; i < dataWhy5.length; i++) {
+                let dataParams = {
+                    w1: dataWhy5[i].index_w1,
+                    w2: dataWhy5[i].index_w2,
+                    w3: dataWhy5[i].index_w3,
+                    w4: dataWhy5[i].index_w4,
+                }
+                let dataPositionW4 = findPosition(dataParams, dataUrutanDivWhy4);
+                if (dataBaruW1 != dataWhy5[i].index_w1 || dataBaruW2 != dataWhy5[i].index_w2 || dataBaruW3 != dataWhy5[i].index_w3 || dataBaruW4 != dataWhy5[i].index_w4) {
+                    dataBaruW1 = dataWhy5[i].index_w1
+                    dataBaruW2 = dataWhy5[i].index_w2
+                    dataBaruW3 = dataWhy5[i].index_w3
+                    dataBaruW4 = dataWhy5[i].index_w4
+                    $(`#node_${dataPositionW4}`).attr('data-first-child', urutan_node);
+                } else {
+                    $(`#node_${urutan_node-1}`).attr('data-next-sibling', urutan_node);
+                }
+                let dataDIVNode = `
+                    <div id="node_${urutan_node}" class="window hidden" data-id="${urutan_node}"
+                        data-parent="${dataPositionW4}" data-first-child="" data-next-sibling="">
+                        <div class="row" style="margin: 10px">
+                            <div class="col-12 my-2">
+                                <div class="row">
+                                    <div class="col-4">Kategori </div>
+                                    <div class="col">: ${ dataWhy5[i].kp_name }</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="margin: 10px">
+                            <div class="col-12">
+                                <div class="row">
+                                    <div class="input-group input-group-static">
+                                        <label for="input-why">-- WHY -- </label>
+                                        <textarea type="textarea" id="input-why" rows="2" disabled class="form-control">${ dataWhy5[i].why }</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                let dataTMPDIVPosition = {
+                    w1: dataWhy4[i].index_w1,
+                    w2: dataWhy4[i].index_w2,
+                    w3: dataWhy4[i].index_w3,
+                    w4: dataWhy4[i].index_w4,
+                    w5: dataWhy5[i].index_w5,
+                    position: urutan_node
+                }
+                urutan_node += 1;
+                dataUrutanDivWhy5.push(dataTMPDIVPosition);
+                $('#treemain').append(dataDIVNode);
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            var connectorPaintStyle = {
+                lineWidth: 2,
+                strokeStyle: "#4F81BE",
+                joinstyle: "round"
+            };
+            var pdef = {
+                // disable dragging
+                DragOptions: null,
+                // the tree container
+                Container: "treemain"
+            };
+            var plumb = jsPlumb.getInstance(pdef);
+
+            // all sizes are in pixels
+            var opts = {
+                prefix: 'node_',
+                baseLeft: 24,
+                baseTop: 24,
+                nodeWidth: 100,
+                hSpace: 50,
+                vSpace: 20,
+                imgPlus: "{{ asset('master/js/tree_expand.png') }}",
+                imgMinus: "{{ asset('master/js/tree_collapse.png') }}",
+                sourceAnchor: [1, 0.5, 1, 0, 10, 0],
+                targetAnchor: "LeftMiddle",
+                sourceEndpoint: {
+                    endpoint: ["Image", {
+                        url: "{{ asset('master/js/tree_collapse.png') }}"
+                    }],
+                    cssClass: "collapser",
+                    isSource: true,
+                    connector: ["Flowchart", {
+                        stub: [40, 60],
+                        gap: [10, 0],
+                        cornerRadius: 10,
+                        alwaysRespectStubs: false
+                    }],
+                    connectorStyle: connectorPaintStyle,
+                    enabled: false,
+                    maxConnections: -1,
+                    dragOptions: null
+                },
+                targetEndpoint: {
+                    endpoint: "Blank",
+                    maxConnections: -1,
+                    dropOptions: null,
+                    enabled: false,
+                    isTarget: true
+                },
+                connectFunc: function(tree, node) {
+                    var cid = node.data('id');
+                    console.log('Connecting node ' + cid);
+                }
+            };
+            var tree = jQuery.jsPlumbTree(plumb, opts);
+            tree.init();
+            window.treemain = tree;
+        })
+    </script>
+    <script type="text/javascript"></script>
 @endsection

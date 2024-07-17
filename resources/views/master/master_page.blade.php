@@ -53,6 +53,7 @@
     <script src="{{ asset('master/js/plugins/perfect-scrollbar.min.js') }}"></script>
     <script src="{{ asset('master/js/plugins/smooth-scrollbar.min.js') }}"></script>
     <script src="{{ asset('master/js/plugins/chartjs.min.js') }}"></script>
+    <script src="{{ asset('master/js/jsplumb-tree.js') }}"></script>
     <script>
         $(document).ready(function() {
             $("#menuSmartPica").on("click", function(e) {

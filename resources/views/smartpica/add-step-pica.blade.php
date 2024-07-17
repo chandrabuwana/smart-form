@@ -338,8 +338,8 @@
                                                 (PIC)</label>
                                             <div class="input-group input-group-static my-2">
                                                 <input class="form-control due-date-picker" type="text"
-                                                placeholder="DD/MM/YYYY" name="DueDate_{{ $i }}" required
-                                                id="DueDate_{{ $i }}">
+                                                    placeholder="DD/MM/YYYY" name="DueDate_{{ $i }}" required
+                                                    id="DueDate_{{ $i }}">
                                             </div>
                                         </div>
                                     </div>

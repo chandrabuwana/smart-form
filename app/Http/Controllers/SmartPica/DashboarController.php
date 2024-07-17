@@ -144,8 +144,6 @@ class DashboarController extends Controller
         $dataPicaW5 = DB::select("select * from pica_why5 w join kategori_problem k on w.id_kategory = k.kp_id where nodocpica = '$id'");
 
 
-
-
         $solution = DB::select("SELECT nodocpica,
                         id_master,
                         nik_master,

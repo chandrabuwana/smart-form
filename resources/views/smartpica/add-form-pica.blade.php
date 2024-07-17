@@ -3,6 +3,29 @@
 @section('custom-css')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.css">
     <style>
+        .close-button-why {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 30px;
+            height: 30px;
+            border: none;
+            border-radius: 50%;
+            background-color: black;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: translate(50%, -50%);
+        }
+
+        .close-button-why:hover {
+            background-color: darkred;
+        }
+
         .select2-container--bootstrap-5 .select2-selection--single {
             height: calc(1.5em + .75rem + 2px);
             /* Menyesuaikan dengan form-control di Bootstrap 5 */
@@ -68,7 +91,7 @@
                         <div class="col-auto my-auto ms-3">
                             <div class="h-100">
                                 <p class="mb-0 fw-bold text-sm">
-                                    Creator : {{session('username')}}
+                                    Creator : {{ session('username') }}
                                     {{-- session()->get('name') . ' - ' . session()->get('dept') . ' - ' . session()->get('site') --}}
                                 </p>
                             </div>
@@ -322,7 +345,7 @@
                 dataType: 'json',
                 data: function(params) {
                     return {
-                        _token: "{{csrf_token()}}",
+                        _token: "{{ csrf_token() }}",
                         query: params.term, // search term
                     };
                 },
@@ -687,6 +710,7 @@
         var initialWhy1 = 1;
         var rowCount = 1;
         var optionsHtml = '';
+        var identityDIV = 2;
         <?php foreach ($dataKategory as $d): ?>
         optionsHtml += '<option value="<?php echo $d['id']; ?>"><?php echo $d['text']; ?></option>';
         <?php endforeach; ?>
@@ -694,6 +718,7 @@
         function AddWhy1() {
             rowCount += 1;
             initialWhy1 += 1;
+            identityDIV += 1;
             listOFWhy1.push(initialWhy1);
             // Generate options HTML from PHP data
 
@@ -702,8 +727,9 @@
             $(".master").append(`
                 <div class="row row-cols-6 r${rowCount}">
                     <div class="col-2">
-                        <fieldset style="margin: 30px">
+                        <fieldset style="margin: 30px" id="divWHY_${identityDIV}">
                             <legend style="width: auto">Why 1 - ${initialWhy1}</legend>
+                            <button type="button" class="close-button-why" onclick="removeFieldset('divWHY_${identityDIV}')">X</button>
                             <div class="row">
                                 <div class="col-5">
                                     <div class="input-group input-group-static my-4">
@@ -730,6 +756,28 @@
             `);
         }
 
+        function removeObjectFromLists(objectString, ...lists) {
+            // var objectString = JSON.stringify(objectToRemove);
+            lists.forEach(function(list, index) {
+                lists.forEach(function(list) {
+                    for (var i = list.length - 1; i >= 0; i--) {
+                        var itemString = JSON.stringify(list[i]);
+                        if (itemString === objectString) {
+                            list.splice(i, 1); // Hapus objek dari array
+                        }
+                    }
+                });
+            });
+        }
+
+        function removeFieldset(idDiv, kordinatObj, why) {
+            console.log(listOFWhy2);
+            removeObjectFromLists(kordinatObj, listOFWhy2, listOFWhy3, listOFWhy4, listOFWhy5);
+            console.log(listOFWhy2);
+            $(`#${idDiv}`).remove();
+        }
+
+
         function checkDataWhy2(list, w1) {
             var maxPosition = null;
             var result = [];
@@ -747,7 +795,8 @@
         }
 
         function AddWhy2(row, why1) {
-
+            console.log(listOFWhy2)
+            identityDIV += 1;
             let dataTerakhiW2 = checkDataWhy2(listOFWhy2, why1);
             if (dataTerakhiW2.length != 0 && dataTerakhiW2[0].position == 5) {
                 return false;
@@ -758,13 +807,14 @@
                     w1: why1,
                     position: 1
                 }
-
                 listOFWhy2.push(dataObject2);
-
+                $dataStringify = JSON.stringify(dataObject2).replace(/'/g, "&apos;").replace(/"/g, '&quot;');
+                
                 let dataDIV = `
-                    <div class="col-2">
-                        <fieldset style="margin: 30px">
+                    <div class="col-2" id="divWHY_${identityDIV}">
+                        <fieldset style="margin: 30px" >
                             <legend style="width: auto">Why 2</legend>
+                            <button type="button" class="close-button-why" onclick="removeFieldset('divWHY_${identityDIV}','${$dataStringify}','2')">X</button>
                             <div class="row">
                                 <div class="col-5">
                                     <div class="input-group input-group-static my-4">
@@ -792,14 +842,22 @@
                 $(`.r${row}`).append(dataDIV);
             } else {
                 rowCount += 1;
+                let dataObject2 = {
+                    row: rowCount,
+                    w1: why1,
+                    position: dataTerakhiW2[0].position + 1
+                }
+                listOFWhy2.push(dataObject2);
+                $dataStringify = JSON.stringify(dataObject2).replace(/'/g, "&apos;").replace(/"/g, '&quot;');
                 var newData = `
                 <div class="row row-cols-6 r${rowCount}">
                     <div class="col-2">
                         <div class="line"></div>
                     </div>
                     <div class="col-2">
-                        <fieldset style="margin: 30px">
+                        <fieldset style="margin: 30px" id="divWHY_${identityDIV}">
                             <legend style="width: auto">Why 2 - ${dataTerakhiW2[0].position + 1}</legend>
+                            <button type="button" class="close-button-why" onclick="removeFieldset('divWHY_${identityDIV}','${$dataStringify}','2')">X</button>
                             <div class="row">
                                 <div class="col-5">
                                     <div class="input-group input-group-static my-4">
@@ -824,12 +882,7 @@
                     </div>
                 </div>
             `;
-                let dataObject2 = {
-                    row: rowCount,
-                    w1: why1,
-                    position: dataTerakhiW2[0].position + 1
-                }
-                listOFWhy2.push(dataObject2);
+                
                 $(`.r${dataTerakhiW2[0].row}`).after(newData);
                 let $newElement = $(`.r${dataTerakhiW2[0].row}`).next(); // Selecting the newly added element
 
@@ -916,6 +969,7 @@
 
         function AddWhy3(row, why1, why2) {
             let dataTerakhiW3 = checkDataWhy3(listOFWhy3, why1, why2);
+            identityDIV += 1;
             console.log(dataTerakhiW3);
             if (dataTerakhiW3.length != 0 && dataTerakhiW3[0].position == 5) {
                 console.log(dataTerakhiW3[0].row)
@@ -934,8 +988,9 @@
 
                 let dataDIV = `
                     <div class="col-2">
-                        <fieldset style="margin: 30px">
+                        <fieldset style="margin: 30px" id="divWHY_${identityDIV}">
                             <legend style="width: auto">Why 3</legend>
+                            <button type="button" class="close-button-why" onclick="removeFieldset('divWHY_${identityDIV}')">X</button>
                             <div class="row">
                                 <div class="col-5">
                                     <div class="input-group input-group-static my-4">
@@ -972,8 +1027,9 @@
                     <div class="col-2">
                     </div>
                     <div class="col-2">
-                        <fieldset style="margin: 30px">
+                        <fieldset style="margin: 30px" id="divWHY_${identityDIV}">
                             <legend style="width: auto">Why 3</legend>
+                            <button type="button" class="close-button-why" onclick="removeFieldset('divWHY_${identityDIV}')">X</button>
                             <div class="row">
                                 <div class="col-5">
                                     <div class="input-group input-group-static my-4">
@@ -1011,7 +1067,7 @@
 
         function AddWhy4(row, why1, why2, why3) {
             let dataTerakhiW4 = checkDataWhy4(listOFWhy4, why1, why2, why3);
-            console.log(dataTerakhiW4);
+            identityDIV += 1;
             if (dataTerakhiW4.length != 0 && dataTerakhiW4[0].position == 5) {
                 console.log(dataTerakhiW4[0].row)
                 return false;
@@ -1030,8 +1086,9 @@
 
                 let dataDIV = `
                     <div class="col-2">
-                        <fieldset style="margin: 30px">
+                        <fieldset style="margin: 30px" id="divWHY_${identityDIV}">
                             <legend style="width: auto">Why 4</legend>
+                            <button type="button" class="close-button-why" onclick="removeFieldset('divWHY_${identityDIV}')">X</button>
                             <div class="row">
                                 <div class="col-5">
                                     <div class="input-group input-group-static my-4">
@@ -1071,8 +1128,9 @@
                     <div class="col-2">
                     </div>
                     <div class="col-2">
-                        <fieldset style="margin: 30px">
+                        <fieldset style="margin: 30px" id="divWHY_${identityDIV}">
                             <legend style="width: auto">Why 4</legend>
+                            <button type="button" class="close-button-why" onclick="removeFieldset('divWHY_${identityDIV}')">X</button>
                             <div class="row">
                                 <div class="col-5">
                                     <div class="input-group input-group-static my-4">
@@ -1111,7 +1169,7 @@
 
         function AddWhy5(row, why1, why2, why3, why4) {
             let dataTerakhiW5 = checkDataWhy5(listOFWhy5, why1, why2, why3, why4);
-            console.log(dataTerakhiW5);
+            identityDIV += 1;
             if (dataTerakhiW5.length != 0 && dataTerakhiW5[0].position == 5) {
                 console.log(dataTerakhiW5[0].row)
                 return false;
@@ -1131,8 +1189,9 @@
 
                 let dataDIV = `
                     <div class="col-2">
-                        <fieldset style="margin: 30px">
+                        <fieldset style="margin: 30px" id="divWHY_${identityDIV}">
                             <legend style="width: auto">Why 5</legend>
+                            <button type="button" class="close-button-why" onclick="removeFieldset('divWHY_${identityDIV}')">X</button>
                             <div class="row">
                                 <div class="col-5">
                                     <div class="input-group input-group-static my-4">
@@ -1172,8 +1231,9 @@
                     <div class="col-2">
                     </div>
                     <div class="col-2">
-                        <fieldset style="margin: 30px">
+                        <fieldset style="margin: 30px" id="divWHY_${identityDIV}">
                             <legend style="width: auto">Why 5</legend>
+                            <button type="button" class="close-button-why" onclick="removeFieldset('divWHY_${identityDIV}')">X</button>
                             <div class="row">
                                 <div class="col-5">
                                     <div class="input-group input-group-static my-4">
