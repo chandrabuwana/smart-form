@@ -164,7 +164,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-9">
-                                    <div class="input-group input-group-static my-4">
+                                    <div class="input-group ayyyyy input-group-static my-4">
                                         <label for="pc_kpi" class="ms-0">Leading KPI </label>
                                         <select class="form-control s2lea" name="pc_kpi" id="pc_kpi" required></select>
                                         <small class="text-danger">Actual & Target hanya bisa diisi dengan angka dan titik
@@ -261,9 +261,13 @@
 @section('custom-js')
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
     <script type="text/javascript">
-        $('.s2lea').select2({
+        // $('#states').select2({
+        //     dropdownParent: $('#parent')
+        // });
+       
+        $('#pc_kpi').select2({
             theme: 'bootstrap-5', // Menggunakan tema Bootstrap 5
-            dropdownParent: $('#pc_kpi').closest('.input-group'),
+            dropdownParent: $('#pc_kpi').closest('.ayyyyy'),
             placeholder: '--- Cari/Pilih KPI Leading ---',
             ajax: {
                 url: "/helper-kpi-lead-datalist",
@@ -285,6 +289,12 @@
                 },
                 cache: true
             }
+        });
+        $('#pc_kpi').on('select2:open', function(e) {
+            console.log(e);
+            const evt = "scroll.select2";
+            $(e.target).parents().off(evt);
+            $(window).off(evt);
         });
 
         $('#pc_thn, #pc_bln').change(function() {
@@ -331,7 +341,7 @@
             }
         });
 
-        $('.dept').select2({
+        $('#pc_site').select2({
             theme: 'bootstrap-5', // Menggunakan tema Bootstrap 5
             dropdownParent: $('#pc_site').closest('.input-group'),
             placeholder: '--- Cari Site ---',
@@ -356,6 +366,12 @@
                 },
                 cache: true
             }
+        });
+        $('#pc_site').on('select2:open', function(e) {
+            console.log(e);
+            const evt = "scroll.select2";
+            $(e.target).parents().off(evt);
+            $(window).off(evt);
         });
     </script>
     <script>
@@ -401,7 +417,7 @@
     </script>
     <script type="text/javascript">
         function SubmitAllDataWhy() {
-            
+
             let getAllDataWhy1 = [];
             let isValid = true;
             let errorMessage = '';
@@ -817,7 +833,6 @@
 
 
         }
-        
     </script>
     <script type="text/javascript">
         var listOFWhy1 = [1];
