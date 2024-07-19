@@ -401,6 +401,7 @@
     </script>
     <script type="text/javascript">
         function SubmitAllDataWhy() {
+            
             let getAllDataWhy1 = [];
             let isValid = true;
             let errorMessage = '';
@@ -543,6 +544,7 @@
             let pc_week = $('#pc_week').val();
             let pc_site = $('#pc_site').val();
             let pc_kpi = $('#pc_kpi').val();
+            console.log(pc_kpi);
             let pc_aktual = $('#pc_aktual').val();
             let pc_target = $('#pc_target').val();
             let pc_ap_pica = $('select[name="pc_ap_pica"]').val();
@@ -552,7 +554,7 @@
 
             // Helper function to validate and highlight
             function validateField(field, fieldName, fieldLabel) {
-                if (field === '') {
+                if (field === '' || field == null) {
                     isValid = false;
                     errorMessage += `${fieldLabel} is required.<br>`;
                 }
