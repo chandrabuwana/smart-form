@@ -359,6 +359,9 @@
         });
     </script>
     <script>
+        $(document).ready(function() {
+            $('#scrollableDiv').scrollTop(0).scrollLeft(0);
+        });
         document.addEventListener('DOMContentLoaded', (event) => {
             const scrollableDiv = document.getElementById('scrollableDiv');
             const zoomableContent = document.getElementById('zoomableContent');
@@ -702,82 +705,6 @@
         }
     </script>
     <script type="text/javascript">
-        var listOFWhy1 = [1];
-        var listOFWhy2 = [];
-        var listOFWhy3 = [];
-        var listOFWhy4 = [];
-        var listOFWhy5 = [];
-        var initialWhy1 = 1;
-        var rowCount = 1;
-        var optionsHtml = '';
-        var identityDIV = 2;
-        <?php foreach ($dataKategory as $d): ?>
-        optionsHtml += '<option value="<?php echo $d['id']; ?>"><?php echo $d['text']; ?></option>';
-        <?php endforeach; ?>
-
-        function AddWhy1() {
-            rowCount += 1;
-            initialWhy1 += 1;
-            identityDIV += 1;
-            listOFWhy1.push(initialWhy1);
-            // Generate options HTML from PHP data
-
-
-            // Append new Why1 fieldset
-            $(".master").append(`
-                <div class="row row-cols-6 r${rowCount}">
-                    <div class="col-2">
-                        <fieldset style="margin: 30px" id="divWHY_${identityDIV}">
-                            <legend style="width: auto">Why 1 - ${initialWhy1}</legend>
-                            <button type="button" class="close-button-why" onclick="removeFieldset('divWHY_${identityDIV}')">X</button>
-                            <div class="row">
-                                <div class="col-5">
-                                    <div class="input-group input-group-static my-4">
-                                        <label class="ms-0" for="input-m-w1-${initialWhy1}">Why 1 - ${initialWhy1}</label>
-                                        <textarea type="textarea" id="input-m-w1-${initialWhy1}" rows="1" class="form-control"></textarea>
-                                    </div>
-                                </div>
-                                <div class="col-5">
-                                    <div class="input-group input-group-static my-4">
-                                        <label for="input-k-w1-${initialWhy1}" class="ms-0">Kategori</label>
-                                        <select class="form-control" name="input-k-w1-${initialWhy1}" id="input-k-w1-${initialWhy1}" required>
-                                            <option value="">-- Pilih Kategori --</option>
-                                            ${optionsHtml}
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-2 d-flex justify-content-center align-items-center">
-                                    <button type="button" class="btn btn-primary" onClick="AddWhy2(${rowCount}, ${initialWhy1})">Why2</button>
-                                </div>
-                            </div>
-                        </fieldset>
-                    </div>
-                </div>
-            `);
-        }
-
-        function removeObjectFromLists(objectString, ...lists) {
-            // var objectString = JSON.stringify(objectToRemove);
-            lists.forEach(function(list, index) {
-                lists.forEach(function(list) {
-                    for (var i = list.length - 1; i >= 0; i--) {
-                        var itemString = JSON.stringify(list[i]);
-                        if (itemString === objectString) {
-                            list.splice(i, 1); // Hapus objek dari array
-                        }
-                    }
-                });
-            });
-        }
-
-        function removeFieldset(idDiv, kordinatObj, why) {
-            console.log(listOFWhy2);
-            removeObjectFromLists(kordinatObj, listOFWhy2, listOFWhy3, listOFWhy4, listOFWhy5);
-            console.log(listOFWhy2);
-            $(`#${idDiv}`).remove();
-        }
-
-
         function checkDataWhy2(list, w1) {
             var maxPosition = null;
             var result = [];
@@ -792,107 +719,6 @@
                 }
             });
             return result;
-        }
-
-        function AddWhy2(row, why1) {
-            console.log(listOFWhy2)
-            identityDIV += 1;
-            let dataTerakhiW2 = checkDataWhy2(listOFWhy2, why1);
-            if (dataTerakhiW2.length != 0 && dataTerakhiW2[0].position == 5) {
-                return false;
-            }
-            if (dataTerakhiW2.length == 0) {
-                let dataObject2 = {
-                    row: row,
-                    w1: why1,
-                    position: 1
-                }
-                listOFWhy2.push(dataObject2);
-                $dataStringify = JSON.stringify(dataObject2).replace(/'/g, "&apos;").replace(/"/g, '&quot;');
-                
-                let dataDIV = `
-                    <div class="col-2" id="divWHY_${identityDIV}">
-                        <fieldset style="margin: 30px" >
-                            <legend style="width: auto">Why 2</legend>
-                            <button type="button" class="close-button-why" onclick="removeFieldset('divWHY_${identityDIV}','${$dataStringify}','2')">X</button>
-                            <div class="row">
-                                <div class="col-5">
-                                    <div class="input-group input-group-static my-4">
-                                        <label class="ms-0" for="input-m-${why1}-w2-1">Why 2 - 1</label>
-                                        <textarea type="textarea" id="input-m-${why1}-w2-1" rows="1" class="form-control"></textarea>
-                                    </div>
-                                </div>
-                                <div class="col-5">
-                                    <div class="input-group input-group-static my-4">
-                                        <label for="input-k-${why1}-w2-1" class="ms-0">Kategori </label>
-                                        <select class="form-control" name="input-k-${why1}-w2-1" id="input-k-${why1}-w2-1" required>
-                                            <option value="">-- Pilih Kategori --</option>
-                                            ${optionsHtml}
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-2 d-flex justify-content-center align-items-center">
-                                    <button type="button" onClick="AddWhy3(${row},${why1},1)" class="btn btn-primary">Why 3</button>
-                                </div>
-                            </div>
-                        </fieldset>
-                    </div>
-                `;
-
-                $(`.r${row}`).append(dataDIV);
-            } else {
-                rowCount += 1;
-                let dataObject2 = {
-                    row: rowCount,
-                    w1: why1,
-                    position: dataTerakhiW2[0].position + 1
-                }
-                listOFWhy2.push(dataObject2);
-                $dataStringify = JSON.stringify(dataObject2).replace(/'/g, "&apos;").replace(/"/g, '&quot;');
-                var newData = `
-                <div class="row row-cols-6 r${rowCount}">
-                    <div class="col-2">
-                        <div class="line"></div>
-                    </div>
-                    <div class="col-2">
-                        <fieldset style="margin: 30px" id="divWHY_${identityDIV}">
-                            <legend style="width: auto">Why 2 - ${dataTerakhiW2[0].position + 1}</legend>
-                            <button type="button" class="close-button-why" onclick="removeFieldset('divWHY_${identityDIV}','${$dataStringify}','2')">X</button>
-                            <div class="row">
-                                <div class="col-5">
-                                    <div class="input-group input-group-static my-4">
-                                        <label class="ms-0" for="input-${dataTerakhiW2[0].w1}-w2-${dataTerakhiW2[0].position + 1}">Why 2 - ${dataTerakhiW2[0].position + 1}</label>
-                                        <textarea type="textarea" id="input-m-${dataTerakhiW2[0].w1}-w2-${dataTerakhiW2[0].position + 1}" rows="1" class="form-control"></textarea>
-                                    </div>
-                                </div>
-                                <div class="col-5">
-                                    <div class="input-group input-group-static my-4">
-                                        <label for="input-k-${dataTerakhiW2[0].w1}-w2-${dataTerakhiW2[0].position + 1}" class="ms-0">Kategori </label>
-                                        <select class="form-control" name="input-k-${dataTerakhiW2[0].w1}-w2-${dataTerakhiW2[0].position + 1}" id="input-k-${dataTerakhiW2[0].w1}-w2-${dataTerakhiW2[0].position + 1}" required>
-                                            <option value="">-- Pilih Kategori --</option>
-                                            ${optionsHtml}
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-2 d-flex justify-content-center align-items-center">
-                                    <button type="button" onClick="AddWhy3(${rowCount},${dataTerakhiW2[0].w1},${dataTerakhiW2[0].position + 1})"  class="btn btn-primary">Why 3</button>
-                                </div>
-                            </div>
-                        </fieldset>
-                    </div>
-                </div>
-            `;
-                
-                $(`.r${dataTerakhiW2[0].row}`).after(newData);
-                let $newElement = $(`.r${dataTerakhiW2[0].row}`).next(); // Selecting the newly added element
-
-                // Scroll to the position of the new element
-                if ($newElement.length) {
-                    $('html, body').animate({
-                        scrollTop: $newElement.offset().top - 100 // Adjust as needed for any offset
-                    }, 10); // Adjust scroll speed as needed
-                }
-            }
         }
 
         function checkDataWhy3(list, w1, w2) {
@@ -967,12 +793,192 @@
             });
         }
 
-        function AddWhy3(row, why1, why2) {
+        function removeObjectFromLists(objectString, ...lists) {
+            // var objectString = JSON.stringify(objectToRemove);
+            lists.forEach(function(list, index) {
+                lists.forEach(function(list) {
+                    for (var i = list.length - 1; i >= 0; i--) {
+                        var itemString = JSON.stringify(list[i]);
+                        if (itemString === objectString) {
+                            list.splice(i, 1); // Hapus objek dari array
+                        }
+                    }
+                });
+            });
+        }
+
+        function removeFieldset(idDiv, kordinatObj, why) {
+            console.log(kordinatObj);
+            removeObjectFromLists(kordinatObj, listOFWhy2, listOFWhy3, listOFWhy4, listOFWhy5);
+            var divElement = $('#divWHY_' + idDiv);
+            $(`#${idDiv}`).remove();
+
+
+        }
+        
+    </script>
+    <script type="text/javascript">
+        var listOFWhy1 = [1];
+        var listOFWhy2 = [];
+        var listOFWhy3 = [];
+        var listOFWhy4 = [];
+        var listOFWhy5 = [];
+        var initialWhy1 = 1;
+        var rowCount = 1;
+        var optionsHtml = '';
+        var identityDIV = 2;
+        <?php foreach ($dataKategory as $d): ?>
+        optionsHtml += '<option value="<?php echo $d['id']; ?>"><?php echo $d['text']; ?></option>';
+        <?php endforeach; ?>
+
+        function AddWhy1() {
+            rowCount += 1;
+            initialWhy1 += 1;
+            identityDIV += 1;
+            listOFWhy1.push(initialWhy1);
+            // Generate options HTML from PHP data
+
+
+            // Append new Why1 fieldset
+            $(".master").append(`
+                <div class="row row-cols-6 r${rowCount}">
+                    <div class="col-2">
+                        <fieldset style="margin: 30px" id="divWHY_${identityDIV}">
+                            <legend style="width: auto">Why 1 - ${initialWhy1}</legend>
+                            <button type="button" id="remove_w1-${initialWhy1}" class="close-button-why" onclick="removeFieldset('divWHY_${identityDIV}')">X</button>
+                            <div class="row">
+                                <div class="col-5">
+                                    <div class="input-group input-group-static my-4">
+                                        <label class="ms-0" for="input-m-w1-${initialWhy1}">Why 1 - ${initialWhy1}</label>
+                                        <textarea type="textarea" id="input-m-w1-${initialWhy1}" rows="1" class="form-control"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-5">
+                                    <div class="input-group input-group-static my-4">
+                                        <label for="input-k-w1-${initialWhy1}" class="ms-0">Kategori</label>
+                                        <select class="form-control" name="input-k-w1-${initialWhy1}" id="input-k-w1-${initialWhy1}" required>
+                                            <option value="">-- Pilih Kategori --</option>
+                                            ${optionsHtml}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-2 d-flex justify-content-center align-items-center">
+                                    <button type="button" class="btn btn-primary" onClick="AddWhy2(${rowCount}, ${initialWhy1}, 'remove_w1-${initialWhy1}')">Why2</button>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+            `);
+        }
+
+        function AddWhy2(row, why1, removeID) {
+            $(`#${removeID}`).addClass("d-none");
+            identityDIV += 1;
+            let dataTerakhiW2 = checkDataWhy2(listOFWhy2, why1);
+            if (dataTerakhiW2.length != 0 && dataTerakhiW2[0].position == 5) {
+                return false;
+            }
+            if (dataTerakhiW2.length == 0) {
+                let dataObject2 = {
+                    row: row,
+                    w1: why1,
+                    position: 1
+                }
+                listOFWhy2.push(dataObject2);
+                $dataStringify = JSON.stringify(dataObject2).replace(/'/g, "&apos;").replace(/"/g, '&quot;');
+
+                let dataDIV = `
+                    <div class="col-2" id="divWHY_${identityDIV}">
+                        <fieldset style="margin: 30px" >
+                            <legend style="width: auto">Why 2</legend>
+                            <button type="button" id="remove_${why1}-w2-1" class="close-button-why" onclick="removeFieldset('divWHY_${identityDIV}','${$dataStringify}','2')">X</button>
+                            <div class="row">
+                                <div class="col-5">
+                                    <div class="input-group input-group-static my-4">
+                                        <label class="ms-0" for="input-m-${why1}-w2-1">Why 2 - 1</label>
+                                        <textarea type="textarea" id="input-m-${why1}-w2-1" rows="1" class="form-control"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-5">
+                                    <div class="input-group input-group-static my-4">
+                                        <label for="input-k-${why1}-w2-1" class="ms-0">Kategori </label>
+                                        <select class="form-control" name="input-k-${why1}-w2-1" id="input-k-${why1}-w2-1" required>
+                                            <option value="">-- Pilih Kategori --</option>
+                                            ${optionsHtml}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-2 d-flex justify-content-center align-items-center">
+                                    <button type="button" onClick="AddWhy3(${row},${why1},1,'remove_${why1}-w2-1')" class="btn btn-primary">Why 3</button>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                `;
+                $(`.r${row}`).append(dataDIV);
+            } else {
+                $(`#remove_${dataTerakhiW2[0].w1}-w2-${dataTerakhiW2[0].position}`).addClass("d-none");
+                rowCount += 1;
+                let dataObject2 = {
+                    row: rowCount,
+                    w1: why1,
+                    position: dataTerakhiW2[0].position + 1
+                }
+                listOFWhy2.push(dataObject2);
+                $dataStringify = JSON.stringify(dataObject2).replace(/'/g, "&apos;").replace(/"/g, '&quot;');
+
+                var newData = `
+                <div class="row row-cols-6 r${rowCount}">
+                    <div class="col-2">
+                        <div class="line"></div>
+                    </div>
+                    <div class="col-2">
+                        <fieldset style="margin: 30px" id="divWHY_${identityDIV}">
+                            <legend style="width: auto">Why 2 - ${dataTerakhiW2[0].position + 1}</legend>
+                            <button type="button" id="remove_${dataTerakhiW2[0].w1}-w2-${dataTerakhiW2[0].position + 1}" class="close-button-why" onclick="removeFieldset('divWHY_${identityDIV}','${$dataStringify}','2')">X</button>
+                            <div class="row">
+                                <div class="col-5">
+                                    <div class="input-group input-group-static my-4">
+                                        <label class="ms-0" for="input-${dataTerakhiW2[0].w1}-w2-${dataTerakhiW2[0].position + 1}">Why 2 - ${dataTerakhiW2[0].position + 1}</label>
+                                        <textarea type="textarea" id="input-m-${dataTerakhiW2[0].w1}-w2-${dataTerakhiW2[0].position + 1}" rows="1" class="form-control"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-5">
+                                    <div class="input-group input-group-static my-4">
+                                        <label for="input-k-${dataTerakhiW2[0].w1}-w2-${dataTerakhiW2[0].position + 1}" class="ms-0">Kategori </label>
+                                        <select class="form-control" name="input-k-${dataTerakhiW2[0].w1}-w2-${dataTerakhiW2[0].position + 1}" id="input-k-${dataTerakhiW2[0].w1}-w2-${dataTerakhiW2[0].position + 1}" required>
+                                            <option value="">-- Pilih Kategori --</option>
+                                            ${optionsHtml}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-2 d-flex justify-content-center align-items-center">
+                                    <button type="button" onClick="AddWhy3(${rowCount},${dataTerakhiW2[0].w1},${dataTerakhiW2[0].position + 1}, 'remove_${dataTerakhiW2[0].w1}-w2-${dataTerakhiW2[0].position + 1}')"  class="btn btn-primary">Why 3</button>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+            `;
+
+                $(`.r${dataTerakhiW2[0].row}`).after(newData);
+                let $newElement = $(`.r${dataTerakhiW2[0].row}`).next(); // Selecting the newly added element
+
+                // Scroll to the position of the new element
+                if ($newElement.length) {
+                    $('html, body').animate({
+                        scrollTop: $newElement.offset().top - 100 // Adjust as needed for any offset
+                    }, 10); // Adjust scroll speed as needed
+                }
+            }
+        }
+
+        function AddWhy3(row, why1, why2, removeID) {
+            $(`#${removeID}`).addClass("d-none");
             let dataTerakhiW3 = checkDataWhy3(listOFWhy3, why1, why2);
             identityDIV += 1;
-            console.log(dataTerakhiW3);
             if (dataTerakhiW3.length != 0 && dataTerakhiW3[0].position == 5) {
-                console.log(dataTerakhiW3[0].row)
                 return false;
             }
 
@@ -985,12 +991,13 @@
                 }
 
                 listOFWhy3.push(dataObject3);
+                $dataStringify = JSON.stringify(dataObject3).replace(/'/g, "&apos;").replace(/"/g, '&quot;');
 
                 let dataDIV = `
-                    <div class="col-2">
-                        <fieldset style="margin: 30px" id="divWHY_${identityDIV}">
+                    <div class="col-2" id="divWHY_${identityDIV}">
+                        <fieldset style="margin: 30px">
                             <legend style="width: auto">Why 3</legend>
-                            <button type="button" class="close-button-why" onclick="removeFieldset('divWHY_${identityDIV}')">X</button>
+                            <button type="button" id="remove_${why1}-${why2}-w3-1" class="close-button-why" onclick="removeFieldset('divWHY_${identityDIV}','${$dataStringify}','3')">X</button>
                             <div class="row">
                                 <div class="col-5">
                                     <div class="input-group input-group-static my-4">
@@ -1008,7 +1015,7 @@
                                     </div>
                                 </div>
                                 <div class="col-2 d-flex justify-content-center align-items-center">
-                                    <button type="button" onClick="AddWhy4(${row},${why1}, ${why2}, 1)" class="btn btn-primary">Why 4</button>
+                                    <button type="button" onClick="AddWhy4(${row},${why1}, ${why2}, 1, 'remove_${why1}-${why2}-w3-1')" class="btn btn-primary">Why 4</button>
                                 </div>
                             </div>
                         </fieldset>
@@ -1017,8 +1024,19 @@
 
                 $(`.r${row}`).append(dataDIV);
             } else {
+                $(`#remove_${dataTerakhiW3[0].w1}-${dataTerakhiW3[0].w2}-w3-${dataTerakhiW3[0].position}`).addClass(
+                    "d-none");
                 rowCount += 1;
                 UpdateRowW2(listOFWhy2, why1, why2, rowCount);
+                let dataObject3 = {
+                    row: rowCount,
+                    w1: why1,
+                    w2: why2,
+                    position: dataTerakhiW3[0].position + 1
+                }
+                listOFWhy3.push(dataObject3);
+
+                $dataStringify = JSON.stringify(dataObject3).replace(/'/g, "&apos;").replace(/"/g, '&quot;');
 
                 var newData = `
                 <div class="row row-cols-6 r${rowCount}">
@@ -1026,10 +1044,10 @@
                     </div>
                     <div class="col-2">
                     </div>
-                    <div class="col-2">
-                        <fieldset style="margin: 30px" id="divWHY_${identityDIV}">
+                    <div class="col-2" id="divWHY_${identityDIV}">
+                        <fieldset style="margin: 30px" >
                             <legend style="width: auto">Why 3</legend>
-                            <button type="button" class="close-button-why" onclick="removeFieldset('divWHY_${identityDIV}')">X</button>
+                            <button type="button" id="remove_${dataTerakhiW3[0].w1}-${dataTerakhiW3[0].w2}-w3-${dataTerakhiW3[0].position + 1}" class="close-button-why" onclick="removeFieldset('divWHY_${identityDIV}','${$dataStringify}','3')">X</button>
                             <div class="row">
                                 <div class="col-5">
                                     <div class="input-group input-group-static my-4">
@@ -1047,29 +1065,23 @@
                                     </div>
                                 </div>
                                 <div class="col-2 d-flex justify-content-center align-items-center">
-                                    <button type="button" onClick="AddWhy4(${rowCount},${dataTerakhiW3[0].w1}, ${dataTerakhiW3[0].w2}, ${dataTerakhiW3[0].position + 1})" class="btn btn-primary">Why 4</button>
+                                    <button type="button" onClick="AddWhy4(${rowCount},${dataTerakhiW3[0].w1}, ${dataTerakhiW3[0].w2}, ${dataTerakhiW3[0].position + 1}, 'remove_${dataTerakhiW3[0].w1}-${dataTerakhiW3[0].w2}-w3-${dataTerakhiW3[0].position + 1}')" class="btn btn-primary">Why 4</button>
                                 </div>
                             </div>
                         </fieldset>
                     </div>
                 </div>
             `;
-                let dataObject3 = {
-                    row: rowCount,
-                    w1: why1,
-                    w2: why2,
-                    position: dataTerakhiW3[0].position + 1
-                }
-                listOFWhy3.push(dataObject3);
+
                 $(`.r${dataTerakhiW3[0].row}`).after(newData);
             }
         }
 
-        function AddWhy4(row, why1, why2, why3) {
+        function AddWhy4(row, why1, why2, why3, removeID) {
+            $(`#${removeID}`).addClass("d-none");
             let dataTerakhiW4 = checkDataWhy4(listOFWhy4, why1, why2, why3);
             identityDIV += 1;
             if (dataTerakhiW4.length != 0 && dataTerakhiW4[0].position == 5) {
-                console.log(dataTerakhiW4[0].row)
                 return false;
             }
 
@@ -1083,12 +1095,14 @@
                 }
 
                 listOFWhy4.push(dataObject4);
+                $dataStringify = JSON.stringify(dataObject4).replace(/'/g, "&apos;").replace(/"/g, '&quot;');
+
 
                 let dataDIV = `
-                    <div class="col-2">
-                        <fieldset style="margin: 30px" id="divWHY_${identityDIV}">
+                    <div class="col-2" id="divWHY_${identityDIV}">
+                        <fieldset style="margin: 30px">
                             <legend style="width: auto">Why 4</legend>
-                            <button type="button" class="close-button-why" onclick="removeFieldset('divWHY_${identityDIV}')">X</button>
+                            <button type="button" id="remove_${why1}-${why2}-${why3}-w4-1" class="close-button-why" onclick="removeFieldset('divWHY_${identityDIV}','${$dataStringify}','4')">X</button>
                             <div class="row">
                                 <div class="col-5">
                                     <div class="input-group input-group-static my-4">
@@ -1106,7 +1120,7 @@
                                     </div>
                                 </div>
                                 <div class="col-2 d-flex justify-content-center align-items-center">
-                                    <button type="button" onClick="AddWhy5(${row},${why1}, ${why2}, ${why3}, 1)" class="btn btn-primary">Why 5</button>
+                                    <button type="button" onClick="AddWhy5(${row},${why1}, ${why2}, ${why3}, 1, 'remove_${why1}-${why2}-${why3}-w4-1')" class="btn btn-primary">Why 5</button>
                                 </div>
                             </div>
                         </fieldset>
@@ -1115,9 +1129,21 @@
 
                 $(`.r${row}`).append(dataDIV);
             } else {
+                $(`#remove_${dataTerakhiW4[0].w1}-${dataTerakhiW4[0].w2}-${dataTerakhiW4[0].w3}-w4-${dataTerakhiW4[0].position}`)
+                    .addClass("d-none");
                 rowCount += 1;
                 UpdateRowW2(listOFWhy2, why1, why2, rowCount);
                 UpdateRowW3(listOFWhy3, why1, why2, why3, rowCount);
+
+                let dataObject4 = {
+                    row: rowCount,
+                    w1: why1,
+                    w2: why2,
+                    w3: why3,
+                    position: dataTerakhiW4[0].position + 1
+                }
+                listOFWhy4.push(dataObject4);
+                $dataStringify = JSON.stringify(dataObject4).replace(/'/g, "&apos;").replace(/"/g, '&quot;');
 
                 var newData = `
                 <div class="row row-cols-6 r${rowCount}">
@@ -1127,10 +1153,10 @@
                     </div>
                     <div class="col-2">
                     </div>
-                    <div class="col-2">
-                        <fieldset style="margin: 30px" id="divWHY_${identityDIV}">
+                    <div class="col-2" id="divWHY_${identityDIV}">
+                        <fieldset style="margin: 30px">
                             <legend style="width: auto">Why 4</legend>
-                            <button type="button" class="close-button-why" onclick="removeFieldset('divWHY_${identityDIV}')">X</button>
+                            <button type="button" id="remove_${dataTerakhiW4[0].w1}-${dataTerakhiW4[0].w2}-${dataTerakhiW4[0].w3}-w4-${dataTerakhiW4[0].position + 1}" class="close-button-why" onclick="removeFieldset('divWHY_${identityDIV}','${$dataStringify}','4')">X</button>
                             <div class="row">
                                 <div class="col-5">
                                     <div class="input-group input-group-static my-4">
@@ -1148,33 +1174,24 @@
                                     </div>
                                 </div>
                                 <div class="col-2 d-flex justify-content-center align-items-center">
-                                    <button type="button" onClick="AddWhy5(${rowCount},${dataTerakhiW4[0].w1}, ${dataTerakhiW4[0].w2},${dataTerakhiW4[0].w3}, ${dataTerakhiW4[0].position + 1})" class="btn btn-primary">Why 5</button>
+                                    <button type="button" onClick="AddWhy5(${rowCount},${dataTerakhiW4[0].w1}, ${dataTerakhiW4[0].w2},${dataTerakhiW4[0].w3}, ${dataTerakhiW4[0].position + 1},'remove_${dataTerakhiW4[0].w1}-${dataTerakhiW4[0].w2}-${dataTerakhiW4[0].w3}-w4-${dataTerakhiW4[0].position + 1}')" class="btn btn-primary">Why 5</button>
                                 </div>
                             </div>
                         </fieldset>
                     </div>
                 </div>
             `;
-                let dataObject4 = {
-                    row: rowCount,
-                    w1: why1,
-                    w2: why2,
-                    w3: why3,
-                    position: dataTerakhiW4[0].position + 1
-                }
-                listOFWhy4.push(dataObject4);
                 $(`.r${dataTerakhiW4[0].row}`).after(newData);
             }
         }
 
-        function AddWhy5(row, why1, why2, why3, why4) {
+        function AddWhy5(row, why1, why2, why3, why4, removeID) {
+            $(`#${removeID}`).addClass("d-none");
             let dataTerakhiW5 = checkDataWhy5(listOFWhy5, why1, why2, why3, why4);
             identityDIV += 1;
             if (dataTerakhiW5.length != 0 && dataTerakhiW5[0].position == 5) {
-                console.log(dataTerakhiW5[0].row)
                 return false;
             }
-
             if (dataTerakhiW5.length == 0) {
                 let dataObject5 = {
                     row: row,
@@ -1184,14 +1201,13 @@
                     w4: why4,
                     position: 1
                 }
-
                 listOFWhy5.push(dataObject5);
-
+                $dataStringify = JSON.stringify(dataObject5).replace(/'/g, "&apos;").replace(/"/g, '&quot;');
                 let dataDIV = `
-                    <div class="col-2">
-                        <fieldset style="margin: 30px" id="divWHY_${identityDIV}">
+                    <div class="col-2" id="divWHY_${identityDIV}">
+                        <fieldset style="margin: 30px">
                             <legend style="width: auto">Why 5</legend>
-                            <button type="button" class="close-button-why" onclick="removeFieldset('divWHY_${identityDIV}')">X</button>
+                            <button type="button" id="remove_${why1}-${why2}-${why3}-${why4}-w5-1" class="close-button-why" onclick="removeFieldset('divWHY_${identityDIV}','${$dataStringify}','5')">X</button>
                             <div class="row">
                                 <div class="col-5">
                                     <div class="input-group input-group-static my-4">
@@ -1212,13 +1228,24 @@
                         </fieldset>
                     </div>
                 `;
-
                 $(`.r${row}`).append(dataDIV);
             } else {
+                $(`#remove_${dataTerakhiW5[0].w1}-${dataTerakhiW5[0].w2}-${dataTerakhiW5[0].w3}-${dataTerakhiW5[0].w4}-w5-${dataTerakhiW5[0].position }`)
+                    .addClass("d-none");
                 rowCount += 1;
                 UpdateRowW2(listOFWhy2, why1, why2, rowCount);
                 UpdateRowW3(listOFWhy3, why1, why2, why3, rowCount);
-                UpdateRowW4(listOFWhy3, why1, why2, why3, why4, rowCount);
+                UpdateRowW4(listOFWhy4, why1, why2, why3, why4, rowCount);
+                let dataObject5 = {
+                    row: rowCount,
+                    w1: why1,
+                    w2: why2,
+                    w3: why3,
+                    w4: why4,
+                    position: dataTerakhiW5[0].position + 1
+                }
+                listOFWhy5.push(dataObject5);
+                $dataStringify = JSON.stringify(dataObject5).replace(/'/g, "&apos;").replace(/"/g, '&quot;');
 
                 var newData = `
                 <div class="row row-cols-6 r${rowCount}">
@@ -1233,7 +1260,7 @@
                     <div class="col-2">
                         <fieldset style="margin: 30px" id="divWHY_${identityDIV}">
                             <legend style="width: auto">Why 5</legend>
-                            <button type="button" class="close-button-why" onclick="removeFieldset('divWHY_${identityDIV}')">X</button>
+                            <button type="button" id="remove_${dataTerakhiW5[0].w1}-${dataTerakhiW5[0].w2}-${dataTerakhiW5[0].w3}-${dataTerakhiW5[0].w4}-w5-${dataTerakhiW5[0].position + 1}" class="close-button-why" onclick="removeFieldset('divWHY_${identityDIV}','${$dataStringify}','4')">X</button>
                             <div class="row">
                                 <div class="col-5">
                                     <div class="input-group input-group-static my-4">
@@ -1255,24 +1282,16 @@
                     </div>
                 </div>
             `;
-                let dataObject5 = {
-                    row: rowCount,
-                    w1: why1,
-                    w2: why2,
-                    w3: why3,
-                    w4: why4,
-                    position: dataTerakhiW5[0].position + 1
-                }
-                listOFWhy5.push(dataObject5);
-                $(`.r${dataTerakhiW5[0].row}`).after(newData);
-                let $newElement = $(`.r${dataTerakhiW5[0].row}`).next(); // Selecting the newly added element
 
-                // Scroll to the position of the new element
-                if ($newElement.length) {
-                    $('html, body').animate({
-                        scrollTop: $newElement.offset().top - 100 // Adjust as needed for any offset
-                    }, 500); // Adjust scroll speed as needed
-                }
+                $(`.r${dataTerakhiW5[0].row}`).after(newData);
+                // let $newElement = $(`.r${dataTerakhiW5[0].row}`).next(); // Selecting the newly added element
+
+                // // Scroll to the position of the new element
+                // if ($newElement.length) {
+                //     $('html, body').animate({
+                //         scrollTop: $newElement.offset().top - 100 // Adjust as needed for any offset
+                //     }, 500); // Adjust scroll speed as needed
+                // }
             }
         }
     </script>

@@ -708,6 +708,7 @@
             return 'Position not found';
         }
         $(document).ready(function() {
+            $('#scrollableDiv').scrollTop(0).scrollLeft(0);
             let dataWhy1 = <?php echo json_encode($dataPicaW1); ?>;
             let dataWhy2 = <?php echo json_encode($dataPicaW2); ?>;
             let dataWhy3 = <?php echo json_encode($dataPicaW3); ?>;
