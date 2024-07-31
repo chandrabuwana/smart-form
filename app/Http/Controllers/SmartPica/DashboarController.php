@@ -135,7 +135,7 @@ class DashboarController extends Controller
 
         // $id = 'PICA-2024-07-04-1';
 
-        $dataMaster = DB::select("select m.* , kl.lea_name, site.Nama nama_site, karyawan.nama nama_karyawan  from master_pica m join kpi_lea kl on m.id_kpi = kl.lea_id join HRD.dbo.tsite site on m.site = site.KodeST join HRD.dbo.TKaryawan karyawan on karyawan.NIK = m.nik where nodocpica = '$id'");
+        $dataMaster = DB::select("select m.* , kl.lea_name, site.Nama nama_site, karyawan.nama nama_karyawan, k.kp_name  from master_pica m join kpi_lea kl on m.id_kpi = kl.lea_id join HRD.dbo.tsite site on m.site = site.KodeST join HRD.dbo.TKaryawan karyawan on karyawan.NIK = m.nik join kategori_problem k on k.kp_id = m.id_kategory where nodocpica = '$id'");
 
         $dataPicaW1 = DB::select("select * from pica_why1 w join kategori_problem k on w.id_kategory = k.kp_id where nodocpica = '$id'");
         $dataPicaW2 = DB::select("select * from pica_why2 w join kategori_problem k on w.id_kategory = k.kp_id where nodocpica = '$id'");
@@ -156,7 +156,16 @@ class DashboarController extends Controller
                         note_step, 
                         upper(ap_tod) ap_tod, 
                         upper(dic) dic,
-                        pic, 
+                        pic,
+                        COALESCE(
+                            (SELECT TOP 1 progress 
+                                FROM history_progress_solution s 
+                                WHERE n.nodocpica = s.nodocpica 
+                                AND s.position_why = n.position_why 
+                                AND s.identity_why = n.identity_why 
+                                ORDER BY progress DESC), 
+                            0
+                        ) progress, 
                        FORMAT(due_date, 'dd MMMM yyyy', 'en-US') AS due_date, position_why, identity_why, k.nama nama_pic FROM [PICA_BETA].[dbo].[new_pica_step] n join hrd.dbo.TKaryawan k on n.pic = k.NIK where nodocpica = '$id'");
 
         $dataFinal = [

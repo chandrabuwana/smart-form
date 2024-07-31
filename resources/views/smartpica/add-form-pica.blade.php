@@ -3,6 +3,12 @@
 @section('custom-css')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.css">
     <style>
+            .select2-dropdown {
+            overflow: scroll;
+            height: 300px;
+        }
+
+
         .close-button-why {
             position: absolute;
             top: 0;
@@ -156,8 +162,7 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static my-4">
                                         <label for="pc_site" class="ms-0">Site </label>
-                                        <select class="form-control dept" name="pc_site" id="pc_site" required>
-                                            {{-- <option value="">-- Pilih Site --</option> --}}
+                                        <select class="form-control dept" name="pc_site" id="pc_site">
                                         </select>
                                     </div>
                                 </div>
@@ -264,7 +269,7 @@
         // $('#states').select2({
         //     dropdownParent: $('#parent')
         // });
-       
+
         $('#pc_kpi').select2({
             theme: 'bootstrap-5', // Menggunakan tema Bootstrap 5
             dropdownParent: $('#pc_kpi').closest('.ayyyyy'),
@@ -290,6 +295,7 @@
                 cache: true
             }
         });
+        
         $('#pc_kpi').on('select2:open', function(e) {
             console.log(e);
             const evt = "scroll.select2";
@@ -367,12 +373,13 @@
                 cache: true
             }
         });
+
         $('#pc_site').on('select2:open', function(e) {
-            console.log(e);
             const evt = "scroll.select2";
             $(e.target).parents().off(evt);
             $(window).off(evt);
         });
+
     </script>
     <script>
         $(document).ready(function() {
@@ -1313,3 +1320,58 @@
         }
     </script>
 @endsection
+
+DEPT. LOGISTIC
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

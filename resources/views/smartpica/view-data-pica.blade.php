@@ -16,9 +16,9 @@
             -moz-border-radius: 0.5em;
             border-radius: 0.5em;
             /*
-                                                                                                                                                                                                    opacity:0.8;
-                                                                                                                                                                                                    filter:alpha(opacity=80);
-                                                                                                                                                                                                    */
+                                                                                                                                                                                                                                opacity:0.8;
+                                                                                                                                                                                                                                filter:alpha(opacity=80);
+                                                                                                                                                                                                                                */
             width: 30em;
             height: auto;
             padding: 0.5em 0em;
@@ -39,17 +39,17 @@
             -webkit-box-shadow: 2px 2px 10px #444;
             -moz-box-shadow: 2px 2px 10px #444;
             /*
-                                                                                                                                                                                            opacity:0.6;
-                                                                                                                                                                                            filter:alpha(opacity=60);
-                                                                                                                                                                                            */
+                                                                                                                                                                                                                        opacity:0.6;
+                                                                                                                                                                                                                        filter:alpha(opacity=60);
+                                                                                                                                                                                                                        */
         }
 
         /*
-                                                                                                                                                                                        .window > div {
-                                                                                                                                                                                            margin-top: 19%;
-                                                                                                                                                                                            margin-bottom: 19%;
-                                                                                                                                                                                        }
-                                                                                                                                                                                        */
+                                                                                                                                                                                                                    .window > div {
+                                                                                                                                                                                                                        margin-top: 19%;
+                                                                                                                                                                                                                        margin-bottom: 19%;
+                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                    */
 
         .hidden {
             display: none;
@@ -153,16 +153,15 @@
                         <div class="row" id="tabel_tambah">
                             <div class="row">
                                 <div class="col-md-2">
-                                    <div class="input-group input-group-static my-4">
+                                    <div class="input-group input-group-static my-2">
                                         <label for="pc_thn" class="ms-0">Tahun </label>
                                         <select class="form-control" name="pc_thn" id="pc_thn" disabled>
                                             <option value="">{{ $dataMaster->tahun }}</option>
-
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
-                                    <div class="input-group input-group-static my-4">
+                                    <div class="input-group input-group-static my-2">
                                         <label for="pc_bln" class="ms-0">Bulan </label>
                                         <select class="form-control" name="pc_bln" disabled id="pc_bln">
                                             <option value="">{{ $dataMaster->bulan }}</option>
@@ -170,7 +169,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-3">
-                                    <div class="input-group input-group-static my-4">
+                                    <div class="input-group input-group-static my-2">
                                         <label for="pc_week" class="ms-0">Week </label>
                                         <select class="form-control" name="pc_week" disabled id="pc_week" disabled>
                                             <option value="">{{ $dataMaster->week }}</option>
@@ -178,7 +177,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-4">
-                                    <div class="input-group input-group-static my-4">
+                                    <div class="input-group input-group-static my-2">
                                         <label for="pc_site" class="ms-0">Site </label>
                                         <select class="form-control dept" name="pc_site" id="pc_site">
                                             <option value="">{{ $dataMaster->nama_site }}</option>
@@ -188,7 +187,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-9">
-                                    <div class="input-group input-group-static my-4">
+                                    <div class="input-group input-group-static my-2">
                                         <label for="pc_kpi" class="ms-0">Leading KPI </label>
                                         <select class="form-control s2lea" name="pc_kpi" id="pc_kpi" disabled>
                                             <option value="">{{ $dataMaster->lea_name }}</option>
@@ -199,7 +198,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-1">
-                                    <div class="input-group input-group-static my-4">
+                                    <div class="input-group input-group-static my-2">
                                         <label for="pc_aktual" class="ms-0">Actual</label>
                                         <input class="form-control" type="text" disabled
                                             inputmode="decimal"value="{{ $dataMaster->actual_master }}" name="pc_aktual"
@@ -207,14 +206,14 @@
                                     </div>
                                 </div>
                                 <div class="col-md-1">
-                                    <div class="input-group input-group-static my-4">
+                                    <div class="input-group input-group-static my-2">
                                         <label class="ms-0" for="pc_target">Target</label>
                                         <input class="form-control" type="text" inputmode="decimal" id="pc_target"
                                             disabled value="{{ $dataMaster->target_master }}" name="pc_target">
                                     </div>
                                 </div>
                                 <div class="col-md-1">
-                                    <div class="input-group input-group-static my-4">
+                                    <div class="input-group input-group-static my-2">
                                         <label class="ms-0" for="pc_ap_pica">AP/PICA</label>
                                         <select class="form-control" name="pc_ap_pica" disabled>
                                             <option value="">{{ $dataMaster->ap_pica == 'pc' ? 'PICA' : 'AP' }}
@@ -225,16 +224,16 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-8">
-                                    <div class="input-group input-group-static my-4">
+                                    <div class="input-group input-group-static my-2">
                                         <label for="pc_problem" class="ms-0">Problem Statement </label>
                                         <textarea class="form-control" name="pc_problem" id="pc_problem" rows="3" disabled>{{ $dataMaster->problem }}</textarea>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
-                                    <div class="input-group input-group-static my-4">
+                                    <div class="input-group input-group-static my-2">
                                         <label class="ms-0" for="pc_kp">Kategori Problem </label>
                                         <select class="form-control" name="pc_kp" id="pc_kp" disabled>
-                                            <option value="">{{ $dataMaster->id_kategory }}</option>
+                                            <option value="">{{ $dataMaster->kp_name }}</option>
                                         </select>
                                     </div>
                                 </div>
@@ -289,32 +288,46 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-footer">
-                        <div class="d-flex align-items-center">
-                            <div class="input-group input-group-static my-4">
-                                <label class="form-label">Pilih Jumlah Estimasi dari Solusi Step PICA
-                                    diatas</label>
-                                <div class="col-md-2">
-                                    <select class="form-control" name="pc_es" id="pc_es">
-                                        <option value='5'>5</option>
-                                        <?php for ($i = 1; $i < 11; $i++) {
-                                            echo '<option value=' . $i . '>' . $i . '</option>';
-                                        } ?>
-                                    </select>
-                                </div>
-                            </div>
-                            <button class="btn btn-primary ms-auto uploadBtn" id="buttonSubmitDataPICA"
-                                onclick="SubmitAllDataWhy()">
-                                <i class="fas fa-save"></i>
-                                Save All Data</button>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
 @endsection
+@section('modal')
+    <div class="modal fade" id="stepSolution" aria-hidden="true" aria-labelledby="exampleModalToggleLabel"
+        tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <input type="hidden" name="IdentityWhy" id="IdentityWhy" value="">
+                <input type="hidden" name="idWhy" id="idWhy" value="">
+                <input type="hidden" name="nodocWhy" id="nodocWhy" value="">
+                <input type="hidden" name="idMaster" id="idMaster" value="">
+                <input type="hidden" name="nikMaster" id="nikMaster" value="">
+                <div class="modal-header">
+                    <div class="row">
+                        <div class="col">
+                            <h5 class="modal-title center" id="exampleModalToggleLabel">FORM Step Solution</h5>
+                            <p id="ProblemHeader"></p>
 
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
+                </div>
+                <div id="content-modal-view-step">
+
+                </div>
+                <hr class="horizontal dark my-sm-3">
+
+                <div class="row" style="margin:10px">
+                    <div class="col text-end" id="masukkanButtonSubmit">
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+@endsection
 
 @section('custom-js')
     <script src="{{ asset('master/js/jquery.jsPlumb-1.4.1-all-min.js') }}"></script>
@@ -707,6 +720,10 @@
             }
             return 'Position not found';
         }
+
+        function checkStep(id, identity, solution) {
+            return solution.some(obj => obj.identity_why === identity && obj.position_why === id);
+        }
         $(document).ready(function() {
             $('#scrollableDiv').scrollTop(0).scrollLeft(0);
             let dataWhy1 = <?php echo json_encode($dataPicaW1); ?>;
@@ -714,6 +731,8 @@
             let dataWhy3 = <?php echo json_encode($dataPicaW3); ?>;
             let dataWhy4 = <?php echo json_encode($dataPicaW4); ?>;
             let dataWhy5 = <?php echo json_encode($dataPicaW5); ?>;
+            var solution = <?php echo json_encode($solution); ?>;
+            // console.log(solution);
             var urutan_node = 1;
             var dataUrutanDivWhy1 = [];
             var dataUrutanDivWhy2 = [];
@@ -743,6 +762,11 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row justify-content-end" style="margin: 10px">
+                        <div class="col-3">
+                            <button id="button_${urutan_node}" style="background-color:black; color:white;">Solution</button>
+                        </div>
+                    </div>
                 </div>
                 `;
                 let dataTMPDIVPosition = {
@@ -761,11 +785,14 @@
                 }
                 let dataPositionW1 = findPosition(dataParams, dataUrutanDivWhy1);
                 if (dataBaruW1 != dataWhy2[i].index_w1) {
-                    dataBaruW1 = dataWhy2[i].index_w1
+                    dataBaruW1 = dataWhy2[i].index_w1;
+                    $(`#button_${dataPositionW1}`).addClass("d-none")
                     $(`#node_${dataPositionW1}`).attr('data-first-child', urutan_node);
                 } else {
+                    $(`#button_${urutan_node}`).addClass("d-none")
                     $(`#node_${urutan_node-1}`).attr('data-next-sibling', urutan_node);
                 }
+                let statusLast = checkStep(dataWhy2[i].id, dataWhy2[i].identity, solution);
                 let dataDIVNode = `
                     <div id="node_${urutan_node}" class="window hidden" data-id="${urutan_node}"
                         data-parent="${dataPositionW1}" data-first-child="" data-next-sibling="">
@@ -787,6 +814,11 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row justify-content-end" style="margin: 10px">
+                            <div class="col-3">
+                                <button id="button_${urutan_node}" class="${statusLast ? "" : "d-none"}" style="background-color:black; color:white;">Solution</button>
+                            </div>
+                        </div>
                     </div>
                 `;
                 let dataTMPDIVPosition = {
@@ -799,9 +831,12 @@
                 $('#treemain').append(dataDIVNode);
             }
 
+            
+
             var dataBaruW1 = 0;
             var dataBaruW2 = 0;
             for (let i = 0; i < dataWhy3.length; i++) {
+                let statusLast = checkStep(dataWhy3[i].id, dataWhy3[i].identity, solution);
                 let dataParams = {
                     w1: dataWhy3[i].index_w1,
                     w2: dataWhy3[i].index_w2
@@ -810,8 +845,10 @@
                 if (dataBaruW1 != dataWhy3[i].index_w1 || dataBaruW2 != dataWhy3[i].index_w2) {
                     dataBaruW1 = dataWhy3[i].index_w1
                     dataBaruW2 = dataWhy3[i].index_w2
+                    $(`#button_${dataPositionW2}`).addClass("d-none")
                     $(`#node_${dataPositionW2}`).attr('data-first-child', urutan_node);
                 } else {
+                    $(`#button_${urutan_node}`).addClass("d-none")
                     $(`#node_${urutan_node-1}`).attr('data-next-sibling', urutan_node);
                 }
                 let dataDIVNode = `
@@ -835,8 +872,14 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row justify-content-end" style="margin: 10px">
+                            <div class="col-3">
+                                <button id="button_${urutan_node}" class="${statusLast ? "" : "d-none"}" onclick="modalViewStep(${dataWhy3[i].id},${dataWhy3[i].identity})" style="background-color:black; color:white;">Solution</button>
+                            </div>
+                        </div>
                     </div>
                 `;
+
                 let dataTMPDIVPosition = {
                     w1: dataWhy3[i].index_w1,
                     w2: dataWhy3[i].index_w2,
@@ -857,13 +900,17 @@
                     w2: dataWhy4[i].index_w2,
                     w3: dataWhy4[i].index_w3
                 }
+                let statusLast = checkStep(dataWhy4[i].id, dataWhy4[i].identity, solution);
                 let dataPositionW3 = findPosition(dataParams, dataUrutanDivWhy3);
-                if (dataBaruW1 != dataWhy4[i].index_w1 || dataBaruW2 != dataWhy4[i].index_w2 || dataBaruW3 != dataWhy4[i].index_w3) {
+                if (dataBaruW1 != dataWhy4[i].index_w1 || dataBaruW2 != dataWhy4[i].index_w2 || dataBaruW3 !=
+                    dataWhy4[i].index_w3) {
                     dataBaruW1 = dataWhy4[i].index_w1
                     dataBaruW2 = dataWhy4[i].index_w2
                     dataBaruW3 = dataWhy4[i].index_w3
+                    $(`#button_${dataPositionW3}`).addClass("d-none")
                     $(`#node_${dataPositionW3}`).attr('data-first-child', urutan_node);
                 } else {
+                    $(`#button_${urutan_node}`).addClass("d-none")
                     $(`#node_${urutan_node-1}`).attr('data-next-sibling', urutan_node);
                 }
                 let dataDIVNode = `
@@ -887,8 +934,14 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row justify-content-end" style="margin: 10px">
+                            <div class="col-3">
+                                <button id="button_${urutan_node}" class="${statusLast ? "" : "d-none"}" onclick="modalViewStep(${dataWhy4[i].id},${dataWhy4[i].identity})" style="background-color:black; color:white;">Solution</button>
+                            </div>
+                        </div>
                     </div>
                 `;
+
                 let dataTMPDIVPosition = {
                     w1: dataWhy4[i].index_w1,
                     w2: dataWhy4[i].index_w2,
@@ -913,15 +966,20 @@
                     w4: dataWhy5[i].index_w4,
                 }
                 let dataPositionW4 = findPosition(dataParams, dataUrutanDivWhy4);
-                if (dataBaruW1 != dataWhy5[i].index_w1 || dataBaruW2 != dataWhy5[i].index_w2 || dataBaruW3 != dataWhy5[i].index_w3 || dataBaruW4 != dataWhy5[i].index_w4) {
+                let statusLast = checkStep(dataWhy5[i].id, dataWhy5[i].identity, solution);
+                if (dataBaruW1 != dataWhy5[i].index_w1 || dataBaruW2 != dataWhy5[i].index_w2 || dataBaruW3 !=
+                    dataWhy5[i].index_w3 || dataBaruW4 != dataWhy5[i].index_w4) {
                     dataBaruW1 = dataWhy5[i].index_w1
                     dataBaruW2 = dataWhy5[i].index_w2
                     dataBaruW3 = dataWhy5[i].index_w3
                     dataBaruW4 = dataWhy5[i].index_w4
+                    $(`#button_${dataPositionW4}`).addClass("d-none")
                     $(`#node_${dataPositionW4}`).attr('data-first-child', urutan_node);
                 } else {
+                    $(`#button_${urutan_node}`).addClass("d-none")
                     $(`#node_${urutan_node-1}`).attr('data-next-sibling', urutan_node);
                 }
+
                 let dataDIVNode = `
                     <div id="node_${urutan_node}" class="window hidden" data-id="${urutan_node}"
                         data-parent="${dataPositionW4}" data-first-child="" data-next-sibling="">
@@ -943,8 +1001,14 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row justify-content-end" style="margin: 10px">
+                            <div class="col-3">
+                                <button id="button_${urutan_node}" class="${statusLast ? "" : "d-none"}" onclick="modalViewStep(${dataWhy4[i].id},${dataWhy4[i].identity})" style="background-color:black; color:white;">Solution</button>
+                            </div>
+                        </div>
                     </div>
                 `;
+
                 let dataTMPDIVPosition = {
                     w1: dataWhy4[i].index_w1,
                     w2: dataWhy4[i].index_w2,
@@ -957,17 +1021,6 @@
                 dataUrutanDivWhy5.push(dataTMPDIVPosition);
                 $('#treemain').append(dataDIVNode);
             }
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1030,5 +1083,93 @@
             window.treemain = tree;
         })
     </script>
-    <script type="text/javascript"></script>
+    <script type="text/javascript">
+        var solution = <?php echo json_encode($solution); ?>;
+
+        function modalViewStep(id, identity) {
+            let dataStep = solution.filter(obj => obj.identity_why == identity && obj.position_why == id);
+            $('#content-modal-view-step').empty(); // Bersihkan konten modal sebelum menambahkan konten baru
+            console.log(solution);
+            console.log(id);
+            console.log(identity);
+            dataStep.forEach((e, index) => {
+                let dataView = `
+                    <div class="row" style="margin: 10px">
+                        <div class="col">
+                            <div class="card border" style="">
+                                <div class="card-body">
+                                    <h5 class="card-title">Solution</h5>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <div class="input-group input-group-static  my-1">
+                                                <label for="pc_action_${index}" class="ms-0">Action</label>
+                                                <select class="form-control" name="pc_action_${index}" id="pc_action_${index}" disabled>
+                                                    <option value="">-- ${e.action} --</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="input-group input-group-static  my-1">
+                                                <label for="pc_aktual_${index}" class="ms-0">Note Step</label>
+                                                <input class="form-control" type="text" inputmode="decimal"
+                                                    placeholder="Masukkan note untuk PIC" value="${e.note_step}" name="pc_aktual_${index}"
+                                                    id="pc_aktual_${index}" disabled>
+                                            </div>
+                                        </div>
+                                        <div class="col-2">
+                                            <div class="input-group input-group-static  my-1">
+                                                <label class="ms-0" for="pc_ap_pica_${index}">AP/TOD</label>
+                                                <select class="form-control" name="pc_ap_pica_${index}" id="pc_ap_pica_${index}" disabled>
+                                                    <option value="">-- ${e.ap_tod} --</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-2">
+                                            <div class="input-group input-group-static my-1">
+                                                <label class="ms-0" for="Button_Progress_${index}">Persentase Progress</label>
+                                                <select class="form-control" name="Button_Progress_${index}" id="Button_Progress_${index}" disabled>
+                                                    <option value=""><button type="button" class="btn btn-danger btn-sm" id="Button_Progress_${index}" >${e.progress}</button></option>
+                                                </select>
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="input-group input-group-static  my-1">
+                                                <label for="dicID_${index}" class="">Department in Charge (DIC)</label>
+                                                <select class="form-control DICDepartment" name="dicID_${index}" id="dicID_${index}" disabled>
+                                                    <option value="">-- ${e.dic} --</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="input-group input-group-static  my-1">
+                                                <label for="picID_${index}" class="">Person In Charge (PIC)</label>
+                                                <select class="form-control picIDHuman" name="picID_${index}" id="picID_${index}" disabled>
+                                                    <option value="">-- ${e.nama_pic} --</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="input-group input-group-static  my-1">
+                                                <label for="DueDate_${index}" class="">Person In Charge (PIC)</label>
+                                                <select class="form-control picIDHuman" name="DueDate_${index}" id="DueDate_${index}" disabled>
+                                                    <option value="">-- ${e.due_date} --</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                console.log(e)
+                $('#content-modal-view-step').append(dataView);
+            });
+
+            $('#stepSolution').modal("show");
+        }
+    </script>
 @endsection

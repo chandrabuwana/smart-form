@@ -267,7 +267,7 @@
         function dataListHistoryProgressActionFormater(value, row, index) {
             return `
                     <button onclick="openFileCCP(this)"><a class="like"  title="Like">
-                        <i class="fa fa-file-import">View</i>
+                        <i class="fa fa-file-import"> CCP</i>
                     </a></button>
                 `
         }
