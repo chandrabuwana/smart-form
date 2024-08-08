@@ -9,6 +9,8 @@ use App\Http\Controllers\SmartPica\DashboarController;
 use App\Http\Controllers\SmartPica\HelperController;
 use App\Http\Controllers\SmartPica\TransactionPicaController;
 use App\Http\Controllers\Login\LoginKaryawanController;
+use App\Http\Controllers\SM\AssetRequestController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -35,7 +37,11 @@ Route::group(['middleware' => ['check.auth']], function () {
     Route::get('/add-step-smart-pica/{id}', [DashboarController::class, 'IndexFormStepPica']);
     Route::get('/view-data-detail-pica/{id}', [DashboarController::class, 'IndexViewDataDetailPica']);
 
-
+    Route::get('/asset-request', [AssetRequestController::class, 'IndexForm'])->name("form-asset-request");
+    Route::get('/dashboard-form-sm', [AssetRequestController::class, 'DashboardForm'])->name("dashboard-form-sm");
+    Route::post('/add-asset-request', [AssetRequestController::class, 'SubmitFormAssetRequest'])->name("submit-asset-request");
+    Route::get('/get-forms-data', [AssetRequestController::class, 'GetFormsData'])->name("get-form-data");
+    Route::get('/get-form-detail', [AssetRequestController::class, 'FormDetailByNoDoc'])->name("form-detail-by-no-doc");
 
     Route::POST('/helper-kpi-lead-datalist', [HelperController::class, 'HelperSelect2PicaKPILead']);
     Route::POST('/helper-week', [HelperController::class, 'HelperSelectWeek']);
