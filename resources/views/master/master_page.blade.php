@@ -64,6 +64,10 @@
                 e.preventDefault();
                 $(this).next(".submenu").slideToggle();
             });
+            $("#menuIC").on("click", function(e) {
+                e.preventDefault();
+                $(this).next(".submenu").slideToggle();
+            });
             var currentUrl = window.location.href;
             $('.nav-link').each(function() {
                 if (this.href === currentUrl) {
