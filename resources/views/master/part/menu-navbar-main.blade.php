@@ -80,6 +80,31 @@
                      </li>
                  </ul>
              </li>
+             
+             <li class="nav-item">
+                 <a class="nav-link text-white active bg-gradient-primary" href="#" id="menuSM">
+                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                         <i class="fa fa-sitemap"></i>
+                     </div>
+                     <span class="nav-link-text ms-1">SM</span>
+                 </a>
+                 <ul class="submenu navbar-nav">
+                     <li class="nav-item">
+                         <a class="nav-link text-white " href="{{ route('dashboard-form-sm') }}" id="form-asset-request-nav">
+                             <div class="text-white text-center d-flex align-items-center justify-content-center">
+                             </div>
+                             <span class="nav-link-text">Dashboard</span>
+                         </a>
+                     </li>
+                     <li class="nav-item">
+                         <a class="nav-link text-white " href="{{ route('form-asset-request') }}" id="form-asset-request-nav">
+                             <div class="text-white text-center d-flex align-items-center justify-content-center">
+                             </div>
+                             <span class="nav-link-text">Form Asset Request</span>
+                         </a>
+                     </li>
+                 </ul>
+             </li>
          </ul>
 
      </div>
