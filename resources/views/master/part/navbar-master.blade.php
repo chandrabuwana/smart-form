@@ -27,12 +27,12 @@
                     </a>
                 </li>
                 <li class="nav-item px-3 d-flex align-items-center">
-                    <a href="javascript:;" class="nav-link text-body p-0">
+                    <a href="#" class="nav-link text-body p-0">
                         <i class="fa fa-cog fixed-plugin-button-nav cursor-pointer"></i>
                     </a>
                 </li>
                 <li class="nav-item d-flex align-items-center">
-                    <a href="../pages/sign-in.html" class="nav-link text-body font-weight-bold px-0">
+                    <a href="#" class="nav-link text-body font-weight-bold px-0">
                         <i class="fa fa-user me-sm-1"></i>
                         <span class="d-sm-inline d-none">{{ session('username') }}</span>
                     </a>

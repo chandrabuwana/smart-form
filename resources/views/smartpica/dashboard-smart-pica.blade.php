@@ -81,12 +81,12 @@
             console.log(row);
             let data = `
                     <button onclick="RedirectViewPica(this)"><a class="like"  title="Like">
-                        <i class="fa fa-eye">View</i>
+                        <i class="fa fa-eye"></i> View
                     </a></button>
                 `
             if (row.status == 1) {
                 data += `<button onclick="redirectToAddStepPica(this)"><a class="like" title="Like">
-                        <i class="fa fa-plus">Step</i>
+                        <i class="fa fa-plus"></i> Step
                     </a></button>`
             }
             return data;

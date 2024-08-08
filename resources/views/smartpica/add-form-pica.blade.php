@@ -108,7 +108,7 @@
                                     <li class="nav-item">
                                         <a class="nav-link mb-0 px-0 py-1 active d-flex align-items-center justify-content-center"
                                             aria-selected="true">
-                                            <i class="fas fa-key"> No Document : </i>
+                                            <i class="fas fa-key"> </i> No Document : 
                                             <span class="ms-2">BSS-FRM-SM-2024-06-11-?</span>
                                         </a>
                                     </li>
@@ -1321,7 +1321,6 @@
     </script>
 @endsection
 
-DEPT. LOGISTIC
 
 
 
