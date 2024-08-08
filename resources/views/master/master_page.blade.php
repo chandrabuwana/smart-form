@@ -68,6 +68,10 @@
                 e.preventDefault();
                 $(this).next(".submenu").slideToggle();
             });
+            $("#menuSM").on("click", function(e) {
+                e.preventDefault();
+                $(this).next(".submenu").slideToggle();
+            });
             var currentUrl = window.location.href;
             $('.nav-link').each(function() {
                 if (this.href === currentUrl) {
