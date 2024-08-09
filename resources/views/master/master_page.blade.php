@@ -18,7 +18,9 @@
     <link href="{{ asset('master/css/nucleo-icons.css') }}" rel="stylesheet" />
     <link href="{{ asset('master/css/nucleo-svg.css') }}" rel="stylesheet" />
     <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <!-- CSS Files -->
@@ -94,6 +96,13 @@
             }
             Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
         }
+        $('.back-button-by-history').click(function() {
+            if (window.history.length > 1) {
+                window.history.back(); // Goes back to the previous page in the browser's history
+            } else {
+                window.location.href = '/smart-pica'; // Redirect to a default page if no history
+            }
+        });
     </script>
     <!-- Github buttons -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>

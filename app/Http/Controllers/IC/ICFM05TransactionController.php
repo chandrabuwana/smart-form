@@ -73,4 +73,102 @@ class ICFM05TransactionController extends Controller
             ]);
         }
     }
+
+    function SubmitALLDataEdit(Request $d)
+    {
+
+
+        DB::beginTransaction();
+
+        try {
+
+            $dataMaster = DB::table('FM_IC_005_BSS_MASTER')
+                ->where("NIK", $d->master['nik'])
+                ->where("created_at", $d->master['date'])
+                ->get()
+                ->first();
+            DB::table('FM_IC_005_BSS_DETAIL')
+                ->where('NIK', $d->master['nik'])
+                ->where('Created', $d->master['date'])
+                ->delete();
+
+
+            foreach ($d->data as $key => $value) {
+                $induksiAtDate = Carbon::createFromFormat('d - M - Y', $value['tanggal'])->format('Y-m-d');
+                DB::table('FM_IC_005_BSS_DETAIL')->insert([
+                    'NIK' => $dataMaster->NIK,
+                    'Created' => $dataMaster->created_at,
+                    'Group' => $dataMaster->Group,
+                    'IndexPertanyaan' => $value['id'],
+                    'Mentor' => $value['mentor'],
+                    'Induksi_at' => $induksiAtDate,
+                    'created_at' => now(),
+                    'created_by' => session("user_id"),
+                    'updated_by' => null, // Nilai ini mungkin bisa dikosongkan jika belum diperbarui
+                    'updated_at' => null // Nilai ini mungkin bisa dikosongkan jika belum diperbarui
+                ]);
+            }
+
+
+
+            // Commit transaksi jika tidak ada error
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Done Induksi Tersimpan',
+                'code' => 200
+            ]);
+
+        } catch (QueryException $e) {
+            // Rollback transaksi jika terjadi error
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Failed to insert records: ' . $e->getMessage(),
+                'code' => 500
+            ]);
+        }
+    }
+
+    public function GetQueryListInduksiKaryawan(string $query, Request $req)
+    {
+
+        if (isset($req->search['FILTERNIK']) && $req->search['FILTERNIK'] != null) {
+            $query = $query . " AND ms.NIK like '%" . $req->search['FILTERNIK'] . "%' ";
+        }
+        if (isset($req->search['FILTERNAMA']) && $req->search['FILTERNAMA'] != null) {
+            $query = $query . " AND UPPER(ms.Nama) LIKE UPPER('%" . $req->search['FILTERNAMA'] . "%') ";
+        }
+        if (isset($req->search['FILTERTANGGAL']) && $req->search['FILTERTANGGAL'] != null) {
+            $query = $query . " AND ms.created_at = '" . $req->search['FILTERTANGGAL'] . "' ";
+        }
+
+        if (isset($req["sort"]) && $req["sort"] != null) {
+            $query = $query . ' ORDER BY ' . $req["sort"] . ' ' . $req["order"];
+        } else {
+            $query = $query . ' ORDER BY created_at DESC ';
+        }
+
+        if ($req["offset"] != null) {
+            $query = $query . ' OFFSET ' . $req["offset"] . ' ROWS ';
+        }
+        if ($req["limit"] != null) {
+            $query = $query . "FETCH NEXT " . $req["limit"] . " ROWS ONLY";
+        }
+        return $query;
+    }
+
+    function helperDataListInduksiKaryawan(Request $table)
+    {
+        $query = "SELECT  * FROM [FM_IC_005_BSS_MASTER] ms where 1 = 1 ";
+        $countDataUser = DB::select('select count(*) jumlah FROM FM_IC_005_BSS_MASTER');
+        $newQuery = $this->GetQueryListInduksiKaryawan($query, $table);
+
+        $dataUser = DB::select($newQuery);
+
+        return response()->json([
+            'total' => $countDataUser[0]->jumlah,
+            'totalNotFiltered' => $countDataUser[0]->jumlah,
+            "rows" => $dataUser,
+        ]);
+    }
 }
