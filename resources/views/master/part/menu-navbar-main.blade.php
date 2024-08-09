@@ -71,6 +71,14 @@
                  </a>
                  <ul class="submenu navbar-nav">
                      <li class="nav-item">
+                         <a class="nav-link text-white " href="{{ route('bss-dahboard-ic-induksi-karyawan') }}"
+                             id="dashboardICInduksiKaryawan">
+                             <div class="text-white text-center d-flex align-items-center justify-content-center">
+                             </div>
+                             <span class="nav-link-text">Dashboard Induksi Karyawan</span>
+                         </a>
+                     </li>
+                     <li class="nav-item">
                          <a class="nav-link text-white " href="{{ route('bss-form-ic-induksi-karyawan') }}"
                              id="dashboardICInduksiKaryawan">
                              <div class="text-white text-center d-flex align-items-center justify-content-center">

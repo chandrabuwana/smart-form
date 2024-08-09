@@ -78,10 +78,15 @@ Route::group(['middleware' => ['check.auth']], function () {
 
     Route::get('/bss-form-prod-timeheet', [ProductionTimeSheetDashboarController::class, 'IndexDashboard'])->name("bss-form-prod-timesheet");
 
-
-    Route::get('/bss-form-IC-form-induksi', [ICFM05InduksiKaryawanController::class, 'IndexDashboard'])->name("bss-form-ic-induksi-karyawan");
+    
+    Route::get('/bss-dashboard-IC-form-induksi', [ICFM05InduksiKaryawanController::class, 'IndexDashboard'])->name("bss-dahboard-ic-induksi-karyawan");
+    Route::get('/bss-form-IC-form-induksi', [ICFM05InduksiKaryawanController::class, 'indexFormAddInduksiKaryawan'])->name("bss-form-ic-induksi-karyawan");
     Route::post('/bss-form-IC-form-induksi-add', [ICFM05TransactionController::class, 'SubmitALLData']);
+    Route::post('/bss-form-IC-form-induksi-edit', [ICFM05TransactionController::class, 'SubmitALLDataEdit']);
     Route::post('/bss-ref-IC-form-induksi', [ICFM05InduksiKaryawanController::class, 'dataListPertanyaan']);
+    Route::post('/bss-ref-IC-form-induksi-2', [ICFM05InduksiKaryawanController::class, 'dataListPertanyaan2']);
+    Route::get('/bss-lst-IC-form-induksi', [ICFM05TransactionController::class, 'helperDataListInduksiKaryawan']);
+    Route::get('/bss-form-edit-view-IC-form-induksi/{d}', [ICFM05InduksiKaryawanController::class, 'IndexDetailEditViewFormInduksiKaryawan'])->name("bss-edit-view-form-ic-induksi-karyawan");
 
     Route::get('/bss-form-plant-transmission-test', [PlantTransmissionController::class, 'index'])->name('bss-form-plant-transmission');
     Route::post('/bss-form-plant-transmission-test/store', [PlantTransmissionController::class, 'store']);
