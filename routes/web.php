@@ -20,9 +20,7 @@ use App\Http\Controllers\Production\ProductionTimeSheetDashboarController;
 
 use App\Http\Controllers\IC\ICFM05InduksiKaryawanController;
 use App\Http\Controllers\IC\ICFM05TransactionController;
-
-
-
+use App\Http\Controllers\PLANT\PlantTransmissionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -85,7 +83,8 @@ Route::group(['middleware' => ['check.auth']], function () {
     Route::post('/bss-form-IC-form-induksi-add', [ICFM05TransactionController::class, 'SubmitALLData']);
     Route::post('/bss-ref-IC-form-induksi', [ICFM05InduksiKaryawanController::class, 'dataListPertanyaan']);
 
-
+    Route::get('/bss-form-plant-transmission-test', [PlantTransmissionController::class, 'index'])->name('bss-form-plant-transmission');
+    Route::post('/bss-form-plant-transmission-test/store', [PlantTransmissionController::class, 'store']);
 });
 
 Route::get('/login', [LoginKaryawanController::class, 'IndexLoginKaryawan']);
