@@ -105,6 +105,31 @@
                      </li>
                  </ul>
              </li>
+
+             <li class="nav-item">
+                <a class="nav-link text-white active bg-gradient-primary" href="#" id="menuProduksi">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="fa fa-sitemap"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Produksi</span>
+                </a>
+                <ul class="submenu navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link text-white " href="{{ route('bss-form-prod-timesheet') }}" id="dashboard-timesheet-produksi">
+                            <div class="text-white text-center d-flex align-items-center justify-content-center">
+                            </div>
+                            <span class="nav-link-text">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white " href="{{ route('form-timesheet-produksi') }}" id="form-timesheet-produksi">
+                            <div class="text-white text-center d-flex align-items-center justify-content-center">
+                            </div>
+                            <span class="nav-link-text">Timesheet Produksi</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
          </ul>
 
      </div>

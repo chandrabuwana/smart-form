@@ -618,6 +618,13 @@
                 })
                 .then(function (response) {
                     console.log(response.data)
+                    Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: response.data.data.no_doc,
+                        }).then((result) => {
+                            window.location.href = `/get-form-detail?no_doc=${response.data.data.no_doc}`;
+                        })
                 })
                 .catch(function (error) {
                     console.log(error);
