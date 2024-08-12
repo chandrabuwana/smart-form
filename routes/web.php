@@ -82,7 +82,9 @@ Route::group(['middleware' => ['check.auth']], function () {
     Route::get('/add-form-timesheet', [ProductionTimeSheetDashboarController::class, 'FormTimesheetProduksi'])->name("form-timesheet-produksi");
     Route::post('/submit-form-timesheet', [ProductionTimeSheetDashboarController::class, 'SubmitFormTimesheet'])->name("add-form-action");
 
-    Route::get('/bss-form-IC-form-induksi', [ICFM05InduksiKaryawanController::class, 'IndexDashboard'])->name("bss-form-ic-induksi-karyawan");
+    
+    Route::get('/bss-dashboard-IC-form-induksi', [ICFM05InduksiKaryawanController::class, 'IndexDashboard'])->name("bss-dahboard-ic-induksi-karyawan");
+    Route::get('/bss-form-IC-form-induksi', [ICFM05InduksiKaryawanController::class, 'indexFormAddInduksiKaryawan'])->name("bss-form-ic-induksi-karyawan");
     Route::post('/bss-form-IC-form-induksi-add', [ICFM05TransactionController::class, 'SubmitALLData']);
     Route::post('/bss-form-IC-form-induksi-edit', [ICFM05TransactionController::class, 'SubmitALLDataEdit']);
     Route::post('/bss-ref-IC-form-induksi', [ICFM05InduksiKaryawanController::class, 'dataListPertanyaan']);
@@ -97,4 +99,3 @@ Route::group(['middleware' => ['check.auth']], function () {
 Route::get('/login', [LoginKaryawanController::class, 'IndexLoginKaryawan']);
 Route::post('/login', [LoginKaryawanController::class, 'ProcessLogin'])->name("login");
 Route::get('/logout', [LoginKaryawanController::class, 'LogoutAuthenticationProcess'])->name("logout");
-
