@@ -88,6 +88,9 @@ Route::group(['middleware' => ['check.auth']], function () {
     Route::get('/bss-lst-IC-form-induksi', [ICFM05TransactionController::class, 'helperDataListInduksiKaryawan']);
     Route::get('/bss-form-edit-view-IC-form-induksi/{d}', [ICFM05InduksiKaryawanController::class, 'IndexDetailEditViewFormInduksiKaryawan'])->name("bss-edit-view-form-ic-induksi-karyawan");
 
+    Route::get('/dashboard-plant', [PlantTransmissionController::class, 'dashboard'])->name('dashboard-form-plant');
+    Route::get('/dashboard-plant/get-data', [PlantTransmissionController::class, 'getDashboardData'])->name('dashboard-plant-get-data');
+    Route::get('/dashboard-plant/detail/{id}', [PlantTransmissionController::class, 'detail'])->name('detail-data-form-plant');
     Route::get('/bss-form-plant-transmission-test', [PlantTransmissionController::class, 'index'])->name('bss-form-plant-transmission');
     Route::post('/bss-form-plant-transmission-test/store', [PlantTransmissionController::class, 'store']);
 });
