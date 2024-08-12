@@ -83,6 +83,9 @@ Route::group(['middleware' => ['check.auth']], function () {
     Route::post('/bss-form-IC-form-induksi-add', [ICFM05TransactionController::class, 'SubmitALLData']);
     Route::post('/bss-ref-IC-form-induksi', [ICFM05InduksiKaryawanController::class, 'dataListPertanyaan']);
 
+    Route::get('/dashboard-plant', [PlantTransmissionController::class, 'dashboard'])->name('dashboard-form-plant');
+    Route::get('/dashboard-plant/get-data', [PlantTransmissionController::class, 'getDashboardData'])->name('dashboard-plant-get-data');
+    Route::get('/dashboard-plant/detail/{id}', [PlantTransmissionController::class, 'detail'])->name('detail-data-form-plant');
     Route::get('/bss-form-plant-transmission-test', [PlantTransmissionController::class, 'index'])->name('bss-form-plant-transmission');
     Route::post('/bss-form-plant-transmission-test/store', [PlantTransmissionController::class, 'store']);
 });
