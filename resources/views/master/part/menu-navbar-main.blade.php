@@ -71,6 +71,14 @@
                  </a>
                  <ul class="submenu navbar-nav">
                      <li class="nav-item">
+                         <a class="nav-link text-white " href="{{ route('bss-dahboard-ic-induksi-karyawan') }}"
+                             id="dashboardICInduksiKaryawan">
+                             <div class="text-white text-center d-flex align-items-center justify-content-center">
+                             </div>
+                             <span class="nav-link-text">Dashboard Induksi Karyawan</span>
+                         </a>
+                     </li>
+                     <li class="nav-item">
                          <a class="nav-link text-white " href="{{ route('bss-form-ic-induksi-karyawan') }}"
                              id="dashboardICInduksiKaryawan">
                              <div class="text-white text-center d-flex align-items-center justify-content-center">
@@ -80,7 +88,7 @@
                      </li>
                  </ul>
              </li>
-             
+
              <li class="nav-item">
                  <a class="nav-link text-white active bg-gradient-primary" href="#" id="menuSM">
                      <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -101,6 +109,22 @@
                              <div class="text-white text-center d-flex align-items-center justify-content-center">
                              </div>
                              <span class="nav-link-text">Form Asset Request</span>
+                         </a>
+                     </li>
+                 </ul>
+             </li>
+
+             <li class="nav-item">
+                 <a class="nav-link text-white active bg-gradient-primary" href="#" id="menuPLANT">
+                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                         <i class="fa fa-sitemap"></i>
+                     </div>
+                     <span class="nav-link-text ms-1">PLANT</span>
+                 </a>
+                 <ul class="submenu navbar-nav">
+                     <li class="nav-item">
+                         <a class="nav-link text-white " href="{{ route('bss-form-plant-transmission') }}" id="form-asset-request-nav">
+                            <span class="nav-link-text">Form Transmission Test</span>
                          </a>
                      </li>
                  </ul>

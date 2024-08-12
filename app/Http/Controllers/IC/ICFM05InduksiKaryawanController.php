@@ -10,7 +10,7 @@ class ICFM05InduksiKaryawanController extends Controller
 {
     //
 
-    function IndexDashboard()
+    function indexFormAddInduksiKaryawan()
     {
 
         $dataPertanyaan = DB::select("select * from REF_IC_05_QUESTIONAIRE");
@@ -38,5 +38,45 @@ class ICFM05InduksiKaryawanController extends Controller
             ]);
         }
     }
+
+    function dataListPertanyaan2()
+    {
+        try {
+            $dataPertanyaan = DB::select("select IdQuestionaire id, QuestionaireGroup, Questionaire from REF_IC_05_QUESTIONAIRE");
+            return response()->json([
+                "code" => 200,
+                "data" => $dataPertanyaan
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                "code" => 500,
+                "message" => "Error"
+            ]);
+        }
+    }
+
+
+    function IndexDashboard()
+    {
+        return view("ic/induksi-karyawan/dashboard-induksi-karyawan");
+    }
+
+    function IndexDetailEditViewFormInduksiKaryawan(string $d)
+    {
+        $params = explode("=", $d);
+        $dataMaster = $result = DB::table('FM_IC_005_BSS_MASTER')
+            ->where('nik', $params[0])
+            ->where('created_at', $params[1])
+            ->first();
+        $dataDetail = DB::select("select * from FM_IC_005_BSS_DETAIL where NIK = ? and CREATED = ? and [Group] = ?", [$params[0], $params[1], $dataMaster->Group]);
+
+        $final = [
+            'master' => $dataMaster,
+            'detail' => $dataDetail
+        ];
+        return view("ic/induksi-karyawan/detail-edit-form-induksi-karyawan", $final);
+    }
+
 
 }

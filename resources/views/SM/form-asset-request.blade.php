@@ -23,7 +23,7 @@
             text-align: right;
         }
         .input-text {
-            
+
             border: 0;
             border-bottom: 1px solid;
             border-color: rgb(188, 188, 188);
@@ -84,12 +84,12 @@
                                             </tr>
                                         </table>
                                     </li>
-                                    
+
                                 </ul>
                             </div>
                         </div>
                     </div>
-                    
+
                     <form action="">
                         <div class="row gx-4 my-3">
                             <div class="col-1">
@@ -140,7 +140,7 @@
                                             <td id="tglDoc"></td>
                                         </tr>
                                     </table>
-                                    <!-- <div>No. Doc : <span id="noDoc"></span></div> 
+                                    <!-- <div>No. Doc : <span id="noDoc"></span></div>
                                     <div>Date : <span id="tglDoc"></span></div> -->
                                     <span>Department</span>
                                     <select class="form-select form-select-sm input-text" aria-label="Default select example" id="inputDepartment" name="inputDepartment">
@@ -155,7 +155,7 @@
                                         <option value="IC">IC</option>
                                         <option value="PLANT">PLANT</option>
                                     </select>
-                                </div> 
+                                </div>
                                 <div>
                                     <span>Project</span>
                                     <select class="form-select form-select-sm input-text" aria-label="Default select example" id="inputProject" name="inputProject">
@@ -163,7 +163,7 @@
                                         <option value="2">Two</option>
                                         <option value="3">Three</option>
                                     </select>
-                                </div> 
+                                </div>
                                 <div>
                                     <span>Area</span>
                                     <select class="form-select form-select-sm input-text" aria-label="Default select example" id="inputArea" name="inputArea">
@@ -172,11 +172,11 @@
                                         <option value="SMD">SMD</option>
                                         <option value="AGM">AGM</option>
                                     </select>
-                                </div> 
+                                </div>
                             </div>
                             <!-- Todo: otomatis ambil sesuai urutan di DB -->
                             <!-- <div class="col-6">
-                                <div>No. Doc : 1/BSS-AR/VII/2024</div>  
+                                <div>No. Doc : 1/BSS-AR/VII/2024</div>
                                 <div>Date : </div>
                             </div> -->
                         </div>
@@ -284,7 +284,7 @@
                                 </table>
                             </div>
                         </div>
-                        
+
                         <div class="ml-16px">
                             <span>Estimated kurs (Budget)</span>
                             <table>
@@ -341,7 +341,7 @@
                                 Ka Dept SM
                             </div>
                             <div class="col-2 text-center">
-                                Think Tank  
+                                Think Tank
                             </div>
                             <div class="col-2 text-center">
                                 Direktur
@@ -481,7 +481,7 @@
                             title: 'Berhasil!',
                             text: response.message,
                         }).then((result) => {
-                            
+
                         })
                     }
                 },
@@ -541,7 +541,7 @@
                 totalPrice.text((estimatedIdr.val() * calculatedIdr.text()) + (estimatedUsd.val() * calculatedUsd.text()) + (estimatedCny.val() * calculatedCny.text()))
             });
             estimatedUsd.change(function(e) {
-                
+
                 totalPrice.text((estimatedIdr.val() * calculatedIdr.text()) + (estimatedUsd.val() * calculatedUsd.text()) + (estimatedCny.val() * calculatedCny.text()))
             });
             estimatedCny.change(function(e) {
@@ -566,7 +566,7 @@
             btnSubmitAssetRequest.click(function(e) {
                 e.preventDefault();
 
-                
+
                 // console.log(inputArea.val())
                 // formName: "Asset Request",
                 // noDok: "BSS-FRM-SM-016",

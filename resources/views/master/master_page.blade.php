@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    
+
     <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('master/img/apple-icon.png') }}">
     <link rel="icon" type="image/png" href="{{ asset('img/logo.png') }}">
     <title>
@@ -18,7 +18,9 @@
     <link href="{{ asset('master/css/nucleo-icons.css') }}" rel="stylesheet" />
     <link href="{{ asset('master/css/nucleo-svg.css') }}" rel="stylesheet" />
     <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <!-- CSS Files -->
@@ -72,6 +74,10 @@
                 e.preventDefault();
                 $(this).next(".submenu").slideToggle();
             });
+            $("#menuPLANT").on("click", function(e) {
+                e.preventDefault();
+                $(this).next(".submenu").slideToggle();
+            });
             $("#menuProduksi").on("click", function(e) {
                 e.preventDefault();
                 $(this).next(".submenu").slideToggle();
@@ -94,6 +100,13 @@
             }
             Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
         }
+        $('.back-button-by-history').click(function() {
+            if (window.history.length > 1) {
+                window.history.back(); // Goes back to the previous page in the browser's history
+            } else {
+                window.location.href = '/smart-pica'; // Redirect to a default page if no history
+            }
+        });
     </script>
     <!-- Github buttons -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
