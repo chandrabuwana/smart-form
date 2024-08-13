@@ -27,19 +27,22 @@
                         <div class="col-md-5">
                             <div class="input-group input-group-static">
                                 <label for="machine_number">Machine Number</label>
-                                <input type="text" class="form-control" id="machine_number" name="machine_number" required>
+                                <input type="text" class="form-control" id="machine_number" name="machine_number"
+                                    value="<?= isset($plantMaster) ? $plantMaster->machine_number : '' ?>" <?= isset($plantMaster) ? 'disabled' : 'required' ?>>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="input-group input-group-static">
                                 <label for="machine_model">Machine Model</label>
-                                <input type="text" class="form-control" id="machine_model" name="machine_model" required>
+                                <input type="text" class="form-control" id="machine_model" name="machine_model"
+                                    value="<?= isset($plantMaster) ? $plantMaster->machine_model : '' ?>" <?= isset($plantMaster) ? 'disabled' : 'required' ?>>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="input-group input-group-static">
                                 <label for="machine_serial_no">Machine Serial No</label>
-                                <input type="text" class="form-control" id="machine_serial_no" name="machine_serial_no" required>
+                                <input type="text" class="form-control" id="machine_serial_no" name="machine_serial_no"
+                                    value="<?= isset($plantMaster) ? $plantMaster->machine_serial_no : '' ?>" <?= isset($plantMaster) ? 'disabled' : 'required' ?>>
                             </div>
                         </div>
                     </div>
@@ -48,19 +51,22 @@
                         <div class="col-md-5">
                             <div class="input-group input-group-static">
                                 <label for="machine_smr">Machine SMR / HM</label>
-                                <input type="text" class="form-control" id="machine_smr" name="machine_smr" required>
+                                <input type="text" class="form-control" id="machine_smr" name="machine_smr"
+                                    value="<?= isset($plantMaster) ? $plantMaster->machine_smr : '' ?>" <?= isset($plantMaster) ? 'disabled' : 'required' ?>>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="input-group input-group-static">
                                 <label for="jobsite">JobSite</label>
-                                <input type="text" class="form-control" id="jobsite" name="jobsite" required>
+                                <input type="text" class="form-control" id="jobsite" name="jobsite"
+                                    value="<?= isset($plantMaster) ? $plantMaster->jobsite : '' ?>" <?= isset($plantMaster) ? 'disabled' : 'required' ?>>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="input-group input-group-static">
                                 <label for="checkdate">Check Date</label>
-                                <input type="date" class="form-control" id="checkdate" name="checkdate" required>
+                                <input type="date" class="form-control" id="checkdate" name="checkdate"
+                                    value="<?= isset($plantMaster) ? $plantMaster->checkdate : '' ?>" <?= isset($plantMaster) ? 'disabled' : 'required' ?>>
                             </div>
                         </div>
                     </div>
@@ -178,7 +184,8 @@
                                 <div class="col-md-3">
                                     <div class="input-group input-group-static">
                                         <label for="actual">Actual</label>
-                                        <input type="number" class="form-control" id="actual" name="solenoid_actual[]" required>
+                                        <input type="number" class="form-control" id="actual" name="solenoid_actual[]"
+                                            value="<?= isset($detailHarness) ? $detailHarness[0]->actual : '' ?>" <?= isset($detailHarness) ? 'disabled' : 'required' ?>>
                                     </div>
                                 </div>
                             </div>
@@ -199,7 +206,8 @@
                                 <div class="col-md-3">
                                     <div class="input-group input-group-static">
                                         <label for="actual">Actual</label>
-                                        <input type="number" class="form-control" id="actual" name="solenoid_actual[]" required>
+                                        <input type="number" class="form-control" id="actual" name="solenoid_actual[]"
+                                            value="<?= isset($detailHarness) ? $detailHarness[1]->actual : '' ?>" <?= isset($detailHarness) ? 'disabled' : 'required' ?>>
                                     </div>
                                 </div>
                             </div>
@@ -220,7 +228,8 @@
                                 <div class="col-md-3">
                                     <div class="input-group input-group-static">
                                         <label for="actual">Actual</label>
-                                        <input type="number" class="form-control" id="actual" name="solenoid_actual[]" required>
+                                        <input type="number" class="form-control" id="actual" name="solenoid_actual[]"
+                                            value="<?= isset($detailHarness) ? $detailHarness[2]->actual : '' ?>" <?= isset($detailHarness) ? 'disabled' : 'required' ?>>
                                     </div>
                                 </div>
                             </div>
@@ -241,7 +250,8 @@
                                 <div class="col-md-3">
                                     <div class="input-group input-group-static">
                                         <label for="actual">Actual</label>
-                                        <input type="number" class="form-control" id="actual" name="solenoid_actual[]" required>
+                                        <input type="number" class="form-control" id="actual" name="solenoid_actual[]"
+                                            value="<?= isset($detailHarness) ? $detailHarness[3]->actual : '' ?>" <?= isset($detailHarness) ? 'disabled' : 'required' ?>>
                                     </div>
                                 </div>
                             </div>
@@ -262,7 +272,8 @@
                                 <div class="col-md-3">
                                     <div class="input-group input-group-static">
                                         <label for="actual">Actual</label>
-                                        <input type="number" class="form-control" id="actual" name="solenoid_actual[]" required>
+                                        <input type="number" class="form-control" id="actual" name="solenoid_actual[]"
+                                            value="<?= isset($detailHarness) ? $detailHarness[4]->actual : '' ?>" <?= isset($detailHarness) ? 'disabled' : 'required' ?>>
                                     </div>
                                 </div>
                             </div>
@@ -321,7 +332,8 @@
                                         <div class="col-md-4">
                                             <div class="input-group input-group-static">
                                                 <label for="speed_sensor_low_iddle_actual">Actual</label>
-                                                <input type="number" class="form-control" id="speed_sensor_low_iddle_actual" name="speed_sensor_low_iddle_actual[]" required>
+                                                <input type="number" class="form-control" id="speed_sensor_low_iddle_actual" name="speed_sensor_low_iddle_actual[]"
+                                                    value="<?= isset($detailSpeedSensor) ? $detailSpeedSensor[0]->actual_low_iddle : '' ?>" <?= isset($detailSpeedSensor) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -342,7 +354,8 @@
                                         <div class="col-md-4">
                                             <div class="input-group input-group-static">
                                                 <label for="speed_sensor_high_iddle_actual">Actual</label>
-                                                <input type="number" class="form-control" id="speed_sensor_high_iddle_actual" name="speed_sensor_high_iddle_actual[]" required>
+                                                <input type="number" class="form-control" id="speed_sensor_high_iddle_actual" name="speed_sensor_high_iddle_actual[]"
+                                                    value="<?= isset($detailSpeedSensor) ? $detailSpeedSensor[0]->actual_high_iddle : '' ?>" <?= isset($detailSpeedSensor) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -374,7 +387,8 @@
                                         <div class="col-md-4">
                                             <div class="input-group input-group-static">
                                                 <label for="speed_sensor_low_iddle_actual">Actual</label>
-                                                <input type="number" class="form-control" id="speed_sensor_low_iddle_actual" name="speed_sensor_low_iddle_actual[]" required>
+                                                <input type="number" class="form-control" id="speed_sensor_low_iddle_actual" name="speed_sensor_low_iddle_actual[]"
+                                                    value="<?= isset($detailSpeedSensor) ? $detailSpeedSensor[1]->actual_low_iddle : '' ?>" <?= isset($detailSpeedSensor) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -395,7 +409,8 @@
                                         <div class="col-md-4">
                                             <div class="input-group input-group-static">
                                                 <label for="speed_sensor_high_iddle_actual">Actual</label>
-                                                <input type="number" class="form-control" id="speed_sensor_high_iddle_actual" name="speed_sensor_high_iddle_actual[]" required>
+                                                <input type="number" class="form-control" id="speed_sensor_high_iddle_actual" name="speed_sensor_high_iddle_actual[]"
+                                                    value="<?= isset($detailSpeedSensor) ? $detailSpeedSensor[1]->actual_high_iddle : '' ?>" <?= isset($detailSpeedSensor) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -427,7 +442,8 @@
                                         <div class="col-md-4">
                                             <div class="input-group input-group-static">
                                                 <label for="speed_sensor_low_iddle_actual">Actual</label>
-                                                <input type="number" class="form-control" id="speed_sensor_low_iddle_actual" name="speed_sensor_low_iddle_actual[]" required>
+                                                <input type="number" class="form-control" id="speed_sensor_low_iddle_actual" name="speed_sensor_low_iddle_actual[]"
+                                                    value="<?= isset($detailSpeedSensor) ? $detailSpeedSensor[2]->actual_low_iddle : '' ?>" <?= isset($detailSpeedSensor) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -448,7 +464,8 @@
                                         <div class="col-md-4">
                                             <div class="input-group input-group-static">
                                                 <label for="speed_sensor_high_iddle_actual">Actual</label>
-                                                <input type="number" class="form-control" id="speed_sensor_high_iddle_actual" name="speed_sensor_high_iddle_actual[]" required>
+                                                <input type="number" class="form-control" id="speed_sensor_high_iddle_actual" name="speed_sensor_high_iddle_actual[]"
+                                                    value="<?= isset($detailSpeedSensor) ? $detailSpeedSensor[2]->actual_high_iddle : '' ?>" <?= isset($detailSpeedSensor) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -516,13 +533,15 @@
                                         <div class="col-md-3">
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_low_iddle_actual">Actual</label>
-                                                <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]" required>
+                                                <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]"
+                                                    value="<?= isset($detailPowerTrain) ? $detailPowerTrain[0]->actual_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
-                                                <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]" required>
+                                                <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
+                                                    value="<?= isset($detailPowerTrain) ? $detailPowerTrain[0]->after_adjust_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -543,13 +562,15 @@
                                         <div class="col-md-3">
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_high_iddle_actual">Actual</label>
-                                                <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]" required>
+                                                <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]"
+                                                    value="<?= isset($detailPowerTrain) ? $detailPowerTrain[0]->actual_high_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_high_iddle_after_adjustment">After Adjustment</label>
-                                                <input type="number" class="form-control" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]" required>
+                                                <input type="number" class="form-control" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]"
+                                                    value="<?= isset($detailPowerTrain) ? $detailPowerTrain[0]->after_adjust_high_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -588,13 +609,15 @@
                                         <div class="col-md-3">
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_low_iddle_actual">Actual</label>
-                                                <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]" required>
+                                                <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]"
+                                                    value="<?= isset($detailPowerTrain) ? $detailPowerTrain[1]->actual_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
-                                                <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]" required>
+                                                <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
+                                                    value="<?= isset($detailPowerTrain) ? $detailPowerTrain[1]->after_adjust_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -615,13 +638,15 @@
                                         <div class="col-md-3">
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_high_iddle_actual">Actual</label>
-                                                <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]" required>
+                                                <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]"
+                                                    value="<?= isset($detailPowerTrain) ? $detailPowerTrain[1]->actual_high_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_high_iddle_after_adjustment">After Adjustment</label>
-                                                <input type="number" class="form-control" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]" required>
+                                                <input type="number" class="form-control" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]"
+                                                    value="<?= isset($detailPowerTrain) ? $detailPowerTrain[1]->after_adjust_high_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -660,13 +685,15 @@
                                         <div class="col-md-3">
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_low_iddle_actual">Actual</label>
-                                                <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]" required>
+                                                <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]"
+                                                    value="<?= isset($detailPowerTrain) ? $detailPowerTrain[2]->actual_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
-                                                <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]" required>
+                                                <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
+                                                    value="<?= isset($detailPowerTrain) ? $detailPowerTrain[2]->after_adjust_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -687,13 +714,15 @@
                                         <div class="col-md-3">
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_high_iddle_actual">Actual</label>
-                                                <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]" required>
+                                                <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]"
+                                                    value="<?= isset($detailPowerTrain) ? $detailPowerTrain[2]->actual_high_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_high_iddle_after_adjustment">After Adjustment</label>
-                                                <input type="number" class="form-control" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]" required>
+                                                <input type="number" class="form-control" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]"
+                                                    value="<?= isset($detailPowerTrain) ? $detailPowerTrain[2]->after_adjust_high_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -732,13 +761,15 @@
                                         <div class="col-md-3">
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_low_iddle_actual">Actual</label>
-                                                <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]" required>
+                                                <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]"
+                                                    value="<?= isset($detailPowerTrain) ? $detailPowerTrain[3]->actual_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
-                                                <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]" required>
+                                                <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
+                                                    value="<?= isset($detailPowerTrain) ? $detailPowerTrain[3]->after_adjust_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -759,13 +790,15 @@
                                         <div class="col-md-3">
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_high_iddle_actual">Actual</label>
-                                                <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]" required>
+                                                <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]"
+                                                    value="<?= isset($detailPowerTrain) ? $detailPowerTrain[3]->actual_high_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_high_iddle_actual">After Adjustment</label>
-                                                <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_after_adjustment[]" required>
+                                                <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_after_adjustment[]"
+                                                    value="<?= isset($detailPowerTrain) ? $detailPowerTrain[3]->after_adjust_high_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -804,13 +837,15 @@
                                         <div class="col-md-3">
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_low_iddle_actual">Actual</label>
-                                                <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]" required>
+                                                <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]"
+                                                    value="<?= isset($detailPowerTrain) ? $detailPowerTrain[4]->actual_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
-                                                <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]" required>
+                                                <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
+                                                    value="<?= isset($detailPowerTrain) ? $detailPowerTrain[4]->after_adjust_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -831,13 +866,15 @@
                                         <div class="col-md-3">
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_high_iddle_actual">Actual</label>
-                                                <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]" required>
+                                                <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]"
+                                                    value="<?= isset($detailPowerTrain) ? $detailPowerTrain[4]->after_adjust_high_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_high_iddle_after_adjustment">After Adjustment</label>
-                                                <input type="number" class="form-control" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]" required>
+                                                <input type="number" class="form-control" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]"
+                                                    value="<?= isset($detailPowerTrain) ? $detailPowerTrain[4]->after_adjust_high_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -876,13 +913,15 @@
                                         <div class="col-md-3">
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_low_iddle_actual">Actual</label>
-                                                <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]" required>
+                                                <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]"
+                                                    value="<?= isset($detailPowerTrain) ? $detailPowerTrain[5]->actual_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
-                                                <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]" required>
+                                                <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
+                                                    value="<?= isset($detailPowerTrain) ? $detailPowerTrain[5]->after_adjust_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -903,13 +942,15 @@
                                         <div class="col-md-3">
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_high_iddle_actual">Actual</label>
-                                                <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]" required>
+                                                <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]"
+                                                    value="<?= isset($detailPowerTrain) ? $detailPowerTrain[5]->actual_high_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_high_iddle_after_adjustment">After Adjustment</label>
-                                                <input type="number" class="form-control" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]" required>
+                                                <input type="number" class="form-control" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]"
+                                                    value="<?= isset($detailPowerTrain) ? $detailPowerTrain[5]->after_adjust_high_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -954,13 +995,15 @@
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_low_iddle_actual">Actual</label>
-                                                        <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]" required>
+                                                        <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[6]->actual_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
-                                                        <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]" required>
+                                                        <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[6]->after_adjust_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -981,13 +1024,15 @@
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_high_iddle_actual">Actual</label>
-                                                        <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]" required>
+                                                        <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[6]->actual_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_high_iddle_after_adjustment">After Adjustment</label>
-                                                        <input type="number" class="form-control" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]" required>
+                                                        <input type="number" class="form-control" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[6]->after_adjust_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1019,13 +1064,15 @@
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_low_iddle_actual">Actual</label>
-                                                        <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]" required>
+                                                        <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[7]->actual_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
-                                                        <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]" required>
+                                                        <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[7]->after_adjust_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1046,13 +1093,15 @@
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_high_iddle_actual">Actual</label>
-                                                        <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]" required>
+                                                        <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[7]->actual_high_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_high_iddle_after_adjustment">After Adjustment</label>
-                                                        <input type="number" class="form-control" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]" required>
+                                                        <input type="number" class="form-control" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[7]->after_adjust_high_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1084,13 +1133,15 @@
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_low_iddle_actual">Actual</label>
-                                                        <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]" required>
+                                                        <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[8]->actual_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
-                                                        <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]" required>
+                                                        <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[8]->after_adjust_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1111,13 +1162,15 @@
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_high_iddle_actual">Actual</label>
-                                                        <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]" required>
+                                                        <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[8]->actual_high_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_high_iddle_after_adjustment">After Adjustment</label>
-                                                        <input type="number" class="form-control" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]" required>
+                                                        <input type="number" class="form-control" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[8]->after_adjust_high_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1149,13 +1202,15 @@
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_low_iddle_actual">Actual</label>
-                                                        <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]" required>
+                                                        <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[9]->actual_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
-                                                        <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]" required>
+                                                        <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[9]->after_adjust_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1176,13 +1231,15 @@
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_high_iddle_actual">Actual</label>
-                                                        <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]" required>
+                                                        <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[9]->actual_high_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_high_iddle_after_adjustment">After Adjustment</label>
-                                                        <input type="number" class="form-control" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]" required>
+                                                        <input type="number" class="form-control" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[9]->after_adjust_high_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1226,13 +1283,15 @@
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_low_iddle_actual">Actual</label>
-                                                        <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]" required>
+                                                        <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[10]->actual_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
-                                                        <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]" required>
+                                                        <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[10]->after_adjust_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1253,13 +1312,15 @@
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_high_iddle_actual">Actual</label>
-                                                        <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]" required>
+                                                        <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[10]->actual_high_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_high_iddle_after_adjustment">After Adjustment</label>
-                                                        <input type="number" class="form-control" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]" required>
+                                                        <input type="number" class="form-control" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[10]->after_adjust_high_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1291,13 +1352,15 @@
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_low_iddle_actual">Actual</label>
-                                                        <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]" required>
+                                                        <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[11]->actual_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
-                                                        <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]" required>
+                                                        <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[11]->after_adjust_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1318,13 +1381,15 @@
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_high_iddle_actual">Actual</label>
-                                                        <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]" required>
+                                                        <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[11]->actual_high_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_high_iddle_after_adjustment">After Adjustment</label>
-                                                        <input type="number" class="form-control" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]" required>
+                                                        <input type="number" class="form-control" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[11]->after_adjust_high_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1370,13 +1435,15 @@
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_low_iddle_actual">Actual</label>
-                                                        <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]" required>
+                                                        <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[12]->actual_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
-                                                        <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]" required>
+                                                        <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[12]->after_adjust_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1397,13 +1464,15 @@
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_high_iddle_actual">Actual</label>
-                                                        <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]" required>
+                                                        <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[12]->actual_high_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_high_iddle_after_adjustment">After Adjustment</label>
-                                                        <input type="number" class="form-control" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]" required>
+                                                        <input type="number" class="form-control" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[12]->after_adjust_high_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1435,13 +1504,15 @@
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_low_iddle_actual">Actual</label>
-                                                        <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]" required>
+                                                        <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[13]->actual_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
-                                                        <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]" required>
+                                                        <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[13]->after_adjust_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1462,13 +1533,15 @@
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_high_iddle_actual">Actual</label>
-                                                        <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]" required>
+                                                        <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[13]->actual_high_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_high_iddle_after_adjustment">After Adjustment</label>
-                                                        <input type="number" class="form-control" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]" required>
+                                                        <input type="number" class="form-control" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[13]->after_adjust_high_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1500,13 +1573,15 @@
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_low_iddle_actual">Actual</label>
-                                                        <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]" required>
+                                                        <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[14]->actual_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
-                                                        <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]" required>
+                                                        <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[14]->after_adjust_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1527,13 +1602,15 @@
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_high_iddle_actual">Actual</label>
-                                                        <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]" required>
+                                                        <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[14]->actual_high_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_high_iddle_after_adjustment">After Adjustment</label>
-                                                        <input type="number" class="form-control" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]" required>
+                                                        <input type="number" class="form-control" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[14]->after_adjust_high_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1574,13 +1651,15 @@
                                         <div class="col-md-3">
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_low_iddle_actual">Actual</label>
-                                                <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]" required>
+                                                <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]"
+                                                    value="<?= isset($detailPowerTrain) ? $detailPowerTrain[15]->actual_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
-                                                <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]" required>
+                                                <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
+                                                    value="<?= isset($detailPowerTrain) ? $detailPowerTrain[15]->after_adjust_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -1601,13 +1680,15 @@
                                         <div class="col-md-3">
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_high_iddle_actual">Actual</label>
-                                                <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]" required>
+                                                <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]"
+                                                    value="<?= isset($detailPowerTrain) ? $detailPowerTrain[15]->actual_high_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_high_iddle_after_adjustment">After Adjustment</label>
-                                                <input type="number" class="form-control" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]" required>
+                                                <input type="number" class="form-control" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]"
+                                                    value="<?= isset($detailPowerTrain) ? $detailPowerTrain[15]->after_adjust_high_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -1651,13 +1732,15 @@
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_low_iddle_actual">Actual</label>
-                                                        <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]" required>
+                                                        <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[16]->actual_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
-                                                        <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]" required>
+                                                        <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[16]->after_adjust_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1678,13 +1761,15 @@
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_high_iddle_actual">Actual</label>
-                                                        <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]" required>
+                                                        <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[16]->actual_high_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_high_iddle_after_adjustment">After Adjustment</label>
-                                                        <input type="number" class="form-control" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]" required>
+                                                        <input type="number" class="form-control" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[16]->after_adjust_high_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1716,13 +1801,15 @@
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_low_iddle_actual">Actual</label>
-                                                        <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]" required>
+                                                        <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[17]->actual_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
-                                                        <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]" required>
+                                                        <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[17]->after_adjust_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1743,13 +1830,15 @@
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_high_iddle_actual">Actual</label>
-                                                        <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]" required>
+                                                        <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[17]->actual_high_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_high_iddle_after_adjustment">After Adjustment</label>
-                                                        <input type="number" class="form-control" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]" required>
+                                                        <input type="number" class="form-control" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[17]->after_adjust_high_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1781,13 +1870,15 @@
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_low_iddle_actual">Actual</label>
-                                                        <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]" required>
+                                                        <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[18]->actual_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
-                                                        <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]" required>
+                                                        <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[18]->after_adjust_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1808,13 +1899,15 @@
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_high_iddle_actual">Actual</label>
-                                                        <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]" required>
+                                                        <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[18]->actual_high_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_high_iddle_after_adjustment">After Adjustment</label>
-                                                        <input type="number" class="form-control" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]" required>
+                                                        <input type="number" class="form-control" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]"
+                                                            value="<?= isset($detailPowerTrain) ? $detailPowerTrain[18]->after_adjust_high_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1855,13 +1948,15 @@
                                         <div class="col-md-3">
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_low_iddle_actual">Actual</label>
-                                                <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]" required>
+                                                <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]"
+                                                    value="<?= isset($detailPowerTrain) ? $detailPowerTrain[19]->actual_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
-                                                <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]" required>
+                                                <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
+                                                    value="<?= isset($detailPowerTrain) ? $detailPowerTrain[19]->after_adjust_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -1882,13 +1977,15 @@
                                         <div class="col-md-3">
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_high_iddle_actual">Actual</label>
-                                                <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]" required>
+                                                <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]"
+                                                    value="<?= isset($detailPowerTrain) ? $detailPowerTrain[19]->actual_high_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_high_iddle_after_adjustment">After Adjustment</label>
-                                                <input type="number" class="form-control" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]" required>
+                                                <input type="number" class="form-control" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]"
+                                                    value="<?= isset($detailPowerTrain) ? $detailPowerTrain[19]->after_adjust_high_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -1927,13 +2024,15 @@
                                         <div class="col-md-3">
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_low_iddle_actual">Actual</label>
-                                                <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]" required>
+                                                <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]"
+                                                    value="<?= isset($detailPowerTrain) ? $detailPowerTrain[20]->actual_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
-                                                <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]" required>
+                                                <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
+                                                    value="<?= isset($detailPowerTrain) ? $detailPowerTrain[20]->after_adjust_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -1954,13 +2053,15 @@
                                         <div class="col-md-3">
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_high_iddle_actual">Actual</label>
-                                                <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]" required>
+                                                <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]"
+                                                    value="<?= isset($detailPowerTrain) ? $detailPowerTrain[20]->actual_high_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_high_iddle_after_adjustment">After Adjustment</label>
-                                                <input type="number" class="form-control" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]" required>
+                                                <input type="number" class="form-control" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]"
+                                                    value="<?= isset($detailPowerTrain) ? $detailPowerTrain[20]->after_adjust_high_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -1999,13 +2100,15 @@
                                         <div class="col-md-3">
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_low_iddle_actual">Actual</label>
-                                                <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]" required>
+                                                <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]"
+                                                    value="<?= isset($detailPowerTrain) ? $detailPowerTrain[21]->actual_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
-                                                <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]" required>
+                                                <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
+                                                    value="<?= isset($detailPowerTrain) ? $detailPowerTrain[21]->after_adjust_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -2026,13 +2129,15 @@
                                         <div class="col-md-3">
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_high_iddle_actual">Actual</label>
-                                                <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]" required>
+                                                <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]"
+                                                    value="<?= isset($detailPowerTrain) ? $detailPowerTrain[21]->actual_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_high_iddle_after_adjustment">After Adjustment</label>
-                                                <input type="number" class="form-control" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]" required>
+                                                <input type="number" class="form-control" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]"
+                                                    value="<?= isset($detailPowerTrain) ? $detailPowerTrain[21]->after_adjust_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -2071,13 +2176,15 @@
                                         <div class="col-md-3">
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_low_iddle_actual">Actual</label>
-                                                <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]" required>
+                                                <input type="number" class="form-control" id="power_train_low_iddle_actual" name="power_train_low_iddle_actual[]"
+                                                    value="<?= isset($detailPowerTrain) ? $detailPowerTrain[22]->actual_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
-                                                <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]" required>
+                                                <input type="number" class="form-control" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
+                                                    value="<?= isset($detailPowerTrain) ? $detailPowerTrain[22]->after_adjust_low_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -2098,13 +2205,15 @@
                                         <div class="col-md-3">
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_high_iddle_actual">Actual</label>
-                                                <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]" required>
+                                                <input type="number" class="form-control" id="power_train_high_iddle_actual" name="power_train_high_iddle_actual[]"
+                                                    value="<?= isset($detailPowerTrain) ? $detailPowerTrain[22]->actual_high_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_high_iddle_after_adjustment">After Adjustment</label>
-                                                <input type="number" class="form-control" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]" required>
+                                                <input type="number" class="form-control" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]"
+                                                    value="<?= isset($detailPowerTrain) ? $detailPowerTrain[22]->after_adjust_high_iddle : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -2114,14 +2223,16 @@
                     </div>
                 </div>
 
-                <div class="card-footer">
-                    <div class="d-flex align-items-center">
-                        <button class="btn btn-primary ms-auto uploadBtn" id="btnSubmitPlant">
-                            <i class="fas fa-save"></i>
-                            Submit Form
-                        </button>
+                @if(!isset($plantMaster))
+                    <div class="card-footer">
+                        <div class="d-flex align-items-center">
+                            <button class="btn btn-primary ms-auto uploadBtn" id="btnSubmitPlant">
+                                <i class="fas fa-save"></i>
+                                Submit Form
+                            </button>
+                        </div>
                     </div>
-                </div>
+                @endif
             </form>
         </div>
     </div>
