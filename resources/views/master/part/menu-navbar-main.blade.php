@@ -145,6 +145,13 @@
                      <span class="nav-link-text ms-1">PLANT</span>
                  </a>
                  <ul class="submenu navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link text-white " href="{{ route('dashboard-form-plant') }}" id="form-asset-request-nav">
+                            <div class="text-white text-center d-flex align-items-center justify-content-center">
+                            </div>
+                            <span class="nav-link-text">Dashboard</span>
+                        </a>
+                    </li>
                      <li class="nav-item">
                          <a class="nav-link text-white " href="{{ route('bss-form-plant-transmission') }}" id="form-asset-request-nav">
                             <span class="nav-link-text">Form Transmission Test</span>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\PLANT;
 
 use App\Http\Controllers\Controller;
+use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -12,6 +13,68 @@ class PlantTransmissionController extends Controller
     public function index()
     {
         return view('plant/transmission-test-form');
+    }
+
+    public function dashboard()
+    {
+        return view('plant/dashboard-plant');
+    }
+
+    public function getDashboardData(Request $request)
+    {
+        $search  = $request->query('search', '');
+        $sort    = $request->query('sort', 'id');
+        $order   = $request->query('order', 'asc');
+        $offset  = $request->query('offset', 0);
+        $limit   = $request->query('limit', 10);
+
+        try {
+            $plantMaster = DB::table('FM_PLANT_PPM_TRANSMISI_CMT_BSS_MASTER')
+                ->select('id', 'machine_number', 'machine_model', 'machine_serial_no', 'machine_smr', 'jobsite', 'checkdate');
+
+            if(!empty($search)) {
+                $plantMaster->where('machine_number', 'like', '%' . $search . '%')
+                    ->orWhere('machine_model', 'like', '%' . $search . '%')
+                    ->orWhere('machine_serial_no', 'like', '%' . $search . '%')
+                    ->orWhere('machine_smr', 'like', '%' . $search . '%')
+                    ->orWhere('jobsite', 'like', '%' . $search . '%');
+            }
+
+            $data = $plantMaster->orderBy($sort, $order)->offset($offset)
+                ->limit($limit)->get();
+
+            $response['message'] = "Ok";
+            $response['isSuccess'] = true;
+            $response['data'] = $data;
+
+        } catch (Exception $ex) {
+            $response['message'] = $ex->getMessage();
+            $response['isSuccess'] = false;
+        }
+
+        return response()->json($response);
+    }
+
+    public function detail($id)
+    {
+        $plantMasterData = DB::table('FM_PLANT_PPM_TRANSMISI_CMT_BSS_MASTER')->find($id);
+        if(!$plantMasterData) abort(404);
+
+        $detailHarness = DB::table('FM_PLANT_PPM_TRANSMISI_CMT_BSS_DETAIL_HARNESS')->where('plant_test_id', $id)
+            ->orderBy('id', 'asc')->get();
+
+        $detailSpeedSensor = DB::table('FM_PLANT_PPM_TRANSMISI_CMT_BSS_DETAIL_SPEED_SENSOR_TEST')->where('plant_test_id', $id)
+            ->orderBy('id', 'asc')->get();
+
+        $detailPowerTrain = DB::table('FM_PLANT_PPM_TRANSMISI_CMT_BSS_DETAIL_POWER_TRAIN_PRESSURE')->where('plant_test_id', $id)
+            ->orderBy('id', 'asc')->get();
+
+        return view('plant/transmission-test-form', [
+            'plantMaster' => $plantMasterData,
+            'detailHarness' => $detailHarness,
+            'detailSpeedSensor' => $detailSpeedSensor,
+            'detailPowerTrain' => $detailPowerTrain
+        ]);
     }
 
     public function store(Request $request)
