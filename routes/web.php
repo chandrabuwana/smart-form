@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\admin\AdminController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
 
@@ -21,6 +22,7 @@ use App\Http\Controllers\Production\ProductionTimeSheetDashboarController;
 use App\Http\Controllers\IC\ICFM05InduksiKaryawanController;
 use App\Http\Controllers\IC\ICFM05TransactionController;
 use App\Http\Controllers\PLANT\PlantTransmissionController;
+use App\Http\Middleware\FetchMenu;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,7 +35,7 @@ use App\Http\Controllers\PLANT\PlantTransmissionController;
 |
 */
 Route::get('/helper-download-pdf/{docno}', [HelperPdfMobilisasiFormController::class, 'DownloadPDFHelperPdf']);
-Route::group(['middleware' => ['check.auth']], function () {
+Route::group(['middleware' => ['check.auth', FetchMenu::class]], function () {
     Route::get('/', function () {
         return view('welcome');
     });
@@ -94,6 +96,10 @@ Route::group(['middleware' => ['check.auth']], function () {
 
     Route::get('/bss-form-plant-transmission-test', [PlantTransmissionController::class, 'index'])->name('bss-form-plant-transmission');
     Route::post('/bss-form-plant-transmission-test/store', [PlantTransmissionController::class, 'store']);
+
+    Route::get('/dashboard-menu', [AdminController::class, 'index'])->name('dashboard-menu');
+    Route::get('/get-all-menu', [AdminController::class, 'GetAllMenu'])->name('get-all-menu');
+    Route::post('/add-new-menu', [AdminController::class, 'AddNewMenu'])->name('add-new-menu');
 });
 
 Route::get('/login', [LoginKaryawanController::class, 'IndexLoginKaryawan']);
