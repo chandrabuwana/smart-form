@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\admin\AdminController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
 
@@ -22,6 +23,7 @@ use App\Http\Controllers\IC\ICFM05InduksiKaryawanController;
 use App\Http\Controllers\IC\ICFM05TransactionController;
 use App\Http\Controllers\PLANT\PlantTransmissionController;
 use App\Http\Controllers\UnderCarriage\UnderCarriageInspectionController;
+use App\Http\Middleware\FetchMenu;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,7 +36,7 @@ use App\Http\Controllers\UnderCarriage\UnderCarriageInspectionController;
 |
 */
 Route::get('/helper-download-pdf/{docno}', [HelperPdfMobilisasiFormController::class, 'DownloadPDFHelperPdf']);
-Route::group(['middleware' => ['check.auth']], function () {
+Route::group(['middleware' => ['check.auth', FetchMenu::class]], function () {
     Route::get('/', function () {
         return view('welcome');
     });
@@ -104,6 +106,11 @@ Route::group(['middleware' => ['check.auth']], function () {
     Route::get('/dashboard-undercarriage-inspection/detail/{id}', [UnderCarriageInspectionController::class, 'detail'])->name('detail-data-undercarriage-inspection');
     Route::get('/bss-form-undercarriage-inspection', [UnderCarriageInspectionController::class, 'form'])->name('form-undercarriage-inspection');
     Route::post('/bss-form-undercarriage-inspection/store', [UnderCarriageInspectionController::class, 'store'])->name('store-undercarriage-inspection');
+
+
+    Route::get('/dashboard-menu', [AdminController::class, 'index'])->name('dashboard-menu');
+    Route::get('/get-all-menu', [AdminController::class, 'GetAllMenu'])->name('get-all-menu');
+    Route::post('/add-new-menu', [AdminController::class, 'AddNewMenu'])->name('add-new-menu');
 });
 
 Route::get('/login', [LoginKaryawanController::class, 'IndexLoginKaryawan']);
