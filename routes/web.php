@@ -38,7 +38,7 @@ use App\Http\Middleware\FetchMenu;
 Route::get('/helper-download-pdf/{docno}', [HelperPdfMobilisasiFormController::class, 'DownloadPDFHelperPdf']);
 Route::group(['middleware' => ['check.auth', FetchMenu::class]], function () {
     Route::get('/', function () {
-        return view('welcome');
+        return redirect(route('dashboard-smart-pica'));
     });
 
     Route::get('/landing-page-dashboard', [DashboardController::class, 'DashboardIndex']);
