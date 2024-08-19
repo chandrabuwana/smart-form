@@ -87,6 +87,10 @@
                 e.preventDefault();
                 $(this).next(".submenu").slideToggle();
             });
+            $("#menuUnderCarriage").on("click", function(e) {
+                e.preventDefault();
+                $(this).next(".submenu").slideToggle();
+            });
             $(".nav-menu-utama").on("click", function(e) {
                 e.preventDefault();
                 $(this).next(".submenu").slideToggle();
