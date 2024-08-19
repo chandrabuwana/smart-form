@@ -47,6 +47,6 @@ class User extends Authenticatable
     public static function getUserIdToken()
     {
         $user = Auth::user();
-        return base64_encode($user->id . '_' . $user->username);
+        return base64_encode($user->userid . '_' . $user->username);
     }
 }
