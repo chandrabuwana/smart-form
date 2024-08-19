@@ -30,6 +30,11 @@
     <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
     {{-- <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script> --}}
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <style>
+        .reset-bg {
+            background-image: none;
+        }
+    </style>
     @yield('custom-css')
 </head>
 
@@ -79,6 +84,10 @@
                 $(this).next(".submenu").slideToggle();
             });
             $("#menuProduksi").on("click", function(e) {
+                e.preventDefault();
+                $(this).next(".submenu").slideToggle();
+            });
+            $(".nav-menu-utama").on("click", function(e) {
                 e.preventDefault();
                 $(this).next(".submenu").slideToggle();
             });
