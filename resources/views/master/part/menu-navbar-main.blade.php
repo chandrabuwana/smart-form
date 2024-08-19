@@ -124,20 +124,20 @@
                  <ul class="submenu navbar-nav">
                     <li class="nav-item">
                         <a class="nav-link text-white " href="{{ route('dashboard-form-plant') }}" id="form-asset-request-nav">
-                            <div class="text-white text-center d-flex align-items-center justify-content-center">
-                            </div>
-                            <span class="nav-link-text">Dashboard</span>
+                           <span class="nav-link-text">Transmission Test</span>
                         </a>
                     </li>
-                     <li class="nav-item">
-                         <a class="nav-link text-white " href="{{ route('bss-form-plant-transmission') }}" id="form-asset-request-nav">
-                            <span class="nav-link-text">Form Transmission Test</span>
-                         </a>
-                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white " href="{{ route('dashboard-undercarriage-inspection') }}" id="form-asset-request-nav">
+                            <div class="text-white text-center d-flex align-items-center justify-content-center">
+                            </div>
+                            <span class="nav-link-text">Under Carriage Inspection</span>
+                        </a>
+                    </li>
                  </ul>
              </li>
 
-             <li class="nav-item">
+            <li class="nav-item">
                 <a class="nav-link text-white active bg-gradient-primary" href="#" id="menuProduksi">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="fa fa-sitemap"></i>
