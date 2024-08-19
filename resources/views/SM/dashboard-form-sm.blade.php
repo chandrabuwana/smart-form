@@ -22,24 +22,25 @@
                         </a>
                     </div>
                     <div class="table-responsive p-0">
-                        <table id="list-form" data-toggle="table" data-ajax="fetchFormsData"
-                            data-side-pagination="server"
+                        <table id="list-form" data-toggle="table" data-ajax="fetchFormsData" data-side-pagination="server"
+                            data-query-params="dataListFormPicaParamsGenerate"
                             data-page-list="[10, 25, 50, 100, all]" data-sortable="true"
                             data-content-type="application/json" data-data-type="json" data-pagination="true"
                             data-unique-id="no_doc">
                             <thead>
                                 <tr>
-                                    <th data-field="no_doc" data-align="left" data-halign="text-center"
-                                        data-sortable="true">No. Document
+                                    <th data-field="no_doc" data-align="left" data-halign="text-center">
+                                        No. Document
                                     </th>
                                     <th data-field="date_doc" data-align="center" data-halign="center">Date</th>
                                     <th data-field="department" data-align="center" data-halign="center">Department</th>
                                     <th data-field="project" data-align="left" data-halign="center">Project</th>
                                     <th data-field="area" data-align="left" data-halign="center">Area</th>
-                                    <th data-field="requested_by" data-align="center">Requested By
+                                    <th data-field="requested_by" data-align="center">
+                                        Requested By
                                     </th>
                                     <th data-field="total_price_idr" data-align="center"
-                                        data-halign="center" data-sortable="true">Total Price (IDR)
+                                        data-halign="center">Total Price (IDR)
                                     </th>
                                     <th data-field="action" data-formatter="actionFormatter" >Actions</th>
                                 </tr>
@@ -57,18 +58,32 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script type="text/javascript">
-        var $table = $("#list-form");
 
         function actionFormatter(value, row, index) {
-            return '<button class="btn btn-primary btn-action"><a href="/get-form-detail?no_doc=' + row.no_doc + '">detail</a></button>';
+            return '<a href="/get-form-detail?no_doc=' + row.no_doc + '"><i class="fa fa-info-circle fixed-plugin-button-nav cursor-pointer"></i></a><a href="/get-form-detail?no_doc=' + row.no_doc + '"><i class="fa fa-edit fixed-plugin-button-nav cursor-pointer"></i></a><a href="/get-form-detail?no_doc=' + row.no_doc + '"><i class="fa fa-sync-alt fixed-plugin-button-nav cursor-pointer"></i></a>';
         }
-
+        
         function fetchFormsData(params) {
             var url = '/get-forms-data'
             $.get(url + '?' + $.param(params.data)).then(function(res) {
                 params.success(res.data)
             })
         }
+        
+        function dataListFormPicaParamsGenerate(params) {
 
+            params.search = {
+                'CARNAME': "",
+            };
+
+            if (params.sort == undefined) {
+                return {
+                    limit: params.limit,
+                    offset: params.offset,
+                    search: params.search
+                }
+            }
+            return params;
+        }
     </script>
 @endsection

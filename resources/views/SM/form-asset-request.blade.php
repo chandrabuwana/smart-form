@@ -2,44 +2,11 @@
 
 @section('custom-css')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.css">
-    <style>
-        .form-control {
-            border: 1px solid;
-            padding: 4px;
-        }
-        .form-control:focus {
-            border: 1px solid;
-        }
-        .ml-16px {
-            margin-left: 16px;
-        }
-        .display-block {
-            display: block;
-        }
-        .m-0 {
-            margin: 0;
-        }
-        .text-right {
-            text-align: right;
-        }
-        .input-text {
-
-            border: 0;
-            border-bottom: 1px solid;
-            border-color: rgb(188, 188, 188);
-            padding: 2px;
-        }
-        .input-text:focus {
-            border: 0;
-            border-bottom: 1px solid;
-            border-color: rgb(188, 188, 188);
-            padding: 2px;
-        }
-        .reset-border {
-            border: 0;
-        }
-
-    </style>
+<style>
+    .text-right {
+        text-align: right;
+    }
+</style>
 @endsection
 
 @section('content')
@@ -62,40 +29,14 @@
                                 </p>
                             </div>
                         </div>
-                        <div class="col-lg-5 col-md-5 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3">
-                            <div class="nav-wrapper position-relative end-0">
-                                <ul class="nav nav-pills nav-fill p-1" role="tablist">
-                                    <li class="nav-item">
-                                        <table style="width: 100%;">
-                                            <tr>
-                                                <td class="text-start">No Document</td>
-                                                <td> : </td>
-                                                <td>BSS-FRM-SM-016</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-start">Revisi</td>
-                                                <td> : </td>
-                                                <td>00</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-start">Tanggal</td>
-                                                <td> : </td>
-                                                <td>01-Jan-2023</td>
-                                            </tr>
-                                        </table>
-                                    </li>
-
-                                </ul>
-                            </div>
-                        </div>
                     </div>
 
                     <form action="">
                         <div class="row gx-4 my-3">
-                            <div class="col-1">
+                            <div class="col-12 col-md-4">
                                 <h4>Nature</h4>
                             </div>
-                            <div class="col-5">
+                            <div class="col-6 col-md-4">
                                 <div class="form-check">
                                     <input class="" type="checkbox" value="" id="checkReplacement" name="checkReplacement" >
                                     <label class="form-check-label" for="flexCheckDefault">
@@ -109,7 +50,7 @@
                                     </label>
                                 </div>
                             </div>
-                            <div class="col-5">
+                            <div class="col-6 col-md-4">
                                 <div class="form-check">
                                     <input class="" type="checkbox" value="" id="checkBudgeted" name="checkBudgeted">
                                     <label class="form-check-label" for="flexCheckDefault">
@@ -126,7 +67,7 @@
                         </div>
 
                         <div class="row gx-4">
-                            <div class="col-6">
+                            <div class="row">
                                 <div>
                                     <table class="small">
                                         <tr>
@@ -142,49 +83,81 @@
                                     </table>
                                     <!-- <div>No. Doc : <span id="noDoc"></span></div>
                                     <div>Date : <span id="tglDoc"></span></div> -->
-                                    <span>Department</span>
-                                    <select class="form-select form-select-sm input-text" aria-label="Default select example" id="inputDepartment" name="inputDepartment">
-                                        <option selected>Pilih Department</option>
-                                        <option value="Engineering">Engineering</option>
-                                        <option value="SHE">SHE</option>
-                                        <option value="Produksi">Produksi</option>
-                                        <option value="SM">SM</option>
-                                        <option value="GS">GS</option>
-                                        <option value="OD">OD</option>
-                                        <option value="IT">IT</option>
-                                        <option value="IC">IC</option>
-                                        <option value="PLANT">PLANT</option>
-                                    </select>
                                 </div>
-                                <div>
-                                    <span>Project</span>
-                                    <select class="form-select form-select-sm input-text" aria-label="Default select example" id="inputProject" name="inputProject">
-                                        <option value="1">SM</option>
-                                        <option value="2">Two</option>
-                                        <option value="3">Three</option>
-                                    </select>
+                                <div class="card col-md-6">
+                                    <div class="card-body w-full">
+                                        <h5 class="card-title">Requestor</h5>
+                                        <div class="input-group input-group-static mb-4">
+                                            <label for="inputDepartment">Department</label>
+                                            <select class="form-control form-select-sm" name="inputDepartment" id="inputDepartment" required>
+                                                <option selected value="">Pilih Department</option>
+                                                <option value="Engineering">Engineering</option>
+                                                <option value="SHE">SHE</option>
+                                                <option value="Produksi">Produksi</option>
+                                                <option value="SM">SM</option>
+                                                <option value="GS">GS</option>
+                                                <option value="OD">OD</option>
+                                                <option value="IT">IT</option>
+                                                <option value="IC">IC</option>
+                                                <option value="PLANT">PLANT</option>
+                                            </select>
+                                        </div>
+                                        <div class="input-group input-group-static mb-4">
+                                            <label for="inputProject">Project / Site</label>
+                                            <select class="form-control form-select-sm" name="inputProject" id="inputProject" required>
+                                                <option value="1">HO</option>
+                                                <option value="2">AGM</option>
+                                                <option value="3">BSSR</option>
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div>
-                                    <span>Area</span>
-                                    <select class="form-select form-select-sm input-text" aria-label="Default select example" id="inputArea" name="inputArea">
-                                        <option value="JKT">JKT</option>
-                                        <option value="BSSR">BSSR</option>
-                                        <option value="SMD">SMD</option>
-                                        <option value="AGM">AGM</option>
-                                    </select>
+                                <div class="card col-md-6">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Asset Allocation</h5>
+                                        <div class="input-group input-group-static mb-4">
+                                            <label for="inputDepartmentAllocation">Department</label>
+                                            <select class="form-control form-select-sm" name="inputDepartmentAllocation" id="inputDepartmentAllocation" required>
+                                                <option selected value="">Pilih Department</option>
+                                                <option value="Engineering">Engineering</option>
+                                                <option value="SHE">SHE</option>
+                                                <option value="Produksi">Produksi</option>
+                                                <option value="SM">SM</option>
+                                                <option value="GS">GS</option>
+                                                <option value="OD">OD</option>
+                                                <option value="IT">IT</option>
+                                                <option value="IC">IC</option>
+                                                <option value="PLANT">PLANT</option>
+                                            </select>
+                                        </div>
+                                        <div class="input-group input-group-static mb-4">
+                                            <label for="inputProjectAllocation">Project / Site</label>
+                                            <select class="form-control form-select-sm" name="inputProjectAllocation" id="inputProjectAllocation" required>
+                                                <option value="1">HO</option>
+                                                <option value="2">AGM</option>
+                                                <option value="3">BSSR</option>
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <!-- Todo: otomatis ambil sesuai urutan di DB -->
-                            <!-- <div class="col-6">
-                                <div>No. Doc : 1/BSS-AR/VII/2024</div>
-                                <div>Date : </div>
-                            </div> -->
                         </div>
 
                         <div class="my-3">
-                            <div class="mb-1">
-                                <label class="form-label">1. Reason For Purchase</label>
-                                <input type="text" class="form-control input-text"  placeholder="" id="reasonpurchase" name="reasonpurchase">
+                            <div class="mb-1 row">
+                                <div class="col-md-6">
+                                    <div class="input-group input-group-static mb-4">
+                                        <label for="reasonpurchase">1. Reason For Purchase</label>
+                                        <input type="text" class="form-control" id="reasonpurchase"
+                                            name="reasonpurchase">
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="input-group input-group-static mb-4">
+                                        <label for="inputPendukungReason">Dokumen Pendukung</label>
+                                        <input type="file" multiple class="form-control" id="inputPendukungReason" name="inputPendukungReason">
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="mb-1">
@@ -194,47 +167,66 @@
                             <div class="mb-1">
                                 <label class="form-label">3. Item</label>
                                 <div class="row mb-2">
-                                    <div class="col-2">
-                                        <label class="display-block m-0">Type : </label>
-                                        <input type="text" placeholder="Type" id="inputType" class="input-text">
+                                    <div class="col-md-4 col-lg-3">
+                                        <div class="input-group input-group-static mb-4">
+                                            <label for="inputType">Type</label>
+                                            <input type="text" class="form-control" id="inputType" name="inputType">
+                                        </div>
                                     </div>
-                                    <div class="col-2">
-                                        <label class="display-block m-0">Model : </label>
-                                        <input type="text" placeholder="Model"id="inputModel" class="input-text">
+                                    <div class="col-md-4 col-lg-3">
+                                        <div class="input-group input-group-static mb-4">
+                                            <label for="inputModel">Model</label>
+                                            <input type="text" class="form-control" id="inputModel" name="inputModel">
+                                        </div>
                                     </div>
-                                    <div class="col-2">
-                                        <label class="display-block m-0">Brand : </label>
-                                        <input type="text" placeholder="Brand" id="inputBrand" class="input-text">
+                                    <div class="col-md-4 col-lg-3">
+                                        <div class="input-group input-group-static mb-4">
+                                            <label for="inputBrand">Brand</label>
+                                            <input type="text" class="form-control" id="inputBrand" name="inputBrand">
+                                        </div>
                                     </div>
-                                    <div class="col-2">
-                                        <label class="display-block m-0">Condition : </label>
-                                        <input type="text" placeholder="Condition" id="inputCondition" class="input-text">
+                                    <div class="col-md-4 col-lg-3">
+                                        <div class="input-group input-group-static mb-4">
+                                            <label for="inputCondition">Condition</label>
+                                            <input type="text" class="form-control" id="inputCondition" name="inputCondition">
+                                        </div>
                                     </div>
-                                    <div class="col-2">
-                                        <label class="display-block m-0">Qty : </label>
-                                        <input type="text" placeholder="Qty" id="inputQty" class="input-text" value="1">
+                                    <div class="col-md-4 col-lg-3">
+                                        <div class="input-group input-group-static mb-4">
+                                            <label for="inputQty">QTY</label>
+                                            <input type="text" class="form-control" id="inputQty" name="inputQty">
+                                        </div>
                                     </div>
-                                    <div class="col-2">
-                                        <label class="display-block m-0">UOM : </label>
-                                        <input type="text" placeholder="UOM" id="inputUom" class="input-text">
+                                    <div class="col-md-4 col-lg-3">
+                                        <div class="input-group input-group-static mb-4">
+                                            <label for="inputUom">UOM</label>
+                                            <input type="text" class="form-control" id="inputUom" name="inputUom">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-lg-3">
+                                        <div class="input-group input-group-static mb-4">
+                                            <label for="inputCurrency">Currency</label>
+                                            <select class="form-control form-select" name="inputCurrency" id="inputCurrency" required>
+                                                <option value="IDR">IDR</option>
+                                                <option value="USD">USD</option>
+                                                <option value="CNY">CNY</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-lg-3">
+                                        <div class="input-group input-group-static mb-4">
+                                            <label for="inputPrice">Price</label>
+                                            <input type="text" class="form-control" id="inputPrice" name="inputPrice">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-lg-3">
+                                        <div class="input-group input-group-static mb-4">
+                                            <label for="inputLampiran">Lampiran</label>
+                                            <input type="file" class="form-control" id="inputLampiran" name="inputLampiran">
+                                        </div>
                                     </div>
                                 </div>
-
-                                <div class="row mb-2">
-                                    <div class="col-2">
-                                        <label class="display-block m-0">Currency</label>
-                                        <select class="form-select form-select-sm input-text" aria-label="Default select example" id="inputCurrency">
-                                            <option value="IDR">IDR</option>
-                                            <option value="USD">USD</option>
-                                            <option value="CNY">CNY</option>
-                                        </select>
-                                        <!-- <input type="text" placeholder="Currency" id="inputCurrency"> -->
-                                    </div>
-                                    <div class="col-2">
-                                        <label class="display-block m-0">Price</label>
-                                        <input type="text" placeholder="Price" id="inputPrice" class="input-text">
-                                    </div>
-                                </div>
+                                
                                 <button id="btn-add-item" class="btn btn-primary">Tambah</button>
                             </div>
                         </div>
@@ -291,28 +283,37 @@
                                 <tr>
                                     <td>IDR</td>
                                     <td class="reset-border">
-                                        <input type="text" class="text-right input-text" name="estimatedIdr" id="estimatedIdr" value="1">
+                                        <div class="input-group input-group-static mb-4">
+                                            <input type="text" class="form-control text-right" id="estimatedIdr" name="estimatedIdr" value="1">
+                                        </div>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>USD</td>
                                     <td>
-                                        <input type="text" class="text-right input-text" name="estimatedUsd" id="estimatedUsd" value="15000">
+                                        <div class="input-group input-group-static mb-4">
+                                            <input type="text" class="form-control text-right" id="estimatedUsd" name="estimatedUsd" value="15000">
+                                        </div>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>CNY</td>
                                     <td>
-                                        <input type="text" class="text-right input-text" name="estimatedCny" id="estimatedCny" value="2300">
+                                        <div class="input-group input-group-static mb-4">
+                                            <input type="text" class="form-control text-right" id="estimatedCny" name="estimatedCny" value="2300">
+                                        </div>
                                     </td>
                                 </tr>
                             </table>
                         </div>
 
                         <div class="my-3 row">
+                            <label class="form-label">5. Budget</label>
                             <div class="mb-1 col-6">
-                                <label class="form-label">5. Budget</label>
-                                <input type="text" class="input-text" id="refDoc" name="refDoc" placeholder="Ref Doc" value="-">
+                                <div class="input-group input-group-static mb-4">
+                                    <label for="inputPrice">Ref Doc</label>
+                                    <input type="text" class="form-control" id="refDoc" name="refDoc">
+                                </div>
                             </div>
                         </div>
 
@@ -383,9 +384,11 @@
         var $table = $("#item-asset");
         var $buttonTambah = $("#btn-add-item")
         var inputType = $("#inputType")
-        var inputArea = $("#inputArea")
+        // var inputArea = $("#inputArea")
         var inputProject = $("#inputProject")
         var inputDepartment = $("#inputDepartment")
+        var inputProjectAllocation = $("#inputProjectAllocation")
+        var inputDepartmentAllocation = $("#inputDepartmentAllocation")
         var reasonpurchase = $("#reasonpurchase")
         var estimatedReadyAtSite = $("#estimatedReadyAtSite")
         var inputModel = $("#inputModel")
@@ -403,6 +406,7 @@
         var estimatedCny = $("#estimatedCny")
         var totalPrice = $("#totalPrice")
         var refDoc = $("#refDoc")
+        var inputPendukungReason = document.getElementById("inputPendukungReason")
         // var requestor = $("#requestor")
         var requestornik = $("#requestornik")
         var dataAssetRequest = {
@@ -417,7 +421,10 @@
             notBudgeted: false,
             department: "",
             project: "",
-            area: "",
+            departmentAllocation: "",
+            projectAllocation: "",
+
+            // area: "",
             reasonForPurchase: "",
             estimatedReadyAtSite: "",
             item: [{}],
@@ -532,9 +539,11 @@
             dataAssetRequest.additional = checkAdditional.checked
             dataAssetRequest.budgeted = checkBudgeted.checked
             dataAssetRequest.notBudgeted = checkNotBudgeted.checked
-            dataAssetRequest.area = $("#inputArea").val()
+            // dataAssetRequest.area = $("#inputArea").val()
             dataAssetRequest.department = inputDepartment.val()
             dataAssetRequest.project = inputProject.val()
+            dataAssetRequest.departmentAllocation = inputDepartmentAllocation.val()
+            dataAssetRequest.projectAllocation = inputProjectAllocation.val()
             dataAssetRequest.reasonForPurchase = reasonpurchase.val()
 
             estimatedIdr.change(function(e) {
@@ -592,7 +601,7 @@
                     formName: dataAssetRequest.formName,
                     noDok: "BSS-FRM-SM-016",
                     tglDok: "01-01-2023",
-                    area: inputArea.val(),
+                    // area: inputArea.val(),
                     noDoc: noDoc.text(),
                     tglDoc: formatTgl(),
                     replacement: checkReplacement.checked,
@@ -601,20 +610,36 @@
                     notBudgeted: checkNotBudgeted.checked,
                     department: inputDepartment.val(),
                     project: inputProject.val(),
-                    area: inputArea.val(),
+                    departmentAllocation: inputDepartmentAllocation.val(),
+                    projectAllocation: inputProjectAllocation.val(),
+                    // area: inputArea.val(),
                     reasonPurchase: reasonpurchase.val(),
                     estimatedReadyAtSite: estimatedReadyAtSite.val(),
-                    item: dataAssetRequest.item,
                     estimatedIdr: estimatedIdr.val(),
                     estimatedUsd: estimatedUsd.val(),
                     estimatedCny: estimatedCny.val(),
                     refDoc: refDoc.val(),
                     requestedBy: requestornik.text(),
-                    item: dataAssetRequest.item,
-                    totalPrice: totalPrice.text()
+                    // item: dataAssetRequest.item,
+                    totalPrice: totalPrice.text(),
+                    pendukungReason: []
                 }
-                axios.post('/add-asset-request', dataReq, {
-                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
+                let formData = new FormData();
+
+                for (let i = 0; i < inputPendukungReason.files.length; i++) {
+                    formData.append('pendukungReason[]', inputPendukungReason.files[i]);
+                }
+                formData.append('item',JSON.stringify(dataAssetRequest.item));
+                for (const key in dataReq) {
+                    if(key != "pendukungReason" || key != "item") {
+                        formData.append(key, dataReq[key])
+                    }
+                }
+                axios.post('/add-asset-request', formData, {
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                        'Content-Type': 'multipart/form-data'
+                    }
                 })
                 .then(function (response) {
                     console.log(response.data)
@@ -623,7 +648,7 @@
                             title: 'Berhasil!',
                             text: response.data.data.no_doc,
                         }).then((result) => {
-                            window.location.href = `/get-form-detail?no_doc=${response.data.data.no_doc}`;
+                            // window.location.href = `/get-form-detail?no_doc=${response.data.data.no_doc}`;
                         })
                 })
                 .catch(function (error) {

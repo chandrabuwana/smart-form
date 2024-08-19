@@ -11,15 +11,7 @@ use Illuminate\Support\Facades\Log;
 class AssetRequestController extends Controller {
     
     function IndexForm(Request $request) {
-        $no_doc = $request->query('no_doc');
-        $str = "checked";
-        if($no_doc != null) {
-            Log::info("no_doc != null");
-        } else {
-            Log::info("no_doc == null");
-            $str = "";
-        }
-        return view("SM/form-asset-request", ['data' => $str]);
+        return view("SM/form-asset-request");
     }
 
     function DashboardForm() {
@@ -29,19 +21,21 @@ class AssetRequestController extends Controller {
     function SubmitFormAssetRequest(Request $req) {
         $TABLE_MASTER = "FM_SM_016_MASTER";
         $TABLE_DETAIL = "FM_SM_016_DETAIL";
+        $TABLE_UPLOADS = "FM_SM_016_UPLOADS";
         $response = array(
             'message' => "",
             'isSuccess' => false
         );
-
         $requested_by = $req->session()->get('user_id');
         $data = $req->input();
-        Log::info(json_encode(array('body' => $data)));
+        // Log::info(json_encode(array('body' => $data)));
         $data_insert = [
             'requested_by' => $requested_by,
             'department' => $data['department'],
             'project' => $data['project'],
-            'area' => $data['area'],
+            'department_allocation' => $data['departmentAllocation'],
+            'project_allocation' => $data['projectAllocation'],
+            // 'area' => $data['area'],
             'no_doc' => $data['noDoc'],
             'date_doc' => $data['tglDoc'],
             'reason_for_purchase' => $data['reasonPurchase'],
@@ -51,35 +45,50 @@ class AssetRequestController extends Controller {
             'estimated_kurs_cny' => (float) $data['estimatedCny'],
             'total_price_idr' => (float) $data['totalPrice'],
             'ref_doc' => $data['refDoc'],
-            'nature_replacement' => $data['replacement'],
-            'nature_additional' => $data['additional'],
-            'nature_budgeted' => $data['budgeted'],
-            'nature_not_budgeted' => $data['notBudgeted'],
+            'nature_replacement' => $data['replacement'] == true ? 1 : 0,
+            'nature_additional' => $data['additional'] == true ? 1 : 0,
+            'nature_budgeted' => $data['budgeted'] == true ? 1 : 0,
+            'nature_not_budgeted' => $data['notBudgeted'] == true ? 1 : 0,
         ];
         $spliited_no_doc = explode("/", $data_insert['no_doc']);
-        Log::info("spliited_no_doc : " . json_encode($spliited_no_doc) . " gabung : ". implode("/", $spliited_no_doc));
-        $data_item = $data['item'];
-        // DB
-        // foreach ($data_item as $data_item_detail) {
-        //     Log::info(json_encode($data_item_detail));
-        // }
+        // Log::info("spliited_no_doc : " . json_encode($spliited_no_doc) . " gabung : ". implode("/", $spliited_no_doc));
+        $data_item = json_decode($data['item']);
+        $uploadedFiles = [];
+        // Log::info('has file ? ' . json_encode($req->hasFile('pendukungReason')));
+        if($req->hasFile('pendukungReason')) {
+            foreach ($req->file('pendukungReason') as $file) {
+                $path = $file->store('uploads');
+                $uploadedFiles[] = array('jenis' => 'pendukungReason', 'name' => $file->getClientOriginalName(), 'path' => $path);
+            }
+        }
 
         try {
             DB::beginTransaction();
             $id = DB::table($TABLE_MASTER)->insertGetId($data_insert);
+            
             foreach ($data_item as $data_item_detail) {
                 DB::table($TABLE_DETAIL)->insert(array(
                     'id_master' => $id,
-                    'type' => $data_item_detail['type'],
-                    'model' => $data_item_detail['model'],
-                    'brand' => $data_item_detail['brand'],
-                    'condition' => $data_item_detail['condition'],
-                    'qty' => (int) $data_item_detail['qty'],
-                    'uom' => $data_item_detail['uom'],
-                    'currency' => $data_item_detail['currency'],
-                    'price' => (float) $data_item_detail['price']
+                    'type' => $data_item_detail->type,
+                    'model' => $data_item_detail->model,
+                    'brand' => $data_item_detail->brand,
+                    'condition' => $data_item_detail->condition,
+                    'qty' => (int) $data_item_detail->qty,
+                    'uom' => $data_item_detail->uom,
+                    'currency' => $data_item_detail->currency,
+                    'price' => (float) $data_item_detail->price
                 ));
             }
+
+            foreach ($uploadedFiles as $uploaded) {
+                DB::table($TABLE_UPLOADS)->insert(array(
+                    'id_form' => $id,
+                    'file_name' => $uploaded['name'],
+                    'path' => $uploaded['path'],
+                    'jenis' => $uploaded['jenis'],
+                ));
+            }
+            
             
             $spliited_no_doc[0] = $id;
             $updated_no_doc = implode("/", $spliited_no_doc);
@@ -98,7 +107,8 @@ class AssetRequestController extends Controller {
             );
         } catch (Exception $ex) {
             //throw $th;
-            // DB::rollBack();
+            Log::error($ex->getTraceAsString());
+            DB::rollBack();
             $response['message'] = $ex->getMessage();
             $response['isSuccess'] = false;
         }
@@ -121,28 +131,34 @@ class AssetRequestController extends Controller {
 
         try {
             $users = DB::table($TABLE_MASTER)
-                ->select('no_doc', 'date_doc', 'department', 'project', 'area', 'requested_by', 'total_price_idr');
-            if($search) {
-                $users->where('no_doc', 'like', "%$search%")
-                  ->orWhere('department', 'like', "%$search%")
-                  ->orWhere('project', 'like', "%$search%")
-                  ->orWhere('area', 'like', "%$search%")
-                  ->orWhere('requested_by', 'like', "%$search%");
-            }
+                ->select('no_doc', 'date_doc', 'department', 'project', 'area', 'requested_by', 'total_price_idr')
+                // ->orderBy($sort, $order)
+                ->skip($offset)->take($limit)
+                ->get();
+                // if($search) {
+            //     $users->where('no_doc', 'like', "%$search%")
+            //       ->orWhere('department', 'like', "%$search%")
+            //       ->orWhere('project', 'like', "%$search%")
+            //       ->orWhere('area', 'like', "%$search%")
+            //       ->orWhere('requested_by', 'like', "%$search%");
+            // }
             // Apply sorting
-            $users->orderBy($sort, $order);
-            $documents = $users->skip($offset)->take($limit)->get();
+            // $documents = $users->skip($offset)->take($limit)->get();
+            $totalNotFiltered = DB::table($TABLE_MASTER)->count();
 
             $response['message'] = "Ok";
             $response['isSuccess'] = true;
-            $response['data'] = $documents;
+            $response['data'] = ['total'=> $totalNotFiltered, 'totalNotFiltered'=> $totalNotFiltered, 'rows' => $users];
+            // $response['data'] = $documents;
 
         } catch (Exception $ex) {
+            Log::info($ex->getTraceAsString());
             $response['message'] = $ex->getMessage();
             $response['isSuccess'] = false;
         }
 
         return response()->json($response);
+        // return response()->json(['total'=> $totalNotFiltered, 'totalNotFiltered'=> $totalNotFiltered, 'rows' => $users]);
     }
 
     function FormDetailByNoDoc(Request $request) {
@@ -161,6 +177,8 @@ class AssetRequestController extends Controller {
             'tgl_doc' => '',
             'department' => '',
             'project' => '',
+            'department_allocation' => '',
+            'project_allocation' => '',
             'area' => '',
             'estimated_ready_at_site' => '',
             'total_price' => '',
@@ -171,7 +189,7 @@ class AssetRequestController extends Controller {
             'estimated_usd' => '',
             'estimated_cny' => '',
             'ref_doc' => '',
-            'reason_pruchase' => ''
+            'reason_purchase' => ''
         );
         $data_detail = array();
 
@@ -183,11 +201,12 @@ class AssetRequestController extends Controller {
                     'nature_budgeted as budgeted', 'nature_not_budgeted as not_budgeted', 'no_doc', 'date_doc as tgl_doc', 
                     'department', 'project', 'area', 'total_price_idr as total_price',
                     'estimated_kurs_idr as estimated_idr', 'estimated_kurs_usd as estimated_usd', 'estimated_kurs_cny as estimated_cny',
-                    'ref_doc', 'reason_for_purchase as reason_purchase'
+                    'ref_doc', 'reason_for_purchase as reason_purchase',
+                    'department_allocation', 'project_allocation'
                 )
                 ->where('no_doc', $no_doc)
                 ->first();
-            // Log::info("id : ". $data->id);
+            Log::info("id : ". json_encode($data));
             $data_detail = DB::table($TABLE_DETAIL)
                 ->select('type', 'model', 'brand', 'condition', 'qty', 'uom', 'currency', 'price')
                 ->where('id_master', $data->id)
@@ -226,6 +245,8 @@ class AssetRequestController extends Controller {
             $data_master['tgl_doc'] = $data->tgl_doc;
             $data_master['department'] = $data->department;
             $data_master['project'] = $data->project;
+            $data_master['department_allocation'] = $data->department_allocation;
+            $data_master['project_allocation'] = $data->project_allocation;
             $data_master['area'] = $data->area;
             $data_master['estimated_ready_at_site'] = $data->estimated_ready_at_site;
             $data_master['total_price'] = $data->total_price;
