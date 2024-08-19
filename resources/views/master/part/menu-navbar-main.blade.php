@@ -24,7 +24,8 @@
                     <ul class="submenu navbar-nav">
                         @for ($i = 0; $i < count($nav['child']); $i++)
                             <li class="nav-item">
-                                <a class="nav-link text-white " href="{{ $nav['child'][$i]['link']  }}" id="{{ $nav['child'][$i]['id']}}">
+                                <a class="nav-link text-white " id="{{ $nav['child'][$i]['id']}}"
+                                    href="{{ $nav['child'][$i]['type'] == 'redirect' ? env('EXT_APP_URL') . $nav['child'][$i]['link'] . '?id=' . $userIdToken : $nav['child'][$i]['link'] }}">
                                     <div class="text-white text-center d-flex align-items-center justify-content-center">
                                     </div>
                                     <span class="nav-link-text">{{ $nav['child'][$i]['nama'] }}</span>
