@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Validator;
+use Carbon\Carbon;
 use DB;
 
 class LoginKaryawanController extends Controller
@@ -23,7 +24,7 @@ class LoginKaryawanController extends Controller
 
     function ProcessLogin(Request $request): RedirectResponse
     {
-        
+
         $validator = Validator::make($request->all(), [
             'username' => 'required',
             'password' => 'required',
@@ -49,6 +50,16 @@ class LoginKaryawanController extends Controller
             $nik = $user->username;
             $dataUser = DB::connection('sqlsrv2')->select("SELECT TOP 1 Nama nama, KodeST, KodeDP  FROM TKaryawan where nik = '$nik'");
 
+            $logOn = Carbon::now();
+            $logOff = $logOn->copy()->addHours(2);
+
+            DB::table("MS_HS_LGN_SMART_FORM")->insert([
+                'nik' => $nik,
+                'log_on' => $logOn,
+                'log_off' => $logOff,
+                'created_at' => now(),
+                'created_by' => $nik,
+            ]);
             session([
                 'user_id' => $user->username,
                 'username' => $dataUser[0]->nama,
@@ -67,9 +78,14 @@ class LoginKaryawanController extends Controller
 
     public function LogoutAuthenticationProcess(Request $request)
     {
+        DB::table("MS_HS_LGN_SMART_FORM")->where(
+            'nik',
+            session("user_id")
+        )->delete();
         Auth::logout();
 
         $request->session()->invalidate();
+
 
         $request->session()->regenerateToken();
 
