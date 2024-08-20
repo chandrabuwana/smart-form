@@ -10,12 +10,12 @@
             <div class="card my-4">
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                     <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                        <h6 class="text-white text-capitalize ps-3">Dashboard Form Transmission Test</h6>
+                        <h6 class="text-white text-capitalize ps-3">Dashboard Under Carriage Inspection</h6>
                     </div>
                 </div>
                 <div class="card-body px-0 pb-2">
                     <div class="d-flex align-items-center">
-                        <a href="{{ route('bss-form-plant-transmission') }}">
+                        <a href="{{ route('form-undercarriage-inspection') }}">
                             <button class="btn btn-primary ms-auto uploadBtn" id="coba">
                                 New Form
                             </button>
@@ -29,23 +29,23 @@
                             data-unique-id="no_doc">
                             <thead>
                                 <tr>
-                                    <th data-field="machine_number" data-align="left" data-halign="text-center" data-sortable="true">
-                                        Machine Number
+                                    <th data-field="document_no" data-align="left" data-halign="text-center" data-sortable="true">
+                                        No. Dokumen
                                     </th>
-                                    <th data-field="machine_model" data-align="center" data-halign="center">
-                                        Machine Model
+                                    <th data-field="unit_model" data-align="center" data-halign="center">
+                                        Unit Model
                                     </th>
-                                    <th data-field="machine_serial_no" data-align="center" data-halign="center">
-                                        Machine Serial No
+                                    <th data-field="unit_sn" data-align="center" data-halign="center">
+                                        S/N Unit
                                     </th>
-                                    <th data-field="machine_smr" data-align="left" data-halign="center">
-                                        Machine SMR / HM
+                                    <th data-field="unit_smr_hm" data-align="left" data-halign="center">
+                                        Unit SMR / HM
                                     </th>
-                                    <th data-field="jobsite" data-align="left" data-halign="center">
-                                        Jobsite
+                                    <th data-field="work_operation" data-align="left" data-halign="center">
+                                        Work Operation
                                     </th>
-                                    <th data-field="checkdate" data-align="center" data-sortable="true">
-                                        Check Date
+                                    <th data-field="inspection_date" data-align="center" data-sortable="true">
+                                        Inspection Date
                                     </th>
                                     <th data-field="action" data-formatter="actionFormatter" >Actions</th>
                                 </tr>
@@ -66,11 +66,11 @@
         var $table = $("#list-form");
 
         function actionFormatter(value, row, index) {
-            return '<button class="btn btn-primary btn-action"><a href="/dashboard-plant/detail/' + row.id + '">detail</a></button>';
+            return '<button class="btn btn-primary btn-action"><a href="/dashboard-undercarriage-inspection/detail/' + row.id + '">detail</a></button>';
         }
 
         function fetchFormsData(params) {
-            var url = `<?= route('dashboard-plant-get-data') ?>`
+            var url = `{{ route('dashboard-undercarriage-inspection-get-data') }}`
             $.get(url + '?' + $.param(params.data)).then(function(res) {
                 params.success(res.data)
             })

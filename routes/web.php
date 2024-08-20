@@ -22,6 +22,7 @@ use App\Http\Controllers\Production\ProductionTimeSheetDashboarController;
 use App\Http\Controllers\IC\ICFM05InduksiKaryawanController;
 use App\Http\Controllers\IC\ICFM05TransactionController;
 use App\Http\Controllers\PLANT\PlantTransmissionController;
+use App\Http\Controllers\UnderCarriage\UnderCarriageInspectionController;
 use App\Http\Middleware\FetchMenu;
 
 /*
@@ -37,7 +38,7 @@ use App\Http\Middleware\FetchMenu;
 Route::get('/helper-download-pdf/{docno}', [HelperPdfMobilisasiFormController::class, 'DownloadPDFHelperPdf']);
 Route::group(['middleware' => ['check.auth', FetchMenu::class]], function () {
     Route::get('/', function () {
-        return view('welcome');
+        return redirect(route('dashboard-smart-pica'));
     });
 
     Route::get('/landing-page-dashboard', [DashboardController::class, 'DashboardIndex']);
@@ -87,7 +88,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class]], function () {
     Route::get('/add-form-timesheet', [ProductionTimeSheetDashboarController::class, 'FormTimesheetProduksi'])->name("form-timesheet-produksi");
     Route::post('/submit-form-timesheet', [ProductionTimeSheetDashboarController::class, 'SubmitFormTimesheet'])->name("add-form-action");
 
-    
+
     Route::get('/bss-dashboard-IC-form-induksi', [ICFM05InduksiKaryawanController::class, 'IndexDashboard'])->name("bss-dahboard-ic-induksi-karyawan");
     Route::get('/bss-form-IC-form-induksi', [ICFM05InduksiKaryawanController::class, 'indexFormAddInduksiKaryawan'])->name("bss-form-ic-induksi-karyawan");
     Route::post('/bss-form-IC-form-induksi-add', [ICFM05TransactionController::class, 'SubmitALLData']);
@@ -102,6 +103,13 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class]], function () {
     Route::get('/dashboard-plant/detail/{id}', [PlantTransmissionController::class, 'detail'])->name('detail-data-form-plant');
     Route::get('/bss-form-plant-transmission-test', [PlantTransmissionController::class, 'index'])->name('bss-form-plant-transmission');
     Route::post('/bss-form-plant-transmission-test/store', [PlantTransmissionController::class, 'store']);
+
+    Route::get('/dashboard-undercarriage-inspection', [UnderCarriageInspectionController::class, 'dashboard'])->name('dashboard-undercarriage-inspection');
+    Route::get('/dashboard-undercarriage-inspection/get-data', [UnderCarriageInspectionController::class, 'getDashboardData'])->name('dashboard-undercarriage-inspection-get-data');
+    Route::get('/dashboard-undercarriage-inspection/detail/{id}', [UnderCarriageInspectionController::class, 'detail'])->name('detail-data-undercarriage-inspection');
+    Route::get('/bss-form-undercarriage-inspection', [UnderCarriageInspectionController::class, 'form'])->name('form-undercarriage-inspection');
+    Route::post('/bss-form-undercarriage-inspection/store', [UnderCarriageInspectionController::class, 'store'])->name('store-undercarriage-inspection');
+
 
     Route::get('/dashboard-menu', [AdminController::class, 'index'])->name('dashboard-menu');
     Route::get('/get-all-menu', [AdminController::class, 'GetAllMenu'])->name('get-all-menu');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\User;
 use Closure;
 use Exception;
 use Illuminate\Http\Request;
@@ -19,7 +20,7 @@ class FetchMenu {
     public function handle(Request $request, Closure $next): Response
     {
         $data = DB::table('MasterMenu')
-            ->select('id', 'nama', 'link', 'parent', 'urutan as order', 'role as roles')
+            ->select('id', 'nama', 'link', 'parent', 'urutan as order', 'role as roles', 'type')
             ->where('status', 1)
             ->orderBy('parent')
             ->orderBy('urutan')
@@ -38,12 +39,14 @@ class FetchMenu {
                     'nama' => $item->nama,
                     'link' => $item->link,
                     'parent' => $item->parent,
-                    'order' => $item->order
+                    'order' => $item->order,
+                    'type' => $item->type
                 ));
             }
         }
 
         View::share('menu', $data_menu);
+        View::share('userIdToken', User::getUserIdToken());
 
         return $next($request);
     }

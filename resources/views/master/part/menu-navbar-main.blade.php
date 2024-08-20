@@ -24,7 +24,8 @@
                     <ul class="submenu navbar-nav">
                         @for ($i = 0; $i < count($nav['child']); $i++)
                             <li class="nav-item">
-                                <a class="nav-link text-white " href="{{ $nav['child'][$i]['link']  }}" id="{{ $nav['child'][$i]['id']}}">
+                                <a class="nav-link text-white " id="{{ $nav['child'][$i]['id']}}"
+                                    href="{{ $nav['child'][$i]['type'] == 'redirect' ? env('EXT_APP_URL') . $nav['child'][$i]['link'] . '?id=' . $userIdToken : $nav['child'][$i]['link'] }}">
                                     <div class="text-white text-center d-flex align-items-center justify-content-center">
                                     </div>
                                     <span class="nav-link-text">{{ $nav['child'][$i]['nama'] }}</span>
@@ -147,20 +148,20 @@
                  <ul class="submenu navbar-nav">
                     <li class="nav-item">
                         <a class="nav-link text-white " href="{{ route('dashboard-form-plant') }}" id="form-asset-request-nav">
-                            <div class="text-white text-center d-flex align-items-center justify-content-center">
-                            </div>
-                            <span class="nav-link-text">Dashboard</span>
+                           <span class="nav-link-text">Transmission Test</span>
                         </a>
                     </li>
-                     <li class="nav-item">
-                         <a class="nav-link text-white " href="{{ route('bss-form-plant-transmission') }}" id="form-asset-request-nav">
-                            <span class="nav-link-text">Form Transmission Test</span>
-                         </a>
-                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white " href="{{ route('dashboard-undercarriage-inspection') }}" id="form-asset-request-nav">
+                            <div class="text-white text-center d-flex align-items-center justify-content-center">
+                            </div>
+                            <span class="nav-link-text">Under Carriage Inspection</span>
+                        </a>
+                    </li>
                  </ul>
              </li>
 
-             <li class="nav-item">
+            <li class="nav-item">
                 <a class="nav-link text-white active bg-gradient-primary" href="#" id="menuProduksi">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="fa fa-sitemap"></i>

@@ -166,7 +166,7 @@ class DashboarController extends Controller
                                 ORDER BY progress DESC), 
                             0
                         ) progress, 
-                       FORMAT(due_date, 'dd MMMM yyyy', 'en-US') AS due_date, position_why, identity_why, k.nama nama_pic FROM [PICA_BETA].[dbo].[new_pica_step] n join hrd.dbo.TKaryawan k on n.pic = k.NIK where nodocpica = '$id'");
+                       FORMAT(due_date, 'dd MMMM yyyy', 'en-US') AS due_date, position_why, identity_why, k.nama nama_pic FROM [new_pica_step] n join hrd.dbo.TKaryawan k on n.pic = k.NIK where nodocpica = '$id'");
 
         $dataFinal = [
             'dataMaster' => $dataMaster[0],
