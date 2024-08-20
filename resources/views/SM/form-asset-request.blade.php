@@ -219,12 +219,12 @@
                                             <input type="text" class="form-control" id="inputPrice" name="inputPrice">
                                         </div>
                                     </div>
-                                    <div class="col-md-4 col-lg-3">
+                                    <!--<div class="col-md-4 col-lg-3">
                                         <div class="input-group input-group-static mb-4">
                                             <label for="inputLampiran">Lampiran</label>
                                             <input type="file" class="form-control" id="inputLampiran" name="inputLampiran">
                                         </div>
-                                    </div>
+                                    </div>-->
                                 </div>
                                 
                                 <button id="btn-add-item" class="btn btn-primary">Tambah</button>
@@ -635,6 +635,7 @@
                         formData.append(key, dataReq[key])
                     }
                 }
+                console.log(dataReq)
                 axios.post('/add-asset-request', formData, {
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),

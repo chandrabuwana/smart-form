@@ -35,13 +35,13 @@
                                     <th data-field="date_doc" data-align="center" data-halign="center">Date</th>
                                     <th data-field="department" data-align="center" data-halign="center">Department</th>
                                     <th data-field="project" data-align="left" data-halign="center">Project</th>
-                                    <th data-field="area" data-align="left" data-halign="center">Area</th>
                                     <th data-field="requested_by" data-align="center">
                                         Requested By
                                     </th>
                                     <th data-field="total_price_idr" data-align="center"
                                         data-halign="center">Total Price (IDR)
                                     </th>
+                                    <th data-field="status" data-formatter="statusFormatter" >Status</th>
                                     <th data-field="action" data-formatter="actionFormatter" >Actions</th>
                                 </tr>
                             </thead>
@@ -60,7 +60,26 @@
     <script type="text/javascript">
 
         function actionFormatter(value, row, index) {
-            return '<a href="/get-form-detail?no_doc=' + row.no_doc + '"><i class="fa fa-info-circle fixed-plugin-button-nav cursor-pointer"></i></a><a href="/get-form-detail?no_doc=' + row.no_doc + '"><i class="fa fa-edit fixed-plugin-button-nav cursor-pointer"></i></a><a href="/get-form-detail?no_doc=' + row.no_doc + '"><i class="fa fa-sync-alt fixed-plugin-button-nav cursor-pointer"></i></a>';
+            return '<a href="/get-form-detail?no_doc=' + row.no_doc + '"><i class="fa fa-info-circle fixed-plugin-button-nav cursor-pointer"></i></a><a href="/edit-form-asset-request?no_doc=' + row.no_doc + '"><i class="fa fa-edit fixed-plugin-button-nav cursor-pointer"></i></a>';
+        }
+
+        function statusFormatter(value, row, index) {
+            console.log(value)
+            var status = "";
+            if(value == 0 || value == null) {
+                status = "Draft"
+            }
+            if(value == 1) {
+                status = "Validated"
+            }
+            if(value == 2) {
+                status = "Diproses"
+            }
+            if(value == 3) {
+                status = "Done"
+            }
+
+            return status;
         }
         
         function fetchFormsData(params) {

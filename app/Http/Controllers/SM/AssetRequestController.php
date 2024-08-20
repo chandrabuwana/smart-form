@@ -7,11 +7,28 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class AssetRequestController extends Controller {
+        private $TABLE_MASTER = "FM_SM_016_MASTER";
+        private $TABLE_DETAIL = "FM_SM_016_DETAIL";
+        private $TABLE_UPLOADS = "FM_SM_016_UPLOADS";
+        private $user_sm = ['1008491', '1008492', '1008493', '1008494', '1008526'];
     
     function IndexForm(Request $request) {
+        // Log::info('user SM : '. config('app.user_sm', ''));
         return view("SM/form-asset-request");
+    }
+
+    function EditForm(Request $request) {
+        $no_doc = $request->query('no_doc');
+        $data = $this->getDetail($request, $no_doc);
+
+        return view("SM/form-asset-request-edit", $data);
+    }
+
+    function SubmitEditForm(Request $request) {
+        // TODO : 
     }
 
     function DashboardForm() {
@@ -29,6 +46,10 @@ class AssetRequestController extends Controller {
         $requested_by = $req->session()->get('user_id');
         $data = $req->input();
         // Log::info(json_encode(array('body' => $data)));
+        $validation_matrix = $this->getValidationMatrix(
+            $data['department'], $data['project'], 
+            $data['departmentAllocation'], $data['projectAllocation']
+        );
         $data_insert = [
             'requested_by' => $requested_by,
             'department' => $data['department'],
@@ -45,20 +66,25 @@ class AssetRequestController extends Controller {
             'estimated_kurs_cny' => (float) $data['estimatedCny'],
             'total_price_idr' => (float) $data['totalPrice'],
             'ref_doc' => $data['refDoc'],
-            'nature_replacement' => $data['replacement'] == true ? 1 : 0,
-            'nature_additional' => $data['additional'] == true ? 1 : 0,
-            'nature_budgeted' => $data['budgeted'] == true ? 1 : 0,
-            'nature_not_budgeted' => $data['notBudgeted'] == true ? 1 : 0,
+            'nature_replacement' => $data['replacement'] == "true" ? 1 : 0,
+            'nature_additional' => $data['additional'] == "true" ? 1 : 0,
+            'nature_budgeted' => $data['budgeted'] == "true" ? 1 : 0,
+            'nature_not_budgeted' => $data['notBudgeted'] == "true" ? 1 : 0,
+            'acknowledge_by_1_nik' => $validation_matrix['acknowledge_by_1_nik'],
+            'acknowledge_by_2_nik' => $validation_matrix['acknowledge_by_2_nik'],
+            'approved_by_1_nik' => $validation_matrix['approved_by_1_nik'],
+            'approved_by_2_nik' => $validation_matrix['approved_by_2_nik'],
         ];
         $spliited_no_doc = explode("/", $data_insert['no_doc']);
-        // Log::info("spliited_no_doc : " . json_encode($spliited_no_doc) . " gabung : ". implode("/", $spliited_no_doc));
+        // Log::info("data_insert : " . json_encode($data_insert));
         $data_item = json_decode($data['item']);
         $uploadedFiles = [];
         // Log::info('has file ? ' . json_encode($req->hasFile('pendukungReason')));
         if($req->hasFile('pendukungReason')) {
             foreach ($req->file('pendukungReason') as $file) {
                 $path = $file->store('uploads');
-                $uploadedFiles[] = array('jenis' => 'pendukungReason', 'name' => $file->getClientOriginalName(), 'path' => $path);
+                $stored_filename = explode('/', $path);
+                $uploadedFiles[] = array('jenis' => 'pendukungReason', 'name' => $file->getClientOriginalName(), 'path' => $stored_filename[1]);
             }
         }
 
@@ -131,7 +157,7 @@ class AssetRequestController extends Controller {
 
         try {
             $users = DB::table($TABLE_MASTER)
-                ->select('no_doc', 'date_doc', 'department', 'project', 'area', 'requested_by', 'total_price_idr')
+                ->select('no_doc', 'date_doc', 'department', 'project', 'area', 'requested_by', 'total_price_idr', 'status')
                 // ->orderBy($sort, $order)
                 ->skip($offset)->take($limit)
                 ->get();
@@ -163,9 +189,17 @@ class AssetRequestController extends Controller {
 
     function FormDetailByNoDoc(Request $request) {
         $no_doc = $request->query('no_doc');
+        $data = $this->getDetail($request, $no_doc);
+
+        return view('SM/detail-form-asset-request', $data);
+    }
+
+    private function getDetail(Request $request, $no_doc) {
         $TABLE_MASTER = "FM_SM_016_MASTER";
         $TABLE_DETAIL = "FM_SM_016_DETAIL";
-
+        $isError = true;
+        $errorMessage = '';
+        $this->user_sm = explode(',', config('app.user_sm', ''));
         $data_master = array(
             'requested_name' => '',
             'requested_by' => '',
@@ -192,7 +226,7 @@ class AssetRequestController extends Controller {
             'reason_purchase' => ''
         );
         $data_detail = array();
-
+        $pendukung_reason = array();
         try {
             $data = DB::table($TABLE_MASTER)
                 ->select(
@@ -202,71 +236,254 @@ class AssetRequestController extends Controller {
                     'department', 'project', 'area', 'total_price_idr as total_price',
                     'estimated_kurs_idr as estimated_idr', 'estimated_kurs_usd as estimated_usd', 'estimated_kurs_cny as estimated_cny',
                     'ref_doc', 'reason_for_purchase as reason_purchase',
-                    'department_allocation', 'project_allocation'
+                    'department_allocation', 'project_allocation', 'status',
+                    'acknowledge_by_1_nik', 'acknowledge_by_2_nik', 'approved_by_1_nik', 'approved_by_2_nik',
+                    'acknowledge_1', 'acknowledge_2', 'approved_1', 'approved_2'
+
                 )
                 ->where('no_doc', $no_doc)
                 ->first();
-            Log::info("id : ". json_encode($data));
-            $data_detail = DB::table($TABLE_DETAIL)
-                ->select('type', 'model', 'brand', 'condition', 'qty', 'uom', 'currency', 'price')
-                ->where('id_master', $data->id)
-                ->get();
+            if(!is_null($data)) {
+                Log::info("id : ". json_encode($data));
+                $data_detail = DB::table($TABLE_DETAIL)
+                    ->select('type', 'model', 'brand', 'condition', 'qty', 'uom', 'currency', 'price')
+                    ->where('id_master', $data->id)
+                    ->get();
 
-            $calculated_idr = 0;
-            $calculated_usd = 0;
-            $calculated_cny = 0;
+                $calculated_idr = 0;
+                $calculated_usd = 0;
+                $calculated_cny = 0;
 
-            foreach($data_detail as $detail) {
-                if($detail->currency == 'IDR') {
-                    $calculated_idr = $calculated_idr + ($detail->qty * $detail->price);
+                foreach($data_detail as $detail) {
+                    if($detail->currency == 'IDR') {
+                        $calculated_idr = $calculated_idr + ($detail->qty * $detail->price);
+                    }
+                    if($detail->currency == 'USD') {
+                        $calculated_usd = $calculated_usd + ($detail->qty * $detail->price);
+                    }
+                    if($detail->currency == 'CNY') {
+                        $calculated_cny = $calculated_cny + ($detail->qty * $detail->price);
+                    }
                 }
-                if($detail->currency == 'USD') {
-                    $calculated_usd = $calculated_usd + ($detail->qty * $detail->price);
-                }
-                if($detail->currency == 'CNY') {
-                    $calculated_cny = $calculated_cny + ($detail->qty * $detail->price);
-                }
+
+
+                $data_user = DB::connection('sqlsrv2')
+                    ->table("TKaryawan")
+                    ->select('NIK as nik', 'Nama as nama')
+                    ->where("nik", $data->requested_by)
+                    ->first();
+
+                $pendukung_reason = DB::table('FM_SM_016_UPLOADS')
+                    ->select('jenis', 'file_name', 'path as lokasi')
+                    ->where('id_form', $data->id)
+                    ->get();
+
+                // Log::info("pendukungReason : ". json_encode($pendukung_reason));
+                $data_master['requested_by'] = $data_user->nik;
+                $data_master['requested_name'] = $data_user->nama;
+                $data_master['replacement'] = $data->replacement == 1 ? "checked" : "";
+                $data_master['additional'] = $data->additional == 1 ? "checked" : "";
+                $data_master['budgeted'] = $data->budgeted == 1 ? "checked" : "";
+                $data_master['not_budgeted'] = $data->not_budgeted == 1 ? "checked" : "";
+                $data_master['no_doc'] = $data->no_doc;
+                $data_master['tgl_doc'] = $data->tgl_doc;
+                $data_master['department'] = $data->department;
+                $data_master['project'] = $data->project;
+                $data_master['department_allocation'] = $data->department_allocation;
+                $data_master['project_allocation'] = $data->project_allocation;
+                $data_master['area'] = $data->area;
+                $data_master['estimated_ready_at_site'] = $data->estimated_ready_at_site;
+                $data_master['total_price'] = $data->total_price;
+                $data_master['estimated_idr'] = $data->estimated_idr;
+                $data_master['estimated_usd'] = $data->estimated_usd;
+                $data_master['estimated_cny'] = $data->estimated_cny;
+                $data_master['ref_doc'] = $data->ref_doc;
+                $data_master['reason_purchase'] = $data->reason_purchase;
+                $data_master['calculated_idr'] = $calculated_idr;
+                $data_master['calculated_usd'] = $calculated_usd;
+                $data_master['calculated_cny'] = $calculated_cny;
+                $data_master['status'] = $data->status;
+                $data_master['acknowledge_by_1_nik'] = $data->acknowledge_by_1_nik;
+                $data_master['acknowledge_by_2_nik'] = $data->acknowledge_by_2_nik;
+                $data_master['approved_by_1_nik'] = $data->approved_by_1_nik;
+                $data_master['approved_by_2_nik'] = $data->approved_by_2_nik;
+                $data_master['acknowledge_1'] = $data->acknowledge_1;
+                $data_master['acknowledge_2'] = $data->acknowledge_2;
+                $data_master['approved_1'] = $data->approved_1;
+                $data_master['approved_2'] = $data->approved_2;
+
+                // Log::info("FormDetailByNoDoc : " .json_encode(array('data_master' => $data_master, 'data_detail' => $data_detail, 'data_user' => $data_user, 'pendukung_reason' => $pendukung_reason)));
+                $isError = false;
+            } else {
+                $isError = true;
+                $errorMessage = "Data tidak ditemukan";
             }
+        } catch (Exception $ex) {
+            Log::error($ex->getMessage());
+            $errorMessage = $ex->getMessage();
+        }
+        $is_user_sm = in_array($request->session()->get('user_id', ''), $this->user_sm);
 
+        return ['error' => $isError, 'errorMessage' => $errorMessage, 'data' => $data_master, 'detail' => $data_detail, 'pendukung_reason' => $pendukung_reason, 'is_user_sm' => $is_user_sm];
+    }
 
-            $data_user = DB::connection('sqlsrv2')
-                ->table("TKaryawan")
-                ->select('NIK as nik', 'Nama as nama')
-                ->where("nik", $data->requested_by)
-                ->first();
+    function download($fileName)
+    {
+        // $filePath = storage_path("app/uploads/{$file->generated_name}");
+
+        // Log::info("download : ".' fileName ' . Storage::exists('uploads/' . $fileName));
+        if (Storage::exists('uploads/' . $fileName)) {
+            return Storage::download('uploads/' . $fileName);
+        } else {
+            abort(404, 'File not found');
+        }
+    }
+
+    function ValidasiRequest(Request $request) {
+
+        $body = $request->input();
+        $nik_session = $request->session()->get('user_id', '');
+        $data = DB::table($this->TABLE_MASTER)
+            ->select('id', 'acknowledge_by_1_nik', 'acknowledge_by_2_nik', 'approved_by_1_nik', 'approved_by_2_nik')
+            ->where('no_doc', $body['noDoc'])
+            ->first();
+        $isError = false;
+        $errorMessage = "";
+        $message = "";
+
+        switch ($body['action']) {
+            case 'acknowledge':
+                if($data->acknowledge_by_1_nik == $nik_session) {
+                    $result = $this->updateValidation('acknowledge_1', $body['noDoc'], $nik_session, 'acknowledge', $data->id);
+                    $isError = $result['error'];
+                    $errorMessage = $result['errorMessage'];
+                    $message = $result['message'];
+                } else if($data->acknowledge_by_2_nik == $nik_session) {
+                    $result = $this->updateValidation('acknowledge_2', $body['noDoc'], $nik_session, 'acknowledge', $data->id);
+                    $isError = $result['error'];
+                    $errorMessage = $result['errorMessage'];
+                    $message = $result['message'];
+                } else {
+                    $isError = true;
+                    $errorMessage = 'Unauthorized Action';
+                }
+                break;
+            case 'approve':
+                if($data->approved_by_1_nik == $nik_session) {
+                    $result = $this->updateValidation('approved_1', $body['noDoc'], $nik_session, 'approve', $data->id);
+                    $isError = $result['error'];
+                    $errorMessage = $result['errorMessage'];
+                    $message = $result['message'];
+                } else if($data->approved_by_2_nik == $nik_session) {
+                    $result = $this->updateValidation('approved_2', $body['noDoc'], $nik_session, 'approve', $data->id);
+                    $isError = $result['error'];
+                    $errorMessage = $result['errorMessage'];
+                    $message = $result['message'];
+                } else {
+                    $isError = true;
+                    $errorMessage = 'Unauthorized Action';
+                }
+                break;
+            case 'proses':
+                $result = $this->updateValidation('proses', $body['noDoc'], $nik_session, 'proses', $data->id);
+                $isError = $result['error'];
+                $errorMessage = $result['errorMessage'];
+                $message = $result['message'];
+                break;
+            case 'selesai':
+                $result = $this->updateValidation('proses', $body['noDoc'], $nik_session, 'selesai', $data->id);
+                $isError = $result['error'];
+                $errorMessage = $result['errorMessage'];
+                $message = $result['message'];
+                break;
             
-            $data_master['requested_by'] = $data_user->nik;
-            $data_master['requested_name'] = $data_user->nama;
-            $data_master['replacement'] = $data->replacement == 1 ? "checked" : "";
-            $data_master['additional'] = $data->additional == 1 ? "checked" : "";
-            $data_master['budgeted'] = $data->budgeted == 1 ? "checked" : "";
-            $data_master['not_budgeted'] = $data->not_budgeted == 1 ? "checked" : "";
-            $data_master['no_doc'] = $data->no_doc;
-            $data_master['tgl_doc'] = $data->tgl_doc;
-            $data_master['department'] = $data->department;
-            $data_master['project'] = $data->project;
-            $data_master['department_allocation'] = $data->department_allocation;
-            $data_master['project_allocation'] = $data->project_allocation;
-            $data_master['area'] = $data->area;
-            $data_master['estimated_ready_at_site'] = $data->estimated_ready_at_site;
-            $data_master['total_price'] = $data->total_price;
-            $data_master['estimated_idr'] = $data->estimated_idr;
-            $data_master['estimated_usd'] = $data->estimated_usd;
-            $data_master['estimated_cny'] = $data->estimated_cny;
-            $data_master['ref_doc'] = $data->ref_doc;
-            $data_master['reason_purchase'] = $data->reason_purchase;
-            $data_master['calculated_idr'] = $calculated_idr;
-            $data_master['calculated_usd'] = $calculated_usd;
-            $data_master['calculated_cny'] = $calculated_cny;
+            default:
+                $isError = true;
+                $errorMessage = "Unknown Action";
+                break;
+        }
 
-            Log::info("FormDetailByNoDoc : " .json_encode(array('data_master' => $data_master, 'data_detail' => $data_detail, 'data_user' => $data_user)));
+        return response()->json([
+            'error' => $isError,
+            'errorMessage' => $errorMessage,
+            'message' => $message,
+            'data' => ['data' => $data, 'no_doc' => $body['noDoc'], 'action' => $body['action'], 'nik' => $request->session()->get('user_id', '')]
+        ]);
+    }
+
+    private function updateValidation($column, $no_doc, $nik, $action, $id) {
+        $affected = 0;
+        $error = true;
+        $errorMessage = '';
+        $message = '';
+        $tgl = now()->toDateTimeString();
+        $new_value = [];
+
+        try {
+            if($action == 'proses') {
+                $affected = DB::table($this->TABLE_MASTER)
+                    ->where('no_doc', $no_doc)
+                    ->update(['status' => 2]);
+                $new_value['status'] = 2;
+            } else if ($action == 'selesai') {
+                $affected = DB::table($this->TABLE_MASTER)
+                    ->where('no_doc', $no_doc)
+                    ->update(['status' => 3]);
+                $new_value['status'] = 3;
+            }  
+            else {
+                $affected = DB::table($this->TABLE_MASTER)
+                    ->where('no_doc', $no_doc)
+                    ->update([$column => 1]);
+                if($action == 'approve') {
+                    $status = DB::table($this->TABLE_MASTER)
+                        ->select('status', 'acknowledge_1', 'acknowledge_2', 'approved_1', 'approved_2')
+                        ->where('no_doc', $no_doc)
+                        ->first();
+                    if($status->status == 0 && $status->acknowledge_1 == 1 && $status->acknowledge_2 == 1 && $status->approved_1 == 1 && $status->approved_2 == 1) {
+                        $affected_status = DB::table($this->TABLE_MASTER)
+                            ->where('no_doc', $no_doc)
+                            ->update(['status' => 1]);
+                        $new_value['status'] = 1;
+                    }
+                }
+                $new_value[$column] = 1;
+            }
+            
+            $this->addHistory($id, $tgl, $nik, $action, $new_value);
+
+            $error = false;
+            $message = 'Berhasil ' . $action . ' dokumen ' . $no_doc;
+        } catch (Exception $ex) {
+            $errorMessage = 'Terjadi Kesalahan update action '.$action;
+        }
+
+        return ['affected' => $affected, 'error' => $error, 'errorMessage' => $errorMessage, 'message' => $message];
+    }
+
+    private function addHistory($form_id, $updated_at, $updated_by, $action, $new_value) {
+        try {
+            DB::table("FM_SM_016_HISTORY")
+                ->insert([
+                    'id_form' => $form_id,
+                    'action' => $action,
+                    'updated_at' => $updated_at,
+                    'updated_by' => $updated_by,
+                    'new_value' => json_encode($new_value)
+                ]);
 
         } catch (Exception $ex) {
             Log::error($ex->getMessage());
-            $response['message'] = $ex->getMessage();
-            $response['isSuccess'] = false;
         }
+    }
 
-        return view('SM/detail-form-asset-request', ['data' => $data_master, 'detail' => $data_detail]);
+    private function getValidationMatrix($department, $project, $department_allocation, $project_allocation) {
+        // TODO : parameterized validation matrix
+        return [
+            'acknowledge_by_1_nik' => '1008590',
+            'acknowledge_by_2_nik' => '1008643',
+            'approved_by_1_nik' => '1008821',
+            'approved_by_2_nik' => '1008886'
+        ];
     }
 }

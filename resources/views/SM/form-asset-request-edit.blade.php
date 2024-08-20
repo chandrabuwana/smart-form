@@ -2,6 +2,11 @@
 
 @section('custom-css')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.css">
+<style>
+    .text-right {
+        text-align: right;
+    }
+</style>
 @endsection
 
 @section('content')
@@ -33,13 +38,13 @@
                             </div>
                             <div class="col-6 col-md-4">
                                 <div class="form-check">
-                                    <input class="" type="checkbox" value="" id="checkReplacement" name="checkReplacement" disabled {{$data['replacement']}}>
+                                    <input class="" type="checkbox" value="" id="checkReplacement" name="checkReplacement" {{$data['replacement']}}>
                                     <label class="form-check-label" for="flexCheckDefault">
                                         Replacement
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="" type="checkbox" value="" id="checkAdditional" name="checkAdditional" disabled {{$data['additional']}}>
+                                    <input class="" type="checkbox" value="" id="checkAdditional" name="checkAdditional" {{$data['additional']}}>
                                     <label class="form-check-label" for="flexCheckDefault">
                                         Additional
                                     </label>
@@ -47,13 +52,13 @@
                             </div>
                             <div class="col-6 col-md-4">
                                 <div class="form-check">
-                                    <input class="" type="checkbox" value="" id="checkBudgeted" name="checkBudgeted" disabled {{$data['budgeted']}}>
+                                    <input class="" type="checkbox" value="" id="checkBudgeted" name="checkBudgeted" {{$data['budgeted']}}>
                                     <label class="form-check-label" for="flexCheckDefault">
                                         Budgeted
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="" type="checkbox" value="" id="checkNotBudgeted" name="checkNotBudgeted" disabled {{$data['not_budgeted']}}>
+                                    <input class="" type="checkbox" value="" id="checkNotBudgeted" name="checkNotBudgeted" {{$data['not_budgeted']}}>
                                     <label class="form-check-label" for="flexCheckDefault">
                                         Not Budgeted
                                     </label>
@@ -68,12 +73,12 @@
                                         <tr>
                                             <td>No. Doc</td>
                                             <td>:</td>
-                                            <td id="noDoc">{{ $data['no_doc'] }}</td>
+                                            <td id="noDoc">No.Doc</td>
                                         </tr>
                                         <tr>
                                             <td>Date</td>
                                             <td>:</td>
-                                            <td id="tglDoc">{{ $data['tgl_doc'] }}</td>
+                                            <td id="tglDoc"></td>
                                         </tr>
                                     </table>
                                     <!-- <div>No. Doc : <span id="noDoc"></span></div>
@@ -82,41 +87,71 @@
                                 <div class="card col-md-6">
                                     <div class="card-body w-full">
                                         <h5 class="card-title">Requestor</h5>
-                                        <div class="mb-1">
-                                            <label class="form-label" for="inputDepartment">Department</label>
-                                            <input type="text" class="form-control input-text"  placeholder="" id="inputDepartment" name="inputDepartment" disabled value="{{ $data['department'] }}">
+                                        <div class="input-group input-group-static mb-4">
+                                            <label for="inputDepartment">Department</label>
+                                            <select class="form-control form-select-sm" name="inputDepartment" id="inputDepartment" required>
+                                                <option value="">Pilih Department</option>
+                                                <option value="Engineering">Engineering</option>
+                                                <option value="SHE">SHE</option>
+                                                <option value="Produksi">Produksi</option>
+                                                <option value="SM">SM</option>
+                                                <option value="GS">GS</option>
+                                                <option value="OD">OD</option>
+                                                <option value="IT">IT</option>
+                                                <option value="IC">IC</option>
+                                                <option value="PLANT">PLANT</option>
+                                            </select>
                                         </div>
-                                        <div class="mb-1">
-                                            <label class="form-label" for="inputProject">Project / Site</label>
-                                            <input type="text" class="form-control input-text"  placeholder="" id="inputProject" name="inputProject" disabled value="{{ $data['project'] }}">
+                                        <div class="input-group input-group-static mb-4">
+                                            <label for="inputProject">Project / Site</label>
+                                            <select class="form-control form-select-sm" name="inputProject" id="inputProject" required>
+                                                <option value="1">HO</option>
+                                                <option value="2">AGM</option>
+                                                <option value="3">BSSR</option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="card col-md-6">
-                                    <div class="card-body w-full">
+                                    <div class="card-body">
                                         <h5 class="card-title">Asset Allocation</h5>
-                                        <div class="mb-1">
-                                            <label class="form-label" for="inputDepartmentAllocation">Department</label>
-                                            <input type="text" class="form-control input-text"  placeholder="" id="inputDepartmentAllocation" name="inputDepartmentAllocation" disabled value="{{ $data['department_allocation'] }}">
+                                        <div class="input-group input-group-static mb-4">
+                                            <label for="inputDepartmentAllocation">Department</label>
+                                            <select class="form-control form-select-sm" name="inputDepartmentAllocation" id="inputDepartmentAllocation" required>
+                                                <option selected value="">Pilih Department</option>
+                                                <option value="Engineering">Engineering</option>
+                                                <option value="SHE">SHE</option>
+                                                <option value="Produksi">Produksi</option>
+                                                <option value="SM">SM</option>
+                                                <option value="GS">GS</option>
+                                                <option value="OD">OD</option>
+                                                <option value="IT">IT</option>
+                                                <option value="IC">IC</option>
+                                                <option value="PLANT">PLANT</option>
+                                            </select>
                                         </div>
-                                        <div class="mb-1">
-                                            <label class="form-label" for="inputProjectAllocation">Project / Site</label>
-                                            <input type="text" class="form-control input-text"  placeholder="" id="inputProjectAllocation" name="inputProjectAllocation" disabled value="{{ $data['project_allocation'] }}">
+                                        <div class="input-group input-group-static mb-4">
+                                            <label for="inputProjectAllocation">Project / Site</label>
+                                            <select class="form-control form-select-sm" name="inputProjectAllocation" id="inputProjectAllocation" required>
+                                                <option value="1">HO</option>
+                                                <option value="2">AGM</option>
+                                                <option value="3">BSSR</option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
                         </div>
 
                         <div class="my-3">
                             <div class="mb-1 row">
                                 <div class="col-md-6">
-                                    <div class="mb-1">
-                                        <label class="form-label" for="reasonpurchase">Reason Purchase</label>
-                                        <input type="text" class="form-control input-text"  placeholder="" id="reasonpurchase" name="reasonpurchase" disabled value="{{ $data['reason_purchase'] }}">
+                                    <div class="input-group input-group-static mb-4">
+                                        <label for="reasonpurchase">1. Reason For Purchase</label>
+                                        <input type="text" class="form-control" id="reasonpurchase"
+                                            name="reasonpurchase">
                                     </div>
                                 </div>
-                                {{-- TODO --}}
+                                
                                 <div class="col-md-6">
                                     <div class="input-group input-group-static mb-4">
                                         <label for="inputPendukungReason">Dokumen Pendukung</label>
@@ -144,13 +179,73 @@
                             </div>
 
                             <div class="mb-1">
-                                <div class="input-group input-group-static mb-4">
-                                    <label for="estimatedReadyAtSite">2. Estimated Ready at Site</label>
-                                    <input type="text" class="form-control" id="estimatedReadyAtSite" name="estimatedReadyAtSite" disabled value="{{ $data['estimated_ready_at_site']  }}">
-                                </div>
+                                <label class="form-label">2. Estimated Ready at Site </label>
+                                <input type="date" class="input-text"  placeholder="" id="estimatedReadyAtSite" name="estimatedReadyAtSite">
                             </div>
                             <div class="mb-1">
                                 <label class="form-label">3. Item</label>
+                                <div class="row mb-2">
+                                    <div class="col-md-4 col-lg-3">
+                                        <div class="input-group input-group-static mb-4">
+                                            <label for="inputType">Type</label>
+                                            <input type="text" class="form-control" id="inputType" name="inputType">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-lg-3">
+                                        <div class="input-group input-group-static mb-4">
+                                            <label for="inputModel">Model</label>
+                                            <input type="text" class="form-control" id="inputModel" name="inputModel">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-lg-3">
+                                        <div class="input-group input-group-static mb-4">
+                                            <label for="inputBrand">Brand</label>
+                                            <input type="text" class="form-control" id="inputBrand" name="inputBrand">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-lg-3">
+                                        <div class="input-group input-group-static mb-4">
+                                            <label for="inputCondition">Condition</label>
+                                            <input type="text" class="form-control" id="inputCondition" name="inputCondition">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-lg-3">
+                                        <div class="input-group input-group-static mb-4">
+                                            <label for="inputQty">QTY</label>
+                                            <input type="text" class="form-control" id="inputQty" name="inputQty">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-lg-3">
+                                        <div class="input-group input-group-static mb-4">
+                                            <label for="inputUom">UOM</label>
+                                            <input type="text" class="form-control" id="inputUom" name="inputUom">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-lg-3">
+                                        <div class="input-group input-group-static mb-4">
+                                            <label for="inputCurrency">Currency</label>
+                                            <select class="form-control form-select" name="inputCurrency" id="inputCurrency" required>
+                                                <option value="IDR">IDR</option>
+                                                <option value="USD">USD</option>
+                                                <option value="CNY">CNY</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-lg-3">
+                                        <div class="input-group input-group-static mb-4">
+                                            <label for="inputPrice">Price</label>
+                                            <input type="text" class="form-control" id="inputPrice" name="inputPrice">
+                                        </div>
+                                    </div>
+                                    <!--<div class="col-md-4 col-lg-3">
+                                        <div class="input-group input-group-static mb-4">
+                                            <label for="inputLampiran">Lampiran</label>
+                                            <input type="file" class="form-control" id="inputLampiran" name="inputLampiran">
+                                        </div>
+                                    </div>-->
+                                </div>
+                                
+                                <button id="btn-add-item" class="btn btn-primary">Tambah</button>
                             </div>
                         </div>
 
@@ -168,6 +263,7 @@
                                         <th data-field="currency">Currency</th>
                                         <th data-field="price">Price</th>
                                         <th data-formatter="totalHarga">Total Price</th>
+                                        <th data-formatter="actionFormatter">Actions</th>
                                     </tr>
                                 </thead>
                             </table>
@@ -205,24 +301,24 @@
                                 <tr>
                                     <td>IDR</td>
                                     <td class="reset-border">
-                                        <div class="mb-1">
-                                            <input type="text" class="form-control input-text"  placeholder="" id="estimatedIdr" name="estimatedIdr" value="{{ $data['estimated_idr'] }}" disabled>
+                                        <div class="input-group input-group-static mb-4">
+                                            <input type="text" class="form-control text-right" id="estimatedIdr" name="estimatedIdr" value="{{ $data['estimated_idr'] }}">
                                         </div>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>USD</td>
                                     <td>
-                                        <div class="mb-1">
-                                            <input type="text" class="form-control input-text"  placeholder="" id="estimatedUsd" name="estimatedUsd" value="{{ $data['estimated_usd'] }}" disabled>
+                                        <div class="input-group input-group-static mb-4">
+                                            <input type="text" class="form-control text-right" id="estimatedUsd" name="estimatedUsd" value="{{ $data['estimated_usd'] }}">
                                         </div>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>CNY</td>
                                     <td>
-                                        <div class="mb-1">
-                                            <input type="text" class="form-control input-text"  placeholder="" id="estimatedCny" name="estimatedCny" value="{{ $data['estimated_cny'] }}" disabled>
+                                        <div class="input-group input-group-static mb-4">
+                                            <input type="text" class="form-control text-right" id="estimatedCny" name="estimatedCny" value="{{ $data['estimated_cny'] }}">
                                         </div>
                                     </td>
                                 </tr>
@@ -234,7 +330,7 @@
                             <div class="mb-1 col-6">
                                 <div class="input-group input-group-static mb-4">
                                     <label for="inputPrice">Ref Doc</label>
-                                    <input type="text" class="form-control" id="refDoc" name="refDoc" disabled value="{{ $data['ref_doc'] }}">
+                                    <input type="text" class="form-control" id="refDoc" name="refDoc" value="{{ $data['ref_doc'] }}">
                                 </div>
                             </div>
                         </div>
@@ -275,50 +371,14 @@
                     </form>
 
                     <div class="card-footer">
-                        {{-- <h5>{{ session('user_id') }} != {{ $data['acknowledge_by_1_nik']}}</h5> --}}
                         <div class="d-flex align-items-center">
-                            
-                                @if($data['status'] == 0 || $data['status'] == null)
-                                    {{-- hanya bisa di validasi ketika sudah acknowledge oleh kedua PIC --}}
-                                    {{-- update status ke 1 setelah validated oleh kedua PIC --}}
-                                    @if($data['acknowledge_1'] == 0 || $data['acknowledge_1'] == null || $data['acknowledge_2'] == 0 || $data['acknowledge_2'] == null)
-                                        @if(session('user_id') == $data['acknowledge_by_1_nik'] || session('user_id') == $data['acknowledge_by_2_nik'])
-                                            <button class="btn btn-primary ms-auto uploadBtn" id="btnSubmitAssetRequest" data-action="acknowledge"
-                                                data-alert-title="Acknowledge" data-alert-message="Konfirmasi acknowledge ?">    
-                                                <i class="fas fa-save"></i>
-                                                Acknowledge
-                                            </button>
-                                        @endif
-                                    @endif
-                                    @if($data['approved_1'] == 0 || $data['approved_1'] == null || $data['approved_2'] == 0 || $data['approved_2'] == null)
-                                        @if(session('user_id') == $data['approved_by_1_nik'] || session('user_id') == $data['approved_by_2_nik'])
-                                            <button class="btn btn-primary ms-auto uploadBtn" id="btnSubmitAssetRequest" data-action="approve"
-                                            data-alert-title="Approve" data-alert-message="Konfirmasi approve ?">    
-                                                <i class="fas fa-save"></i>
-                                                Approve
-                                            </button>
-                                        @endif
-                                    @endif
-                                @endif
-                                @if($data['status'] == 1 && $is_user_sm)
-                                    {{-- TODO : hanya SM --}}
-                                    <button class="btn btn-primary ms-auto uploadBtn" id="btnSubmitAssetRequest" data-action="proses"
-                                        data-alert-title="Proses Request" data-alert-message="Konfirmasi proses request ?">    
-                                        <i class="fas fa-save"></i>
-                                        Proses
-                                    </button>
-                                @endif
-                                @if($data['status'] == 2 && $is_user_sm)
-                                    {{-- TODO : hanya SM --}}
-                                    <button class="btn btn-primary ms-auto uploadBtn" id="btnSubmitAssetRequest" data-action="selesai"
-                                        data-alert-title="Selesai" data-alert-message="Request asset telah selesai ?">    
-                                        <i class="fas fa-save"></i>
-                                        Selesai
-                                    </button>
-                                @endif
-                            
+                            <button class="btn btn-primary ms-auto uploadBtn" id="btnSubmitAssetRequest">
+                                <i class="fas fa-save"></i>
+                                Submit Form
+                            </button>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -342,9 +402,11 @@
         var $table = $("#item-asset");
         var $buttonTambah = $("#btn-add-item")
         var inputType = $("#inputType")
-        var inputArea = $("#inputArea")
+        // var inputArea = $("#inputArea")
         var inputProject = $("#inputProject")
         var inputDepartment = $("#inputDepartment")
+        var inputProjectAllocation = $("#inputProjectAllocation")
+        var inputDepartmentAllocation = $("#inputDepartmentAllocation")
         var reasonpurchase = $("#reasonpurchase")
         var estimatedReadyAtSite = $("#estimatedReadyAtSite")
         var inputModel = $("#inputModel")
@@ -362,6 +424,7 @@
         var estimatedCny = $("#estimatedCny")
         var totalPrice = $("#totalPrice")
         var refDoc = $("#refDoc")
+        var inputPendukungReason = document.getElementById("inputPendukungReason")
         // var requestor = $("#requestor")
         var requestornik = $("#requestornik")
         var dataAssetRequest = {
@@ -376,7 +439,10 @@
             notBudgeted: false,
             department: "",
             project: "",
-            area: "",
+            departmentAllocation: "",
+            projectAllocation: "",
+
+            // area: "",
             reasonForPurchase: "",
             estimatedReadyAtSite: "",
             item: [{}],
@@ -413,6 +479,49 @@
             return total
         }
 
+        function actionFormatter(value, row, index) {
+            return `
+                <a class="btn btn-danger btn-sm" onclick="deleteRow(${index})">Delete</a>
+            `;
+        }
+
+        function deleteRow(id) {
+            $table.bootstrapTable('remove', {
+                field: '$index',
+                values: [id]
+            })
+        }
+
+        function submitAssetRequest(data) {
+            $.ajax({
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                type: "post",
+                url: "/add-asset-request",
+                data: data,
+                dataType: "json",
+                success: function(response) {
+                    if (response.code == 200) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: response.message,
+                        }).then((result) => {
+
+                        })
+                    }
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'thrownError',
+                        html: errorMessage,
+                        confirmButtonText: 'OK'
+                    });
+                    console.log()
+                }
+            })
+        }
+
         $table.on('post-body.bs.table', function(data) {
             var idr = 0;
             var usd = 0;
@@ -440,51 +549,10 @@
             totalPrice.text((parseInt(estimatedIdr.val()) * idr) + (parseInt(estimatedUsd.val()) * usd) + (parseInt(estimatedCny.val()) * cny) || "-")
             // console.log("IDR = ", idr)
         })
-        var detial = {{ Illuminate\Support\Js::from($detail) }}
         var isError = {
             error: {{ Illuminate\Support\Js::from($error) }},
             errorMessage: {{ Illuminate\Support\Js::from($errorMessage) }}
         }
-        document.getElementById("btnSubmitAssetRequest").addEventListener("click", function(e) {
-            Swal.fire({
-                title: e.target.getAttribute('data-alert-title'),
-                text: e.target.getAttribute('data-alert-message'),
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Yes, " + e.target.getAttribute('data-alert-title') + "!"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    axios.post('/validasi-asset-request', 
-                        {
-                            noDoc: noDoc.text(),
-                            action: e.target.getAttribute('data-action')
-                        }, 
-                    {
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        }
-                    })
-                    .then(function (response) {
-                        // console.log(response.data)
-                        var popMsg = {
-                            icon: response.data.error ? "error" : "success",
-                            title: response.data.error ? "Gagal!" : "Berhasil",
-                            text: response.data.error ? response.data.errorMessage : response.data.message,
-                        }
-                        Swal.fire(popMsg).then((result) => {
-                                // window.location.href = `/get-form-detail?no_doc=${response.data.data.no_doc}`;
-                            })
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                    });
-                }
-            });
-            
-        })
-        // console.log({{ Illuminate\Support\Js::from($data) }})
         $(function() {
             if(isError.error) {
                 Swal.fire({
@@ -495,44 +563,116 @@
 
                 })
             } else {
+                var detial = {{ Illuminate\Support\Js::from($detail) }}
+                console.log({{ Illuminate\Support\Js::from($data) }})
                 detial.forEach(element => {
                     $table.bootstrapTable('append', element)
                 });
+                inputDepartment.val({{ Illuminate\Support\Js::from( $data['department']) }})
+                inputProject.val({{ Illuminate\Support\Js::from( $data['project']) }})
+                inputDepartmentAllocation.val({{ Illuminate\Support\Js::from( $data['department_allocation']) }})
+                inputProjectAllocation.val({{ Illuminate\Support\Js::from( $data['project_allocation']) }})
+
                 dataAssetRequest.replacement = checkReplacement.checked
                 dataAssetRequest.additional = checkAdditional.checked
                 dataAssetRequest.budgeted = checkBudgeted.checked
                 dataAssetRequest.notBudgeted = checkNotBudgeted.checked
-                dataAssetRequest.area = $("#inputArea").val()
+                // dataAssetRequest.area = $("#inputArea").val()
                 dataAssetRequest.department = inputDepartment.val()
                 dataAssetRequest.project = inputProject.val()
+                dataAssetRequest.departmentAllocation = inputDepartmentAllocation.val()
+                dataAssetRequest.projectAllocation = inputProjectAllocation.val()
                 dataAssetRequest.reasonForPurchase = reasonpurchase.val()
     
                 estimatedIdr.change(function(e) {
                     totalPrice.text((estimatedIdr.val() * calculatedIdr.text()) + (estimatedUsd.val() * calculatedUsd.text()) + (estimatedCny.val() * calculatedCny.text()))
                 });
                 estimatedUsd.change(function(e) {
-                    
+    
                     totalPrice.text((estimatedIdr.val() * calculatedIdr.text()) + (estimatedUsd.val() * calculatedUsd.text()) + (estimatedCny.val() * calculatedCny.text()))
                 });
                 estimatedCny.change(function(e) {
                     totalPrice.text((estimatedIdr.val() * calculatedIdr.text()) + (estimatedUsd.val() * calculatedUsd.text()) + (estimatedCny.val() * calculatedCny.text()))
                 });
             }
-        })
 
-        // $table.bootstrapTable({
-        //     data: [
-        //         {
-        //         id: 1,
-        //         name: 'Item 1',
-        //         _name_rowspan: 2,
-        //         price: '$1'
-        //         },
-        //         {
-        //         id: 2,
-        //         price: '$2'
-        //         }
-        //     ]
-        // })
+            $buttonTambah.click(function (e) {
+                e.preventDefault()
+                $table.bootstrapTable('append', {
+                    type: inputType.val(),
+                    model: inputModel.val(),
+                    brand: inputBrand.val(),
+                    condition: inputCondition.val(),
+                    qty: inputQty.val(),
+                    uom: inputUom.val(),
+                    currency: inputCurrency.val(),
+                    price: inputPrice.val()
+                })
+                $table.bootstrapTable('scrollTo', 'bottom')
+            })
+
+            btnSubmitAssetRequest.click(function(e) {
+                e.preventDefault();
+                var dataReq = {
+                    formName: dataAssetRequest.formName,
+                    noDok: "BSS-FRM-SM-016",
+                    tglDok: "01-01-2023",
+                    // area: inputArea.val(),
+                    noDoc: noDoc.text(),
+                    tglDoc: formatTgl(),
+                    replacement: checkReplacement.checked,
+                    additional: checkAdditional.checked,
+                    budgeted: checkBudgeted.checked,
+                    notBudgeted: checkNotBudgeted.checked,
+                    department: inputDepartment.val(),
+                    project: inputProject.val(),
+                    departmentAllocation: inputDepartmentAllocation.val(),
+                    projectAllocation: inputProjectAllocation.val(),
+                    // area: inputArea.val(),
+                    reasonPurchase: reasonpurchase.val(),
+                    estimatedReadyAtSite: estimatedReadyAtSite.val(),
+                    estimatedIdr: estimatedIdr.val(),
+                    estimatedUsd: estimatedUsd.val(),
+                    estimatedCny: estimatedCny.val(),
+                    refDoc: refDoc.val(),
+                    requestedBy: requestornik.text(),
+                    // item: dataAssetRequest.item,
+                    totalPrice: totalPrice.text(),
+                    pendukungReason: []
+                }
+                let formData = new FormData();
+
+                for (let i = 0; i < inputPendukungReason.files.length; i++) {
+                    formData.append('pendukungReason[]', inputPendukungReason.files[i]);
+                }
+                formData.append('item',JSON.stringify(dataAssetRequest.item));
+                for (const key in dataReq) {
+                    if(key != "pendukungReason" || key != "item") {
+                        formData.append(key, dataReq[key])
+                    }
+                }
+                // TODO 
+                axios.post('/add-asset-request', formData, {
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                        'Content-Type': 'multipart/form-data'
+                    }
+                })
+                .then(function (response) {
+                    console.log(response.data)
+                    Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: response.data.data.no_doc,
+                        }).then((result) => {
+                            // window.location.href = `/get-form-detail?no_doc=${response.data.data.no_doc}`;
+                        })
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+                // submitAssetRequest(dataReq);
+            })
+        })
     </script>
 @endsection
