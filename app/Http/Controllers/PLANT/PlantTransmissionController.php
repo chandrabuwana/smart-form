@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\PLANT;
 
+use App\Helper;
 use App\Http\Controllers\Controller;
 use Exception;
 use Illuminate\Database\QueryException;
@@ -12,11 +13,19 @@ class PlantTransmissionController extends Controller
 {
     public function index()
     {
+        if(!Helper::isGrantPermission('create-form-transmission')) {
+            return redirect('/');
+        }
+
         return view('plant/transmission-test-form');
     }
 
     public function dashboard()
     {
+        if(!Helper::isGrantPermission('dashboard-form-transmission')) {
+            return redirect('/');
+        }
+
         return view('plant/dashboard-plant');
     }
 
@@ -57,6 +66,10 @@ class PlantTransmissionController extends Controller
 
     public function detail($id)
     {
+        if(!Helper::isGrantPermission('detail-data-transmission')) {
+            return redirect('/');
+        }
+
         $plantMasterData = DB::table('FM_PLANT_PPM_TRANSMISI_CMT_BSS_MASTER')->find($id);
         if(!$plantMasterData) abort(404);
 
@@ -79,6 +92,10 @@ class PlantTransmissionController extends Controller
 
     public function store(Request $request)
     {
+        if(!Helper::isGrantPermission('create-form-transmission')) {
+            return redirect('/');
+        }
+
         $request->validate([
             'machine_number' => 'required|string|max:255',
             'machine_model' => 'required|string|max:255',
