@@ -66,6 +66,18 @@
 
                 <div class="card-body my-1">
                     <div class="row">
+                        <div class="row gx-4">
+                            <div class="col-auto my-auto ms-3">
+                                <div class="h-100">
+                                    <p class="mb-0 fw-bold text-sm">
+                                        Requested NIK : <span id="requestor">{{ $data['nik'] }}</span>
+                                    </p>
+                                    <p class="mb-0 fw-bold text-sm">
+                                        Requested Name : <span id="requestor">{{ $data['driver'] }}</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                         <div class="col-md-6">
                             <table class="w-full">
                                 <tr>
@@ -282,6 +294,7 @@
             // console.log(items)
         })
         var dataDetail = {{ Illuminate\Support\Js::from($data_detail) }}
+        console.log(dataDetail)
         $(function() {
             dataDetail.forEach(element => {
                 $table.bootstrapTable('append', element)
