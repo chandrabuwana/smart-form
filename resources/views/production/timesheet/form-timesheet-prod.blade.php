@@ -432,10 +432,33 @@
                     headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
                 })
                 .then(function (response) {
-                    console.log(response.data)
+                    var data = {
+                        icon: 'error',
+                        title: '',
+                        text: ''
+                    }
+                    if(response.data.isSuccess) {
+                        data.icon = 'success'
+                        data.title = "Berhasil!"
+                        data.text = response.data.message
+                    } else {
+                        data.icon = 'error'
+                        data.title = "Gagal!"
+                        data.text = response.data.message
+                    }
+
+                    Swal.fire(data).then((result) => {
+                        // window.location.href = `/get-form-detail?no_doc=${response.data.data.no_doc}`;
+                    })
                 })
                 .catch(function (error) {
-                    console.log(errorw);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        text: 'Terjadi kesalahan, coba beberapa saat lagi'
+                    }).then((result) => {
+                        // window.location.href = `/get-form-detail?no_doc=${response.data.data.no_doc}`;
+                    })
                 });
             })
         })

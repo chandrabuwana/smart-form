@@ -46,7 +46,6 @@ class ProductionTimeSheetDashboarController extends Controller
         try {
             $data_insert['driver'] = $data_input['driver'];
             $data_insert['site'] = $data_input['site'];
-            $data_insert['hari'] = $data_input['site'];
             $data_insert['tanggal'] = $data_input['tanggal'];
             $data_insert['shift'] = $data_input['shift'];
             $data_insert['nama_no_unit'] = $data_input['namaNoUnit'];
@@ -71,9 +70,13 @@ class ProductionTimeSheetDashboarController extends Controller
                 ));
             }
             DB::commit();
-            $isError = false;
+            $response['isSuccess'] = true;
+            $response['message'] = "Berhasil Submit Timesheet";
+            $response['data'] = ['id' => $id];
         } catch (Exception $ex) {
             Log::error($ex->getMessage());
+            $response['isSuccess'] = false;
+            $response['message'] = $ex->getMessage();
         }
 
         return response()->json(data: $response);
