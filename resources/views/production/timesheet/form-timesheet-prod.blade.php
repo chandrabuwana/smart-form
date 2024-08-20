@@ -514,7 +514,7 @@
                         title: 'Gagal!',
                         html: msg
                     }).then((result) => {
-                        // window.location.href = `/get-form-detail?no_doc=${response.data.data.no_doc}`;
+                        window.location.href = "/bss-form-prod-timesheet";
                     })
                 } else {
                     $table.bootstrapTable('sortBy', {
@@ -524,9 +524,9 @@
     
                     $table.bootstrapTable('append', {
                         jam: inputJam.val(),
-                        menitRit: inputMenitRit.val(),
-                        materialSeam: inputMaterialSeam.val(),
-                        kodeAktifitas: inputKodeAktifitas.val(),
+                        rit_menit: inputMenitRit.val(),
+                        mns: inputMaterialSeam.val(),
+                        kd_aktifitas: inputKodeAktifitas.val(),
                         problem: inputProblem.val(),
                         awal: inputAwal.val(),
                         akhir: inputAkhir.val()
@@ -562,6 +562,7 @@
                         awalHM: inputAwalHM.val(),
                         akhirHM: inputAkhirHM.val(),
                         problem: inputProblem.val(),
+                        blok: inputBlok.val(),
                         totalRit: detailData.length,
                         detail: detailData
                     }
@@ -586,6 +587,7 @@
                         }
 
                         Swal.fire(data).then((result) => {
+                            window.location.href = "/bss-form-prod-timesheet";
                             // window.location.href = `/get-form-detail?no_doc=${response.data.data.no_doc}`;
                         })
                     })

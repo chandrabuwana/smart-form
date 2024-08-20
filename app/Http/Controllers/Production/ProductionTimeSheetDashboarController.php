@@ -57,6 +57,7 @@ class ProductionTimeSheetDashboarController extends Controller
             $data_insert['total_rit'] = $data_input['totalRit'];
             $data_insert['created_by'] = $nik_session;
             $data_insert['nik'] = $nik_session;
+            $data_insert['blok'] = $data_input['blok'];
 
             DB::beginTransaction();
             $id = DB::table($TABLE_MASTER)->insertGetId($data_insert);
@@ -65,10 +66,10 @@ class ProductionTimeSheetDashboarController extends Controller
                 DB::table($TABLE_DETAIL)->insert(array(
                     'id_master' => $id,
                     'jam' => $data_item_detail['jam'],
-                    'rit_menit_ke' => $data_item_detail['menitRit'],
+                    'rit_menit_ke' => $data_item_detail['rit_menit'],
                     'problem' => $data_item_detail['problem'],
-                    'material_seam' => $data_item_detail['materialSeam'],
-                    'kode_aktifitas' => $data_item_detail['kodeAktifitas'],
+                    'material_seam' => $data_item_detail['mns'],
+                    'kode_aktifitas' => $data_item_detail['kd_aktifitas'],
                     'awal' => (float) $data_item_detail['awal'],
                     'akhir' => (float) $data_item_detail['akhir'],
                     'created_by' => $nik_session,
