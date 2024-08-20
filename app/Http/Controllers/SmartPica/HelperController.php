@@ -142,7 +142,7 @@ class HelperController extends Controller
 
     function HelperDataTablePica(Request $table)
     {
-        $query = "select nik, nodocpica, CONCAT(FORMAT(DATEFROMPARTS(tahun, bulan, 1), 'MMMM'), ' - ', tahun) AS tahun_bulan, week, site, id_kpi, status, problem, kp_name, lea_name from PICA_BETA.dbo.master_pica m join kategori_problem k
+        $query = "select nik, nodocpica, CONCAT(FORMAT(DATEFROMPARTS(tahun, bulan, 1), 'MMMM'), ' - ', tahun) AS tahun_bulan, week, site, id_kpi, status, problem, kp_name, lea_name from master_pica m join kategori_problem k
                     on k.kp_id = m.id_kategory join kpi_lea kl on kl.lea_id = m.id_kpi ";
         $countDataUser = DB::select('select count(*) jumlah FROM master_pica');
         $newQuery = $this->GetQueryDataTablePica($query, $table);
@@ -240,7 +240,7 @@ class HelperController extends Controller
                     ,[ccp]
                     ,[progress]
                     ,[created_at]
-                FROM [PICA_BETA].[dbo].[history_progress_solution] ";
+                FROM [history_progress_solution] ";
         $countDataUser = DB::select('select count(*) jumlah FROM history_progress_solution');
         $newQuery = $this->GetQueryDataTablePica($query, $table);
 

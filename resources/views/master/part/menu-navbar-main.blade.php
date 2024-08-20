@@ -12,6 +12,30 @@
      <hr class="horizontal light mt-0 mb-2">
      <div class="collapse navbar-collapse w-auto " id="sidenav-collapse-main">
          <ul class="navbar-nav">
+            @foreach ($menu as $nav)
+                <li class="nav-item">
+                    <a class="nav-link text-white active bg-gradient-primary nav-menu-utama" href="#">
+                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="fa fa-sitemap"></i>
+                        </div>
+                        <span class="nav-link-text ms-1">{{ $nav['nama'] }}</span>
+                    </a>
+
+                    <ul class="submenu navbar-nav">
+                        @for ($i = 0; $i < count($nav['child']); $i++)
+                            <li class="nav-item">
+                                <a class="nav-link text-white " id="{{ $nav['child'][$i]['id']}}"
+                                    href="{{ $nav['child'][$i]['type'] == 'redirect' ? env('EXT_APP_URL') . $nav['child'][$i]['link'] . '?id=' . $userIdToken : $nav['child'][$i]['link'] }}">
+                                    <div class="text-white text-center d-flex align-items-center justify-content-center">
+                                    </div>
+                                    <span class="nav-link-text">{{ $nav['child'][$i]['nama'] }}</span>
+                                </a>
+                            </li>
+                        @endfor
+                    </ul>
+                </li>
+            @endforeach
+            <!--
              <li class="nav-item">
                  <a class="nav-link text-white active bg-gradient-primary" href="#" id="menuSmartPica">
                      <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -134,10 +158,20 @@
                             <span class="nav-link-text">Form Transmission Test</span>
                          </a>
                      </li>
+                           <span class="nav-link-text">Transmission Test</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white " href="{{ route('dashboard-undercarriage-inspection') }}" id="form-asset-request-nav">
+                            <div class="text-white text-center d-flex align-items-center justify-content-center">
+                            </div>
+                            <span class="nav-link-text">Under Carriage Inspection</span>
+                        </a>
+                    </li>
                  </ul>
              </li>
 
-             <li class="nav-item">
+            <li class="nav-item">
                 <a class="nav-link text-white active bg-gradient-primary" href="#" id="menuProduksi">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="fa fa-sitemap"></i>
@@ -161,6 +195,7 @@
                     </li>
                 </ul>
             </li>
+        -->
          </ul>
 
      </div>

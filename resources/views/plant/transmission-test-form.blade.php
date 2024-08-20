@@ -2261,9 +2261,22 @@
             })
             .then(function (response) {
                 console.log(response.data)
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: 'Form Transmission Test Berhasil di Simpan!',
+
+                }).then((result) => {
+                    window.location.href = `{{ route('dashboard-form-plant') }}`;
+                });
             })
             .catch(function (error) {
                 console.error(error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops!',
+                    text: 'Gagal menyimpan Form Transmission Test'
+                });
             });
         });
     </script>
