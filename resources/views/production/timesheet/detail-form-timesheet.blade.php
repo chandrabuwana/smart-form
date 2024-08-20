@@ -90,7 +90,7 @@
                             <table class="w-full">
                                 <tr>
                                     <td>Nama & No. Unit</td>
-                                    <td><input type="text" class="input-text w-full" id="inputNamaNoUnit" disabled value="{{ $data['nama_no_unit'] }}"></td>
+                                    <td><input type="text" class="input-text w-full" id="inputNamaNoUnit" disabled value="{{ $data['no_unit'] }}"></td>
                                 </tr>
                                 <tr>
                                     <td>Driver</td>

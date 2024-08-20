@@ -66,6 +66,19 @@
                 </div>
 
                 <div class="card-body my-1">
+                    <div class="row gx-4">
+                        <div class="col-auto my-auto ms-3">
+                            <div class="h-100">
+                                <p class="mb-0 fw-bold text-sm">
+                                    Requested NIK : <span id="requestor">{{ session('user_id') }}</span>
+                                </p>
+                                <p class="mb-0 fw-bold text-sm">
+                                    Requested Name : <span id="requestor">{{ session('username') }}</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="row">
                         <div class="col-md-6">
                             <table class="w-full">
@@ -97,11 +110,11 @@
                             <table class="w-full">
                                 <tr>
                                     <td>Nama & No. Unit</td>
-                                    <td><input type="text" class="input-text w-full" id="inputNamaNoUnit"></td>
+                                    <td><input type="text" class="input-text w-full" id="inputNoUnit"></td>
                                 </tr>
                                 <tr>
                                     <td>Driver</td>
-                                    <td><input type="text" class="input-text w-full" id="inputDriver"></td>
+                                    <td><input type="text" class="input-text w-full" id="inputDriver" value="{{ session('username') }}" disabled></td>
                                 </tr>
                                 <tr>
                                     <td>HM Awal</td>
@@ -145,7 +158,7 @@
                         </div>
                         <div class="w-1/2 md:w-1/6">
                             <span>RIT (Menit ke)</span>
-                            <input class="input-text display-block w-full" aria-label="Default select example" id="inputMenitRit" name="inputMenitRit">
+                            <input class="input-text display-block w-full" aria-label="Default select example" id="inputMenitRit" name="inputMenitRit" placeholder="Menit ke 0 - 59">
                             </input>
                         </div>
                         <div class="col-md-4">
@@ -232,7 +245,7 @@
         var inputHari = $("#inputHari");
         var inputTanggal = $("#inputTanggal");
         var inputShift = $("#inputShift");
-        var inputNamaNoUnit = $("#inputNamaNoUnit");
+        var inputNoUnit = $("#inputNoUnit");
         var inputDriver = $("#inputDriver");
         var inputAwalHM = $("#inputAwalHM");
         var inputAkhirHM = $("#inputAkhirHM");
@@ -242,8 +255,40 @@
         var inputMaterialSeam = $("#inputMaterialSeam");
         var inputKodeAktifitas = $("#inputKodeAktifitas");
         var inputProblem = $("#inputProblem");
+        var inputBlok = $("#inputBlok");
         var inputAwal = $("#inputAwal");
         var inputAkhir = $("#inputAkhir");
+
+        var optionJam = {
+            DS: [
+                { value: 'aa', text: '06:00-07:00' },
+                { value: 'ba', text: '07:00-08:00' },
+                { value: 'ca', text: '08:00-09:00' },
+                { value: 'da', text: '09:00-10:00' },
+                { value: 'ea', text: '10:00-11:00' },
+                { value: 'fa', text: '11:00-12:00' },
+                { value: 'ga', text: '12:00-13:00' },
+                { value: 'ha', text: '13:00-14:00' },
+                { value: 'ja', text: '14:00-15:00' },
+                { value: 'ka', text: '15:00-16:00' },
+                { value: 'la', text: '16:00-17:00' },
+                { value: 'ma', text: '17:00-18:00' },
+            ],
+            NS: [
+                { value: 'ab', text: '18:00-19:00' },
+                { value: 'bb', text: '19:00-20:00' },
+                { value: 'cb', text: '20:00-21:00' },
+                { value: 'db', text: '21:00-22:00' },
+                { value: 'eb', text: '22:00-23:00' },
+                { value: 'fb', text: '23:00-00:00' },
+                { value: 'gb', text: '00:00-01:00' },
+                { value: 'hb', text: '01:00-02:00' },
+                { value: 'jb', text: '02:00-03:00' },
+                { value: 'kb', text: '03:00-04:00' },
+                { value: 'lb', text: '04:00-05:00' },
+                { value: 'mb', text: '05:00-06:00' },
+            ]
+        };
         
         function getTodayDate() {
             const today = new Date();
@@ -351,6 +396,88 @@
                 values: [id]
             })
         }
+
+        function validateForm() {
+            var errorList = []
+            var validateError = {
+                field: "",
+                message: ""
+            }
+
+            $("#inputSite").val($("#inputSite").val().trim())
+            $("#inputNoUnit").val($("#inputNoUnit").val().trim())
+            $("#inputAwalHM").val($("#inputAwalHM").val().trim())
+            $("#inputAkhir").val($("#inputAkhir").val().trim())
+
+            if($("#inputSite").val().length < 1) {
+                errorList.push({field: "Site", message: "Site tidak boleh kosong"})
+            }
+            if($("#inputNoUnit").val().length < 1) {
+                errorList.push({field: "Nama & No. Unit", message: "Nama & No. Unit tidak boleh kosong"})
+            }
+            if($("#inputAwalHM").val().length < 1) {
+                errorList.push({field: "HM Awal", message: "HM Awal tidak boleh kosong"})
+            }
+            if($("#inputAkhir").val().length < 1) {
+                errorList.push({field: "HM Akhir", message: "HM Akhir tidak boleh kosong"})
+            }
+
+            return errorList;
+        }
+
+        function validateItem() {
+            var errorList = []
+            var validateError = {
+                field: "",
+                message: ""
+            }
+            
+            $("#inputMenitRit").val($("#inputMenitRit").val().trim())
+            $("#inputMaterialSeam").val($("#inputMaterialSeam").val().trim())
+            $("#inputBlok").val($("#inputBlok").val().trim())
+            $("#inputKodeAktifitas").val($("#inputKodeAktifitas").val().trim())
+
+            if($("#inputMenitRit").val().length < 1) {
+                errorList.push({field: "RIT (Menit ke)", message: "RIT (Menit ke) tidak boleh kosong"})
+            }
+            if(!($("#inputMenitRit").val() >= 0 && $("#inputMenitRit").val() < 60)) {
+                errorList.push({field: "RIT (Menit ke)", message: "RIT (Menit ke) hanya bernilai 0 - 59"})
+            }
+            if($("#inputMaterialSeam").val().length < 1) {
+                errorList.push({field: "Material & Sam", message: "Material & Sam tidak boleh kosong"})
+            }
+            if($("#inputBlok").val().length < 1) {
+                errorList.push({field: "Blok", message: "Blok tidak boleh kosong"})
+            }
+            if($("#inputKodeAktifitas").val().length < 1) {
+                errorList.push({field: "Kode Aktifitas", message: "Kode Aktifitas tidak boleh kosong"})
+            }
+
+            return errorList;
+        }
+
+        function updateJam(shift) {
+            const optionSelect = document.getElementById('inputJam');
+            const selectedType = shift;
+
+            // Hapus semua opsi yang ada
+            optionSelect.innerHTML = '';
+
+            // Jika tipe dipilih, tambahkan opsi baru berdasarkan pilihan
+            if (selectedType && optionJam[selectedType]) {
+                optionJam[selectedType].forEach(option => {
+                    const opt = document.createElement('option');
+                    opt.value = option.value;
+                    opt.textContent = option.text;
+                    optionSelect.appendChild(opt);
+                });
+            }
+        }
+
+        inputShift.change(function(e) {
+            updateJam(e.target.value)
+        })
+
         $table.on('post-body.bs.table', function(data) {
             items = {}
             $tableSummaryRit.bootstrapTable('removeAll')
@@ -373,93 +500,105 @@
             inputHari.val(hariMapping[tgl.getDay()])
         })
         $(function() {
+            updateJam(inputShift.val())
             $btnAddItem.click(function(e) {
                 e.preventDefault()
-                $table.bootstrapTable('sortBy', {
-                    field: "jam",
-                    sortOrder: "asc"
-                })
-
-                $table.bootstrapTable('append', {
-                    jam: inputJam.val(),
-                    menitRit: inputMenitRit.val(),
-                    materialSeam: inputMaterialSeam.val(),
-                    kodeAktifitas: inputKodeAktifitas.val(),
-                    problem: inputProblem.val(),
-                    awal: inputAwal.val(),
-                    akhir: inputAkhir.val()
-                })
-                $table.bootstrapTable('scrollTo', 'bottom')
-
-                // console.log({
-                //     site: inputSite.val(),
-                //     hari: inputHari.val(),
-                //     tanggal: inputTanggal.val(),
-                //     shift: inputShift.val(),
-                //     namaNoUnit: inputNamaNoUnit.val(),
-                //     driver: inputDriver.val(),
-                //     awalHM: inputAwalHM.val(),
-                //     akhirHM: inputAkhirHM.val(),
-                // })
-
-                //     jam: inputJam.val(),
-                //     menitRit: inputMenitRit.val(),
-                //     materialSeam: inputMaterialSeam.val(),
-                //     kodeAktifitas: inputKodeAktifitas.val(),
-                //     awal: inputAwal.val(),
-                //     akhir: inputAkhir.val()
-                // })
+                var validasiItem = validateItem()
+                if(validasiItem.length > 0) {
+                    var msg = "";
+                    for (var listErr of validasiItem) {
+                        msg = msg + "<p>" + listErr.message +  "</p>"
+                    }
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        html: msg
+                    }).then((result) => {
+                        // window.location.href = `/get-form-detail?no_doc=${response.data.data.no_doc}`;
+                    })
+                } else {
+                    $table.bootstrapTable('sortBy', {
+                        field: "jam",
+                        sortOrder: "asc"
+                    })
+    
+                    $table.bootstrapTable('append', {
+                        jam: inputJam.val(),
+                        menitRit: inputMenitRit.val(),
+                        materialSeam: inputMaterialSeam.val(),
+                        kodeAktifitas: inputKodeAktifitas.val(),
+                        problem: inputProblem.val(),
+                        awal: inputAwal.val(),
+                        akhir: inputAkhir.val()
+                    })
+                    $table.bootstrapTable('scrollTo', 'bottom')
+                }
             })
 
             btnSubmitForm.click(function(e) {
                 e.preventDefault()
-                var detailData = $table.bootstrapTable('getData'); 
-                var dataReq = {
-                    site: inputSite.val(),
-                    hari: inputHari.val(),
-                    tanggal: inputTanggal.val(),
-                    shift: inputShift.val(),
-                    namaNoUnit: inputNamaNoUnit.val(),
-                    driver: inputDriver.val(),
-                    awalHM: inputAwalHM.val(),
-                    akhirHM: inputAkhirHM.val(),
-                    problem: inputProblem.val(),
-                    totalRit: detailData.length,
-                    detail: detailData
-                }
-
-                axios.post('/submit-form-timesheet', dataReq, {
-                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
-                })
-                .then(function (response) {
-                    var data = {
-                        icon: 'error',
-                        title: '',
-                        text: ''
+                var validasi = validateForm()
+                if(validasi.length > 0) {
+                    var msg = "";
+                    for (var listErr of validasi) {
+                        msg = msg + "<p>" + listErr.message +  "</p>"
                     }
-                    if(response.data.isSuccess) {
-                        data.icon = 'success'
-                        data.title = "Berhasil!"
-                        data.text = response.data.message
-                    } else {
-                        data.icon = 'error'
-                        data.title = "Gagal!"
-                        data.text = response.data.message
-                    }
-
-                    Swal.fire(data).then((result) => {
-                        // window.location.href = `/get-form-detail?no_doc=${response.data.data.no_doc}`;
-                    })
-                })
-                .catch(function (error) {
                     Swal.fire({
                         icon: 'error',
                         title: 'Gagal!',
-                        text: 'Terjadi kesalahan, coba beberapa saat lagi'
+                        html: msg
                     }).then((result) => {
                         // window.location.href = `/get-form-detail?no_doc=${response.data.data.no_doc}`;
                     })
-                });
+                } else {
+                    var detailData = $table.bootstrapTable('getData'); 
+                    var dataReq = {
+                        site: inputSite.val(),
+                        hari: inputHari.val(),
+                        tanggal: inputTanggal.val(),
+                        shift: inputShift.val(),
+                        noUnit: inputNoUnit.val(),
+                        driver: inputDriver.val(),
+                        awalHM: inputAwalHM.val(),
+                        akhirHM: inputAkhirHM.val(),
+                        problem: inputProblem.val(),
+                        totalRit: detailData.length,
+                        detail: detailData
+                    }
+
+                    axios.post('/submit-form-timesheet', dataReq, {
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
+                    })
+                    .then(function (response) {
+                        var data = {
+                            icon: 'error',
+                            title: '',
+                            text: ''
+                        }
+                        if(response.data.isSuccess) {
+                            data.icon = 'success'
+                            data.title = "Berhasil!"
+                            data.text = response.data.message
+                        } else {
+                            data.icon = 'error'
+                            data.title = "Gagal!"
+                            data.text = response.data.message
+                        }
+
+                        Swal.fire(data).then((result) => {
+                            // window.location.href = `/get-form-detail?no_doc=${response.data.data.no_doc}`;
+                        })
+                    })
+                    .catch(function (error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal!',
+                            text: 'Terjadi kesalahan, coba beberapa saat lagi'
+                        }).then((result) => {
+                            // window.location.href = `/get-form-detail?no_doc=${response.data.data.no_doc}`;
+                        })
+                    });
+                }
             })
         })
     </script>

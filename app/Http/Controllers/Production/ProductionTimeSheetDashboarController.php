@@ -36,7 +36,7 @@ class ProductionTimeSheetDashboarController extends Controller
             'site' => '',
             'tanggal' => '',
             'shift' => '',
-            'nama_no_unit' => '',
+            'no_unit' => '',
             'hm_awal' => 0.0,
             'hm_akhir' => 0.0,
             'total_rit' => 0
@@ -48,7 +48,7 @@ class ProductionTimeSheetDashboarController extends Controller
             $data_insert['site'] = $data_input['site'];
             $data_insert['tanggal'] = $data_input['tanggal'];
             $data_insert['shift'] = $data_input['shift'];
-            $data_insert['nama_no_unit'] = $data_input['namaNoUnit'];
+            $data_insert['no_unit'] = $data_input['noUnit'];
             $data_insert['hm_awal'] = $data_input['awalHM'];
             $data_insert['hm_akhir'] = $data_input['akhirHM'];
             $data_insert['total_rit'] = $data_input['totalRit'];
@@ -97,7 +97,7 @@ class ProductionTimeSheetDashboarController extends Controller
 
         try {
             $master = DB::table($TABLE_MASTER)
-                ->select('id', 'driver', 'tanggal', 'shift', 'nama_no_unit', 'hm_awal', 'hm_akhir', 'total_rit');
+                ->select('id', 'driver', 'tanggal', 'shift', 'no_unit', 'hm_awal', 'hm_akhir', 'total_rit');
 
             $master->orderBy($sort, $order);
             $document = $master->skip($offset)->take($limit)->get();
@@ -129,7 +129,7 @@ class ProductionTimeSheetDashboarController extends Controller
             'site' => '',
             'tanggal' => '',
             'shift' => '',
-            'nama_no_unit' => '',
+            'no_unit' => '',
             'hm_awal' => '',
             'hm_akhir' => '',
             'total_rit' => 0,
@@ -137,7 +137,7 @@ class ProductionTimeSheetDashboarController extends Controller
         );
         try {
             $data = DB::table($TABLE_MASTER)
-                ->select('id', 'driver', 'site', 'tanggal', 'shift', 'nama_no_unit', 'hm_awal', 'hm_akhir', 'total_rit')
+                ->select('id', 'driver', 'site', 'tanggal', 'shift', 'no_unit', 'hm_awal', 'hm_akhir', 'total_rit')
                 ->where('id', $id)
                 ->first();
             
@@ -155,7 +155,7 @@ class ProductionTimeSheetDashboarController extends Controller
 
             $data_master['tanggal'] = $data->tanggal;
             $data_master['shift'] = $data->shift == "DS" ? "Day Shift (DS)" :  ($data_master['shift'] == "DS" ? "Night Shift (NS)" : "");
-            $data_master['nama_no_unit'] = $data->nama_no_unit;
+            $data_master['no_unit'] = $data->no_unit;
             $data_master['hm_awal'] = $data->hm_awal;
             $data_master['hm_akhir'] = $data->hm_akhir;
         } catch (Exception $ex) {
