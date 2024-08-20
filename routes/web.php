@@ -52,6 +52,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class]], function () {
 
     Route::get('/asset-request', [AssetRequestController::class, 'IndexForm'])->name("form-asset-request");
     Route::get('/edit-form-asset-request', [AssetRequestController::class, 'EditForm'])->name("edit-form-asset-request");
+    Route::post('/submit-edit-asset-request', [AssetRequestController::class, 'SubmitEditForm'])->name("submit-edit-asset-request");
     Route::get('/dashboard-form-sm', [AssetRequestController::class, 'DashboardForm'])->name("dashboard-form-sm");
     Route::post('/add-asset-request', [AssetRequestController::class, 'SubmitFormAssetRequest'])->name("submit-asset-request");
     Route::get('/get-forms-data', [AssetRequestController::class, 'GetFormsData'])->name("get-form-data");

@@ -58,9 +58,15 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script type="text/javascript">
-
+        var users_nik = {{ Illuminate\Support\Js::from($nik_session) }}
         function actionFormatter(value, row, index) {
-            return '<a href="/get-form-detail?no_doc=' + row.no_doc + '"><i class="fa fa-info-circle fixed-plugin-button-nav cursor-pointer"></i></a><a href="/edit-form-asset-request?no_doc=' + row.no_doc + '"><i class="fa fa-edit fixed-plugin-button-nav cursor-pointer"></i></a>';
+            var btn = '<a href="/get-form-detail?no_doc=' + row.no_doc + '"><i class="fa fa-info-circle fixed-plugin-button-nav cursor-pointer"></i></a>';
+            if(row.status < 1 ) {
+                if(row.requested_by == users_nik) {
+                    btn = btn + '<a href="/edit-form-asset-request?no_doc=' + row.no_doc + '"><i class="fa fa-edit fixed-plugin-button-nav cursor-pointer"></i></a>';
+                }
+            }
+            return btn;
         }
 
         function statusFormatter(value, row, index) {

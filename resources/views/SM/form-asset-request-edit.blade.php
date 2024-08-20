@@ -24,8 +24,7 @@
                         <div class="col-auto my-auto ms-3">
                             <div class="h-100">
                                 <p class="mb-0 fw-bold text-sm">
-                                    Requested By : <span id="requestor">{{ session('username') }}</span>
-                                    {{-- session()->get('name') . ' - ' . session()->get('dept') . ' - ' . session()->get('site') --}}
+                                    Requested By : <span id="requestor">{{$data['requested_by']}}</span>
                                 </p>
                             </div>
                         </div>
@@ -73,12 +72,12 @@
                                         <tr>
                                             <td>No. Doc</td>
                                             <td>:</td>
-                                            <td id="noDoc">No.Doc</td>
+                                            <td id="noDoc">{{$data['no_doc']}}</td>
                                         </tr>
                                         <tr>
                                             <td>Date</td>
                                             <td>:</td>
-                                            <td id="tglDoc"></td>
+                                            <td id="tglDoc">{{$data['tgl_doc']}}</td>
                                         </tr>
                                     </table>
                                     <!-- <div>No. Doc : <span id="noDoc"></span></div>
@@ -492,36 +491,6 @@
             })
         }
 
-        function submitAssetRequest(data) {
-            $.ajax({
-                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                type: "post",
-                url: "/add-asset-request",
-                data: data,
-                dataType: "json",
-                success: function(response) {
-                    if (response.code == 200) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Berhasil!',
-                            text: response.message,
-                        }).then((result) => {
-
-                        })
-                    }
-                },
-                error: function(xhr, ajaxOptions, thrownError) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'thrownError',
-                        html: errorMessage,
-                        confirmButtonText: 'OK'
-                    });
-                    console.log()
-                }
-            })
-        }
-
         $table.on('post-body.bs.table', function(data) {
             var idr = 0;
             var usd = 0;
@@ -615,8 +584,6 @@
                 e.preventDefault();
                 var dataReq = {
                     formName: dataAssetRequest.formName,
-                    noDok: "BSS-FRM-SM-016",
-                    tglDok: "01-01-2023",
                     // area: inputArea.val(),
                     noDoc: noDoc.text(),
                     tglDoc: formatTgl(),
@@ -652,7 +619,7 @@
                     }
                 }
                 // TODO 
-                axios.post('/add-asset-request', formData, {
+                axios.post('/submit-edit-asset-request?no_doc='+noDoc.text(), formData, {
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
                         'Content-Type': 'multipart/form-data'

@@ -19,8 +19,7 @@
                         <div class="col-auto my-auto ms-3">
                             <div class="h-100">
                                 <p class="mb-0 fw-bold text-sm">
-                                    Requested By : <span id="requestor">{{ session('username') }}</span>
-                                    {{-- session()->get('name') . ' - ' . session()->get('dept') . ' - ' . session()->get('site') --}}
+                                    Requested By : <span id="requestor">{{ $data['requested_by'] }}</span>
                                 </p>
                             </div>
                         </div>
@@ -63,7 +62,7 @@
 
                         <div class="row gx-4">
                             <div class="row">
-                                <div>
+                                <div class="">
                                     <table class="small">
                                         <tr>
                                             <td>No. Doc</td>
@@ -75,6 +74,13 @@
                                             <td>:</td>
                                             <td id="tglDoc">{{ $data['tgl_doc'] }}</td>
                                         </tr>
+                                        @foreach ($history as $riwayat)
+                                                <tr>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td>{{ $riwayat->updated_at }}</td>
+                                                </tr>
+                                        @endforeach
                                     </table>
                                     <!-- <div>No. Doc : <span id="noDoc"></span></div>
                                     <div>Date : <span id="tglDoc"></span></div> -->
@@ -114,13 +120,6 @@
                                     <div class="mb-1">
                                         <label class="form-label" for="reasonpurchase">Reason Purchase</label>
                                         <input type="text" class="form-control input-text"  placeholder="" id="reasonpurchase" name="reasonpurchase" disabled value="{{ $data['reason_purchase'] }}">
-                                    </div>
-                                </div>
-                                {{-- TODO --}}
-                                <div class="col-md-6">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label for="inputPendukungReason">Dokumen Pendukung</label>
-                                        <input type="file" multiple class="form-control" id="inputPendukungReason" name="inputPendukungReason">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -275,7 +274,6 @@
                     </form>
 
                     <div class="card-footer">
-                        {{-- <h5>{{ session('user_id') }} != {{ $data['acknowledge_by_1_nik']}}</h5> --}}
                         <div class="d-flex align-items-center">
                             
                                 @if($data['status'] == 0 || $data['status'] == null)
@@ -445,45 +443,6 @@
             error: {{ Illuminate\Support\Js::from($error) }},
             errorMessage: {{ Illuminate\Support\Js::from($errorMessage) }}
         }
-        document.getElementById("btnSubmitAssetRequest").addEventListener("click", function(e) {
-            Swal.fire({
-                title: e.target.getAttribute('data-alert-title'),
-                text: e.target.getAttribute('data-alert-message'),
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Yes, " + e.target.getAttribute('data-alert-title') + "!"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    axios.post('/validasi-asset-request', 
-                        {
-                            noDoc: noDoc.text(),
-                            action: e.target.getAttribute('data-action')
-                        }, 
-                    {
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        }
-                    })
-                    .then(function (response) {
-                        // console.log(response.data)
-                        var popMsg = {
-                            icon: response.data.error ? "error" : "success",
-                            title: response.data.error ? "Gagal!" : "Berhasil",
-                            text: response.data.error ? response.data.errorMessage : response.data.message,
-                        }
-                        Swal.fire(popMsg).then((result) => {
-                                // window.location.href = `/get-form-detail?no_doc=${response.data.data.no_doc}`;
-                            })
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                    });
-                }
-            });
-            
-        })
         // console.log({{ Illuminate\Support\Js::from($data) }})
         $(function() {
             if(isError.error) {

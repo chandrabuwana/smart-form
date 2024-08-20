@@ -22,17 +22,126 @@ class AssetRequestController extends Controller {
 
     function EditForm(Request $request) {
         $no_doc = $request->query('no_doc');
-        $data = $this->getDetail($request, $no_doc);
-
-        return view("SM/form-asset-request-edit", $data);
+        $nik_session = $request->session()->get('user_id', '');
+        $data = $this->getDetail($request, $no_doc, $nik_session);
+        if($data['data']['requested_by'] != $nik_session) {
+            return abort(401, 'Unauthoried Request!');
+        } else {
+            return view("SM/form-asset-request-edit", $data);
+        }
     }
 
-    function SubmitEditForm(Request $request) {
-        // TODO : 
+    function SubmitEditForm(Request $req) {
+        $tgl = now()->toDateTimeString();
+        $no_doc = $req->query('no_doc');
+        $response = array(
+            'message' => "",
+            'isSuccess' => false
+        );
+        $nik_session = $req->session()->get('user_id', '');
+        $data = $req->input();
+
+        $data_insert = [
+            'department' => $data['department'],
+            'project' => $data['project'],
+            'department_allocation' => $data['departmentAllocation'],
+            'project_allocation' => $data['projectAllocation'],
+            // 'area' => $data['area'],
+            // 'date_doc' => $data['tglDoc'],
+            'reason_for_purchase' => $data['reasonPurchase'],
+            'estimated_ready_at_site' => $data['estimatedReadyAtSite'],
+            'estimated_kurs_idr' => (float) $data['estimatedIdr'],
+            'estimated_kurs_usd' => (float) $data['estimatedUsd'],
+            'estimated_kurs_cny' => (float) $data['estimatedCny'],
+            'total_price_idr' => (float) $data['totalPrice'],
+            'ref_doc' => $data['refDoc'],
+            'nature_replacement' => $data['replacement'] == "true" ? 1 : 0,
+            'nature_additional' => $data['additional'] == "true" ? 1 : 0,
+            'nature_budgeted' => $data['budgeted'] == "true" ? 1 : 0,
+            'nature_not_budgeted' => $data['notBudgeted'] == "true" ? 1 : 0,
+        ];
+        $data_item = json_decode($data['item']);
+        Log::info($data_item);
+        $uploadedFiles = [];
+        if($req->hasFile('pendukungReason')) {
+            foreach ($req->file('pendukungReason') as $file) {
+                $path = $file->store('uploads');
+                $stored_filename = explode('/', $path);
+                $uploadedFiles[] = array('jenis' => 'pendukungReason', 'name' => $file->getClientOriginalName(), 'path' => $stored_filename[1]);
+            }
+        }
+
+        try {
+            DB::beginTransaction();
+            $old_value_master = DB::table($this->TABLE_MASTER)
+                ->select('id', 'department', 'project', 'department_allocation', 'project_allocation',
+                    'date_doc', 'reason_for_purchase', 'estimated_ready_at_site', 'estimated_kurs_idr',
+                    'estimated_kurs_usd', 'estimated_kurs_cny', 'total_price_idr', 'ref_doc',
+                    'nature_replacement', 'nature_additional', 'nature_budgeted', 'nature_not_budgeted')
+                ->where('no_doc', $no_doc)
+                ->first();
+
+            $old_value_detail = DB::table($this->TABLE_DETAIL)
+                ->select('type', 'model', 'brand', 'condition', 'qty', 'uom', 'currency', 'price')
+                ->where('id_master', $old_value_master->id)
+                ->get();
+            $is_item_edit_item = $this->isArrayDifferent($old_value_detail, $data_item);
+            
+            if($is_item_edit_item) {
+                $deleted = DB::table($this->TABLE_DETAIL)->where('id_master', $old_value_master->id)->delete();
+                foreach ($data_item as $data_item_detail) {
+                    DB::table($this->TABLE_DETAIL)->insert(array(
+                        'id_master' => $old_value_master->id,
+                        'type' => $data_item_detail->type,
+                        'model' => $data_item_detail->model,
+                        'brand' => $data_item_detail->brand,
+                        'condition' => $data_item_detail->condition,
+                        'qty' => (int) $data_item_detail->qty,
+                        'uom' => $data_item_detail->uom,
+                        'currency' => $data_item_detail->currency,
+                        'price' => (float) $data_item_detail->price
+                    ));
+                }
+                $history_detail = $this->addHistory($old_value_master->id, $tgl, $nik_session, 'AssetRequestEdit', $data_item, $old_value_detail);
+            }
+
+            foreach ($uploadedFiles as $uploaded) {
+                DB::table($this->TABLE_UPLOADS)->insert(array(
+                    'id_form' => $old_value_master->id,
+                    'file_name' => $uploaded['name'],
+                    'path' => $uploaded['path'],
+                    'jenis' => $uploaded['jenis'],
+                ));
+            }
+            // Log::info($old_value_detail);
+            // Log::info(json_encode($this->isArrayDifferent($old_value_detail, $data_item)));
+            $affected_rows = DB::table($this->TABLE_MASTER)
+                ->where('no_doc', $no_doc)
+                ->update($data_insert);
+            $history_master = $this->addHistory($old_value_master->id, $tgl, $nik_session, 'AssetRequestEdit', $data_insert, $old_value_master);
+            DB::commit();
+            $response['message'] = "Ok";
+            $response['isSuccess'] = true;
+            $response['data'] = array(
+                'no_doc' => $no_doc
+            );
+            
+        } catch (Exception $ex) {
+            // DB::rollBack();
+
+            Log::error($ex->getMessage());
+            Log::error($ex->getTraceAsString());
+            $response['message'] = $ex->getMessage();
+            $response['isSuccess'] = false;
+        }
+
+        return response()->json($response);
     }
 
-    function DashboardForm() {
-       return view("SM/dashboard-form-sm"); 
+    function DashboardForm(Request $req) {
+        $nik_session = $req->session()->get('user_id', '');
+
+        return view("SM/dashboard-form-sm", ['nik_session' => $nik_session]); 
     }
 
     function SubmitFormAssetRequest(Request $req) {
@@ -189,12 +298,15 @@ class AssetRequestController extends Controller {
 
     function FormDetailByNoDoc(Request $request) {
         $no_doc = $request->query('no_doc');
-        $data = $this->getDetail($request, $no_doc);
-
+        $nik_session = $request->session()->get('user_id', '');
+        $data = $this->getDetail($request, $no_doc, $nik_session);
+        $history_edit = $this->getHistory($data['data']['id']);
+        $data = array_merge($data, $history_edit);
+        
         return view('SM/detail-form-asset-request', $data);
     }
 
-    private function getDetail(Request $request, $no_doc) {
+    private function getDetail(Request $request, $no_doc, $nik) {
         $TABLE_MASTER = "FM_SM_016_MASTER";
         $TABLE_DETAIL = "FM_SM_016_DETAIL";
         $isError = true;
@@ -244,7 +356,7 @@ class AssetRequestController extends Controller {
                 ->where('no_doc', $no_doc)
                 ->first();
             if(!is_null($data)) {
-                Log::info("id : ". json_encode($data));
+                // Log::info("id : ". json_encode($data));
                 $data_detail = DB::table($TABLE_DETAIL)
                     ->select('type', 'model', 'brand', 'condition', 'qty', 'uom', 'currency', 'price')
                     ->where('id_master', $data->id)
@@ -280,6 +392,7 @@ class AssetRequestController extends Controller {
 
                 // Log::info("pendukungReason : ". json_encode($pendukung_reason));
                 $data_master['requested_by'] = $data_user->nik;
+                $data_master['id'] = $data->id;
                 $data_master['requested_name'] = $data_user->nama;
                 $data_master['replacement'] = $data->replacement == 1 ? "checked" : "";
                 $data_master['additional'] = $data->additional == 1 ? "checked" : "";
@@ -324,7 +437,7 @@ class AssetRequestController extends Controller {
         }
         $is_user_sm = in_array($request->session()->get('user_id', ''), $this->user_sm);
 
-        return ['error' => $isError, 'errorMessage' => $errorMessage, 'data' => $data_master, 'detail' => $data_detail, 'pendukung_reason' => $pendukung_reason, 'is_user_sm' => $is_user_sm];
+        return ['error' => $isError, 'errorMessage' => $errorMessage, 'data' => $data_master, 'detail' => $data_detail, 'pendukung_reason' => $pendukung_reason, 'is_user_sm' => $is_user_sm, 'nik_session' => $nik];
     }
 
     function download($fileName)
@@ -461,7 +574,7 @@ class AssetRequestController extends Controller {
         return ['affected' => $affected, 'error' => $error, 'errorMessage' => $errorMessage, 'message' => $message];
     }
 
-    private function addHistory($form_id, $updated_at, $updated_by, $action, $new_value) {
+    private function addHistory($form_id, $updated_at, $updated_by, $action, $new_value, $old_value=null) {
         try {
             DB::table("FM_SM_016_HISTORY")
                 ->insert([
@@ -469,12 +582,22 @@ class AssetRequestController extends Controller {
                     'action' => $action,
                     'updated_at' => $updated_at,
                     'updated_by' => $updated_by,
+                    'old_value' => json_encode($old_value),
                     'new_value' => json_encode($new_value)
                 ]);
 
         } catch (Exception $ex) {
             Log::error($ex->getMessage());
         }
+    }
+
+    private function getHistory($form_id) {
+        $history_detail = DB::table('FM_SM_016_HISTORY')
+            ->select('updated_by', 'updated_at')
+            ->where('id_form', $form_id)
+            ->get();
+
+        return ['history' => $history_detail];
     }
 
     private function getValidationMatrix($department, $project, $department_allocation, $project_allocation) {
@@ -485,5 +608,28 @@ class AssetRequestController extends Controller {
             'approved_by_1_nik' => '1008821',
             'approved_by_2_nik' => '1008886'
         ];
+    }
+
+    private function isArrayDifferent($array1, $array2) {
+        if (count($array1) !== count($array2)) {
+            return true;
+        }
+    
+        foreach ($array1 as $key => $item1) {
+            if (!isset($array2[$key])) {
+                return true;
+            }
+            
+            $item2 = $array2[$key];
+    
+            // Membandingkan masing-masing properti dalam object
+            foreach ($item1 as $prop => $value1) {
+                if (!property_exists($item2, $prop) || $item2->$prop !== $value1) {
+                    return true;
+                }
+            }
+        }
+    
+        return false;
     }
 }
