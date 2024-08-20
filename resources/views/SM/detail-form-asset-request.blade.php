@@ -443,6 +443,45 @@
             error: {{ Illuminate\Support\Js::from($error) }},
             errorMessage: {{ Illuminate\Support\Js::from($errorMessage) }}
         }
+        document.getElementById("btnSubmitAssetRequest").addEventListener("click", function(e) {
+            Swal.fire({
+                title: e.target.getAttribute('data-alert-title'),
+                text: e.target.getAttribute('data-alert-message'),
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, " + e.target.getAttribute('data-alert-title') + "!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    axios.post('/validasi-asset-request', 
+                        {
+                            noDoc: noDoc.text(),
+                            action: e.target.getAttribute('data-action')
+                        }, 
+                    {
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    })
+                    .then(function (response) {
+                        // console.log(response.data)
+                        var popMsg = {
+                            icon: response.data.error ? "error" : "success",
+                            title: response.data.error ? "Gagal!" : "Berhasil",
+                            text: response.data.error ? response.data.errorMessage : response.data.message,
+                        }
+                        Swal.fire(popMsg).then((result) => {
+                                // window.location.href = `/get-form-detail?no_doc=${response.data.data.no_doc}`;
+                            })
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+                }
+            });
+            
+        })
         // console.log({{ Illuminate\Support\Js::from($data) }})
         $(function() {
             if(isError.error) {

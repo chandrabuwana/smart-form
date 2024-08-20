@@ -152,6 +152,7 @@ class AssetRequestController extends Controller {
             'message' => "",
             'isSuccess' => false
         );
+        $tgl = now()->toDateTimeString();
         $requested_by = $req->session()->get('user_id');
         $data = $req->input();
         // Log::info(json_encode(array('body' => $data)));
@@ -183,6 +184,7 @@ class AssetRequestController extends Controller {
             'acknowledge_by_2_nik' => $validation_matrix['acknowledge_by_2_nik'],
             'approved_by_1_nik' => $validation_matrix['approved_by_1_nik'],
             'approved_by_2_nik' => $validation_matrix['approved_by_2_nik'],
+            'created_by' => $requested_by
         ];
         $spliited_no_doc = explode("/", $data_insert['no_doc']);
         // Log::info("data_insert : " . json_encode($data_insert));
@@ -211,7 +213,9 @@ class AssetRequestController extends Controller {
                     'qty' => (int) $data_item_detail->qty,
                     'uom' => $data_item_detail->uom,
                     'currency' => $data_item_detail->currency,
-                    'price' => (float) $data_item_detail->price
+                    'price' => (float) $data_item_detail->price,
+                    'created_by' => $requested_by,
+                    'created_at' => $tgl
                 ));
             }
 
@@ -221,6 +225,8 @@ class AssetRequestController extends Controller {
                     'file_name' => $uploaded['name'],
                     'path' => $uploaded['path'],
                     'jenis' => $uploaded['jenis'],
+                    'created_by' => $requested_by,
+                    'created_at' => $tgl
                 ));
             }
             
@@ -536,18 +542,18 @@ class AssetRequestController extends Controller {
             if($action == 'proses') {
                 $affected = DB::table($this->TABLE_MASTER)
                     ->where('no_doc', $no_doc)
-                    ->update(['status' => 2]);
+                    ->update(['status' => 2, 'updated_by' => $nik, 'updated_at' => $tgl]);
                 $new_value['status'] = 2;
             } else if ($action == 'selesai') {
                 $affected = DB::table($this->TABLE_MASTER)
                     ->where('no_doc', $no_doc)
-                    ->update(['status' => 3]);
+                    ->update(['status' => 3, 'updated_by' => $nik, 'updated_at' => $tgl]);
                 $new_value['status'] = 3;
             }  
             else {
                 $affected = DB::table($this->TABLE_MASTER)
                     ->where('no_doc', $no_doc)
-                    ->update([$column => 1]);
+                    ->update([$column => 1, 'updated_by' => $nik, 'updated_at' => $tgl]);
                 if($action == 'approve') {
                     $status = DB::table($this->TABLE_MASTER)
                         ->select('status', 'acknowledge_1', 'acknowledge_2', 'approved_1', 'approved_2')
@@ -556,7 +562,7 @@ class AssetRequestController extends Controller {
                     if($status->status == 0 && $status->acknowledge_1 == 1 && $status->acknowledge_2 == 1 && $status->approved_1 == 1 && $status->approved_2 == 1) {
                         $affected_status = DB::table($this->TABLE_MASTER)
                             ->where('no_doc', $no_doc)
-                            ->update(['status' => 1]);
+                            ->update(['status' => 1, 'updated_by' => $nik, 'updated_at' => $tgl]);
                         $new_value['status'] = 1;
                     }
                 }
