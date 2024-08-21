@@ -180,6 +180,8 @@ class UnderCarriageInspectionController extends Controller
         $limit   = $request->query('limit', 10);
 
         try {
+            $underCarriageMasterNotFiltered = DB::table('FM_PLANT_UNDERCARRIAGE_INSPECTION_MASTER')->select('id');
+
             $underCarriageMaster = DB::table('FM_PLANT_UNDERCARRIAGE_INSPECTION_MASTER')
                 ->select('id', 'document_no', 'unit_model', 'unit_sn', 'unit_smr_hm', 'work_operation', 'ground_condition', 'condition_area_frame', 'inspection_date');
 
@@ -192,18 +194,21 @@ class UnderCarriageInspectionController extends Controller
             }
 
             $data = $underCarriageMaster->orderBy($sort, $order)->offset($offset)
-                ->limit($limit)->get();
+                ->limit($limit);
 
-            $response['message'] = "Ok";
-            $response['isSuccess'] = true;
-            $response['data'] = $data;
+            return response()->json([
+                'total' => $data->count(),
+                'totalNotFiltered' => $underCarriageMasterNotFiltered->count(),
+                'rows' => $data->get()
+            ]);
 
         } catch (Exception $ex) {
-            $response['message'] = $ex->getMessage();
-            $response['isSuccess'] = false;
+            return response()->json([
+                'total' => 0,
+                'totalNotFiltered' => 0,
+                'rows' => []
+            ]);
         }
-
-        return response()->json($response);
     }
 
     public function detail($id)

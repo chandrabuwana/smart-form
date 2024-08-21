@@ -38,6 +38,8 @@ class PlantTransmissionController extends Controller
         $limit   = $request->query('limit', 10);
 
         try {
+            $plantMasterNotFiltered = DB::table('FM_PLANT_PPM_TRANSMISI_CMT_BSS_MASTER')->select('id');
+
             $plantMaster = DB::table('FM_PLANT_PPM_TRANSMISI_CMT_BSS_MASTER')
                 ->select('id', 'machine_number', 'machine_model', 'machine_serial_no', 'machine_smr', 'jobsite', 'checkdate');
 
@@ -50,18 +52,21 @@ class PlantTransmissionController extends Controller
             }
 
             $data = $plantMaster->orderBy($sort, $order)->offset($offset)
-                ->limit($limit)->get();
+                ->limit($limit);
 
-            $response['message'] = "Ok";
-            $response['isSuccess'] = true;
-            $response['data'] = $data;
+            return response()->json([
+                'total' => $data->count(),
+                'totalNotFiltered' => $plantMasterNotFiltered->count(),
+                'rows' => $data->get()
+            ]);
 
         } catch (Exception $ex) {
-            $response['message'] = $ex->getMessage();
-            $response['isSuccess'] = false;
+            return response()->json([
+                'total' => 0,
+                'totalNotFiltered' => 0,
+                'rows' => []
+            ]);
         }
-
-        return response()->json($response);
     }
 
     public function detail($id)

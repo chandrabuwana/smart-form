@@ -77,7 +77,7 @@
         function fetchFormsData(params) {
             var url = `<?= route('dashboard-plant-get-data') ?>`
             $.get(url + '?' + $.param(params.data)).then(function(res) {
-                params.success(res.data)
+                params.success(res)
             })
         }
 

@@ -29,6 +29,8 @@ class RoleManagementController extends Controller
         $limit   = $request->query('limit', 10);
 
         try {
+            $roleMasterNotFiltered = DB::table('MS_ROLE')->select('id');
+
             $roleMaster = DB::table('MS_ROLE')
                 ->select('MS_ROLE.id', 'role_name', 'role_code', DB::raw('COUNT(MS_ROLE_PERMISSION.id) AS role_permission'))
                 ->join('MS_ROLE_PERMISSION', 'MS_ROLE_PERMISSION.role_id', '=', 'MS_ROLE.id')
@@ -38,19 +40,22 @@ class RoleManagementController extends Controller
                 $roleMaster->where('role_name', 'like', '%' . $search . '%');
             }
 
-            $data = $roleMaster->orderBy($sort, $order)->offset($offset)
-                ->limit($limit)->get();
+            $data = $roleMaster->orderBy('MS_ROLE.' . $sort, $order)->offset($offset)
+                ->limit($limit);
 
-            $response['message'] = "Ok";
-            $response['isSuccess'] = true;
-            $response['data'] = $data;
+            return response()->json([
+                'total' => $data->count(),
+                'totalNotFiltered' => $roleMasterNotFiltered->count(),
+                'rows' => $data->get()
+            ]);
 
         } catch (Exception $ex) {
-            $response['message'] = $ex->getMessage();
-            $response['isSuccess'] = false;
+            return response()->json([
+                'total' => 0,
+                'totalNotFiltered' => 0,
+                'rows' => []
+            ]);
         }
-
-        return response()->json($response);
     }
 
     public function create()

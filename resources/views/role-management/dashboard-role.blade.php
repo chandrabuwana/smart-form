@@ -29,7 +29,7 @@
                             data-side-pagination="server"
                             data-page-list="[10, 25, 50, 100, all]" data-sortable="true"
                             data-content-type="application/json" data-data-type="json" data-pagination="true"
-                            data-unique-id="no_doc">
+                            data-unique-id="id">
                             <thead>
                                 <tr>
                                     <th data-field="role_name" data-align="left" data-halign="text-center" data-sortable="true">
@@ -79,7 +79,7 @@
         function fetchFormsData(params) {
             var url = `<?= route('dashboard-role-get-data') ?>`
             $.get(url + '?' + $.param(params.data)).then(function(res) {
-                params.success(res.data)
+                params.success(res)
             })
         }
 

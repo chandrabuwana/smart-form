@@ -30,26 +30,31 @@ class UserManagementController extends Controller
         $limit   = $request->query('limit', 10);
 
         try {
-            $roleMaster = DB::table('users')->select('userid', 'username', 'last_login', 'last_logout', 'device', 'role_name')
+            $userMasterNotFiltered = DB::table('users')->select('id');
+
+            $userMaster = DB::table('users')->select('userid', 'username', 'last_login', 'last_logout', 'device', 'role_name')
                 ->join('MS_ROLE', 'MS_ROLE.role_code', '=', 'users.role');
 
             if(!empty($search)) {
-                $roleMaster->where('role_name', 'like', '%' . $search . '%');
+                $userMaster->where('role_name', 'like', '%' . $search . '%');
             }
 
-            $data = $roleMaster->orderBy($sort, $order)->offset($offset)
-                ->limit($limit)->get();
+            $data = $userMaster->orderBy($sort, $order)->offset($offset)
+                ->limit($limit);
 
-            $response['message'] = "Ok";
-            $response['isSuccess'] = true;
-            $response['data'] = $data;
+            return response()->json([
+                'total' => $data->count(),
+                'totalNotFiltered' => $userMasterNotFiltered->count(),
+                'rows' => $data->get()
+            ]);
 
         } catch (Exception $ex) {
-            $response['message'] = $ex->getMessage();
-            $response['isSuccess'] = false;
+            return response()->json([
+                'total' => 0,
+                'totalNotFiltered' => 0,
+                'rows' => []
+            ]);
         }
-
-        return response()->json($response);
     }
 
     public function create()
