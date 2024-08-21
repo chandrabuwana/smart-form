@@ -171,4 +171,40 @@ class ICFM05TransactionController extends Controller
             "rows" => $dataUser,
         ]);
     }
+
+    function HelperSelect2InduksiKaryawanByDept(Request $d)
+    {
+        $data = $d->request->get("query");
+        $dataDepartment = DB::connection('sqlsrv2')->select("SELECT TOP 5 NIK nomorPunggung, tk.Nama nama, td.Nama dept FROM TKaryawan tk join tdepartement td on tk.KodeDP = td.KodeDP where Nik like  ?  ", ['%' . $data . '%']);
+        // dd($dataDepartment);
+
+        $dataJs = [];
+        foreach ($dataDepartment as $a) {
+            $dataBaru = [
+                'name' => $a->nama,
+                'dept' => $a->dept,
+                'text' => $a->nomorPunggung,
+                'id' => $a->nomorPunggung
+            ];
+            $dataJs[] = $dataBaru;
+        }
+        $final = [
+            'data' => $dataJs,
+        ];
+        return json_encode($final);
+    }
+
+    function validateAndSanitizeInput($input)
+    {
+        // Sanitasi input
+        $sanitizedInput = filter_var($input, FILTER_SANITIZE_STRING);
+
+        // Validasi input: Misalnya, hanya menerima huruf, angka, dan spasi
+        if (preg_match('/^[a-zA-Z0-9 ]*$/', $sanitizedInput)) {
+            return $sanitizedInput;
+        } else {
+            // Jika input tidak valid, Anda bisa mengembalikan false atau memicu error
+            throw new Exception('Input tidak valid');
+        }
+    }
 }
