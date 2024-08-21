@@ -93,6 +93,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class]], function () {
     Route::post('/bss-ref-IC-form-induksi', [ICFM05InduksiKaryawanController::class, 'dataListPertanyaan']);
     Route::post('/bss-ref-IC-form-induksi-2', [ICFM05InduksiKaryawanController::class, 'dataListPertanyaan2']);
     Route::get('/bss-lst-IC-form-induksi', [ICFM05TransactionController::class, 'helperDataListInduksiKaryawan']);
+    Route::post('/bss-helper-data-nik', [ICFM05TransactionController::class, 'HelperSelect2InduksiKaryawanByDept']);
     Route::get('/bss-form-edit-view-IC-form-induksi/{d}', [ICFM05InduksiKaryawanController::class, 'IndexDetailEditViewFormInduksiKaryawan'])->name("bss-edit-view-form-ic-induksi-karyawan");
 
     Route::get('/dashboard-plant', [PlantTransmissionController::class, 'dashboard'])->name('dashboard-form-plant');
@@ -108,6 +109,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class]], function () {
     Route::post('/bss-form-undercarriage-inspection/store', [UnderCarriageInspectionController::class, 'store'])->name('store-undercarriage-inspection');
 
 
+    
     Route::get('/dashboard-menu', [AdminController::class, 'index'])->name('dashboard-menu');
     Route::get('/get-all-menu', [AdminController::class, 'GetAllMenu'])->name('get-all-menu');
     Route::post('/add-new-menu', [AdminController::class, 'AddNewMenu'])->name('add-new-menu');
