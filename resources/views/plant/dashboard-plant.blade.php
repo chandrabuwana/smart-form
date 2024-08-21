@@ -14,13 +14,16 @@
                     </div>
                 </div>
                 <div class="card-body px-0 pb-2">
-                    <div class="d-flex align-items-center">
-                        <a href="{{ route('bss-form-plant-transmission') }}">
-                            <button class="btn btn-primary ms-auto uploadBtn" id="coba">
-                                New Form
-                            </button>
-                        </a>
-                    </div>
+                    @if(Helper::isGrantPermission('create-form-transmission'))
+                        <div class="d-flex align-items-center">
+                            <a href="{{ route('bss-form-plant-transmission') }}">
+                                <button class="btn btn-primary ms-auto uploadBtn" id="coba">
+                                    New Form
+                                </button>
+                            </a>
+                        </div>
+                    @endif
+
                     <div class="table-responsive p-0">
                         <table id="list-form" data-toggle="table" data-ajax="fetchFormsData"
                             data-side-pagination="server"
@@ -47,7 +50,9 @@
                                     <th data-field="checkdate" data-align="center" data-sortable="true">
                                         Check Date
                                     </th>
-                                    <th data-field="action" data-formatter="actionFormatter" >Actions</th>
+                                    @if(Helper::isGrantPermission('detail-data-transmission'))
+                                        <th data-field="action" data-formatter="actionFormatter" >Actions</th>
+                                    @endif
                                 </tr>
                             </thead>
                         </table>
@@ -72,7 +77,7 @@
         function fetchFormsData(params) {
             var url = `<?= route('dashboard-plant-get-data') ?>`
             $.get(url + '?' + $.param(params.data)).then(function(res) {
-                params.success(res.data)
+                params.success(res)
             })
         }
 
