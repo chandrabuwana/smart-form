@@ -15,17 +15,8 @@ class AllowCors
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $allowedOrigins = [
-            'https://form.binasaranasukses.co.id',
-            'https://dev-form.binasaranasukses.co.id',
-        ];
-
-        $origin = $request->headers->get('Origin');
-        if(in_array($origin, $allowedOrigins)) {
-            header('Access-Control-Allow-Origin: ' . $origin);
-            header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-        }
-
+        header('Access-Control-Allow-Origin: *');
+        header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
         return $next($request);
     }
 }
