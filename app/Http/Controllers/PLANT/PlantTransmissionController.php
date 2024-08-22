@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\PLANT;
 
+use App\Helper;
 use App\Http\Controllers\Controller;
 use Exception;
 use Illuminate\Database\QueryException;
@@ -12,11 +13,19 @@ class PlantTransmissionController extends Controller
 {
     public function index()
     {
+        if(!Helper::isGrantPermission('create-form-transmission')) {
+            return redirect('/');
+        }
+
         return view('plant/transmission-test-form');
     }
 
     public function dashboard()
     {
+        if(!Helper::isGrantPermission('dashboard-form-transmission')) {
+            return redirect('/');
+        }
+
         return view('plant/dashboard-plant');
     }
 
@@ -29,6 +38,8 @@ class PlantTransmissionController extends Controller
         $limit   = $request->query('limit', 10);
 
         try {
+            $plantMasterNotFiltered = DB::table('FM_PLANT_PPM_TRANSMISI_CMT_BSS_MASTER')->select('id');
+
             $plantMaster = DB::table('FM_PLANT_PPM_TRANSMISI_CMT_BSS_MASTER')
                 ->select('id', 'machine_number', 'machine_model', 'machine_serial_no', 'machine_smr', 'jobsite', 'checkdate');
 
@@ -41,22 +52,29 @@ class PlantTransmissionController extends Controller
             }
 
             $data = $plantMaster->orderBy($sort, $order)->offset($offset)
-                ->limit($limit)->get();
+                ->limit($limit);
 
-            $response['message'] = "Ok";
-            $response['isSuccess'] = true;
-            $response['data'] = $data;
+            return response()->json([
+                'total' => $data->count(),
+                'totalNotFiltered' => $plantMasterNotFiltered->count(),
+                'rows' => $data->get()
+            ]);
 
         } catch (Exception $ex) {
-            $response['message'] = $ex->getMessage();
-            $response['isSuccess'] = false;
+            return response()->json([
+                'total' => 0,
+                'totalNotFiltered' => 0,
+                'rows' => []
+            ]);
         }
-
-        return response()->json($response);
     }
 
     public function detail($id)
     {
+        if(!Helper::isGrantPermission('detail-data-transmission')) {
+            return redirect('/');
+        }
+
         $plantMasterData = DB::table('FM_PLANT_PPM_TRANSMISI_CMT_BSS_MASTER')->find($id);
         if(!$plantMasterData) abort(404);
 
@@ -79,6 +97,10 @@ class PlantTransmissionController extends Controller
 
     public function store(Request $request)
     {
+        if(!Helper::isGrantPermission('create-form-transmission')) {
+            return redirect('/');
+        }
+
         $request->validate([
             'machine_number' => 'required|string|max:255',
             'machine_model' => 'required|string|max:255',
