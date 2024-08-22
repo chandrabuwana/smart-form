@@ -3,6 +3,10 @@
 @section('custom-css')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.css">
     <style>
+        .display-block {
+            display: contents !important;
+        }
+
         .select2-dropdown {
             overflow: scroll;
             height: 300px;
@@ -274,6 +278,70 @@
                                 <tbody></tbody>
                             </table>
                         </div>
+                        <hr class="horizontal dark my-sm-4">
+                        <div class="row" id="tabel_tambah">
+                            <div class="row" style="padding-left: 0px !important;">
+                                <div class="col" style="padding-left: 0px !important;">
+                                    <fieldset class="color-fieldset form-horizontal">
+                                        <legend class="color-legend">
+                                            <span>Materi Tambahan</span>
+                                        </legend>
+                                        <div class="form-horizontal">
+                                            <table class="" id="MateriTambahanInputData" data-toggle="table"
+                                                data-data-type="json" data-query-params-type="limit"
+                                                data-unique-id="concat" data-pagination="true">
+                                                <thead>
+                                                    <tr>
+                                                        <th data-field="description" data-halign="center"
+                                                            data-sortable="true">
+                                                            Materi</th>
+                                                        <th data-field="nikMateriTambahan" data-halign="center">NIK</th>
+                                                        <th data-halign="center" data-align="center"
+                                                            data-formatter="MateriTambahanInputDataActionFormater">
+                                                            Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                                <tfoot class="display-block" style="display: block !important">
+                                                    <tr>
+                                                        <!-- Description ---->
+                                                        <th data-field="description" data-align="left">
+                                                            <div class="input-group input-group-static my-2">
+                                                                <input id="materiInduksiTambahan" style="margin:5px"
+                                                                    placeholder=" -- Masukkan Materi Induksi -- "
+                                                                    type="text" class="form-control uppercase"
+                                                                    maxlength="50">
+                                                            </div>
+                                                        </th>
+
+                                                        {{-- nik --}}
+                                                        <th data-field="nikMateriTambahan" data-align="left">
+                                                            <div class="input-group input-group-static my-2">
+                                                                <input id="nikInduksiTambahan" style="margin:5px"
+                                                                    placeholder=" -- Masukkan NIK Induktor -- "
+                                                                    type="number"
+                                                                    oninput="this.value = Math.abs(this.value)"
+                                                                    class="form-control uppercase" maxlength="50">
+                                                            </div>
+                                                        </th>
+
+                                                        <!-- action ---->
+                                                        <th data-align="center"
+                                                            style="text-align: center; vertical-align : middle !important">
+                                                            <button
+                                                                onclick="MateriTambahanInputData_InitAddDataTable_obj(this);"><a
+                                                                    class="like" title="Like">
+                                                                    <i class="fa fa-plus"></i> Add
+                                                                </a></button>
+                                                        </th>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+                        </div>
 
                     </div>
 
@@ -305,10 +373,58 @@
     <script src="https://unpkg.com/gijgo@1.9.14/js/gijgo.min.js" type="text/javascript"></script>
     <link href="https://unpkg.com/gijgo@1.9.14/css/gijgo.min.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript">
+        var MateriTambahanInputData_Obj_datas = <?php echo json_encode($tambahanPertanyaan); ?>;
+        
+        
+
+        function MateriTambahanInputData_InitAddDataTable_obj(obj) {
+            if ($('#materiInduksiTambahan').val() == '') {
+                Swal.fire(
+                    'Validation Failed', "Materi cannot be empty", 'error'
+                )
+                return false;
+            }
+            if ($('#nikInduksiTambahan').val() == '') {
+                Swal.fire(
+                    'Validation Failed', "NIK cannot be empty", 'error'
+                )
+                return false;
+            }
+
+            let data_obj = {};
+            data_obj.description = $('#materiInduksiTambahan').val();
+            data_obj.nikMateriTambahan = $('#nikInduksiTambahan').val();
+            data_obj.concat = $('#materiInduksiTambahan').val() + " - " + $(
+                '#nikInduksiTambahan').val();
+            $('#materiInduksiTambahan').val('')
+            $('#nikInduksiTambahan').val('')
+            MateriTambahanInputData_Obj_datas.push(data_obj);
+            $('#MateriTambahanInputData').bootstrapTable('refresh');
+            $('#MateriTambahanInputData').bootstrapTable('load',
+                MateriTambahanInputData_Obj_datas);
+        }
+
+        function MateriTambahanInputDataActionFormater(value, row, index) {
+            return `
+                    <a class="like" href="javascript:void(0)" onclick="MateriTambahanInputData_InitDeletedDataTable_obj(this)" title="Like">
+                        <i class="fa fa-trash"></i>
+                    </a>
+                `
+        }
+
+        function MateriTambahanInputData_InitDeletedDataTable_obj(obj) {
+            var indexDt = $(obj).closest('tr').data('index');
+            let getUniqId = $('#MateriTambahanInputData').bootstrapTable('getData')[indexDt];
+            $('#MateriTambahanInputData').bootstrapTable('removeByUniqueId', getUniqId.concat);
+        }
+
         $(document).ready(function() {
             var dataDetailed = <?php echo json_encode($detail); ?>;
             var dataMaster = <?php echo json_encode($master); ?>;
+            var listpertamaUntukperubahanPErtanyaan = <?php echo json_encode($tambahanPertanyaan); ?>;
             var listDataSelected = [];
+            $('#MateriTambahanInputData').bootstrapTable('load', listpertamaUntukperubahanPErtanyaan);
+
 
             $('#nCreatedAt').val(formatDate(dataMaster.created_at))
             $('#nCreatedAtHidden').val(dataMaster.created_at)
@@ -464,10 +580,13 @@
                 group: $('#fm_jenisInduksi').val(),
                 date: $('#nCreatedAtHidden').val()
             }
+            console.log(MateriTambahanInputData_Obj_datas);
+            
 
             let dataKirim = {
                 master: dataMaster,
-                data: checkedData
+                data: checkedData,
+                pertanyaanTambahan : MateriTambahanInputData_Obj_datas
             }
 
             $.ajax({
