@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\HasApiTokens;
+use DB;
 
 class User extends Authenticatable
 {
@@ -47,6 +48,8 @@ class User extends Authenticatable
     public static function getUserIdToken()
     {
         $user = Auth::user();
-        return base64_encode($user->userid . '_' . $user->username);
+
+        $data_ID = DB::table("MS_HS_LGN_SMART_FORM")->where("nik", $user->username)->first();
+        return base64_encode($data_ID->no . '_' . $user->username);
     }
 }
