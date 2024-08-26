@@ -9,6 +9,16 @@
     .w-fit-content {
         width: fit-content;
     }
+
+    input:not([type="checkbox"]):read-only, textarea:read-only {
+        opacity: .85;
+        cursor: default !important;
+        background-color: rgba(0, 0, 0, 0.02) !important;
+    }
+
+    input:read-only:focus, , textarea:read-only:focus {
+        background-image: linear-gradient(0deg, #e91e63 2px, rgba(156, 39, 176, 0) 0), linear-gradient(0deg, #d2d2d2 1px, rgba(209, 209, 209, 0) 0) !important;
+    }
 </style>
 @endsection
 
@@ -2234,6 +2244,114 @@
                     </div>
                 @endif
             </form>
+
+            @if(isset($plantMaster) && isset($approvalPIC) && $approvalPIC->count() > 0)
+                <div class="card mt-6">
+                    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                        <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+                            <h6 class="text-white text-capitalize ps-3">Approval Pihak Terkait</h6>
+                        </div>
+                    </div>
+                    <div class="card-body my-1">
+                        <div class="row">
+                            @foreach($approvalPIC as $pic)
+                                <div class="col-md-6 col-lg-3 text-center">
+                                    <p class="fw-bold mb-0">Dept. {{ $pic->nama_departement }}</p>
+                                    <p class="mb-2">{{ $pic->nama_karyawan }}</p>
+
+                                    @if($pic->status == 'Approved')
+                                        <img src="{{ url('img/paraf.jpg') }}" height="35px" alt="Paraf">
+
+                                    @elseif($pic->status == 'Rejected')
+                                        <p class="mb-0 text-danger fw-bold d-flex align-items-center justify-content-center">
+                                            Ditolak
+                                            <a href="javascript:detailRejectModal('{{ $pic->reason }}');" class="badge bg-primary badge-circle text-white ms-2"
+                                                data-bs-toggle="tooltip" title="Lihat Catatan Review">
+                                                <i class="fas fa-info-circle"></i>
+                                            </a>
+                                        </p>
+
+                                    @else
+                                        <div class="d-flex align-items-center justify-content-center">
+                                            <button type="button" class="btn btn-danger btn-xs text-center px-3 py-2 me-2"
+                                                data-bs-toggle="tooltip" title="Reject Pengisian Form" onclick="rejectForm('{{ $plantMaster->ID }}', '{{ $pic->id }}')">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+
+                                            <button type="button" class="btn btn-success btn-xs text-center px-3 py-2"
+                                                data-bs-toggle="tooltip" title="Approve Pengisian Form" onclick="approveForm('{{ $plantMaster->ID }}', '{{ $pic->id }}')">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                        </div>
+                                    @endif
+
+                                    <small class="mt-2 d-block"><i>({{ $pic->nama_jabatan }})</i></small>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+            @endif
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-reject" tabindex="-1" role="dialog" aria-labelledby="modalRejectLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalRejectLabel">Reject Pengisian Form</h5>
+                    <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form class="modal-body" id="formReject">
+                    <input type="hidden" name="master_id">
+                    <input type="hidden" name="form_pic_id">
+
+                    <div class="input-group input-group-static mb-3">
+                        <label for="status">Status</label>
+                        <select class="form-control" id="status" name="status">
+                            <option value="Rejected" selected>Rejected</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group input-group-static mb-4">
+                        <label for="reason">Alasan</label>
+                        <input type="text" class="form-control" id="reason" name="reason" />
+                    </div>
+
+                    <div class="d-flex align-items-center">
+                        <button class="btn btn-primary ms-auto uploadBtn" id="btnSubmitReject">
+                            <i class="fas fa-save"></i>
+                            Submit Reject
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-reason-reject" tabindex="-1" role="dialog" aria-labelledby="modalReasonReject" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalReasonReject">Catatan Review Approval</h5>
+                    <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" >
+                    <div class="input-group input-group-static mb-3">
+                        <label for="status">Status</label>
+                        <input type="text" class="form-control" id="status-reject" value="Rejected" readonly />
+                    </div>
+
+                    <div class="input-group input-group-static mb-4">
+                        <label for="reason">Alasan</label>
+                        <textarea rows="4" class="form-control" id="reason-reject" readonly></textarea>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 @endsection
@@ -2250,6 +2368,72 @@
             } else {
                 $el.find('i').removeClass('fa-circle-arrow-up').addClass('fa-circle-arrow-down');
             }
+        });
+
+        function approveForm(masterId, formPICId) {
+            const formData = `master_id=${masterId}&form_pic_id=${formPICId}&status=Approved`;
+            axios.post(`{{ route('bss-approval-form') }}`, formData, {
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
+            })
+            .then(function (response) {
+                console.log(response.data)
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: 'Berhasil approve pengisian form berikut!',
+
+                }).then((result) => {
+                    window.location.reload();
+                });
+            })
+            .catch(function (error) {
+                console.error(error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops!',
+                    text: 'Gagal melakukan approve pengisian form berikut'
+                });
+            });
+        }
+
+        function rejectForm(masterId, formPICId) {
+            $('#formReject').trigger('reset');
+            $('#formReject [name=master_id]').val(masterId);
+            $('#formReject [name=form_pic_id]').val(formPICId);
+            $('#modal-reject').modal('show');
+        }
+
+        function detailRejectModal(reasonReject) {
+            $('#reason-reject').val(reasonReject);
+            $('#modal-reason-reject').modal('show');
+        }
+
+        $('#btnSubmitReject').click( function(e) {
+            e.preventDefault();
+
+            const formData = $('#formReject').serialize();
+            axios.post(`{{ route('bss-approval-form') }}`, formData, {
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
+            })
+            .then(function (response) {
+                console.log(response.data)
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: 'Berhasil reject pengisian form berikut!',
+
+                }).then((result) => {
+                    window.location.reload();
+                });
+            })
+            .catch(function (error) {
+                console.error(error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops!',
+                    text: 'Gagal melakukan reject pengisian form berikut'
+                });
+            });
         });
 
         $('#btnSubmitPlant').click( function(e) {

@@ -255,6 +255,29 @@ class UnderCarriageInspectionController extends Controller
             $subComponentInspections->push($component);
         }
 
+        $approvalPIC = DB::table('MS_FORM_PIC')->select('MS_FORM_PIC.id', 'pic_username')
+            ->where('form_slug', 'plant-under-carriage-inspection')
+            ->get()->map( function($pic) use($id) {
+                $detailPIC = DB::connection('sqlsrv2')->table('TKaryawan')
+                    ->select('TKaryawan.Nama AS nama_karyawan', 'tdepartement.Nama as nama_departement', 'tjabatan.Nama AS nama_jabatan')
+                    ->join('tdepartement', 'tdepartement.KodeDP', '=', 'TKaryawan.KodeDP')
+                    ->join('tjabatan', 'tjabatan.KodeJB', '=', 'TKaryawan.KodeJB')
+                    ->where('TKaryawan.NIK', $pic->pic_username)->first();
+
+                $submissionApproval = DB::table('FM_APPROVAL')->select('status', 'reason')
+                    ->where('ms_form_pic_id', $pic->id)
+                    ->where('submission_form_id', $id)
+                    ->first();
+
+                $pic->nama_karyawan = $detailPIC->nama_karyawan;
+                $pic->nama_departement = $detailPIC->nama_departement;
+                $pic->nama_jabatan = $detailPIC->nama_jabatan;
+                $pic->status = $submissionApproval->status ?? null;
+                $pic->reason = $submissionApproval->reason ?? null;
+
+                return $pic;
+            });
+
         return view('undercarriage/undercarriage-inspection-form', [
             'underCarriageMaster' => $underCarriageMasterData,
             'componentInspections' => $componentInspections,
@@ -262,6 +285,7 @@ class UnderCarriageInspectionController extends Controller
             'components' => $components,
             'componentThirsts' => $componentThirsts,
             'componentLabels' => $componentLabels,
+            'approvalPIC' => $approvalPIC
         ]);
     }
 }
