@@ -38,6 +38,17 @@
                             <img src="<?= url('img/form-undercarriage-inspection/master.png') ?>" class="w-100" alt="Under Carriage Inspection">
                         </div>
                         <div class="col-md-7">
+                            @if(!empty($referenceNo))
+                                <div class="input-group input-group-static mb-2 row align-items-center justify-content-between">
+                                    <div class="col-md-3">
+                                        <label for="reference_no">No Referensi</label>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <input type="text" class="form-control" id="reference_no" name="reference_no" value="{{ $referenceNo }}" readonly>
+                                    </div>
+                                </div>
+                            @endif
+
                             <div class="input-group input-group-static mb-2 row align-items-center justify-content-between">
                                 <div class="col-md-3">
                                     <label for="document_no">No. Dokumen</label>
@@ -396,6 +407,27 @@
                             </div>
                         </div>
                         <div class="card-body my-1">
+                            <div class="d-flex mb-4 align-items-center">
+                                <h5 class="mb-0 me-3">
+                                    Status Approval Form :
+
+                                    @if($statusOverallApproval == 'Approved')
+                                        <span class="text-success fw-bolder">{{ $statusOverallApproval }}</span>
+                                    @elseif($statusOverallApproval == 'Ditolak')
+                                        <span class="text-danger fw-bolder">{{ $statusOverallApproval }}</span>
+                                    @elseif($statusOverallApproval)
+                                        <span class="text-warning fw-bolder">{{ $statusOverallApproval }}</span>
+                                    @endif
+                                </h5>
+
+                                @if($statusOverallApproval == 'Ditolak')
+                                    <a class="btn btn-icon btn-2 bg-gradient-success mb-0 btn-sm" href="{{ route('form-undercarriage-inspection') }}?reference_no={{ $underCarriageMaster->id }}"
+                                        data-bs-toggle="tooltip" title="Buat form baru dengan referensi form ini">
+                                        <span class="btn-inner--icon"><i class="fas fa-reply"></i></span>
+                                    </a>
+                                @endif
+                            </div>
+
                             <div class="row">
                                 @foreach($approvalPIC as $pic)
                                     <div class="col-md-6 col-lg-3 text-center">

@@ -47,7 +47,9 @@ class UnderCarriageInspectionController extends Controller
         $components = DB::table('FM_REFF_PLANT_UNDERCARRIAGE_COMPONENT')
             ->orderBy('id', 'ASC')->get();
 
+        $referenceNo = $request->query('reference_no');
         return view('undercarriage/undercarriage-inspection-form', [
+            'referenceNo' => $referenceNo,
             'components' => $components,
             'componentThirsts' => $componentThirsts,
             'componentLabels' => $componentLabels,
@@ -79,6 +81,7 @@ class UnderCarriageInspectionController extends Controller
 
         try {
             $masterId = DB::table('FM_PLANT_UNDERCARRIAGE_INSPECTION_MASTER')->insertGetId([
+                'reference_no' => $requestData['reference_no'] ?? null,
                 'document_no' => $requestData['document_no'],
                 'unit_model' => $requestData['unit_model'],
                 'unit_sn' => $requestData['unit_sn'],
@@ -278,6 +281,17 @@ class UnderCarriageInspectionController extends Controller
                 return $pic;
             });
 
+        $statusOverallApproval = 'Dalam Review';
+        $approvalPIC->pluck('status')->each( function($status) use(&$statusOverallApproval) {
+            if($status == 'Rejected') {
+                $statusOverallApproval = 'Ditolak';
+            } else if(is_null($status)) {
+                $statusOverallApproval = 'Dalam Review';
+            } else {
+                $statusOverallApproval = 'Approved';
+            }
+        });
+
         return view('undercarriage/undercarriage-inspection-form', [
             'underCarriageMaster' => $underCarriageMasterData,
             'componentInspections' => $componentInspections,
@@ -285,7 +299,8 @@ class UnderCarriageInspectionController extends Controller
             'components' => $components,
             'componentThirsts' => $componentThirsts,
             'componentLabels' => $componentLabels,
-            'approvalPIC' => $approvalPIC
+            'approvalPIC' => $approvalPIC,
+            'statusOverallApproval' => $statusOverallApproval
         ]);
     }
 }

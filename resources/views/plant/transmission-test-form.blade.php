@@ -32,6 +32,18 @@
                     </div>
                 </div>
                 <div class="card-body my-1">
+                    @if(!empty($referenceNo))
+                        <div class="row mb-3">
+                            <div class="col-md-5">
+                                <div class="input-group input-group-static">
+                                    <label for="reference_no">No Referensi</label>
+                                    <input type="text" class="form-control" id="reference_no" name="reference_no"
+                                        value="{{ $referenceNo }}" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
                     {{-- Form Master --}}
                     <div class="row">
                         <div class="col-md-5">
@@ -2253,6 +2265,27 @@
                         </div>
                     </div>
                     <div class="card-body my-1">
+                        <div class="d-flex mb-4 align-items-center">
+                            <h5 class="mb-0 me-3">
+                                Status Approval Form :
+
+                                @if($statusOverallApproval == 'Approved')
+                                    <span class="text-success fw-bolder">{{ $statusOverallApproval }}</span>
+                                @elseif($statusOverallApproval == 'Ditolak')
+                                    <span class="text-danger fw-bolder">{{ $statusOverallApproval }}</span>
+                                @elseif($statusOverallApproval)
+                                    <span class="text-warning fw-bolder">{{ $statusOverallApproval }}</span>
+                                @endif
+                            </h5>
+
+                            @if($statusOverallApproval == 'Ditolak')
+                                <a class="btn btn-icon btn-2 bg-gradient-success mb-0 btn-sm" href="{{ route('bss-form-plant-transmission') }}?reference_no={{ $plantMaster->ID }}"
+                                    data-bs-toggle="tooltip" title="Buat form baru dengan referensi form ini">
+                                    <span class="btn-inner--icon"><i class="fas fa-reply"></i></span>
+                                </a>
+                            @endif
+                        </div>
+
                         <div class="row">
                             @foreach($approvalPIC as $pic)
                                 <div class="col-md-6 col-lg-3 text-center">
