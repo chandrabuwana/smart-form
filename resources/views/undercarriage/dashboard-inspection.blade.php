@@ -71,7 +71,7 @@
         var $table = $("#list-form");
 
         function actionFormatter(value, row, index) {
-            return '<button class="btn btn-primary btn-action"><a href="/dashboard-undercarriage-inspection/detail/' + row.id + '">detail</a></button>';
+            return '<a href="/dashboard-undercarriage-inspection/detail/' + row.id + '" class="btn btn-primary btn-action">detail</a>';
         }
 
         function fetchFormsData(params) {

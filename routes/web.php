@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\admin\AdminController;
+use App\Http\Controllers\Approval\ApprovalFormController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
 
@@ -21,6 +22,7 @@ use App\Http\Controllers\Production\ProductionTimeSheetDashboarController;
 
 use App\Http\Controllers\IC\ICFM05InduksiKaryawanController;
 use App\Http\Controllers\IC\ICFM05TransactionController;
+use App\Http\Controllers\MasterData\MasterFormPICController;
 use App\Http\Controllers\TeamManagement\RoleManagementController;
 use App\Http\Controllers\PLANT\PlantTransmissionController;
 use App\Http\Controllers\TeamManagement\UserManagementController;
@@ -132,6 +134,20 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class]], function () {
         Route::get('/edit/{id}', [UserManagementController::class, 'edit'])->name('edit-user-management');
         Route::post('/edit/update/{id}', [UserManagementController::class, 'update'])->name('update-user-management');
         Route::get('/destroy/{id}', [UserManagementController::class, 'destroy'])->name('destroy-user-management');
+    });
+
+    Route::prefix('master-form-pic')->group( function() {
+        Route::get('/dashboard', [MasterFormPICController::class, 'dashboard'])->name('dashboard-master-form-pic');
+        Route::get('/dashboard/get-data', [MasterFormPICController::class, 'getDashboardData'])->name('dashboard-form-pic-get-data');
+        Route::get('/create', [MasterFormPICController::class, 'create'])->name('create-master-form-pic');
+        Route::post('/create/store', [MasterFormPICController::class, 'store'])->name('store-master-form-pic');
+        Route::get('/edit/{id}', [MasterFormPICController::class, 'edit'])->name('edit-master-form-pic');
+        Route::post('/edit/update/{id}', [MasterFormPICController::class, 'update'])->name('update-master-form-pic');
+        Route::get('/destroy/{id}', [MasterFormPICController::class, 'destroy'])->name('destroy-master-form-pic');
+    });
+
+    Route::prefix('approval')->group( function() {
+        Route::post('/form', [ApprovalFormController::class, 'approveForm'])->name('bss-approval-form');
     });
 });
 

@@ -11,13 +11,16 @@ use Illuminate\Support\Facades\DB;
 
 class PlantTransmissionController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         if(!Helper::isGrantPermission('create-form-transmission')) {
             return redirect('/');
         }
 
-        return view('plant/transmission-test-form');
+        $referenceNo = $request->query('reference_no');
+        return view('plant/transmission-test-form', [
+            'referenceNo' => $referenceNo
+        ]);
     }
 
     public function dashboard()
@@ -87,11 +90,48 @@ class PlantTransmissionController extends Controller
         $detailPowerTrain = DB::table('FM_PLANT_PPM_TRANSMISI_CMT_BSS_DETAIL_POWER_TRAIN_PRESSURE')->where('plant_test_id', $id)
             ->orderBy('id', 'asc')->get();
 
+        $approvalPIC = DB::table('MS_FORM_PIC')->select('MS_FORM_PIC.id', 'pic_username')
+            ->where('form_slug', 'plant-transmission-test')
+            ->get()->map( function($pic) use($id, &$statusOverallApproval) {
+                $detailPIC = DB::connection('sqlsrv2')->table('TKaryawan')
+                    ->select('TKaryawan.Nama AS nama_karyawan', 'tdepartement.Nama as nama_departement', 'tjabatan.Nama AS nama_jabatan')
+                    ->join('tdepartement', 'tdepartement.KodeDP', '=', 'TKaryawan.KodeDP')
+                    ->join('tjabatan', 'tjabatan.KodeJB', '=', 'TKaryawan.KodeJB')
+                    ->where('TKaryawan.NIK', $pic->pic_username)->first();
+
+                $submissionApproval = DB::table('FM_APPROVAL')->select('status', 'reason')
+                    ->where('ms_form_pic_id', $pic->id)
+                    ->where('submission_form_id', $id)
+                    ->first();
+
+                $pic->nama_karyawan = $detailPIC->nama_karyawan;
+                $pic->nama_departement = $detailPIC->nama_departement;
+                $pic->nama_jabatan = $detailPIC->nama_jabatan;
+                $pic->status = $submissionApproval->status ?? null;
+                $pic->reason = $submissionApproval->reason ?? null;
+
+                $statusOverallApproval = $pic->status == 'Rejected' ? 'Rejected' : $pic->status;
+                return $pic;
+            });
+
+        $statusOverallApproval = 'Dalam Review';
+        $approvalPIC->pluck('status')->each( function($status) use(&$statusOverallApproval) {
+            if($status == 'Rejected') {
+                $statusOverallApproval = 'Ditolak';
+            } else if(is_null($status)) {
+                $statusOverallApproval = 'Dalam Review';
+            } else {
+                $statusOverallApproval = 'Approved';
+            }
+        });
+
         return view('plant/transmission-test-form', [
             'plantMaster' => $plantMasterData,
             'detailHarness' => $detailHarness,
             'detailSpeedSensor' => $detailSpeedSensor,
-            'detailPowerTrain' => $detailPowerTrain
+            'detailPowerTrain' => $detailPowerTrain,
+            'approvalPIC' => $approvalPIC,
+            'statusOverallApproval' => $statusOverallApproval
         ]);
     }
 
@@ -126,6 +166,7 @@ class PlantTransmissionController extends Controller
 
         try {
             $master = DB::table('FM_PLANT_PPM_TRANSMISI_CMT_BSS_MASTER')->insertGetId([
+                'reference_no' => $requestData['reference_no'] ?? null,
                 'machine_number' => $requestData['machine_number'],
                 'machine_model' => $requestData['machine_model'],
                 'machine_serial_no' => $requestData['machine_serial_no'],
