@@ -14,6 +14,95 @@
                     </div>
                 </div>
                 <div class="card-body px-0 pb-2">
+                    <div class="row px-3 mb-3">
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <div class="card border">
+                                        <div class="card-body p-3">
+                                            <div class="row align-items-center">
+                                                <div class="col-md-8">
+                                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Step Not Yet</p>
+                                                    <h2 class="fw-bolder">{{ $dataCharts['Step Not Yet']['count'] }}</h2>
+                                                </div>
+                                                <div class="col-md-4 text-end">
+                                                    <div class="icon icon-shape bg-gradient-info shadow-info text-center rounded-circle">
+                                                        <i class="fas fa-calendar-alt text-lg opacity-10" aria-hidden="true"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <div class="card border">
+                                        <div class="card-body p-3">
+                                            <div class="row align-items-center">
+                                                <div class="col-md-8">
+                                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Not Any Progres</p>
+                                                    <h2 class="fw-bolder">{{ $dataCharts['Not Any Progres']['count'] }}</h2>
+                                                </div>
+                                                <div class="col-md-4 text-end">
+                                                    <div class="icon icon-shape bg-gradient-danger shadow-danger text-center rounded-circle">
+                                                        <i class="fas fa-times-circle text-lg opacity-10" aria-hidden="true"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <div class="card border">
+                                        <div class="card-body p-3">
+                                            <div class="row align-items-center">
+                                                <div class="col-md-8">
+                                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">On Progress</p>
+                                                    <h2 class="fw-bolder">{{ $dataCharts['On Progress']['count'] }}</h2>
+                                                </div>
+                                                <div class="col-md-4 text-end">
+                                                    <div class="icon icon-shape bg-gradient-warning shadow-warning text-center rounded-circle">
+                                                        <i class="fas fa-clock text-lg opacity-10" aria-hidden="true"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <div class="card border">
+                                        <div class="card-body p-3">
+                                            <div class="row align-items-center">
+                                                <div class="col-md-8">
+                                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Closed</p>
+                                                    <h2 class="fw-bolder">{{ $dataCharts['Closed']['count'] }}</h2>
+                                                </div>
+                                                <div class="col-md-4 text-end">
+                                                    <div class="icon icon-shape bg-gradient-success shadow-success text-center rounded-circle">
+                                                        <i class="fas fa-check-circle text-lg opacity-10" aria-hidden="true"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="card shadow border">
+                                <div class="card-header px-2 py-3">
+                                    <h6 class="text-capitalize ps-3">Perbandingan Status</h6>
+                                </div>
+                                <div class="card-body p-3">
+                                    <canvas id="chart-status" class="chart-canvas" height="300px"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="d-flex align-items-center">
                         <a href="{{ route('add-smart-pica') }}"><button class="btn btn-primary ms-auto uploadBtn">
                                 Add PICA</button></a>
@@ -54,6 +143,44 @@
 @section('custom-js')
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
     <script type="text/javascript">
+        var elChartStatus = document.getElementById("chart-status").getContext("2d");
+        new Chart(elChartStatus, {
+            type: "pie",
+            data: {
+                labels: ['Step Not Yet', 'Not Any Progres', 'On Progress', 'Closed'],
+                datasets: [{
+                    label: "Projects",
+                    weight: 9,
+                    cutout: 0,
+                    tension: 0.9,
+                    pointRadius: 2,
+                    borderWidth: 2,
+                    hoverOffset: 4,
+                    backgroundColor: ['#49a3f1', '#EF5350', '#FFA726', '#66BB6A'],
+                    data: [
+                        {{ $dataCharts['Step Not Yet']['percentage'] }},
+                        {{ $dataCharts['Not Any Progres']['percentage'] }},
+                        {{ $dataCharts['On Progress']['percentage'] }},
+                        {{ $dataCharts['Closed']['percentage'] }}
+                    ],
+                    fill: false
+                }],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(item) {
+                                return item.label + ' : ' + item.parsed + '%';
+                            }
+                        }
+                    }
+                },
+            },
+        });
+
         function dataTableDateFormater(value, row, index) {
             var monthNames = ["January", "February", "March", "April", "May", "June",
                 "July", "August", "September", "October", "November", "December"
