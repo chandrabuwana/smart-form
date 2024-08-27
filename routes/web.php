@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\absensi\CompareAbsensiController;
 use App\Http\Controllers\admin\AdminController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
@@ -115,8 +116,11 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class]], function () {
     Route::get('/dashboard-menu', [AdminController::class, 'index'])->name('dashboard-menu');
     Route::get('/get-all-menu', [AdminController::class, 'GetAllMenu'])->name('get-all-menu');
     Route::post('/add-new-menu', [AdminController::class, 'AddNewMenu'])->name('add-new-menu');
+    
 });
 
 Route::get('/login', [LoginKaryawanController::class, 'IndexLoginKaryawan']);
 Route::post('/login', [LoginKaryawanController::class, 'ProcessLogin'])->name("login");
 Route::get('/logout', [LoginKaryawanController::class, 'LogoutAuthenticationProcess'])->name("logout");
+Route::get('/absensi', [CompareAbsensiController::class, 'Absensi'])->name('absensi');
+Route::get('/compare-absensi', [CompareAbsensiController::class, 'CompareAbsensi'])->name('compare-absensi');
