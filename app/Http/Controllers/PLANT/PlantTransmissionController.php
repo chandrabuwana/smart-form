@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\PLANT;
 
+use App\Helper;
 use App\Http\Controllers\Controller;
 use Exception;
 use Illuminate\Database\QueryException;
@@ -10,13 +11,24 @@ use Illuminate\Support\Facades\DB;
 
 class PlantTransmissionController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return view('plant/transmission-test-form');
+        if(!Helper::isGrantPermission('create-form-transmission')) {
+            return redirect('/');
+        }
+
+        $referenceNo = $request->query('reference_no');
+        return view('plant/transmission-test-form', [
+            'referenceNo' => $referenceNo
+        ]);
     }
 
     public function dashboard()
     {
+        if(!Helper::isGrantPermission('dashboard-form-transmission')) {
+            return redirect('/');
+        }
+
         return view('plant/dashboard-plant');
     }
 
@@ -29,6 +41,8 @@ class PlantTransmissionController extends Controller
         $limit   = $request->query('limit', 10);
 
         try {
+            $plantMasterNotFiltered = DB::table('FM_PLANT_PPM_TRANSMISI_CMT_BSS_MASTER')->select('id');
+
             $plantMaster = DB::table('FM_PLANT_PPM_TRANSMISI_CMT_BSS_MASTER')
                 ->select('id', 'machine_number', 'machine_model', 'machine_serial_no', 'machine_smr', 'jobsite', 'checkdate');
 
@@ -41,22 +55,29 @@ class PlantTransmissionController extends Controller
             }
 
             $data = $plantMaster->orderBy($sort, $order)->offset($offset)
-                ->limit($limit)->get();
+                ->limit($limit);
 
-            $response['message'] = "Ok";
-            $response['isSuccess'] = true;
-            $response['data'] = $data;
+            return response()->json([
+                'total' => $data->count(),
+                'totalNotFiltered' => $plantMasterNotFiltered->count(),
+                'rows' => $data->get()
+            ]);
 
         } catch (Exception $ex) {
-            $response['message'] = $ex->getMessage();
-            $response['isSuccess'] = false;
+            return response()->json([
+                'total' => 0,
+                'totalNotFiltered' => 0,
+                'rows' => []
+            ]);
         }
-
-        return response()->json($response);
     }
 
     public function detail($id)
     {
+        if(!Helper::isGrantPermission('detail-data-transmission')) {
+            return redirect('/');
+        }
+
         $plantMasterData = DB::table('FM_PLANT_PPM_TRANSMISI_CMT_BSS_MASTER')->find($id);
         if(!$plantMasterData) abort(404);
 
@@ -69,16 +90,57 @@ class PlantTransmissionController extends Controller
         $detailPowerTrain = DB::table('FM_PLANT_PPM_TRANSMISI_CMT_BSS_DETAIL_POWER_TRAIN_PRESSURE')->where('plant_test_id', $id)
             ->orderBy('id', 'asc')->get();
 
+        $approvalPIC = DB::table('MS_FORM_PIC')->select('MS_FORM_PIC.id', 'pic_username')
+            ->where('form_slug', 'plant-transmission-test')
+            ->get()->map( function($pic) use($id, &$statusOverallApproval) {
+                $detailPIC = DB::connection('sqlsrv2')->table('TKaryawan')
+                    ->select('TKaryawan.Nama AS nama_karyawan', 'tdepartement.Nama as nama_departement', 'tjabatan.Nama AS nama_jabatan')
+                    ->join('tdepartement', 'tdepartement.KodeDP', '=', 'TKaryawan.KodeDP')
+                    ->join('tjabatan', 'tjabatan.KodeJB', '=', 'TKaryawan.KodeJB')
+                    ->where('TKaryawan.NIK', $pic->pic_username)->first();
+
+                $submissionApproval = DB::table('FM_APPROVAL')->select('status', 'reason')
+                    ->where('ms_form_pic_id', $pic->id)
+                    ->where('submission_form_id', $id)
+                    ->first();
+
+                $pic->nama_karyawan = $detailPIC->nama_karyawan;
+                $pic->nama_departement = $detailPIC->nama_departement;
+                $pic->nama_jabatan = $detailPIC->nama_jabatan;
+                $pic->status = $submissionApproval->status ?? null;
+                $pic->reason = $submissionApproval->reason ?? null;
+
+                $statusOverallApproval = $pic->status == 'Rejected' ? 'Rejected' : $pic->status;
+                return $pic;
+            });
+
+        $statusOverallApproval = 'Dalam Review';
+        $approvalPIC->pluck('status')->each( function($status) use(&$statusOverallApproval) {
+            if($status == 'Rejected') {
+                $statusOverallApproval = 'Ditolak';
+            } else if(is_null($status)) {
+                $statusOverallApproval = 'Dalam Review';
+            } else {
+                $statusOverallApproval = 'Approved';
+            }
+        });
+
         return view('plant/transmission-test-form', [
             'plantMaster' => $plantMasterData,
             'detailHarness' => $detailHarness,
             'detailSpeedSensor' => $detailSpeedSensor,
-            'detailPowerTrain' => $detailPowerTrain
+            'detailPowerTrain' => $detailPowerTrain,
+            'approvalPIC' => $approvalPIC,
+            'statusOverallApproval' => $statusOverallApproval
         ]);
     }
 
     public function store(Request $request)
     {
+        if(!Helper::isGrantPermission('create-form-transmission')) {
+            return redirect('/');
+        }
+
         $request->validate([
             'machine_number' => 'required|string|max:255',
             'machine_model' => 'required|string|max:255',
@@ -104,6 +166,7 @@ class PlantTransmissionController extends Controller
 
         try {
             $master = DB::table('FM_PLANT_PPM_TRANSMISI_CMT_BSS_MASTER')->insertGetId([
+                'reference_no' => $requestData['reference_no'] ?? null,
                 'machine_number' => $requestData['machine_number'],
                 'machine_model' => $requestData['machine_model'],
                 'machine_serial_no' => $requestData['machine_serial_no'],

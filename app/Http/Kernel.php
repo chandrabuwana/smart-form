@@ -63,6 +63,7 @@ class Kernel extends HttpKernel
         'signed' => \App\Http\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-        'check.auth' => \App\Http\Middleware\EnsureTokenIsValid::class
+        'check.auth' => \App\Http\Middleware\EnsureTokenIsValid::class,
+        'allow.cors' => \App\Http\Middleware\AllowCors::class
     ];
 }
