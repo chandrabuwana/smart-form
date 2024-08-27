@@ -36,7 +36,7 @@
                                     <th data-field="site" data-align="center" data-halign="center">Site</th>
                                     <th data-field="tanggal" data-align="left" data-halign="center">Tanggal</th>
                                     <th data-field="shift" data-align="left" data-halign="center">Shift</th>
-                                    <th data-field="nama_no_unit" data-align="center">Nama & No unit
+                                    <th data-field="no_unit" data-align="center">Nama & No unit
                                     </th>
                                     <th data-field="total_rit" data-align="center"
                                         data-halign="center" data-sortable="true">Total RIT

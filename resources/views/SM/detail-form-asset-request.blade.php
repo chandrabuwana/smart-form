@@ -2,44 +2,6 @@
 
 @section('custom-css')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.css">
-    <style>
-        .form-control {
-            border: 1px solid;
-            padding: 4px;
-        }
-        .form-control:focus {
-            border: 1px solid;
-        }
-        .ml-16px {
-            margin-left: 16px;
-        }
-        .display-block {
-            display: block;
-        }
-        .m-0 {
-            margin: 0;
-        }
-        .text-right {
-            text-align: right;
-        }
-        .input-text {
-            
-            border: 0;
-            border-bottom: 1px solid;
-            border-color: rgb(188, 188, 188);
-            padding: 2px;
-        }
-        .input-text:focus {
-            border: 0;
-            border-bottom: 1px solid;
-            border-color: rgb(188, 188, 188);
-            padding: 2px;
-        }
-        .reset-border {
-            border: 0;
-        }
-
-    </style>
 @endsection
 
 @section('content')
@@ -59,45 +21,16 @@
                                 <p class="mb-0 fw-bold text-sm">
                                     Requested By : <span id="requestor">{{ $data['requested_by'] }}</span>
                                 </p>
-                                <p class="mb-0 fw-bold text-sm">
-                                    Requested Name : <span id="requestor">{{ $data['requested_name'] }}</span>
-                                </p>
-                            </div>
-                        </div>
-                        <div class="col-lg-5 col-md-5 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3">
-                            <div class="nav-wrapper position-relative end-0">
-                                <ul class="nav nav-pills nav-fill p-1" role="tablist">
-                                    <li class="nav-item">
-                                        <table style="width: 100%;">
-                                            <tr>
-                                                <td class="text-start">No Document</td>
-                                                <td> : </td>
-                                                <td>BSS-FRM-SM-016</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-start">Revisi</td>
-                                                <td> : </td>
-                                                <td>00</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-start">Tanggal</td>
-                                                <td> : </td>
-                                                <td>01-Jan-2023</td>
-                                            </tr>
-                                        </table>
-                                    </li>
-                                    
-                                </ul>
                             </div>
                         </div>
                     </div>
-                    
+
                     <form action="">
                         <div class="row gx-4 my-3">
-                            <div class="col-1">
+                            <div class="col-12 col-md-4">
                                 <h4>Nature</h4>
                             </div>
-                            <div class="col-5">
+                            <div class="col-6 col-md-4">
                                 <div class="form-check">
                                     <input class="" type="checkbox" value="" id="checkReplacement" name="checkReplacement" disabled {{$data['replacement']}}>
                                     <label class="form-check-label" for="flexCheckDefault">
@@ -111,7 +44,7 @@
                                     </label>
                                 </div>
                             </div>
-                            <div class="col-5">
+                            <div class="col-6 col-md-4">
                                 <div class="form-check">
                                     <input class="" type="checkbox" value="" id="checkBudgeted" name="checkBudgeted" disabled {{$data['budgeted']}}>
                                     <label class="form-check-label" for="flexCheckDefault">
@@ -128,43 +61,92 @@
                         </div>
 
                         <div class="row gx-4">
-                            <div class="col-6">
-                                <div>
+                            <div class="row">
+                                <div class="">
                                     <table class="small">
                                         <tr>
                                             <td>No. Doc</td>
                                             <td>:</td>
-                                            <td id="noDoc">No.Doc</td>
+                                            <td id="noDoc">{{ $data['no_doc'] }}</td>
                                         </tr>
                                         <tr>
                                             <td>Date</td>
                                             <td>:</td>
-                                            <td id="tglDoc"></td>
+                                            <td id="tglDoc">{{ $data['tgl_doc'] }}</td>
                                         </tr>
+                                        @foreach ($history as $riwayat)
+                                                <tr>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td>{{ $riwayat->updated_at }}</td>
+                                                </tr>
+                                        @endforeach
                                     </table>
-                                    <span>Department</span>
-                                    <input type="text" id="inputDepartment" class="form-select form-select-sm input-text" disabled value='{{ $data['department'] }}'>
-                                </div> 
-                                <div>
-                                    <span>Project</span>
-                                    <input type="text" id="inputProject" class="form-select form-select-sm input-text" disabled value='{{ $data['project'] }}'>
-                                </div> 
-                                <div>
-                                    <span>Area</span>
-                                    <input type="text" id="inputArea" class="form-select form-select-sm input-text" disabled value='{{ $data['area'] }}'>
-                                </div> 
+                                    <!-- <div>No. Doc : <span id="noDoc"></span></div>
+                                    <div>Date : <span id="tglDoc"></span></div> -->
+                                </div>
+                                <div class="card col-md-6">
+                                    <div class="card-body w-full">
+                                        <h5 class="card-title">Requestor</h5>
+                                        <div class="mb-1">
+                                            <label class="form-label" for="inputDepartment">Department</label>
+                                            <input type="text" class="form-control input-text"  placeholder="" id="inputDepartment" name="inputDepartment" disabled value="{{ $data['department'] }}">
+                                        </div>
+                                        <div class="mb-1">
+                                            <label class="form-label" for="inputProject">Project / Site</label>
+                                            <input type="text" class="form-control input-text"  placeholder="" id="inputProject" name="inputProject" disabled value="{{ $data['project'] }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card col-md-6">
+                                    <div class="card-body w-full">
+                                        <h5 class="card-title">Asset Allocation</h5>
+                                        <div class="mb-1">
+                                            <label class="form-label" for="inputDepartmentAllocation">Department</label>
+                                            <input type="text" class="form-control input-text"  placeholder="" id="inputDepartmentAllocation" name="inputDepartmentAllocation" disabled value="{{ $data['department_allocation'] }}">
+                                        </div>
+                                        <div class="mb-1">
+                                            <label class="form-label" for="inputProjectAllocation">Project / Site</label>
+                                            <input type="text" class="form-control input-text"  placeholder="" id="inputProjectAllocation" name="inputProjectAllocation" disabled value="{{ $data['project_allocation'] }}">
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
                         <div class="my-3">
-                            <div class="mb-1">
-                                <label class="form-label">1. Reason For Purchase</label>
-                                <input type="text" class="form-control input-text"  placeholder="" id="reasonpurchase" name="reasonpurchase" disabled value="{{ $data['reason_purchase'] }}">
+                            <div class="mb-1 row">
+                                <div class="col-md-6">
+                                    <div class="mb-1">
+                                        <label class="form-label" for="reasonpurchase">Reason Purchase</label>
+                                        <input type="text" class="form-control input-text"  placeholder="" id="reasonpurchase" name="reasonpurchase" disabled value="{{ $data['reason_purchase'] }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <td>Nama File</td>
+                                                <td>Link</td>
+                                            </tr> 
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($pendukung_reason as $dokumen_reason)
+                                                <tr>
+                                                    <td>{{ $dokumen_reason->file_name }}</td>
+                                                    <td><a href="/asset-request-download/{{ $dokumen_reason->lokasi }}">Download</a></td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
 
                             <div class="mb-1">
-                                <label class="form-label">2. Estimated Ready at Site </label>
-                                <input type="text" class="form-control input-text"  placeholder="" id="estimatedReadyAtSite" name="estimatedReadyAtSite" disabled value="{{ $data['estimated_ready_at_site']  }}">
+                                <div class="input-group input-group-static mb-4">
+                                    <label for="estimatedReadyAtSite">2. Estimated Ready at Site</label>
+                                    <input type="text" class="form-control" id="estimatedReadyAtSite" name="estimatedReadyAtSite" disabled value="{{ $data['estimated_ready_at_site']  }}">
+                                </div>
                             </div>
                             <div class="mb-1">
                                 <label class="form-label">3. Item</label>
@@ -177,7 +159,7 @@
                                     <tr>
                                         <th data-formatter="indexFormatter" data-field="no">No</th>
                                         <th data-field="type">Type</th>
-                                        <th data-field="model">Model</th> --
+                                        <th data-field="model">Model</th>
                                         <th data-field="brand">Brand</th>
                                         <th data-field="condition">Condition</th>
                                         <th data-field="qty">Qty</th>
@@ -215,65 +197,48 @@
                                 </table>
                             </div>
                         </div>
-                        
+
                         <div class="ml-16px">
                             <span>Estimated kurs (Budget)</span>
                             <table>
                                 <tr>
                                     <td>IDR</td>
                                     <td class="reset-border">
-                                        <input type="text" class="text-right input-text" name="estimatedIdr" id="estimatedIdr" value="{{ $data['estimated_idr'] }}" disabled>
+                                        <div class="mb-1">
+                                            <input type="text" class="form-control input-text"  placeholder="" id="estimatedIdr" name="estimatedIdr" value="{{ $data['estimated_idr'] }}" disabled>
+                                        </div>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>USD</td>
                                     <td>
-                                        <input type="text" class="text-right input-text" name="estimatedUsd" id="estimatedUsd" value="{{ $data['estimated_usd'] }}" disabled>
+                                        <div class="mb-1">
+                                            <input type="text" class="form-control input-text"  placeholder="" id="estimatedUsd" name="estimatedUsd" value="{{ $data['estimated_usd'] }}" disabled>
+                                        </div>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>CNY</td>
                                     <td>
-                                        <input type="text" class="text-right input-text" name="estimatedCny" id="estimatedCny" value="{{ $data['estimated_cny'] }}" disabled>
+                                        <div class="mb-1">
+                                            <input type="text" class="form-control input-text"  placeholder="" id="estimatedCny" name="estimatedCny" value="{{ $data['estimated_cny'] }}" disabled>
+                                        </div>
                                     </td>
                                 </tr>
                             </table>
                         </div>
 
                         <div class="my-3 row">
+                            <label class="form-label">5. Budget</label>
                             <div class="mb-1 col-6">
-                                <label class="form-label">5. Budget</label>
-                                <input type="text" class="input-text" id="refDoc" name="refDoc" disabled value="{{ $data['ref_doc'] }}">
-                                
+                                <div class="input-group input-group-static mb-4">
+                                    <label for="inputPrice">Ref Doc</label>
+                                    <input type="text" class="form-control" id="refDoc" name="refDoc" disabled value="{{ $data['ref_doc'] }}">
+                                </div>
                             </div>
                         </div>
-                        <!--
-                        <table style="width: 100%">
-                            <tr>
-                                <td>Requested By</td>
-                                <td></td>
-                                <td colspan="2">Acknowledge By</td>
-                                <td>Approved By</td>
-                                <td></td>
-                            </tr>
-                            <tr style="height: 64px">
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td>Requested By</td>
-                                <td></td>
-                                <td>Ka Dept</td>
-                                <td>Ka Dept SM</td>
-                                <td>Think Tank</td>
-                                <td>Direktur</td>
-                            </tr>
-                        </table>
-                        <div class="row">
+
+                        <!-- <div class="row">
                             <div class="col-1"></div>
                             <div class="col-2">
                                 Requested By
@@ -298,25 +263,60 @@
                                 Ka Dept SM
                             </div>
                             <div class="col-2 text-center">
-                                Think Tank  
+                                Think Tank
                             </div>
                             <div class="col-2 text-center">
                                 Direktur
                             </div>
                             <div class="col-1"></div>
-                        </div>
-                        -->
+                        </div> -->
+                        <span style="display: none;" id="requestornik">{{ session('user_id') }}</span>
                     </form>
 
-                    <div class="card-footer" style="visibility: hidden;">
+                    <div class="card-footer">
                         <div class="d-flex align-items-center">
-                            <button class="btn btn-primary ms-auto uploadBtn" id="btnSubmitAssetRequest">
-                                <i class="fas fa-save"></i>
-                                Submit Form
-                            </button>
+                            
+                                @if($data['status'] == 0 || $data['status'] == null)
+                                    {{-- hanya bisa di validasi ketika sudah acknowledge oleh kedua PIC --}}
+                                    {{-- update status ke 1 setelah validated oleh kedua PIC --}}
+                                    @if($data['acknowledge_1'] == 0 || $data['acknowledge_1'] == null || $data['acknowledge_2'] == 0 || $data['acknowledge_2'] == null)
+                                        @if(session('user_id') == $data['acknowledge_by_1_nik'] || session('user_id') == $data['acknowledge_by_2_nik'])
+                                            <button class="btn btn-primary ms-auto uploadBtn" id="btnSubmitAssetRequest" data-action="acknowledge"
+                                                data-alert-title="Acknowledge" data-alert-message="Konfirmasi acknowledge ?">    
+                                                <i class="fas fa-save"></i>
+                                                Acknowledge
+                                            </button>
+                                        @endif
+                                    @endif
+                                    @if($data['approved_1'] == 0 || $data['approved_1'] == null || $data['approved_2'] == 0 || $data['approved_2'] == null)
+                                        @if(session('user_id') == $data['approved_by_1_nik'] || session('user_id') == $data['approved_by_2_nik'])
+                                            <button class="btn btn-primary ms-auto uploadBtn" id="btnSubmitAssetRequest" data-action="approve"
+                                            data-alert-title="Approve" data-alert-message="Konfirmasi approve ?">    
+                                                <i class="fas fa-save"></i>
+                                                Approve
+                                            </button>
+                                        @endif
+                                    @endif
+                                @endif
+                                @if($data['status'] == 1 && $is_user_sm)
+                                    {{-- TODO : hanya SM --}}
+                                    <button class="btn btn-primary ms-auto uploadBtn" id="btnSubmitAssetRequest" data-action="proses"
+                                        data-alert-title="Proses Request" data-alert-message="Konfirmasi proses request ?">    
+                                        <i class="fas fa-save"></i>
+                                        Proses
+                                    </button>
+                                @endif
+                                @if($data['status'] == 2 && $is_user_sm)
+                                    {{-- TODO : hanya SM --}}
+                                    <button class="btn btn-primary ms-auto uploadBtn" id="btnSubmitAssetRequest" data-action="selesai"
+                                        data-alert-title="Selesai" data-alert-message="Request asset telah selesai ?">    
+                                        <i class="fas fa-save"></i>
+                                        Selesai
+                                    </button>
+                                @endif
+                            
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -325,6 +325,7 @@
 
 @section('custom-js')
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
         var tglNow = new Date()
         var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -438,33 +439,83 @@
             // console.log("IDR = ", idr)
         })
         var detial = {{ Illuminate\Support\Js::from($detail) }}
-
-        console.log(detial)
+        var isError = {
+            error: {{ Illuminate\Support\Js::from($error) }},
+            errorMessage: {{ Illuminate\Support\Js::from($errorMessage) }}
+        }
+        document.getElementById("btnSubmitAssetRequest").addEventListener("click", function(e) {
+            Swal.fire({
+                title: e.target.getAttribute('data-alert-title'),
+                text: e.target.getAttribute('data-alert-message'),
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, " + e.target.getAttribute('data-alert-title') + "!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    axios.post('/validasi-asset-request', 
+                        {
+                            noDoc: noDoc.text(),
+                            action: e.target.getAttribute('data-action')
+                        }, 
+                    {
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    })
+                    .then(function (response) {
+                        // console.log(response.data)
+                        var popMsg = {
+                            icon: response.data.error ? "error" : "success",
+                            title: response.data.error ? "Gagal!" : "Berhasil",
+                            text: response.data.error ? response.data.errorMessage : response.data.message,
+                        }
+                        Swal.fire(popMsg).then((result) => {
+                                // window.location.href = `/get-form-detail?no_doc=${response.data.data.no_doc}`;
+                            })
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+                }
+            });
+            
+        })
+        // console.log({{ Illuminate\Support\Js::from($data) }})
         $(function() {
-            detial.forEach(element => {
-                $table.bootstrapTable('append', element)
-            });
-            noDoc.text(generateNoDoc())
-            tglDoc.text(formatTgl() || "-")
-            dataAssetRequest.replacement = checkReplacement.checked
-            dataAssetRequest.additional = checkAdditional.checked
-            dataAssetRequest.budgeted = checkBudgeted.checked
-            dataAssetRequest.notBudgeted = checkNotBudgeted.checked
-            dataAssetRequest.area = $("#inputArea").val()
-            dataAssetRequest.department = inputDepartment.val()
-            dataAssetRequest.project = inputProject.val()
-            dataAssetRequest.reasonForPurchase = reasonpurchase.val()
+            if(isError.error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: isError.errorMessage,
+                }).then((result) => {
 
-            estimatedIdr.change(function(e) {
-                totalPrice.text((estimatedIdr.val() * calculatedIdr.text()) + (estimatedUsd.val() * calculatedUsd.text()) + (estimatedCny.val() * calculatedCny.text()))
-            });
-            estimatedUsd.change(function(e) {
-                
-                totalPrice.text((estimatedIdr.val() * calculatedIdr.text()) + (estimatedUsd.val() * calculatedUsd.text()) + (estimatedCny.val() * calculatedCny.text()))
-            });
-            estimatedCny.change(function(e) {
-                totalPrice.text((estimatedIdr.val() * calculatedIdr.text()) + (estimatedUsd.val() * calculatedUsd.text()) + (estimatedCny.val() * calculatedCny.text()))
-            });
+                })
+            } else {
+                detial.forEach(element => {
+                    $table.bootstrapTable('append', element)
+                });
+                dataAssetRequest.replacement = checkReplacement.checked
+                dataAssetRequest.additional = checkAdditional.checked
+                dataAssetRequest.budgeted = checkBudgeted.checked
+                dataAssetRequest.notBudgeted = checkNotBudgeted.checked
+                dataAssetRequest.area = $("#inputArea").val()
+                dataAssetRequest.department = inputDepartment.val()
+                dataAssetRequest.project = inputProject.val()
+                dataAssetRequest.reasonForPurchase = reasonpurchase.val()
+    
+                estimatedIdr.change(function(e) {
+                    totalPrice.text((estimatedIdr.val() * calculatedIdr.text()) + (estimatedUsd.val() * calculatedUsd.text()) + (estimatedCny.val() * calculatedCny.text()))
+                });
+                estimatedUsd.change(function(e) {
+                    
+                    totalPrice.text((estimatedIdr.val() * calculatedIdr.text()) + (estimatedUsd.val() * calculatedUsd.text()) + (estimatedCny.val() * calculatedCny.text()))
+                });
+                estimatedCny.change(function(e) {
+                    totalPrice.text((estimatedIdr.val() * calculatedIdr.text()) + (estimatedUsd.val() * calculatedUsd.text()) + (estimatedCny.val() * calculatedCny.text()))
+                });
+            }
         })
 
         // $table.bootstrapTable({

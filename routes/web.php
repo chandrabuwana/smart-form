@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\absensi\CompareAbsensiController;
 use App\Http\Controllers\admin\AdminController;
 use App\Http\Controllers\Approval\ApprovalFormController;
 use Illuminate\Support\Facades\Route;
@@ -55,10 +56,14 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class]], function () {
     Route::get('/view-data-detail-pica/{id}', [DashboarController::class, 'IndexViewDataDetailPica']);
 
     Route::get('/asset-request', [AssetRequestController::class, 'IndexForm'])->name("form-asset-request");
+    Route::get('/edit-form-asset-request', [AssetRequestController::class, 'EditForm'])->name("edit-form-asset-request");
+    Route::post('/submit-edit-asset-request', [AssetRequestController::class, 'SubmitEditForm'])->name("submit-edit-asset-request");
     Route::get('/dashboard-form-sm', [AssetRequestController::class, 'DashboardForm'])->name("dashboard-form-sm");
     Route::post('/add-asset-request', [AssetRequestController::class, 'SubmitFormAssetRequest'])->name("submit-asset-request");
     Route::get('/get-forms-data', [AssetRequestController::class, 'GetFormsData'])->name("get-form-data");
     Route::get('/get-form-detail', [AssetRequestController::class, 'FormDetailByNoDoc'])->name("form-detail-by-no-doc");
+    Route::get('/asset-request-download/{fileName}', [AssetRequestController::class, 'download'])->name("asset-request-download");
+    Route::post('/validasi-asset-request', [AssetRequestController::class, 'ValidasiRequest'])->name("validasi-asset-request");
 
     Route::POST('/helper-kpi-lead-datalist', [HelperController::class, 'HelperSelect2PicaKPILead']);
     Route::POST('/helper-week', [HelperController::class, 'HelperSelectWeek']);
@@ -154,3 +159,5 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class]], function () {
 Route::get('/login', [LoginKaryawanController::class, 'IndexLoginKaryawan']);
 Route::post('/login', [LoginKaryawanController::class, 'ProcessLogin'])->name("login");
 Route::get('/logout', [LoginKaryawanController::class, 'LogoutAuthenticationProcess'])->name("logout");
+Route::get('/absensi', [CompareAbsensiController::class, 'Absensi'])->name('absensi');
+Route::get('/compare-absensi', [CompareAbsensiController::class, 'CompareAbsensi'])->name('compare-absensi');

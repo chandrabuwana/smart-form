@@ -13,9 +13,32 @@ class DashboarController extends Controller
 
     function IndexSmartPicaDashboard()
     {
+        $dataCharts = [
+            'Step Not Yet' => [ 'count' => 0, 'percentage' => 0 ],
+            'Not Any Progres' => [ 'count' => 0, 'percentage' => 0 ],
+            'On Progress' => [ 'count' => 0, 'percentage' => 0 ],
+            'Closed' => [ 'count' => 0, 'percentage' => 0 ],
+        ];
 
+        $dataPicas = DB::table('master_pica')->selectRaw('COUNT(id) AS count_pica, status')
+            ->groupBy('status')->get();
 
-        return view("smartpica/dashboard-smart-pica");
+        foreach($dataPicas as $pica) {
+            $status = strtr($pica->status, [
+                '1' => 'Step Not Yet',
+                '2' => 'Not Any Progres',
+                '3' => 'On Progress',
+                '4' => 'Closed',
+            ]);
+
+            $countAll = $dataPicas->pluck('count_pica')->sum();
+            $dataCharts[ $status ]['count'] = $pica->count_pica;
+            $dataCharts[ $status ]['percentage'] = round(($pica->count_pica / $countAll) * 100, 2);
+        }
+
+        return view("smartpica/dashboard-smart-pica", [
+            'dataCharts' => $dataCharts
+        ]);
     }
 
     function IndexFormAdd()
@@ -147,25 +170,25 @@ class DashboarController extends Controller
         $solution = DB::select("SELECT nodocpica,
                         id_master,
                         nik_master,
-                        id, 
-                        CASE 
+                        id,
+                        CASE
                             WHEN action = 'ca' THEN 'Corrective'
                             WHEN action = 'pa' THEN 'Preventive'
-                            ELSE action 
-                        END AS action, 
-                        note_step, 
-                        upper(ap_tod) ap_tod, 
+                            ELSE action
+                        END AS action,
+                        note_step,
+                        upper(ap_tod) ap_tod,
                         upper(dic) dic,
                         pic,
                         COALESCE(
-                            (SELECT TOP 1 progress 
-                                FROM history_progress_solution s 
-                                WHERE n.nodocpica = s.nodocpica 
-                                AND s.position_why = n.position_why 
-                                AND s.identity_why = n.identity_why 
-                                ORDER BY progress DESC), 
+                            (SELECT TOP 1 progress
+                                FROM history_progress_solution s
+                                WHERE n.nodocpica = s.nodocpica
+                                AND s.position_why = n.position_why
+                                AND s.identity_why = n.identity_why
+                                ORDER BY progress DESC),
                             0
-                        ) progress, 
+                        ) progress,
                        FORMAT(due_date, 'dd MMMM yyyy', 'en-US') AS due_date, position_why, identity_why, k.nama nama_pic FROM [new_pica_step] n join hrd.dbo.TKaryawan k on n.pic = k.NIK where nodocpica = '$id'");
 
         $dataFinal = [
