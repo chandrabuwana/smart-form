@@ -41,14 +41,14 @@ class ICFM05TransactionController extends Controller
             ]);
 
             foreach ($d->data as $key => $value) {
-                $induksiAtDate = Carbon::createFromFormat('d - M - Y', $value['tanggal'])->format('Y-m-d');
+                // $induksiAtDate = Carbon::createFromFormat('d - M - Y', $value['tanggal'])->format('Y-m-d');
                 DB::table('FM_IC_005_BSS_DETAIL')->insert([
                     'NIK' => $validatedData['master']['nik'],
                     'Created' => $dataNOW,
                     'Group' => $validatedData['master']['group'],
                     'IndexPertanyaan' => $value['id'],
-                    'Mentor' => $value['mentor'],
-                    'Induksi_at' => $induksiAtDate,
+                    'Mentor' => session("user_id"),
+                    'Induksi_at' => $dataNOW,
                     'created_at' => $dataNOW,
                     'created_by' => session("user_id"),
                     'updated_by' => null, // Nilai ini mungkin bisa dikosongkan jika belum diperbarui
@@ -62,7 +62,7 @@ class ICFM05TransactionController extends Controller
                     'Created' => $dataNOW,
                     'Group' => $validatedData['master']['group'],
                     'pertanyaan' => $value['description'],
-                    'Mentor' => $value['nikMateriTambahan'],
+                    'Mentor' => session("user_id"),
                     'created_at' => $dataNOW,
                     'created_by' => session("user_id"),
                     'updated_by' => null, // Nilai ini mungkin bisa dikosongkan jika belum diperbarui
