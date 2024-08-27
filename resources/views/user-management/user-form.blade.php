@@ -94,7 +94,7 @@
             e.preventDefault();
             const formData = $('#formUser').serialize();
 
-            axios.post(`{{ isset($userMaster) ? route('update-user-management', ['id' => $userMaster->id]) : route('store-user-management') }}`, formData, {
+            axios.post(`{{ isset($userMaster) ? route('update-user-management', ['id' => $userMaster->userid]) : route('store-user-management') }}`, formData, {
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
             })
             .then(function (response) {

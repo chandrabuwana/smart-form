@@ -23,7 +23,7 @@ class ICFM05TransactionController extends Controller
         ]);
 
         DB::beginTransaction();
-
+        $dataNOW = now();
         try {
 
             DB::table('FM_IC_005_BSS_MASTER')->insert([
@@ -34,7 +34,7 @@ class ICFM05TransactionController extends Controller
                 'Instansi' => $validatedData['master']['instansi'],
                 'Jenis' => $validatedData['master']['jenisInduksi'],
                 'Group' => $validatedData['master']['group'],
-                'created_at' => now(),
+                'created_at' => $dataNOW,
                 'created_by' => session("user_id"),
                 'updated_by' => null, // Nilai ini mungkin bisa dikosongkan jika belum diperbarui
                 'updated_at' => null // Nilai ini mungkin bisa dikosongkan jika belum diperbarui
@@ -44,12 +44,26 @@ class ICFM05TransactionController extends Controller
                 $induksiAtDate = Carbon::createFromFormat('d - M - Y', $value['tanggal'])->format('Y-m-d');
                 DB::table('FM_IC_005_BSS_DETAIL')->insert([
                     'NIK' => $validatedData['master']['nik'],
-                    'Created' => now(),
+                    'Created' => $dataNOW,
                     'Group' => $validatedData['master']['group'],
                     'IndexPertanyaan' => $value['id'],
                     'Mentor' => $value['mentor'],
                     'Induksi_at' => $induksiAtDate,
-                    'created_at' => now(),
+                    'created_at' => $dataNOW,
+                    'created_by' => session("user_id"),
+                    'updated_by' => null, // Nilai ini mungkin bisa dikosongkan jika belum diperbarui
+                    'updated_at' => null // Nilai ini mungkin bisa dikosongkan jika belum diperbarui
+                ]);
+            }
+
+            foreach ($d->pertanyaanTambahan as $key => $value) {
+                DB::table('FM_IC_005_BSS_DETAIL_TAMBAHAN_PERTANYAAN')->insert([
+                    'NIK' => $validatedData['master']['nik'],
+                    'Created' => $dataNOW,
+                    'Group' => $validatedData['master']['group'],
+                    'pertanyaan' => $value['description'],
+                    'Mentor' => $value['nikMateriTambahan'],
+                    'created_at' => $dataNOW,
                     'created_by' => session("user_id"),
                     'updated_by' => null, // Nilai ini mungkin bisa dikosongkan jika belum diperbarui
                     'updated_at' => null // Nilai ini mungkin bisa dikosongkan jika belum diperbarui
@@ -77,7 +91,6 @@ class ICFM05TransactionController extends Controller
     function SubmitALLDataEdit(Request $d)
     {
 
-
         DB::beginTransaction();
 
         try {
@@ -88,6 +101,10 @@ class ICFM05TransactionController extends Controller
                 ->get()
                 ->first();
             DB::table('FM_IC_005_BSS_DETAIL')
+                ->where('NIK', $d->master['nik'])
+                ->where('Created', $d->master['date'])
+                ->delete();
+            DB::table('FM_IC_005_BSS_DETAIL_TAMBAHAN_PERTANYAAN')
                 ->where('NIK', $d->master['nik'])
                 ->where('Created', $d->master['date'])
                 ->delete();
@@ -104,11 +121,24 @@ class ICFM05TransactionController extends Controller
                     'Induksi_at' => $induksiAtDate,
                     'created_at' => now(),
                     'created_by' => session("user_id"),
-                    'updated_by' => null, // Nilai ini mungkin bisa dikosongkan jika belum diperbarui
-                    'updated_at' => null // Nilai ini mungkin bisa dikosongkan jika belum diperbarui
+                    'updated_by' => session("user_id"), // Nilai ini mungkin bisa dikosongkan jika belum diperbarui
+                    'updated_at' => now()// Nilai ini mungkin bisa dikosongkan jika belum diperbarui
                 ]);
             }
 
+            foreach ($d->pertanyaanTambahan as $key => $value) {
+                DB::table('FM_IC_005_BSS_DETAIL_TAMBAHAN_PERTANYAAN')->insert([
+                    'NIK' => $dataMaster->NIK,
+                    'Created' => $dataMaster->created_at,
+                    'Group' => $dataMaster->Group,
+                    'pertanyaan' => $value['description'],
+                    'Mentor' => $value['nikMateriTambahan'],
+                    'created_at' => now(),
+                    'created_by' => session("user_id"),
+                    'updated_by' => session("user_id"), // Nilai ini mungkin bisa dikosongkan jika belum diperbarui
+                    'updated_at' => now()// Nilai ini mungkin bisa dikosongkan jika belum diperbarui
+                ]);
+            }
 
 
             // Commit transaksi jika tidak ada error
@@ -170,5 +200,41 @@ class ICFM05TransactionController extends Controller
             'totalNotFiltered' => $countDataUser[0]->jumlah,
             "rows" => $dataUser,
         ]);
+    }
+
+    function HelperSelect2InduksiKaryawanByDept(Request $d)
+    {
+        $data = $d->request->get("query");
+        $dataDepartment = DB::connection('sqlsrv2')->select("SELECT TOP 5 NIK nomorPunggung, tk.Nama nama, td.Nama dept FROM TKaryawan tk join tdepartement td on tk.KodeDP = td.KodeDP where Nik like  ?  ", ['%' . $data . '%']);
+        // dd($dataDepartment);
+
+        $dataJs = [];
+        foreach ($dataDepartment as $a) {
+            $dataBaru = [
+                'name' => $a->nama,
+                'dept' => $a->dept,
+                'text' => $a->nomorPunggung,
+                'id' => $a->nomorPunggung
+            ];
+            $dataJs[] = $dataBaru;
+        }
+        $final = [
+            'data' => $dataJs,
+        ];
+        return json_encode($final);
+    }
+
+    function validateAndSanitizeInput($input)
+    {
+        // Sanitasi input
+        $sanitizedInput = filter_var($input, FILTER_SANITIZE_STRING);
+
+        // Validasi input: Misalnya, hanya menerima huruf, angka, dan spasi
+        if (preg_match('/^[a-zA-Z0-9 ]*$/', $sanitizedInput)) {
+            return $sanitizedInput;
+        } else {
+            // Jika input tidak valid, Anda bisa mengembalikan false atau memicu error
+            throw new Exception('Input tidak valid');
+        }
     }
 }

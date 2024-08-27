@@ -73,10 +73,10 @@
 
             let action = '';
             if(isUpdateUser) {
-                action += `<a class="btn btn-primary btn-action btn-sm me-1" href="/user-management/edit/${row.id}">Edit</a>`;
+                action += `<a class="btn btn-primary btn-action btn-sm me-1" href="/user-management/edit/${row.userid}">Edit</a>`;
             }
             if(isDeleteUser) {
-                action += `<a class="btn btn-danger btn-action btn-sm" href="/user-management/destroy/${row.id}">Delete</a>`;
+                action += `<a class="btn btn-danger btn-action btn-sm" href="/user-management/destroy/${row.userid}">Delete</a>`;
             }
 
             return action;

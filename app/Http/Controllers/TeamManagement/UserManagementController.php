@@ -117,7 +117,7 @@ class UserManagementController extends Controller
         $roleMaster = DB::table('MS_ROLE')->select('id', 'role_name')
             ->orderBy('id', 'ASC')->get();
 
-        $userMaster = DB::table('users')->find($id);
+        $userMaster = DB::table('users')->where("userid",$id)->first();
 
         return view('user-management/user-form', [
             'userMaster' => $userMaster,
@@ -141,7 +141,8 @@ class UserManagementController extends Controller
         $requestData = $request->all();
 
         try {
-            $user = DB::table('users')->find($id);
+            // $user = DB::table('users')->find($id);
+            $user = DB::table('users')->where("userid", $id)->first();
 
             DB::table('users')->where('id', $id)->update([
                 'username' => $requestData['username'],
