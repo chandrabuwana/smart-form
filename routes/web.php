@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\absensi\CompareAbsensiController;
 use App\Http\Controllers\admin\AdminController;
+use App\Http\Controllers\Approval\ApprovalFormController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
 
@@ -22,7 +23,10 @@ use App\Http\Controllers\Production\ProductionTimeSheetDashboarController;
 
 use App\Http\Controllers\IC\ICFM05InduksiKaryawanController;
 use App\Http\Controllers\IC\ICFM05TransactionController;
+use App\Http\Controllers\MasterData\MasterFormPICController;
+use App\Http\Controllers\TeamManagement\RoleManagementController;
 use App\Http\Controllers\PLANT\PlantTransmissionController;
+use App\Http\Controllers\TeamManagement\UserManagementController;
 use App\Http\Controllers\UnderCarriage\UnderCarriageInspectionController;
 use App\Http\Middleware\FetchMenu;
 
@@ -116,7 +120,40 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class]], function () {
     Route::get('/dashboard-menu', [AdminController::class, 'index'])->name('dashboard-menu');
     Route::get('/get-all-menu', [AdminController::class, 'GetAllMenu'])->name('get-all-menu');
     Route::post('/add-new-menu', [AdminController::class, 'AddNewMenu'])->name('add-new-menu');
-    
+
+    Route::prefix('role-management')->group( function() {
+        Route::get('/dashboard', [RoleManagementController::class, 'dashboard'])->name('dashboard-role-management');
+        Route::get('/dashboard/get-data', [RoleManagementController::class, 'getDashboardData'])->name('dashboard-role-get-data');
+        Route::get('/create', [RoleManagementController::class, 'create'])->name('create-role-management');
+        Route::post('/create/store', [RoleManagementController::class, 'store'])->name('store-role-management');
+        Route::get('/edit/{id}', [RoleManagementController::class, 'edit'])->name('edit-role-management');
+        Route::post('/edit/update/{id}', [RoleManagementController::class, 'update'])->name('update-role-management');
+        Route::get('/destroy/{id}', [RoleManagementController::class, 'destroy'])->name('destroy-role-management');
+    });
+
+    Route::prefix('user-management')->group( function() {
+        Route::get('/dashboard', [UserManagementController::class, 'dashboard'])->name('dashboard-user-management');
+        Route::get('/dashboard/get-data', [UserManagementController::class, 'getDashboardData'])->name('dashboard-user-get-data');
+        Route::get('/create', [UserManagementController::class, 'create'])->name('create-user-management');
+        Route::post('/create/store', [UserManagementController::class, 'store'])->name('store-user-management');
+        Route::get('/edit/{id}', [UserManagementController::class, 'edit'])->name('edit-user-management');
+        Route::post('/edit/update/{id}', [UserManagementController::class, 'update'])->name('update-user-management');
+        Route::get('/destroy/{id}', [UserManagementController::class, 'destroy'])->name('destroy-user-management');
+    });
+
+    Route::prefix('master-form-pic')->group( function() {
+        Route::get('/dashboard', [MasterFormPICController::class, 'dashboard'])->name('dashboard-master-form-pic');
+        Route::get('/dashboard/get-data', [MasterFormPICController::class, 'getDashboardData'])->name('dashboard-form-pic-get-data');
+        Route::get('/create', [MasterFormPICController::class, 'create'])->name('create-master-form-pic');
+        Route::post('/create/store', [MasterFormPICController::class, 'store'])->name('store-master-form-pic');
+        Route::get('/edit/{id}', [MasterFormPICController::class, 'edit'])->name('edit-master-form-pic');
+        Route::post('/edit/update/{id}', [MasterFormPICController::class, 'update'])->name('update-master-form-pic');
+        Route::get('/destroy/{id}', [MasterFormPICController::class, 'destroy'])->name('destroy-master-form-pic');
+    });
+
+    Route::prefix('approval')->group( function() {
+        Route::post('/form', [ApprovalFormController::class, 'approveForm'])->name('bss-approval-form');
+    });
 });
 
 Route::get('/login', [LoginKaryawanController::class, 'IndexLoginKaryawan']);

@@ -14,13 +14,16 @@
                     </div>
                 </div>
                 <div class="card-body px-0 pb-2">
-                    <div class="d-flex align-items-center">
-                        <a href="{{ route('form-undercarriage-inspection') }}">
-                            <button class="btn btn-primary ms-auto uploadBtn" id="coba">
-                                New Form
-                            </button>
-                        </a>
-                    </div>
+                    @if(Helper::isGrantPermission('create-form-under-carriage-inspection'))
+                        <div class="d-flex align-items-center">
+                            <a href="{{ route('form-undercarriage-inspection') }}">
+                                <button class="btn btn-primary ms-auto uploadBtn" id="coba">
+                                    New Form
+                                </button>
+                            </a>
+                        </div>
+                    @endif
+
                     <div class="table-responsive p-0">
                         <table id="list-form" data-toggle="table" data-ajax="fetchFormsData"
                             data-side-pagination="server"
@@ -47,7 +50,9 @@
                                     <th data-field="inspection_date" data-align="center" data-sortable="true">
                                         Inspection Date
                                     </th>
-                                    <th data-field="action" data-formatter="actionFormatter" >Actions</th>
+                                    @if(Helper::isGrantPermission('detail-data-under-carriage-inspection'))
+                                        <th data-field="action" data-formatter="actionFormatter" >Actions</th>
+                                    @endif
                                 </tr>
                             </thead>
                         </table>
@@ -66,13 +71,13 @@
         var $table = $("#list-form");
 
         function actionFormatter(value, row, index) {
-            return '<button class="btn btn-primary btn-action"><a href="/dashboard-undercarriage-inspection/detail/' + row.id + '">detail</a></button>';
+            return '<a href="/dashboard-undercarriage-inspection/detail/' + row.id + '" class="btn btn-primary btn-action">detail</a>';
         }
 
         function fetchFormsData(params) {
             var url = `{{ route('dashboard-undercarriage-inspection-get-data') }}`
             $.get(url + '?' + $.param(params.data)).then(function(res) {
-                params.success(res.data)
+                params.success(res)
             })
         }
 

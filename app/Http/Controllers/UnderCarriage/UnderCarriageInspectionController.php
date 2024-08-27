@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\UnderCarriage;
 
+use App\Helper;
 use App\Http\Controllers\Controller;
 use Exception;
 use Illuminate\Database\QueryException;
@@ -12,6 +13,10 @@ class UnderCarriageInspectionController extends Controller
 {
     public function form(Request $request)
     {
+        if(!Helper::isGrantPermission('create-form-under-carriage-inspection')) {
+            return redirect('/');
+        }
+
         $getComponentThirsts = DB::table('FM_REFF_PLANT_UNDERCARRIAGE_COMPONENT_THIRST')
             ->select('component_name', 'percentage', 'thirst_value')
             ->join('FM_REFF_PLANT_UNDERCARRIAGE_COMPONENT', 'FM_REFF_PLANT_UNDERCARRIAGE_COMPONENT.id', '=', 'FM_REFF_PLANT_UNDERCARRIAGE_COMPONENT_THIRST.component_id')
@@ -42,7 +47,9 @@ class UnderCarriageInspectionController extends Controller
         $components = DB::table('FM_REFF_PLANT_UNDERCARRIAGE_COMPONENT')
             ->orderBy('id', 'ASC')->get();
 
+        $referenceNo = $request->query('reference_no');
         return view('undercarriage/undercarriage-inspection-form', [
+            'referenceNo' => $referenceNo,
             'components' => $components,
             'componentThirsts' => $componentThirsts,
             'componentLabels' => $componentLabels,
@@ -53,6 +60,10 @@ class UnderCarriageInspectionController extends Controller
 
     public function store(Request $request)
     {
+        if(!Helper::isGrantPermission('create-form-under-carriage-inspection')) {
+            return redirect('/');
+        }
+
         $request->validate([
             'document_no' => 'required|string|max:255',
             'unit_model' => 'required|string|max:255',
@@ -70,6 +81,7 @@ class UnderCarriageInspectionController extends Controller
 
         try {
             $masterId = DB::table('FM_PLANT_UNDERCARRIAGE_INSPECTION_MASTER')->insertGetId([
+                'reference_no' => $requestData['reference_no'] ?? null,
                 'document_no' => $requestData['document_no'],
                 'unit_model' => $requestData['unit_model'],
                 'unit_sn' => $requestData['unit_sn'],
@@ -155,6 +167,10 @@ class UnderCarriageInspectionController extends Controller
 
     public function dashboard(Request $request)
     {
+        if(!Helper::isGrantPermission('dashboard-under-carriage-inspection')) {
+            return redirect('/');
+        }
+
         return view('undercarriage/dashboard-inspection');
     }
 
@@ -167,6 +183,8 @@ class UnderCarriageInspectionController extends Controller
         $limit   = $request->query('limit', 10);
 
         try {
+            $underCarriageMasterNotFiltered = DB::table('FM_PLANT_UNDERCARRIAGE_INSPECTION_MASTER')->select('id');
+
             $underCarriageMaster = DB::table('FM_PLANT_UNDERCARRIAGE_INSPECTION_MASTER')
                 ->select('id', 'document_no', 'unit_model', 'unit_sn', 'unit_smr_hm', 'work_operation', 'ground_condition', 'condition_area_frame', 'inspection_date');
 
@@ -179,22 +197,29 @@ class UnderCarriageInspectionController extends Controller
             }
 
             $data = $underCarriageMaster->orderBy($sort, $order)->offset($offset)
-                ->limit($limit)->get();
+                ->limit($limit);
 
-            $response['message'] = "Ok";
-            $response['isSuccess'] = true;
-            $response['data'] = $data;
+            return response()->json([
+                'total' => $data->count(),
+                'totalNotFiltered' => $underCarriageMasterNotFiltered->count(),
+                'rows' => $data->get()
+            ]);
 
         } catch (Exception $ex) {
-            $response['message'] = $ex->getMessage();
-            $response['isSuccess'] = false;
+            return response()->json([
+                'total' => 0,
+                'totalNotFiltered' => 0,
+                'rows' => []
+            ]);
         }
-
-        return response()->json($response);
     }
 
     public function detail($id)
     {
+        if(!Helper::isGrantPermission('detail-data-under-carriage-inspection')) {
+            return redirect('/');
+        }
+
         $underCarriageMasterData = DB::table('FM_PLANT_UNDERCARRIAGE_INSPECTION_MASTER')->find($id);
         if(!$underCarriageMasterData) abort(404);
 
@@ -233,6 +258,40 @@ class UnderCarriageInspectionController extends Controller
             $subComponentInspections->push($component);
         }
 
+        $approvalPIC = DB::table('MS_FORM_PIC')->select('MS_FORM_PIC.id', 'pic_username')
+            ->where('form_slug', 'plant-under-carriage-inspection')
+            ->get()->map( function($pic) use($id) {
+                $detailPIC = DB::connection('sqlsrv2')->table('TKaryawan')
+                    ->select('TKaryawan.Nama AS nama_karyawan', 'tdepartement.Nama as nama_departement', 'tjabatan.Nama AS nama_jabatan')
+                    ->join('tdepartement', 'tdepartement.KodeDP', '=', 'TKaryawan.KodeDP')
+                    ->join('tjabatan', 'tjabatan.KodeJB', '=', 'TKaryawan.KodeJB')
+                    ->where('TKaryawan.NIK', $pic->pic_username)->first();
+
+                $submissionApproval = DB::table('FM_APPROVAL')->select('status', 'reason')
+                    ->where('ms_form_pic_id', $pic->id)
+                    ->where('submission_form_id', $id)
+                    ->first();
+
+                $pic->nama_karyawan = $detailPIC->nama_karyawan;
+                $pic->nama_departement = $detailPIC->nama_departement;
+                $pic->nama_jabatan = $detailPIC->nama_jabatan;
+                $pic->status = $submissionApproval->status ?? null;
+                $pic->reason = $submissionApproval->reason ?? null;
+
+                return $pic;
+            });
+
+        $statusOverallApproval = 'Dalam Review';
+        $approvalPIC->pluck('status')->each( function($status) use(&$statusOverallApproval) {
+            if($status == 'Rejected') {
+                $statusOverallApproval = 'Ditolak';
+            } else if(is_null($status)) {
+                $statusOverallApproval = 'Dalam Review';
+            } else {
+                $statusOverallApproval = 'Approved';
+            }
+        });
+
         return view('undercarriage/undercarriage-inspection-form', [
             'underCarriageMaster' => $underCarriageMasterData,
             'componentInspections' => $componentInspections,
@@ -240,6 +299,8 @@ class UnderCarriageInspectionController extends Controller
             'components' => $components,
             'componentThirsts' => $componentThirsts,
             'componentLabels' => $componentLabels,
+            'approvalPIC' => $approvalPIC,
+            'statusOverallApproval' => $statusOverallApproval
         ]);
     }
 }

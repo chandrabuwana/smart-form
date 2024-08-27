@@ -212,6 +212,8 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
         // 'ExampleClass' => App\Example\ExampleClass::class,
         'PDF' => Barryvdh\DomPDF\Facade::class,
+        'Helper' => \App\Helper::class
+
     ])->toArray(),
 
     'user_sm' => env('USER_SM', '1008491,1008492,1008493,1008494,1008526')
