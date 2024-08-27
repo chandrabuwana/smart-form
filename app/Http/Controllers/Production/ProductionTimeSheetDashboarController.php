@@ -22,6 +22,8 @@ class ProductionTimeSheetDashboarController extends Controller
 
     function SubmitFormTimesheet(Request $req) {
         $isError = true;
+        $tgl = now()->toDateTimeString();
+        $nik_session = $req->session()->get('user_id', '');
         $TABLE_MASTER = "FM_PRODUKSI_TIMESHEET_MASTER";
         $TABLE_DETAIL = "FM_PRODUKSI_TIMESHEET_DETAIL";
         $response = array(
@@ -36,7 +38,7 @@ class ProductionTimeSheetDashboarController extends Controller
             'site' => '',
             'tanggal' => '',
             'shift' => '',
-            'nama_no_unit' => '',
+            'no_unit' => '',
             'hm_awal' => 0.0,
             'hm_akhir' => 0.0,
             'total_rit' => 0
@@ -46,14 +48,16 @@ class ProductionTimeSheetDashboarController extends Controller
         try {
             $data_insert['driver'] = $data_input['driver'];
             $data_insert['site'] = $data_input['site'];
-            $data_insert['hari'] = $data_input['site'];
             $data_insert['tanggal'] = $data_input['tanggal'];
             $data_insert['shift'] = $data_input['shift'];
-            $data_insert['nama_no_unit'] = $data_input['namaNoUnit'];
+            $data_insert['no_unit'] = $data_input['noUnit'];
             $data_insert['hm_awal'] = $data_input['awalHM'];
             $data_insert['hm_akhir'] = $data_input['akhirHM'];
             $data_insert['total_rit'] = $data_input['totalRit'];
-            
+            $data_insert['total_rit'] = $data_input['totalRit'];
+            $data_insert['created_by'] = $nik_session;
+            $data_insert['nik'] = $nik_session;
+            $data_insert['blok'] = $data_input['blok'];
 
             DB::beginTransaction();
             $id = DB::table($TABLE_MASTER)->insertGetId($data_insert);
@@ -62,18 +66,25 @@ class ProductionTimeSheetDashboarController extends Controller
                 DB::table($TABLE_DETAIL)->insert(array(
                     'id_master' => $id,
                     'jam' => $data_item_detail['jam'],
-                    'rit_menit_ke' => $data_item_detail['menitRit'],
+                    'rit_menit_ke' => $data_item_detail['rit_menit'],
                     'problem' => $data_item_detail['problem'],
-                    'material_seam' => $data_item_detail['materialSeam'],
-                    'kode_aktifitas' => $data_item_detail['kodeAktifitas'],
+                    'material_seam' => $data_item_detail['mns'],
+                    'kode_aktifitas' => $data_item_detail['kd_aktifitas'],
                     'awal' => (float) $data_item_detail['awal'],
                     'akhir' => (float) $data_item_detail['akhir'],
+                    'created_by' => $nik_session,
+                    'created_at' => $tgl
                 ));
             }
             DB::commit();
-            $isError = false;
+            $response['isSuccess'] = true;
+            $response['message'] = "Berhasil Submit Timesheet";
+            $response['data'] = ['id' => $id];
         } catch (Exception $ex) {
+            DB::rollBack();
             Log::error($ex->getMessage());
+            $response['isSuccess'] = false;
+            $response['message'] = $ex->getMessage();
         }
 
         return response()->json(data: $response);
@@ -94,7 +105,7 @@ class ProductionTimeSheetDashboarController extends Controller
 
         try {
             $master = DB::table($TABLE_MASTER)
-                ->select('id', 'driver', 'tanggal', 'shift', 'nama_no_unit', 'hm_awal', 'hm_akhir', 'total_rit');
+                ->select('id', 'driver', 'tanggal', 'shift', 'no_unit', 'hm_awal', 'hm_akhir', 'total_rit');
 
             $master->orderBy($sort, $order);
             $document = $master->skip($offset)->take($limit)->get();
@@ -126,7 +137,7 @@ class ProductionTimeSheetDashboarController extends Controller
             'site' => '',
             'tanggal' => '',
             'shift' => '',
-            'nama_no_unit' => '',
+            'no_unit' => '',
             'hm_awal' => '',
             'hm_akhir' => '',
             'total_rit' => 0,
@@ -134,12 +145,12 @@ class ProductionTimeSheetDashboarController extends Controller
         );
         try {
             $data = DB::table($TABLE_MASTER)
-                ->select('id', 'driver', 'site', 'tanggal', 'shift', 'nama_no_unit', 'hm_awal', 'hm_akhir', 'total_rit')
+                ->select('id', 'driver', 'site', 'tanggal', 'shift', 'no_unit', 'hm_awal', 'hm_akhir', 'total_rit', 'nik')
                 ->where('id', $id)
                 ->first();
             
             $data_detail = DB::table($TABLE_DETAIL)
-                ->select('jam', 'rit_menit_ke', 'problem', 'material_seam', 'blok', 'kode_aktifitas', 'awal', 'akhir')
+                ->select('jam', 'rit_menit_ke as rit_menit', 'problem', 'material_seam as mns', 'blok', 'kode_aktifitas as kd_aktifitas', 'awal', 'akhir')
                 ->where('id_master', $data->id)
                 ->get();
             
@@ -147,12 +158,13 @@ class ProductionTimeSheetDashboarController extends Controller
             
             $data_master['id'] = $data->id;
             $data_master['driver'] = $data->driver;
+            $data_master['nik'] = $data->nik;
             $data_master['site'] = $data->site;
             $data_master['hari'] = $HARI_MAPPING[$nameOfDay];
 
             $data_master['tanggal'] = $data->tanggal;
             $data_master['shift'] = $data->shift == "DS" ? "Day Shift (DS)" :  ($data_master['shift'] == "DS" ? "Night Shift (NS)" : "");
-            $data_master['nama_no_unit'] = $data->nama_no_unit;
+            $data_master['no_unit'] = $data->no_unit;
             $data_master['hm_awal'] = $data->hm_awal;
             $data_master['hm_akhir'] = $data->hm_akhir;
         } catch (Exception $ex) {

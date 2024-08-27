@@ -24,8 +24,7 @@
                         <div class="col-auto my-auto ms-3">
                             <div class="h-100">
                                 <p class="mb-0 fw-bold text-sm">
-                                    Requested By : <span id="requestor">{{ session('username') }}</span>
-                                    {{-- session()->get('name') . ' - ' . session()->get('dept') . ' - ' . session()->get('site') --}}
+                                    Requested By : <span id="requestor">{{$data['requested_by']}}</span>
                                 </p>
                             </div>
                         </div>
@@ -38,13 +37,13 @@
                             </div>
                             <div class="col-6 col-md-4">
                                 <div class="form-check">
-                                    <input class="" type="checkbox" value="" id="checkReplacement" name="checkReplacement" >
+                                    <input class="" type="checkbox" value="" id="checkReplacement" name="checkReplacement" {{$data['replacement']}}>
                                     <label class="form-check-label" for="flexCheckDefault">
                                         Replacement
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="" type="checkbox" value="" id="checkAdditional" name="checkAdditional">
+                                    <input class="" type="checkbox" value="" id="checkAdditional" name="checkAdditional" {{$data['additional']}}>
                                     <label class="form-check-label" for="flexCheckDefault">
                                         Additional
                                     </label>
@@ -52,13 +51,13 @@
                             </div>
                             <div class="col-6 col-md-4">
                                 <div class="form-check">
-                                    <input class="" type="checkbox" value="" id="checkBudgeted" name="checkBudgeted">
+                                    <input class="" type="checkbox" value="" id="checkBudgeted" name="checkBudgeted" {{$data['budgeted']}}>
                                     <label class="form-check-label" for="flexCheckDefault">
                                         Budgeted
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="" type="checkbox" value="" id="checkNotBudgeted" name="checkNotBudgeted">
+                                    <input class="" type="checkbox" value="" id="checkNotBudgeted" name="checkNotBudgeted" {{$data['not_budgeted']}}>
                                     <label class="form-check-label" for="flexCheckDefault">
                                         Not Budgeted
                                     </label>
@@ -73,12 +72,12 @@
                                         <tr>
                                             <td>No. Doc</td>
                                             <td>:</td>
-                                            <td id="noDoc">No.Doc</td>
+                                            <td id="noDoc">{{$data['no_doc']}}</td>
                                         </tr>
                                         <tr>
                                             <td>Date</td>
                                             <td>:</td>
-                                            <td id="tglDoc"></td>
+                                            <td id="tglDoc">{{$data['tgl_doc']}}</td>
                                         </tr>
                                     </table>
                                     <!-- <div>No. Doc : <span id="noDoc"></span></div>
@@ -90,7 +89,7 @@
                                         <div class="input-group input-group-static mb-4">
                                             <label for="inputDepartment">Department</label>
                                             <select class="form-control form-select-sm" name="inputDepartment" id="inputDepartment" required>
-                                                <option selected value="">Pilih Department</option>
+                                                <option value="">Pilih Department</option>
                                                 <option value="Engineering">Engineering</option>
                                                 <option value="SHE">SHE</option>
                                                 <option value="Produksi">Produksi</option>
@@ -157,6 +156,24 @@
                                         <label for="inputPendukungReason">Dokumen Pendukung</label>
                                         <input type="file" multiple class="form-control" id="inputPendukungReason" name="inputPendukungReason">
                                     </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <td>Nama File</td>
+                                                <td>Link</td>
+                                            </tr> 
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($pendukung_reason as $dokumen_reason)
+                                                <tr>
+                                                    <td>{{ $dokumen_reason->file_name }}</td>
+                                                    <td><a href="/asset-request-download/{{ $dokumen_reason->lokasi }}">Download</a></td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
 
@@ -284,7 +301,7 @@
                                     <td>IDR</td>
                                     <td class="reset-border">
                                         <div class="input-group input-group-static mb-4">
-                                            <input type="text" class="form-control text-right" id="estimatedIdr" name="estimatedIdr" value="1">
+                                            <input type="text" class="form-control text-right" id="estimatedIdr" name="estimatedIdr" value="{{ $data['estimated_idr'] }}">
                                         </div>
                                     </td>
                                 </tr>
@@ -292,7 +309,7 @@
                                     <td>USD</td>
                                     <td>
                                         <div class="input-group input-group-static mb-4">
-                                            <input type="text" class="form-control text-right" id="estimatedUsd" name="estimatedUsd" value="15000">
+                                            <input type="text" class="form-control text-right" id="estimatedUsd" name="estimatedUsd" value="{{ $data['estimated_usd'] }}">
                                         </div>
                                     </td>
                                 </tr>
@@ -300,7 +317,7 @@
                                     <td>CNY</td>
                                     <td>
                                         <div class="input-group input-group-static mb-4">
-                                            <input type="text" class="form-control text-right" id="estimatedCny" name="estimatedCny" value="2300">
+                                            <input type="text" class="form-control text-right" id="estimatedCny" name="estimatedCny" value="{{ $data['estimated_cny'] }}">
                                         </div>
                                     </td>
                                 </tr>
@@ -312,7 +329,7 @@
                             <div class="mb-1 col-6">
                                 <div class="input-group input-group-static mb-4">
                                     <label for="inputPrice">Ref Doc</label>
-                                    <input type="text" class="form-control" id="refDoc" name="refDoc">
+                                    <input type="text" class="form-control" id="refDoc" name="refDoc" value="{{ $data['ref_doc'] }}">
                                 </div>
                             </div>
                         </div>
@@ -474,36 +491,6 @@
             })
         }
 
-        function submitAssetRequest(data) {
-            $.ajax({
-                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                type: "post",
-                url: "/add-asset-request",
-                data: data,
-                dataType: "json",
-                success: function(response) {
-                    if (response.code == 200) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Berhasil!',
-                            text: response.message,
-                        }).then((result) => {
-
-                        })
-                    }
-                },
-                error: function(xhr, ajaxOptions, thrownError) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'thrownError',
-                        html: errorMessage,
-                        confirmButtonText: 'OK'
-                    });
-                    console.log()
-                }
-            })
-        }
-
         $table.on('post-body.bs.table', function(data) {
             var idr = 0;
             var usd = 0;
@@ -531,31 +518,52 @@
             totalPrice.text((parseInt(estimatedIdr.val()) * idr) + (parseInt(estimatedUsd.val()) * usd) + (parseInt(estimatedCny.val()) * cny) || "-")
             // console.log("IDR = ", idr)
         })
-
+        var isError = {
+            error: {{ Illuminate\Support\Js::from($error) }},
+            errorMessage: {{ Illuminate\Support\Js::from($errorMessage) }}
+        }
         $(function() {
-            noDoc.text(generateNoDoc())
-            tglDoc.text(formatTgl() || "-")
-            dataAssetRequest.replacement = checkReplacement.checked
-            dataAssetRequest.additional = checkAdditional.checked
-            dataAssetRequest.budgeted = checkBudgeted.checked
-            dataAssetRequest.notBudgeted = checkNotBudgeted.checked
-            // dataAssetRequest.area = $("#inputArea").val()
-            dataAssetRequest.department = inputDepartment.val()
-            dataAssetRequest.project = inputProject.val()
-            dataAssetRequest.departmentAllocation = inputDepartmentAllocation.val()
-            dataAssetRequest.projectAllocation = inputProjectAllocation.val()
-            dataAssetRequest.reasonForPurchase = reasonpurchase.val()
+            if(isError.error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: isError.errorMessage,
+                }).then((result) => {
 
-            estimatedIdr.change(function(e) {
-                totalPrice.text((estimatedIdr.val() * calculatedIdr.text()) + (estimatedUsd.val() * calculatedUsd.text()) + (estimatedCny.val() * calculatedCny.text()))
-            });
-            estimatedUsd.change(function(e) {
+                })
+            } else {
+                var detial = {{ Illuminate\Support\Js::from($detail) }}
+                console.log({{ Illuminate\Support\Js::from($data) }})
+                detial.forEach(element => {
+                    $table.bootstrapTable('append', element)
+                });
+                inputDepartment.val({{ Illuminate\Support\Js::from( $data['department']) }})
+                inputProject.val({{ Illuminate\Support\Js::from( $data['project']) }})
+                inputDepartmentAllocation.val({{ Illuminate\Support\Js::from( $data['department_allocation']) }})
+                inputProjectAllocation.val({{ Illuminate\Support\Js::from( $data['project_allocation']) }})
 
-                totalPrice.text((estimatedIdr.val() * calculatedIdr.text()) + (estimatedUsd.val() * calculatedUsd.text()) + (estimatedCny.val() * calculatedCny.text()))
-            });
-            estimatedCny.change(function(e) {
-                totalPrice.text((estimatedIdr.val() * calculatedIdr.text()) + (estimatedUsd.val() * calculatedUsd.text()) + (estimatedCny.val() * calculatedCny.text()))
-            });
+                dataAssetRequest.replacement = checkReplacement.checked
+                dataAssetRequest.additional = checkAdditional.checked
+                dataAssetRequest.budgeted = checkBudgeted.checked
+                dataAssetRequest.notBudgeted = checkNotBudgeted.checked
+                // dataAssetRequest.area = $("#inputArea").val()
+                dataAssetRequest.department = inputDepartment.val()
+                dataAssetRequest.project = inputProject.val()
+                dataAssetRequest.departmentAllocation = inputDepartmentAllocation.val()
+                dataAssetRequest.projectAllocation = inputProjectAllocation.val()
+                dataAssetRequest.reasonForPurchase = reasonpurchase.val()
+    
+                estimatedIdr.change(function(e) {
+                    totalPrice.text((estimatedIdr.val() * calculatedIdr.text()) + (estimatedUsd.val() * calculatedUsd.text()) + (estimatedCny.val() * calculatedCny.text()))
+                });
+                estimatedUsd.change(function(e) {
+    
+                    totalPrice.text((estimatedIdr.val() * calculatedIdr.text()) + (estimatedUsd.val() * calculatedUsd.text()) + (estimatedCny.val() * calculatedCny.text()))
+                });
+                estimatedCny.change(function(e) {
+                    totalPrice.text((estimatedIdr.val() * calculatedIdr.text()) + (estimatedUsd.val() * calculatedUsd.text()) + (estimatedCny.val() * calculatedCny.text()))
+                });
+            }
 
             $buttonTambah.click(function (e) {
                 e.preventDefault()
@@ -574,33 +582,8 @@
 
             btnSubmitAssetRequest.click(function(e) {
                 e.preventDefault();
-
-
-                // console.log(inputArea.val())
-                // formName: "Asset Request",
-                // noDok: "BSS-FRM-SM-016",
-                // tglDok: "01-01-2023",
-                // noDoc: "",
-                // tglDoc: "",
-                // replacement: false,
-                // additional: false,
-                // budgeted: false,
-                // notBudgeted: false,
-                // department: "",
-                // project: "",
-                // area: "",
-                // reasonForPurchase: "",
-                // estimatedReadyAtSite: "",
-                // item: [],
-                // estimatedIDR: 0,
-                // estimatedUSD: 0,
-                // estimatedCNY: 0,
-                // refDoc: "",
-                // requestedBy: requestornik.text()
                 var dataReq = {
                     formName: dataAssetRequest.formName,
-                    noDok: "BSS-FRM-SM-016",
-                    tglDok: "01-01-2023",
                     // area: inputArea.val(),
                     noDoc: noDoc.text(),
                     tglDoc: formatTgl(),
@@ -635,8 +618,8 @@
                         formData.append(key, dataReq[key])
                     }
                 }
-                console.log(dataReq)
-                axios.post('/add-asset-request', formData, {
+                // TODO 
+                axios.post('/submit-edit-asset-request?no_doc='+noDoc.text(), formData, {
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
                         'Content-Type': 'multipart/form-data'
