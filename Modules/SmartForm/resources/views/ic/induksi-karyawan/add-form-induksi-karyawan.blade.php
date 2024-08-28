@@ -13,7 +13,7 @@
         }
 
         .custom-width-1 {
-            width: 30%;
+            width: 90%;
             /* Example width, adjust as needed */
         }
 
@@ -189,20 +189,20 @@
                         </div>
                         <hr class="horizontal dark my-sm-1">
                         <div class="row">
-                            <table class="tableOfPertanyaan" id="DataListInduksiICGS" width="50px" data-toggle="table"
+                            <table class="tableOfPertanyaan" id="DataListInduksiICGS" data-toggle="table"
                                 data-data-type="json" data-unique-id="IdQuestionaire">
                                 <thead>
                                     <tr>
-                                        <th data-field="IdQuestionaire" data-checkbox="true"></th>
+                                        <th data-field="IdQuestionaire" data-width="10px" data-checkbox="true"></th>
                                         <th data-field="Questionaire" data-halign="center" class="custom-width-1"
                                             data-sortable="true">
                                             Complaint</th>
-                                        <th data-field="QuestionaireGroup" data-width="1" data-halign="center"
+                                        {{-- <th data-field="QuestionaireGroup" data-width="1" data-halign="center"
                                             data-align="center" data-formatter="formaterInputNamaInduktor">
                                             Nama Mentor</th>
                                         <th data-field="QuestionaireGroup" data-halign="center" data-width="150"
                                             data-formatter="formaterInputTanggalInduksi" data-align="center">
-                                            Tanggal</th>
+                                            Tanggal</th> --}}
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -215,12 +215,12 @@
                                         <th data-field="Questionaire" data-halign="center" class="custom-width-1"
                                             data-sortable="true">
                                             Complaint</th>
-                                        <th data-field="QuestionaireGroup" data-width="1" data-halign="center"
+                                        {{-- <th data-field="QuestionaireGroup" data-width="1" data-halign="center"
                                             data-align="center" data-formatter="formaterInputNamaInduktor">
                                             Nama Mentor</th>
                                         <th data-field="QuestionaireGroup" data-halign="center" data-width="150"
                                             data-formatter="formaterInputTanggalInduksi" data-align="center">
-                                            Tanggal</th>
+                                            Tanggal</th> --}}
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -233,12 +233,12 @@
                                         <th data-field="Questionaire" data-halign="center" class="custom-width-1"
                                             data-sortable="true">
                                             Complaint</th>
-                                        <th data-field="QuestionaireGroup" data-width="1" data-halign="center"
+                                        {{-- <th data-field="QuestionaireGroup" data-width="1" data-halign="center"
                                             data-align="center" data-formatter="formaterInputNamaInduktor">
                                             Nama Mentor</th>
                                         <th data-field="QuestionaireGroup" data-halign="center" data-width="150"
                                             data-formatter="formaterInputTanggalInduksi" data-align="center">
-                                            Tanggal</th>
+                                            Tanggal</th> --}}
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -251,12 +251,12 @@
                                         <th data-field="Questionaire" data-halign="center" class="custom-width-1"
                                             data-sortable="true">
                                             Complaint</th>
-                                        <th data-field="QuestionaireGroup" data-width="1" data-halign="center"
+                                        {{-- <th data-field="QuestionaireGroup" data-width="1" data-halign="center"
                                             data-align="center" data-formatter="formaterInputNamaInduktor">
                                             NIK Mentor</th>
                                         <th data-field="QuestionaireGroup" data-halign="center" data-width="150"
                                             data-formatter="formaterInputTanggalInduksi" data-align="center">
-                                            Tanggal</th>
+                                            Tanggal</th> --}}
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -279,7 +279,7 @@
                                                         <th data-field="description" data-halign="center"
                                                             data-sortable="true">
                                                             Materi</th>
-                                                        <th data-field="nikMateriTambahan" data-halign="center">NIK</th>
+                                                        {{-- <th data-field="nikMateriTambahan" data-halign="center">NIK</th> --}}
                                                         <th data-halign="center" data-align="center"
                                                             data-formatter="MateriTambahanInputDataActionFormater">
                                                             Action</th>
@@ -299,7 +299,7 @@
                                                         </th>
 
                                                         {{-- nik --}}
-                                                        <th data-field="nikMateriTambahan" data-align="left">
+                                                        {{-- <th data-field="nikMateriTambahan" data-align="left">
                                                             <div class="input-group input-group-static my-2">
                                                                 <input id="nikInduksiTambahan" style="margin:5px"
                                                                     placeholder=" -- Masukkan NIK Induktor -- "
@@ -307,7 +307,7 @@
                                                                     oninput="this.value = Math.abs(this.value)"
                                                                     class="form-control uppercase" maxlength="50">
                                                             </div>
-                                                        </th>
+                                                        </th> --}}
 
                                                         <!-- action ---->
                                                         <th data-align="center"
@@ -365,20 +365,21 @@
                 )
                 return false;
             }
-            if ($('#nikInduksiTambahan').val() == '') {
-                Swal.fire(
-                    'Validation Failed', "NIK cannot be empty", 'error'
-                )
-                return false;
-            }
+            // if ($('#nikInduksiTambahan').val() == '') {
+            //     Swal.fire(
+            //         'Validation Failed', "NIK cannot be empty", 'error'
+            //     )
+            //     return false;
+            // }
 
             let data_obj = {};
             data_obj.description = $('#materiInduksiTambahan').val();
             data_obj.nikMateriTambahan = $('#nikInduksiTambahan').val();
-            data_obj.concat = $('#materiInduksiTambahan').val() + " - " + $(
-                '#nikInduksiTambahan').val();
+            // data_obj.concat = $('#materiInduksiTambahan').val() + " - " + $(
+            //     '#nikInduksiTambahan').val();
+            data_obj.concat = $('#materiInduksiTambahan').val() + " - ";
             $('#materiInduksiTambahan').val('')
-            $('#nikInduksiTambahan').val('')
+            // $('#nikInduksiTambahan').val('')
             MateriTambahanInputData_Obj_datas.push(data_obj);
             $('#MateriTambahanInputData').bootstrapTable('refresh');
             $('#MateriTambahanInputData').bootstrapTable('load',
@@ -532,8 +533,8 @@
                 var data = {
                     id: item.iden, // Menambahkan 1 karena index dimulai dari 0
                     group: item.QuestionaireGroup, // Menambahkan 1 karena index dimulai dari 0
-                    mentor: $(`#input_${dataJenisInduksi}_` + item.iden).val(),
-                    tanggal: $(`#tanggal_${dataJenisInduksi}_` + item.iden).val(),
+                    // mentor: $(`#input_${dataJenisInduksi}_` + item.iden).val(),
+                    // tanggal: $(`#tanggal_${dataJenisInduksi}_` + item.iden).val(),
                 };
                 checkedData.push(data);
             });
