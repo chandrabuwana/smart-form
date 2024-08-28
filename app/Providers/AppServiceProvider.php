@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -24,5 +25,7 @@ class AppServiceProvider extends ServiceProvider
         // Paginator::useBootstrap();
         // Carbon::setLocale('id');
         date_default_timezone_set('Asia/Jakarta');
+
+        View::addNamespace('SmartForm', module_path('SmartForm', 'resources/views'));
     }
 }
