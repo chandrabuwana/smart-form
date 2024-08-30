@@ -216,5 +216,6 @@ return [
 
     ])->toArray(),
 
-    'user_sm' => env('USER_SM', '1008491,1008492,1008493,1008494,1008526')
+    'user_sm' => env('USER_SM', '1008491,1008492,1008493,1008494,1008526'),
+    'pengawas_produksi' => env('PENGAWAS_PRODUKSI', '1020340')
 ];

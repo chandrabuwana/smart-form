@@ -3,6 +3,7 @@
 @section('custom-css')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.css">
     <link href="{{ asset('master/css/app-baf8d111.css') }}" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     {{-- <script src="{{ asset('master/js/app-e576488e.js') }}"></script> --}}
     {{-- @vite('resources/css/app.css') --}}
     <style>
@@ -50,6 +51,9 @@
         .collapse {
             visibility: visible;
         }
+        .mouse-click {
+            cursor: pointer;
+        }
     </style>
     
 @endsection
@@ -75,6 +79,15 @@
                                 <p class="mb-0 fw-bold text-sm">
                                     Requested Name : <span id="requestor">{{ session('username') }}</span>
                                 </p>
+                                <div class="mb-3 mt-3">
+                                    <span class="fw-bold">Pengawas</span>
+                                    <select class="form-select form-select-sm input-text" aria-label="Default select example" id="inputPengawas" name="inputPengawas">
+                                            <option value="" selected>-- Pilih Pengawas --</option>
+                                        @foreach($data_pengawas as $pengawas)
+                                            <option value="{{ $pengawas->nik }}">{{ $pengawas->nama }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -84,7 +97,9 @@
                             <table class="w-full">
                                 <tr>
                                     <td>Site</td>
-                                    <td><input type="text" class="input-text w-full" id="inputSite"></td>
+                                    <td>
+                                        <input type="text" class="input-text w-full" id="inputSite">
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>Hari</td>
@@ -109,7 +124,7 @@
                         <div class="col-md-6 mb-4">
                             <table class="w-full">
                                 <tr>
-                                    <td>Nama & No. Unit</td>
+                                    <td>No. Unit</td>
                                     <td><input type="text" class="input-text w-full" id="inputNoUnit"></td>
                                 </tr>
                                 <tr>
@@ -118,11 +133,11 @@
                                 </tr>
                                 <tr>
                                     <td>HM Awal</td>
-                                    <td><input type="text" class="input-text w-full" id="inputAwalHM"></td>
+                                    <td><input type="text" class="input-text w-full" id="inputAwalHM" disabled></td>
                                 </tr>
                                 <tr>
                                     <td>HM Akhir</td>
-                                    <td><input type="text" class="input-text w-full" id="inputAkhirHM"></td>
+                                    <td><input type="text" class="input-text w-full" id="inputAkhirHM" disabled></td>
                                 </tr>
                             </table>
                         </div>
@@ -176,7 +191,29 @@
 
                         <div class="w-1/2 md:w-1/6">
                             <span>Kode Aktifitas</span>
-                            <input type="text" class="input-text display-block w-full" id="inputKodeAktifitas">
+                            <select class="form-select form-select-sm input-text" aria-label="Default select example" id="inputKodeAktifitas" name="inputKodeAktifitas">
+                                <option value="S1" selected>S1 - Overshift/P5M</option>
+                                <option value="S2">S2 - Hujan, Licin</option>
+                                <option value="S3">S3 - Blasting</option>
+                                <option value="S4">S4 - No Driver</option>
+                                <option value="S5">S5 - P2H</option>
+                                <option value="S6">S6 - Tunggu Alat Lain</option>
+                                <option value="S7">S7 - Isi Solar</option>
+                                <option value="S8">S8 - Berdebu</option>
+                                <option value="S9">S9 - Perbaikan Jalan</option>
+                                <option value="S10">S10 - Kabut</option>
+                                <option value="S11">S11 - Cuci Unit</option>
+                                <option value="S12">S12 - Demo</option>
+                                <option value="S13">S13 - Insident</option>
+                                <option value="S14">S14 - Antrian Timbangan</option>
+                                <option value="S15">S15 - Antrian Di Pit</option>
+                                <option value="S16">S16 - Stock File Penuh</option>
+                                <option value="S17">S17 - Makan & Istirahat</option>
+                                <option value="S18">S18 - No Coal</option>
+                                <option value="S19">S19 - Perbaikan Front</option>
+                                <option value="S20">S20 - Lain-lain</option>
+                            </select>
+                            {{-- <input type="text" class="input-text display-block w-full" id="inputKodeAktifitas"> --}}
                         </div>
                         <div class="w-1/2 md:w-1/6">
                             <span>Awal</span>
@@ -234,6 +271,7 @@
 @section('custom-js')
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     
     <script>
         var hariMapping = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
@@ -258,6 +296,7 @@
         var inputBlok = $("#inputBlok");
         var inputAwal = $("#inputAwal");
         var inputAkhir = $("#inputAkhir");
+        var inputPengawas = $("#inputPengawas");
 
         var optionJam = {
             DS: [
@@ -386,7 +425,7 @@
 
         function actionFormatter(value, row, index) {
             return `
-                <i class="fas fa-circle-minus text-red-800 fa-2x" onclick="deleteRow(${index})"></i>
+                <i class="fas fa-circle-minus text-red-800 fa-2x mouse-click" onclick="deleteRow(${index})"></i>
             `;
         }
 
@@ -407,7 +446,7 @@
             $("#inputSite").val($("#inputSite").val().trim())
             $("#inputNoUnit").val($("#inputNoUnit").val().trim())
             $("#inputAwalHM").val($("#inputAwalHM").val().trim())
-            $("#inputAkhir").val($("#inputAkhir").val().trim())
+            $("#inputAkhirHM").val($("#inputAkhirHM").val().trim())
 
             if($("#inputSite").val().length < 1) {
                 errorList.push({field: "Site", message: "Site tidak boleh kosong"})
@@ -418,8 +457,11 @@
             if($("#inputAwalHM").val().length < 1) {
                 errorList.push({field: "HM Awal", message: "HM Awal tidak boleh kosong"})
             }
-            if($("#inputAkhir").val().length < 1) {
+            if($("#inputAkhirHM").val().length < 1) {
                 errorList.push({field: "HM Akhir", message: "HM Akhir tidak boleh kosong"})
+            }
+            if($("#inputPengawas").val().length < 1 || $("#inputPengawas").val() == "") {
+                errorList.push({field: "Pengawas", message: "Pengawas belum dipilih"})
             }
 
             return errorList;
@@ -436,6 +478,8 @@
             $("#inputMaterialSeam").val($("#inputMaterialSeam").val().trim())
             $("#inputBlok").val($("#inputBlok").val().trim())
             $("#inputKodeAktifitas").val($("#inputKodeAktifitas").val().trim())
+            $("#inputAwal").val($("#inputAwal").val().trim())
+            $("#inputAkhir").val($("#inputAkhir").val().trim())
 
             if($("#inputMenitRit").val().length < 1) {
                 errorList.push({field: "RIT (Menit ke)", message: "RIT (Menit ke) tidak boleh kosong"})
@@ -451,6 +495,18 @@
             }
             if($("#inputKodeAktifitas").val().length < 1) {
                 errorList.push({field: "Kode Aktifitas", message: "Kode Aktifitas tidak boleh kosong"})
+            }
+            if($("#inputAwal").val().length < 1) {
+                errorList.push({field: "Awal", message: "Awal tidak boleh kosong"})
+            }
+            if($("#inputAkhir").val().length < 1) {
+                errorList.push({field: "Akhir", message: "Akhir tidak boleh kosong"})
+            }
+            if(isNaN(parseInt($("#inputAwal").val()))) {
+                errorList.push({field: "Awal", message: "Awal hanya boleh angka"})
+            }
+            if(isNaN(parseInt($("#inputAkhir").val()))) {
+                errorList.push({field: "Akhir", message: "Akhir hanya boleh angka"})
             }
 
             return errorList;
@@ -479,10 +535,16 @@
         })
 
         $table.on('post-body.bs.table', function(data) {
-            items = {}
+            var items = {}
+            var awal = []
+            var akhir = []
+            
             $tableSummaryRit.bootstrapTable('removeAll')
             data.sender.data.forEach(function (item, index, arr) {
+                // console.log(item)
                 items[item.jam] = item.jam in items ? items[item.jam] + 1 : 1;
+                awal.push(item.awal)
+                akhir.push(item.akhir)
             })
 
             for(var key in items) {
@@ -492,7 +554,13 @@
                     total_rit: items[key]
                 })
             }
-            // console.log(items)
+            var minAwal = awal.length > 0 ? Math.min(...awal) : 0;
+            var maxAkhir = akhir.length > 0 ? Math.max(...akhir) : 0;
+            inputAwalHM.val(minAwal)
+            inputAkhirHM.val(maxAkhir)
+            // console.log(data.sender.data)
+            // console.log({minAwal, maxAkhir})
+
         })
         document.getElementById("inputTanggal").addEventListener("change", function(e) {
             var tgl = new Date(e.target.value);
@@ -500,6 +568,7 @@
             inputHari.val(hariMapping[tgl.getDay()])
         })
         $(function() {
+            inputPengawas.select2()
             updateJam(inputShift.val())
             $btnAddItem.click(function(e) {
                 e.preventDefault()
@@ -514,7 +583,7 @@
                         title: 'Gagal!',
                         html: msg
                     }).then((result) => {
-                        window.location.href = "/bss-form-prod-timesheet";
+
                     })
                 } else {
                     $table.bootstrapTable('sortBy', {
@@ -564,6 +633,7 @@
                         problem: inputProblem.val(),
                         blok: inputBlok.val(),
                         totalRit: detailData.length,
+                        pengawas: inputPengawas.val(),
                         detail: detailData
                     }
 
@@ -580,16 +650,16 @@
                             data.icon = 'success'
                             data.title = "Berhasil!"
                             data.text = response.data.message
+
+                            Swal.fire(data).then((result) => {
+                                window.location.href = "/bss-form-prod-timesheet";
+                                // window.location.href = `/get-form-detail?no_doc=${response.data.data.no_doc}`;
+                            })
                         } else {
                             data.icon = 'error'
                             data.title = "Gagal!"
                             data.text = response.data.message
                         }
-
-                        Swal.fire(data).then((result) => {
-                            window.location.href = "/bss-form-prod-timesheet";
-                            // window.location.href = `/get-form-detail?no_doc=${response.data.data.no_doc}`;
-                        })
                     })
                     .catch(function (error) {
                         Swal.fire({
