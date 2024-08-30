@@ -122,14 +122,14 @@
                  </a>
                  <ul class="submenu navbar-nav">
                      <li class="nav-item">
-                         <a class="nav-link text-white " href="{{ route('dashboard-form-sm') }}" id="form-asset-request-nav">
+                         <a class="nav-link text-white " href="{{ route('bss-form.sm.dashboard') }}" id="form-asset-request-nav">
                              <div class="text-white text-center d-flex align-items-center justify-content-center">
                              </div>
                              <span class="nav-link-text">Dashboard</span>
                          </a>
                      </li>
                      <li class="nav-item">
-                         <a class="nav-link text-white " href="{{ route('form-asset-request') }}" id="form-asset-request-nav">
+                         <a class="nav-link text-white " href="{{ route('bss-form.sm.form-asset-request') }}" id="form-asset-request-nav">
                              <div class="text-white text-center d-flex align-items-center justify-content-center">
                              </div>
                              <span class="nav-link-text">Form Asset Request</span>
@@ -147,14 +147,14 @@
                  </a>
                  <ul class="submenu navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link text-white " href="{{ route('dashboard-form-plant') }}" id="form-asset-request-nav">
+                        <a class="nav-link text-white " href="{{ route('bss-form.plant-transmission.dashboard') }}" id="form-asset-request-nav">
                             <div class="text-white text-center d-flex align-items-center justify-content-center">
                             </div>
                             <span class="nav-link-text">Dashboard</span>
                         </a>
                     </li>
                      <li class="nav-item">
-                         <a class="nav-link text-white " href="{{ route('bss-form-plant-transmission') }}" id="form-asset-request-nav">
+                         <a class="nav-link text-white " href="{{ route('bss-form.plant-transmission.form') }}" id="form-asset-request-nav">
                             <span class="nav-link-text">Form Transmission Test</span>
                          </a>
                      </li>
@@ -162,7 +162,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white " href="{{ route('dashboard-undercarriage-inspection') }}" id="form-asset-request-nav">
+                        <a class="nav-link text-white " href="{{ route('bss-form.undercarriage.dashboard') }}" id="form-asset-request-nav">
                             <div class="text-white text-center d-flex align-items-center justify-content-center">
                             </div>
                             <span class="nav-link-text">Under Carriage Inspection</span>

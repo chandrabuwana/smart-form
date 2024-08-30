@@ -1,0 +1,11 @@
+{
+    "name": "SmartForm",
+    "alias": "smartform",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\SmartForm\\App\\Providers\\SmartFormServiceProvider"
+    ],
+    "files": []
+}

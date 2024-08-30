@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Production;
+namespace Modules\SmartForm\App\Http\Controllers\Production;
 
 use App\Http\Controllers\Controller;
 use Exception;
@@ -18,7 +18,7 @@ class ProductionTimeSheetDashboarController extends Controller
     private const TABLE_DETAIL = "FM_PRODUKSI_TIMESHEET_DETAIL";
 
     function IndexDashboard(){
-        return view("production/timesheet/dashboard-form-timesheet-prod");
+        return view("SmartForm::production/timesheet/dashboard-form-timesheet-prod");
     }
 
     function FormTimesheetProduksi() {
@@ -35,7 +35,7 @@ class ProductionTimeSheetDashboarController extends Controller
         ];
         $data_pengawas = $this->getListPengawas();
 
-        return view("production/timesheet/form-timesheet-prod", ['data_pengawas' => $data_pengawas]);
+        return view("SmartForm::production/timesheet/form-timesheet-prod", ['data_pengawas' => $data_pengawas]);
     }
 
     function SubmitFormTimesheet(Request $req) {
@@ -77,7 +77,7 @@ class ProductionTimeSheetDashboarController extends Controller
             $data_insert['nik'] = $nik_session;
             $data_insert['blok'] = $data_input['blok'];
             $data_insert['pengawas'] = $data_input['pengawas'];
-            $data_insert['status'] = $data_input[1];
+            $data_insert['status'] = 1;
 
             DB::beginTransaction();
             $id = DB::table($TABLE_MASTER)->insertGetId($data_insert);
@@ -232,7 +232,7 @@ class ProductionTimeSheetDashboarController extends Controller
         }
 
         Log::info("data_master : ". json_encode($data_master));
-        return view('production/timesheet/detail-form-timesheet', ['data' => $data_master, 'data_detail' => $data_detail, 'error' => $errors]);
+        return view('SmartForm::production/timesheet/detail-form-timesheet', ['data' => $data_master, 'data_detail' => $data_detail, 'error' => $errors]);
     }
 
     function SearchKaryawan (Request $request) {
