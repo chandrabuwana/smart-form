@@ -334,7 +334,7 @@
                         // text: "",
                         icon: ""
                     }
-                    axios.post('/timesheet/submit-action-pengawas', {
+                    axios.post('/bss-form/timesheet/submit-action-pengawas', {
                         id_timesheet: idDokumen.text(),
                         action: selectedActionPengawas
                     }, {headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}})
