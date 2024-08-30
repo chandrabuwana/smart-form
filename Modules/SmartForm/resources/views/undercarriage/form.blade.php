@@ -83,7 +83,7 @@
                             <div class="input-group input-group-static">
                                 <label for="unit_mode">Unit Model</label>
                                 <input type="text" class="form-control" id="unit_mode" name="unit_model"
-                                    value="{{ isset($underCarriageMaster) ? $underCarriageMaster->unit_model : '' }}" {{ isset($underCarriageMaster) ? 'readonly' : '' }}>
+                                    value="{{ isset($underCarriageMaster) ? $underCarriageMaster->unit_model : '' }}" {{ isset($underCarriageMaster) ? 'readonly' : 'required' }}>
                             </div>
                         </div>
 
@@ -91,7 +91,7 @@
                             <div class="input-group input-group-static">
                                 <label for="unit_sn">S/N Unit</label>
                                 <input type="text" class="form-control" id="unit_sn" name="unit_sn"
-                                    value="{{ isset($underCarriageMaster) ? $underCarriageMaster->unit_sn : '' }}" {{ isset($underCarriageMaster) ? 'readonly' : '' }}>
+                                    value="{{ isset($underCarriageMaster) ? $underCarriageMaster->unit_sn : '' }}" {{ isset($underCarriageMaster) ? 'readonly' : 'required' }}>
                             </div>
                         </div>
 
@@ -99,7 +99,7 @@
                             <div class="input-group input-group-static">
                                 <label for="unit_smr_hm">SMR / Hm</label>
                                 <input type="text" class="form-control" id="unit_smr_hm" name="unit_smr_hm"
-                                    value="{{ isset($underCarriageMaster) ? $underCarriageMaster->unit_smr_hm : '' }}" {{ isset($underCarriageMaster) ? 'readonly' : '' }}>
+                                    value="{{ isset($underCarriageMaster) ? $underCarriageMaster->unit_smr_hm : '' }}" {{ isset($underCarriageMaster) ? 'readonly' : 'required' }}>
                             </div>
                         </div>
 
@@ -107,7 +107,7 @@
                             <div class="input-group input-group-static">
                                 <label for="work_operation">Work operation</label>
                                 <input type="text" class="form-control" id="work_operation" name="work_operation"
-                                    value="{{ isset($underCarriageMaster) ? $underCarriageMaster->work_operation : '' }}" {{ isset($underCarriageMaster) ? 'readonly' : '' }}>
+                                    value="{{ isset($underCarriageMaster) ? $underCarriageMaster->work_operation : '' }}" {{ isset($underCarriageMaster) ? 'readonly' : 'required' }}>
                             </div>
                         </div>
 
@@ -115,7 +115,7 @@
                             <div class="input-group input-group-static">
                                 <label for="ground_condition">Ground condition</label>
                                 <input type="text" class="form-control" id="ground_condition" name="ground_condition"
-                                    value="{{ isset($underCarriageMaster) ? $underCarriageMaster->ground_condition : '' }}" {{ isset($underCarriageMaster) ? 'readonly' : '' }}>
+                                    value="{{ isset($underCarriageMaster) ? $underCarriageMaster->ground_condition : '' }}" {{ isset($underCarriageMaster) ? 'readonly' : 'required' }}>
                             </div>
                         </div>
 
@@ -123,7 +123,7 @@
                             <div class="input-group input-group-static">
                                 <label for="condition_area">Condition Area Frame</label>
                                 <input type="text" class="form-control" id="condition_area" name="condition_area"
-                                    value="{{ isset($underCarriageMaster) ? $underCarriageMaster->condition_area_frame : '' }}" {{ isset($underCarriageMaster) ? 'readonly' : '' }}>
+                                    value="{{ isset($underCarriageMaster) ? $underCarriageMaster->condition_area_frame : '' }}" {{ isset($underCarriageMaster) ? 'readonly' : 'required' }}>
                             </div>
                         </div>
 
@@ -131,7 +131,7 @@
                             <div class="input-group input-group-static">
                                 <label for="inspection_date">Inspection Date</label>
                                 <input type="date" class="form-control" id="inspection_date" name="inspection_date"
-                                    value="{{ isset($underCarriageMaster) ? $underCarriageMaster->inspection_date : date('Y-m-d') }}" {{ isset($underCarriageMaster) ? 'readonly' : '' }}>
+                                    value="{{ isset($underCarriageMaster) ? $underCarriageMaster->inspection_date : date('Y-m-d') }}" {{ isset($underCarriageMaster) ? 'readonly' : 'required' }}>
                             </div>
                         </div>
 
@@ -139,7 +139,7 @@
                             <div class="input-group input-group-static">
                                 <label for="comment">Comment and Summary</label>
                                 <input type="text" class="form-control" id="comment" name="comment"
-                                    value="{{ isset($underCarriageMaster) ? $underCarriageMaster->comment : '' }}" {{ isset($underCarriageMaster) ? 'readonly' : '' }}>
+                                    value="{{ isset($underCarriageMaster) ? $underCarriageMaster->comment : '' }}" {{ isset($underCarriageMaster) ? 'readonly' : 'required' }}>
                             </div>
                         </div>
                     </div>
@@ -243,8 +243,8 @@
                                             </div>
                                             <div class="col-md-7">
                                                 <div class="input-group input-group-static">
-                                                    <input type="number" name="inspection_right_side[{{ $inspection->id }}]" class="form-control w-100"
-                                                        value="{{ isset($inspection->right_side) ? $inspection->right_side : '' }}" {{ isset($inspection->right_side) ? 'readonly' : 'required' }}>
+                                                    <input type="text" name="inspection_right_side[{{ $inspection->id }}]" class="form-control input-number-only w-100"
+                                                        value="{{ isset($inspection->right_side) ? ($inspection->right_side ?? '-') : '' }}" {{ isset($inspection->right_side) ? 'readonly' : 'required' }}>
                                                 </div>
                                             </div>
 
@@ -253,8 +253,8 @@
                                             </div>
                                             <div class="col-md-7">
                                                 <div class="input-group input-group-static">
-                                                    <input type="number" name="inspection_left_side[{{ $inspection->id }}]" class="form-control w-100"
-                                                        value="{{ isset($inspection->left_side) ? $inspection->left_side : '' }}" {{ isset($inspection->left_side) ? 'readonly' : 'required' }}>
+                                                    <input type="text" name="inspection_left_side[{{ $inspection->id }}]" class="form-control input-number-only w-100"
+                                                        value="{{ isset($inspection->left_side) ? ($inspection->left_side ?? '-') : '' }}" {{ isset($inspection->left_side) ? 'readonly' : 'required' }}>
                                                 </div>
                                             </div>
                                         </div>
@@ -317,8 +317,8 @@
                                                     </div>
                                                     <div class="col-md-7 mb-1">
                                                         <div class="input-group input-group-static">
-                                                            <input type="number" name="inspection_right_side[{{ $component->id }}][{{ $subComponent->id }}]" class="form-control w-100"
-                                                                value="{{ isset($subComponent->right_side) ? $subComponent->right_side : '' }}" {{ isset($subComponent->right_side) ? 'readonly' : 'required' }}>
+                                                            <input type="text" name="inspection_right_side[{{ $component->id }}][{{ $subComponent->id }}]" class="form-control input-number-only w-100"
+                                                                value="{{ isset($subComponent->right_side) ? ($subComponent->right_side ?? '-') : '' }}" {{ isset($subComponent->right_side) ? 'readonly' : 'required' }}>
                                                         </div>
                                                     </div>
 
@@ -327,8 +327,8 @@
                                                     </div>
                                                     <div class="col-md-7">
                                                         <div class="input-group input-group-static">
-                                                            <input type="number" name="inspection_left_side[{{ $component->id }}][{{ $subComponent->id }}]" class="form-control w-100"
-                                                                value="{{ isset($subComponent->left_side) ? $subComponent->left_side : '' }}" {{ isset($subComponent->left_side) ? 'readonly' : 'required' }}>
+                                                            <input type="text" name="inspection_left_side[{{ $component->id }}][{{ $subComponent->id }}]" class="form-control input-number-only w-100"
+                                                                value="{{ isset($subComponent->left_side) ? ($subComponent->left_side ?? '-') : '' }}" {{ isset($subComponent->left_side) ? 'readonly' : 'required' }}>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -544,6 +544,10 @@
             } else {
                 $el.find('i').removeClass('fa-circle-arrow-up').addClass('fa-circle-arrow-down');
             }
+        });
+
+        $('.input-number-only:required').keyup( function() {
+            $(this).val( this.value.replace(/[^0-9\-\.]+/g, '') );
         });
 
         function approveForm(masterId, formPICId) {

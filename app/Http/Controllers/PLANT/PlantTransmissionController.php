@@ -149,16 +149,9 @@ class PlantTransmissionController extends Controller
             'jobsite' => 'required|string|max:255',
             'checkdate' => 'required|date_format:Y-m-d',
             'solenoid_position' => 'required',
-            'solenoid_actual' => 'required',
             'speed_sensor' => 'required',
-            'speed_sensor_low_iddle_actual' => 'required',
-            'speed_sensor_high_iddle_actual' => 'required',
             'power_train_description' => 'required',
             'lever_position' => 'required',
-            'power_train_low_iddle_actual' => 'required',
-            'power_train_low_iddle_after_adjustment' => 'required',
-            'power_train_high_iddle_actual' => 'required',
-            'power_train_high_iddle_after_adjustment' => 'required'
         ]);
 
         DB::beginTransaction();
@@ -166,7 +159,7 @@ class PlantTransmissionController extends Controller
 
         try {
             $master = DB::table('FM_PLANT_PPM_TRANSMISI_CMT_BSS_MASTER')->insertGetId([
-                'reference_no' => $requestData['reference_no'] ?? null,
+                // 'reference_no' => $requestData['reference_no'] ?? null,
                 'machine_number' => $requestData['machine_number'],
                 'machine_model' => $requestData['machine_model'],
                 'machine_serial_no' => $requestData['machine_serial_no'],
@@ -185,7 +178,7 @@ class PlantTransmissionController extends Controller
                 DB::table('FM_PLANT_PPM_TRANSMISI_CMT_BSS_DETAIL_HARNESS')->insert([
                     'plant_test_id' => $master,
                     'selonoid_position' => $solenoidPosition,
-                    'actual' => $solenoidActual,
+                    'actual' => $solenoidActual == '-' ? null : $solenoidActual,
                     'created_at' => now(),
                     'created_by' => session("user_id"),
                     'updated_at' => null,
@@ -201,8 +194,8 @@ class PlantTransmissionController extends Controller
                 DB::table('FM_PLANT_PPM_TRANSMISI_CMT_BSS_DETAIL_SPEED_SENSOR_TEST')->insert([
                     'plant_test_id' => $master,
                     'speed_sensor' => $speedSensor,
-                    'actual_low_iddle' => $lowIddleActual,
-                    'actual_high_iddle' => $highIddleActual,
+                    'actual_low_iddle' => $lowIddleActual == '-' ? null : $lowIddleActual,
+                    'actual_high_iddle' => $highIddleActual == '-' ? null : $highIddleActual,
                     'created_at' => now(),
                     'created_by' => session("user_id"),
                     'updated_at' => null,
@@ -222,10 +215,10 @@ class PlantTransmissionController extends Controller
                     'plant_test_id' => $master,
                     'description' => $powerTrainDescription,
                     'lever_position' => $leverPosition,
-                    'actual_low_iddle' => $lowIddleActual,
-                    'actual_high_iddle' => $highIddleActual,
-                    'after_adjust_low_iddle' => $lowIddleAfterAdjustment,
-                    'after_adjust_high_iddle' => $highIddleAfterAdjustment,
+                    'actual_low_iddle' => $lowIddleActual == '-' ? null : $lowIddleActual,
+                    'actual_high_iddle' => $highIddleActual == '-' ? null : $highIddleActual,
+                    'after_adjust_low_iddle' => $lowIddleAfterAdjustment == '-' ? null : $lowIddleAfterAdjustment,
+                    'after_adjust_high_iddle' => $highIddleAfterAdjustment == '-' ? null : $highIddleAfterAdjustment,
                     'created_at' => now(),
                     'created_by' => session("user_id"),
                     'updated_at' => null,
@@ -244,7 +237,7 @@ class PlantTransmissionController extends Controller
             return response()->json([
                 'message' => 'Something went wrong: ' . $e->getMessage(),
                 'code' => 500
-            ]);
+            ], 500);
         }
     }
 }
