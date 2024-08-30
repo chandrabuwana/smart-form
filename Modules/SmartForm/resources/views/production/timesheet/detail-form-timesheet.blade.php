@@ -79,9 +79,9 @@
                                         <span class="fw-bold">Pengawas</span>
                                         <input type="text" class="input-text w-full" id="inputPengawas" disabled value="{{ $data['pengawas_nama'] }}">
                                     </div>
-                                    <div>{{ $data['status']}}</div>
+                                    
                                     @if($data['pengawas'] == session('user_id'))
-                                        @if($data['status'] == null || $data['status'] == 'null')
+                                        @if($data['status'] == null || $data['status'] == 'null' || $data['status'] == 1 || $data['status'] == '1')
                                             <div>
                                                 <a href="#" onclick="submitActionPengawas(this)" data-action="approve"><button class="btn btn-primary btn-action text-white">Approve</button></a>
                                                 <a href="#" onclick="submitActionPengawas(this)" data-action="reject"><button class="btn btn-secondary btn-action text-white">Reject</button></a>
