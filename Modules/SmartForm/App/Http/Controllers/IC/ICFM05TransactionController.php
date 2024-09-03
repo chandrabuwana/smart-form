@@ -12,65 +12,36 @@ class ICFM05TransactionController extends Controller
     //
     function SubmitALLData(Request $d)
     {
-        $validatedData = $d->validate([
-            'master.nama' => 'required|string|max:255',
-            'master.nik' => 'required|string|max:255',
-            'master.jabatan' => 'required|string|max:255',
-            'master.department' => 'required|string|max:255',
-            'master.instansi' => 'required|string|max:255',
-            'master.jenisInduksi' => 'required|integer',
-            'master.group' => 'required|string|max:255'
-        ]);
-
+        // 
         DB::beginTransaction();
         $dataNOW = now();
         try {
-
-            DB::table('FM_IC_005_BSS_MASTER')->insert([
-                'NIK' => $validatedData['master']['nik'],
-                'Nama' => $validatedData['master']['nama'],
-                'Jabatan' => $validatedData['master']['jabatan'],
-                'Department' => $validatedData['master']['department'],
-                'Instansi' => $validatedData['master']['instansi'],
-                'Jenis' => $validatedData['master']['jenisInduksi'],
-                'Group' => $validatedData['master']['group'],
-                'created_at' => $dataNOW,
-                'created_by' => session("user_id"),
-                'updated_by' => null, // Nilai ini mungkin bisa dikosongkan jika belum diperbarui
-                'updated_at' => null // Nilai ini mungkin bisa dikosongkan jika belum diperbarui
-            ]);
-
-            foreach ($d->data as $key => $value) {
-                $induksiAtDate = Carbon::createFromFormat('d - M - Y', $value['tanggal'])->format('Y-m-d');
-                DB::table('FM_IC_005_BSS_DETAIL')->insert([
-                    'NIK' => $validatedData['master']['nik'],
-                    'Created' => $dataNOW,
-                    'Group' => $validatedData['master']['group'],
-                    'IndexPertanyaan' => $value['id'],
-                    'Mentor' => $value['mentor'],
-                    'Induksi_at' => $induksiAtDate,
-                    'created_at' => $dataNOW,
-                    'created_by' => session("user_id"),
-                    'updated_by' => null, // Nilai ini mungkin bisa dikosongkan jika belum diperbarui
-                    'updated_at' => null // Nilai ini mungkin bisa dikosongkan jika belum diperbarui
-                ]);
+            $dataTypes = ['dataICGS', 'dataOD', 'dataSHE', 'dataDEPT'];
+            foreach ($dataTypes as $dataType) {
+                if (!empty($d->$dataType)) {
+                    foreach ($d->$dataType as $value) {
+                        DB::table('FM_IC_005_BSS_DETAIL_INDUKSI')->insert([
+                            'group_code' => $d->code,
+                            'index_pertanyaan' => $value['id'],
+                            'mentor' => session("user_id"),
+                            'created_at' => $dataNOW,
+                            'created_by' => session("user_id"),
+                        ]);
+                    }
+                }
+            }
+            if (!empty($d->pertanyaanTambahan)) {
+                foreach ($d->pertanyaanTambahan as $key => $value) {
+                    DB::table('FM_IC_005_BSS_DETAIL_PERTANYAAN_EXT')->insert([
+                        'group_code' => $d->code,
+                        'pertanyaan' => $value['description'],
+                        'mentor' => $value['nikMateriTambahan'],
+                        'created_at' => $dataNOW,
+                        'created_by' => session("user_id"),
+                    ]);
+                }
             }
 
-            foreach ($d->pertanyaanTambahan as $key => $value) {
-                DB::table('FM_IC_005_BSS_DETAIL_TAMBAHAN_PERTANYAAN')->insert([
-                    'NIK' => $validatedData['master']['nik'],
-                    'Created' => $dataNOW,
-                    'Group' => $validatedData['master']['group'],
-                    'pertanyaan' => $value['description'],
-                    'Mentor' => $value['nikMateriTambahan'],
-                    'created_at' => $dataNOW,
-                    'created_by' => session("user_id"),
-                    'updated_by' => null, // Nilai ini mungkin bisa dikosongkan jika belum diperbarui
-                    'updated_at' => null // Nilai ini mungkin bisa dikosongkan jika belum diperbarui
-                ]);
-            }
-
-            // Commit transaksi jika tidak ada error
             DB::commit();
 
             return response()->json([
@@ -91,54 +62,85 @@ class ICFM05TransactionController extends Controller
     function SubmitALLDataEdit(Request $d)
     {
 
+        // dd($d);
         DB::beginTransaction();
-
+        $dataNOW = now();
         try {
 
-            $dataMaster = DB::table('FM_IC_005_BSS_MASTER')
-                ->where("NIK", $d->master['nik'])
-                ->where("created_at", $d->master['date'])
-                ->get()
-                ->first();
-            DB::table('FM_IC_005_BSS_DETAIL')
-                ->where('NIK', $d->master['nik'])
-                ->where('Created', $d->master['date'])
+            // $dataMaster = DB::table('FM_IC_005_BSS_MASTER')
+            //     ->where("NIK", $d->master['nik'])
+            //     ->where("created_at", $d->master['date'])
+            //     ->get()
+            //     ->first();
+            DB::table('FM_IC_005_BSS_DETAIL_INDUKSI')
+                ->where('group_code', $d->code)
+                // ->where('Created', $d->master['date'])
                 ->delete();
-            DB::table('FM_IC_005_BSS_DETAIL_TAMBAHAN_PERTANYAAN')
-                ->where('NIK', $d->master['nik'])
-                ->where('Created', $d->master['date'])
+            DB::table('FM_IC_005_BSS_DETAIL_PERTANYAAN_EXT')
+                ->where('group_code', $d->code)
                 ->delete();
 
-
-            foreach ($d->data as $key => $value) {
-                $induksiAtDate = Carbon::createFromFormat('d - M - Y', $value['tanggal'])->format('Y-m-d');
-                DB::table('FM_IC_005_BSS_DETAIL')->insert([
-                    'NIK' => $dataMaster->NIK,
-                    'Created' => $dataMaster->created_at,
-                    'Group' => $dataMaster->Group,
-                    'IndexPertanyaan' => $value['id'],
-                    'Mentor' => $value['mentor'],
-                    'Induksi_at' => $induksiAtDate,
-                    'created_at' => now(),
-                    'created_by' => session("user_id"),
-                    'updated_by' => session("user_id"), // Nilai ini mungkin bisa dikosongkan jika belum diperbarui
-                    'updated_at' => now()// Nilai ini mungkin bisa dikosongkan jika belum diperbarui
-                ]);
+            $dataTypes = ['dataICGS', 'dataOD', 'dataSHE', 'dataDEPT'];
+            foreach ($dataTypes as $dataType) {
+                if (!empty($d->$dataType)) {
+                    foreach ($d->$dataType as $value) {
+                        $induksiAtDate = Carbon::createFromFormat('d - M - Y', $value['tanggal'])->format('Y-m-d');
+                        DB::table('FM_IC_005_BSS_DETAIL_INDUKSI')->insert([
+                            'group_code' => $d->code,
+                            'index_pertanyaan' => $value['id'],
+                            'mentor' => session("user_id"),
+                            'created_at' => $induksiAtDate,
+                            'created_by' => session("user_id"),
+                            'updated_by' => session("user_id"),
+                            'updated_at' => $dataNOW,
+                        ]);
+                    }
+                }
             }
 
-            foreach ($d->pertanyaanTambahan as $key => $value) {
-                DB::table('FM_IC_005_BSS_DETAIL_TAMBAHAN_PERTANYAAN')->insert([
-                    'NIK' => $dataMaster->NIK,
-                    'Created' => $dataMaster->created_at,
-                    'Group' => $dataMaster->Group,
-                    'pertanyaan' => $value['description'],
-                    'Mentor' => $value['nikMateriTambahan'],
-                    'created_at' => now(),
-                    'created_by' => session("user_id"),
-                    'updated_by' => session("user_id"), // Nilai ini mungkin bisa dikosongkan jika belum diperbarui
-                    'updated_at' => now()// Nilai ini mungkin bisa dikosongkan jika belum diperbarui
-                ]);
+            if (!empty($d->pertanyaanTambahan)) {
+                foreach ($d->pertanyaanTambahan as $key => $value) {
+                    // dd($value);
+                    DB::table('FM_IC_005_BSS_DETAIL_PERTANYAAN_EXT')->insert([
+                        'group_code' => $d->code,
+                        'pertanyaan' => $value['description'],
+                        'mentor' => $value['nikMateriTambahan'],
+                        'created_at' => $dataNOW,
+                        'created_by' => session("user_id"),
+                    ]);
+                }
             }
+
+
+            // foreach ($d->data as $key => $value) {
+            //     $induksiAtDate = Carbon::createFromFormat('d - M - Y', $value['tanggal'])->format('Y-m-d');
+            //     DB::table('FM_IC_005_BSS_DETAIL')->insert([
+            //         'NIK' => $dataMaster->NIK,
+            //         'Created' => $dataMaster->created_at,
+            //         'Group' => $dataMaster->Group,
+            //         'IndexPertanyaan' => $value['id'],
+            //         'Mentor' => $value['mentor'],
+            //         'Induksi_at' => $induksiAtDate,
+            //         'created_at' => now(),
+            //         'created_by' => session("user_id"),
+            //         'updated_by' => session("user_id"), // Nilai ini mungkin bisa dikosongkan jika belum diperbarui
+            //         'updated_at' => now()// Nilai ini mungkin bisa dikosongkan jika belum diperbarui
+            //     ]);
+            // }
+
+            // foreach ($d->pertanyaanTambahan as $key => $value) {
+            //     DB::table('FM_IC_005_BSS_DETAIL_TAMBAHAN_PERTANYAAN')->insert([
+            //         'NIK' => $dataMaster->NIK,
+            //         'Created' => $dataMaster->created_at,
+            //         'Group' => $dataMaster->Group,
+            //         'pertanyaan' => $value['description'],
+            //         'Mentor' => $value['nikMateriTambahan'],
+            //         'created_at' => now(),
+            //         'created_by' => session("user_id"),
+            //         'updated_by' => session("user_id"), // Nilai ini mungkin bisa dikosongkan jika belum diperbarui
+            //         'updated_at' => now()// Nilai ini mungkin bisa dikosongkan jika belum diperbarui
+            //     ]);
+            // }
 
 
             // Commit transaksi jika tidak ada error
@@ -159,18 +161,18 @@ class ICFM05TransactionController extends Controller
         }
     }
 
-    public function GetQueryListInduksiKaryawan(string $query, Request $req)
+    public function GetQueryListHasilInduksi(string $query, Request $req)
     {
 
         if (isset($req->search['FILTERNIK']) && $req->search['FILTERNIK'] != null) {
-            $query = $query . " AND ms.NIK like '%" . $req->search['FILTERNIK'] . "%' ";
+            $query = $query . " AND grp.code = (select code from FM_IC_005_BSS_LST_KRYWN k where k.nik like '%" . $req->search['FILTERNIK'] . "%' ) ";
         }
         if (isset($req->search['FILTERNAMA']) && $req->search['FILTERNAMA'] != null) {
-            $query = $query . " AND UPPER(ms.Nama) LIKE UPPER('%" . $req->search['FILTERNAMA'] . "%') ";
+            $query = $query . " AND grp.code = (select code from FM_IC_005_BSS_LST_KRYWN k where UPPER(k.Nama) LIKE UPPER('%" . $req->search['FILTERNAMA'] . "%') ) ";
         }
-        if (isset($req->search['FILTERTANGGAL']) && $req->search['FILTERTANGGAL'] != null) {
-            $query = $query . " AND ms.created_at = '" . $req->search['FILTERTANGGAL'] . "' ";
-        }
+        // if (isset($req->search['FILTERTANGGAL']) && $req->search['FILTERTANGGAL'] != null) {
+        //     $query = $query . " AND ms.created_at = '" . $req->search['FILTERTANGGAL'] . "' ";
+        // }
 
         if (isset($req["sort"]) && $req["sort"] != null) {
             $query = $query . ' ORDER BY ' . $req["sort"] . ' ' . $req["order"];
@@ -189,9 +191,35 @@ class ICFM05TransactionController extends Controller
 
     function helperDataListInduksiKaryawan(Request $table)
     {
-        $query = "SELECT  * FROM [FM_IC_005_BSS_MASTER] ms where 1 = 1 ";
-        $countDataUser = DB::select('select count(*) jumlah FROM FM_IC_005_BSS_MASTER');
-        $newQuery = $this->GetQueryListInduksiKaryawan($query, $table);
+        $query = "SELECT * , (Select count (*) from FM_IC_005_BSS_LST_KRYWN k where k.code = grp.code) jml_karyawan,
+                    (SELECT STUFF((
+                        SELECT DISTINCT ',' + LEFT(index_pertanyaan, CHARINDEX('_', index_pertanyaan) - 1)
+                        FROM FM_IC_005_BSS_DETAIL_INDUKSI d where d.group_code = grp.code
+                        FOR XML PATH('')
+                    ), 1, 1, '') AS group_names) pertanyaan  FROM FM_IC_005_BSS_LST_GRP grp 
+                    where 1 = 1 ";
+        $countDataUser = DB::select('select count(*) jumlah FROM FM_IC_005_BSS_LST_GRP');
+        $newQuery = $this->GetQueryListHasilInduksi($query, $table);
+
+        $dataUser = DB::select($newQuery);
+
+        return response()->json([
+            'total' => $countDataUser[0]->jumlah,
+            'totalNotFiltered' => $countDataUser[0]->jumlah,
+            "rows" => $dataUser,
+        ]);
+    }
+
+    public function GetQueryListKaryawanInduksi(string $query, Request $req)
+    {
+        return $query;
+    }
+
+    function helperDataListKaryawanInduksi(Request $table)
+    {
+        $query = "SELECT * FROM [FM_IC_005_BSS_LST_KRYWN] ms where code = '" . $table->search['FILTERCODE'] . "' ";
+        $countDataUser = DB::select("select count(*) jumlah FROM [FM_IC_005_BSS_LST_KRYWN]  where code = '" . $table->search['FILTERCODE'] . "' ");
+        $newQuery = $this->GetQueryListKaryawanInduksi($query, $table);
 
         $dataUser = DB::select($newQuery);
 
