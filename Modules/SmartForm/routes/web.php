@@ -1,5 +1,6 @@
 <?php
 
+// use App\Http\Controllers\GS\SmartCateringController;
 use App\Http\Middleware\FetchMenu;
 use Illuminate\Support\Facades\Route;
 use Modules\SmartForm\App\Http\Controllers\Admin\AdminController;
@@ -93,6 +94,10 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class]], function () {
             Route::get('/detail', [ProductionTimeSheetDashboarController::class, 'GetFormTimesheetDetail'])->name("get-form-timesheet-detail");
             Route::get('/form-produksi', [ProductionTimeSheetDashboarController::class, 'FormTimesheetProduksi'])->name("form-timesheet-produksi");
             Route::post('/submit-form', [ProductionTimeSheetDashboarController::class, 'SubmitFormTimesheet'])->name("add-form-action");
+            Route::get('/search-karyawan', [ProductionTimeSheetDashboarController::class, 'SearchKaryawan'])->name("search-karyawan");
+            Route::post('/submit-action-pengawas', [ProductionTimeSheetDashboarController::class, 'ActionPengawasTimesheet'])->name("search-karyawan");
+            // Route::get('/add-pemesanan-catering', [SmartCateringController::class, 'AddPemesanan'])->name('add-pemesanan-catering');
+            // Route::post('/generate-detail-pemesanan-catering', [SmartCateringController::class, 'GenerateDetailPemesanan'])->name('generate-detail-pemesanan-catering');
         });
     });
 
