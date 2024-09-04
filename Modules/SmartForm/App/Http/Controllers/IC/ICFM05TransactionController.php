@@ -62,34 +62,38 @@ class ICFM05TransactionController extends Controller
     function SubmitALLDataEdit(Request $d)
     {
 
+
         // dd($d);
         DB::beginTransaction();
         $dataNOW = now();
         try {
 
-            // $dataMaster = DB::table('FM_IC_005_BSS_MASTER')
-            //     ->where("NIK", $d->master['nik'])
-            //     ->where("created_at", $d->master['date'])
-            //     ->get()
-            //     ->first();
-            DB::table('FM_IC_005_BSS_DETAIL_INDUKSI')
-                ->where('group_code', $d->code)
-                // ->where('Created', $d->master['date'])
-                ->delete();
+            $listDataNotExist = DB::select("SELECT group_code,
+                STUFF(
+                    CONCAT(
+                        CASE WHEN MAX(CASE WHEN index_pertanyaan LIKE 'ICGS%' THEN 1 ELSE 0 END) = 0 THEN ', ICGS' ELSE '' END,
+                        CASE WHEN MAX(CASE WHEN index_pertanyaan LIKE 'OD%' THEN 1 ELSE 0 END) = 0 THEN ', OD' ELSE '' END,
+                        CASE WHEN MAX(CASE WHEN index_pertanyaan LIKE 'DEPT%' THEN 1 ELSE '' END) = 0 THEN ', DEPT' ELSE '' END,
+                        CASE WHEN MAX(CASE WHEN index_pertanyaan LIKE 'SHE%' THEN 1 ELSE 0 END) = 0 THEN ', SHE' ELSE '' END
+                    ), 1, 2, ''
+                ) AS missing_categories
+            FROM FM_IC_005_BSS_DETAIL_INDUKSI where group_code = ?
+            GROUP BY group_code ;", [$d->code]);
+
+            $dataNotExist = explode(", ", collect($listDataNotExist)->first()->missing_categories);
+           
             DB::table('FM_IC_005_BSS_DETAIL_PERTANYAAN_EXT')
                 ->where('group_code', $d->code)
-                ->delete();
+            ->delete();
 
-            $dataTypes = ['dataICGS', 'dataOD', 'dataSHE', 'dataDEPT'];
-            foreach ($dataTypes as $dataType) {
-                if (!empty($d->$dataType)) {
-                    foreach ($d->$dataType as $value) {
-                        $induksiAtDate = Carbon::createFromFormat('d - M - Y', $value['tanggal'])->format('Y-m-d');
+            foreach ($dataNotExist as $z) {
+                if (!empty($d->$z)) {
+                    foreach ($d->$z as $value) {
                         DB::table('FM_IC_005_BSS_DETAIL_INDUKSI')->insert([
                             'group_code' => $d->code,
                             'index_pertanyaan' => $value['id'],
                             'mentor' => session("user_id"),
-                            'created_at' => $induksiAtDate,
+                            'created_at' => $dataNOW,
                             'created_by' => session("user_id"),
                             'updated_by' => session("user_id"),
                             'updated_at' => $dataNOW,
@@ -110,38 +114,6 @@ class ICFM05TransactionController extends Controller
                     ]);
                 }
             }
-
-
-            // foreach ($d->data as $key => $value) {
-            //     $induksiAtDate = Carbon::createFromFormat('d - M - Y', $value['tanggal'])->format('Y-m-d');
-            //     DB::table('FM_IC_005_BSS_DETAIL')->insert([
-            //         'NIK' => $dataMaster->NIK,
-            //         'Created' => $dataMaster->created_at,
-            //         'Group' => $dataMaster->Group,
-            //         'IndexPertanyaan' => $value['id'],
-            //         'Mentor' => $value['mentor'],
-            //         'Induksi_at' => $induksiAtDate,
-            //         'created_at' => now(),
-            //         'created_by' => session("user_id"),
-            //         'updated_by' => session("user_id"), // Nilai ini mungkin bisa dikosongkan jika belum diperbarui
-            //         'updated_at' => now()// Nilai ini mungkin bisa dikosongkan jika belum diperbarui
-            //     ]);
-            // }
-
-            // foreach ($d->pertanyaanTambahan as $key => $value) {
-            //     DB::table('FM_IC_005_BSS_DETAIL_TAMBAHAN_PERTANYAAN')->insert([
-            //         'NIK' => $dataMaster->NIK,
-            //         'Created' => $dataMaster->created_at,
-            //         'Group' => $dataMaster->Group,
-            //         'pertanyaan' => $value['description'],
-            //         'Mentor' => $value['nikMateriTambahan'],
-            //         'created_at' => now(),
-            //         'created_by' => session("user_id"),
-            //         'updated_by' => session("user_id"), // Nilai ini mungkin bisa dikosongkan jika belum diperbarui
-            //         'updated_at' => now()// Nilai ini mungkin bisa dikosongkan jika belum diperbarui
-            //     ]);
-            // }
-
 
             // Commit transaksi jika tidak ada error
             DB::commit();
@@ -165,10 +137,10 @@ class ICFM05TransactionController extends Controller
     {
 
         if (isset($req->search['FILTERNIK']) && $req->search['FILTERNIK'] != null) {
-            $query = $query . " AND grp.code = (select code from FM_IC_005_BSS_LST_KRYWN k where k.nik like '%" . $req->search['FILTERNIK'] . "%' ) ";
+            $query = $query . " AND grp.code in (select code from FM_IC_005_BSS_LST_KRYWN k where k.nik like '%" . $req->search['FILTERNIK'] . "%' ) ";
         }
         if (isset($req->search['FILTERNAMA']) && $req->search['FILTERNAMA'] != null) {
-            $query = $query . " AND grp.code = (select code from FM_IC_005_BSS_LST_KRYWN k where UPPER(k.Nama) LIKE UPPER('%" . $req->search['FILTERNAMA'] . "%') ) ";
+            $query = $query . " AND grp.code in (select code from FM_IC_005_BSS_LST_KRYWN k where UPPER(k.Nama) LIKE UPPER('%" . $req->search['FILTERNAMA'] . "%') ) ";
         }
         // if (isset($req->search['FILTERTANGGAL']) && $req->search['FILTERTANGGAL'] != null) {
         //     $query = $query . " AND ms.created_at = '" . $req->search['FILTERTANGGAL'] . "' ";

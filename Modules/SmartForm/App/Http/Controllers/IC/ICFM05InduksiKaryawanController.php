@@ -100,11 +100,20 @@ class ICFM05InduksiKaryawanController extends Controller
 
     function formDeletedKaryawanListing(Request $d)
     {
+
         try {
-            DB::table("FM_IC_005_BSS_LST_KRYWN")->where("group", $d->code)->where("nik", $d->nik)->delete();
-            
+            DB::table("FM_IC_005_BSS_LST_KRYWN")->where("code", $d->code)->where("nik", $d->nik)->delete();
+            return response()->json([
+                'message' => 'Done Induksi Tersimpan',
+                'code' => 200
+            ]);
+
         } catch (\Throwable $th) {
             //throw $th;
+            return response()->json([
+                'message' => 'Failed to insert records: ' . $th->getMessage(),
+                'code' => 500
+            ]);
         }
     }
 
@@ -211,12 +220,27 @@ class ICFM05InduksiKaryawanController extends Controller
             ->where('expired', '<', now())
             ->first();
 
+
+
         $dataListInduksi = DB::table("FM_IC_005_BSS_DETAIL_INDUKSI")->where('group_code', $params[0])->get()->toArray();
+        $listDataNotExist = DB::select("SELECT group_code,
+            STUFF(
+                CONCAT(
+                    CASE WHEN MAX(CASE WHEN index_pertanyaan LIKE 'ICGS%' THEN 1 ELSE 0 END) = 0 THEN ', ICGS' ELSE '' END,
+                    CASE WHEN MAX(CASE WHEN index_pertanyaan LIKE 'OD%' THEN 1 ELSE 0 END) = 0 THEN ', OD' ELSE '' END,
+                    CASE WHEN MAX(CASE WHEN index_pertanyaan LIKE 'DEPT%' THEN 1 ELSE '' END) = 0 THEN ', DEPT' ELSE '' END,
+                    CASE WHEN MAX(CASE WHEN index_pertanyaan LIKE 'SHE%' THEN 1 ELSE 0 END) = 0 THEN ', SHE' ELSE '' END
+                ), 1, 2, ''
+            ) AS missing_categories
+        FROM FM_IC_005_BSS_DETAIL_INDUKSI where group_code = ?
+        GROUP BY group_code ;", [$params[0]]);
+
         $detailPertanyaanTambahan = DB::select("select pertanyaan description, mentor nikMateriTambahan,( pertanyaan + ' - ' + mentor) as concat from FM_IC_005_BSS_DETAIL_PERTANYAAN_EXT where group_code = ?", [$params[0]]);
         $final = [
             'code' => $params[0],
             'master' => $dataMaster,
             'activated' => $dataLinkActive,
+            'notExist' => collect($listDataNotExist)->first(),
             'detail' => $dataListInduksi,
             'tambahanPertanyaan' => $detailPertanyaanTambahan
         ];
