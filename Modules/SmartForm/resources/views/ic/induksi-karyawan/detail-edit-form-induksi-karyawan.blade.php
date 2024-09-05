@@ -13,7 +13,7 @@
         }
 
         .custom-width-1 {
-            width: 30%;
+            width: 90%;
             /* Example width, adjust as needed */
         }
 
@@ -196,34 +196,10 @@
                                             placeholder=" -- Masukkan Instansi --" value="" required id="nInstansi">
                                     </div>
                                 </div>
-                                <div class="col-md-2">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label for="nCreatedAt" class="">Tanggal</label>
-                                        <div class="input-group input-group-static my-2">
-                                            <input class="form-control due-date-picker" type="text"
-                                                placeholder="DD/MM/YYYY" name="nCreatedAt" required id="nCreatedAt">
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
 
                         </div>
 
-                        {{-- untuk jenis induksi ICGS --}}
-                        {{-- <div class="row">
-                            <div class="col-md-3">
-                                <div class="input-group input-group-static my-2">
-                                    <label class="ms-0" for="fm_jenisInduksi">Jenis Form Induksi</label>
-                                    <select class="form-control" name="fm_jenisInduksi" id="fm_jenisInduksi" disabled
-                                        onchange="triggerDataInduksi()" value="" required>
-                                        <option value="ICGS" selected>ICGS</option>
-                                        <option value="SHE">SHE</option>
-                                        <option value="OD">OD</option>
-                                        <option value="DEPT">Dept. Terkait</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div> --}}
                         <div class="row">
                             <button class="btn btn-primary ms-auto uploadBtn" id="buttonSubmitDataPICA"
                                 onclick="AddDAtaKaryawan()">
@@ -258,7 +234,7 @@
                                                             data-sortable="true">
                                                             Department</th>
                                                         <th data-halign="center" data-align="center"
-                                                            data-formatter="MateriTambahanInputDataActionFormater">
+                                                            data-formatter="FormaterActionListKaryawan">
                                                             Action</th>
                                                     </tr>
                                                 </thead>
@@ -281,16 +257,16 @@
                                 data-data-type="json" data-unique-id="id">
                                 <thead>
                                     <tr>
-                                        <th data-field="state" data-checkbox="true"></th>
+                                        <th data-field="state" data-checkbox="true" data-width="10px"></th>
                                         <th data-field="Questionaire" data-halign="center" class="custom-width-1"
                                             data-sortable="true">
                                             Complaint</th>
-                                        <th data-field="QuestionaireGroup" data-width="1" data-halign="center"
+                                        {{-- <th data-field="QuestionaireGroup" data-width="1" data-halign="center"
                                             data-align="center" data-formatter="formaterInputNamaInduktor">
                                             Nama Mentor</th>
                                         <th data-field="QuestionaireGroup" data-halign="center" data-width="150"
                                             data-formatter="formaterInputTanggalInduksi" data-align="center">
-                                            Tanggal</th>
+                                            Tanggal</th> --}}
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -305,16 +281,17 @@
                                 data-data-type="json" data-unique-id="id">
                                 <thead>
                                     <tr>
-                                        <th data-field="created" data-checkbox="true"></th>
+                                        <th data-field="created" data-checkbox="true">
+                                        </th>
                                         <th data-field="Questionaire" data-halign="center" class="custom-width-1"
                                             data-sortable="true">
                                             Complaint</th>
-                                        <th data-field="QuestionaireGroup" data-width="1" data-halign="center"
+                                        {{-- <th data-field="QuestionaireGroup" data-width="1" data-halign="center"
                                             data-align="center" data-formatter="formaterInputNamaInduktor">
                                             Nama Mentor</th>
                                         <th data-field="QuestionaireGroup" data-halign="center" data-width="150"
                                             data-formatter="formaterInputTanggalInduksi" data-align="center">
-                                            Tanggal</th>
+                                            Tanggal</th> --}}
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -333,12 +310,12 @@
                                         <th data-field="Questionaire" data-halign="center" class="custom-width-1"
                                             data-sortable="true">
                                             Complaint</th>
-                                        <th data-field="QuestionaireGroup" data-width="1" data-halign="center"
+                                        {{-- <th data-field="QuestionaireGroup" data-width="1" data-halign="center"
                                             data-align="center" data-formatter="formaterInputNamaInduktor">
                                             Nama Mentor</th>
                                         <th data-field="QuestionaireGroup" data-halign="center" data-width="150"
                                             data-formatter="formaterInputTanggalInduksi" data-align="center">
-                                            Tanggal</th>
+                                            Tanggal</th> --}}
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -357,12 +334,12 @@
                                         <th data-field="Questionaire" data-halign="center" class="custom-width-1"
                                             data-sortable="true">
                                             Complaint</th>
-                                        <th data-field="QuestionaireGroup" data-width="1" data-halign="center"
+                                        {{-- <th data-field="QuestionaireGroup" data-width="1" data-halign="center"
                                             data-align="center" data-formatter="formaterInputNamaInduktor">
                                             Nama Mentor</th>
                                         <th data-field="QuestionaireGroup" data-halign="center" data-width="150"
                                             data-formatter="formaterInputTanggalInduksi" data-align="center">
-                                            Tanggal</th>
+                                            Tanggal</th> --}}
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -464,7 +441,8 @@
     <link href="https://unpkg.com/gijgo@1.9.14/css/gijgo.min.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript">
         var MateriTambahanInputData_Obj_datas = <?php echo json_encode($tambahanPertanyaan); ?>;
-
+        var dataExist = <?php echo json_encode($notExist); ?>;
+        var dataExistList = dataExist.missing_categories.split(", ");
         var DataInduksi_Obj_datas = <?php echo json_encode($detail); ?>;
         var listDataSelectedICGS = [];
         var listDataSelectedOD = [];
@@ -483,6 +461,54 @@
         const filteredDataSHE = DataInduksi_Obj_datas.filter(item => {
             return /SHE/.test(item.index_pertanyaan);
         });
+
+
+        function FormaterActionListKaryawan(value, row, index) {
+            return `
+                    <a class="like" href="javascript:void(0)" onclick="DeletedDataDetailKaryawanListing(this)" title="Like">
+                        <i class="fa fa-trash"></i>
+                    </a>
+                `
+        }
+
+        function DeletedDataDetailKaryawanListing(obj) {
+            var indexDt = $(obj).closest('tr').data('index');
+            let getUniqId = $('#TableKaryawanList').bootstrapTable('getData')[indexDt];
+
+            let dataKirim = {
+                code: getUniqId.code,
+                nik: getUniqId.nik
+            }
+
+            $.ajax({
+                type: 'post',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: "/bss-form/induksi-karyawan/listing-karyawan-deleted",
+                data: dataKirim,
+                dataType: 'json',
+                success: function(response) {
+                    console.log(response);
+                    if (response.code == 200) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: "Karyawan Sudah Dihapus",
+                        })
+                        RefreshTableListOfKaryawan();
+                    }
+                }
+                // error: function(xhr, ajaxOptions, thrownError) {
+                //     Swal.fire({
+                //         icon: 'error',
+                //         title: 'thrownError',
+                //         html: errorMessage,
+                //         confirmButtonText: 'OK'
+                //     });
+                // }
+            })
+        }
 
         function AddDAtaKaryawan() {
             var nJenisInduksi = $('#nJenisInduksi').val();
@@ -715,15 +741,6 @@
 
             $('#MateriTambahanInputData').bootstrapTable('load', listpertamaUntukperubahanPErtanyaan);
 
-            $('#nCreatedAt').datepicker({
-                dateFormat: 'd MM yy',
-                monthNames: [
-                    'January', 'February', 'March', 'April', 'May', 'June',
-                    'July', 'August', 'September', 'October', 'November', 'December'
-                ],
-                dayNamesMin: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
-            });
-
             filteredDataSHE.forEach((x) => {
                 listDataSelectedSHE.push(x.index_pertanyaan);
             })
@@ -755,7 +772,9 @@
                         $('#DataListInduksiICGS').bootstrapTable('load', pertanyaanICGS);
                         $('#DataListInduksiICGS').bootstrapTable('checkBy', {
                             field: 'id',
-                            values: listDataSelectedICGS
+                            values: listDataSelectedICGS,
+                            disabled : true,
+                            checked : true
                         });
                         var pertanyaanSHE = $.grep(dataPertanyaan, function(item) {
                             return item.QuestionaireGroup === 'SHE';
@@ -763,7 +782,9 @@
                         $('#DataListInduksiSHE').bootstrapTable('load', pertanyaanSHE);
                         $('#DataListInduksiSHE').bootstrapTable('checkBy', {
                             field: 'id',
-                            values: listDataSelectedSHE
+                            values: listDataSelectedSHE,
+                            disabled : true,
+                            checked : true
                         });
 
                         var pertanyaanOD = $.grep(dataPertanyaan, function(item) {
@@ -772,7 +793,9 @@
                         $('#DataListInduksiOD').bootstrapTable('load', pertanyaanOD);
                         $('#DataListInduksiOD').bootstrapTable('checkBy', {
                             field: 'id',
-                            values: listDataSelectedOD
+                            values: listDataSelectedOD,
+                            disabled : true,
+                            checked : true
                         });
 
                         var pertanyaanDept = $.grep(dataPertanyaan, function(item) {
@@ -781,7 +804,9 @@
                         $('#DataListInduksiDEPT').bootstrapTable('load', pertanyaanDept);
                         $('#DataListInduksiDEPT').bootstrapTable('checkBy', {
                             field: 'id',
-                            values: listDataSelectedDEPT
+                            values: listDataSelectedDEPT,
+                            disabled : true,
+                            checked : true
                         });
 
 
@@ -810,13 +835,6 @@
                     });
                 }
             })
-
-
-
-
-
-
-
 
         })
 
@@ -870,46 +888,13 @@
             checkedDataOD = collectCheckedData($(`#DataListInduksiOD`).bootstrapTable('getSelections'));
             checkedDataSHE = collectCheckedData($(`#DataListInduksiSHE`).bootstrapTable('getSelections'));
             checkedDataDEPT = collectCheckedData($(`#DataListInduksiDEPT`).bootstrapTable('getSelections'));
-            console.log(checkedDataSHE);
-
-
-            // let dataKirim = {
-            //     code: $('#FILTERCODE').val(),
-            //     dataICGS: checkedDataICGS,
-            //     dataOD: checkedDataOD,
-            //     dataSHE: checkedDataSHE,
-            //     dataDEPT: checkedDataDEPT,
-            //     pertanyaanTambahan: MateriTambahanInputData_Obj_datas
-            // }
-
-            // dataListSelection.forEach(function(item, index) {
-            //     var data = {
-            //         id: item.id, // Menambahkan 1 karena index dimulai dari 0
-            //         group: item.QuestionaireGroup, // Menambahkan 1 karena index dimulai dari 0
-            //         mentor: $(`#input_${dataJenisInduksi}_` + item.id).val(),
-            //         tanggal: $(`#tanggal_${dataJenisInduksi}_` + item.id).val(),
-            //     };
-            //     checkedData.push(data);
-            // });
-
-            // let dataMaster = {
-            //     nama: $('#nNama').val(),
-            //     nik: $('#nNik').val(),
-            //     jabatan: $('#nJabatan').val(),
-            //     department: $('#nDept').val(),
-            //     instansi: $('#nInstansi').val(),
-            //     jenisInduksi: $('#nJenisInduksi').val(),
-            //     group: $('#fm_jenisInduksi').val(),
-            //     date: $('#nCreatedAtHidden').val()
-            // }
-
 
             let dataKirim = {
                 code: $('#FILTERCODE').val(),
-                dataICGS: checkedDataICGS,
-                dataOD: checkedDataOD,
-                dataSHE: checkedDataSHE,
-                dataDEPT: checkedDataDEPT,
+                ICGS: checkedDataICGS,
+                OD: checkedDataOD,
+                SHE: checkedDataSHE,
+                DEPT: checkedDataDEPT,
                 pertanyaanTambahan: MateriTambahanInputData_Obj_datas
             }
 

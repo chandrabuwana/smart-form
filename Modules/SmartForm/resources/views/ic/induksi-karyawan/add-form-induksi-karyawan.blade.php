@@ -599,18 +599,13 @@
 
         function FormaterActionListKaryawan(value, row, index) {
             return `
-                    <a class="like" href="javascript:void(0)" onclick="MateriTambahanInputData_InitDeletedDataTable_obj(this)" title="Like">
+                    <a class="like" href="javascript:void(0)" onclick="DeletedDataDetailKaryawanListing(this)" title="Like">
                         <i class="fa fa-trash"></i>
                     </a>
                 `
         }
 
         function DeletedDataDetailKaryawanListing(obj) {
-            var indexDt = $(obj).closest('tr').data('index');
-            let getUniqId = $('#MateriTambahanInputData').bootstrapTable('getData')[indexDt];
-        }
-
-        function MateriTambahanInputData_InitDeletedDataTable_obj(obj) {
             var indexDt = $(obj).closest('tr').data('index');
             let getUniqId = $('#TableKaryawanList').bootstrapTable('getData')[indexDt];
 
@@ -653,6 +648,13 @@
                     });
                 }
             })
+        }
+
+        function MateriTambahanInputData_InitDeletedDataTable_obj(obj) {
+            var indexDt = $(obj).closest('tr').data('index');
+            let getUniqId = $('#MateriTambahanInputData').bootstrapTable('getData')[indexDt];
+
+
         }
 
         $(document).ready(function() {
