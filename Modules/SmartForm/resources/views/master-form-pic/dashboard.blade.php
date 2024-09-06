@@ -14,15 +14,13 @@
                     </div>
                 </div>
                 <div class="card-body px-0 pb-2">
-                    @if(Helper::isGrantPermission('create-master-form-pic'))
-                        <div class="d-flex align-items-center">
-                            <a href="{{ route('master-form-pic.create') }}">
-                                <button class="btn btn-primary ms-auto uploadBtn" id="coba">
-                                    New Form
-                                </button>
-                            </a>
-                        </div>
-                    @endif
+                    <div class="d-flex align-items-center">
+                        <a href="{{ route('master-form-pic.create') }}">
+                            <button class="btn btn-primary ms-auto uploadBtn" id="coba">
+                                New Form
+                            </button>
+                        </a>
+                    </div>
 
                     <div class="table-responsive p-0">
                         <table id="list-form-pic" data-toggle="table" data-ajax="fetchFormsData"
@@ -41,9 +39,7 @@
                                     <th data-field="pic_username" data-align="center" data-halign="center">
                                         PIC Username
                                     </th>
-                                    @if(Helper::isGrantPermission(['update-master-form-pic', 'delete-master-form-pic']))
-                                        <th data-field="action" data-formatter="actionFormatter" >Actions</th>
-                                    @endif
+                                    <th data-field="action" data-formatter="actionFormatter" >Actions</th>
                                 </tr>
                             </thead>
                         </table>
@@ -61,18 +57,10 @@
         var $table = $("#list-form-pic");
 
         function actionFormatter(value, row, index) {
-            const isUpdateFormPIC = `{!! Helper::isGrantPermission('update-master-form-pic') ? '1' : '0' !!}` == '1';
-            const isDeleteFormPIC = `{!! Helper::isGrantPermission('delete-master-form-pic') ? '1' : '' !!}` == '1';
-
-            let action = '';
-            if(isUpdateFormPIC) {
-                action += `<a class="btn btn-primary btn-action btn-sm me-1" href="/master-form-pic/edit/${row.id}">Edit</a>`;
-            }
-            if(isDeleteFormPIC) {
-                action += `<a class="btn btn-danger btn-action btn-sm" href="/master-form-pic/destroy/${row.id}">Delete</a>`;
-            }
-
-            return action;
+            return `
+                <a class="btn btn-primary btn-action btn-sm me-1" href="/master-form-pic/edit/${row.id}">Edit</a>
+                <a class="btn btn-danger btn-action btn-sm" href="/master-form-pic/destroy/${row.id}">Delete</a>
+            `;
         }
 
         function fetchFormsData(params) {

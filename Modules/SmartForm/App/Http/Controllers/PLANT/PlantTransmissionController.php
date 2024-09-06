@@ -11,12 +11,15 @@ use Illuminate\Support\Facades\DB;
 
 class PlantTransmissionController extends Controller
 {
+    public function __construct()
+    {
+        if(!Helper::isGrantPermission('PLANT')) {
+            abort(403);
+        }
+    }
+
     public function form(Request $request)
     {
-        if(!Helper::isGrantPermission('create-form-transmission')) {
-            return redirect('/');
-        }
-
         $referenceNo = $request->query('reference_no');
         return view('SmartForm::/plant/form', [
             'referenceNo' => $referenceNo
@@ -25,10 +28,6 @@ class PlantTransmissionController extends Controller
 
     public function dashboard()
     {
-        if(!Helper::isGrantPermission('dashboard-form-transmission')) {
-            return redirect('/');
-        }
-
         return view('SmartForm::plant/dashboard');
     }
 
@@ -74,10 +73,6 @@ class PlantTransmissionController extends Controller
 
     public function detail($id)
     {
-        if(!Helper::isGrantPermission('detail-data-transmission')) {
-            return redirect('/');
-        }
-
         $plantMasterData = DB::table('FM_PLANT_PPM_TRANSMISI_CMT_BSS_MASTER')->find($id);
         if(!$plantMasterData) abort(404);
 
@@ -137,10 +132,6 @@ class PlantTransmissionController extends Controller
 
     public function store(Request $request)
     {
-        if(!Helper::isGrantPermission('create-form-transmission')) {
-            return redirect('/');
-        }
-
         $request->validate([
             'machine_number' => 'required|string|max:255',
             'machine_model' => 'required|string|max:255',

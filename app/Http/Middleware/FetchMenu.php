@@ -26,17 +26,17 @@ class FetchMenu {
             ->orderBy('urutan')
             ->get();
 
-        $rolePermissionUser = DB::table('MS_ROLE_PERMISSION')->select('permission_module_id')
-            ->join('MS_ROLE', 'MS_ROLE.id', '=', 'MS_ROLE_PERMISSION.role_id')
-            ->join('users', 'users.role', '=', 'MS_ROLE.role_code')
-            ->where('users.username', session('user_id'))
-            ->get()->pluck('permission_module_id')->all();
+        // $rolePermissionUser = DB::table('MS_ROLE_PERMISSION')->select('permission_module_id')
+        //     ->join('MS_ROLE', 'MS_ROLE.id', '=', 'MS_ROLE_PERMISSION.role_id')
+        //     ->join('users', 'users.role', '=', 'MS_ROLE.role_code')
+        //     ->where('users.username', session('user_id'))
+        //     ->get()->pluck('permission_module_id')->all();
 
         $data_menu = [];
         foreach($data as $item) {
-            if(!empty($item->permission_module_id) && !in_array($item->permission_module_id, $rolePermissionUser)) {
-                continue;
-            }
+            // if(!empty($item->permission_module_id) && !in_array($item->permission_module_id, $rolePermissionUser)) {
+            //     continue;
+            // }
 
             if($item->parent == null) {
                 $data_menu[$item->id] = array(
