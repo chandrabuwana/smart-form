@@ -309,7 +309,7 @@ class AssetRequestController extends Controller {
         $history_edit = $this->getHistory($data['data']['id']);
         $data = array_merge($data, $history_edit);
 
-        return view('SM/detail-form-asset-request', $data);
+        return view('SmartForm::SM/detail-form-asset-request', $data);
     }
 
     private function getDetail(Request $request, $no_doc, $nik) {
