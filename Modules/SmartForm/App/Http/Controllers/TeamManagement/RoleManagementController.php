@@ -11,12 +11,15 @@ use Illuminate\Support\Facades\DB;
 
 class RoleManagementController extends Controller
 {
+    public function __construct()
+    {
+        if(!Helper::isGrantPermission('Team Management')) {
+            abort(403);
+        }
+    }
+
     public function dashboard()
     {
-        if(!Helper::isGrantPermission('dashboard-role-management')) {
-            return redirect('/');
-        }
-
         return view('SmartForm::role-management/dashboard');
     }
 
@@ -33,7 +36,7 @@ class RoleManagementController extends Controller
 
             $roleMaster = DB::table('MS_ROLE')
                 ->select('MS_ROLE.id', 'role_name', 'role_code', DB::raw('COUNT(MS_ROLE_PERMISSION.id) AS role_permission'))
-                ->join('MS_ROLE_PERMISSION', 'MS_ROLE_PERMISSION.role_id', '=', 'MS_ROLE.id')
+                ->leftJoin('MS_ROLE_PERMISSION', 'MS_ROLE_PERMISSION.role_id', '=', 'MS_ROLE.id')
                 ->groupBy(['MS_ROLE.id', 'role_name', 'role_code']);
 
             if(!empty($search)) {
@@ -60,11 +63,8 @@ class RoleManagementController extends Controller
 
     public function create()
     {
-        if(!Helper::isGrantPermission('create-role-management')) {
-            return redirect('/');
-        }
-
-        $modulePermissions = DB::table('MS_PERMISSION_MODULE')->select('id', 'module_name')
+        $modulePermissions = DB::table('MasterMenu')->select('id', 'nama')
+            ->whereNull('parent')
             ->orderBy('id', 'ASC')->get();
 
         return view('SmartForm::role-management/form', [
@@ -74,10 +74,6 @@ class RoleManagementController extends Controller
 
     public function store(Request $request)
     {
-        if(!Helper::isGrantPermission('create-role-management')) {
-            return redirect('/');
-        }
-
         $request->validate([
             'role_name' => 'required|string|max:255',
             'role_code' => 'required|string|max:255',
@@ -100,7 +96,7 @@ class RoleManagementController extends Controller
             foreach($requestData['module_permission'] as $moduleId) {
                 DB::table('MS_ROLE_PERMISSION')->insert([
                     'role_id' => $roleId,
-                    'permission_module_id' => $moduleId,
+                    'master_menu_id' => $moduleId,
                     'created_at' => now(),
                     'created_by' => session("user_id"),
                     'updated_at' => null,
@@ -125,11 +121,7 @@ class RoleManagementController extends Controller
 
     public function edit($id)
     {
-        if(!Helper::isGrantPermission('update-role-management')) {
-            return redirect('/');
-        }
-
-        $modulePermissions = DB::table('MS_PERMISSION_MODULE')->select('id', 'module_name')
+        $modulePermissions = DB::table('MasterMenu')->select('id', 'nama')
             ->orderBy('id', 'ASC')->get();
 
         $roleMaster = DB::table('MS_ROLE')->find($id);
@@ -144,10 +136,6 @@ class RoleManagementController extends Controller
 
     public function update($id, Request $request)
     {
-        if(!Helper::isGrantPermission('update-role-management')) {
-            return redirect('/');
-        }
-
         $request->validate([
             'role_name' => 'required|string|max:255',
             'role_code' => 'required|string|max:255',
@@ -171,7 +159,7 @@ class RoleManagementController extends Controller
             foreach($requestData['module_permission'] as $moduleId) {
                 DB::table('MS_ROLE_PERMISSION')->insert([
                     'role_id' => $id,
-                    'permission_module_id' => $moduleId,
+                    'master_menu_id' => $moduleId,
                     'created_at' => now(),
                     'created_by' => session("user_id"),
                     'updated_at' => now(),
@@ -190,16 +178,12 @@ class RoleManagementController extends Controller
             return response()->json([
                 'message' => 'Something went wrong: ' . $e->getMessage(),
                 'code' => 500
-            ]);
+            ], 500);
         }
     }
 
     public function destroy($id)
     {
-        if(!Helper::isGrantPermission('delete-role-management')) {
-            return redirect('/');
-        }
-
         DB::table('MS_ROLE_PERMISSION')->where('role_id', $id)->delete();
         DB::table('MS_ROLE')->where('id', $id)->delete();
         return redirect(route('role-management.dashboard'));

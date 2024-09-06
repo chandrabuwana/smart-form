@@ -14,15 +14,13 @@
                     </div>
                 </div>
                 <div class="card-body px-0 pb-2">
-                    @if(Helper::isGrantPermission('create-form-under-carriage-inspection'))
-                        <div class="d-flex align-items-center">
-                            <a href="{{ route('bss-form.undercarriage.form') }}">
-                                <button class="btn btn-primary ms-auto uploadBtn" id="coba">
-                                    New Form
-                                </button>
-                            </a>
-                        </div>
-                    @endif
+                    <div class="d-flex align-items-center">
+                        <a href="{{ route('bss-form.undercarriage.form') }}">
+                            <button class="btn btn-primary ms-auto uploadBtn" id="coba">
+                                New Form
+                            </button>
+                        </a>
+                    </div>
 
                     <div class="table-responsive p-0">
                         <table id="list-form" data-toggle="table" data-ajax="fetchFormsData"
@@ -50,9 +48,7 @@
                                     <th data-field="inspection_date" data-align="center" data-sortable="true">
                                         Inspection Date
                                     </th>
-                                    @if(Helper::isGrantPermission('detail-data-under-carriage-inspection'))
-                                        <th data-field="action" data-formatter="actionFormatter" >Actions</th>
-                                    @endif
+                                    <th data-field="action" data-formatter="actionFormatter" >Actions</th>
                                 </tr>
                             </thead>
                         </table>

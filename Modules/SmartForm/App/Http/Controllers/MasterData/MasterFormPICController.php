@@ -12,12 +12,15 @@ use Illuminate\Support\Str;
 
 class MasterFormPICController extends Controller
 {
+    public function __construct()
+    {
+        if(!Helper::isGrantPermission('Master Data')) {
+            abort(403);
+        }
+    }
+
     public function dashboard()
     {
-        if(!Helper::isGrantPermission('dashboard-master-pic')) {
-            return redirect('/');
-        }
-
         return view('SmartForm::master-form-pic/dashboard');
     }
 
@@ -61,19 +64,11 @@ class MasterFormPICController extends Controller
 
     public function create()
     {
-        if(!Helper::isGrantPermission('create-master-form-pic')) {
-            return redirect('/');
-        }
-
         return view('SmartForm::master-form-pic/form');
     }
 
     public function store(Request $request)
     {
-        if(!Helper::isGrantPermission('create-role-management')) {
-            return redirect('/');
-        }
-
         $request->validate([
             'form_name' => 'required|string|max:255',
             'pic_username' => 'required'
@@ -110,10 +105,6 @@ class MasterFormPICController extends Controller
 
     public function edit($id)
     {
-        if(!Helper::isGrantPermission('update-master-form-pic')) {
-            return redirect('/');
-        }
-
         $formPIC = DB::table('MS_FORM_PIC')->find($id);
         return view('SmartForm::master-form-pic/form', [
             'formPIC' => $formPIC
@@ -122,10 +113,6 @@ class MasterFormPICController extends Controller
 
     public function update($id, Request $request)
     {
-        if(!Helper::isGrantPermission('update-master-form-pic')) {
-            return redirect('/');
-        }
-
         $request->validate([
             'form_name' => 'required|string|max:255',
             'pic_username' => 'required'
@@ -160,10 +147,6 @@ class MasterFormPICController extends Controller
 
     public function destroy($id)
     {
-        if(!Helper::isGrantPermission('delete-master-form-pic')) {
-            return redirect('/');
-        }
-
         DB::table('MS_FORM_PIC')->where('id', $id)->delete();
         return redirect(route('dashboard-master-form-pic'));
     }
