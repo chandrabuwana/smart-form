@@ -11,13 +11,6 @@ use Illuminate\Support\Facades\DB;
 
 class UnderCarriageInspectionController extends Controller
 {
-    public function __construct()
-    {
-        if(!Helper::isGrantPermission('PLANT')) {
-            abort(403);
-        }
-    }
-
     public function form(Request $request)
     {
         $getComponentThirsts = DB::table('FM_REFF_PLANT_UNDERCARRIAGE_COMPONENT_THIRST')
