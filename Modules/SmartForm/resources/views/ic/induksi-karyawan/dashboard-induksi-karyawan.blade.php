@@ -63,7 +63,10 @@
                                     class="btn btn-primary ms-auto uploadBtn">
                                     Mulai Induksi</button></a>
                         </div>
-
+                        <div class="col-md-2">
+                            <button class="btn btn-primary ms-auto uploadBtn" onclick="TiggerBukaModalUntukDownlaodPDF()">
+                                Export PDF</button>
+                        </div>
                     </div>
                     <div class="table-responsive p-0">
                         <table id="dataListFormICInduksiKaryawan" data-toggle="table"
@@ -92,6 +95,61 @@
         </div>
     </div>
 @endsection
+
+@section('modal')
+    <div class="modal fade" id="ModalUntukDownload" aria-hidden="true" aria-labelledby="exampleModalToggleLabel"
+        tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="row">
+                        <div class="col">
+                            <h5 class="modal-title center" id="exampleModalToggleLabel">Masukkan NIK</h5>
+                            <p id="ProblemHeader"></p>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
+                </div>
+                <div class="row" style="margin: 10px">
+                    <div class="col">
+                        <div class="card border" style="">
+                            <div class="card-body">
+                                <h5 class="card-title">Progress Pembenahan</h5>
+                                <span id="solutionSpan"></span>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="input-group input-group-static my-4">
+                                            <label for="note_progress">Masukkan NIK</label>
+                                            <input class="form-control" type="text" placeholder="-- Masukkan NIK -- "
+                                                name="pdfNIK" required id="pdfNIK">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="input-group input-group-static my-4">
+                                            <label for="CCPLink" class="ms-0">Nama</label>
+                                            <input class="form-control" type="text"
+                                                placeholder="-- Akan Generate By Click Check" name="pdfName" disabled
+                                                id="pdfName">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="d-flex align-items-center">
+                                <button class="btn btn-primary ms-auto uploadBtn" id="buttonSubmitDataPICA"
+                                    style="margin : 20px" onclick="CheckDataBeforeDownloadPDF()">
+                                    <i class="fas fa-save"></i>
+                                    Check Data</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+
 
 
 @section('custom-js')
@@ -270,6 +328,60 @@
             $.get(url + '?' + $.param(params.data)).then(function(res) {
                 params.success(res)
             })
+        }
+    </script>
+    <script type="text/javascript">
+        function CheckDataBeforeDownloadPDF() {
+            let nnik = $('#pdfNIK').val();
+            if (nnik == "") {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'NIK Empty',
+                    confirmButtonText: 'OK'
+                });
+                return false;
+            }
+
+            let dataKirim = {
+                nik: nnik
+            }
+            $.ajax({
+                type: 'post',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: "/bss-form/induksi-karyawan/check-nik-pdf",
+                data: dataKirim,
+                dataType: 'json',
+                success: function(response) {
+                    if (response.code == 200) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: response.message,
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                
+                            } else if (result.isDenied) {
+                                Swal.fire("Changes are not saved", "", "info");
+                            }
+                        });
+                    }
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'thrownError',
+                        html: errorMessage,
+                        confirmButtonText: 'OK'
+                    });
+                }
+            })
+        }
+
+
+        function TiggerBukaModalUntukDownlaodPDF() {
+            $('#ModalUntukDownload').modal("show");
         }
     </script>
 @endsection
