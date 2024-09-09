@@ -636,7 +636,7 @@
                     }
                 }
                 console.log(dataReq)
-                axios.post('bss-form/sm/add-asset-request', formData, {
+                axios.post('/bss-form/sm/add-asset-request', formData, {
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
                         'Content-Type': 'multipart/form-data'

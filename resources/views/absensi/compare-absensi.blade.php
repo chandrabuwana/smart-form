@@ -134,6 +134,7 @@
             if(value != "") {
                 parsedJson = JSON.parse(value); 
                 return '<p>Nik: ' + parsedJson.nik + '</p>' + '<p>Nama: ' + parsedJson.nama + '</p>' + '<p>tanggal: ' + parsedJson.tanggal + '</p>' + '<p>Jam: ' + parsedJson.jam + '</p>';
+                // return '<p>Nik: ' + parsedJson.nik + '</p>' + '<p>Nama: ' + parsedJson.nama + '</p>' + '<p>tanggal: ' + parsedJson.tanggal + '</p>' + '<p>Jam: ' + parsedJson.jam + '</p>' + '<p>Dept: ' + parsedJson.kodedp + '</p>';
             } else {
                 return value;
             }
@@ -148,7 +149,8 @@
             var tahun = tgl.getFullYear();
             var bulan = new String(tgl.getMonth()+1).toString()
             bulan = bulan.length < 2 ? "0"+bulan : bulan;
-            var hari = tgl.getDate()
+            var hari = new String(tgl.getDate())
+            hari = hari.length < 2 ? "0"+hari : hari;
             var tanggal = tahun + "-" + bulan + "-" + hari;
 
             axios.get('/compare-absensi?tanggalAbsensi='+tanggal, {
@@ -180,6 +182,7 @@
                             nama: response.data.data.rows[absensi].nama,
                             tanggal: response.data.data.rows[absensi].absensi.tanggal,
                             jam: response.data.data.rows[absensi].absensi.Jam.replace(".", ":"),
+                            // kodedp: response.data.data.rows[absensi].finger.kodedp
                         })
                     } else {
                         if(response.data.data.rows[absensi].absensi.Jam != response.data.data.rows[absensi-1].absensi.Jam ) {
@@ -188,6 +191,7 @@
                                 nama: response.data.data.rows[absensi].nama,
                                 tanggal: response.data.data.rows[absensi].absensi.tanggal,
                                 jam: response.data.data.rows[absensi].absensi.Jam.replace(".", ":"),
+                                // kodedp: response.data.data.rows[absensi].finger.kodedp
                             })
                         }
                     }
