@@ -40,11 +40,15 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        // 'api' => [
+        //     'driver' => 'token',
+        //     'provider' => 'data_admin', // Menggunakan provider untuk data_admin
+        //     'hash' => false,
+        // ],
         'api' => [
-            'driver' => 'token',
-            'provider' => 'data_admin', // Menggunakan provider untuk data_admin
-            'hash' => false,
-        ],
+            'driver' => 'jwt',
+            'provider' => 'users'
+        ]
     ],
 
     /*

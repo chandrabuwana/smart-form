@@ -454,7 +454,7 @@
                 confirmButtonText: "Yes, " + e.target.getAttribute('data-alert-title') + "!"
             }).then((result) => {
                 if (result.isConfirmed) {
-                    axios.post('bss-form/sm/validasi-asset-request',
+                    axios.post('/bss-form/sm/validasi-asset-request',
                         {
                             noDoc: noDoc.text(),
                             action: e.target.getAttribute('data-action')
