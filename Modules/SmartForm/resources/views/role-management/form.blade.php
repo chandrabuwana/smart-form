@@ -69,12 +69,12 @@
                                             {{ $i + 1 }}
                                         </td>
                                         <td class="text-sm">
-                                            {{ $module->module_name }}
+                                            {{ $module->nama }}
                                         </td>
                                         <td class="text-center">
                                             <div class="form-check ps-0">
                                                 <input class="form-check-input" type="checkbox" name="module_permission[]" value="{{ $module->id }}"
-                                                    {{ isset($rolePermission) && in_array($module->id, $rolePermission->pluck('permission_module_id')->all()) ? 'checked' : '' }}>
+                                                    {{ isset($rolePermission) && in_array($module->id, $rolePermission->pluck('master_menu_id')->all()) ? 'checked' : '' }}>
                                             </div>
                                         </td>
                                     </tr>

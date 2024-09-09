@@ -12,12 +12,15 @@ use Illuminate\Support\Facades\Hash;
 
 class UserManagementController extends Controller
 {
+    public function __construct()
+    {
+        if(!Helper::isGrantPermission('Team Management')) {
+            abort(403);
+        }
+    }
+
     public function dashboard()
     {
-        if(!Helper::isGrantPermission('dashboard-user-management')) {
-            return redirect('/');
-        }
-
         return view('SmartForm::user-management/dashboard');
     }
 
@@ -59,10 +62,6 @@ class UserManagementController extends Controller
 
     public function create()
     {
-        if(!Helper::isGrantPermission('create-user-management')) {
-            return redirect('/');
-        }
-
         $roleMaster = DB::table('MS_ROLE')->select('id', 'role_name')
             ->orderBy('id', 'ASC')->get();
 
@@ -73,10 +72,6 @@ class UserManagementController extends Controller
 
     public function store(Request $request)
     {
-        if(!Helper::isGrantPermission('create-user-management')) {
-            return redirect('/');
-        }
-
         $request->validate([
             'username' => 'required|string|max:255',
             'password' => 'required|string|max:255',
@@ -110,10 +105,6 @@ class UserManagementController extends Controller
 
     public function edit($id)
     {
-        if(!Helper::isGrantPermission('update-user-management')) {
-            return redirect('/');
-        }
-
         $roleMaster = DB::table('MS_ROLE')->select('id', 'role_name')
             ->orderBy('id', 'ASC')->get();
 
@@ -127,10 +118,6 @@ class UserManagementController extends Controller
 
     public function update($id, Request $request)
     {
-        if(!Helper::isGrantPermission('update-user-management')) {
-            return redirect('/');
-        }
-
         $request->validate([
             'username' => 'required|string|max:255',
             'password' => 'nullable|string|max:255',
@@ -166,10 +153,6 @@ class UserManagementController extends Controller
 
     public function destroy($id)
     {
-        if(!Helper::isGrantPermission('delete-user-management')) {
-            return redirect('/');
-        }
-
         DB::table('users')->where('id', $id)->delete();
         return redirect(route('dashboard-user-management'));
     }

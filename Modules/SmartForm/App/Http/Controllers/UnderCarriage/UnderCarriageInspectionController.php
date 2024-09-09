@@ -11,12 +11,15 @@ use Illuminate\Support\Facades\DB;
 
 class UnderCarriageInspectionController extends Controller
 {
+    public function __construct()
+    {
+        if(!Helper::isGrantPermission('PLANT')) {
+            abort(403);
+        }
+    }
+
     public function form(Request $request)
     {
-        if(!Helper::isGrantPermission('create-form-under-carriage-inspection')) {
-            return redirect('/');
-        }
-
         $getComponentThirsts = DB::table('FM_REFF_PLANT_UNDERCARRIAGE_COMPONENT_THIRST')
             ->select('component_name', 'percentage', 'thirst_value')
             ->join('FM_REFF_PLANT_UNDERCARRIAGE_COMPONENT', 'FM_REFF_PLANT_UNDERCARRIAGE_COMPONENT.id', '=', 'FM_REFF_PLANT_UNDERCARRIAGE_COMPONENT_THIRST.component_id')
@@ -60,10 +63,6 @@ class UnderCarriageInspectionController extends Controller
 
     public function store(Request $request)
     {
-        if(!Helper::isGrantPermission('create-form-under-carriage-inspection')) {
-            return redirect('/');
-        }
-
         $request->validate([
             'document_no' => 'required|string|max:255',
             'unit_model' => 'required|string|max:255',
@@ -167,10 +166,6 @@ class UnderCarriageInspectionController extends Controller
 
     public function dashboard(Request $request)
     {
-        if(!Helper::isGrantPermission('dashboard-under-carriage-inspection')) {
-            return redirect('/');
-        }
-
         return view('SmartForm::undercarriage/dashboard');
     }
 
@@ -216,10 +211,6 @@ class UnderCarriageInspectionController extends Controller
 
     public function detail($id)
     {
-        if(!Helper::isGrantPermission('detail-data-under-carriage-inspection')) {
-            return redirect('/');
-        }
-
         $underCarriageMasterData = DB::table('FM_PLANT_UNDERCARRIAGE_INSPECTION_MASTER')->find($id);
         if(!$underCarriageMasterData) abort(404);
 
