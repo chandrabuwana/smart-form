@@ -441,8 +441,6 @@
     <link href="https://unpkg.com/gijgo@1.9.14/css/gijgo.min.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript">
         var MateriTambahanInputData_Obj_datas = <?php echo json_encode($tambahanPertanyaan); ?>;
-        var dataExist = <?php echo json_encode($notExist); ?>;
-        var dataExistList = dataExist.missing_categories.split(", ");
         var DataInduksi_Obj_datas = <?php echo json_encode($detail); ?>;
         var listDataSelectedICGS = [];
         var listDataSelectedOD = [];

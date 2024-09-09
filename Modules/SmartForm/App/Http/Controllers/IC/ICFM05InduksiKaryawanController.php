@@ -39,6 +39,68 @@ class ICFM05InduksiKaryawanController extends Controller
         return view("SmartForm::ic/induksi-karyawan/add-form-induksi-karyawan", $final);
     }
 
+    function downloadPDF(string $id)
+    {
+
+        $dataDetail = DB::select("SELECT DISTINCT DI.index_pertanyaan, RFQ.Questionaire, RFQ.QuestionaireGroup
+                            FROM [PICA_BETA].[dbo].[FM_IC_005_BSS_LST_KRYWN] LK  
+                            JOIN [FM_IC_005_BSS_DETAIL_INDUKSI] DI 
+                                ON LK.code = DI.group_code 
+                            JOIN [REF_IC_05_QUESTIONAIRE] RFQ 
+                                ON DI.index_pertanyaan = RFQ.IdQuestionaire
+                            WHERE LK.NIK = ? ;", [$id]);
+
+        $dataDetailKaryawan = DB::table("FM_IC_005_BSS_LST_KRYWN")
+            ->select(
+                "*",
+                DB::raw("CASE 
+                        WHEN jenis = '1' THEN 'Karyawan Baru'
+                        WHEN jenis = '2' THEN 'Karyawan'
+                        WHEN jenis = '3' THEN 'Siswa Magang'
+                        WHEN jenis = '4' THEN 'Subkontraktor'
+                        ELSE 'Unknown' 
+                    END AS jenis_karyawan")
+            )
+            ->where("nik", $id)
+            ->first();
+
+        $dataFinal = [
+            'date_now' => now(),
+            'detail' => $dataDetail,
+            'karyawan' => $dataDetailKaryawan
+        ];
+
+        return view("SmartForm::ic/induksi-karyawan/pdf-induksi-karyawan", $dataFinal);
+
+        // $pdf = Pdf::loadview("pdf/form_mobilisasi_export", $data)->setOptions(['defaultFont' => 'sans-serif'])->setPaper('a4', 'potrait');
+        // return $pdf->stream();
+    }
+
+    function checkNIKPDF(Request $d)
+    {
+        try {
+            $data = DB::table("FM_IC_005_BSS_LST_KRYWN")->where("nik", $d->nik)->first();
+            if ($data) {
+                return response()->json([
+                    'message' => 'Done Induksi Tersimpan',
+                    'code' => 200,
+                    'data' => $data->Nama
+                ]);
+            } else {
+                return response()->json([
+                    'message' => 'NIK tidak ditemukan',
+                    'code' => 500
+                ]);
+            }
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'Failed to Get Record ',
+                'code' => 500
+            ]);
+        }
+
+    }
+
     function indexFormAddKaryawanListing(string $data)
     {
         try {
