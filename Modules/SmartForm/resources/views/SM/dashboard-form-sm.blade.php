@@ -79,10 +79,10 @@
                 status = "Validated"
             }
             if(value == 2) {
-                status = "Diproses" // approveby SM
+                status = "Approved" // approveby SM
             }
             if(value == 3) {
-                status = "Done"
+                status = "Rejected"
             }
 
             return status;
