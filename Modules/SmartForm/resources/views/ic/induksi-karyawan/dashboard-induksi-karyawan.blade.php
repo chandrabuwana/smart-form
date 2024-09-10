@@ -361,10 +361,8 @@
                             text: response.message,
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                
-                            } else if (result.isDenied) {
-                                Swal.fire("Changes are not saved", "", "info");
-                            }
+                                window.location.href = "/bss-form/induksi-karyawan/download-pdf/" + nnik
+                            } 
                         });
                     }
                 },
