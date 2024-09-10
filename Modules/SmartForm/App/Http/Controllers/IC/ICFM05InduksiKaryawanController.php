@@ -50,7 +50,7 @@ class ICFM05InduksiKaryawanController extends Controller
                             DI.mentor, 
                             TK.Nama, 
                             FORMAT(MIN(DI.created_at), 'dd - MMM - yyyy') AS created_at
-                        FROM [PICA_BETA].[dbo].[FM_IC_005_BSS_LST_KRYWN] LK  
+                        FROM [FM_IC_005_BSS_LST_KRYWN] LK  
                         JOIN [FM_IC_005_BSS_DETAIL_INDUKSI] DI 
                             ON LK.code = DI.group_code 
                         JOIN [REF_IC_05_QUESTIONAIRE] RFQ 
