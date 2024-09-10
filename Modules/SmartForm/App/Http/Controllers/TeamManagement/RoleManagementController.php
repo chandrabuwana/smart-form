@@ -11,13 +11,6 @@ use Illuminate\Support\Facades\DB;
 
 class RoleManagementController extends Controller
 {
-    public function __construct()
-    {
-        if(!Helper::isGrantPermission('Team Management')) {
-            abort(403);
-        }
-    }
-
     public function dashboard()
     {
         return view('SmartForm::role-management/dashboard');

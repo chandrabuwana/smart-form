@@ -2,6 +2,7 @@
 
 // use App\Http\Controllers\GS\SmartCateringController;
 use App\Http\Middleware\FetchMenu;
+use App\Http\Middleware\PermissionMenu;
 use Illuminate\Support\Facades\Route;
 use Modules\SmartForm\App\Http\Controllers\Admin\AdminController;
 use Modules\SmartForm\App\Http\Controllers\Approval\ApprovalFormController;
@@ -35,7 +36,7 @@ use Modules\SmartForm\App\Http\Controllers\UnderCarriage\UnderCarriageInspection
 |
 */
 
-Route::group(['middleware' => ['check.auth', FetchMenu::class]], function () {
+Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::class]], function () {
     Route::prefix('bss-form')->group(function () {
         Route::prefix('plant-transmission')->group(function () {
             Route::get('/dashboard', [PlantTransmissionController::class, 'dashboard'])->name('bss-form.plant-transmission.dashboard');
@@ -79,6 +80,8 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class]], function () {
             Route::post('/generate-link', [ICFM05InduksiKaryawanController::class, 'GenerateLinkUrl']);
             Route::post('/activated-link', [ICFM05InduksiKaryawanController::class, 'ActivatedLink']);
             Route::post('/listing-karyawan-deleted', [ICFM05InduksiKaryawanController::class, 'formDeletedKaryawanListing']);
+            Route::post('/check-nik-pdf', [ICFM05InduksiKaryawanController::class, 'checkNIKPDF']);
+            Route::get('/download-pdf/{id}', [ICFM05InduksiKaryawanController::class, 'downloadPDF']);
         });
 
         Route::prefix('she-019B')->group(function () {
