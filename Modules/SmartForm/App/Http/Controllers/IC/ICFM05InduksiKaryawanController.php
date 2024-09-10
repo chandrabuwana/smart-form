@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Cron\MinutesField;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use DB;
 
@@ -42,13 +43,25 @@ class ICFM05InduksiKaryawanController extends Controller
     function downloadPDF(string $id)
     {
 
-        $dataDetail = DB::select("SELECT DISTINCT DI.index_pertanyaan, RFQ.Questionaire, RFQ.QuestionaireGroup
-                            FROM [PICA_BETA].[dbo].[FM_IC_005_BSS_LST_KRYWN] LK  
-                            JOIN [FM_IC_005_BSS_DETAIL_INDUKSI] DI 
-                                ON LK.code = DI.group_code 
-                            JOIN [REF_IC_05_QUESTIONAIRE] RFQ 
-                                ON DI.index_pertanyaan = RFQ.IdQuestionaire
-                            WHERE LK.NIK = ? ;", [$id]);
+        $dataDetail = DB::select("WITH LatestInduksi AS (
+                        SELECT DI.index_pertanyaan, 
+                            RFQ.Questionaire, 
+                            RFQ.QuestionaireGroup, 
+                            DI.mentor, 
+                            TK.Nama, 
+                            FORMAT(MIN(DI.created_at), 'dd - MMM - yyyy') AS created_at
+                        FROM [PICA_BETA].[dbo].[FM_IC_005_BSS_LST_KRYWN] LK  
+                        JOIN [FM_IC_005_BSS_DETAIL_INDUKSI] DI 
+                            ON LK.code = DI.group_code 
+                        JOIN [REF_IC_05_QUESTIONAIRE] RFQ 
+                            ON DI.index_pertanyaan = RFQ.IdQuestionaire
+                        JOIN HRD.dbo.TKaryawan TK 
+                            ON TK.NIK = DI.mentor
+                        WHERE LK.nik = ?
+                        GROUP BY DI.index_pertanyaan, RFQ.Questionaire, RFQ.QuestionaireGroup, DI.mentor, TK.Nama
+                    )
+                    SELECT * 
+                    FROM LatestInduksi;", [$id]);
 
         $dataDetailKaryawan = DB::table("FM_IC_005_BSS_LST_KRYWN")
             ->select(
@@ -59,10 +72,13 @@ class ICFM05InduksiKaryawanController extends Controller
                         WHEN jenis = '3' THEN 'Siswa Magang'
                         WHEN jenis = '4' THEN 'Subkontraktor'
                         ELSE 'Unknown' 
-                    END AS jenis_karyawan")
+                    END AS jenis_karyawan"),
+                DB::raw("FORMAT(created_at, 'dd - MMM - yyyy') AS created_at")
             )
             ->where("nik", $id)
             ->first();
+
+        // dd($dataDetail);
 
         $dataFinal = [
             'date_now' => now(),
@@ -70,10 +86,10 @@ class ICFM05InduksiKaryawanController extends Controller
             'karyawan' => $dataDetailKaryawan
         ];
 
-        return view("SmartForm::ic/induksi-karyawan/pdf-induksi-karyawan", $dataFinal);
+        // return view("SmartForm::ic/induksi-karyawan/pdf-induksi-karyawan", $dataFinal);
 
-        // $pdf = Pdf::loadview("pdf/form_mobilisasi_export", $data)->setOptions(['defaultFont' => 'sans-serif'])->setPaper('a4', 'potrait');
-        // return $pdf->stream();
+        $pdf = Pdf::loadview("SmartForm::ic/induksi-karyawan/pdf-induksi-karyawan", $dataFinal)->setOptions(['defaultFont' => 'sans-serif'])->setPaper('a4', 'potrait');
+        return $pdf->stream();
     }
 
     function checkNIKPDF(Request $d)
@@ -82,7 +98,7 @@ class ICFM05InduksiKaryawanController extends Controller
             $data = DB::table("FM_IC_005_BSS_LST_KRYWN")->where("nik", $d->nik)->first();
             if ($data) {
                 return response()->json([
-                    'message' => 'Done Induksi Tersimpan',
+                    'message' => 'Cetak Karyawan',
                     'code' => 200,
                     'data' => $data->Nama
                 ]);

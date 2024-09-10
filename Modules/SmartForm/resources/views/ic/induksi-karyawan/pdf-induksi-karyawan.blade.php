@@ -6,17 +6,19 @@
     <title>Laporan Hasil Kuisioner</title>
     <style>
         body {
-            font-size: 11px;
+            font-size: 10px;
         }
 
         table {
             width: 100%;
-            border-collapse: separate;
+            border-collapse: collapse;
         }
 
         table,
         th,
         td {
+            padding: 0px;
+            margin: 0px;
             border: 1px solid black;
         }
 
@@ -65,8 +67,8 @@
         .hide-border,
         .hide-border th,
         .hide-border td {
+            margin : 5px;
             border: none;
-            padding-bottom: 20px;
         }
 
         .header-table-color {
@@ -98,345 +100,250 @@
         </tr>
         <tr class="doc-details">
             <td>TANGGAL</td>
-            <td><?php
-            // Contoh tanggal dari database
-            $from_date = $date_now; // Format yyyy-mm-dd
-            
-            // Ubah format tanggal
-            $date = new DateTime($from_date);
-            
-            // Array bulan dalam bahasa Indonesia
-            $bulan = [
-                'January' => 'Januari',
-                'February' => 'Februari',
-                'March' => 'Maret',
-                'April' => 'April',
-                'May' => 'Mei',
-                'June' => 'Juni',
-                'July' => 'Juli',
-                'August' => 'Agustus',
-                'September' => 'September',
-                'October' => 'Oktober',
-                'November' => 'November',
-                'December' => 'Desember',
-            ];
-            
-            // Ganti nama bulan dalam bahasa Inggris menjadi bahasa Indonesia
-            $bulan_eng = $date->format('F');
-            $bulan_indo = $bulan[$bulan_eng];
-            $formatted_date = $date->format('d') . ' ' . $bulan_indo . ' ' . $date->format('Y');
-            
-            echo $formatted_date;
-            ?></td>
+            <td>{{ $karyawan->created_at }}</td>
         </tr>
         <tr>
             <td class="check" colspan="5" rowspan="1">INDUKSI KARYAWAN</td>
             <td class="doc-details">HALAMAN</td>
             <td class="doc-details">1 of 2</td>
         </tr>
-        <tr></tr>
-    </table>
-
-    <br><br>
-    <!-- Penerima Induksi -->
-    <table>
         <tr>
-            <td class="header-table-color" rowan="1" colspan="3">PENERIMA INDUKSI</td>
-        </tr>
-        <tr></tr>
-        <tr class="doc-details">
-            <td class="form hide-border" style="width:100">Nama</td>
-            <td class="form hide-border" style="width:2">:</td>
-            <td class="form hide-border" style="width:83vw">{{ $karyawan->Nama }}
-            </td>
-        </tr>
-        <tr class="doc-details">
-            <td class="form hide-border" style="width:15vw">NIK</td>
-            <td class="form hide-border">:</td>
-            <td class="form hide-border" style="width:83vw">{{ $karyawan->nik }}
-            </td>
-        </tr>
-        <tr class="doc-details">
-            <td class="form hide-border" style="width:15vw">Jabatan</td>
-            <td class="form hide-border" style="width:2vw">:</td>
-            <td class="form hide-border" style="width:83vw">{{ $karyawan->Jabatan }}
-            </td>
-        </tr>
-        <tr class="doc-details">
-            <td class="form hide-border" style="width:15vw">Devisi / Dept</td>
-            <td class="form hide-border" style="width:2vw">:</td>
-            <td class="form hide-border" style="width:83vw">{{ $karyawan->Department }}
-            </td>
-        </tr>
-        <tr class="doc-details">
-            <td class="form hide-border" style="width:15vw">Nama Instansi </td>
-            <td class="form hide-border" style="width:1vw">:</td>
-            <td class="form hide-border" style="width:17vw">{{ $karyawan->Instansi }}
-            </td>
-        </tr>
-        <tr class="doc-details">
-            <td class="form hide-border" style="width:15vw">Jenis Induksi</td>
-            <td class="form hide-border" style="width:2vw">:</td>
-            <td class="form hide-border" style="width:83vw">{{ $karyawan->jenis_karyawan }}
-            </td>
-        </tr>
-    </table>
+            <td colspan="7">
+                <br>
+                <h2 style="margin : 10px !important">PENERIMA INDUKSI</h2>
+                <div>
+                    <table style="border : none !important; margin : 10px">
+                        <tr class="doc-details">
+                            <td class="form hide-border" style="width:100">Nama</td>
+                            <td class="form hide-border" style="width:2">:</td>
+                            <td class="form hide-border" style="width:83vw">{{ $karyawan->Nama }}
+                            </td>
+                        </tr>
+                        <tr class="doc-details">
+                            <td class="form hide-border" style="width:15vw">NIK</td>
+                            <td class="form hide-border">:</td>
+                            <td class="form hide-border" style="width:83vw">{{ $karyawan->nik }}
+                            </td>
+                        </tr>
+                        <tr class="doc-details">
+                            <td class="form hide-border" style="width:15vw">Jabatan</td>
+                            <td class="form hide-border" style="width:2vw">:</td>
+                            <td class="form hide-border" style="width:83vw">{{ $karyawan->Jabatan }}
+                            </td>
+                        </tr>
+                        <tr class="doc-details">
+                            <td class="form hide-border" style="width:15vw">Devisi / Dept</td>
+                            <td class="form hide-border" style="width:2vw">:</td>
+                            <td class="form hide-border" style="width:83vw">{{ $karyawan->Department }}
+                            </td>
+                        </tr>
+                        <tr class="doc-details">
+                            <td class="form hide-border" style="width:15vw">Nama Instansi </td>
+                            <td class="form hide-border" style="width:1vw">:</td>
+                            <td class="form hide-border" style="width:17vw">{{ $karyawan->Instansi }}
+                            </td>
+                        </tr>
+                        <tr class="doc-details">
+                            <td class="form hide-border" style="width:15vw">Jenis Induksi</td>
+                            <td class="form hide-border" style="width:2vw">:</td>
+                            <td class="form hide-border" style="width:83vw">{{ $karyawan->jenis_karyawan }}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <table style="margin : 0 auto; width: 90% !important">
+                    <tr>
+                        <td class="header-table-color" colspan="4">INDUKSI ICGS</td>
+                    </tr>
 
-    <br>
+                    @php
+                        $counter = 1;
+                    @endphp
 
-    <!-- ICGS -->
-    <table>
-        <tr>
-            <td class="header-table-color" colspan="7">INDUKSI ICGS</td>
-        </tr>
-        <tr class="doc-details">
-            <td class="form hide-border" style="width:15vw">Nama Mentor</td>
-            <td class="form hide-border" style="width:2vw">:</td>
-            <td class="form hide-border" style="width:83vw">ABIYOGA HENDRA
-            </td>
-        </tr>
-        <tr class="doc-details">
-            <td class="form hide-border" style="width:15vw">NIK Mentor</td>
-            <td class="form hide-border" style="width:2vw">:</td>
-            <td class="form hide-border" style="width:83vw">1020125
-            </td>
-        </tr>
-        <tr class="doc-details">
-            <td class="form hide-border" style="width:15vw">Tanggal Induksi</td>
-            <td class="form hide-border" style="width:2vw">:</td>
-            <td class="form hide-border" style="width:83vw">12 OKtober 1992
-            </td>
-        </tr>
-        <tr class="doc-details">
-            <td class="form hide-border" style="width:15vw" colspan="3">Daftar materi yang telah selesai disampaikan
-            </td>
-        </tr>
-        <?php
-        $counter = 1;
-        foreach ($detail as $key => $d) {
-            if ($d->QuestionaireGroup == 'ICGS') {
-                // dd($d);
-                echo '<tr class="doc-details">
-                                                    <td class="form hide-border" style="width:15vw" colspan="7">' .
-                    $counter .
-                    ' - ' .
-                    $d->Questionaire .
-                    '
-                                                    </td>
-                                                </tr>';
-                $counter += 1;
-            }
-        }
-        ?>
-
-    </table>
-
-    <br><br>
-
-    <!-- SHE -->
-    <table>
-        <tr>
-            <td class="header-table-color" colspan="7">INDUKSI SHE</td>
-        </tr>
-        <tr class="doc-details">
-            <td class="form hide-border" style="width:15vw">Nama Mentor</td>
-            <td class="form hide-border" style="width:2vw">:</td>
-            <td class="form hide-border" style="width:83vw">ABIYOGA HENDRA
-            </td>
-        </tr>
-        <tr class="doc-details">
-            <td class="form hide-border" style="width:15vw">NIK Mentor</td>
-            <td class="form hide-border" style="width:2vw">:</td>
-            <td class="form hide-border" style="width:83vw">1020125
-            </td>
-        </tr>
-        <tr class="doc-details">
-            <td class="form hide-border" style="width:15vw">Tanggal Induksi</td>
-            <td class="form hide-border" style="width:2vw">:</td>
-            <td class="form hide-border" style="width:83vw">12 OKtober 1992
-            </td>
-        </tr>
-        <tr class="doc-details">
-            <td class="form hide-border" style="width:15vw" colspan="3">Daftar materi yang telah selesai
-                disampaikan
-            </td>
-        </tr>
-        <?php
-        
-        $counter = 1;
-        foreach ($detail as $key => $d) {
-            if ($d->QuestionaireGroup == 'SHE') {
-                // dd($d);
-                echo '<tr class="doc-details">
-                                                    <td class="form hide-border" style="width:15vw" colspan="7">' .
-                    $counter .
-                    ' - ' .
-                    $d->Questionaire .
-                    '
-                                        </td>
-                                    </tr>';
-                $counter += 1;
-            }
-        }
-        ?>
-    </table>
-
-
-
-    <br>
-    <br>
-
-    {{-- OD --}}
-    <table>
-        <tr>
-            <td class="header-table-color" colspan="7">INDUKSI OD</td>
-        </tr>
-        <tr class="doc-details">
-            <td class="form hide-border" style="width:15vw">Nama Mentor</td>
-            <td class="form hide-border" style="width:2vw">:</td>
-            <td class="form hide-border" style="width:83vw">ABIYOGA HENDRA
-            </td>
-        </tr>
-        <tr class="doc-details">
-            <td class="form hide-border" style="width:15vw">NIK Mentor</td>
-            <td class="form hide-border" style="width:2vw">:</td>
-            <td class="form hide-border" style="width:83vw">1020125
-            </td>
-        </tr>
-        <tr class="doc-details">
-            <td class="form hide-border" style="width:15vw">Tanggal Induksi</td>
-            <td class="form hide-border" style="width:2vw">:</td>
-            <td class="form hide-border" style="width:83vw">12 OKtober 1992
-            </td>
-        </tr>
-        <tr class="doc-details">
-            <td class="form hide-border" style="width:15vw" colspan="3">Daftar materi yang telah selesai
-                disampaikan
-            </td>
-        </tr>
-        <?php
-        $counter = 1;
-        foreach ($detail as $key => $d) {
-            if ($d->QuestionaireGroup == 'OD') {
-                // dd($d);
-                echo '<tr class="doc-details">
-                                            <td class="form hide-border" style="width:15vw" colspan="7">' .
-                    $counter .
-                    ' - ' .
-                    $d->Questionaire .
-                    '
-                                </td>
-                            </tr>';
-                $counter += 1;
-            }
-        }
-        ?>
-        ?>
-
-    </table>
-    <br>
-    <br>
-
-    {{-- DEPT Terkait --}}
-    <table>
-        <tr>
-            <td class="header-table-color" colspan="7">INDUKSI DEPARTMENT TERKAIT</td>
-        </tr>
-        <tr class="doc-details">
-            <td class="form hide-border" style="width:15vw">Nama Mentor</td>
-            <td class="form hide-border" style="width:2vw">:</td>
-            <td class="form hide-border" style="width:83vw">ABIYOGA HENDRA
-            </td>
-        </tr>
-        <tr class="doc-details">
-            <td class="form hide-border" style="width:15vw">NIK Mentor</td>
-            <td class="form hide-border" style="width:2vw">:</td>
-            <td class="form hide-border" style="width:83vw">1020125
-            </td>
-        </tr>
-        <tr class="doc-details">
-            <td class="form hide-border" style="width:15vw">Tanggal Induksi</td>
-            <td class="form hide-border" style="width:2vw">:</td>
-            <td class="form hide-border" style="width:83vw">12 OKtober 1992
-            </td>
-        </tr>
-        <tr class="doc-details">
-            <td class="form hide-border" style="width:15vw" colspan="3">Daftar materi yang telah selesai
-                disampaikan
-            </td>
-        </tr>
-        <?php
-        
-        $counter = 1;
-        foreach ($detail as $key => $d) {
-            if ($d->QuestionaireGroup == 'DEPT') {
-                // dd($d);
-                echo '<tr class="doc-details">
-                        <td class="form hide-border" style="width:15vw" colspan="7">' .
-                    $counter .
-                    ' - ' .
-                    $d->Questionaire .
-                    '
-                    </td>
-                    </tr>';
-                $counter += 1;
-            }
-        }
-        ?>
-
-
-
-    </table>
-    <br>
-    <br>
-
-    <div class="row" style="padding: 20px">
-        <table style="border:none">
-            <tr class="hide-border">
-                <td style="width: 70vw">
-                    <table class="densoTableHeader" style=" align-content: center; border : none">
-                        <tbody class="hide-border">
-                            <tr class="hide-border">
-                                <td style="width: 100px" class="hide-border">
-                                    <div class="row">
-                                        <div class="col center">
-                                            ......................................................
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col center">Dibuat Oleh,</div>
-                                    </div>
-                                    <br>
-                                    <br>
-                                    <br>
-                                    <div class="row">
-                                        <div class="col center">
-                                            (Asset Procurement Officer)
-                                        </div>
-                                    </div>
+                    @foreach ($detail as $d)
+                        @if ($d->QuestionaireGroup == 'ICGS' && $counter == 1)
+                            <tr class="doc-details">
+                                <td class="hide-border" style="width:1vw">Nama Mentor &emsp;&emsp;: {{ $d->Nama }}  </td>
+                                <td class="hide-border" style="width:1px"></td>
+                                <td class="hide-border" style="width:3vw"></td>
+                            </tr>
+                            <tr class="doc-details">
+                                <td class="hide-border">NIK Mentor &emsp;&emsp; &nbsp;: {{ $d->mentor }}  </td>
+                                <td class="hide-border"></td>
+                                <td class="hide-border"></td>
+                            </tr>
+                            <tr class="doc-details">
+                                <td class="hide-border">Tanggal Induksi&emsp; &nbsp;: {{ $d->created_at }}  </td>
+                                <td class="hide-border"></td>
+                                <td class="hide-border"></td>
+                            </tr>
+                            <tr class="doc-details">
+                                <td class="hide-border">Daftar materi yang telah selesai disampaikan
                                 </td>
                             </tr>
-                        </tbody>
-                    </table>
-                </td>
-                <td>
-                    <div class="row">
-                        <div class="col center">Disetujui Oleh,</div>
-                    </div>
-                    <br>
-                    <br>
-                    <br>
-                    <div class="row">
-                        <div class="col center">
-                            (Kasi Asset Procurement)
-                        </div>
-                    </div>
-                </td>
-            </tr>
-        </table>
+                        @endif
 
+                        @if ($d->QuestionaireGroup == 'ICGS')
+                            <tr class="doc-details">
+                                <td class="hide-border">{{ $counter }} -
+                                    {{ $d->Questionaire }}</td>
+                            </tr>
+                            @php
+                                $counter += 1;
+                            @endphp
+                        @endif
+                    @endforeach
 
-    </div>
+                </table>
+                <br>
+                <table style="margin : 0 auto; width: 90% !important">
+                    <tr>
+                        <td class="header-table-color" colspan="4">INDUKSI SHE</td>
+                    </tr>
+
+                    @php
+                        $counter = 1;
+                    @endphp
+
+                    @foreach ($detail as $d)
+                        @if ($d->QuestionaireGroup == 'SHE' && $counter == 1)
+                            <tr class="doc-details">
+                                <td class="hide-border" style="width:1vw">Nama Mentor &emsp;&emsp;: {{ $d->Nama }}  </td>
+                                <td class="hide-border" style="width:1px"></td>
+                                <td class="hide-border" style="width:3vw"></td>
+                            </tr>
+                            <tr class="doc-details">
+                                <td class="hide-border">NIK Mentor &emsp;&emsp;: {{ $d->mentor }}  </td>
+                                <td class="hide-border"></td>
+                                <td class="hide-border"></td>
+                            </tr>
+                            <tr class="doc-details">
+                                <td class="hide-border">Tanggal Induksi &emsp;&emsp;: {{ $d->created_at }}  </td>
+                                <td class="hide-border"></td>
+                                <td class="hide-border"></td>
+                            </tr>
+                            <tr class="doc-details">
+                                <td class="hide-border">Daftar materi yang telah selesai disampaikan
+                                </td>
+                            </tr>
+                        @endif
+
+                        @if ($d->QuestionaireGroup == 'SHE')
+                            <tr class="doc-details">
+                                <td class="hide-border">{{ $counter }} -
+                                    {{ $d->Questionaire }}</td>
+                            </tr>
+                            @php
+                                $counter += 1;
+                            @endphp
+                        @endif
+                    @endforeach
+
+                </table>
+
+                <br>
+
+                <table style="margin : 0 auto; width: 90% !important">
+                    <tr>
+                        <td class="header-table-color" colspan="4">INDUKSI OD</td>
+                    </tr>
+
+                    @php
+                        $counter = 1;
+                    @endphp
+
+                    @foreach ($detail as $d)
+                        @if ($d->QuestionaireGroup == 'OD' && $counter == 1)
+                            <tr class="doc-details">
+                                <td class="hide-border" style="width:1vw">Nama Mentor &emsp;&emsp;: {{ $d->Nama }}  </td>
+                                <td class="hide-border" style="width:1px"></td>
+                                <td class="hide-border" style="width:3vw"></td>
+                            </tr>
+                            <tr class="doc-details">
+                                <td class="hide-border">NIK Mentorv &emsp;&emsp; &nbsp;: {{ $d->mentor }}  </td>
+                                <td class="hide-border"></td>
+                                <td class="hide-border"></td>
+                            </tr>
+                            <tr class="doc-details">
+                                <td class="hide-border">Tanggal Induksi &emsp;&emsp;: {{ $d->created_at }}  </td>
+                                <td class="hide-border"></td>
+                                <td class="hide-border"></td>
+                            </tr>
+                            <tr class="doc-details">
+                                <td class="hide-border">Daftar materi yang telah selesai disampaikan
+                                </td>
+                            </tr>
+                        @endif
+
+                        @if ($d->QuestionaireGroup == 'OD')
+                            <tr class="doc-details">
+                                <td class="hide-border">{{ $counter }} -
+                                    {{ $d->Questionaire }}</td>
+                            </tr>
+                            @php
+                                $counter += 1;
+                            @endphp
+                        @endif
+                    @endforeach
+
+                </table>
+
+                <br>
+
+                <table style="margin : 0 auto; width: 90% !important">
+                    <tr>
+                        <td class="header-table-color" colspan="4">INDUKSI DEPT. Terkait</td>
+                    </tr>
+
+                    @php
+                        $counter = 1;
+                    @endphp
+
+                    @foreach ($detail as $d)
+                        @if ($d->QuestionaireGroup == 'DEPT' && $counter == 1)
+                            <tr class="doc-details">
+                                <td class="hide-border" style="width:1vw">Nama Mentor  &emsp;&emsp;: {{ $d->Nama }}  </td>
+                                <td class="hide-border" style="width:1px"></td>
+                                <td class="hide-border" style="width:3vw"></td>
+                            </tr>
+                            <tr class="doc-details">
+                                <td class="hide-border">NIK Mentor  &emsp;&emsp;: {{ $d->mentor }}  </td>
+                                <td class="hide-border"></td>
+                                <td class="hide-border"></td>
+                            </tr>
+                            <tr class="doc-details">
+                                <td class="hide-border">Tanggal Induksi &emsp;&emsp;: {{ $d->created_at }}  </td>
+                                <td class="hide-border"></td>
+                                <td class="hide-border"></td>
+                            </tr>
+                            <tr class="doc-details">
+                                <td class="hide-border">Daftar materi yang telah selesai disampaikan
+                                </td>
+                            </tr>
+                        @endif
+
+                        @if ($d->QuestionaireGroup == 'DEPT')
+                            <tr class="doc-details">
+                                <td class="hide-border">{{ $counter }} -
+                                    {{ $d->Questionaire }}</td>
+                            </tr>
+                            @php
+                                $counter += 1;
+                            @endphp
+                        @endif
+                    @endforeach
+
+                </table>
+
+                <br>
+
+            </td>
+        </tr>
+      
+    </table>
+
+    <br>
+    <br>
 
     <script></script>
 </body>
