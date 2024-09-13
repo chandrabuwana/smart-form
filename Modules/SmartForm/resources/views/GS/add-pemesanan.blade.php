@@ -343,7 +343,7 @@
                     tooltip: {
                         callbacks: {
                             label: function(item) {
-                                return item.label + ' : ' + item.parsed + '%';
+                                return item.label + ' : ' + item.parsed + '';
                             }
                         }
                     }
@@ -356,10 +356,12 @@
             if(e.target.value == "request") jumlahDiMess = totalMessSummary.innerText
             if(e.target.value == "system") jumlahDiMess = totalMessSummaryBySystem.innerText
 
-            console.log(jumlahDiMess)
+            // console.log(jumlahDiMess)
             chart.clear()
-            chart.data.datasets[0].data = [jumlahDiMess, totalWorkingSummary.innerText, totalAdjustment.innerText]
-            chart.update("active")
+            if(e.target.value == "request" || e.target.value == "system") {
+                chart.data.datasets[0].data = [jumlahDiMess, totalWorkingSummary.innerText, totalAdjustment.innerText]
+                chart.update("active")
+            }  
         })
 
         document.getElementById("submit-pemesanan").addEventListener("click", function(e) {
@@ -412,6 +414,7 @@
                 tanggal: inputTanggalPemesanan.val(),
                 messBySystem: dataMess.length,
                 messByRequest: dataRequestMakan.length,
+                working: dataWorking.length,
                 adjustment: dataAdjustmen.length,
                 selected: selectedJenisPemesanan.value,
                 site: inputSite.val(),
@@ -422,10 +425,39 @@
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
             })
             .then(function(response) {
-                console.log(response.data)
+                var dataAlert = {
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: 'Terjadi kesalahan, coba beberapa saat lagi'
+                }
+
+                if(!response.data.isError) {
+                    dataAlert = {
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: 'Pemesanan Berhasil disubmit.'
+                    }
+                } else {
+                    dataAlert = {
+                        icon: 'error',
+                        title: 'Gagal!',
+                        text: 'Gagal Submit pemesanan.'
+                    }
+                }
+
+                Swal.fire(dataAlert).then((result) => {
+                    window.location.reload();
+                })
+                // console.log(response.data)
             })
             .catch(function(err) {
                 console.log(err)
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: 'Terjadi kesalahan, coba beberapa saat lagi'
+                }).then((result) => {
+                })
             })
         })
 

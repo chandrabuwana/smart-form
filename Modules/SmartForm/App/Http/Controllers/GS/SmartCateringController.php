@@ -265,6 +265,7 @@ class SmartCateringController extends Controller {
             'isError' => true,
             'message' => ''
         ];
+        $nik_session = $request->session()->get('user_id', '');
 
         $validator = Validator::make($request->all(), [
             'jenisPemesanan' => ['required',  Rule::in(['pagi', 'siang', 'malam'])],
@@ -295,6 +296,7 @@ class SmartCateringController extends Controller {
                 $messBySystem = $request->input("messBySystem");
                 $messByRequest = $request->input("messByRequest");
                 $adjustment = $request->input("adjustment");
+                $working = $request->input("working");
                 $site = $request->input("site");
                 $tanggal = $request->input("tanggal");
                 $kode_pemesanan = Carbon::createFromFormat('Y-m-d', $tanggal)->startOfDay()->format('Ymd') . '/' .$site . '/' . $jenisPemesanan;
@@ -307,11 +309,15 @@ class SmartCateringController extends Controller {
                     'mess_by_system' => $messBySystem,
                     'mess_by_request' => $messByRequest,
                     'adjustment' => $adjustment,
+                    'working' => $working,
                     'site' => $site,
-                    'selected' => $selected_pemesanan
+                    'selected' => $selected_pemesanan,
+                    'created_by' => $nik_session,
+                    'tanggal'  => $tanggal
                 ];
 
                 Log::info($kode_pemesanan . ' | '.json_encode($data_order_insert, JSON_PRETTY_PRINT));
+                Log::info('detail ' .count($detail));
                 
                 DB::connection(self::DB_CONN_NAME)->beginTransaction();
                 $id_pemesanan = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_SUBMIT_ORDER)
@@ -320,14 +326,19 @@ class SmartCateringController extends Controller {
                 for($i=0;$i<count($detail);$i++) {
                     $detail[$i]['id_order'] = $kode_pemesanan;
                 }
+                $batchSize = 100; // Sesuaikan batch size sesuai dengan kebutuhan (misalnya 100 baris per batch)
+                $chunks = array_chunk($detail, $batchSize);
+                foreach ($chunks as $chunk) {
+                    DB::connection(self::DB_CONN_NAME)->table(self::TABLE_SUBMIT_ORDER_DETAIL)->insert($chunk);
+                }
                 // foreach($detail as $dtl_order_makan) {
                 //     $dtl_order_makan['id_order'] = $kode_pemesanan;
                 //     Log::info(json_encode($dtl_order_makan['nik']));
                 // }
                 // Log::info(json_encode($detail, JSON_PRETTY_PRINT));
 
-                $dtl_pemesanan = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_SUBMIT_ORDER_DETAIL)
-                    ->insert($detail);
+                // $dtl_pemesanan = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_SUBMIT_ORDER_DETAIL)
+                //     ->insert($detail);
 
                 DB::connection(self::DB_CONN_NAME)->commit();
                 $isError = false;
@@ -349,6 +360,82 @@ class SmartCateringController extends Controller {
             'errorMessage' => $errorMessage,
             'data' => $data
         ];
+    }
+
+    function DashboardPemesanan(Request $request) {
+        return view("SmartForm::GS/dashboard-pemesanan");
+    }
+
+    function GetListPemesanan(Request $request) {
+        $isSuccess = false;
+        $message = '';
+        $data = [
+            'total' => 0,
+            'totalNotFiltered' => 0,
+            'rows' => null
+        ];
+
+        $filterTanggal = $request->query('tanggal', null);
+        $filterSite = $request->query('site', null);
+        $filterSelected = $request->query('selected', null);
+        $filterJenis = $request->query('jenis', null);
+        $sort = $request->query('sort', 'id'); // Default sort by id
+        $order = $request->query('order', 'asc'); // Default order is ascending
+        $offset = $request->query('offset', 0); // Default offset
+        $limit = $request->query('limit', null);
+
+        try {
+            $sql_master_data = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_SUBMIT_ORDER)
+                ->select('kode_pemesanan', 'site', 'selected', 'jenis_pemesanan');
+                
+            if($filterTanggal == null || $filterTanggal == 'null') {
+            } else {
+                // Log::debug('Debug : '. now()->format($filterTanggal));
+                $tgl = Carbon::createFromFormat('Y-m-d', $filterTanggal);
+                $tgl_akhir = Carbon::createFromFormat('Y-m-d', $filterTanggal)->endOfDay()->format('Y-m-d H:i:s');;
+                $sql_master_data->whereDate('tanggal', $tgl);
+            }
+            if($filterSite == null || $filterSite == 'null') {
+            } else {
+                $sql_master_data->where('site', $filterSite);
+            }
+            if($filterJenis == null || $filterJenis == 'null') {
+            } else {
+                $sql_master_data->where('jenis_pemesanan', $filterJenis);
+            }
+            if($filterSelected == null || $filterSelected == 'null') {
+            } else {
+                $sql_master_data->where('selected', $filterSelected);
+            }
+            $jml = $sql_master_data->count();
+            if($limit == null || $limit == 'null' || $limit == '') {
+                $sql_master_data->skip($offset);
+            } else {
+                $sql_master_data->skip($offset)->limit($limit);
+            }
+            Log::info('SQL : ' . $sql_master_data->toRawSql());
+            $master_data = $sql_master_data->get();
+
+            $message= "Ok";
+            $isSuccess = true;
+            $data = [
+                'total' => $jml,
+                'totalNotFiltered' => $jml,
+                'rows' => $master_data
+            ];
+        } catch (Exception $ex) {
+            Log::error($ex->getMessage());
+            Log::error($ex->getTraceAsString());
+            
+            $message= $ex->getMessage();
+            $isSuccess = false;
+        }
+
+        return response()->json([
+            'isSuccess' => $isSuccess,
+            'message' => $message,
+            'data' => $data
+        ]);
     }
 }
 

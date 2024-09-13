@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.23.2/dist/bootstrap-table.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/extensions/filter-control/bootstrap-table-filter-control.css">
     <style>
         p {
             margin: 0;
@@ -37,7 +38,7 @@
         id="list-absensi" data-toggle="table"
         data-side-pagination="server" data-page-list="[10, 25, 50, 100, all]" 
         data-sortable="true" data-content-type="application/json" data-data-type="json" 
-        data-pagination="true" data-row-style="rowStyle" data-height="460">
+        data-pagination="true" data-row-style="rowStyle" data-height="800" data-show-export="true">
 
         <thead>
             <tr>
@@ -52,6 +53,9 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.23.2/dist/bootstrap-table.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.29.0/tableExport.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.29.0/libs/jsPDF/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.23.2/dist/extensions/export/bootstrap-table-export.min.js"></script>
     <script>
         var inputTanggal = document.getElementById("tgl_absen")
         var loadingAnimation = document.getElementById("loading-animation")
@@ -133,7 +137,7 @@
             var parsedJson = {}
             if(value != "") {
                 parsedJson = JSON.parse(value); 
-                return '<p>Nik: ' + parsedJson.nik + '</p>' + '<p>Nama: ' + parsedJson.nama + '</p>' + '<p>tanggal: ' + parsedJson.tanggal + '</p>' + '<p>Jam: ' + parsedJson.jam + '</p>';
+                return '<p>Nik: ' + parsedJson.nik + '</p><br>' + '<p>Nama: ' + parsedJson.nama + '</p><br>' + '<p>tanggal: ' + parsedJson.tanggal + '</p><br>' + '<p>Jam: ' + parsedJson.jam + '</p>';
                 // return '<p>Nik: ' + parsedJson.nik + '</p>' + '<p>Nama: ' + parsedJson.nama + '</p>' + '<p>tanggal: ' + parsedJson.tanggal + '</p>' + '<p>Jam: ' + parsedJson.jam + '</p>' + '<p>Dept: ' + parsedJson.kodedp + '</p>';
             } else {
                 return value;

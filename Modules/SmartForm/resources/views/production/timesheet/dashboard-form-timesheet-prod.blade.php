@@ -273,7 +273,7 @@
         })
         filterNama.addEventListener("focusout", function(e) {
             filterNama.removeEventListener("input", debounceHandler, true)
-            suggestNik.style.display = "none";
+            // suggestNik.style.display = "none";
         })
         
         function suggestionClick(e) {

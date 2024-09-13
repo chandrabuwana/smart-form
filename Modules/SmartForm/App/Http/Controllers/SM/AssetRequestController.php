@@ -307,9 +307,46 @@ class AssetRequestController extends Controller {
         $nik_session = $request->session()->get('user_id', '');
         $data = $this->getDetail($request, $no_doc, $nik_session);
         $history_edit = $this->getHistory($data['data']['id']);
-        $data = array_merge($data, $history_edit);
+        $data_approval = $this->getApprovalStatus($no_doc, $data['data']['acknowledge_by_1_nik'], $data['data']['acknowledge_by_2_nik'], $data['data']['approved_by_1_nik'], $data['data']['approved_by_2_nik']);
+        $data = array_merge($data, $history_edit, $data_approval);
 
         return view('SmartForm::SM/detail-form-asset-request', $data);
+    }
+
+    private function getApprovalStatus(string $no_doc, string $ack1, string $ack2, string $approve1, string $approve2) {
+        $data = null;
+
+        try {
+            $data['approval_status'] = DB::table('PICA_BETA.dbo.FM_SM_016_MASTER as pfm')
+                ->leftJoin('HRD.dbo.TKaryawan as k0', 'pfm.requested_by', '=', 'k0.NIK')
+                ->leftJoin('HRD.dbo.TKaryawan as k1', 'pfm.acknowledge_by_1_nik', '=', 'k1.NIK')
+                ->leftJoin('HRD.dbo.TKaryawan as k2', 'pfm.acknowledge_by_2_nik', '=', 'k2.NIK')
+                ->leftJoin('HRD.dbo.TKaryawan as k3', 'pfm.approved_by_1_nik', '=', 'k3.NIK')
+                ->leftJoin('HRD.dbo.TKaryawan as k4', 'pfm.approved_by_2_nik', '=', 'k4.NIK')
+                ->select(
+                    'pfm.requested_by',
+                    'pfm.acknowledge_1',
+                    'pfm.acknowledge_2',
+                    'pfm.approved_1',
+                    'pfm.approved_2',
+                    'pfm.acknowledge_by_1_nik',
+                    'pfm.acknowledge_by_2_nik',
+                    'pfm.approved_by_1_nik',
+                    'pfm.approved_by_2_nik',
+                    'k0.Nama as requested_by_nama',
+                    'k1.Nama as acknowledge_by_1_nama',
+                    'k2.Nama as acknowledge_by_2_nama',
+                    'k3.Nama as approved_by_1_nama',
+                    'k4.Nama as approved_by_2_nama'
+                )
+                ->where('pfm.no_doc', $no_doc)
+                ->first();
+        } catch (Exception $ex) {
+            Log::error($ex->getMessage());
+            Log::error($ex->getTraceAsString());
+        }
+        Log::debug($data);
+        return $data;
     }
 
     private function getDetail(Request $request, $no_doc, $nik) {
@@ -446,8 +483,7 @@ class AssetRequestController extends Controller {
         return ['error' => $isError, 'errorMessage' => $errorMessage, 'data' => $data_master, 'detail' => $data_detail, 'pendukung_reason' => $pendukung_reason, 'is_user_sm' => $is_user_sm, 'nik_session' => $nik];
     }
 
-    function download($fileName)
-    {
+    function download($fileName) {
         // $filePath = storage_path("app/uploads/{$file->generated_name}");
 
         // Log::info("download : ".' fileName ' . Storage::exists('uploads/' . $fileName));
@@ -471,14 +507,9 @@ class AssetRequestController extends Controller {
         $message = "";
 
         switch ($body['action']) {
-            case 'acknowledge':
+            case 'acknowledge1':
                 if($data->acknowledge_by_1_nik == $nik_session) {
-                    $result = $this->updateValidation('acknowledge_1', $body['noDoc'], $nik_session, 'acknowledge', $data->id);
-                    $isError = $result['error'];
-                    $errorMessage = $result['errorMessage'];
-                    $message = $result['message'];
-                } else if($data->acknowledge_by_2_nik == $nik_session) {
-                    $result = $this->updateValidation('acknowledge_2', $body['noDoc'], $nik_session, 'acknowledge', $data->id);
+                    $result = $this->updateValidation('acknowledge_1', $body['noDoc'], $nik_session, 'acknowledge1', $data->id);
                     $isError = $result['error'];
                     $errorMessage = $result['errorMessage'];
                     $message = $result['message'];
@@ -487,14 +518,31 @@ class AssetRequestController extends Controller {
                     $errorMessage = 'Unauthorized Action';
                 }
                 break;
-            case 'approve':
-                if($data->approved_by_1_nik == $nik_session) {
-                    $result = $this->updateValidation('approved_1', $body['noDoc'], $nik_session, 'approve', $data->id);
+            case 'acknowledge2':
+                if($data->acknowledge_by_2_nik == $nik_session) {
+                    $result = $this->updateValidation('acknowledge_2', $body['noDoc'], $nik_session, 'acknowledge2', $data->id);
                     $isError = $result['error'];
                     $errorMessage = $result['errorMessage'];
                     $message = $result['message'];
-                } else if($data->approved_by_2_nik == $nik_session) {
-                    $result = $this->updateValidation('approved_2', $body['noDoc'], $nik_session, 'approve', $data->id);
+                } else {
+                    $isError = true;
+                    $errorMessage = 'Unauthorized Action';
+                }
+                break;
+            case 'approve1':
+                if($data->approved_by_1_nik == $nik_session) {
+                    $result = $this->updateValidation('approved_1', $body['noDoc'], $nik_session, 'approve1', $data->id);
+                    $isError = $result['error'];
+                    $errorMessage = $result['errorMessage'];
+                    $message = $result['message'];
+                } else {
+                    $isError = true;
+                    $errorMessage = 'Unauthorized Action';
+                }
+                break;
+            case 'approve2':
+                if($data->approved_by_2_nik == $nik_session) {
+                    $result = $this->updateValidation('approved_2', $body['noDoc'], $nik_session, 'approve2', $data->id);
                     $isError = $result['error'];
                     $errorMessage = $result['errorMessage'];
                     $message = $result['message'];
@@ -509,8 +557,8 @@ class AssetRequestController extends Controller {
                 $errorMessage = $result['errorMessage'];
                 $message = $result['message'];
                 break;
-            case 'selesai':
-                $result = $this->updateValidation('proses', $body['noDoc'], $nik_session, 'selesai', $data->id);
+            case 'reject':
+                $result = $this->updateValidation('proses', $body['noDoc'], $nik_session, 'reject', $data->id);
                 $isError = $result['error'];
                 $errorMessage = $result['errorMessage'];
                 $message = $result['message'];
@@ -544,36 +592,36 @@ class AssetRequestController extends Controller {
                     ->where('no_doc', $no_doc)
                     ->update(['status' => 2, 'updated_by' => $nik, 'updated_at' => $tgl]);
                 $new_value['status'] = 2;
-            } else if ($action == 'selesai') {
+            } if ($action == 'reject') {
                 $affected = DB::table($this->TABLE_MASTER)
                     ->where('no_doc', $no_doc)
                     ->update(['status' => 3, 'updated_by' => $nik, 'updated_at' => $tgl]);
                 $new_value['status'] = 3;
-            }
-            else {
+            } if ($action =='acknowledge1' || $action =='acknowledge2') {
                 $affected = DB::table($this->TABLE_MASTER)
                     ->where('no_doc', $no_doc)
                     ->update([$column => 1, 'updated_by' => $nik, 'updated_at' => $tgl]);
-                if($action == 'approve') {
-                    $status = DB::table($this->TABLE_MASTER)
-                        ->select('status', 'acknowledge_1', 'acknowledge_2', 'approved_1', 'approved_2')
-                        ->where('no_doc', $no_doc)
-                        ->first();
-                    if($status->status == 0 && $status->acknowledge_1 == 1 && $status->acknowledge_2 == 1 && $status->approved_1 == 1 && $status->approved_2 == 1) {
-                        $affected_status = DB::table($this->TABLE_MASTER)
-                            ->where('no_doc', $no_doc)
-                            ->update(['status' => 1, 'updated_by' => $nik, 'updated_at' => $tgl]);
-                        $new_value['status'] = 1;
-                    }
-                }
-                $new_value[$column] = 1;
+                // $new_value[$column] = 1;
+            } if ($action =='approve1') {
+                $affected = DB::table($this->TABLE_MASTER)
+                    ->where('no_doc', $no_doc)
+                    ->update([$column => 1, 'updated_by' => $nik, 'updated_at' => $tgl]);
+                // $new_value[$column] = 1;
+            } if ($action =='approve2') {
+                $affected = DB::table($this->TABLE_MASTER)
+                    ->where('no_doc', $no_doc)
+                    ->update(['status' => 1, $column => 1, 'updated_by' => $nik, 'updated_at' => $tgl]);
+                // $new_value[$column] = 1;
+                $new_value['status'] = 1;
             }
-
+            $new_value[$column] = 1;
             $this->addHistory($id, $tgl, $nik, $action, $new_value);
 
             $error = false;
             $message = 'Berhasil ' . $action . ' dokumen ' . $no_doc;
         } catch (Exception $ex) {
+            Log::error($ex->getMessage());
+            Log::error($ex->getTraceAsString());
             $errorMessage = 'Terjadi Kesalahan update action '.$action;
         }
 
