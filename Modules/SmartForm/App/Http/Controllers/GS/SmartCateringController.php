@@ -191,51 +191,6 @@ class SmartCateringController extends Controller {
         return response()->json($data);
     }
 
-    function GetListMess(Request $request) {
-        $kode_site = $request->query('kodeSite', '');
-        $data = [
-            'isError' => true,
-            'message' => '',
-            'errorMessage' => '',
-            'data' => null
-        ];
-
-        try {
-            $list_mess = $this->ListMess($kode_site);
-            if(count($list_mess) > 0) {
-                $data['isError'] = false;
-                $data['message'] = "Berhasil";
-                $data['data'] = $list_mess;
-            } else {
-                $data['errorMessage'] = 'Data Mess '. $kode_site . ' tidak ditemukan!';
-            }
-        } catch (Exception $ex) {
-            $data['errorMessage'] = 'Terjadi kesalahan, coba beberapa saat lagi!';
-        }
-
-        return response()->json($data);
-    }
-
-    private function ListMess(string $site): array {
-        $master_mess = [];
-
-        try {
-            $query_mess = DB::connection(self::DB_CONN_NAME)
-                ->table(self::TABLE_MASTER_MESS)
-                ->select('KodeSite', 'NamaMess')
-                ->where('KodeSite', $site);
-            
-                Log::debug("SQL : ". $query_mess->toRawSql());
-            $master_mess = $query_mess->get()->toArray();
-
-        } catch (Exception $ex) {
-            Log::error('ListMess : '. $ex->getMessage());
-            Log::error($ex->getTraceAsString());
-        }
-
-        return $master_mess;
-    }
-
     private function ListPesanMakanMess(string $jenis, $tanggal): array {
         $list_pesan_makan = [];
 

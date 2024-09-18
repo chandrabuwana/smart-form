@@ -6,6 +6,7 @@ use App\Http\Middleware\PermissionMenu;
 use Illuminate\Support\Facades\Route;
 use Modules\SmartForm\App\Http\Controllers\Admin\AdminController;
 use Modules\SmartForm\App\Http\Controllers\Approval\ApprovalFormController;
+use Modules\SmartForm\App\Http\Controllers\GS\MessController;
 use Modules\SmartForm\App\Http\Controllers\GS\SmartCateringController;
 use Modules\SmartForm\App\Http\Controllers\IC\ICFM05InduksiKaryawanController;
 use Modules\SmartForm\App\Http\Controllers\IC\ICFM05TransactionController;
@@ -110,7 +111,26 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/list-pemesanan', [SmartCateringController::class, 'GetListPemesanan'])->name('list-pemesanan');
             Route::post('/generate-detail', [SmartCateringController::class, 'GenerateDetailPemesanan'])->name('generate-detail-pemesanan-catering');
             Route::post('/order', [SmartCateringController::class, 'SubmitPesanMakan'])->name('submit-makan');
-    
+            
+            Route::prefix('mess')->group( function() {
+                Route::post('/add-mess', [MessController::class, 'AddMess'])->name('add-mess');
+                Route::post('/add-kamar', [MessController::class, 'AddKamar'])->name('add-kamar');
+                Route::post('/add-penghuni', [MessController::class, 'AddPenghuniMess'])->name('add-penghuni');
+                Route::put('/edit-penghuni', [MessController::class, 'EditPenghuniMess'])->name('edit-penghuni');
+                Route::put('/edit-kamar', [MessController::class, 'EditKamar'])->name('edit-kamar');
+                Route::post('/delete-kamar', [MessController::class, 'Deletekamar'])->name('delete-kamar');
+                Route::post('/delete-penghuni-mess', [MessController::class, 'DeletePenghuniMess'])->name('delete-penghuni-mess');
+                Route::get('/dashboard', [MessController::class, 'DashboardMess'])->name('dashboard-mess');
+                Route::get('/dashboard-huni', [MessController::class, 'DashboardHuni'])->name('dashboard-penghuni');
+                Route::get('/dashboard-kamar', [MessController::class, 'DashboardKamar'])->name('dashboard-penghuni');
+                // Route::get('/detail-huni', [MessController::class, 'DashboardHuni'])->name('detail-huni-mess');
+                Route::get('/list-mess', [MessController::class, 'GetListMess'])->name('list-mess');
+                Route::get('/list-huni', [MessController::class, 'GetListHuni'])->name('list-huni');
+                Route::get('/list-kamar', [MessController::class, 'GetListKamar'])->name('list-kamar');
+                Route::get('/helper-mess', [MessController::class, 'HelperMess'])->name('helper-mess');
+                Route::get('/helper-kamar', [MessController::class, 'HelperKamar'])->name('helper-kamar');
+
+            });
         });
     });
 

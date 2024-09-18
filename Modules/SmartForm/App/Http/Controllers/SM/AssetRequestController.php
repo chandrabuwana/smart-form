@@ -10,10 +10,11 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class AssetRequestController extends Controller {
-        private $TABLE_MASTER = "FM_SM_016_MASTER";
-        private $TABLE_DETAIL = "FM_SM_016_DETAIL";
-        private $TABLE_UPLOADS = "FM_SM_016_UPLOADS";
-        private $user_sm = ['1008491', '1008492', '1008493', '1008494', '1008526'];
+    private $TABLE_MASTER = "FM_SM_016_MASTER";
+    private $TABLE_DETAIL = "FM_SM_016_DETAIL";
+    private $TABLE_UPLOADS = "FM_SM_016_UPLOADS";
+    private $TABLE_MAPPING_APPROVAL = "FM_SM_016_MAPPING_APPROVAL";
+    private $user_sm = ['1008491', '1008492', '1008493', '1008494', '1008526'];
 
     function IndexForm(Request $request) {
         // Log::info('user SM : '. config('app.user_sm', ''));
@@ -139,6 +140,7 @@ class AssetRequestController extends Controller {
     }
 
     function DashboardForm(Request $req) {
+        $this->getValidationMatrix("IT");
         $nik_session = $req->session()->get('user_id', '');
 
         return view("SmartForm::SM/dashboard-form-sm", ['nik_session' => $nik_session]);
@@ -654,14 +656,53 @@ class AssetRequestController extends Controller {
         return ['history' => $history_detail];
     }
 
-    private function getValidationMatrix($department, $project, $department_allocation, $project_allocation) {
-        // TODO : parameterized validation matrix
-        return [
-            'acknowledge_by_1_nik' => '1008590',
-            'acknowledge_by_2_nik' => '1008643',
-            'approved_by_1_nik' => '1008821',
-            'approved_by_2_nik' => '1008886'
+    private function getValidationMatrix($department, $project=null, $department_allocation=null, $project_allocation=null) {
+        $ack_1 = "";
+        $ack_2 = "";
+        $aprv_1 = "";
+        $appr_2 = "";
+        $data = [
+            'acknowledge_1' => '',
+            'acknowledge_2' => '',
+            'approved_1' => '',
+            'approved_2' => '',
         ];
+
+        try {
+            $sql_ack_1 = DB::table($this->TABLE_MAPPING_APPROVAL)
+                ->where('role_approval', 'acknowledge_1')
+                ->where('KodeDP', $department)
+                ->first();
+            $ack_1 = $sql_ack_1->nik;
+            $data['acknowledge_1'] = $sql_ack_1->nik;
+            $sql_ack = DB::table($this->TABLE_MAPPING_APPROVAL)
+                ->whereIn('role_approval', ['acknowledge_2', 'approved_1', 'approved_2'])
+                ->get();
+
+            foreach ($sql_ack->toArray() as $apprvl) {
+                // Log::info("key: ". $apprvl . ", value : ");
+                $data[$apprvl->role_approval] = $apprvl->nik;
+            }
+            
+        } catch (Exception $ex) {
+            Log::error($ex->getMessage());
+            log::error(($ex->getTraceAsString()));
+        }
+
+        Log::info($data);
+        return [
+            // 'acknowledge_by_1_nik' => $this->getMappingKadep($department), // TODO: dinamis
+            'acknowledge_by_1_nik' => $data['acknowledge_1'], // TODO: dinamis
+            'acknowledge_by_2_nik' => $data['acknowledge_2'],
+            'approved_by_1_nik' => $data['approved_1'],
+            'approved_by_2_nik' => $data['approved_2']
+        ];
+    }
+
+    private function getMappingKadep($department) {
+        $nik = '';
+
+        return $nik;
     }
 
     private function isArrayDifferent($array1, $array2) {
