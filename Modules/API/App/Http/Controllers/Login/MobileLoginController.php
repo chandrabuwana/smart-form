@@ -3,19 +3,22 @@
 namespace Modules\API\App\Http\Controllers\Login;
 
 use App\Http\Controllers\Controller;
+use App\Models\VendorMaster;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class MobileLoginController extends Controller {
-    
+
     public function login(Request $request) {
         // Log::debug($request->all());
 
         $validator = Validator::make($request->all(), [
-            'username'     => 'required',
-            'password'  => 'required'
+            'username'  => 'required',
+            'password'  => 'required',
         ]);
+
         $isSuccess = false;
         $message = '';
         $errorMessage = [];
@@ -26,12 +29,28 @@ class MobileLoginController extends Controller {
             $errorMessage = $validator->errors()->all();
 
         } else {
-            $payload = [
-                'username' => $request->input('username'),
-                'password' => $request->input('password') 
-            ];
-            $token = null;
-            if (!$token = auth()->guard('api')->attempt($payload)) {
+            if(!empty($request->apps) && $request->apps == 'vendor') {
+                $payload = [
+                    'Email' => $request->input('username'),
+                    'pwd' => $request->input('password')
+                ];
+
+                $user = VendorMaster::where('Email', $payload['Email'])->first();
+                $token = null;
+
+                if(!is_null($user) && Hash::check($payload['pwd'], $user->pwd)) {
+                    $token = auth()->guard('api_vendor')->login($user);
+                }
+
+            } else {
+                $payload = [
+                    'username' => $request->input('username'),
+                    'password' => $request->input('password')
+                ];
+                $token = auth()->guard('api')->attempt($payload);
+            }
+
+            if (!$token) {
 
                 $message = 'Username atau password tidak sesuai';
                 $errorMessage = [
@@ -46,30 +65,30 @@ class MobileLoginController extends Controller {
                     'access_token' => $token,
                     'token_type' => 'bearer'
                 ];
-                
+
                 // $data['token'] = $token;
             }
         }
-        
+
 
         return response()->json([
             'isSuccess' => $isSuccess,
-            'message' => $message, 
+            'message' => $message,
             'errorMessage' => $errorMessage,
             'data' => $data
-        ], 
-        200, 
+        ],
+        200,
         [
             'X-CSRF-TOKEN' => csrf_token()
         ]);
     }
-    
+
     public function logout(Request $request) {
         auth()->guard('api')->logout();
 
         return response()->json([
             'isSuccess' => true,
-            'message' => "Successfully logged out", 
+            'message' => "Successfully logged out",
             'errorMessage' => [],
             'data' => null
         ]);
