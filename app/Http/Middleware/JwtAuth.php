@@ -49,7 +49,7 @@ class JwtAuth
             // provided key/key-array is empty or malformed.
             $errorMessage = ['Unauthorized request'];
             $httpStatus = 401;
-            
+
             Log::error($e->getMessage());
             Log::error($e->getTraceAsString());
         } catch (DomainException $e) {
@@ -87,7 +87,7 @@ class JwtAuth
             $errorMessage = ['Unauthorized request'];
             $httpStatus = 401;
 
-            
+
         } catch (TypeError $e) {
             $errorMessage = ['Terjadi kesalahan, coba beberapa saat lagi'];
             $httpStatus = 500;
@@ -105,13 +105,16 @@ class JwtAuth
         if(!$isSuccess) {
             return response()->json([
                 'isSuccess' => $isSuccess,
-                'message' => $message, 
+                'message' => $message,
                 'errorMessage' => $errorMessage,
                 'data' => $data
             ], $httpStatus);
         };
 
-        $request->attributes->add(['nik_from_token' => $decoded->nik]);
+        $request->attributes->add([
+            'nik_from_token' => $decoded->nik ?? null,
+            'email_from_token' => $decoded->email ?? null
+        ]);
 
 
         return $next($request);

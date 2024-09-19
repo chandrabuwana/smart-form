@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use DateTime;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -20,6 +21,7 @@ class UserMobileController extends Controller {
     private const TABLE_KARYAWAN_HRD = "HRD.dbo.TKaryawan";
     private const TABLE_PENEGASAN_CUTI = "HRD.dbo.TPenegasanCuti";
     private const TABLE_PENGAJUAN_CUTI = "HRD.dbo.tpengajuancuti";
+    private const TABLE_VENDOR_MASTER = 'PICA_BETA.dbo.SCT_GS_VENDOR_MST';
     private const DB_CONN_NAME = 'sqlsrv';
     private const WAKTU_PEMESANAN = [
         [
@@ -51,7 +53,7 @@ class UserMobileController extends Controller {
         ]);
 
         if(count($validator->errors()) > 0) {
-            
+
             $errorMessage = $validator->errors()->all();
         } else {
             $httpRespCode = 200;
@@ -62,7 +64,7 @@ class UserMobileController extends Controller {
                     ->leftJoin(self::TABLE_PENGHUNI_MESS. ' as hn', 'tk.NIK', '=', 'hn.Nik')
                     ->leftJoin(self::TABLE_MASTER_MESS. ' as mm', 'hn.NoDoc', '=', 'mm.NoDoc')
                     ->where('tk.NIK', $nik_from_token);
-                
+
                 // Log::debug($sql_data_user->toRawSql());
                 $data_user = $sql_data_user->first();
                 // Log::debug(json_encode($data_user, JSON_PRETTY_PRINT));
@@ -71,29 +73,29 @@ class UserMobileController extends Controller {
                     $data[$key] = $value;
                 }
                 $data['next_shift'] = $this->getWaktuPemesanan($waktu_order);
-                
+
                 $isSuccess = true;
                 $message = 'Berhasil!';
             } catch (Exception $ex) {
                 Log::error($ex->getMessage());
                 Log::error($ex->getTraceAsString());
-    
+
                 $errorMessage = [
                     'Terjadi Kesalahan, coba beberapa saat lagi'
                 ];
             }
 
         }
-        
+
 
         return response()->json(
             [
                 'isSuccess' => $isSuccess,
-                'message' => $message, 
+                'message' => $message,
                 'errorMessage' => $errorMessage,
                 'data' => $data
-            ], 
-            $httpRespCode, 
+            ],
+            $httpRespCode,
             [
                 'X-CSRF-TOKEN' => csrf_token()
             ]
@@ -120,5 +122,32 @@ class UserMobileController extends Controller {
         }
 
         return $waktuPesan; // Jika tidak ada waktu yang sesuai
+    }
+
+    public function GetUserVendor(Request $request) {
+        $emailFromToken = $request->get('email_from_token');
+        $user = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_VENDOR_MASTER)
+            ->where('Email', $emailFromToken)->first();
+
+        $isSuccess = true;
+        $message = 'Berhasil!';
+
+        return response()->json(
+            [
+                'isSuccess' => $isSuccess,
+                'message' => $message,
+                'errorMessage' => '',
+                'data' => $user
+            ],
+            200,
+            [
+                'X-CSRF-TOKEN' => csrf_token()
+            ]
+        );
+    }
+
+    public function testt(Request $request)
+    {
+        dd('OKOKKK');
     }
 }
