@@ -1,9 +1,12 @@
 <?php
 
+// use App\Http\Controllers\GS\SmartCateringController;
 use App\Http\Middleware\FetchMenu;
+use App\Http\Middleware\PermissionMenu;
 use Illuminate\Support\Facades\Route;
 use Modules\SmartForm\App\Http\Controllers\Admin\AdminController;
 use Modules\SmartForm\App\Http\Controllers\Approval\ApprovalFormController;
+use Modules\SmartForm\App\Http\Controllers\GS\SmartCateringController;
 use Modules\SmartForm\App\Http\Controllers\IC\ICFM05InduksiKaryawanController;
 use Modules\SmartForm\App\Http\Controllers\IC\ICFM05TransactionController;
 use Modules\SmartForm\App\Http\Controllers\Master\DashboardController;
@@ -33,9 +36,9 @@ use Modules\SmartForm\App\Http\Controllers\UnderCarriage\UnderCarriageInspection
 |
 */
 
-Route::group(['middleware' => ['check.auth', FetchMenu::class]], function () {
-    Route::prefix('bss-form')->group( function() {
-        Route::prefix('plant-transmission')->group( function() {
+Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::class]], function () {
+    Route::prefix('bss-form')->group(function () {
+        Route::prefix('plant-transmission')->group(function () {
             Route::get('/dashboard', [PlantTransmissionController::class, 'dashboard'])->name('bss-form.plant-transmission.dashboard');
             Route::get('/dashboard/get-data', [PlantTransmissionController::class, 'getDashboardData'])->name('bss-form.plant-transmission.get-data-dashboard');
             Route::get('/dashboard/detail/{id}', [PlantTransmissionController::class, 'detail'])->name('bss-form.plant-transmission.detail');
@@ -43,7 +46,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class]], function () {
             Route::post('/form/store', [PlantTransmissionController::class, 'store'])->name('bss-form.plant-transmission.store');
         });
 
-        Route::prefix('under-carriage')->group( function() {
+        Route::prefix('under-carriage')->group(function () {
             Route::get('/dashboard', [UnderCarriageInspectionController::class, 'dashboard'])->name('bss-form.undercarriage.dashboard');
             Route::get('/dashboard/get-data', [UnderCarriageInspectionController::class, 'getDashboardData'])->name('bss-form.undercarriage.get-data-dashboard');
             Route::get('/dashboard/detail/{id}', [UnderCarriageInspectionController::class, 'detail'])->name('bss-form.undercarriage.detail');
@@ -51,7 +54,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class]], function () {
             Route::post('/form/store', [UnderCarriageInspectionController::class, 'store'])->name('bss-form.undercarriage.store');
         });
 
-        Route::prefix('sm')->group( function() {
+        Route::prefix('sm')->group(function () {
             Route::get('/asset-request', [AssetRequestController::class, 'IndexForm'])->name("bss-form.sm.form-asset-request");
             Route::get('/edit-form-asset-request', [AssetRequestController::class, 'EditForm'])->name("bss-form.sm.edit-form-asset-request");
             Route::post('/submit-edit-asset-request', [AssetRequestController::class, 'SubmitEditForm'])->name("bss-form.sm.submit-edit-asset-request");
@@ -63,7 +66,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class]], function () {
             Route::post('/validasi-asset-request', [AssetRequestController::class, 'ValidasiRequest'])->name("bss-form.sm.validasi-asset-request");
         });
 
-        Route::prefix('induksi-karyawan')->group( function() {
+        Route::prefix('induksi-karyawan')->group(function () {
             Route::get('/dashboard', [ICFM05InduksiKaryawanController::class, 'IndexDashboard'])->name("bss-dahboard-ic-induksi-karyawan");
             Route::get('/form', [ICFM05InduksiKaryawanController::class, 'indexFormAddInduksiKaryawan'])->name("bss-form-ic-induksi-karyawan");
             Route::post('/form-add', [ICFM05TransactionController::class, 'SubmitALLData']);
@@ -71,11 +74,17 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class]], function () {
             Route::post('/form-induksi', [ICFM05InduksiKaryawanController::class, 'dataListPertanyaan']);
             Route::post('/form-induksi-2', [ICFM05InduksiKaryawanController::class, 'dataListPertanyaan2']);
             Route::get('/lst-IC-form-induksi', [ICFM05TransactionController::class, 'helperDataListInduksiKaryawan']);
+            Route::get('/lst-karyawan-induksi', [ICFM05TransactionController::class, 'helperDataListKaryawanInduksi']);
             Route::post('/helper-data-nik', [ICFM05TransactionController::class, 'HelperSelect2InduksiKaryawanByDept']);
             Route::get('/form-edit-view-IC-form-induksi/{d}', [ICFM05InduksiKaryawanController::class, 'IndexDetailEditViewFormInduksiKaryawan'])->name("bss-edit-view-form-ic-induksi-karyawan");
+            Route::post('/generate-link', [ICFM05InduksiKaryawanController::class, 'GenerateLinkUrl']);
+            Route::post('/activated-link', [ICFM05InduksiKaryawanController::class, 'ActivatedLink']);
+            Route::post('/listing-karyawan-deleted', [ICFM05InduksiKaryawanController::class, 'formDeletedKaryawanListing']);
+            Route::post('/check-nik-pdf', [ICFM05InduksiKaryawanController::class, 'checkNIKPDF']);
+            Route::get('/download-pdf/{id}', [ICFM05InduksiKaryawanController::class, 'downloadPDF']);
         });
 
-        Route::prefix('she-019B')->group( function() {
+        Route::prefix('she-019B')->group(function () {
             Route::get('/dashboard', [DashboardSHEFRM19BController::class, 'DashboardIndex'])->name("bss-form-she-019B");
             Route::get('/bss-form-she-019B-add-frm', [DashboardSHEFRM19BController::class, 'AddForm'])->name("add-bss-form-she-019B");
             Route::post('/store', [TransactionSHEFRM19BController::class, 'addDataPraCheckUp']);
@@ -83,12 +92,25 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class]], function () {
             Route::post('/store-petugas-checker', [TransactionSHEFRM19BController::class, 'addDataCheckUpPetugas']);
         });
 
-        Route::prefix('timesheet')->group( function() {
+        Route::prefix('timesheet')->group(function () {
             Route::get('/dashboard', [ProductionTimeSheetDashboarController::class, 'IndexDashboard'])->name("bss-form-prod-timesheet");
             Route::get('/form', [ProductionTimeSheetDashboarController::class, 'GetFormsTimesheet'])->name("get-form-timesheet");
             Route::get('/detail', [ProductionTimeSheetDashboarController::class, 'GetFormTimesheetDetail'])->name("get-form-timesheet-detail");
             Route::get('/form-produksi', [ProductionTimeSheetDashboarController::class, 'FormTimesheetProduksi'])->name("form-timesheet-produksi");
             Route::post('/submit-form', [ProductionTimeSheetDashboarController::class, 'SubmitFormTimesheet'])->name("add-form-action");
+            Route::get('/search-karyawan', [ProductionTimeSheetDashboarController::class, 'SearchKaryawan'])->name("search-karyawan");
+            Route::post('/submit-action-pengawas', [ProductionTimeSheetDashboarController::class, 'ActionPengawasTimesheet'])->name("search-karyawan");
+            // Route::get('/add-pemesanan-catering', [SmartCateringController::class, 'AddPemesanan'])->name('add-pemesanan-catering');
+            // Route::post('/generate-detail-pemesanan-catering', [SmartCateringController::class, 'GenerateDetailPemesanan'])->name('generate-detail-pemesanan-catering');
+        });
+
+        Route::prefix('catering')->group( function() {
+            Route::get('/pemesanan', [SmartCateringController::class, 'AddPemesanan'])->name('add-pemesanan-catering');
+            Route::get('/dashboard-pemesanan', [SmartCateringController::class, 'DashboardPemesanan'])->name('dashboard-pemesanan-catering');
+            Route::get('/list-pemesanan', [SmartCateringController::class, 'GetListPemesanan'])->name('list-pemesanan');
+            Route::post('/generate-detail', [SmartCateringController::class, 'GenerateDetailPemesanan'])->name('generate-detail-pemesanan-catering');
+            Route::post('/order', [SmartCateringController::class, 'SubmitPesanMakan'])->name('submit-makan');
+    
         });
     });
 
@@ -96,7 +118,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class]], function () {
     Route::get('/get-all-menu', [AdminController::class, 'GetAllMenu'])->name('get-all-menu');
     Route::post('/add-new-menu', [AdminController::class, 'AddNewMenu'])->name('add-new-menu');
 
-    Route::prefix('helper')->group( function() {
+    Route::prefix('helper')->group(function () {
         Route::post('/kpi-lead-datalist', [HelperController::class, 'HelperSelect2PicaKPILead']);
         Route::post('/week', [HelperController::class, 'HelperSelectWeek']);
         Route::post('/department', [HelperController::class, 'HelperSelect2PicaKDept']);
@@ -106,7 +128,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class]], function () {
         Route::get('/data-history-progress', [HelperController::class, 'HelperDataTableHistoryProgressPica']);
     });
 
-    Route::prefix('role-management')->group( function() {
+    Route::prefix('role-management')->group(function () {
         Route::get('/dashboard', [RoleManagementController::class, 'dashboard'])->name('role-management.dashboard');
         Route::get('/dashboard/get-data', [RoleManagementController::class, 'getDashboardData'])->name('role-management.get-dashboard-data');
         Route::get('/create', [RoleManagementController::class, 'create'])->name('role-management.create');
@@ -116,7 +138,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class]], function () {
         Route::get('/destroy/{id}', [RoleManagementController::class, 'destroy'])->name('role-management.destroy');
     });
 
-    Route::prefix('user-management')->group( function() {
+    Route::prefix('user-management')->group(function () {
         Route::get('/dashboard', [UserManagementController::class, 'dashboard'])->name('user-management.dashboard');
         Route::get('/dashboard/get-data', [UserManagementController::class, 'getDashboardData'])->name('user-management.get-dashboard-data');
         Route::get('/create', [UserManagementController::class, 'create'])->name('user-management.create');
@@ -126,7 +148,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class]], function () {
         Route::get('/destroy/{id}', [UserManagementController::class, 'destroy'])->name('user-management.destroy');
     });
 
-    Route::prefix('master-form-pic')->group( function() {
+    Route::prefix('master-form-pic')->group(function () {
         Route::get('/dashboard', [MasterFormPICController::class, 'dashboard'])->name('master-form-pic.dashboard');
         Route::get('/dashboard/get-data', [MasterFormPICController::class, 'getDashboardData'])->name('master-form-pic.get-dashboard-data');
         Route::get('/create', [MasterFormPICController::class, 'create'])->name('master-form-pic.create');
@@ -136,7 +158,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class]], function () {
         Route::get('/destroy/{id}', [MasterFormPICController::class, 'destroy'])->name('master-form-pic.destroy');
     });
 
-    Route::prefix('smart-pica')->group( function() {
+    Route::prefix('smart-pica')->group(function () {
         Route::get('/create', [DashboarController::class, 'IndexFormAdd'])->name("add-smart-pica");
         Route::get('/dashboard', [DashboarController::class, 'IndexSmartPicaDashboard'])->name("dashboard-smart-pica");
         Route::get('/update-progress', [DashboarController::class, 'IndexUpdateProgress'])->name(("dashboard-update-progress-smartpica"));
@@ -148,7 +170,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class]], function () {
         Route::post('/add-progress-history-transaction', [TransactionPicaController::class, 'addTransactionProgressStepSolutionPica']);
     });
 
-    Route::prefix('approval')->group( function() {
+    Route::prefix('approval')->group(function () {
         Route::post('/form', [ApprovalFormController::class, 'approveForm'])->name('bss-approval-form');
     });
 
@@ -159,4 +181,8 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class]], function () {
     Route::get('/landing-page-dashboard', [DashboardController::class, 'DashboardIndex']);
 });
 
+Route::get('/bss-form/induksi-karyawan/listing-karyawan/{data}', [ICFM05InduksiKaryawanController::class, 'indexFormAddKaryawanListing']);
+Route::post('/bss-form/induksi-karyawan/listing-karyawan-add', [ICFM05InduksiKaryawanController::class, 'formAddKaryawanListing']);
+
 Route::get('/helper-download-pdf/{docno}', [HelperPdfMobilisasiFormController::class, 'DownloadPDFHelperPdf']);
+// Route::get('/dashboard-pemesanan', [SmartCateringController::class, 'DashboardPemesanan'])->name('dashboard-pemesanan-catering');

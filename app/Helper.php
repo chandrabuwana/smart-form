@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\DB;
 
 class Helper
 {
-    public static function isGrantPermission(string $moduleName)
+    public static function isGrantPermission(string $username, string $moduleName)
     {
         // spesific action
         // $username = session('user_id');
@@ -24,8 +24,6 @@ class Helper
 
         //     })->count() > 0;
 
-        $username = session('user_id');
-        return true;
         return DB::table('users')->select('MS_ROLE_PERMISSION.id')
             ->join('MS_ROLE', 'MS_ROLE.role_code', '=', 'users.role')
             ->join('MS_ROLE_PERMISSION', 'MS_ROLE_PERMISSION.role_id', '=', 'MS_ROLE.id')

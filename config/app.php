@@ -182,6 +182,7 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
+        Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -195,7 +196,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        Modules\SmartForm\App\Providers\SmartFormServiceProvider::class
+        Modules\SmartForm\App\Providers\SmartFormServiceProvider::class,
 
     ],
 
@@ -217,5 +218,7 @@ return [
 
     ])->toArray(),
 
-    'user_sm' => env('USER_SM', '1008491,1008492,1008493,1008494,1008526')
+    'user_sm' => env('USER_SM', '1008491,1008492,1008493,1008494,1008526'),
+    'pengawas_produksi' => env('PENGAWAS_PRODUKSI', '1020340'),
+    'jwt_secret' => env('JWT_SECRET', null)
 ];

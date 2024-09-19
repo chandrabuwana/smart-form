@@ -75,6 +75,19 @@
                                     <p class="mb-0 fw-bold text-sm">
                                         Requested Name : <span id="requestor">{{ $data['driver'] }}</span>
                                     </p>
+                                    <div class="mb-3 mt-3">
+                                        <span class="fw-bold">Pengawas</span>
+                                        <input type="text" class="input-text w-full" id="inputPengawas" disabled value="{{ $data['pengawas_nama'] }}">
+                                    </div>
+                                    
+                                    @if($data['pengawas'] == session('user_id'))
+                                        @if($data['status'] == null || $data['status'] == 'null' || $data['status'] == 1 || $data['status'] == '1')
+                                            <div>
+                                                <a href="#" onclick="submitActionPengawas(this)" data-action="approve"><button class="btn btn-primary btn-action text-white">Approve</button></a>
+                                                <a href="#" onclick="submitActionPengawas(this)" data-action="reject"><button class="btn btn-secondary btn-action text-white">Reject</button></a>
+                                            </div>
+                                        @endif
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -143,6 +156,7 @@
                         </thead>
                     </table>
                 </div>
+                <span id="id_timesheet" style="display: none">{{ $data['id'] }}</span>
 
                 {{-- <div class="card-footer">
                     <div class="d-flex align-items-center">
@@ -181,6 +195,7 @@
         var inputProblem = $("#inputProblem");
         var inputAwal = $("#inputAwal");
         var inputAkhir = $("#inputAkhir");
+        var idDokumen= $("#id_timesheet");
         
         function jamMapper(value, row, index) {
             // console.log("jamMapper " + value)
@@ -294,7 +309,65 @@
             // console.log(items)
         })
         var dataDetail = {{ Illuminate\Support\Js::from($data_detail) }}
-        console.log(dataDetail)
+        // console.log(dataDetail)
+        function submitActionPengawas(e) {
+            var selectedActionPengawas = e.getAttribute("data-action");
+            var dialogTitle = selectedActionPengawas.split('')
+            dialogTitle[0] = dialogTitle[0].toUpperCase()
+            dialogTitle = dialogTitle.join("")
+
+
+            Swal.fire({
+                title: dialogTitle,
+                text: "Konfirmasi aksi " + dialogTitle + "?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#7b809a",
+                confirmButtonText: "Yes, " + dialogTitle + "!",
+                cancelButtonText: "Batal"
+            })
+            .then((result) => {
+                if (result.isConfirmed) {
+                    actionResult = {
+                        title: "",
+                        // text: "",
+                        icon: ""
+                    }
+                    axios.post('/bss-form/timesheet/submit-action-pengawas', {
+                        id_timesheet: idDokumen.text(),
+                        action: selectedActionPengawas
+                    }, {headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}})
+                        .then(function(resp) {
+                            // console.log(resp.data)
+                            if(resp.data.isSuccess) {
+                                actionResult.title = dialogTitle
+                                actionResult.text = "Berhasil melakukan " + dialogTitle
+                                actionResult.icon = "success"
+                            } else {
+                                actionResult.title = dialogTitle
+                                // actionResult.text = "Gagal melakukan" + dialogTitle
+                                actionResult.html = "Gagal melakukan " +dialogTitle + "<br>" + resp.data.errorMessage
+                                actionResult.icon = "error"
+                            }
+                        })
+                        .catch(function(err) {
+                            actionResult.title = dialogTitle
+                            actionResult.text = "Terjadi kesalahan, coba beberapa saat lagi!"
+                            actionResult.icon = "error"
+                        })
+                        .finally(function() {
+                            Swal.fire(actionResult)
+                                .then(function() {
+                                    if(actionResult.icon == "success") {
+                                        location.reload();
+                                    }
+                                });
+                        })
+                }
+            })
+            
+        }
         $(function() {
             dataDetail.forEach(element => {
                 $table.bootstrapTable('append', element)

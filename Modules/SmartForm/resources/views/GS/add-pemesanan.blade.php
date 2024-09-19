@@ -1,0 +1,689 @@
+@extends('master.master_page')
+
+@section('custom-css')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.css">
+    <style>
+        .center-container {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            height: 8em;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            background-color: #0000001f
+        }
+    </style>
+@endsection
+
+@section('content')
+    <div class="text-center center-container" id="loading-animation">
+        <div class="spinner-border" style="width: 10rem; height: 10rem; border-width: 1rem" role="status">
+            <span class="sr-only"></span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card my-4">
+                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 my-2">
+                    <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+                        <h6 class="text-white text-capitalize ps-3">Pemesanan Catering</h6>
+                    </div>
+                </div>
+                <div class="card-body px-0 pb-2">
+                    <div class="row mx-2">
+                        <div class="col-6 col-md-4">
+                            <div class="input-group input-group-static mb-4">
+                                <label for="inputTanggalPemesanan">Tanggal</label>
+                                <input type="date" class="form-control" id="inputTanggalPemesanan"
+                                    name="inputTanggalPemesanan" placeholder="Management Menu">
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <div class="input-group input-group-static mb-4">
+                                <label for="inputSite">Site</label>
+                                <select class="form-control form-select" name="inputSite" id="inputSite" required>
+                                    <!--<option value="">-- Filter Site --</option>
+                                    <option value="AGM">AGM</option>
+                                    <option value="MBL">MBL</option>
+                                    <option value="MME">MME</option>
+                                    <option value="MAS">MAS</option>
+                                    <option value="PMSS">PMSS</option>
+                                    <option value="TAJ">TAJ</option>
+                                    <option value="BSSR">BSSR</option>
+                                    <option value="TDM">TDM</option>
+                                    <option value="MSJ">MSJ</option>-->
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="input-group input-group-static mb-4">
+                                <label for="inputJenisPemesanan">Jenis Pemesanan</label>
+                                <select class="form-control form-select" name="inputJenisPemesanan" id="inputJenisPemesanan" required>
+                                    <option value="pagi" selected>Pagi</option>
+                                    <option value="siang">Siang</option>
+                                    <option value="malam">Malam</option>
+                                </select>
+                            </div>
+                        </div>
+                        <a href="#" id="generate-detail-pemesanan" class="w-auto">
+                            <button class="btn btn-primary ms-auto">Generate <i class="spinner-border" style="width: 14px; height: 14px; border-width: 2px"></i></button>
+                        </a>
+                    </div>
+                    <h5 class="text-black text-capitalize ps-3">Mess</h5>
+                    <h6 class="text-black text-capitalize ps-3">Total data Mess : </h6>
+                    <div class="table-responsive p-0 mb-4">
+                        <table id="table" data-toggle="table" data-ajax="" data-side-pagination="client"
+                            data-query-params=""
+                            data-page-list="[10, 25, 50, 100, all]" data-sortable="true"
+                            data-content-type="application/json" data-data-type="json" data-pagination="true"
+                            data-filter-control="true"
+                            data-unique-id="" data-header-style="headerStyle">
+                            <thead>
+                                <tr>
+                                    <th data-field="nik" data-align="center">NIK</th>
+                                    <th data-field="kodesite" data-align="center">Site</th>
+                                    <th data-field="lokasi" data-align="left">Lokasi</th>
+                                    <th data-field="status" data-align="left" data-formatter='statusFormatter' data-filter-control="select">Status</th>
+                                    <th data-field="cuti" data-align="left" data-formatter='cutiFormatter'>Cuti</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+
+                    <h5 class="text-black text-capitalize ps-3">Data Working</h5>
+                    <h6 class="text-black text-capitalize ps-3">Total working : </h6>
+                    <div class="table-responsive p-0 mb-4">
+                        <table id="table-working" data-toggle="table" data-ajax="" data-side-pagination="client"
+                            data-query-params=""
+                            data-page-list="[10, 25, 50, 100, all]" data-sortable="true"
+                            data-content-type="application/json" data-data-type="json" data-pagination="true"
+                            data-unique-id="" data-header-style="headerStyle">
+                            <thead>
+                                <tr>
+                                    <th data-field="nik" data-align="center">NIK</th>
+                                    <th data-field="tanggal" data-align="left">Tanggal</th>
+                                    <th data-field="masuk" data-align="left">Masuk</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+
+                    <h5 class="text-black text-capitalize ps-3">Data Request Makan</h5>
+                    <h6 class="text-black text-capitalize ps-3">Total request makan mess : </h6>
+                    <div class="table-responsive p-0 mb-4">
+                        <table id="table-request-makan" data-toggle="table" data-ajax="" data-side-pagination="client"
+                            data-query-params=""
+                            data-page-list="[10, 25, 50, 100, all]" data-sortable="true"
+                            data-content-type="application/json" data-data-type="json" data-pagination="true"
+                            data-unique-id="" data-header-style="headerStyle">
+                            <thead>
+                                <tr>
+                                    <th data-field="nik" data-align="center">NIK</th>
+                                    <th data-field="tanggal" data-align="left">Tanggal</th>
+                                    <th data-field="lokasi" data-align="left">lokasi</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+
+                    <h5 class="text-black text-capitalize ps-3">Data Adjustment</h5>
+                    <h6 class="text-black text-capitalize ps-3">Total Adjustment : </h6>
+                    <div class="col-md-4 mx-3">
+                        <div class="input-group input-group-static mb-4">
+                            <label for="uploadExcell">Template Excell</label>
+                            <input type="file" multiple class="form-control" id="uploadExcell" name="uploadExcell">
+                        </div>
+                    </div>
+                    <div class="table-responsive p-0 mb-4">
+                        <table id="table-adjustment-makan" data-toggle="table" data-ajax="" data-side-pagination="client"
+                            data-query-params=""
+                            data-page-list="[10, 25, 50, 100, all]" data-sortable="true"
+                            data-content-type="application/json" data-data-type="json" data-pagination="true"
+                            data-unique-id="" data-header-style="headerStyle">
+                            <thead>
+                                <tr>
+                                    <th data-field="nama" data-align="center">Nama</th>
+                                    <th data-field="nik" data-align="left">NIK</th>
+                                    <th data-field="lokasi" data-align="left">lokasi</th>
+                                    <th data-field="keterangan" data-align="left">keterangan</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="card shadow border mx-3 my-2">
+                            <div class="card-header px-2 py-3">
+                                <h6 class="text-capitalize ps-3">Perbandingan Status</h6>
+                            </div>
+                            <div class="card-body p-3">
+                                <canvas id="chart-status" class="chart-canvas" height="300px"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h5 class="text-black text-capitalize ps-3">Summary Pemesanan</h5>
+                    <table>
+                        <thead>
+                            <tr>
+                                <td colspan="2">Lokasi</td>
+                                <td>By Request</td>
+                                <td>By System</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Mess</td>
+                                <td>:</td>
+                                <td id="totalMessSummary"></td>
+                                <td id="totalMessSummaryBySystem"></td>
+                            </tr>
+                            <tr>
+                                <td>Working</td>
+                                <td>:</td>
+                                <td id="totalWorkingSummary"></td>
+                                <td id="totalWorkingSummaryBySystem" colspan="2"></td>
+                            </tr>
+                            <tr>
+                                <td>Adjustment</td>
+                                <td>:</td>
+                                <td colspan="2" id="totalAdjustment"></td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="2">Total</td>
+                                <td id="totalPesanan"></td>
+                                <td id="totalPesananBySystem"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">Jenis Pemesanan</td>
+                                <td colspan="2">
+                                    {{-- <div class="input-group input-group-static mb-4"> --}}
+                                        <select class="form-control form-select" required id="selectedJenisPemesanan">
+                                            <option value="" selected>-- Pilih Jenis Pemesanan --</option>
+                                            <option value="request">By Request</option>
+                                            <option value="system">By System</option>
+                                        </select>
+                                    {{-- </div> --}}
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    
+                    <a href="#" id="submit-pemesanan" class="w-auto">
+                        <button class="btn btn-primary ms-auto">Submit Pemesanan</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+
+@section('modal')
+    <div class="modal fade" id="modalPemesanan" aria-hidden="true" aria-labelledby="exampleModalToggleLabel"
+        tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <div class="row">
+                        <div class="col">
+                            <h5 class="modal-title center" id="exampleModalToggleLabel">Add Pemesanan</h5>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
+                </div>
+                <div class="row" style="margin: 10px">
+                    <div class="col">
+                        <div class="card border" style="">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        {{-- <h6 class="card-title">Biodata Karyawan</h6> --}}
+                                        <hr class="horizontal dark my-sm-1">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="input-group input-group-static mb-4">
+                                                    <label for="inputTanggal">Tanggal</label>
+                                                    <input type="date" class="form-control" id="inputTanggal"
+                                                        name="inputTanggal" placeholder="Management Menu">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="input-group input-group-static mb-4">
+                                                    <label for="inputSite">Site</label>
+                                                    <select class="form-control form-select" name="inputSite" id="inputSite" required>
+                                                        <option value="AGM">AGM</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="input-group input-group-static mb-4">
+                                                    <label for="inputJenisPemesanan">Jenis Pemesanan</label>
+                                                    <select class="form-control form-select" name="inputJenisPemesanan" id="inputJenisPemesanan" required>
+                                                        <option value="pagi" selected>Pagi</option>
+                                                        <option value="siang">Siang</option>
+                                                        <option value="malam">Malam</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="horizontal dark my-sm-3">
+
+                <div class="row" style="margin:10px">
+                    <div class="col text-end" id="masukkanButtonSubmit">
+                        <button class="btn btn-primary ms-auto uploadBtn" id="btnSubmitMenu">
+                            <i class="fas fa-save"></i>
+                            Submit Data</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+
+@section('custom-js')
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script lang="javascript" src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/shim.min.js"></script>
+    <script lang="javascript" src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+    <script>
+        var inputTanggalPemesanan = $("#inputTanggalPemesanan");
+        var inputJenisPemesanan = $("#inputJenisPemesanan");
+        var inputSite = $("#inputSite");
+        // var inputJenisPemesanan = document.getElementById("jenisPemesanan")
+        var btnGenerateDetailPemesanan = document.getElementById("generate-detail-pemesanan");
+        var loadingAnimation = document.getElementById("loading-animation")
+        var totalMessSummary = document.getElementById("totalMessSummary")
+        var totalWorkingSummary = document.getElementById("totalWorkingSummary")
+        var totalMessSummaryBySystem = document.getElementById("totalMessSummaryBySystem")
+        var totalWorkingSummaryBySystem = document.getElementById("totalWorkingSummaryBySystem")
+        var totalPesanan = document.getElementById("totalPesanan")
+        var totalPesananBySystem = document.getElementById("totalPesananBySystem")
+        var totalAdjustment = document.getElementById("totalAdjustment")
+        var selectedJenisPemesanan = document.getElementById("selectedJenisPemesanan")
+        var $table = $('#table')
+        var $tableWorking = $('#table-working')
+        var $tableRequestMakan = $('#table-request-makan')
+        var $tableAdjustmentMakan = $('#table-adjustment-makan')
+        var elChartStatus = document.getElementById("chart-status").getContext("2d");
+
+        var chart = new Chart(elChartStatus, {
+            type: "pie",
+            data: {
+                labels: ["Mess", "Working", "Adjustment"],
+                datasets: [{
+                    label: "Projects",
+                    weight: 9,
+                    cutout: 0,
+                    tension: 0.9,
+                    pointRadius: 2,
+                    borderWidth: 2,
+                    hoverOffset: 4,
+                    backgroundColor: ['#49a3f1', '#EF5350', '#FFA726', '#66BB6A'],
+                    data: [0, 0, 0 ],
+                    fill: false
+                }],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(item) {
+                                return item.label + ' : ' + item.parsed + '';
+                            }
+                        }
+                    }
+                },
+            },
+        });
+
+        selectedJenisPemesanan.addEventListener("change", function(e) {
+            var jumlahDiMess = 0;
+            if(e.target.value == "request") jumlahDiMess = totalMessSummary.innerText
+            if(e.target.value == "system") jumlahDiMess = totalMessSummaryBySystem.innerText
+
+            // console.log(jumlahDiMess)
+            chart.clear()
+            if(e.target.value == "request" || e.target.value == "system") {
+                chart.data.datasets[0].data = [jumlahDiMess, totalWorkingSummary.innerText, totalAdjustment.innerText]
+                chart.update("active")
+            }  
+        })
+
+        document.getElementById("submit-pemesanan").addEventListener("click", function(e) {
+            var detail = []
+            var dataMess = $('#table').bootstrapTable('getData').filter((data) => data.lokasi == "mess").filter((data) => data.cuti == 0); 
+            var dataWorking = $('#table-working').bootstrapTable('getData'); 
+            var dataRequestMakan = $('#table-request-makan').bootstrapTable('getData'); 
+            var dataAdjustmen = $('#table-adjustment-makan').bootstrapTable('getData');
+
+            dataMess.forEach(element => {
+                detail.push({
+                    nama: '',
+                    nik: element.nik,
+                    lokasi: element.lokasi,
+                    keterangan: '',
+                    kategori: 'system',
+                })
+            });
+            dataWorking.forEach(element => {
+                detail.push({
+                    nama: '',
+                    nik: element.nik,
+                    lokasi: 'working',
+                    keterangan: '',
+                    kategori: 'working',
+                })
+            });
+            dataRequestMakan.forEach(element => {
+                detail.push({
+                    nama: element.nama || "",
+                    nik: element.nik,
+                    lokasi: element.lokasi,
+                    keterangan: '',
+                    kategori: 'request',
+                })
+            });
+            dataAdjustmen.forEach(element => {
+                detail.push({
+                    nama: element.nama.toString(),
+                    nik: element.nik,
+                    lokasi: element.lokasi,
+                    keterangan: element.keterangan,
+                    kategori: 'adjustment',
+                })
+            });
+
+            console.log(detail)
+            var reqBody = {
+                jenisPemesanan: inputJenisPemesanan.val(),
+                tanggal: inputTanggalPemesanan.val(),
+                messBySystem: dataMess.length,
+                messByRequest: dataRequestMakan.length,
+                working: dataWorking.length,
+                adjustment: dataAdjustmen.length,
+                selected: selectedJenisPemesanan.value,
+                site: inputSite.val(),
+                detail: detail
+            };
+            // console.log({mess: dataMess, working: dataWorking, requestMakan: dataRequestMakan, adjustmen: dataAdjustmen, jenisPemesanan: inputJenisPemesanan.val()});
+            axios.post("/bss-form/catering/order", reqBody, {
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
+            })
+            .then(function(response) {
+                var dataAlert = {
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: 'Terjadi kesalahan, coba beberapa saat lagi'
+                }
+
+                if(!response.data.isError) {
+                    dataAlert = {
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: 'Pemesanan Berhasil disubmit.'
+                    }
+                } else {
+                    dataAlert = {
+                        icon: 'error',
+                        title: 'Gagal!',
+                        text: 'Gagal Submit pemesanan.'
+                    }
+                }
+
+                Swal.fire(dataAlert).then((result) => {
+                    window.location.reload();
+                })
+                // console.log(response.data)
+            })
+            .catch(function(err) {
+                console.log(err)
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: 'Terjadi kesalahan, coba beberapa saat lagi'
+                }).then((result) => {
+                })
+            })
+        })
+
+        $('#inputSite').select2({
+            theme: 'bootstrap-5', // Menggunakan tema Bootstrap 5
+            dropdownParent: $('#inputSite').closest('.input-group'),
+            placeholder: '--- Cari Site ---',
+            ajax: {
+                url: "/helper/department",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type: "post",
+                delay: 250,
+                dataType: 'json',
+                data: function(params) {
+                    return {
+                        _token: "{{ csrf_token() }}",
+                        query: params.term, // search term
+                    };
+                },
+                processResults: function(response) {
+                    return {
+                        results: response.data
+                    };
+                },
+                cache: true
+            }
+        });
+
+        function statusFormatter(value) {
+            var nilai = null;
+            if(value==0) nilai="Belum pesan"
+            if(value==1) nilai="Done"
+
+            return nilai
+        }
+        function cutiFormatter(value) {
+            var nilai = null;
+            if(value==0) nilai="Masuk/Off"
+            if(value==1) nilai="Cuti"
+
+            return nilai
+        }
+
+        $tableWorking.on('post-body.bs.table', function(data) {
+            
+        })
+
+        $tableRequestMakan.on('post-body.bs.table', function(data) {
+
+        })
+
+        function getTodayDate() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        inputTanggalPemesanan.val(getTodayDate());
+
+        $("#tambah-pemesanan").click(function(e) {
+            $('#modalPemesanan').modal("show");
+        })
+
+        btnGenerateDetailPemesanan.addEventListener("click", function(e) {
+            e.preventDefault()
+            console.log("halo")
+            axios.post('/bss-form/catering/generate-detail', 
+                {
+                    tanggalPemesanan: inputTanggalPemesanan.val(),
+                    site: inputSite.val(),
+                    jenisPemesanan: inputJenisPemesanan.val()
+                }, 
+                {
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
+                }
+            )
+            .then(function (response) {
+                var data_tabel = []
+                var data_working = []
+                var data_request_makan_mess = []
+                var data = {
+                    icon: 'error',
+                    title: '',
+                    text: ''
+                }
+                var workingNIK = []
+                var cutiNIK = []
+
+                if(response.data.isSuccess) {
+                    data.icon = 'success'
+                    data.title = "Berhasil!"
+                    data.text = response.data.message
+                } else {
+                    data.icon = 'error'
+                    data.title = "Gagal!"
+                    data.text = response.data.message
+                }
+                for (var dataMess in response.data.dataMess) {
+                    // console.log(response.data.dataMess[dataMess].cuti)
+                    data_tabel.push({
+                        nik: response.data.dataMess[dataMess].Nik,
+                        kodesite: response.data.dataMess[dataMess].KodeSite,
+                        lokasi: response.data.dataMess[dataMess].lokasi,
+                        status: response.data.dataMess[dataMess].status,
+                        cuti: response.data.dataMess[dataMess].cuti,
+                        noDoc: response.data.dataMess[dataMess].NoDoc,
+                    })
+                    if(response.data.dataMess[dataMess].cuti == 1) cutiNIK.push(response.data.dataMess[dataMess].Nik)
+                }
+                for (var working in response.data.dataWorking) {
+                    // console.log(response.data.dataWorking[working])
+                    workingNIK.push(response.data.dataWorking[working].NIK)
+                    data_working.push({
+                        nik: response.data.dataWorking[working].NIK,
+                        tanggal: response.data.dataWorking[working].Tanggal,
+                        masuk: response.data.dataWorking[working].Masuk
+                    })
+                }
+                for (var pesanMakan in response.data.dataPesanMakanMess) {
+                    // console.log(response.data.dataPesanMakanMess[working])
+                    data_request_makan_mess.push({
+                        nik: response.data.dataPesanMakanMess[pesanMakan].NIK,
+                        tanggal: response.data.dataPesanMakanMess[pesanMakan].TanggalOrder,
+                        lokasi: response.data.dataPesanMakanMess[pesanMakan].lokasi
+                    })
+                }
+                // data mess dikurangi cuti
+                var filteredCutiNik = response.data.dataMess.filter(function(item) {
+                    return !cutiNIK.includes(item.Nik)
+                })
+                // hasil data mess dikurangi cuti, dikurangi yang bekerja
+                var filteredWorkingNik = filteredCutiNik.filter(function(item) {
+                    return !workingNIK.includes(item.Nik)
+                })
+
+                console.log({dataMess: dataMess, workingNIK: workingNIK, cutiNIK: cutiNIK, filteredCutiNik: filteredCutiNik, filteredWorkingNik: filteredWorkingNik})
+
+                $table.bootstrapTable('load', {total: data_tabel.length, totalNotFiltered: data_tabel.length, rows: data_tabel})
+                $tableWorking.bootstrapTable('load', {total: data_working.length, totalNotFiltered: data_working.length, rows: data_working})
+                $tableRequestMakan.bootstrapTable('load', {total: data_request_makan_mess.length, totalNotFiltered: data_request_makan_mess.length, rows: data_request_makan_mess})
+                
+                totalMessSummary.innerText = data_request_makan_mess.length
+                totalWorkingSummary.innerText = data_working.length
+                totalPesanan.innerText = data_request_makan_mess.length + data_working.length
+                totalWorkingSummaryBySystem.innerText = data_working.length
+                totalMessSummaryBySystem.innerText = filteredWorkingNik.length
+                totalPesananBySystem.innerText = filteredWorkingNik.length + data_working.length
+
+                if(response.data.isError) {
+                    data.icon='error';
+                    data.text=response.data.message
+                    data.title='Gagal!'
+                } else {
+                    data.icon='success';
+                    data.text=response.data.message
+                    data.title='Berhasil!'
+                }
+
+                Swal.fire(data).then((result) => {
+
+                })
+            })
+            .catch(function (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: 'Terjadi kesalahan, coba beberapa saat lagi'
+                }).then((result) => {
+                    // window.location.href = `/get-form-detail?no_doc=${response.data.data.no_doc}`;
+                })
+            })
+            .finally(function() {
+
+            });
+        })
+
+        document.getElementById('uploadExcell').addEventListener('change', function(e) {
+            var file = e.target.files[0];
+            var reader = new FileReader();
+
+            reader.onload = function(e) {
+                var data = new Uint8Array(e.target.result);
+                var workbook = XLSX.read(data, {type: 'array'});
+                var loadedData = [];
+
+                // Ambil sheet pertama
+                var firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+
+                // Konversi sheet ke JSON
+                var excelRows = XLSX.utils.sheet_to_json(firstSheet, {header: 1});
+
+                // Ambil referensi tabel
+                // var table = document.getElementById('excelDataTable').getElementsByTagName('tbody')[0];
+
+                // Hapus baris lama (jika ada)
+                // table.innerHTML = '';
+
+                // Loop untuk menambah baris baru dari data Excel
+                var jumlahData = 0
+                excelRows.forEach(function(row, index) {
+                    if(index > 0) { // Skip header row
+                        console.log(row)
+                        loadedData.push({
+                            nama: row[0],
+                            nik: row[1],
+                            lokasi: row[2],
+                            keterangan: row[3]
+                        })
+                        jumlahData++
+                        // var newRow = table.insertRow();
+                        // row.forEach(function(cell) {
+                        //     // var newCell = newRow.insertCell();
+                        //     // newCell.textContent = cell;
+                        //     console.log(cell)
+                        // });
+                    }
+                });
+                $tableAdjustmentMakan.bootstrapTable('load', loadedData)
+                document.getElementById("totalAdjustment").innerText = new String(jumlahData)
+            };
+
+            reader.readAsArrayBuffer(file);
+        })
+    </script>
+@endsection

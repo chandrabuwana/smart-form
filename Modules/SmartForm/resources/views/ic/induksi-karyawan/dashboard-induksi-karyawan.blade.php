@@ -57,9 +57,16 @@
 
                 </div>
                 <div class="card-body px-0 pb-2">
-                    <div class="d-flex align-items-center">
-                        <a href="{{ route('bss-form-ic-induksi-karyawan') }}"><button class="btn btn-primary ms-auto uploadBtn">
-                                Mulai Induksi</button></a>
+                    <div class="d-flex align-items-center" style="margin:10px">
+                        <div class="col-md-2">
+                            <a href="{{ route('bss-form-ic-induksi-karyawan') }}"><button
+                                    class="btn btn-primary ms-auto uploadBtn">
+                                    Mulai Induksi</button></a>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-primary ms-auto uploadBtn" onclick="TiggerBukaModalUntukDownlaodPDF()">
+                                Export PDF</button>
+                        </div>
                     </div>
                     <div class="table-responsive p-0">
                         <table id="dataListFormICInduksiKaryawan" data-toggle="table"
@@ -70,13 +77,12 @@
                             data-unique-id="id">
                             <thead>
                                 <tr>
-                                    <th data-field="NIK" data-align="center" data-halign="center">NIK</th>
-                                    <th data-field="Nama" data-align="center" data-halign="center">Nama</th>
-                                    <th data-field="Jabatan" data-align="center" data-halign="center">Jabatan</th>
-                                    <th data-field="Instansi" data-align="center" data-halign="center">Instansi</th>
-                                    <th data-field="Group" data-align="center" data-halign="center">Jenis</th>
-                                    <th data-field="created_at" data-align="center" data-formatter="dataTableDateFormater"
-                                        data-halign="center">Tanggal</th>
+                                    <th data-field="code" data-align="center" data-halign="center">Code</th>
+                                    <th data-field="link" data-align="center" data-halign="center">link</th>
+                                    <th data-field="expired" data-align="center" data-formatter="dataTableDateFormater"
+                                        data-halign="center">Expired</th>
+                                    <th data-field="jml_karyawan" data-align="center" data-halign="center">Karyawan</th>
+                                    <th data-field="pertanyaan" data-align="center" data-halign="center">Jenis</th>
                                     <th data-halign="center" data-align="center"
                                         data-formatter="dataListFormICInduksiKaryawanActionFormater">Action
                                     </th>
@@ -89,6 +95,62 @@
         </div>
     </div>
 @endsection
+
+@section('modal')
+    <div class="modal fade" id="ModalUntukDownload" aria-hidden="true" aria-labelledby="exampleModalToggleLabel"
+        tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="row">
+                        <div class="col">
+                            <h5 class="modal-title center" id="exampleModalToggleLabel">Masukkan NIK</h5>
+                            <p id="ProblemHeader"></p>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
+                </div>
+                <div class="row" style="margin: 10px">
+                    <div class="col">
+                        <div class="card border" style="">
+                            <div class="card-body">
+                                <h5 class="card-title">Progress Pembenahan</h5>
+                                <span id="solutionSpan"></span>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="input-group input-group-static my-4">
+                                            <label for="note_progress">Masukkan NIK</label>
+                                            <input class="form-control" type="text" placeholder="-- Masukkan NIK -- "
+                                                name="pdfNIK" required id="pdfNIK">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="input-group input-group-static my-4">
+                                            <label for="CCPLink" class="ms-0">Nama</label>
+                                            <input class="form-control" type="text"
+                                                placeholder="-- Akan Generate By Click Check" name="pdfName" disabled
+                                                id="pdfName">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="d-flex align-items-center">
+                                <button class="btn btn-primary ms-auto uploadBtn" id="buttonSubmitDataPICA"
+                                    style="margin : 20px" onclick="CheckDataBeforeDownloadPDF()">
+                                    <i class="fas fa-save"></i>
+                                    Check Data</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+
+
 
 @section('custom-js')
     <script src="https://unpkg.com/gijgo@1.9.14/js/gijgo.min.js" type="text/javascript"></script>
@@ -141,7 +203,8 @@
         function RedirectToDetail(obj) {
             let indexDt = $(obj).closest('tr').data('index');
             let d = $('#dataListFormICInduksiKaryawan').bootstrapTable('getData')[indexDt];
-            window.location.href = "/bss-form/induksi-karyawan/form-edit-view-IC-form-induksi/" + d.NIK + "=" + d.created_at;
+            window.location.href = "/bss-form/induksi-karyawan/form-edit-view-IC-form-induksi/" + d.code + "=" + d
+                .created_at;
         }
 
         function SubmittAllDataModal() {
@@ -236,12 +299,6 @@
             return data;
         }
 
-        function redirectToAddStepPica(obj) {
-            var indexDt = $(obj).closest('tr').data('index');
-            window.location.href = "/smart-pica/create-step/" + $('#dataListFormICInduksiKaryawan').bootstrapTable('getData')[
-                    indexDt]
-                .nodocpica;
-        }
 
         function dataListFormICInduksiKaryawanParamsGenerate(params) {
 
@@ -271,6 +328,58 @@
             $.get(url + '?' + $.param(params.data)).then(function(res) {
                 params.success(res)
             })
+        }
+    </script>
+    <script type="text/javascript">
+        function CheckDataBeforeDownloadPDF() {
+            let nnik = $('#pdfNIK').val();
+            if (nnik == "") {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'NIK Empty',
+                    confirmButtonText: 'OK'
+                });
+                return false;
+            }
+
+            let dataKirim = {
+                nik: nnik
+            }
+            $.ajax({
+                type: 'post',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: "/bss-form/induksi-karyawan/check-nik-pdf",
+                data: dataKirim,
+                dataType: 'json',
+                success: function(response) {
+                    if (response.code == 200) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: response.message,
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = "/bss-form/induksi-karyawan/download-pdf/" + nnik
+                            } 
+                        });
+                    }
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'thrownError',
+                        html: errorMessage,
+                        confirmButtonText: 'OK'
+                    });
+                }
+            })
+        }
+
+
+        function TiggerBukaModalUntukDownlaodPDF() {
+            $('#ModalUntukDownload').modal("show");
         }
     </script>
 @endsection

@@ -74,6 +74,7 @@ class CompareAbsensiController extends Controller {
                 $data_finger_log = DB::connection('sqlsrv2')
                         ->table("TFingerlog as tf")
                         ->select('tf.nik', 'tf.tanggal', DB::raw('SUBSTRING(CAST(jam AS VARCHAR), 1, 5) AS jam'), 'tk.nama')
+                        // ->select('tf.nik', 'tf.tanggal', DB::raw('SUBSTRING(CAST(jam AS VARCHAR), 1, 5) AS jam'), 'tk.nama', 'tk.kodedp')
                         ->leftJoin('Tkaryawan as tk', 'tf.nik', '=', 'tk.nik' )
                         ->where('Status', 'IN')
                         ->where('tk.AKTIF', 0)

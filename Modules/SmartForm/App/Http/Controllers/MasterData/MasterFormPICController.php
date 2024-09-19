@@ -12,14 +12,6 @@ use Illuminate\Support\Str;
 
 class MasterFormPICController extends Controller
 {
-    public function __construct()
-    {
-        dd(session('user_id'));
-        if(!Helper::isGrantPermission('Master Data')) {
-            abort(403);
-        }
-    }
-
     public function dashboard()
     {
         return view('SmartForm::master-form-pic/dashboard');

@@ -60,10 +60,10 @@
     <script type="text/javascript">
         var users_nik = {{ Illuminate\Support\Js::from($nik_session) }}
         function actionFormatter(value, row, index) {
-            var btn = '<a href="bss-form/sm/get-form-detail?no_doc=' + row.no_doc + '"><i class="fa fa-info-circle fixed-plugin-button-nav cursor-pointer"></i></a>';
+            var btn = '<a href="/bss-form/sm/get-form-detail?no_doc=' + row.no_doc + '"><i class="fa fa-info-circle fixed-plugin-button-nav cursor-pointer"></i></a>';
             if(row.status < 1 ) {
                 if(row.requested_by == users_nik) {
-                    btn = btn + '<a href="bss-form/sm/edit-form-asset-request?no_doc=' + row.no_doc + '"><i class="fa fa-edit fixed-plugin-button-nav cursor-pointer"></i></a>';
+                    btn = btn + '<a href="/bss-form/sm/edit-form-asset-request?no_doc=' + row.no_doc + '"><i class="fa fa-edit fixed-plugin-button-nav cursor-pointer"></i></a>';
                 }
             }
             return btn;
@@ -79,17 +79,17 @@
                 status = "Validated"
             }
             if(value == 2) {
-                status = "Diproses"
+                status = "Approved" // approveby SM
             }
             if(value == 3) {
-                status = "Done"
+                status = "Rejected"
             }
 
             return status;
         }
 
         function fetchFormsData(params) {
-            var url = 'bss-form/sm/get-forms-data'
+            var url = '/bss-form/sm/get-forms-data'
             $.get(url + '?' + $.param(params.data)).then(function(res) {
                 params.success(res.data)
             })

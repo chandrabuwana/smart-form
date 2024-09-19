@@ -6,6 +6,9 @@
     .text-right {
         text-align: right;
     }
+    .m-0 {
+        margin: 0;
+    }
 </style>
 @endsection
 
@@ -90,7 +93,7 @@
                                         <div class="input-group input-group-static mb-4">
                                             <label for="inputDepartment">Department</label>
                                             <select class="form-control form-select-sm" name="inputDepartment" id="inputDepartment" required>
-                                                <option selected value="">Pilih Department</option>
+                                                <option selected value="">-- Pilih Department --</option>
                                                 <option value="Engineering">Engineering</option>
                                                 <option value="SHE">SHE</option>
                                                 <option value="Produksi">Produksi</option>
@@ -105,9 +108,29 @@
                                         <div class="input-group input-group-static mb-4">
                                             <label for="inputProject">Project / Site</label>
                                             <select class="form-control form-select-sm" name="inputProject" id="inputProject" required>
-                                                <option value="1">HO</option>
-                                                <option value="2">AGM</option>
-                                                <option value="3">BSSR</option>
+                                                <option value="" selected>-- Pilih Project / Site --</option>
+                                                <option value="JKT">JKT</option>
+                                                <option value="TDM">TDM</option>
+                                                <option value="AGM">AGM</option>
+                                                <option value="PMSS">PMSS</option>
+                                                <option value="MAS">MAS</option>
+                                                <option value="COMEX MSJ">COMEX MSJ</option>
+                                                <option value="COMEX PALARAN">COMEX PALARAN</option>
+                                                <option value="COMEX AGM">COMEX AGM</option>
+                                                <option value="BSSR 2">BSSR 2</option>
+                                                <option value="PKM">PKM</option>
+                                                <option value="SMD">SMD</option>
+                                                <option value="KUP">KUP</option>
+                                                <option value="TAJ">TAJ</option>
+                                                <option value="MME">MME</option>
+                                                <option value="MBL">MBL</option>
+                                                <option value="COMEX-MAS">COMEX-MAS</option>
+                                                <option value="COMEX CILEGON">COMEX CILEGON</option>
+                                                <option value="SAS">SAS</option>
+                                                <option value="BSEE">BSEE</option>
+                                                <option value="BRN">BRN</option>
+                                                <option value="KUD">KUD</option>
+                                                <option value="BYN">BYN</option>
                                             </select>
                                         </div>
                                     </div>
@@ -118,7 +141,7 @@
                                         <div class="input-group input-group-static mb-4">
                                             <label for="inputDepartmentAllocation">Department</label>
                                             <select class="form-control form-select-sm" name="inputDepartmentAllocation" id="inputDepartmentAllocation" required>
-                                                <option selected value="">Pilih Department</option>
+                                                <option selected value="">-- Pilih Department --</option>
                                                 <option value="Engineering">Engineering</option>
                                                 <option value="SHE">SHE</option>
                                                 <option value="Produksi">Produksi</option>
@@ -133,9 +156,29 @@
                                         <div class="input-group input-group-static mb-4">
                                             <label for="inputProjectAllocation">Project / Site</label>
                                             <select class="form-control form-select-sm" name="inputProjectAllocation" id="inputProjectAllocation" required>
-                                                <option value="1">HO</option>
-                                                <option value="2">AGM</option>
-                                                <option value="3">BSSR</option>
+                                                <option value="" selected>-- Pilih Project / Site --</option>
+                                                <option value="JKT">JKT</option>
+                                                <option value="TDM">TDM</option>
+                                                <option value="AGM">AGM</option>
+                                                <option value="PMSS">PMSS</option>
+                                                <option value="MAS">MAS</option>
+                                                <option value="COMEX MSJ">COMEX MSJ</option>
+                                                <option value="COMEX PALARAN">COMEX PALARAN</option>
+                                                <option value="COMEX AGM">COMEX AGM</option>
+                                                <option value="BSSR 2">BSSR 2</option>
+                                                <option value="PKM">PKM</option>
+                                                <option value="SMD">SMD</option>
+                                                <option value="KUP">KUP</option>
+                                                <option value="TAJ">TAJ</option>
+                                                <option value="MME">MME</option>
+                                                <option value="MBL">MBL</option>
+                                                <option value="COMEX-MAS">COMEX-MAS</option>
+                                                <option value="COMEX CILEGON">COMEX CILEGON</option>
+                                                <option value="SAS">SAS</option>
+                                                <option value="BSEE">BSEE</option>
+                                                <option value="BRN">BRN</option>
+                                                <option value="KUD">KUD</option>
+                                                <option value="BYN">BYN</option>
                                             </select>
                                         </div>
                                     </div>
@@ -188,7 +231,13 @@
                                     <div class="col-md-4 col-lg-3">
                                         <div class="input-group input-group-static mb-4">
                                             <label for="inputCondition">Condition</label>
-                                            <input type="text" class="form-control" id="inputCondition" name="inputCondition">
+                                            {{-- <input type="text" class="form-control" id="inputCondition" name="inputCondition"> --}}
+                                            <select class="form-control form-select" name="inputCondition" id="inputCondition" required>
+                                                <option selected value="">-- Pilih Condition --</option>
+                                                <option value="new">New</option>
+                                                <option value="used">Used</option>
+                                                <option value="refurbished">Refurbished</option>
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-lg-3">
@@ -207,6 +256,7 @@
                                         <div class="input-group input-group-static mb-4">
                                             <label for="inputCurrency">Currency</label>
                                             <select class="form-control form-select" name="inputCurrency" id="inputCurrency" required>
+                                                <option value="">-- Pilih Currency --</option>
                                                 <option value="IDR">IDR</option>
                                                 <option value="USD">USD</option>
                                                 <option value="CNY">CNY</option>
@@ -532,6 +582,27 @@
             // console.log("IDR = ", idr)
         })
 
+        checkNotBudgeted.addEventListener("change",(e) => {
+            if(e.target.checked) {
+                checkBudgeted.checked=false
+            }
+        })
+        checkBudgeted.addEventListener("change",(e) => {
+            if(e.target.checked) {
+                checkNotBudgeted.checked=false
+            }
+        })
+        checkReplacement.addEventListener("change",(e) => {
+            if(e.target.checked) {
+                checkAdditional.checked=false
+            }
+        })
+        checkAdditional.addEventListener("change",(e) => {
+            if(e.target.checked) {
+                checkReplacement.checked=false
+            }
+        })
+
         $(function() {
             noDoc.text(generateNoDoc())
             tglDoc.text(formatTgl() || "-")
@@ -557,19 +628,139 @@
                 totalPrice.text((estimatedIdr.val() * calculatedIdr.text()) + (estimatedUsd.val() * calculatedUsd.text()) + (estimatedCny.val() * calculatedCny.text()))
             });
 
+            function validateItem() {
+                var errorValidate = []
+
+                if(inputType.val() == "") {
+                    errorValidate.push({
+                        field: "Type",
+                        message: "Tidak boleh kosong"
+                    })
+                }
+                if(inputCondition.val() == "") {
+                    errorValidate.push({
+                        field: "Condition",
+                        message: "Tidak boleh kosong"
+                    })
+                }
+                if(inputQty.val() == "") {
+                    errorValidate.push({
+                        field: "QTY",
+                        message: "Tidak boleh kosong"
+                    })
+                }
+                if(inputUom.val() == "") {
+                    errorValidate.push({
+                        field: "UOM",
+                        message: "Tidak boleh kosong"
+                    })
+                }
+                if(inputCurrency.val() == "") {
+                    errorValidate.push({
+                        field: "Currency",
+                        message: "Tidak boleh kosong"
+                    })
+                }
+                if(inputPrice.val() == "") {
+                    errorValidate.push({
+                        field: "Price",
+                        message: "Tidak boleh kosong"
+                    })
+                }
+
+                return errorValidate
+            }
+
+            function validateForm() {
+                var errorValidate = []
+
+                if(!checkAdditional.checked && !checkReplacement.checked){
+                    errorValidate.push({
+                        field: "Replacement / Additional",
+                        message: "harus dipilih"
+                    })
+                }
+                if(!checkBudgeted.checked && !checkNotBudgeted.checked){
+                    errorValidate.push({
+                        field: "Budgeted / Not Budgeted",
+                        message: "harus dipilih"
+                    })
+                }
+                if(inputDepartment.val() == ""){
+                    errorValidate.push({
+                        field: "Department Requestor",
+                        message: "tidak boleh kosong"
+                    })
+                }
+                if(inputProject.val() == ""){
+                    errorValidate.push({
+                        field: "Project/Site Requestor",
+                        message: "tidak boleh kosong"
+                    })
+                }
+                if(inputDepartmentAllocation.val() == ""){
+                    errorValidate.push({
+                        field: "Department Allocation",
+                        message: "tidak boleh kosong"
+                    })
+                }
+                if(inputProjectAllocation.val() == ""){
+                    errorValidate.push({
+                        field: "Project/Site Allocation",
+                        message: "tidak boleh kosong"
+                    })
+                }
+                if(reasonpurchase.val() == ""){
+                    errorValidate.push({
+                        field: "Estimated ready",
+                        message: "tidak boleh kosong"
+                    })
+                }
+                if(estimatedReadyAtSite.val() == ""){
+                    errorValidate.push({
+                        field: "Reason for Purchase",
+                        message: "tidak boleh kosong"
+                    })
+                }
+                if($table.bootstrapTable('getData').length < 1) {
+                    errorValidate.push({
+                        field: "Item",
+                        message: "minimal harus ada 1"
+                    })
+                }
+
+                return errorValidate
+            }
+
             $buttonTambah.click(function (e) {
                 e.preventDefault()
-                $table.bootstrapTable('append', {
-                    type: inputType.val(),
-                    model: inputModel.val(),
-                    brand: inputBrand.val(),
-                    condition: inputCondition.val(),
-                    qty: inputQty.val(),
-                    uom: inputUom.val(),
-                    currency: inputCurrency.val(),
-                    price: inputPrice.val()
-                })
-                $table.bootstrapTable('scrollTo', 'bottom')
+                var errorValidate = validateItem()
+                
+                var msg = "";
+                if(errorValidate.length > 0) {
+                    for (var listErr of errorValidate) {
+                        msg = msg + "<p class='m-0'>" + listErr.field + " " + listErr.message +  "</p>"
+                    }
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        html: msg,
+                    }).then((result) => {
+                        // window.location.href = `/get-form-detail?no_doc=${response.data.data.no_doc}`;
+                    })
+                } else {
+                    $table.bootstrapTable('append', {
+                        type: inputType.val(),
+                        model: inputModel.val(),
+                        brand: inputBrand.val(),
+                        condition: inputCondition.val(),
+                        qty: inputQty.val(),
+                        uom: inputUom.val(),
+                        currency: inputCurrency.val(),
+                        price: inputPrice.val()
+                    })
+                    $table.bootstrapTable('scrollTo', 'bottom')
+                }
             })
 
             btnSubmitAssetRequest.click(function(e) {
@@ -597,7 +788,21 @@
                 // estimatedCNY: 0,
                 // refDoc: "",
                 // requestedBy: requestornik.text()
-                var dataReq = {
+                var errValidate = validateForm()
+                if(errValidate.length > 0) {
+                    var msg = ""
+                    for (var listErr of errValidate) {
+                        msg = msg + "<p class='m-0'>" + listErr.field + " " + listErr.message +  "</p>"
+                    }
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        html: msg,
+                    }).then((result) => {
+                        // window.location.href = `/get-form-detail?no_doc=${response.data.data.no_doc}`;
+                    })
+                } else {
+                    var dataReq = {
                     formName: dataAssetRequest.formName,
                     noDok: "BSS-FRM-SM-016",
                     tglDok: "01-01-2023",
@@ -636,7 +841,7 @@
                     }
                 }
                 console.log(dataReq)
-                axios.post('bss-form/sm/add-asset-request', formData, {
+                axios.post('/bss-form/sm/add-asset-request', formData, {
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
                         'Content-Type': 'multipart/form-data'
@@ -655,6 +860,8 @@
                 .catch(function (error) {
                     console.log(error);
                 });
+                }
+                
                 // submitAssetRequest(dataReq);
             })
         })

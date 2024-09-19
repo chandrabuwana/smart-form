@@ -107,13 +107,39 @@
                             <div class="h-100">
                                 <p class="mb-0 fw-bold text-sm">
                                     Pelapor : {{ session('username') }}
+                                    <br>
+                                    Link :
+                                <p class="{{ $link == '' ? 'd-none' : '' }}" id="linkKaryawanList"></p>
                                 </p>
                             </div>
                         </div>
                     </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <button id="buttonGenerateLinkButton" class="btn btn-primary ms-auto uploadBtn"
+                                onclick="GenerateLink()" {{ $link == '' ? '' : 'disabled' }}>
+                                Generate Link</button>
+                        </div>
+                    </div>
+
                     <input type="hidden" name="pc_no" value="1">
                     <div class="card-body">
                         <div class="row" id="tabel_tambah">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="input-group input-group-static my-4">
+                                        <label class="ms-0" for="nJenisInduksi">Jenis Induksi</label>
+                                        <select class="form-control" name="nJenisInduksi" id="nJenisInduksi" required>
+                                            <option value="" selected> -- Pilih --</option>
+                                            <option value="1">Karyawan Baru</option>
+                                            <option value="2">Karyawan</option>
+                                            <option value="3">Siswa Magang</option>
+                                            <option value="4">Subkontraktor</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="input-group input-group-static my-2">
@@ -155,60 +181,80 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-6">
-                                    <div class="input-group input-group-static my-4">
-                                        <label class="ms-0" for="nJenisInduksi">Jenis Induksi</label>
-                                        <select class="form-control" name="nJenisInduksi" id="nJenisInduksi" required>
-                                            <option value="" selected> -- Pilih --</option>
-                                            <option value="1">Karyawan Baru</option>
-                                            <option value="2">Karyawan</option>
-                                            <option value="3">Siswa Magang</option>
-                                            <option value="4">Subkontraktor</option>
-                                        </select>
-                                    </div>
+                                <button class="btn btn-primary ms-auto uploadBtn" id="buttonSubmitDataPICA"
+                                    onclick="AddDAtaKaryawan()">
+                                    <i class="fas fa-save"></i>
+                                    Add Karyawan Induksi</button>
+                            </div>
+
+                        </div>
+                        <hr class="horizontal dark my-sm-4">
+                        <div class="row" id="tabel_list_karyawan">
+                            <input type="hidden" name="FILTERCODE" id="FILTERCODE" value="{{ $code == '' ? '' : $code }}">
+                            <div class="row" style="padding-left: 0px !important;">
+                                <div class="col" style="padding-left: 0px !important;">
+                                    <fieldset class="color-fieldset form-horizontal">
+                                        <legend class="color-legend">
+                                            <span>List Of Karyawan</span>
+                                        </legend>
+                                        <div id="toolbar">
+                                            <button id="button" class="btn btn-secondary"
+                                                onclick="RefreshTableListOfKaryawan()">refresh</button>
+                                        </div>
+                                        <div class="form-horizontal">
+                                            <table class="" id="TableKaryawanList" data-toggle="table"
+                                                data-ajax="dataListKaryawan" data-data-type="json"
+                                                data-query-params-type="limit" data-unique-id="nik" refre
+                                                data-query-params="dataListKaryawanParamsGenerate" data-pagination="true">
+                                                <thead>
+                                                    <tr>
+                                                        <th data-field="nik" data-halign="center" data-sortable="true">
+                                                            NIK</th>
+                                                        <th data-field="Nama" data-halign="center" data-sortable="true">
+                                                            Nama</th>
+                                                        <th data-field="Department" data-halign="center"
+                                                            data-sortable="true">
+                                                            Department</th>
+                                                        <th data-halign="center" data-align="center"
+                                                            data-formatter="FormaterActionListKaryawan">
+                                                            Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
+                                        </div>
+                                    </fieldset>
                                 </div>
                             </div>
                         </div>
-
-
-                        {{-- untuk jenis induksi ICGS --}}
-
                         <div class="row">
-                            <div class="col-md-3">
-                                <div class="input-group input-group-static my-4">
-                                    <label class="ms-0" for="fm_jenisInduksi">Jenis Form Induksi</label>
-                                    <select class="form-control" name="fm_jenisInduksi" id="fm_jenisInduksi"
-                                        onchange="triggerDataInduksi()" required>
-                                        <option value="ICGS" selected>ICGS</option>
-                                        <option value="SHE">SHE</option>
-                                        <option value="OD">OD</option>
-                                        <option value="DEPT">Dept. Terkait</option>
-                                    </select>
+                            <hr class="horizontal dark my-sm-3">
+                            <div class="row">
+                                <div class="col">
+                                    <h3> -- ICGS -- </h3>
                                 </div>
                             </div>
-                        </div>
-                        <hr class="horizontal dark my-sm-1">
-                        <div class="row">
-                            <table class="tableOfPertanyaan" id="DataListInduksiICGS" data-toggle="table"
-                                data-data-type="json" data-unique-id="IdQuestionaire">
+                            <table class="tableOfPertanyaan" data-click-to-select="true" id="DataListInduksiICGS"
+                                data-toggle="table" data-data-type="json" data-unique-id="IdQuestionaire">
                                 <thead>
                                     <tr>
                                         <th data-field="IdQuestionaire" data-width="10px" data-checkbox="true"></th>
                                         <th data-field="Questionaire" data-halign="center" class="custom-width-1"
                                             data-sortable="true">
                                             Complaint</th>
-                                        {{-- <th data-field="QuestionaireGroup" data-width="1" data-halign="center"
-                                            data-align="center" data-formatter="formaterInputNamaInduktor">
-                                            Nama Mentor</th>
-                                        <th data-field="QuestionaireGroup" data-halign="center" data-width="150"
-                                            data-formatter="formaterInputTanggalInduksi" data-align="center">
-                                            Tanggal</th> --}}
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
                             </table>
-                            <table class="tableOfPertanyaan d-none" id="DataListInduksiSHE" width="50px"
-                                data-toggle="table" data-data-type="json" data-unique-id="IdQuestionaire">
+                            <hr class="horizontal dark my-sm-2">
+                            <div class="row">
+                                <div class="col">
+                                    <h3> -- SHE --</h3>
+                                </div>
+                            </div>
+                            <table class="tableOfPertanyaan " data-click-to-select="true" id="DataListInduksiSHE"
+                                width="50px" data-toggle="table" data-data-type="json"
+                                data-unique-id="IdQuestionaire">
                                 <thead>
                                     <tr>
                                         <th data-field="IdQuestionaire" data-checkbox="true"></th>
@@ -225,8 +271,15 @@
                                 </thead>
                                 <tbody></tbody>
                             </table>
-                            <table class="tableOfPertanyaan d-none" id="DataListInduksiOD" width="50px"
-                                data-toggle="table" data-data-type="json" data-unique-id="IdQuestionaire">
+                            <hr class="horizontal dark my-sm-2">
+                            <div class="row">
+                                <div class="col">
+                                    <h3> -- OD -- </h3>
+                                </div>
+                            </div>
+                            <table class="tableOfPertanyaan" data-click-to-select="true" id="DataListInduksiOD"
+                                width="50px" data-toggle="table" data-data-type="json"
+                                data-unique-id="IdQuestionaire">
                                 <thead>
                                     <tr>
                                         <th data-field="IdQuestionaire" data-checkbox="true"></th>
@@ -243,20 +296,21 @@
                                 </thead>
                                 <tbody></tbody>
                             </table>
-                            <table class="tableOfPertanyaan d-none" id="DataListInduksiDEPT" width="50px"
-                                data-toggle="table" data-data-type="json" data-unique-id="IdQuestionaire">
+                            <hr class="horizontal dark my-sm-2">
+                            <div class="row">
+                                <div class="col">
+                                    <h3> -- DEPT -- </h3>
+                                </div>
+                            </div>
+                            <table class="tableOfPertanyaan" data-click-to-select="true" id="DataListInduksiDEPT"
+                                width="50px" data-toggle="table" data-data-type="json"
+                                data-unique-id="IdQuestionaire">
                                 <thead>
                                     <tr>
                                         <th data-field="state" data-checkbox="true"></th>
                                         <th data-field="Questionaire" data-halign="center" class="custom-width-1"
                                             data-sortable="true">
                                             Complaint</th>
-                                        {{-- <th data-field="QuestionaireGroup" data-width="1" data-halign="center"
-                                            data-align="center" data-formatter="formaterInputNamaInduktor">
-                                            NIK Mentor</th>
-                                        <th data-field="QuestionaireGroup" data-halign="center" data-width="150"
-                                            data-formatter="formaterInputTanggalInduksi" data-align="center">
-                                            Tanggal</th> --}}
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -279,7 +333,7 @@
                                                         <th data-field="description" data-halign="center"
                                                             data-sortable="true">
                                                             Materi</th>
-                                                        {{-- <th data-field="nikMateriTambahan" data-halign="center">NIK</th> --}}
+                                                        <th data-field="nikMateriTambahan" data-halign="center">NIK</th>
                                                         <th data-halign="center" data-align="center"
                                                             data-formatter="MateriTambahanInputDataActionFormater">
                                                             Action</th>
@@ -299,7 +353,7 @@
                                                         </th>
 
                                                         {{-- nik --}}
-                                                        {{-- <th data-field="nikMateriTambahan" data-align="left">
+                                                        <th data-field="nikMateriTambahan" data-align="left">
                                                             <div class="input-group input-group-static my-2">
                                                                 <input id="nikInduksiTambahan" style="margin:5px"
                                                                     placeholder=" -- Masukkan NIK Induktor -- "
@@ -307,7 +361,7 @@
                                                                     oninput="this.value = Math.abs(this.value)"
                                                                     class="form-control uppercase" maxlength="50">
                                                             </div>
-                                                        </th> --}}
+                                                        </th>
 
                                                         <!-- action ---->
                                                         <th data-align="center"
@@ -357,6 +411,155 @@
     <link href="https://unpkg.com/gijgo@1.9.14/css/gijgo.min.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript">
         var MateriTambahanInputData_Obj_datas = [];
+        var linkKaryawan = <?php echo json_encode($link); ?>
+
+        function AddDAtaKaryawan() {
+            var nJenisInduksi = $('#nJenisInduksi').val();
+            var nNama = $('#nNama').val().trim();
+            var nNik = $('#nNik').val().trim();
+            var nJabatan = $('#nJabatan').val().trim();
+            var nDept = $('#nDept').val().trim();
+            var nInstansi = $('#nInstansi').val().trim();
+
+            // Validasi masing-masing field
+            if (nJenisInduksi === "") {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Jenis Induksi harus dipilih!'
+                });
+                return false;
+            }
+
+            if (nNama === "") {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Nama harus diisi!'
+                });
+                return false;
+            }
+
+            if (nNik === "") {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'NIK harus diisi!'
+                });
+                return false;
+            }
+
+            if (nJabatan === "") {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Jabatan harus diisi!'
+                });
+                return false;
+            }
+
+            if (nDept === "") {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Department harus diisi!'
+                });
+                return false;
+            }
+
+            if (nInstansi === "") {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Instansi harus diisi!'
+                });
+                return false;
+            }
+
+            let dataMaster = {
+                nama: $('#nNama').val(),
+                nik: $('#nNik').val(),
+                jabatan: $('#nJabatan').val(),
+                department: $('#nDept').val(),
+                instansi: $('#nInstansi').val(),
+                jenisInduksi: $('#nJenisInduksi').val(),
+                group: $('#fm_jenisInduksi').val(),
+                code: <?php echo json_encode($code); ?>
+            }
+
+            let dataKirim = {
+                master: dataMaster,
+            }
+
+            $.ajax({
+                type: 'post',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: "/bss-form/induksi-karyawan/listing-karyawan-add",
+                data: dataKirim,
+                dataType: 'json',
+                success: function(response) {
+                    if (response.code == 200) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: "Karyawan Sudah Ditambahkan",
+                        })
+                        $('#nJenisInduksi').val("");
+                        $('#nNama').val("");
+                        $('#nNik').val("");
+                        $('#nJabatan').val("");
+                        $('#nDept').val("");
+                        $('#nInstansi').val("");
+                        RefreshTableListOfKaryawan();
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error While Add Data',
+                            html: message,
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'thrownError',
+                        html: errorMessage,
+                        confirmButtonText: 'OK'
+                    });
+                }
+            })
+
+        }
+
+        function dataListKaryawan(params) {
+            var url = '/bss-form/induksi-karyawan/lst-karyawan-induksi'
+            $.get(url + '?' + $.param(params.data)).then(function(res) {
+                params.success(res)
+            })
+        }
+
+        function RefreshTableListOfKaryawan() {
+            $('#TableKaryawanList').bootstrapTable('refresh');
+        }
+
+        function dataListKaryawanParamsGenerate(params) {
+
+            params.search = {
+                'FILTERCODE': $('#FILTERCODE').val()
+            };
+
+            if (params.sort == undefined) {
+                return {
+                    limit: params.limit,
+                    offset: params.offset,
+                    search: params.search
+                }
+            }
+            return params;
+        }
 
         function MateriTambahanInputData_InitAddDataTable_obj(obj) {
             if ($('#materiInduksiTambahan').val() == '') {
@@ -365,21 +568,21 @@
                 )
                 return false;
             }
-            // if ($('#nikInduksiTambahan').val() == '') {
-            //     Swal.fire(
-            //         'Validation Failed', "NIK cannot be empty", 'error'
-            //     )
-            //     return false;
-            // }
+            if ($('#nikInduksiTambahan').val() == '') {
+                Swal.fire(
+                    'Validation Failed', "NIK cannot be empty", 'error'
+                )
+                return false;
+            }
 
             let data_obj = {};
             data_obj.description = $('#materiInduksiTambahan').val();
             data_obj.nikMateriTambahan = $('#nikInduksiTambahan').val();
-            // data_obj.concat = $('#materiInduksiTambahan').val() + " - " + $(
-            //     '#nikInduksiTambahan').val();
+            data_obj.concat = $('#materiInduksiTambahan').val() + " - " + $(
+                '#nikInduksiTambahan').val();
             data_obj.concat = $('#materiInduksiTambahan').val() + " - ";
             $('#materiInduksiTambahan').val('')
-            // $('#nikInduksiTambahan').val('')
+            $('#nikInduksiTambahan').val('')
             MateriTambahanInputData_Obj_datas.push(data_obj);
             $('#MateriTambahanInputData').bootstrapTable('refresh');
             $('#MateriTambahanInputData').bootstrapTable('load',
@@ -394,13 +597,69 @@
                 `
         }
 
+        function FormaterActionListKaryawan(value, row, index) {
+            return `
+                    <a class="like" href="javascript:void(0)" onclick="DeletedDataDetailKaryawanListing(this)" title="Like">
+                        <i class="fa fa-trash"></i>
+                    </a>
+                `
+        }
+
+        function DeletedDataDetailKaryawanListing(obj) {
+            var indexDt = $(obj).closest('tr').data('index');
+            let getUniqId = $('#TableKaryawanList').bootstrapTable('getData')[indexDt];
+
+            let dataKirim = {
+                code: getUniqId.code,
+                nik: getUniqId.nik
+            }
+
+            $.ajax({
+                type: 'post',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: "/bss-form/induksi-karyawan/listing-karyawan-deleted",
+                data: dataKirim,
+                dataType: 'json',
+                success: function(response) {
+                    if (response.code == 200) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: "Karyawan Sudah Dihapus",
+                        })
+                        RefreshTableListOfKaryawan();
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error While Deleted Data',
+                            html: message,
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'thrownError',
+                        html: errorMessage,
+                        confirmButtonText: 'OK'
+                    });
+                }
+            })
+        }
+
         function MateriTambahanInputData_InitDeletedDataTable_obj(obj) {
             var indexDt = $(obj).closest('tr').data('index');
             let getUniqId = $('#MateriTambahanInputData').bootstrapTable('getData')[indexDt];
-            $('#MateriTambahanInputData').bootstrapTable('removeByUniqueId', getUniqId.concat);
+
+
         }
 
         $(document).ready(function() {
+
+            $("#linkKaryawanList").html(window.location.origin + linkKaryawan)
 
             function formatSelectingAfterSelectNIK(repo) {
                 $("#nNama").val(repo.name);
@@ -510,7 +769,8 @@
         }
 
         function formaterInputNamaInduktor(value, row, index) {
-            let html = `<input type="text" id="input_${value}_${row.iden}" placeholder="NIK Induktor" oninput="this.value = this.value.replace(/[^0-9]/g, '')" />`
+            let html =
+                `<input type="text" id="input_${value}_${row.iden}" placeholder="NIK Induktor" oninput="this.value = this.value.replace(/[^0-9]/g, '')" />`
             return html;
         }
 
@@ -523,21 +783,63 @@
             return html;
         }
 
+        function GenerateLink() {
+            $.ajax({
+                type: 'post',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: "/bss-form/induksi-karyawan/generate-link",
+                dataType: 'json',
+                success: function(response) {
+                    if (response.code == 200) {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Your Link",
+                            text: window.location.origin + response.data,
+                        });
+                        $("#linkKaryawanList").html(window.location.origin + response.data);
+                        $("#linkKaryawanList").removeClass("d-none");
+                        $("#buttonGenerateLinkButton").prop("disabled", true);
+                        $('#FILTERCODE').val(response.codeR)
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Oops...",
+                            text: response.data,
+                        });
+                    }
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'thrownError',
+                        html: errorMessage,
+                        confirmButtonText: 'OK'
+                    });
+                }
+            })
+        }
+
+        function collectCheckedData(selections) {
+            return selections.map(item => ({
+                id: item.iden,
+                group: item.QuestionaireGroup
+            }));
+        }
+
         function collectData() {
             let dataJenisInduksi = $('#fm_jenisInduksi').val()
-            let checkedData = [];
+            let checkedDataICGS = [];
+            let checkedDataOD = [];
+            let checkedDataSHE = [];
+            let checkedDataDEPT = [];
 
-            var dataListSelection = $(`#DataListInduksi${dataJenisInduksi}`).bootstrapTable('getSelections');
+            checkedDataICGS = collectCheckedData($(`#DataListInduksiICGS`).bootstrapTable('getSelections'));
+            checkedDataOD = collectCheckedData($(`#DataListInduksiOD`).bootstrapTable('getSelections'));
+            checkedDataSHE = collectCheckedData($(`#DataListInduksiSHE`).bootstrapTable('getSelections'));
+            checkedDataDEPT = collectCheckedData($(`#DataListInduksiDEPT`).bootstrapTable('getSelections'));
 
-            dataListSelection.forEach(function(item, index) {
-                var data = {
-                    id: item.iden, // Menambahkan 1 karena index dimulai dari 0
-                    group: item.QuestionaireGroup, // Menambahkan 1 karena index dimulai dari 0
-                    // mentor: $(`#input_${dataJenisInduksi}_` + item.iden).val(),
-                    // tanggal: $(`#tanggal_${dataJenisInduksi}_` + item.iden).val(),
-                };
-                checkedData.push(data);
-            });
 
             let dataMaster = {
                 nama: $('#nNama').val(),
@@ -550,9 +852,12 @@
             }
 
             let dataKirim = {
-                master: dataMaster,
-                data: checkedData,
-                pertanyaanTambahan : MateriTambahanInputData_Obj_datas
+                code: $('#FILTERCODE').val(),
+                dataICGS: checkedDataICGS,
+                dataOD: checkedDataOD,
+                dataSHE: checkedDataSHE,
+                dataDEPT: checkedDataDEPT,
+                pertanyaanTambahan: MateriTambahanInputData_Obj_datas
             }
 
             $.ajax({

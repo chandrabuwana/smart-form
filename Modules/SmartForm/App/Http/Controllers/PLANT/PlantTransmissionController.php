@@ -11,13 +11,6 @@ use Illuminate\Support\Facades\DB;
 
 class PlantTransmissionController extends Controller
 {
-    public function __construct()
-    {
-        if(!Helper::isGrantPermission('PLANT')) {
-            abort(403);
-        }
-    }
-
     public function form(Request $request)
     {
         $referenceNo = $request->query('reference_no');
