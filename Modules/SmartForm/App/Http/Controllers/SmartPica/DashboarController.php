@@ -13,6 +13,7 @@ class DashboarController extends Controller
 
     function IndexSmartPicaDashboard()
     {
+        // dd(session('user_id'));
         $dataCharts = [
             'Step Not Yet' => [ 'count' => 0, 'percentage' => 0 ],
             'Not Any Progres' => [ 'count' => 0, 'percentage' => 0 ],

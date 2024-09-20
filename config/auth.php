@@ -48,7 +48,11 @@ return [
         'api' => [
             'driver' => 'jwt',
             'provider' => 'users'
-        ]
+        ],
+        'api_vendor' => [
+            'driver' => 'jwt',
+            'provider' => 'data_vendor'
+        ],
     ],
 
     /*
@@ -77,6 +81,11 @@ return [
         'data_admin' => [
             'driver' => 'eloquent',
             'model' => App\Models\Karyawan::class,
+        ],
+
+        'data_vendor' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\VendorMaster::class,
         ],
 
         // 'users' => [
