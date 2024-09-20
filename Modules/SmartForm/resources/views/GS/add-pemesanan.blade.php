@@ -370,6 +370,7 @@
             var dataWorking = $('#table-working').bootstrapTable('getData'); 
             var dataRequestMakan = $('#table-request-makan').bootstrapTable('getData'); 
             var dataAdjustmen = $('#table-adjustment-makan').bootstrapTable('getData');
+            var summaryByLokasi = {}
 
             dataMess.forEach(element => {
                 detail.push({
@@ -379,6 +380,19 @@
                     keterangan: '',
                     kategori: 'system',
                 })
+
+                if(selectedJenisPemesanan.value == "system") {
+                    if(element.noDoc in summaryByLokasi) {
+                        summaryByLokasi[element.noDoc].jumlah++
+                    } else {
+                        summaryByLokasi[element.noDoc] = {
+                            site: inputSite.val(),
+                            jenis: inputJenisPemesanan.val(),
+                            tanggalOrder: inputTanggalPemesanan.val(),
+                            jumlah: 1
+                        }
+                    }
+                }
             });
             dataWorking.forEach(element => {
                 detail.push({
@@ -388,6 +402,17 @@
                     keterangan: '',
                     kategori: 'working',
                 })
+
+                if('working' in summaryByLokasi) {
+                    summaryByLokasi['working'].jumlah++
+                } else {
+                    summaryByLokasi['working'] = {
+                        site: inputSite.val(),
+                        jenis: inputJenisPemesanan.val(),
+                        tanggalOrder: inputTanggalPemesanan.val(),
+                        jumlah: 1
+                    }
+                }
             });
             dataRequestMakan.forEach(element => {
                 detail.push({
@@ -397,18 +422,47 @@
                     keterangan: '',
                     kategori: 'request',
                 })
+
+                if(selectedJenisPemesanan.value == "request") {
+                    if(element.lokasi in summaryByLokasi) {
+                        summaryByLokasi[element.lokasi].jumlah++
+                    } else {
+                        summaryByLokasi[element.lokasi] = {
+                            site: inputSite.val(),
+                            jenis: inputJenisPemesanan.val(),
+                            tanggalOrder: inputTanggalPemesanan.val(),
+                            jumlah: 1
+                        }
+                    }
+                }
             });
             dataAdjustmen.forEach(element => {
                 detail.push({
                     nama: element.nama.toString(),
                     nik: element.nik,
-                    lokasi: element.lokasi,
+                    lokasi: "working",
                     keterangan: element.keterangan,
                     kategori: 'adjustment',
                 })
+                if('working' in summaryByLokasi) {
+                    summaryByLokasi['working'].jumlah++
+                } else {
+                    summaryByLokasi['working'] = {
+                        site: inputSite.val(),
+                        jenis: inputJenisPemesanan.val(),
+                        tanggalOrder: inputTanggalPemesanan.val(),
+                        jumlah: 1
+                    }
+                }
             });
 
-            console.log(detail)
+            // console.log(summaryDetail)
+            console.log("summary by lokasi", summaryByLokasi)
+            const resultContoh = Object.entries(summaryByLokasi).map(([lokasi, detail]) => ({
+                lokasi,
+                ...detail
+            }));
+            console.log("summary by lokasi mapping : ", resultContoh)
             var reqBody = {
                 jenisPemesanan: inputJenisPemesanan.val(),
                 tanggal: inputTanggalPemesanan.val(),
@@ -418,7 +472,8 @@
                 adjustment: dataAdjustmen.length,
                 selected: selectedJenisPemesanan.value,
                 site: inputSite.val(),
-                detail: detail
+                // detail: detail,
+                summaryOrder: resultContoh
             };
             // console.log({mess: dataMess, working: dataWorking, requestMakan: dataRequestMakan, adjustmen: dataAdjustmen, jenisPemesanan: inputJenisPemesanan.val()});
             axios.post("/bss-form/catering/order", reqBody, {
@@ -435,18 +490,18 @@
                     dataAlert = {
                         icon: 'success',
                         title: 'Berhasil!',
-                        text: 'Pemesanan Berhasil disubmit.'
+                        text: response.data.message
                     }
                 } else {
                     dataAlert = {
                         icon: 'error',
                         title: 'Gagal!',
-                        text: 'Gagal Submit pemesanan.'
+                        text: response.data.message
                     }
                 }
 
                 Swal.fire(dataAlert).then((result) => {
-                    window.location.reload();
+                    if(!response.data.isError) window.location.reload();
                 })
                 // console.log(response.data)
             })
@@ -608,7 +663,9 @@
                 totalPesanan.innerText = data_request_makan_mess.length + data_working.length
                 totalWorkingSummaryBySystem.innerText = data_working.length
                 totalMessSummaryBySystem.innerText = filteredWorkingNik.length
-                totalPesananBySystem.innerText = filteredWorkingNik.length + data_working.length
+                totalPesananBySystem.innerText = filteredWorkingNik.length + data_working.length + $tableAdjustmentMakan.bootstrapTable("getData").length
+                
+                document.getElementById("totalAdjustment").innerText = $tableAdjustmentMakan.bootstrapTable("getData").length
 
                 if(response.data.isError) {
                     data.icon='error';
@@ -681,6 +738,9 @@
                 });
                 $tableAdjustmentMakan.bootstrapTable('load', loadedData)
                 document.getElementById("totalAdjustment").innerText = new String(jumlahData)
+                totalPesananBySystem.innerText = parseInt(totalPesananBySystem.innerText) + jumlahData
+                totalPesanan.innerText = parseInt(totalPesanan.innerText) + jumlahData
+
             };
 
             reader.readAsArrayBuffer(file);

@@ -141,7 +141,14 @@
                                                 <div class="input-group input-group-static mb-4">
                                                     <label for="editKamar">kamar</label>
                                                     <input type="text" class="form-control" id="editKamar"
-                                                        name="editKamar" placeholder="Nama Mess">
+                                                        name="editKamar" placeholder="Nama Kamar">
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <div class="input-group input-group-static mb-4">
+                                                    <label for="editKapasitas">Kapasitas Kamar</label>
+                                                    <input type="text" class="form-control" id="editKapasitas"
+                                                        name="editKapasitas" placeholder="Kapasitas">
                                                 </div>
                                             </div>
                                         </div>
@@ -183,6 +190,7 @@
         var inputSite = document.getElementById("inputSite")
         var inputNoDoc = document.getElementById("inputNoDoc")
         var editKamar = document.getElementById("editKamar")
+        var editKapasitas = document.getElementById("editKapasitas")
         var $tableDashboardHuni = $("#table-dashboard-huni");
         
         var filter = {
@@ -192,7 +200,6 @@
 
         function validateAddKamar() {
             // var isValid = true
-            console.log()
             var errMsg = {
                 isValid: true,
                 errorMsg: [],
@@ -228,7 +235,6 @@
             // $('#addMess').modal("show");
             var validasiAddkamar = validateAddKamar()
             if(validasiAddkamar.isValid) {
-                console.log("Ok")
                 axios.post(helperMessURL + "/add-kamar", validasiAddkamar.data, {
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -270,14 +276,7 @@
                 })
             }
         })
-        
-        // btnAddKamar.addEventListener("click", function(e) {
-        //     // $('#addMess').modal("show");
-        //     validateAddKamar()
-        // })
-
         btnFilterSubmit.addEventListener("click", function(e) {
-            // console.log("halo")
             $tableDashboardHuni.bootstrapTable('refresh')
         })
 
@@ -383,15 +382,6 @@
         }
 
         function actionFormatter(value, row, index) {
-            // console.log(row)
-            // {
-            //     "site": "TAJ",
-            //     "kode_mess": "MSS/TAJ/000003",
-            //     "no_kamar": "1",
-            //     "nama_mess": "Mess Kelomang 12",
-            //     "kapasitas": 2,
-            //     "terisi": 2
-            // }
             var _site = ", '"+ row.site + "'"
             var _kode_mess = ", '"+ row.kode_mess + "'"
             var _no_kamar = ", '"+ row.no_kamar + "'"
@@ -409,7 +399,7 @@
         }
 
         function actionDelete(e, st, kd_mess, nm_kmr, nm_mess, kpsts) {
-            console.log(st, kd_mess, nm_kmr, nm_mess, kpsts)
+            // console.log(st, kd_mess, nm_kmr, nm_mess, kpsts)
             var _reqBody = {
                 site: st,
                 no_doc: kd_mess,
@@ -459,7 +449,8 @@
                 site: inputSite.value,
                 kode_mess: inputNoDoc.value,
                 kamar: kamar,
-                edited_kamar: editKamar.value
+                edited_kamar: editKamar.value,
+                kapasitas: editKapasitas.value
             }, {
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -497,10 +488,11 @@
         }
 
         function modalDetail(e, st, kd_mess, nm_kmr, nm_mess, kpsts) {
-            console.log({e, st, kd_mess, nm_kmr, nm_mess, kpsts})
+            // console.log({e, st, kd_mess, nm_kmr, nm_mess, kpsts})
             inputSite.value = st
             inputNoDoc.value = kd_mess
             editKamar.value = nm_kmr
+            editKapasitas.value = kpsts
             document.getElementById("btnSubmitKamar").setAttribute("data-kamar", nm_kmr)
 
             $('#addMess').modal("show")

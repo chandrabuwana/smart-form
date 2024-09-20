@@ -5,6 +5,21 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/extensions/filter-control/bootstrap-table-filter-control.css">
     <style>
+        .select2.select2-container .select2-selection {
+            border-bottom: 1px solid #ccc;
+            height: 40px;
+            margin-bottom: 15px;
+            outline: none !important;
+            transition: all .15s ease-in-out;
+        }
+        .select2.select2-container .select2-selection .select2-selection__rendered {
+            line-height: 32px;
+            padding: 8px 0px;
+        }
+        .select2-results {
+            max-height: 200px; /* Batasi tinggi maksimum dropdown */
+            overflow-y: auto;  /* Aktifkan scroll vertical */
+        }
         .center-container {
             display: none;
             align-items: center;
@@ -69,17 +84,7 @@
                         <div class="col-6 col-md-3">
                             <div class="input-group input-group-static mb-4">
                                 <label for="filterSite">Site</label>
-                                <select class="form-control form-select" name="filterSite" id="filterSite">
-                                    <option value="">-- Filter Site --</option>
-                                    <option value="AGM">AGM</option>
-                                    <option value="MBL">MBL</option>
-                                    <option value="MME">MME</option>
-                                    <option value="MAS">MAS</option>
-                                    <option value="PMSS">PMSS</option>
-                                    <option value="TAJ">TAJ</option>
-                                    <option value="BSSR">BSSR</option>
-                                    <option value="TDM">TDM</option>
-                                    <option value="MSJ">MSJ</option>
+                                <select class="form-control form-select" name="filterSite" id="filterSite" style="width: 100%;">
                                 </select>
                             </div>
                         </div>
@@ -127,7 +132,7 @@
                                     <th data-field="site" data-align="center" data-halign="center" >Site</th>
                                     <th data-field="selected" data-align="center" data-halign="center" >Selected</th>
                                     <th data-field="jenis_pemesanan" data-align="left" data-halign="center">Jenis Pemesanan</th>
-                                    
+                                    <th data-align="left" data-formatter="actionFormater" data-halign="center">Action</th>
                                 </tr>
                             </thead>
                         </table>
@@ -158,6 +163,11 @@
         var filterSite = document.getElementById("filterSite")
         var filterSelected = document.getElementById("filterSelected")
         var filterJenis = document.getElementById("filterJenis")
+        $('#filterSite').select2({
+            theme: 'bootstrap-5', // Menggunakan tema Bootstrap 5
+            dropdownParent: $('#filterSite').closest('.input-group'),
+            placeholder: '--- Cari Site ---'
+        });
         
         btnClearFilter.addEventListener("click", function(e) {
             document.getElementById("filterTanggal").value = ""
@@ -185,5 +195,52 @@
                 params.success(res.data)
             })
         }
+
+        function actionFormatter(value, row, index) {
+            
+        }
+
+        function fetchSite(cb=function(site) {}) {
+            axios.post("/helper/department", {
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            })
+            .then(function(data) {
+                var opstionSite = []
+                // opstionSite.push(new Option("--- Cari Site ---", "", true, true))
+                opstionSite.push({
+                    id: "",
+                    text: "--- Cari Site ---"
+                })
+
+                data.data.data.forEach(element => {
+                    opstionSite.push({
+                        id: element.id,
+                        text: element.text
+                    })
+
+                    // opstionSite.push(new Option(element.text, element.id))
+                });
+                
+                cb(opstionSite)
+            })
+            .catch(function(err) {
+                console.log(err)
+            })
+            .finally( function(){
+
+            });
+        }
+
+        fetchSite(function(data) {
+            // console.log(data)
+            data.forEach(function(opt) {
+                $('#filterSite').append(new Option(opt.text, opt.id))
+            })
+            // data.forEach(function(opt) {
+            //     $('#editSite').append(opt)
+            // })
+        })
     </script>
 @endsection

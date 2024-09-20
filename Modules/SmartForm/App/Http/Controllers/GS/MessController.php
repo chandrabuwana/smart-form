@@ -284,11 +284,13 @@ class MessController extends Controller {
             $site = $request->input('site');
             $mess = $request->input('kode_mess');
             $kamar = $request->input('kamar');
+            $kapasitas = $request->input('kapasitas');
 
             $request_body = [
                 'NoKamar' => $request->input('edited_kamar'),
+                'kapasitas' => $request->input('kapasitas'),
                 'updated_at' => now(),
-                'updated_by' => $nik_session
+                'updated_by' => $nik_session,
             ];
 
             try {

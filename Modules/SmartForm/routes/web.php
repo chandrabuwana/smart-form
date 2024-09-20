@@ -8,6 +8,7 @@ use Modules\SmartForm\App\Http\Controllers\Admin\AdminController;
 use Modules\SmartForm\App\Http\Controllers\Approval\ApprovalFormController;
 use Modules\SmartForm\App\Http\Controllers\GS\MessController;
 use Modules\SmartForm\App\Http\Controllers\GS\SmartCateringController;
+use Modules\SmartForm\App\Http\Controllers\GS\VendorController;
 use Modules\SmartForm\App\Http\Controllers\IC\ICFM05InduksiKaryawanController;
 use Modules\SmartForm\App\Http\Controllers\IC\ICFM05TransactionController;
 use Modules\SmartForm\App\Http\Controllers\Master\DashboardController;
@@ -130,6 +131,21 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
                 Route::get('/helper-mess', [MessController::class, 'HelperMess'])->name('helper-mess');
                 Route::get('/helper-kamar', [MessController::class, 'HelperKamar'])->name('helper-kamar');
 
+            });
+
+            Route::prefix('vendor')->group( function() {
+                Route::get('/helper-vendor', [VendorController::class, 'HelperVendor'])->name('helper-vendor');
+                Route::get('/helper-lokasi', [VendorController::class, 'HelperLokasi'])->name('helper-lokasi');
+                Route::get('/dashboard-vendor', [VendorController::class, 'DashboardVendor'])->name('dashboard-vendor');
+                Route::get('/list-vendor', [VendorController::class, 'ListVendor'])->name('list-vendor');
+                Route::post('/add-vendor', [VendorController::class, 'AddVendor'])->name('add-vendor');
+                Route::post('/add-mapping-vendor', [VendorController::class, 'AddMappingVendor'])->name('add-mapping-vendor');
+                Route::put('/edit-vendor', [VendorController::class, 'EditVendor'])->name('edit-vendor');
+                Route::put('/edit-mapping-vendor', [VendorController::class, 'EditMappingVendor'])->name('edit-mapping-vendor');
+                Route::delete('/delete-vendor', [VendorController::class, 'DeleteVendor'])->name('delete-vendor');
+                Route::delete('/delete-mapping-vendor', [VendorController::class, 'DeleteMappingVendor'])->name('delete-mapping-vendor');
+                Route::get('/dashboard-vendor-mapping', [VendorController::class, 'DashboardVendorMappingCatering'])->name('dashboard-vendor-mapping-catering');
+                Route::get('/list-vendor-mapping', [VendorController::class, 'ListVendorMappingCatering'])->name('list-vendor-mapping');
             });
         });
     });

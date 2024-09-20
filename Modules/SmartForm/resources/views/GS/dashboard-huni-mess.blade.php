@@ -218,7 +218,6 @@
 @section('custom-js')
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="https://twitter.github.io/typeahead.js/releases/latest/typeahead.bundle.js"></script>
     <script>
         var baseUrl = '/bss-form/catering/mess/list-huni'
         var helperMessURL = '/bss-form/catering/mess'
@@ -308,7 +307,7 @@
             filter.kamar = e.params.data.id
         });
         $('#editSite').on("select2:select", function (e) { 
-            console.log("editSite", e.params.data.id); 
+            // console.log("editSite", e.params.data.id); 
             fetchMessBySite(e.params.data.id, function(data) {
                 $('#editMess').empty();
 
@@ -320,7 +319,7 @@
             })
         });
         $('#editMess').on("select2:select", function (e) { 
-            console.log("editMess", $('#editSite').val())
+            // console.log("editMess", $('#editSite').val())
             fetchKamarBySiteAndMess($('#editSite').select2("data")[0].id, e.params.data.id, function(data){
                 $('#editKamar').empty()
 
@@ -332,7 +331,7 @@
             }) 
         });
         $('#editKamar').on("select2:select", function (e) { 
-            console.log("filterKamar", e.params.data.id); 
+            // console.log("filterKamar", e.params.data.id); 
         });
 
         function fetchSite(cb=function(site) {}) {
@@ -378,7 +377,7 @@
                 }
             })
             .then(function(data) {
-                console.log(data)
+                // console.log(data)
                 var listMess = []
                 listMess.push(new Option("--- Cari Mess ---", "", true, true))
                 listMess.push({
@@ -387,7 +386,7 @@
                 })
 
                 data.data.data.forEach(element => {
-                    console.log(element)
+                    // console.log(element)
                     // listMess.push(new Option(element.text, element.id))
                     listMess.push({
                         id: element.id,
@@ -439,7 +438,7 @@
         }
 
         fetchSite(function(data) {
-            console.log(data)
+            // console.log(data)
             data.forEach(function(opt) {
                 $('#filterSite').append(new Option(opt.text, opt.id))
                 $('#editSite').append(new Option(opt.text, opt.id))
@@ -450,7 +449,7 @@
         })
 
         function getDetailHuniMess(params) {
-            console.log("halo")
+            // console.log("halo")
             // params.data.kode_mess = kode_mess_query
             params.data.site = filter.site
             params.data.mess = filter.mess
@@ -470,7 +469,7 @@
         }
 
         function actionFormatter(value, row, index) {
-            console.log(row)
+            // console.log(row)
             // {
             //     "site": "TAJ",
             //     "nik": "1020341",
@@ -527,7 +526,7 @@
         }
 
         function actionDelete(e, st, kd_mess, no_kmr, nik) {
-            console.log(st, kd_mess, no_kmr, nik)
+            // console.log(st, kd_mess, no_kmr, nik)
             var _reqBody = {
                 site: st,
                 no_doc: kd_mess,
@@ -536,14 +535,14 @@
                 _action: 'delete'
             }
             Swal.fire({
-                title: "Do you want to save the changes?",
+                title: "Apakah yakin ingin menghapus?",
                 showCancelButton: true,
                 confirmButtonText: "Hapus",
                 cancelButtonText: "Batal",
                 cancelButtonColor: "#3085d6",
                 confirmButtonColor: "#d33"
             }).then((result) => {
-                console.log(result)
+                // console.log(result)
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
                     Swal.fire("Saved!", "", "success");
@@ -746,7 +745,7 @@
             // suggestNik.style.display = "none";
         })
         filterNIK.addEventListener("keyup", function(e) {
-            console.log(e)
+            // console.log(e)
             if(e.key == "Escape"){ // key press ESC detect
                 filterNIK.removeEventListener("input", debounceHandler, true)
                 suggestNik.style.display = "none";
@@ -755,7 +754,7 @@
         
         function suggestionClick(e) {
             var nik = e.getAttribute("data-nik");
-            console.log(nik)
+            // console.log(nik)
         }
     </script>
 @endsection
