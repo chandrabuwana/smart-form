@@ -315,7 +315,7 @@
                                     {{-- update status ke 1 setelah validated oleh kedua PIC --}}
                                     @if($data['acknowledge_1'] == 0 || $data['acknowledge_1'] == null)
                                         @if(session('user_id') == $data['acknowledge_by_1_nik'])
-                                            <button onclick="actionValidation(this)" class="btn btn-primary ms-auto uploadBtn" id="btnSubmitAssetRequest" data-action="acknowledge"
+                                            <button onclick="actionValidation(this)" class="btn btn-primary ms-auto uploadBtn" id="btnSubmitAssetRequest" data-action="acknowledge1"
                                                 data-alert-title="Acknowledge" data-alert-message="Konfirmasi acknowledge ?">
                                                 <i class="fas fa-save"></i>
                                                 Acknowledge

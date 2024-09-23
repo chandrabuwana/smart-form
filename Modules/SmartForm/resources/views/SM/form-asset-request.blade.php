@@ -94,15 +94,28 @@
                                             <label for="inputDepartment">Department</label>
                                             <select class="form-control form-select-sm" name="inputDepartment" id="inputDepartment" required>
                                                 <option selected value="">-- Pilih Department --</option>
-                                                <option value="Engineering">Engineering</option>
+                                                <option value="ENG">ENGINEERING</option>
                                                 <option value="SHE">SHE</option>
-                                                <option value="Produksi">Produksi</option>
+                                                <option value="Produksi">PRODUKSI</option>
                                                 <option value="SM">SM</option>
-                                                <option value="GS">GS</option>
                                                 <option value="OD">OD</option>
                                                 <option value="IT">IT</option>
-                                                <option value="IC">IC</option>
-                                                <option value="PLANT">PLANT</option>
+                                                <option value="ICGS">ICGS</option>
+                                                <option value="RM">PLANT</option>
+                                                <option value="BDV">BUSDEV</option>
+                                                <option value="DIR">DIRECTORS</option>
+                                                <option value="FAT">FAT</option>
+                                                <option value="DTC">DATA CENTER</option>
+                                                <option value="MM">LOGISTIK</option>
+                                                <option value="OPR">OPERATION</option>
+                                                <option value="SI">SINERGY INSTITUTE</option>
+                                                <option value="LEG">LEGAL</option>
+                                                <option value="OD">ORGANIZATION DEVELOPMENT</option>
+                                                {{-- <option value="Z001">ASSESSMENT CENTER</option>
+                                                <option value="Z002">LABOR SUPPLY</option>
+                                                <option value="Z003">MANAGEMENT CONSULTANT</option>
+                                                <option value="Z004">SERTIFIKASI</option>
+                                                <option value="TC">TRAINING CENTER</option> --}}
                                             </select>
                                         </div>
                                         <div class="input-group input-group-static mb-4">
@@ -142,15 +155,28 @@
                                             <label for="inputDepartmentAllocation">Department</label>
                                             <select class="form-control form-select-sm" name="inputDepartmentAllocation" id="inputDepartmentAllocation" required>
                                                 <option selected value="">-- Pilih Department --</option>
-                                                <option value="Engineering">Engineering</option>
+                                                <option value="ENG">ENGINEERING</option>
                                                 <option value="SHE">SHE</option>
-                                                <option value="Produksi">Produksi</option>
+                                                <option value="Produksi">PRODUKSI</option>
                                                 <option value="SM">SM</option>
-                                                <option value="GS">GS</option>
                                                 <option value="OD">OD</option>
                                                 <option value="IT">IT</option>
-                                                <option value="IC">IC</option>
-                                                <option value="PLANT">PLANT</option>
+                                                <option value="ICGS">ICGS</option>
+                                                <option value="RM">PLANT</option>
+                                                <option value="BDV">BUSDEV</option>
+                                                <option value="DIR">DIRECTORS</option>
+                                                <option value="FAT">FAT</option>
+                                                <option value="DTC">DATA CENTER</option>
+                                                <option value="MM">LOGISTIK</option>
+                                                <option value="OPR">OPERATION</option>
+                                                <option value="SI">SINERGY INSTITUTE</option>
+                                                <option value="LEG">LEGAL</option>
+                                                <option value="OD">ORGANIZATION DEVELOPMENT</option>
+                                                {{-- <option value="Z001">ASSESSMENT CENTER</option>
+                                                <option value="Z002">LABOR SUPPLY</option>
+                                                <option value="Z003">MANAGEMENT CONSULTANT</option>
+                                                <option value="Z004">SERTIFIKASI</option>
+                                                <option value="TC">TRAINING CENTER</option> --}}
                                             </select>
                                         </div>
                                         <div class="input-group input-group-static mb-4">

@@ -6,7 +6,9 @@ use App\Http\Middleware\PermissionMenu;
 use Illuminate\Support\Facades\Route;
 use Modules\SmartForm\App\Http\Controllers\Admin\AdminController;
 use Modules\SmartForm\App\Http\Controllers\Approval\ApprovalFormController;
+use Modules\SmartForm\App\Http\Controllers\GS\MessController;
 use Modules\SmartForm\App\Http\Controllers\GS\SmartCateringController;
+use Modules\SmartForm\App\Http\Controllers\GS\VendorController;
 use Modules\SmartForm\App\Http\Controllers\IC\ICFM05InduksiKaryawanController;
 use Modules\SmartForm\App\Http\Controllers\IC\ICFM05TransactionController;
 use Modules\SmartForm\App\Http\Controllers\Master\DashboardController;
@@ -107,10 +109,45 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
         Route::prefix('catering')->group( function() {
             Route::get('/pemesanan', [SmartCateringController::class, 'AddPemesanan'])->name('add-pemesanan-catering');
             Route::get('/dashboard-pemesanan', [SmartCateringController::class, 'DashboardPemesanan'])->name('dashboard-pemesanan-catering');
+            Route::get('/detail-pemesanan', [SmartCateringController::class, 'DetailPemesanan'])->name('detail-pemesanan-catering');
             Route::get('/list-pemesanan', [SmartCateringController::class, 'GetListPemesanan'])->name('list-pemesanan');
             Route::post('/generate-detail', [SmartCateringController::class, 'GenerateDetailPemesanan'])->name('generate-detail-pemesanan-catering');
             Route::post('/order', [SmartCateringController::class, 'SubmitPesanMakan'])->name('submit-makan');
-    
+            
+            Route::prefix('mess')->group( function() {
+                Route::post('/add-mess', [MessController::class, 'AddMess'])->name('add-mess');
+                Route::post('/add-kamar', [MessController::class, 'AddKamar'])->name('add-kamar');
+                Route::post('/add-penghuni', [MessController::class, 'AddPenghuniMess'])->name('add-penghuni');
+                Route::put('/edit-penghuni', [MessController::class, 'EditPenghuniMess'])->name('edit-penghuni');
+                Route::put('/edit-kamar', [MessController::class, 'EditKamar'])->name('edit-kamar');
+                Route::post('/delete-kamar', [MessController::class, 'Deletekamar'])->name('delete-kamar');
+                Route::post('/delete-penghuni-mess', [MessController::class, 'DeletePenghuniMess'])->name('delete-penghuni-mess');
+                Route::get('/dashboard', [MessController::class, 'DashboardMess'])->name('dashboard-mess');
+                Route::get('/dashboard-huni', [MessController::class, 'DashboardHuni'])->name('dashboard-penghuni');
+                Route::get('/dashboard-kamar', [MessController::class, 'DashboardKamar'])->name('dashboard-penghuni');
+                // Route::get('/detail-huni', [MessController::class, 'DashboardHuni'])->name('detail-huni-mess');
+                Route::get('/list-mess', [MessController::class, 'GetListMess'])->name('list-mess');
+                Route::get('/list-huni', [MessController::class, 'GetListHuni'])->name('list-huni');
+                Route::get('/list-kamar', [MessController::class, 'GetListKamar'])->name('list-kamar');
+                Route::get('/helper-mess', [MessController::class, 'HelperMess'])->name('helper-mess');
+                Route::get('/helper-kamar', [MessController::class, 'HelperKamar'])->name('helper-kamar');
+
+            });
+
+            Route::prefix('vendor')->group( function() {
+                Route::get('/helper-vendor', [VendorController::class, 'HelperVendor'])->name('helper-vendor');
+                Route::get('/helper-lokasi', [VendorController::class, 'HelperLokasi'])->name('helper-lokasi');
+                Route::get('/dashboard-vendor', [VendorController::class, 'DashboardVendor'])->name('dashboard-vendor');
+                Route::get('/list-vendor', [VendorController::class, 'ListVendor'])->name('list-vendor');
+                Route::post('/add-vendor', [VendorController::class, 'AddVendor'])->name('add-vendor');
+                Route::post('/add-mapping-vendor', [VendorController::class, 'AddMappingVendor'])->name('add-mapping-vendor');
+                Route::put('/edit-vendor', [VendorController::class, 'EditVendor'])->name('edit-vendor');
+                Route::put('/edit-mapping-vendor', [VendorController::class, 'EditMappingVendor'])->name('edit-mapping-vendor');
+                Route::delete('/delete-vendor', [VendorController::class, 'DeleteVendor'])->name('delete-vendor');
+                Route::delete('/delete-mapping-vendor', [VendorController::class, 'DeleteMappingVendor'])->name('delete-mapping-vendor');
+                Route::get('/dashboard-vendor-mapping', [VendorController::class, 'DashboardVendorMappingCatering'])->name('dashboard-vendor-mapping-catering');
+                Route::get('/list-vendor-mapping', [VendorController::class, 'ListVendorMappingCatering'])->name('list-vendor-mapping');
+            });
         });
     });
 
