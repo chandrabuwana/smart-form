@@ -65,9 +65,14 @@
                     </div>
                 </div>
                 <div class="card-body px-0 pb-2">
-                    <h6>Tanggal : {{ $data['master']->tanggal }}</h6>
-                    <h6>Adjustment : {{ $data['master']->adjustment }}</h6>
-                    <h6>Selected : {{ $data['master']->selected }}</h6>
+                    <div class="mx-4">
+                        <h6>Tanggal : {{ $data['master']->tanggal ?? ""}}</h6>
+                        <h6>Adjustment : {{ $data['master']->adjustment ?? 0}}</h6>
+                        <h6>Selected : {{ $data['master']->selected ?? ""}}</h6>
+                        <h6>Jumlah Adjustment : {{ $data['master']->adjustment ?? 0}}</h6>
+                        
+                        <h4>Detail per Vendor</h4>
+                    </div>
                     <div class="table-responsive p-0">
                         <table id="list-form" data-toggle="table"
                             data-side-pagination="client" data-filter-control="true"
@@ -91,6 +96,37 @@
                                         <td>{{ $detail->KodeSite }}</td>
                                         <td>{{ $detail->Nama }}</td>
                                         <td>{{ $detail->Jumlah }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="mx-4">
+                        <h4>Detail per lokasi</h4>
+                    </div>
+                        <table id="list-form" data-toggle="table"
+                            data-side-pagination="client" data-filter-control="true"
+                            data-page-list="[10, 25, 50, 100, all]" data-sortable="true"
+                            data-content-type="application/json" data-data-type="json" data-pagination="true"
+                            data-unique-id="kode_pemesanan" data-show-export="true" data-show-toggle="true">
+                            <thead>
+                                <tr>
+                                    <th data-field="kode_pemesanan" data-align="left" data-halign="text-center"
+                                        data-sortable="true">Kode Pemesanan
+                                    </th>
+                                    <th data-field="site" data-align="left" data-halign="center">Lokasi</th>
+                                    <th data-field="nama" data-align="left" data-halign="center">Vendor</th>
+                                    <th data-field="jumlah" data-align="center" data-halign="center">Jumlah</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($data['detail_lokasi'] as $detail_lokasi)
+                                    <tr>
+                                        <td>{{ $detail_lokasi->kode_pemesanan }}</td>
+                                        <td>{{ $detail_lokasi->NamaMess }}</td>
+                                        <td>{{ $detail_lokasi->nama_vendor }}</td>
+                                        <td>{{ $detail_lokasi->jumlah }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>

@@ -405,9 +405,18 @@ class SmartCateringController extends Controller {
                 ->select('a.kode_pemesanan', 'a.KodeSite', 'a.TanggalOrder', 'a.Jumlah', 'b.Nama')    
                 ->leftJoin(self::TABLE_VENDOR_MASTER . ' as b', 'a.VendorID', '=', 'b.id')
                 ->where('kode_pemesanan', $kode_pemesanan);
+            $detail_per_lokasi = db::connection(SELF::DB_CONN_NAME)->table(SELF::TABLE_SUBMIT_ORDER_DETAIL . ' as a')
+                ->select('a.id_order as kode_pemesanan', 'a.jenis_pemesanan', 'a.jumlah','c.Nama as nama_vendor',  'd.NamaMess')
+                ->leftJoin(self::TABLE_VENDOR_MAPPING . ' as b', 'a.id_mapping_vendor', '=', 'b.id')
+                ->leftJoin(self::TABLE_VENDOR_MASTER . ' as c', 'b.VendorID', '=', 'c.id')
+                ->leftJoin(self::TABLE_MASTER_MESS . ' as d', 'a.lokasi', '=', 'd.NoDoc')
+                ->where('a.id_order', $kode_pemesanan);
+                
             Log::debug($master_pemesanan->toRawSql());
             Log::debug($data_pemesanan->toRawSql());
+            Log::debug($detail_per_lokasi->toRawSql());
             $data['detail'] = $data_pemesanan->get()->toArray();
+            $data['detail_lokasi'] = $detail_per_lokasi->get()->toArray();
             $data['master'] = $master_pemesanan->first();
         } catch (Exception $ex) {
             Log::error($ex->getMessage());
