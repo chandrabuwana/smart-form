@@ -109,6 +109,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
         Route::prefix('catering')->group( function() {
             Route::get('/pemesanan', [SmartCateringController::class, 'AddPemesanan'])->name('add-pemesanan-catering');
             Route::get('/dashboard-pemesanan', [SmartCateringController::class, 'DashboardPemesanan'])->name('dashboard-pemesanan-catering');
+            Route::get('/detail-pemesanan', [SmartCateringController::class, 'DetailPemesanan'])->name('detail-pemesanan-catering');
             Route::get('/list-pemesanan', [SmartCateringController::class, 'GetListPemesanan'])->name('list-pemesanan');
             Route::post('/generate-detail', [SmartCateringController::class, 'GenerateDetailPemesanan'])->name('generate-detail-pemesanan-catering');
             Route::post('/order', [SmartCateringController::class, 'SubmitPesanMakan'])->name('submit-makan');

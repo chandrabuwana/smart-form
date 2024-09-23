@@ -26,6 +26,8 @@ class SmartCateringController extends Controller {
     private const TABLE_SUBMIT_ORDER_DETAIL = "PICA_BETA.dbo.SCT_GS_CT_ORDER_DETAIL";
     private const TABLE_SUBMIT_ORDER_VENDOR = "PICA_BETA.dbo.SCT_GS_CT_ORDER_VNDR";
     private const TABLE_VENDOR_MAPPING = "PICA_BETA.dbo.SCT_GS_VENDOR_MAPPING";
+    private const TABLE_VENDOR_ORDER = "PICA_BETA.dbo.SCT_GS_CT_ORDER_VNDR";
+    private const TABLE_VENDOR_MASTER = "PICA_BETA.dbo.SCT_GS_VENDOR_MST";
     private const TABLE_ABSENSI_HRD = "HRD.dbo.TAbsensi";
     private const TABLE_KARYAWAN_HRD = "HRD.dbo.TKaryawan";
     private const TABLE_PENEGASAN_CUTI = "HRD.dbo.TPenegasanCuti";
@@ -384,6 +386,36 @@ class SmartCateringController extends Controller {
 
     function DashboardPemesanan(Request $request) {
         return view("SmartForm::GS/dashboard-pemesanan");
+    }
+
+    function DetailPemesanan(Request $request) {
+        $data = [
+            'isSucces' => false,
+            'message' => 'halo',
+            'detail' => [],
+            'master' => null
+        ];
+
+        $kode_pemesanan = $request->input('id');
+
+        try {
+            $master_pemesanan = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_SUBMIT_ORDER . ' as a')
+                ->where('a.kode_pemesanan', $kode_pemesanan);
+            $data_pemesanan = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_VENDOR_ORDER . ' as a')
+                ->select('a.kode_pemesanan', 'a.KodeSite', 'a.TanggalOrder', 'a.Jumlah', 'b.Nama')    
+                ->leftJoin(self::TABLE_VENDOR_MASTER . ' as b', 'a.VendorID', '=', 'b.id')
+                ->where('kode_pemesanan', $kode_pemesanan);
+            Log::debug($master_pemesanan->toRawSql());
+            Log::debug($data_pemesanan->toRawSql());
+            $data['detail'] = $data_pemesanan->get()->toArray();
+            $data['master'] = $master_pemesanan->first();
+        } catch (Exception $ex) {
+            Log::error($ex->getMessage());
+            Log::error($ex->getTraceAsString());
+        }
+
+
+        return view('SmartForm::GS/detail-pemesanan', ['data' => $data]);
     }
 
     function GetListPemesanan(Request $request) {

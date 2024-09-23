@@ -282,11 +282,11 @@
             var _keterangan = ", '"+ row.keterangan + "'"
             var _alamat = ", '"+ row.alamat + "'"
 
-            var _clickEvent = 'onclick="modalDetail(this' + _site + _kode_mess + _nama_mess + _status + _jumlah_kamar + _daya_tampung + _keterangan +_alamat +')"';
+            var _clickEvent = 'onclick="modalDetail(this' + _site + _kode_mess + _nama_mess + _status + _jumlah_kamar + _daya_tampung + _keterangan +_alamat +')"'
             // var _clickEvent = '"';
-            var btnDetail = '<a href="#" data-caption="" '+ _clickEvent +' data-action="detail" data-show="false" data-url=""><i class="fa fa-info-circle cursor-pointer"></i></a>';
-            var btnEdit = '<a href="#" '+ _clickEvent +' data-caption="Simpan" data-action="edit" data-url="" data-show="true"><i class="fa fa-pen cursor-pointer"></i></a>';
-            var btnHapus = '<a href="#" '+ _clickEvent +' data-caption="" data-url="" data-show="true" data-action="delete"><i class="fa-solid fa-trash-can cursor-pointer"></i></a>';
+            var btnDetail = '<a href="#" data-caption="" '+ _clickEvent +' data-action="detail" data-show="false" data-url=""><i class="fa fa-info-circle cursor-pointer"></i></a>'
+            var btnEdit = '<a href="#" '+ _clickEvent +' data-caption="Simpan" data-action="edit" data-url="" data-show="true"><i class="fa fa-pen cursor-pointer"></i></a>'
+            var btnHapus = '<a href="#" '+ _clickEvent +' data-caption="" data-url="" data-show="true" data-action="delete"><i class="fa-solid fa-trash-can cursor-pointer"></i></a>'
             
             return btnDetail + btnEdit + btnHapus
         }
