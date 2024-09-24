@@ -51,24 +51,28 @@ class User extends Authenticatable implements JWTSubject
         $user = Auth::user();
 
         $data_ID = DB::table("MS_HS_LGN_SMART_FORM")->where("nik", $user->username)->first();
-        return base64_encode($data_ID->no . '_' . $user->username);
+        if (is_null($data_ID)) {
+            redirect('logout');
+        } else {
+            return base64_encode($data_ID->no . '_' . $user->username);
+        }
     }
 
     /**
-    * Get the identifier that will be stored in the subject claim of the JWT.
-    *
-    * @return mixed
-    */
+     * Get the identifier that will be stored in the subject claim of the JWT.
+     *
+     * @return mixed
+     */
     public function getJWTIdentifier()
     {
         return $this->getKey();
     }
 
     /**
-    * Return a key value array, containing any custom claims to be added to the JWT.
-    *
-    * @return array
-    */
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
     public function getJWTCustomClaims()
     {
         return ['nik' => $this->username];

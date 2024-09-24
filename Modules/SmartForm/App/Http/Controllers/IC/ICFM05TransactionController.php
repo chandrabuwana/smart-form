@@ -81,10 +81,10 @@ class ICFM05TransactionController extends Controller
             GROUP BY group_code ;", [$d->code]);
 
             $dataNotExist = explode(", ", collect($listDataNotExist)->first()->missing_categories);
-           
+
             DB::table('FM_IC_005_BSS_DETAIL_PERTANYAAN_EXT')
                 ->where('group_code', $d->code)
-            ->delete();
+                ->delete();
 
             foreach ($dataNotExist as $z) {
                 if (!empty($d->$z)) {
@@ -137,10 +137,13 @@ class ICFM05TransactionController extends Controller
     {
 
         if (isset($req->search['FILTERNIK']) && $req->search['FILTERNIK'] != null) {
-            $query = $query . " AND grp.code in (select code from FM_IC_005_BSS_LST_KRYWN k where k.nik like '%" . $req->search['FILTERNIK'] . "%' ) ";
+            $query = $query . " AND code in (select code from FM_IC_005_BSS_LST_KRYWN k where k.nik like '%" . $req->search['FILTERNIK'] . "%' ) ";
         }
         if (isset($req->search['FILTERNAMA']) && $req->search['FILTERNAMA'] != null) {
-            $query = $query . " AND grp.code in (select code from FM_IC_005_BSS_LST_KRYWN k where UPPER(k.Nama) LIKE UPPER('%" . $req->search['FILTERNAMA'] . "%') ) ";
+            $query = $query . " AND code in (select code from FM_IC_005_BSS_LST_KRYWN k where UPPER(k.Nama) LIKE UPPER('%" . $req->search['FILTERNAMA'] . "%') ) ";
+        }
+        if (isset($req->search['FILTERNIKMENTOR']) && $req->search['FILTERNIKMENTOR'] != null) {
+            $query = $query . " AND mentor_names like  '%" . $req->search['FILTERNIKMENTOR'] . "%'";
         }
         // if (isset($req->search['FILTERTANGGAL']) && $req->search['FILTERTANGGAL'] != null) {
         //     $query = $query . " AND ms.created_at = '" . $req->search['FILTERTANGGAL'] . "' ";
@@ -163,13 +166,30 @@ class ICFM05TransactionController extends Controller
 
     function helperDataListInduksiKaryawan(Request $table)
     {
-        $query = "SELECT * , (Select count (*) from FM_IC_005_BSS_LST_KRYWN k where k.code = grp.code) jml_karyawan,
-                    (SELECT STUFF((
-                        SELECT DISTINCT ',' + LEFT(index_pertanyaan, CHARINDEX('_', index_pertanyaan) - 1)
-                        FROM FM_IC_005_BSS_DETAIL_INDUKSI d where d.group_code = grp.code
-                        FOR XML PATH('')
-                    ), 1, 1, '') AS group_names) pertanyaan  FROM FM_IC_005_BSS_LST_GRP grp 
-                    where 1 = 1 ";
+        $query = "WITH MentorData AS (
+                    SELECT *, 
+                        (SELECT COUNT(*) 
+                        FROM FM_IC_005_BSS_LST_KRYWN k 
+                        WHERE k.code = grp.code) AS jml_karyawan,
+
+                        (SELECT STUFF((
+                            SELECT DISTINCT ',' + LEFT(index_pertanyaan, CHARINDEX('_', index_pertanyaan) - 1)
+                            FROM FM_IC_005_BSS_DETAIL_INDUKSI d 
+                            WHERE d.group_code = grp.code
+                            FOR XML PATH('')
+                        ), 1, 1, '') AS group_names) AS pertanyaan,
+
+                        (SELECT STUFF((
+                            SELECT DISTINCT ',' + mentor 
+                            FROM FM_IC_005_BSS_DETAIL_INDUKSI d 
+                            WHERE d.group_code = grp.code
+                            FOR XML PATH('')
+                        ), 1, 1, '') AS mentors) AS mentor_names
+                    FROM FM_IC_005_BSS_LST_GRP grp
+                )
+                SELECT *
+                FROM MentorData
+                WHERE 1 = 1 ";
         $countDataUser = DB::select('select count(*) jumlah FROM FM_IC_005_BSS_LST_GRP');
         $newQuery = $this->GetQueryListHasilInduksi($query, $table);
 
