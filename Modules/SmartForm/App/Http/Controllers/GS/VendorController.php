@@ -124,7 +124,7 @@ class VendorController extends Controller {
                 'Website' => $request->input('website'),
                 'Email' => $request->input('email'),
                 'Kontak' => $request->input('kontak'),
-                'Status' => '0',
+                'Status' => '1',
                 'Keterangan' => $request->input('keterangan'),
                 'created_at' => now(),
                 'created_by' => $nik_session

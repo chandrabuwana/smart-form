@@ -286,24 +286,48 @@
                                 <tbody>
                                     <tr>
                                         <td>{{$approval_status->requested_by}}</td>
-                                        <td>{{$approval_status->acknowledge_by_1_nik}}</td>
-                                        <td>{{$approval_status->acknowledge_by_2_nik}}</td>
-                                        <td>{{$approval_status->approved_by_1_nik}}</td>
-                                        <td>{{$approval_status->approved_by_2_nik}}</td>
+                                        @if($approval_status->acknowledge_by_1_nik)
+                                            <td>{{$approval_status->acknowledge_by_1_nik}}</td>
+                                        @endif
+                                        @if($approval_status->acknowledge_by_2_nik)
+                                            <td>{{$approval_status->acknowledge_by_2_nik}}</td>
+                                        @endif
+                                        @if($approval_status->approved_by_1_nik)
+                                            <td>{{$approval_status->approved_by_1_nik}}</td>
+                                        @endif
+                                        @if($approval_status->approved_by_2_nik)
+                                            <td>{{$approval_status->approved_by_2_nik}}</td>
+                                        @endif
                                     </tr>
                                     <tr>
                                         <td>Done</td>
-                                        <td>{{$approval_status->acknowledge_1 == 1 ? "Done" : "Not Yet"}}</td>
-                                        <td>{{$approval_status->acknowledge_2 == 1 ? "Done" : "Not Yet"}}</td>
-                                        <td>{{$approval_status->approved_1 == 1 ? "Done" : "Not Yet"}}</td>
-                                        <td>{{$approval_status->approved_2 == 1 ? "Done" : "Not Yet"}}</td>
+                                        @if($approval_status->acknowledge_by_1_nik)
+                                            <td>{{$approval_status->acknowledge_1 == 1 ? "Done" : "Not Yet"}}</td>
+                                        @endif
+                                        @if($approval_status->acknowledge_by_2_nik)
+                                            <td>{{$approval_status->acknowledge_2 == 1 ? "Done" : "Not Yet"}}</td>
+                                        @endif
+                                        @if($approval_status->approved_by_1_nik)
+                                            <td>{{$approval_status->approved_1 == 1 ? "Done" : "Not Yet"}}</td>
+                                        @endif
+                                        @if($approval_status->approved_by_2_nik)
+                                            <td>{{$approval_status->approved_2 == 1 ? "Done" : "Not Yet"}}</td>
+                                        @endif
                                     </tr>
                                     <tr>
                                         <td>{{$approval_status->requested_by_nama}}</td>
-                                        <td>{{$approval_status->acknowledge_by_1_nama}}</td>
-                                        <td>{{$approval_status->acknowledge_by_2_nama}}</td>
-                                        <td>{{$approval_status->approved_by_1_nama}}</td>
-                                        <td>{{$approval_status->approved_by_2_nama}}</td>
+                                        @if($approval_status->acknowledge_by_1_nik)
+                                            <td>{{$approval_status->acknowledge_by_1_nama}}</td>
+                                        @endif
+                                        @if($approval_status->acknowledge_by_2_nik)
+                                            <td>{{$approval_status->acknowledge_by_2_nama}}</td>
+                                        @endif
+                                        @if($approval_status->approved_by_1_nik)
+                                            <td>{{$approval_status->approved_by_1_nama}}</td>
+                                        @endif
+                                        @if($approval_status->approved_by_2_nik)
+                                            <td>{{$approval_status->approved_by_2_nama}}</td>
+                                        @endif
                                     </tr>
                                 </tbody>
                             </table>

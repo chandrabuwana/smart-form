@@ -315,11 +315,12 @@ class AssetRequestController extends Controller {
         return view('SmartForm::SM/detail-form-asset-request', $data);
     }
 
-    private function getApprovalStatus(string $no_doc, string $ack1, string $ack2, string $approve1, string $approve2) {
+    private function getApprovalStatus(string $no_doc, $ack1, $ack2, $approve1, $approve2) {
         $data = null;
 
         try {
-            $data['approval_status'] = DB::table('PICA_BETA.dbo.FM_SM_016_MASTER as pfm')
+            // $data['approval_status'] = DB::table('PICA_BETA.dbo.FM_SM_016_MASTER as pfm')
+            $sql_approval = DB::table('PICA_BETA.dbo.FM_SM_016_MASTER as pfm')
                 ->leftJoin('HRD.dbo.TKaryawan as k0', 'pfm.requested_by', '=', 'k0.NIK')
                 ->leftJoin('HRD.dbo.TKaryawan as k1', 'pfm.acknowledge_by_1_nik', '=', 'k1.NIK')
                 ->leftJoin('HRD.dbo.TKaryawan as k2', 'pfm.acknowledge_by_2_nik', '=', 'k2.NIK')
@@ -341,8 +342,10 @@ class AssetRequestController extends Controller {
                     'k3.Nama as approved_by_1_nama',
                     'k4.Nama as approved_by_2_nama'
                 )
-                ->where('pfm.no_doc', $no_doc)
-                ->first();
+                ->where('pfm.no_doc', $no_doc);
+            Log::debug("SQL approval status : " . $sql_approval->toRawSql());
+
+            $data['approval_status'] = $sql_approval->first();
         } catch (Exception $ex) {
             Log::error($ex->getMessage());
             Log::error($ex->getTraceAsString());
