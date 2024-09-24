@@ -26,15 +26,22 @@ class FetchMenu {
             ->orderBy('urutan')
             ->get();
 
-        $rolePermissionUser = DB::table('MS_ROLE_PERMISSION')->select('permission_module_id')
+        // check permission first
+        $rolePermissionUser = DB::table('MS_ROLE_PERMISSION')->select('master_menu_id')
             ->join('MS_ROLE', 'MS_ROLE.id', '=', 'MS_ROLE_PERMISSION.role_id')
             ->join('users', 'users.role', '=', 'MS_ROLE.role_code')
             ->where('users.username', session('user_id'))
-            ->get()->pluck('permission_module_id')->all();
+            ->get()->pluck('master_menu_id')->all();
+
+        $allowedMenus = [];
+        foreach($data as $item) {
+            if(!is_null($item->parent) || !in_array($item->id, $rolePermissionUser)) continue;
+            $allowedMenus[] = $item->id;
+        }
 
         $data_menu = [];
         foreach($data as $item) {
-            if(!empty($item->permission_module_id) && !in_array($item->permission_module_id, $rolePermissionUser)) {
+            if((!is_null($item->parent) && !in_array($item->parent, $allowedMenus)) || (is_null($item->parent) && !in_array($item->id, $allowedMenus))) {
                 continue;
             }
 
@@ -45,14 +52,14 @@ class FetchMenu {
                     'child' => []
                 );
             } else {
-                array_push($data_menu[$item->parent]['child'], array(
+                $data_menu[$item->parent]['child'][] = array(
                     'id' => $item->id,
                     'nama' => $item->nama,
                     'link' => $item->link,
                     'parent' => $item->parent,
                     'order' => $item->order,
                     'type' => $item->type
-                ));
+                );
             }
         }
 

@@ -1,0 +1,260 @@
+<?php
+
+namespace Modules\SmartForm\App\Http\Controllers\IC;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use DB;
+use Carbon\Carbon;
+
+class ICFM05TransactionController extends Controller
+{
+    //
+    function SubmitALLData(Request $d)
+    {
+        // 
+        DB::beginTransaction();
+        $dataNOW = now();
+        try {
+            $dataTypes = ['dataICGS', 'dataOD', 'dataSHE', 'dataDEPT'];
+            foreach ($dataTypes as $dataType) {
+                if (!empty($d->$dataType)) {
+                    foreach ($d->$dataType as $value) {
+                        DB::table('FM_IC_005_BSS_DETAIL_INDUKSI')->insert([
+                            'group_code' => $d->code,
+                            'index_pertanyaan' => $value['id'],
+                            'mentor' => session("user_id"),
+                            'created_at' => $dataNOW,
+                            'created_by' => session("user_id"),
+                        ]);
+                    }
+                }
+            }
+            if (!empty($d->pertanyaanTambahan)) {
+                foreach ($d->pertanyaanTambahan as $key => $value) {
+                    DB::table('FM_IC_005_BSS_DETAIL_PERTANYAAN_EXT')->insert([
+                        'group_code' => $d->code,
+                        'pertanyaan' => $value['description'],
+                        'mentor' => $value['nikMateriTambahan'],
+                        'created_at' => $dataNOW,
+                        'created_by' => session("user_id"),
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Done Induksi Tersimpan',
+                'code' => 200
+            ]);
+
+        } catch (QueryException $e) {
+            // Rollback transaksi jika terjadi error
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Failed to insert records: ' . $e->getMessage(),
+                'code' => 500
+            ]);
+        }
+    }
+
+    function SubmitALLDataEdit(Request $d)
+    {
+
+
+        // dd($d);
+        DB::beginTransaction();
+        $dataNOW = now();
+        try {
+
+            $listDataNotExist = DB::select("SELECT group_code,
+                STUFF(
+                    CONCAT(
+                        CASE WHEN MAX(CASE WHEN index_pertanyaan LIKE 'ICGS%' THEN 1 ELSE 0 END) = 0 THEN ', ICGS' ELSE '' END,
+                        CASE WHEN MAX(CASE WHEN index_pertanyaan LIKE 'OD%' THEN 1 ELSE 0 END) = 0 THEN ', OD' ELSE '' END,
+                        CASE WHEN MAX(CASE WHEN index_pertanyaan LIKE 'DEPT%' THEN 1 ELSE '' END) = 0 THEN ', DEPT' ELSE '' END,
+                        CASE WHEN MAX(CASE WHEN index_pertanyaan LIKE 'SHE%' THEN 1 ELSE 0 END) = 0 THEN ', SHE' ELSE '' END
+                    ), 1, 2, ''
+                ) AS missing_categories
+            FROM FM_IC_005_BSS_DETAIL_INDUKSI where group_code = ?
+            GROUP BY group_code ;", [$d->code]);
+
+            $dataNotExist = explode(", ", collect($listDataNotExist)->first()->missing_categories);
+
+            DB::table('FM_IC_005_BSS_DETAIL_PERTANYAAN_EXT')
+                ->where('group_code', $d->code)
+                ->delete();
+
+            foreach ($dataNotExist as $z) {
+                if (!empty($d->$z)) {
+                    foreach ($d->$z as $value) {
+                        DB::table('FM_IC_005_BSS_DETAIL_INDUKSI')->insert([
+                            'group_code' => $d->code,
+                            'index_pertanyaan' => $value['id'],
+                            'mentor' => session("user_id"),
+                            'created_at' => $dataNOW,
+                            'created_by' => session("user_id"),
+                            'updated_by' => session("user_id"),
+                            'updated_at' => $dataNOW,
+                        ]);
+                    }
+                }
+            }
+
+            if (!empty($d->pertanyaanTambahan)) {
+                foreach ($d->pertanyaanTambahan as $key => $value) {
+                    // dd($value);
+                    DB::table('FM_IC_005_BSS_DETAIL_PERTANYAAN_EXT')->insert([
+                        'group_code' => $d->code,
+                        'pertanyaan' => $value['description'],
+                        'mentor' => $value['nikMateriTambahan'],
+                        'created_at' => $dataNOW,
+                        'created_by' => session("user_id"),
+                    ]);
+                }
+            }
+
+            // Commit transaksi jika tidak ada error
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Done Induksi Tersimpan',
+                'code' => 200
+            ]);
+
+        } catch (QueryException $e) {
+            // Rollback transaksi jika terjadi error
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Failed to insert records: ' . $e->getMessage(),
+                'code' => 500
+            ]);
+        }
+    }
+
+    public function GetQueryListHasilInduksi(string $query, Request $req)
+    {
+
+        if (isset($req->search['FILTERNIK']) && $req->search['FILTERNIK'] != null) {
+            $query = $query . " AND code in (select code from FM_IC_005_BSS_LST_KRYWN k where k.nik like '%" . $req->search['FILTERNIK'] . "%' ) ";
+        }
+        if (isset($req->search['FILTERNAMA']) && $req->search['FILTERNAMA'] != null) {
+            $query = $query . " AND code in (select code from FM_IC_005_BSS_LST_KRYWN k where UPPER(k.Nama) LIKE UPPER('%" . $req->search['FILTERNAMA'] . "%') ) ";
+        }
+        if (isset($req->search['FILTERNIKMENTOR']) && $req->search['FILTERNIKMENTOR'] != null) {
+            $query = $query . " AND mentor_names like  '%" . $req->search['FILTERNIKMENTOR'] . "%'";
+        }
+        // if (isset($req->search['FILTERTANGGAL']) && $req->search['FILTERTANGGAL'] != null) {
+        //     $query = $query . " AND ms.created_at = '" . $req->search['FILTERTANGGAL'] . "' ";
+        // }
+
+        if (isset($req["sort"]) && $req["sort"] != null) {
+            $query = $query . ' ORDER BY ' . $req["sort"] . ' ' . $req["order"];
+        } else {
+            $query = $query . ' ORDER BY created_at DESC ';
+        }
+
+        if ($req["offset"] != null) {
+            $query = $query . ' OFFSET ' . $req["offset"] . ' ROWS ';
+        }
+        if ($req["limit"] != null) {
+            $query = $query . "FETCH NEXT " . $req["limit"] . " ROWS ONLY";
+        }
+        return $query;
+    }
+
+    function helperDataListInduksiKaryawan(Request $table)
+    {
+        $query = "WITH MentorData AS (
+                    SELECT *, 
+                        (SELECT COUNT(*) 
+                        FROM FM_IC_005_BSS_LST_KRYWN k 
+                        WHERE k.code = grp.code) AS jml_karyawan,
+
+                        (SELECT STUFF((
+                            SELECT DISTINCT ',' + LEFT(index_pertanyaan, CHARINDEX('_', index_pertanyaan) - 1)
+                            FROM FM_IC_005_BSS_DETAIL_INDUKSI d 
+                            WHERE d.group_code = grp.code
+                            FOR XML PATH('')
+                        ), 1, 1, '') AS group_names) AS pertanyaan,
+
+                        (SELECT STUFF((
+                            SELECT DISTINCT ',' + mentor 
+                            FROM FM_IC_005_BSS_DETAIL_INDUKSI d 
+                            WHERE d.group_code = grp.code
+                            FOR XML PATH('')
+                        ), 1, 1, '') AS mentors) AS mentor_names
+                    FROM FM_IC_005_BSS_LST_GRP grp
+                )
+                SELECT *
+                FROM MentorData
+                WHERE 1 = 1 ";
+        $countDataUser = DB::select('select count(*) jumlah FROM FM_IC_005_BSS_LST_GRP');
+        $newQuery = $this->GetQueryListHasilInduksi($query, $table);
+
+        $dataUser = DB::select($newQuery);
+
+        return response()->json([
+            'total' => $countDataUser[0]->jumlah,
+            'totalNotFiltered' => $countDataUser[0]->jumlah,
+            "rows" => $dataUser,
+        ]);
+    }
+
+    public function GetQueryListKaryawanInduksi(string $query, Request $req)
+    {
+        return $query;
+    }
+
+    function helperDataListKaryawanInduksi(Request $table)
+    {
+        $query = "SELECT * FROM [FM_IC_005_BSS_LST_KRYWN] ms where code = '" . $table->search['FILTERCODE'] . "' ";
+        $countDataUser = DB::select("select count(*) jumlah FROM [FM_IC_005_BSS_LST_KRYWN]  where code = '" . $table->search['FILTERCODE'] . "' ");
+        $newQuery = $this->GetQueryListKaryawanInduksi($query, $table);
+
+        $dataUser = DB::select($newQuery);
+
+        return response()->json([
+            'total' => $countDataUser[0]->jumlah,
+            'totalNotFiltered' => $countDataUser[0]->jumlah,
+            "rows" => $dataUser,
+        ]);
+    }
+
+    function HelperSelect2InduksiKaryawanByDept(Request $d)
+    {
+        $data = $d->request->get("query");
+        $dataDepartment = DB::connection('sqlsrv2')->select("SELECT TOP 5 NIK nomorPunggung, tk.Nama nama, td.Nama dept FROM TKaryawan tk join tdepartement td on tk.KodeDP = td.KodeDP where Nik like  ?  ", ['%' . $data . '%']);
+        // dd($dataDepartment);
+
+        $dataJs = [];
+        foreach ($dataDepartment as $a) {
+            $dataBaru = [
+                'name' => $a->nama,
+                'dept' => $a->dept,
+                'text' => $a->nomorPunggung,
+                'id' => $a->nomorPunggung
+            ];
+            $dataJs[] = $dataBaru;
+        }
+        $final = [
+            'data' => $dataJs,
+        ];
+        return json_encode($final);
+    }
+
+    function validateAndSanitizeInput($input)
+    {
+        // Sanitasi input
+        $sanitizedInput = filter_var($input, FILTER_SANITIZE_STRING);
+
+        // Validasi input: Misalnya, hanya menerima huruf, angka, dan spasi
+        if (preg_match('/^[a-zA-Z0-9 ]*$/', $sanitizedInput)) {
+            return $sanitizedInput;
+        } else {
+            // Jika input tidak valid, Anda bisa mengembalikan false atau memicu error
+            throw new Exception('Input tidak valid');
+        }
+    }
+}
