@@ -25,6 +25,7 @@ class AssetRequestController extends Controller {
         $no_doc = $request->query('no_doc');
         $nik_session = $request->session()->get('user_id', '');
         $data = $this->getDetail($request, $no_doc, $nik_session);
+        Log::debug("Data edit : ". json_encode($data, JSON_PRETTY_PRINT));
         if($data['data']['requested_by'] != $nik_session) {
             return abort(401, 'Unauthoried Request!');
         } else {

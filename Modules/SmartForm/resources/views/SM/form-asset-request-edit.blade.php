@@ -631,6 +631,9 @@
                 inputProject.val({{ Illuminate\Support\Js::from( $data['project']) }})
                 inputDepartmentAllocation.val({{ Illuminate\Support\Js::from( $data['department_allocation']) }})
                 inputProjectAllocation.val({{ Illuminate\Support\Js::from( $data['project_allocation']) }})
+                estimatedReadyAtSite.val({{ Illuminate\Support\Js::from( $data['estimated_ready_at_site']) }})
+                reasonpurchase.val({{ Illuminate\Support\Js::from( $data['reason_purchase']) }})
+                refDoc.val({{ Illuminate\Support\Js::from( $data['ref_doc']) }})
 
                 dataAssetRequest.replacement = checkReplacement.checked
                 dataAssetRequest.additional = checkAdditional.checked
