@@ -725,6 +725,12 @@
                         message: "harus dipilih"
                     })
                 }
+                if(checkNotBudgeted.checked && inputPendukungReason.files.length < 1) {
+                    errorValidate.push({
+                        field: "Dokumen Pendukung",
+                        message: "tidak boleh kosong jika Not Budgeted"
+                    })
+                }
                 if(inputDepartment.val() == ""){
                     errorValidate.push({
                         field: "Department Requestor",
