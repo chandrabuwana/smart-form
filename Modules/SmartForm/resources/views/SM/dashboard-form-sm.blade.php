@@ -61,8 +61,8 @@
         var users_nik = {{ Illuminate\Support\Js::from($nik_session) }}
         function actionFormatter(value, row, index) {
             var btn = '<a href="/bss-form/sm/get-form-detail?no_doc=' + row.no_doc + '"><i class="fa fa-info-circle fixed-plugin-button-nav cursor-pointer"></i></a>';
-            if(row.status < 1 ) {
-                if(row.requested_by == users_nik) {
+            if(row.status < 1 || row.status == null) {
+                if(row.requested_by == users_nik && (row.editable == 0 || row.editable == null)) {
                     btn = btn + '<a href="/bss-form/sm/edit-form-asset-request?no_doc=' + row.no_doc + '"><i class="fa fa-edit fixed-plugin-button-nav cursor-pointer"></i></a>';
                 }
             }

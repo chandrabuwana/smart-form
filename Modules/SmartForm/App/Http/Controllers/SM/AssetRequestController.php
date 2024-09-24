@@ -276,7 +276,7 @@ class AssetRequestController extends Controller {
 
         try {
             $users = DB::table($TABLE_MASTER)
-                ->select('no_doc', 'date_doc', 'department', 'project', 'area', 'requested_by', 'total_price_idr', 'status')
+                ->select('no_doc', 'date_doc', 'department', 'project', 'area', 'requested_by', 'total_price_idr', 'status', 'acknowledge_1 as editable')
                 // ->orderBy($sort, $order)
                 ->skip($offset)->take($limit)
                 ->get();
