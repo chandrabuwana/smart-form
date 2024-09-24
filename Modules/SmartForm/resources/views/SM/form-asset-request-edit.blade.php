@@ -522,6 +522,14 @@
             requestedBy: requestornik.text()
         }
 
+        function getTodayDate() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
         function indexFormatter(value, row, index) {
             return index + 1;
         }
@@ -751,6 +759,12 @@
                     errorValidate.push({
                         field: "Estimated ready",
                         message: "tidak boleh kosong"
+                    })
+                }
+                if(estimatedReadyAtSite.val() < getTodayDate()){
+                    errorValidate.push({
+                        field: "Estimated ready at site",
+                        message: "tidak boleh back date"
                     })
                 }
                 if($table.bootstrapTable('getData').length < 1) {

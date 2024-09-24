@@ -141,6 +141,7 @@ class AssetRequestController extends Controller {
     }
 
     function DashboardForm(Request $req) {
+        Log::debug('Valdiation matrix : '. json_encode($this->getValidationMatrix('ENG'), JSON_PRETTY_PRINT));
         $nik_session = $req->session()->get('user_id', '');
 
         return view("SmartForm::SM/dashboard-form-sm", ['nik_session' => $nik_session]);
@@ -183,6 +184,7 @@ class AssetRequestController extends Controller {
             'nature_budgeted' => $data['budgeted'] == "true" ? 1 : 0,
             'nature_not_budgeted' => $data['notBudgeted'] == "true" ? 1 : 0,
             'acknowledge_by_1_nik' => $validation_matrix['acknowledge_by_1_nik'],
+            'cost_control_nik' => $validation_matrix['cost_control_nik'],
             'acknowledge_by_2_nik' => $validation_matrix['acknowledge_by_2_nik'],
             'approved_by_1_nik' => $validation_matrix['approved_by_1_nik'],
             'approved_by_2_nik' => $validation_matrix['approved_by_2_nik'],
@@ -323,21 +325,25 @@ class AssetRequestController extends Controller {
             $sql_approval = DB::table('PICA_BETA.dbo.FM_SM_016_MASTER as pfm')
                 ->leftJoin('HRD.dbo.TKaryawan as k0', 'pfm.requested_by', '=', 'k0.NIK')
                 ->leftJoin('HRD.dbo.TKaryawan as k1', 'pfm.acknowledge_by_1_nik', '=', 'k1.NIK')
+                ->leftJoin('HRD.dbo.TKaryawan as k1a', 'pfm.cost_control_nik', '=', 'k1a.NIK')
                 ->leftJoin('HRD.dbo.TKaryawan as k2', 'pfm.acknowledge_by_2_nik', '=', 'k2.NIK')
                 ->leftJoin('HRD.dbo.TKaryawan as k3', 'pfm.approved_by_1_nik', '=', 'k3.NIK')
                 ->leftJoin('HRD.dbo.TKaryawan as k4', 'pfm.approved_by_2_nik', '=', 'k4.NIK')
                 ->select(
                     'pfm.requested_by',
                     'pfm.acknowledge_1',
+                    'pfm.cost_control',
                     'pfm.acknowledge_2',
                     'pfm.approved_1',
                     'pfm.approved_2',
                     'pfm.acknowledge_by_1_nik',
+                    'pfm.cost_control_nik',
                     'pfm.acknowledge_by_2_nik',
                     'pfm.approved_by_1_nik',
                     'pfm.approved_by_2_nik',
                     'k0.Nama as requested_by_nama',
                     'k1.Nama as acknowledge_by_1_nama',
+                    'k1a.Nama as cost_control_nama',
                     'k2.Nama as acknowledge_by_2_nama',
                     'k3.Nama as approved_by_1_nama',
                     'k4.Nama as approved_by_2_nama'
@@ -397,8 +403,8 @@ class AssetRequestController extends Controller {
                     'estimated_kurs_idr as estimated_idr', 'estimated_kurs_usd as estimated_usd', 'estimated_kurs_cny as estimated_cny',
                     'ref_doc', 'reason_for_purchase as reason_purchase',
                     'department_allocation', 'project_allocation', 'status',
-                    'acknowledge_by_1_nik', 'acknowledge_by_2_nik', 'approved_by_1_nik', 'approved_by_2_nik',
-                    'acknowledge_1', 'acknowledge_2', 'approved_1', 'approved_2'
+                    'acknowledge_by_1_nik','cost_control_nik', 'acknowledge_by_2_nik', 'approved_by_1_nik', 'approved_by_2_nik',
+                    'acknowledge_1', 'cost_control', 'acknowledge_2', 'approved_1', 'approved_2'
 
                 )
                 ->where('no_doc', $no_doc)
@@ -465,10 +471,12 @@ class AssetRequestController extends Controller {
                 $data_master['calculated_cny'] = $calculated_cny;
                 $data_master['status'] = $data->status;
                 $data_master['acknowledge_by_1_nik'] = $data->acknowledge_by_1_nik;
+                $data_master['cost_control_nik'] = $data->cost_control_nik;
                 $data_master['acknowledge_by_2_nik'] = $data->acknowledge_by_2_nik;
                 $data_master['approved_by_1_nik'] = $data->approved_by_1_nik;
                 $data_master['approved_by_2_nik'] = $data->approved_by_2_nik;
                 $data_master['acknowledge_1'] = $data->acknowledge_1;
+                $data_master['cost_control'] = $data->cost_control;
                 $data_master['acknowledge_2'] = $data->acknowledge_2;
                 $data_master['approved_1'] = $data->approved_1;
                 $data_master['approved_2'] = $data->approved_2;
@@ -504,7 +512,7 @@ class AssetRequestController extends Controller {
         $body = $request->input();
         $nik_session = $request->session()->get('user_id', '');
         $data = DB::table($this->TABLE_MASTER)
-            ->select('id', 'acknowledge_by_1_nik', 'acknowledge_by_2_nik', 'approved_by_1_nik', 'approved_by_2_nik')
+            ->select('id', 'acknowledge_by_1_nik','cost_control_nik', 'acknowledge_by_2_nik', 'approved_by_1_nik', 'approved_by_2_nik')
             ->where('no_doc', $body['noDoc'])
             ->first();
         $isError = false;
@@ -515,6 +523,17 @@ class AssetRequestController extends Controller {
             case 'acknowledge1':
                 if($data->acknowledge_by_1_nik == $nik_session) {
                     $result = $this->updateValidation('acknowledge_1', $body['noDoc'], $nik_session, 'acknowledge1', $data->id);
+                    $isError = $result['error'];
+                    $errorMessage = $result['errorMessage'];
+                    $message = $result['message'];
+                } else {
+                    $isError = true;
+                    $errorMessage = 'Unauthorized Action';
+                }
+                break;
+            case 'cost_control':
+                if($data->cost_control_nik == $nik_session) {
+                    $result = $this->updateValidation('cost_control', $body['noDoc'], $nik_session, 'cost_control', $data->id);
                     $isError = $result['error'];
                     $errorMessage = $result['errorMessage'];
                     $message = $result['message'];
@@ -607,6 +626,11 @@ class AssetRequestController extends Controller {
                     ->where('no_doc', $no_doc)
                     ->update([$column => 1, 'updated_by' => $nik, 'updated_at' => $tgl]);
                 // $new_value[$column] = 1;
+            } if ($action =='cost_control') {
+                $affected = DB::table($this->TABLE_MASTER)
+                    ->where('no_doc', $no_doc)
+                    ->update([$column => 1, 'updated_by' => $nik, 'updated_at' => $tgl]);
+                // $new_value[$column] = 1;
             } if ($action =='approve1') {
                 $affected = DB::table($this->TABLE_MASTER)
                     ->where('no_doc', $no_doc)
@@ -665,10 +689,11 @@ class AssetRequestController extends Controller {
         $aprv_1 = "";
         $appr_2 = "";
         $data = [
-            'acknowledge_1' => '',
-            'acknowledge_2' => '',
-            'approved_1' => '',
-            'approved_2' => '',
+            'acknowledge_1' => null,
+            'cost_control' => null,
+            'acknowledge_2' => null,
+            'approved_1' => null,
+            'approved_2' => null,
         ];
 
         try {
@@ -676,12 +701,21 @@ class AssetRequestController extends Controller {
                 ->where('role_approval', 'acknowledge_1')
                 ->where('KodeDP', $department)
                 ->first();
+            $sql_approval_1 = DB::table($this->TABLE_MAPPING_APPROVAL)
+                ->where('role_approval', 'approved_1')
+                ->where('KodeDP', $department)
+                ->first();
             $ack_1 = $sql_ack_1->nik;
-            $data['acknowledge_1'] = $sql_ack_1->nik;
+            $data['acknowledge_1'] = $sql_ack_1 ? $sql_ack_1->nik : null;
+            $data['approved_1'] = $sql_approval_1 ? $sql_approval_1->nik : null;
             $sql_ack = DB::table($this->TABLE_MAPPING_APPROVAL)
-                ->whereIn('role_approval', ['acknowledge_2', 'approved_1', 'approved_2'])
+                ->whereIn('role_approval', ['cost_control', 'acknowledge_2', 'approved_2'])
                 ->get();
-
+            Log::debug(DB::table($this->TABLE_MAPPING_APPROVAL)
+            ->where('role_approval', 'acknowledge_1')
+            ->where('KodeDP', $department)->toRawSql());
+            Log::debug('SQL Matrix valdiation : ' .DB::table($this->TABLE_MAPPING_APPROVAL)
+                ->whereIn('role_approval', ['cost_control', 'acknowledge_2', 'approved_2'])->toRawSql());
             foreach ($sql_ack->toArray() as $apprvl) {
                 // Log::info("key: ". $apprvl . ", value : ");
                 $data[$apprvl->role_approval] = $apprvl->nik;
@@ -696,6 +730,7 @@ class AssetRequestController extends Controller {
         return [
             // 'acknowledge_by_1_nik' => $this->getMappingKadep($department), // TODO: dinamis
             'acknowledge_by_1_nik' => $data['acknowledge_1'], // TODO: dinamis
+            'cost_control_nik' => $data['cost_control'],
             'acknowledge_by_2_nik' => $data['acknowledge_2'],
             'approved_by_1_nik' => $data['approved_1'],
             'approved_by_2_nik' => $data['approved_2']

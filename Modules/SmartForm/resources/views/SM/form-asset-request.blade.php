@@ -512,6 +512,16 @@
             requestedBy: requestornik.text()
         }
 
+        function getTodayDate() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+        
+        estimatedReadyAtSite.attr('min', getTodayDate())
+
         function indexFormatter(value, row, index) {
             return index + 1;
         }
@@ -739,14 +749,20 @@
                 }
                 if(reasonpurchase.val() == ""){
                     errorValidate.push({
-                        field: "Estimated ready",
+                        field: "Reason for Purchase",
                         message: "tidak boleh kosong"
                     })
                 }
                 if(estimatedReadyAtSite.val() == ""){
                     errorValidate.push({
-                        field: "Reason for Purchase",
+                        field: "Estimated ready at site",
                         message: "tidak boleh kosong"
+                    })
+                }
+                if(estimatedReadyAtSite.val() < getTodayDate()){
+                    errorValidate.push({
+                        field: "Estimated ready at site",
+                        message: "tidak boleh back date"
                     })
                 }
                 if($table.bootstrapTable('getData').length < 1) {

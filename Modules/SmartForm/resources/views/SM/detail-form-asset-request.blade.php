@@ -279,7 +279,7 @@
                                 <thead>
                                     <tr>
                                         <th>Requested By</th>
-                                        <th colspan="2">Acknowledge By</th>
+                                        <th colspan="3">Acknowledge By</th>
                                         <th colspan="2">Approved By</th>
                                     </tr>
                                 </thead>
@@ -288,6 +288,9 @@
                                         <td>{{$approval_status->requested_by}}</td>
                                         @if($approval_status->acknowledge_by_1_nik)
                                             <td>{{$approval_status->acknowledge_by_1_nik}}</td>
+                                        @endif
+                                        @if($approval_status->cost_control_nik)
+                                            <td>{{$approval_status->cost_control_nik}}</td>
                                         @endif
                                         @if($approval_status->acknowledge_by_2_nik)
                                             <td>{{$approval_status->acknowledge_by_2_nik}}</td>
@@ -304,6 +307,9 @@
                                         @if($approval_status->acknowledge_by_1_nik)
                                             <td>{{$approval_status->acknowledge_1 == 1 ? "Done" : "Not Yet"}}</td>
                                         @endif
+                                        @if($approval_status->cost_control_nik)
+                                            <td>{{$approval_status->cost_control == 1 ? "Done" : "Not Yet"}}</td>
+                                        @endif
                                         @if($approval_status->acknowledge_by_2_nik)
                                             <td>{{$approval_status->acknowledge_2 == 1 ? "Done" : "Not Yet"}}</td>
                                         @endif
@@ -318,6 +324,9 @@
                                         <td>{{$approval_status->requested_by_nama}}</td>
                                         @if($approval_status->acknowledge_by_1_nik)
                                             <td>{{$approval_status->acknowledge_by_1_nama}}</td>
+                                        @endif
+                                        @if($approval_status->cost_control_nik)
+                                            <td>{{$approval_status->cost_control_nama}}</td>
                                         @endif
                                         @if($approval_status->acknowledge_by_2_nik)
                                             <td>{{$approval_status->acknowledge_by_2_nama}}</td>
@@ -346,7 +355,16 @@
                                             </button>
                                         @endif
                                     @endif
-                                    @if(($data['acknowledge_2'] == 0 || $data['acknowledge_2'] == null) && $data['acknowledge_1'] == 1)
+                                    @if(($data['cost_control'] == 0 || $data['cost_control'] == null) && $data['acknowledge_1'] == 1)
+                                        @if(session('user_id') == $data['cost_control_nik'])
+                                            <button onclick="actionValidation(this)" class="btn btn-primary ms-auto uploadBtn" id="btnSubmitAssetRequest" data-action="cost_control"
+                                                data-alert-title="Acknowledge" data-alert-message="Konfirmasi acknowledge ?">
+                                                <i class="fas fa-save"></i>
+                                                Acknowledge
+                                            </button>
+                                        @endif
+                                    @endif
+                                    @if(($data['acknowledge_2'] == 0 || $data['acknowledge_2'] == null) && $data['cost_control'] == 1)
                                         @if(session('user_id') == $data['acknowledge_by_2_nik'])
                                             <button onclick="actionValidation(this)" class="btn btn-primary ms-auto uploadBtn" id="btnSubmitAssetRequest" data-action="acknowledge2"
                                                 data-alert-title="Acknowledge" data-alert-message="Konfirmasi acknowledge ?">
