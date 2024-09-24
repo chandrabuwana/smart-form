@@ -268,6 +268,9 @@ class AssetRequestController extends Controller {
             'message' => '',
             'isSuccess' => false
         );
+        $filterNik =  $request->query('nik', null);
+        $filterStatus =  $request->query('status', null);
+        $filterDepartment =  $request->query('department', null);
         $search = $request->query('search', '');
         $sort = $request->query('sort', 'id'); // Default sort by id
         $order = $request->query('order', 'asc'); // Default order is ascending
@@ -275,11 +278,15 @@ class AssetRequestController extends Controller {
         $limit = $request->query('limit', 10); // Default limit
 
         try {
-            $users = DB::table($TABLE_MASTER)
+            $forms_request_sql = DB::table($TABLE_MASTER)
                 ->select('no_doc', 'date_doc', 'department', 'project', 'area', 'requested_by', 'total_price_idr', 'status', 'acknowledge_1 as editable')
-                // ->orderBy($sort, $order)
-                ->skip($offset)->take($limit)
-                ->get();
+                ->orderBy('id', 'desc');
+
+            if($filterNik) $forms_request_sql = $forms_request_sql->where('requested_by', $filterNik);
+            if($filterStatus) $forms_request_sql = $forms_request_sql->where('status', $filterStatus);
+            if($filterDepartment) $forms_request_sql = $forms_request_sql->where('department', $filterDepartment);
+            
+            $totalNotFiltered = $forms_request_sql->count();
                 // if($search) {
             //     $users->where('no_doc', 'like', "%$search%")
             //       ->orWhere('department', 'like', "%$search%")
@@ -289,11 +296,17 @@ class AssetRequestController extends Controller {
             // }
             // Apply sorting
             // $documents = $users->skip($offset)->take($limit)->get();
-            $totalNotFiltered = DB::table($TABLE_MASTER)->count();
+            if($limit == null || $limit == 'null' || $limit == '') {
+                $forms_request_sql->skip($offset);
+            } else {
+                $forms_request_sql->skip($offset)->limit($limit);
+            }
+            LOG::info("SQL Forms Data Asset Request : ". $forms_request_sql->toRawSql());
+            
 
             $response['message'] = "Ok";
             $response['isSuccess'] = true;
-            $response['data'] = ['total'=> $totalNotFiltered, 'totalNotFiltered'=> $totalNotFiltered, 'rows' => $users];
+            $response['data'] = ['total'=> $totalNotFiltered, 'totalNotFiltered'=> $totalNotFiltered, 'rows' => $forms_request_sql->get()->toArray()];
             // $response['data'] = $documents;
 
         } catch (Exception $ex) {
