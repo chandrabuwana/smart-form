@@ -141,7 +141,6 @@ class AssetRequestController extends Controller {
     }
 
     function DashboardForm(Request $req) {
-        $this->getValidationMatrix("IT");
         $nik_session = $req->session()->get('user_id', '');
 
         return view("SmartForm::SM/dashboard-form-sm", ['nik_session' => $nik_session]);

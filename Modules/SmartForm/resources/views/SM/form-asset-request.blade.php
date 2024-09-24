@@ -225,6 +225,7 @@
                                     <div class="input-group input-group-static mb-4">
                                         <label for="inputPendukungReason">Dokumen Pendukung</label>
                                         <input type="file" multiple class="form-control" id="inputPendukungReason" name="inputPendukungReason">
+                                        <span class="text-xs"><i>max file size: 2mb</i></span>
                                     </div>
                                 </div>
                             </div>
