@@ -115,6 +115,13 @@
                         </div>
                     </div>
                     <br>
+                    <div class="col-md-4">
+                        <div class="input-group input-group-static my-4">
+                            <label for="pc_site" class="ms-0">Site </label>
+                            <select class="form-control dept" name="pc_site" id="pc_site">
+                            </select>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-2">
                             <button id="buttonGenerateLinkButton" class="btn btn-primary ms-auto uploadBtn"
@@ -412,6 +419,33 @@
     <script type="text/javascript">
         var MateriTambahanInputData_Obj_datas = [];
         var linkKaryawan = <?php echo json_encode($link); ?>
+
+        $('#pc_site').select2({
+            theme: 'bootstrap-5', // Menggunakan tema Bootstrap 5
+            dropdownParent: $('#pc_site').closest('.input-group'),
+            placeholder: '--- Cari Site ---',
+            ajax: {
+                url: "/helper/department",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type: "post",
+                delay: 250,
+                dataType: 'json',
+                data: function(params) {
+                    return {
+                        _token: "{{ csrf_token() }}",
+                        query: params.term, // search term
+                    };
+                },
+                processResults: function(response) {
+                    return {
+                        results: response.data
+                    };
+                },
+                cache: true
+            }
+        });
 
         function AddDAtaKaryawan() {
             var nJenisInduksi = $('#nJenisInduksi').val();
@@ -784,6 +818,20 @@
         }
 
         function GenerateLink() {
+            let site = $('#pc_site').val();
+
+            if (site == "" || site == null) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Mohon Isikan Site",
+                });
+                return false
+            }
+
+            let dataKirimGenerateLink = {
+                site: site
+            }
             $.ajax({
                 type: 'post',
                 headers: {
@@ -791,6 +839,7 @@
                 },
                 url: "/bss-form/induksi-karyawan/generate-link",
                 dataType: 'json',
+                data: dataKirimGenerateLink,
                 success: function(response) {
                     if (response.code == 200) {
                         Swal.fire({
