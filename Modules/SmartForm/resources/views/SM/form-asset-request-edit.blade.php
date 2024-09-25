@@ -89,17 +89,18 @@
                                         <div class="input-group input-group-static mb-4">
                                             <label for="inputDepartment">Department</label>
                                             <select class="form-control form-select-sm" name="inputDepartment" id="inputDepartment" required>
-                                                <option selected value="">-- Pilih Department --</option>
+                                                @foreach ($list_dept as $key => $item)
+                                                    <option value="{{$key}}">{{ $item }}</option>
+                                                @endforeach
+                                                {{-- <option selected value="">-- Pilih Department --</option>
                                                 <option value="ENG">ENGINEERING</option>
                                                 <option value="SHE">SHE</option>
                                                 <option value="PRD">PRODUKSI</option>
                                                 <option value="SM">SM</option>
-                                                {{-- <option value="IT">IT</option> --}}
                                                 <option value="IC">IC</option>
                                                 <option value="GS">GS</option>
                                                 <option value="RM">PLANT</option>
                                                 <option value="BDV">BUSDEV</option>
-                                                {{-- <option value="DIR">DIRECTORS</option> --}}
                                                 <option value="FIN">FINANCE</option>
                                                 <option value="ATA">Accounting & Tax</option>
                                                 <option value="DTC">DATA CENTER</option>
@@ -107,7 +108,9 @@
                                                 <option value="OPR">OPERATION</option>
                                                 <option value="LEG">LEGAL</option>
                                                 <option value="OD">ORGANIZATION DEVELOPMENT</option>
-                                                <option value="CIVIL">CIVIL</option>
+                                                <option value="CIVIL">CIVIL</option> --}}
+                                                {{-- <option value="IT">IT</option> --}}
+                                                {{-- <option value="DIR">DIRECTORS</option> --}}
                                                 {{-- <option value="SI">SINERGY INSTITUTE</option>
                                                 <option value="Z001">ASSESSMENT CENTER</option>
                                                 <option value="Z002">LABOR SUPPLY</option>
@@ -151,17 +154,18 @@
                                         <div class="input-group input-group-static mb-4">
                                             <label for="inputDepartmentAllocation">Department</label>
                                             <select class="form-control form-select-sm" name="inputDepartmentAllocation" id="inputDepartmentAllocation" required>
-                                                <option selected value="">-- Pilih Department --</option>
+                                                @foreach ($list_dept as $key => $item)
+                                                    <option value="{{$key}}">{{ $item }}</option>
+                                                @endforeach
+                                                {{-- <option selected value="">-- Pilih Department --</option>
                                                 <option value="ENG">ENGINEERING</option>
                                                 <option value="SHE">SHE</option>
                                                 <option value="PRD">PRODUKSI</option>
                                                 <option value="SM">SM</option>
-                                                {{-- <option value="IT">IT</option> --}}
                                                 <option value="IC">IC</option>
                                                 <option value="GS">GS</option>
                                                 <option value="RM">PLANT</option>
                                                 <option value="BDV">BUSDEV</option>
-                                                {{-- <option value="DIR">DIRECTORS</option> --}}
                                                 <option value="FIN">FINANCE</option>
                                                 <option value="ATA">Accounting & Tax</option>
                                                 <option value="DTC">DATA CENTER</option>
@@ -169,7 +173,9 @@
                                                 <option value="OPR">OPERATION</option>
                                                 <option value="LEG">LEGAL</option>
                                                 <option value="OD">ORGANIZATION DEVELOPMENT</option>
-                                                <option value="CIVIL">CIVIL</option>
+                                                <option value="CIVIL">CIVIL</option> --}}
+                                                {{-- <option value="IT">IT</option> --}}
+                                                {{-- <option value="DIR">DIRECTORS</option> --}}
                                                 {{-- <option value="SI">SINERGY INSTITUTE</option>
                                                 <option value="Z001">ASSESSMENT CENTER</option>
                                                 <option value="Z002">LABOR SUPPLY</option>

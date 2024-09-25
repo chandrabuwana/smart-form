@@ -15,6 +15,25 @@ class AssetRequestController extends Controller {
     private $TABLE_UPLOADS = "FM_SM_016_UPLOADS";
     private $TABLE_MAPPING_APPROVAL = "FM_SM_016_MAPPING_APPROVAL";
     private $user_sm = ['1008491', '1008492', '1008493', '1008494', '1008526'];
+    private const LIST_DEPT = [
+        '' => '--- Pilih Departmen ---',
+        'ENG' => 'ENGINEERING',
+        'SHE' => 'SHE',
+        'PRD' => 'PRODUKSI',
+        'SM' => 'SM',
+        'IC' => 'IC',
+        'GS' => 'GS',
+        'RM' => 'PLANT',
+        'BDV' => 'BUSDEV',
+        'FIN' => 'FINANCE',
+        'ATA' => 'Accounting & Tax',
+        'DTC' => 'DATA CENTER',
+        'MM' => 'LOGISTIK',
+        'OPR' => 'OPERATION',
+        'LEG' => 'LEGAL',
+        'OD' => 'ORGANIZATION DEVELOPMENT',
+        'CIVIL' => 'CIVIL'
+    ];
 
     private function getUserSM(): array {
         $list_nik_SM = [];
@@ -30,7 +49,9 @@ class AssetRequestController extends Controller {
     }
 
     function IndexForm(Request $request) {
-        return view("SmartForm::SM/form-asset-request");
+        return view("SmartForm::SM/form-asset-request", [
+            'list_dept' => self::LIST_DEPT
+        ]);
     }
 
     function EditForm(Request $request) {
@@ -41,6 +62,7 @@ class AssetRequestController extends Controller {
         if($data['data']['requested_by'] != $nik_session) {
             return abort(401, 'Unauthoried Request!');
         } else {
+            $data['list_dept'] = self::LIST_DEPT;
             return view("SmartForm::SM/form-asset-request-edit", $data);
         }
     }
@@ -337,6 +359,7 @@ class AssetRequestController extends Controller {
         $history_edit = $this->getHistory($data['data']['id']);
         $data_approval = $this->getApprovalStatus($no_doc, $data['data']['acknowledge_by_1_nik'], $data['data']['acknowledge_by_2_nik'], $data['data']['approved_by_1_nik'], $data['data']['approved_by_2_nik']);
         $data = array_merge($data, $history_edit, $data_approval);
+        $data['list_dept'] = self::LIST_DEPT;
 
         return view('SmartForm::SM/detail-form-asset-request', $data);
     }

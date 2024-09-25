@@ -470,6 +470,7 @@
                 messByRequest: dataRequestMakan.length,
                 working: dataWorking.length,
                 adjustment: dataAdjustmen.length,
+                listAdjustment: $('#table-adjustment-makan').bootstrapTable('getData'),
                 selected: selectedJenisPemesanan.value,
                 site: inputSite.val(),
                 // detail: detail,
@@ -722,10 +723,10 @@
                     if(index > 0) { // Skip header row
                         console.log(row)
                         loadedData.push({
-                            nama: row[0],
-                            nik: row[1],
-                            lokasi: row[2],
-                            keterangan: row[3]
+                            nama: row[0] !== undefined ? row[0] : "",
+                            nik: row[1] !== undefined ? row[1] : "",
+                            lokasi: row[2] !== undefined ? row[2] : "",
+                            keterangan: row[3] !== undefined ? row[3] : ""
                         })
                         jumlahData++
                         // var newRow = table.insertRow();

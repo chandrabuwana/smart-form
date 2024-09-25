@@ -24,6 +24,7 @@ class SmartCateringController extends Controller {
     private const TABLE_MASTER_MESS = self::DB_SMARTFORM . ".dbo.SCT_GS_MESS_MST";
     private const TABLE_PENGHUNI_MESS = self::DB_SMARTFORM . ".dbo.SCT_GS_MESS_HUNI";
     private const TABLE_SUBMIT_ORDER = self::DB_SMARTFORM . ".dbo.SCT_GS_CT_ORDER";
+    private const TABLE_SUBMIT_ORDER_ADJUSTMENT_DTL = self::DB_SMARTFORM . ".dbo.SCT_GS_CT_ADJUSTMENT";
     // private const TABLE_SUBMIT_ORDER_DETAIL = self::DB_SMARTFORM . ".dbo.SCT_GS_CT_ORDER_DTL";
     private const TABLE_SUBMIT_ORDER_DETAIL = self::DB_SMARTFORM . ".dbo.SCT_GS_CT_ORDER_DETAIL";
     private const TABLE_SUBMIT_ORDER_VENDOR = self::DB_SMARTFORM . ".dbo.SCT_GS_CT_ORDER_VNDR";
@@ -253,7 +254,17 @@ class SmartCateringController extends Controller {
             'selected.in' => 'Selected tidak sesuai',
         ]);
 
-        Log::info($validator->errors()->all());
+        // Log::info($request->input("listAdjustment", []));
+        // foreach ($request->input("listAdjustment", []) as $adjustmentPerson) {
+        //     $insertAdjustment = [
+        //         'KodeST' => $request->input("site"),
+        //         'kode_pemesanan' => "sf",
+        //         'nik' => $adjustmentPerson['nik'],
+        //         'nama' => $adjustmentPerson['nama'],
+        //         'keterangan' => $adjustmentPerson['keterangan']
+        //     ];
+        //     Log::info($insertAdjustment);
+        // }
         try {
             if(count($validator->errors()->all())) {
                 $errorMessage = $validator->errors()->all();
@@ -269,6 +280,7 @@ class SmartCateringController extends Controller {
                 $selected_pemesanan = $request->input("selected");
                 $detail = $request->input("detail", []);
                 $summaryOrder = $request->input("summaryOrder", []);
+                $detailAdjustment = $request->input("listAdjustment", []);
 
                 $data_order_insert = [
                     'jenis_pemesanan' => $jenisPemesanan,
@@ -359,6 +371,20 @@ class SmartCateringController extends Controller {
                     
                     $summaryPerVendor_new[] = $details;
                     DB::connection(self::DB_CONN_NAME)->table(self::TABLE_SUBMIT_ORDER_VENDOR)->insert($details);
+                }
+
+                foreach ($detailAdjustment as $adjustmentPerson) {
+                    $insertAdjustment = [
+                        'KodeST' => $site,
+                        'kode_pemesanan' => $kode_pemesanan,
+                        'nik' => $adjustmentPerson['nik'],
+                        'nama' => $adjustmentPerson['nama'],
+                        'keterangan' => $adjustmentPerson['keterangan'],
+                        'created_by' => $nik_session,
+                        'created_at' => $tgl
+                    ];
+                    
+                    DB::connection(self::DB_CONN_NAME)->table(self::TABLE_SUBMIT_ORDER_ADJUSTMENT_DTL)->insert($insertAdjustment);
                 }
 
                 Log::debug("SQL hasil match mapping : " . json_encode($newSummaryOrder, JSON_PRETTY_PRINT));
