@@ -103,7 +103,7 @@
                                                 <option value="GS">GS</option>
                                                 <option value="RM">PLANT</option>
                                                 <option value="BDV">BUSDEV</option>
-                                                <option value="DIR">DIRECTORS</option>
+                                                {{-- <option value="DIR">DIRECTORS</option> --}}
                                                 <option value="FIN">FINANCE</option>
                                                 <option value="ATA">Accounting & Tax</option>
                                                 <option value="DTC">DATA CENTER</option>
@@ -111,6 +111,7 @@
                                                 <option value="OPR">OPERATION</option>
                                                 <option value="LEG">LEGAL</option>
                                                 <option value="OD">ORGANIZATION DEVELOPMENT</option>
+                                                <option value="CIVIL">CIVIL</option>
                                                 {{-- <option value="SI">SINERGY INSTITUTE</option>
                                                 <option value="Z001">ASSESSMENT CENTER</option>
                                                 <option value="Z002">LABOR SUPPLY</option>
@@ -160,12 +161,10 @@
                                                 <option value="SHE">SHE</option>
                                                 <option value="PRD">PRODUKSI</option>
                                                 <option value="SM">SM</option>
-                                                {{-- <option value="IT">IT</option> --}}
                                                 <option value="IC">IC</option>
                                                 <option value="GS">GS</option>
                                                 <option value="RM">PLANT</option>
                                                 <option value="BDV">BUSDEV</option>
-                                                <option value="DIR">DIRECTORS</option>
                                                 <option value="FIN">FINANCE</option>
                                                 <option value="ATA">Accounting & Tax</option>
                                                 <option value="DTC">DATA CENTER</option>
@@ -173,6 +172,9 @@
                                                 <option value="OPR">OPERATION</option>
                                                 <option value="LEG">LEGAL</option>
                                                 <option value="OD">ORGANIZATION DEVELOPMENT</option>
+                                                <option value="CIVIL">CIVIL</option>
+                                                {{-- <option value="IT">IT</option> --}}
+                                                {{-- <option value="DIR">DIRECTORS</option> --}}
                                                 {{-- <option value="SI">SINERGY INSTITUTE</option>
                                                 <option value="Z001">ASSESSMENT CENTER</option>
                                                 <option value="Z002">LABOR SUPPLY</option>

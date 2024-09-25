@@ -280,7 +280,9 @@
                                     <tr>
                                         <th>Requested By</th>
                                         <th colspan="3">Acknowledge By</th>
-                                        <th colspan="2">Approved By</th>
+                                        @if($approval_status->approved_by_1_nik != null && $approval_status->approved_by_2_nik != null)
+                                            <th colspan="{{ $approval_status->approved_by_2_nik == null ? 1 : 2}}">Approved By {{ $approval_status->approved_by_1_nik == null ? "null" : "tidak null"}} {{$approval_status->approved_by_2_nik == null}}</th>
+                                        @endif
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -419,7 +421,7 @@
                                 @endif
                                 @if($data['status'] == 1 && $is_user_sm)
                                     {{-- TODO : hanya SM --}}
-                                    <button onclick="actionValidation(this)" class="btn btn-primary uploadBtn" id="btnSubmitAssetRequest" data-nilai="1" data-action="proses"
+                                    <button onclick="actionValidation(this)" class="btn btn-primary uploadBtn" id="btnSubmitAssetRequest" data-nilai="2" data-action="proses"
                                         data-alert-title="Proses Request" data-alert-message="Konfirmasi approve request ?">
                                         <i class="fas fa-save"></i>
                                         Proses

@@ -16,9 +16,20 @@ class AssetRequestController extends Controller {
     private $TABLE_MAPPING_APPROVAL = "FM_SM_016_MAPPING_APPROVAL";
     private $user_sm = ['1008491', '1008492', '1008493', '1008494', '1008526'];
 
+    private function getUserSM(): array {
+        $list_nik_SM = [];
+
+        try {
+            $list_nik_SM = array_map('trim', explode(',', config('app.user_sm', '')));
+        } catch (Exception $ex) {
+           Log::error($ex->getMessage());
+           Log::error($ex->getTraceAsString());
+        }
+        
+        return $list_nik_SM;
+    }
+
     function IndexForm(Request $request) {
-        Log::debug('Valdiation matrix : '. json_encode($this->getValidationMatrix('SM'), JSON_PRETTY_PRINT));
-        // Log::info('user SM : '. config('app.user_sm', ''));
         return view("SmartForm::SM/form-asset-request");
     }
 
@@ -159,10 +170,10 @@ class AssetRequestController extends Controller {
         $requested_by = $req->session()->get('user_id');
         $data = $req->input();
         // Log::info(json_encode(array('body' => $data)));
-        $validation_matrix = $this->getValidationMatrix(
+        $validation_matrix = $this->checkValidationMatrixNominal($data['totalPrice'], $this->getValidationMatrix(
             $data['department'], $data['project'],
             $data['departmentAllocation'], $data['projectAllocation']
-        );
+        ));
         $data_insert = [
             'requested_by' => $requested_by,
             'department' => $data['department'],
@@ -378,7 +389,7 @@ class AssetRequestController extends Controller {
         $TABLE_DETAIL = "FM_SM_016_DETAIL";
         $isError = true;
         $errorMessage = '';
-        $this->user_sm = explode(',', config('app.user_sm', ''));
+        $this->user_sm = $this->getUserSM();
         $data_master = array(
             'requested_name' => '',
             'requested_by' => '',
@@ -524,10 +535,13 @@ class AssetRequestController extends Controller {
 
         $body = $request->input();
         $nik_session = $request->session()->get('user_id', '');
-        $data = DB::table($this->TABLE_MASTER)
+        $data_sql = DB::table($this->TABLE_MASTER)
             ->select('id', 'acknowledge_by_1_nik','cost_control_nik', 'acknowledge_by_2_nik', 'approved_by_1_nik', 'approved_by_2_nik')
-            ->where('no_doc', $body['noDoc'])
-            ->first();
+            ->where('no_doc', $body['noDoc']);
+
+        Log::debug('SQL check validation nik : ' . $data_sql->toRawSql());
+        $data = $data_sql->first();
+        Log::debug('Data check validation nik : ' . json_encode($data));
         $isError = false;
         $errorMessage = "";
         $message = "";
@@ -536,7 +550,7 @@ class AssetRequestController extends Controller {
         switch ($body['action']) {
             case 'acknowledge1':
                 if($data->acknowledge_by_1_nik == $nik_session) {
-                    $result = $this->updateValidation('acknowledge_1', $body['noDoc'], $nik_session, 'acknowledge1', $data->id, $action_value);
+                    $result = $this->updateValidation('acknowledge_1', $body['noDoc'], $nik_session, 'acknowledge1', $data->id, $action_value, $data);
                     $isError = $result['error'];
                     $errorMessage = $result['errorMessage'];
                     $message = $result['message'];
@@ -547,7 +561,7 @@ class AssetRequestController extends Controller {
                 break;
             case 'cost_control':
                 if($data->cost_control_nik == $nik_session) {
-                    $result = $this->updateValidation('cost_control', $body['noDoc'], $nik_session, 'cost_control', $data->id, $action_value);
+                    $result = $this->updateValidation('cost_control', $body['noDoc'], $nik_session, 'cost_control', $data->id, $action_value, $data);
                     $isError = $result['error'];
                     $errorMessage = $result['errorMessage'];
                     $message = $result['message'];
@@ -558,7 +572,7 @@ class AssetRequestController extends Controller {
                 break;
             case 'acknowledge2':
                 if($data->acknowledge_by_2_nik == $nik_session) {
-                    $result = $this->updateValidation('acknowledge_2', $body['noDoc'], $nik_session, 'acknowledge2', $data->id, $action_value);
+                    $result = $this->updateValidation('acknowledge_2', $body['noDoc'], $nik_session, 'acknowledge2', $data->id, $action_value, $data);
                     $isError = $result['error'];
                     $errorMessage = $result['errorMessage'];
                     $message = $result['message'];
@@ -569,7 +583,7 @@ class AssetRequestController extends Controller {
                 break;
             case 'approve1':
                 if($data->approved_by_1_nik == $nik_session) {
-                    $result = $this->updateValidation('approved_1', $body['noDoc'], $nik_session, 'approve1', $data->id, $action_value);
+                    $result = $this->updateValidation('approved_1', $body['noDoc'], $nik_session, 'approve1', $data->id, $action_value, $data);
                     $isError = $result['error'];
                     $errorMessage = $result['errorMessage'];
                     $message = $result['message'];
@@ -580,7 +594,7 @@ class AssetRequestController extends Controller {
                 break;
             case 'approve2':
                 if($data->approved_by_2_nik == $nik_session) {
-                    $result = $this->updateValidation('approved_2', $body['noDoc'], $nik_session, 'approve2', $data->id, $action_value);
+                    $result = $this->updateValidation('approved_2', $body['noDoc'], $nik_session, 'approve2', $data->id, $action_value, $data);
                     $isError = $result['error'];
                     $errorMessage = $result['errorMessage'];
                     $message = $result['message'];
@@ -590,7 +604,7 @@ class AssetRequestController extends Controller {
                 }
                 break;
             case 'proses':
-                $result = $this->updateValidation('proses', $body['noDoc'], $nik_session, 'proses', $data->id, $action_value);
+                $result = $this->updateValidation('proses', $body['noDoc'], $nik_session, 'proses', $data->id, $action_value, $data);
                 $isError = $result['error'];
                 $errorMessage = $result['errorMessage'];
                 $message = $result['message'];
@@ -616,7 +630,7 @@ class AssetRequestController extends Controller {
         ]);
     }
 
-    private function updateValidation($column, $no_doc, $nik, $action, $id, $value) {
+    private function updateValidation($column, $no_doc, $nik, $action, $id, $value, $matrix_validation_result) {
         $affected = 0;
         $error = true;
         $errorMessage = '';
@@ -643,33 +657,38 @@ class AssetRequestController extends Controller {
             } if ($action =='acknowledge1' || $action =='acknowledge2') {
                 $updated_column[$column] = $value;
                 if($value == -1) $updated_column['status'] = -1;
+                if($action =='acknowledge2' && $matrix_validation_result->approved_by_1_nik == null && $value == 1) $updated_column['status'] = 1;
                 $affected = DB::table($this->TABLE_MASTER)
                     ->where('no_doc', $no_doc)
                     ->update($updated_column);
                 // $new_value[$column] = 1;
             } if ($action =='cost_control') {
                 $updated_column[$column] = $value;
+                if($value == -1) $updated_column['status'] = -1;
                 $affected = DB::table($this->TABLE_MASTER)
                     ->where('no_doc', $no_doc)
                     ->update($updated_column);
                 // $new_value[$column] = 1;
             } if ($action =='approve1') {
                 $updated_column[$column] = $value;
+                if($value == -1) $updated_column['status'] = -1;
+                if($matrix_validation_result->approved_by_2_nik == null && $value == 1) $updated_column['status'] = 1;
                 $affected = DB::table($this->TABLE_MASTER)
                     ->where('no_doc', $no_doc)
                     ->update($updated_column);
                 // $new_value[$column] = 1;
             } if ($action =='approve2') {
                 $updated_column[$column] = $value;
-                $updated_column['status'] = 1;
+                if($value == -1) $updated_column['status'] = -1;
+                if($value == 1) $updated_column['status'] = 1;
                 $affected = DB::table($this->TABLE_MASTER)
                     ->where('no_doc', $no_doc)
                     ->update($updated_column);
                 // $new_value[$column] = 1;
-                $new_value['status'] = 1;
+                // $new_value['status'] = 1;
             }
-            $new_value[$column] = 1;
-            $this->addHistory($id, $tgl, $nik, $action, $new_value);
+            // $new_value[$column] = 1;
+            $this->addHistory($id, $tgl, $nik, $action, $updated_column);
 
             $error = false;
             $message = 'Berhasil ' . $action . ' dokumen ' . $no_doc;
@@ -762,10 +781,27 @@ class AssetRequestController extends Controller {
         ];
     }
 
-    private function checkValidationMatrixNominal($department) {
-        $nik = '';
+    private function checkValidationMatrixNominal($nominal, $matrix_validation) {
+        if(filter_var($nominal, FILTER_VALIDATE_INT) !== false)  $nominal = (int) $nominal;
+        else $nominal = 0;
+        Log::debug('checkValidationMatrixNominal : ' . $nominal . ' , matrix: '. json_encode($matrix_validation, JSON_PRETTY_PRINT));
+        
+        if($nominal < 50000000) {
+            if(array_key_exists('approved_by_1_nik', $matrix_validation)) {
+                $matrix_validation['approved_by_1_nik'] = null;
+            }
+            if(array_key_exists('approved_by_2_nik', $matrix_validation)) {
+                $matrix_validation['approved_by_2_nik'] = null;
+            }
+        } else if ($nominal >= 50000000 && $nominal < 300000000) {
+            if(array_key_exists('approved_by_2_nik', $matrix_validation)) {
+                $matrix_validation['approved_by_2_nik'] = null;
+            }
+        }
 
-        return $nik;
+        Log::debug('matrix validation filtered : '. json_encode($matrix_validation, JSON_PRETTY_PRINT));
+
+        return $matrix_validation;
     }
 
     private function isArrayDifferent($array1, $array2) {

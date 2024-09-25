@@ -99,7 +99,7 @@
                                                 <option value="GS">GS</option>
                                                 <option value="RM">PLANT</option>
                                                 <option value="BDV">BUSDEV</option>
-                                                <option value="DIR">DIRECTORS</option>
+                                                {{-- <option value="DIR">DIRECTORS</option> --}}
                                                 <option value="FIN">FINANCE</option>
                                                 <option value="ATA">Accounting & Tax</option>
                                                 <option value="DTC">DATA CENTER</option>
@@ -107,6 +107,7 @@
                                                 <option value="OPR">OPERATION</option>
                                                 <option value="LEG">LEGAL</option>
                                                 <option value="OD">ORGANIZATION DEVELOPMENT</option>
+                                                <option value="CIVIL">CIVIL</option>
                                                 {{-- <option value="SI">SINERGY INSTITUTE</option>
                                                 <option value="Z001">ASSESSMENT CENTER</option>
                                                 <option value="Z002">LABOR SUPPLY</option>
@@ -160,7 +161,7 @@
                                                 <option value="GS">GS</option>
                                                 <option value="RM">PLANT</option>
                                                 <option value="BDV">BUSDEV</option>
-                                                <option value="DIR">DIRECTORS</option>
+                                                {{-- <option value="DIR">DIRECTORS</option> --}}
                                                 <option value="FIN">FINANCE</option>
                                                 <option value="ATA">Accounting & Tax</option>
                                                 <option value="DTC">DATA CENTER</option>
@@ -168,6 +169,7 @@
                                                 <option value="OPR">OPERATION</option>
                                                 <option value="LEG">LEGAL</option>
                                                 <option value="OD">ORGANIZATION DEVELOPMENT</option>
+                                                <option value="CIVIL">CIVIL</option>
                                                 {{-- <option value="SI">SINERGY INSTITUTE</option>
                                                 <option value="Z001">ASSESSMENT CENTER</option>
                                                 <option value="Z002">LABOR SUPPLY</option>
