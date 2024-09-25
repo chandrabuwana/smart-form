@@ -3,6 +3,7 @@
 namespace Modules\API\App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\VendorMaster;
 use DateTime;
 use Exception;
 use Illuminate\Http\Request;
@@ -146,8 +147,44 @@ class UserMobileController extends Controller {
         );
     }
 
-    public function testt(Request $request)
+    public function UpdateFcmToken(Request $request)
     {
-        dd('OKOKKK');
+        $validator = Validator::make($request->all(), [
+            'fcm_token'  => 'required',
+            'apps'  => 'required',
+        ]);
+
+        $isSuccess = false;
+        $message = '';
+        $errorMessage = [];
+        $data = null;
+
+        if (count($validator->errors()->all()) > 0 ) {
+            $message = 'Error request body validation';
+            $errorMessage = $validator->errors()->all();
+
+        } else {
+            $isSuccess = true;
+            $message = 'Berhasil!';
+            $data = [];
+
+            if($request->apps == 'vendor') {
+                $emailFromToken = $request->get('email_from_token');
+                VendorMaster::where('email', $emailFromToken)->update([
+                    'notification_token' => $request->fcm_token,
+                ]);
+            }
+        }
+
+        return response()->json([
+            'isSuccess' => $isSuccess,
+            'message' => $message,
+            'errorMessage' => $errorMessage,
+            'data' => $data
+        ],
+        200,
+        [
+            'X-CSRF-TOKEN' => csrf_token()
+        ]);
     }
 }
