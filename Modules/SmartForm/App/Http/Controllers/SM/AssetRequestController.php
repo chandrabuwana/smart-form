@@ -17,6 +17,7 @@ class AssetRequestController extends Controller {
     private $user_sm = ['1008491', '1008492', '1008493', '1008494', '1008526'];
 
     function IndexForm(Request $request) {
+        Log::debug('Valdiation matrix : '. json_encode($this->getValidationMatrix('SM'), JSON_PRETTY_PRINT));
         // Log::info('user SM : '. config('app.user_sm', ''));
         return view("SmartForm::SM/form-asset-request");
     }
@@ -141,7 +142,6 @@ class AssetRequestController extends Controller {
     }
 
     function DashboardForm(Request $req) {
-        Log::debug('Valdiation matrix : '. json_encode($this->getValidationMatrix('ENG'), JSON_PRETTY_PRINT));
         $nik_session = $req->session()->get('user_id', '');
 
         return view("SmartForm::SM/dashboard-form-sm", ['nik_session' => $nik_session]);
@@ -531,11 +531,12 @@ class AssetRequestController extends Controller {
         $isError = false;
         $errorMessage = "";
         $message = "";
+        $action_value = $request->input('actionValue', 1);
 
         switch ($body['action']) {
             case 'acknowledge1':
                 if($data->acknowledge_by_1_nik == $nik_session) {
-                    $result = $this->updateValidation('acknowledge_1', $body['noDoc'], $nik_session, 'acknowledge1', $data->id);
+                    $result = $this->updateValidation('acknowledge_1', $body['noDoc'], $nik_session, 'acknowledge1', $data->id, $action_value);
                     $isError = $result['error'];
                     $errorMessage = $result['errorMessage'];
                     $message = $result['message'];
@@ -546,7 +547,7 @@ class AssetRequestController extends Controller {
                 break;
             case 'cost_control':
                 if($data->cost_control_nik == $nik_session) {
-                    $result = $this->updateValidation('cost_control', $body['noDoc'], $nik_session, 'cost_control', $data->id);
+                    $result = $this->updateValidation('cost_control', $body['noDoc'], $nik_session, 'cost_control', $data->id, $action_value);
                     $isError = $result['error'];
                     $errorMessage = $result['errorMessage'];
                     $message = $result['message'];
@@ -557,7 +558,7 @@ class AssetRequestController extends Controller {
                 break;
             case 'acknowledge2':
                 if($data->acknowledge_by_2_nik == $nik_session) {
-                    $result = $this->updateValidation('acknowledge_2', $body['noDoc'], $nik_session, 'acknowledge2', $data->id);
+                    $result = $this->updateValidation('acknowledge_2', $body['noDoc'], $nik_session, 'acknowledge2', $data->id, $action_value);
                     $isError = $result['error'];
                     $errorMessage = $result['errorMessage'];
                     $message = $result['message'];
@@ -568,7 +569,7 @@ class AssetRequestController extends Controller {
                 break;
             case 'approve1':
                 if($data->approved_by_1_nik == $nik_session) {
-                    $result = $this->updateValidation('approved_1', $body['noDoc'], $nik_session, 'approve1', $data->id);
+                    $result = $this->updateValidation('approved_1', $body['noDoc'], $nik_session, 'approve1', $data->id, $action_value);
                     $isError = $result['error'];
                     $errorMessage = $result['errorMessage'];
                     $message = $result['message'];
@@ -579,7 +580,7 @@ class AssetRequestController extends Controller {
                 break;
             case 'approve2':
                 if($data->approved_by_2_nik == $nik_session) {
-                    $result = $this->updateValidation('approved_2', $body['noDoc'], $nik_session, 'approve2', $data->id);
+                    $result = $this->updateValidation('approved_2', $body['noDoc'], $nik_session, 'approve2', $data->id, $action_value);
                     $isError = $result['error'];
                     $errorMessage = $result['errorMessage'];
                     $message = $result['message'];
@@ -589,17 +590,17 @@ class AssetRequestController extends Controller {
                 }
                 break;
             case 'proses':
-                $result = $this->updateValidation('proses', $body['noDoc'], $nik_session, 'proses', $data->id);
+                $result = $this->updateValidation('proses', $body['noDoc'], $nik_session, 'proses', $data->id, $action_value);
                 $isError = $result['error'];
                 $errorMessage = $result['errorMessage'];
                 $message = $result['message'];
                 break;
-            case 'reject':
-                $result = $this->updateValidation('proses', $body['noDoc'], $nik_session, 'reject', $data->id);
-                $isError = $result['error'];
-                $errorMessage = $result['errorMessage'];
-                $message = $result['message'];
-                break;
+            // case 'reject':
+            //     $result = $this->updateValidation('proses', $body['noDoc'], $nik_session, 'reject', $data->id);
+            //     $isError = $result['error'];
+            //     $errorMessage = $result['errorMessage'];
+            //     $message = $result['message'];
+            //     break;
 
             default:
                 $isError = true;
@@ -615,7 +616,7 @@ class AssetRequestController extends Controller {
         ]);
     }
 
-    private function updateValidation($column, $no_doc, $nik, $action, $id) {
+    private function updateValidation($column, $no_doc, $nik, $action, $id, $value) {
         $affected = 0;
         $error = true;
         $errorMessage = '';
@@ -624,35 +625,46 @@ class AssetRequestController extends Controller {
         $new_value = [];
 
         try {
+            $updated_column = [
+                'updated_by' => $nik,
+                'updated_at' => $tgl
+            ];
             if($action == 'proses') {
+                $updated_column['status'] = $value;
                 $affected = DB::table($this->TABLE_MASTER)
                     ->where('no_doc', $no_doc)
-                    ->update(['status' => 2, 'updated_by' => $nik, 'updated_at' => $tgl]);
+                    ->update($updated_column);
                 $new_value['status'] = 2;
-            } if ($action == 'reject') {
-                $affected = DB::table($this->TABLE_MASTER)
-                    ->where('no_doc', $no_doc)
-                    ->update(['status' => 3, 'updated_by' => $nik, 'updated_at' => $tgl]);
-                $new_value['status'] = 3;
+            // } if ($action == 'reject') {
+            //     $affected = DB::table($this->TABLE_MASTER)
+            //         ->where('no_doc', $no_doc)
+            //         ->update(['status' => 3, 'updated_by' => $nik, 'updated_at' => $tgl]);
+            //     $new_value['status'] = 3;
             } if ($action =='acknowledge1' || $action =='acknowledge2') {
+                $updated_column[$column] = $value;
+                if($value == -1) $updated_column['status'] = -1;
                 $affected = DB::table($this->TABLE_MASTER)
                     ->where('no_doc', $no_doc)
-                    ->update([$column => 1, 'updated_by' => $nik, 'updated_at' => $tgl]);
+                    ->update($updated_column);
                 // $new_value[$column] = 1;
             } if ($action =='cost_control') {
+                $updated_column[$column] = $value;
                 $affected = DB::table($this->TABLE_MASTER)
                     ->where('no_doc', $no_doc)
-                    ->update([$column => 1, 'updated_by' => $nik, 'updated_at' => $tgl]);
+                    ->update($updated_column);
                 // $new_value[$column] = 1;
             } if ($action =='approve1') {
+                $updated_column[$column] = $value;
                 $affected = DB::table($this->TABLE_MASTER)
                     ->where('no_doc', $no_doc)
-                    ->update([$column => 1, 'updated_by' => $nik, 'updated_at' => $tgl]);
+                    ->update($updated_column);
                 // $new_value[$column] = 1;
             } if ($action =='approve2') {
+                $updated_column[$column] = $value;
+                $updated_column['status'] = 1;
                 $affected = DB::table($this->TABLE_MASTER)
                     ->where('no_doc', $no_doc)
-                    ->update(['status' => 1, $column => 1, 'updated_by' => $nik, 'updated_at' => $tgl]);
+                    ->update($updated_column);
                 // $new_value[$column] = 1;
                 $new_value['status'] = 1;
             }
