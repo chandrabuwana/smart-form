@@ -44,24 +44,25 @@ class ICFM05InduksiKaryawanController extends Controller
     {
 
         $dataDetail = DB::select("WITH LatestInduksi AS (
-                        SELECT DI.index_pertanyaan, 
-                            RFQ.Questionaire, 
-                            RFQ.QuestionaireGroup, 
-                            DI.mentor, 
-                            TK.Nama, 
-                            FORMAT(MIN(DI.created_at), 'dd - MMM - yyyy') AS created_at
-                        FROM [FM_IC_005_BSS_LST_KRYWN] LK  
-                        JOIN [FM_IC_005_BSS_DETAIL_INDUKSI] DI 
-                            ON LK.code = DI.group_code 
-                        JOIN [REF_IC_05_QUESTIONAIRE] RFQ 
-                            ON DI.index_pertanyaan = RFQ.IdQuestionaire
-                        JOIN HRD.dbo.TKaryawan TK 
-                            ON TK.NIK = DI.mentor
-                        WHERE LK.nik = ?
-                        GROUP BY DI.index_pertanyaan, RFQ.Questionaire, RFQ.QuestionaireGroup, DI.mentor, TK.Nama
-                    )
-                    SELECT * 
-                    FROM LatestInduksi;", [$id]);
+            SELECT DI.index_pertanyaan, 
+                RFQ.Questionaire, 
+                RFQ.QuestionaireGroup, 
+                DI.mentor, 
+                TK.Nama, 
+                DI.created_at,
+                ROW_NUMBER() OVER (PARTITION BY DI.index_pertanyaan ORDER BY DI.created_at ASC) AS RowNum
+            FROM [FM_IC_005_BSS_LST_KRYWN] LK  
+            JOIN [FM_IC_005_BSS_DETAIL_INDUKSI] DI 
+                ON LK.code = DI.group_code 
+            JOIN [REF_IC_05_QUESTIONAIRE] RFQ 
+                ON DI.index_pertanyaan = RFQ.IdQuestionaire
+            JOIN HRD.dbo.TKaryawan TK 
+                ON TK.NIK = DI.mentor
+            WHERE LK.nik = ?
+        )
+        SELECT * 
+        FROM LatestInduksi
+        WHERE RowNum = 1;", [$id]);
 
         $dataDetailKaryawan = DB::table("FM_IC_005_BSS_LST_KRYWN")
             ->select(
@@ -195,7 +196,7 @@ class ICFM05InduksiKaryawanController extends Controller
         }
     }
 
-    function GenerateLinkUrl()
+    function GenerateLinkUrl(Request $r)
     {
         $randomeCode = DB::table('VW_GNRT_CODE_IC_005')->first()->generated_code;
         $dataGenerate = base64_encode(session("user_id") . '_' . $randomeCode);
@@ -207,6 +208,7 @@ class ICFM05InduksiKaryawanController extends Controller
             DB::table('FM_IC_005_BSS_LST_GRP')->insert([
                 'code' => $randomeCode,
                 'link' => $link,
+                'site' => $r->site,
                 'expired' => $timePlus30Minutes,
                 'created_at' => $timeNow,
                 'created_by' => session("user_id"),
@@ -279,7 +281,6 @@ class ICFM05InduksiKaryawanController extends Controller
             ]);
         }
     }
-
 
     function IndexDashboard()
     {

@@ -29,9 +29,16 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-4">
+                                        <label for="FILTERNIKMENTOR">NIK Mentor</label>
+                                        <input type="text" class="form-control" id="FILTERNIKMENTOR" name="FILTERNIKMENTOR"
+                                            maxlength="7" placeholder=" -- Masukkan NIK Mentor -- ">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="input-group input-group-static mb-4">
                                         <label for="FILTERNAMA">Nama</label>
                                         <input type="text" class="form-control" id="FILTERNAMA" name="FILTERNAMA"
-                                            maxlength="7" placeholder="-- Masukkan Lokasi -- ">
+                                            maxlength="7" placeholder="-- Masukkan Nama Karyawan Induksi -- ">
                                     </div>
                                 </div>
                                 <div class="col-md-2">
@@ -78,9 +85,12 @@
                             <thead>
                                 <tr>
                                     <th data-field="code" data-align="center" data-halign="center">Code</th>
-                                    <th data-field="link" data-align="center" data-halign="center">link</th>
-                                    <th data-field="expired" data-align="center" data-formatter="dataTableDateFormater"
-                                        data-halign="center">Expired</th>
+                                    {{-- <th data-field="expired" data-align="center" data-formatter="dataTableDateFormater"
+                                        data-halign="center">Expired</th> --}}
+                                    <th data-field="mentor_names" data-align="center" data-halign="center">Mentor</th>
+                                    <th data-field="site" data-align="center" data-halign="center">Site</th>
+                                    <th data-field="created_at" data-align="center" data-halign="center"
+                                        data-formatter="dataTableDateFormater">Dibuat Tanggal</th>
                                     <th data-field="jml_karyawan" data-align="center" data-halign="center">Karyawan</th>
                                     <th data-field="pertanyaan" data-align="center" data-halign="center">Jenis</th>
                                     <th data-halign="center" data-align="center"
@@ -299,13 +309,13 @@
             return data;
         }
 
-
         function dataListFormICInduksiKaryawanParamsGenerate(params) {
 
             params.search = {
                 'FILTERNIK': $('#FILTERNIK').val(),
                 'FILTERNAMA': $('#FILTERNAMA').val(),
                 'FILTERTANGGAL': $('#FILTERTANGGAL').val(),
+                'FILTERNIKMENTOR': $('#FILTERNIKMENTOR').val(),
             };
 
             if (params.sort == undefined) {
@@ -362,7 +372,7 @@
                         }).then((result) => {
                             if (result.isConfirmed) {
                                 window.location.href = "/bss-form/induksi-karyawan/download-pdf/" + nnik
-                            } 
+                            }
                         });
                     }
                 },
