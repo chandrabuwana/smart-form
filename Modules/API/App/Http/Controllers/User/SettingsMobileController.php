@@ -94,7 +94,7 @@ class SettingsMobileController extends Controller
             'required' => 'Kolom :attribute wajib diisi.',
             'password_baru.min' => 'Password baru minimal berisi 5 karakter',
             'password_baru.max' => 'Password baru maksimal berisi 15 karakter',
-            'konfirmasi_password_baru.match' => 'Konfirmasi password baru wajib sesuai dengan password baru',
+            'konfirmasi_password_baru.same' => 'Konfirmasi password baru wajib sesuai dengan password baru',
         ]);
 
         $httpRespCode = 401;
@@ -107,11 +107,11 @@ class SettingsMobileController extends Controller
         $user = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_VENDOR_MASTER)
             ->where('Email', $emailFromToken)->first();
 
-        if(count($validator->errors()) > 0) {
-            $errorMessage = $validator->errors()->all();
-
-        } else if(!Hash::check($request->password_lama, $user->pwd)) {
+        if(!Hash::check($request->password_lama, $user->pwd)) {
             $errorMessage[] = 'Password lama yang anda masukkan salah';
+
+        } else if(count($validator->errors()) > 0) {
+            $errorMessage = $validator->errors()->all();
 
         } else {
             $httpRespCode = 200;
