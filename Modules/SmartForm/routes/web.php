@@ -16,6 +16,7 @@ use Modules\SmartForm\App\Http\Controllers\PLANT\PlantTransmissionController;
 use Modules\SmartForm\App\Http\Controllers\Production\ProductionTimeSheetDashboarController;
 use Modules\SmartForm\App\Http\Controllers\SHE\DashboardSHEFRM19BController;
 use Modules\SmartForm\App\Http\Controllers\SHE\TransactionSHEFRM19BController;
+use Modules\SmartForm\App\Http\Controllers\SKL\SKLFormController;
 use Modules\SmartForm\App\Http\Controllers\SM\AssetRequestController;
 use Modules\SmartForm\App\Http\Controllers\SmartFormController;
 use Modules\SmartForm\App\Http\Controllers\SmartPica\DashboarController;
@@ -110,7 +111,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/list-pemesanan', [SmartCateringController::class, 'GetListPemesanan'])->name('list-pemesanan');
             Route::post('/generate-detail', [SmartCateringController::class, 'GenerateDetailPemesanan'])->name('generate-detail-pemesanan-catering');
             Route::post('/order', [SmartCateringController::class, 'SubmitPesanMakan'])->name('submit-makan');
-    
+
         });
     });
 
@@ -168,6 +169,13 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
         Route::post('/add-transaction', [TransactionPicaController::class, 'AddDataTransactionPica']);
         Route::post('/add-step-transaction', [TransactionPicaController::class, 'addDataStepTransactionPica']);
         Route::post('/add-progress-history-transaction', [TransactionPicaController::class, 'addTransactionProgressStepSolutionPica']);
+    });
+
+    Route::prefix('skl')->group( function() {
+        Route::get('/dashboard', [SKLFormController::class, 'dashboard'])->name('bss-skl.dashboard');
+        Route::get('/dashboard/get-data', [SKLFormController::class, 'getDashboardData'])->name('bss-skl.dashboard-get-data');
+        Route::get('/form', [SKLFormController::class, 'create'])->name('bss-skl.create');
+        Route::post('/store', [SKLFormController::class, 'store'])->name('bss-skl.store');
     });
 
     Route::prefix('approval')->group(function () {
