@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\JwtAuth;
 use Illuminate\Support\Facades\Route;
+use Modules\API\App\Http\Controllers\Invoice\InvoiceMobileController;
 use Modules\API\App\Http\Controllers\Login\CateringController;
 use Modules\API\App\Http\Controllers\Login\MobileLoginController;
 use Modules\API\App\Http\Controllers\User\SettingsMobileController;
@@ -33,6 +34,8 @@ Route::prefix('api/v1')->group(function () {
 
         Route::group(['middleware' => [JwtAuth::class]], function () {
             Route::post('/profile', [UserMobileController::class, 'GetUser'])->name('user-profile');
+
+            Route::post('/update-fcm-token', [UserMobileController::class, 'UpdateFcmToken'])->name('update-fcm-token');
         });
     });
 
@@ -53,6 +56,13 @@ Route::prefix('api/v1')->group(function () {
                 Route::post('/account', [SettingsMobileController::class, 'UpdateAccount'])->name('settings-account-vendor');
                 Route::post('/password', [SettingsMobileController::class, 'UpdatePassword'])->name('settings-password-vendor');
             });
+        });
+
+        Route::prefix('invoice')->group( function() {
+            Route::get('/', [InvoiceMobileController::class, 'index'])->name('invoice-vendor');
+            Route::get('/statistics', [InvoiceMobileController::class, 'statistics'])->name('invoice-vendor-statistics');
+            Route::post('/store', [InvoiceMobileController::class, 'store'])->name('invoice-vendor-store');
+            Route::post('/detail', [InvoiceMobileController::class, 'detail'])->name('invoice-vendor-detail');
         });
     });
 });

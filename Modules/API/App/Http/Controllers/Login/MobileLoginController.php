@@ -32,13 +32,19 @@ class MobileLoginController extends Controller {
             if(!empty($request->apps) && $request->apps == 'vendor') {
                 $payload = [
                     'Email' => $request->input('username'),
-                    'pwd' => $request->input('password')
+                    'pwd' => $request->input('password'),
                 ];
 
                 $user = VendorMaster::where('Email', $payload['Email'])->first();
                 $token = null;
 
                 if(!is_null($user) && Hash::check($payload['pwd'], $user->pwd)) {
+                    if(!empty($request->fcm_token)) {
+                        VendorMaster::where('Email', $payload['Email'])->update([
+                           'notification_token' => $request->fcm_token
+                        ]);
+                    }
+
                     $token = auth()->guard('api_vendor')->login($user);
                 }
 
