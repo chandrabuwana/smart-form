@@ -762,7 +762,7 @@ class AssetRequestController extends Controller {
         ];
     }
 
-    private function getMappingKadep($department) {
+    private function checkValidationMatrixNominal($department) {
         $nik = '';
 
         return $nik;
