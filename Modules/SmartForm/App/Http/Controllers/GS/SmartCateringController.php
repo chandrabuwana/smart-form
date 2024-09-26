@@ -2,6 +2,7 @@
 
 namespace Modules\SmartForm\App\Http\Controllers\GS;
 
+use App\Helper;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Exception;
@@ -371,6 +372,19 @@ class SmartCateringController extends Controller {
                     
                     $summaryPerVendor_new[] = $details;
                     DB::connection(self::DB_CONN_NAME)->table(self::TABLE_SUBMIT_ORDER_VENDOR)->insert($details);
+                }
+                
+                $vendor_id_list = array_filter(array_column($summaryPerVendor_new, 'VendorID'));
+                $sql_notification_vendor = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_VENDOR_MASTER)
+                    ->select('notification_token', 'id')
+                    ->whereIn('id', $vendor_id_list)
+                    ->whereNotNull('notification_token')
+                    ->get();
+
+                foreach ($sql_notification_vendor as $token_firebase_vendor) {
+                    $notification_body = 'Waktu Pemesanan : ' . $summaryPerVendor[$token_firebase_vendor->id]['TanggalOrder'] . ' ' .$summaryPerVendor[$token_firebase_vendor->id]['JenisPemesanan']. ', Jumlah : '. $summaryPerVendor[$token_firebase_vendor->id]['jumlah'];
+                    $notification_title = 'Pesanan Baru : ' . $summaryPerVendor[$token_firebase_vendor->id]['kode_pemesanan'];
+                    Helper::sendPushNotification($token_firebase_vendor->notification_token, $notification_title, $notification_body);
                 }
 
                 foreach ($detailAdjustment as $adjustmentPerson) {
