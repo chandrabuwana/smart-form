@@ -18,70 +18,8 @@ class SKLFormController extends Controller
     private const T_MST_PEKERJAAN = 'DB_SPL.dbo.TBL_MST_PEKERJAAN';
     private const T_DEPARTEMENT = 'HRD.dbo.tdepartement';
     private const T_SITE = 'HRD.dbo.tsite';
-
-    private const CONN_HRD = 'HRD';
-    private const CONN_SPL = 'DB_SPL';
-
-    public function dashboard()
-    {
-        return view('SmartForm::skl/dashboard');
-    }
-
-    public function getDashboardData(Request $request)
-    {
-        $search  = $request->query('search', '');
-        $sort    = $request->query('sort', 'id');
-        $order   = $request->query('order', 'asc');
-        $offset  = $request->query('offset', 0);
-        $limit   = $request->query('limit', 10);
-
-        try {
-            $sklMasterNotFiltered = DB::table(self::T_FORM_MST)->select('id');
-
-            $sklMaster = DB::table(self::T_FORM_MST)
-                ->select(
-                    self::T_FORM_MST . '.NoForm',
-                    self::T_FORM_MST . '.TglPelaksanaan',
-                    self::T_FORM_MST . '.Shift',
-                    self::T_FORM_MST . '.Status',
-                    DB::raw('COUNT(' . self::T_FORM_KARYAWAN . '.ID) AS TotalKaryawan'),
-                    DB::raw('COUNT(' . self::T_FORM_PEKERJAAN . '.ID) AS TotalPekerjaan')
-                )
-                ->join(self::T_FORM_KARYAWAN, self::T_FORM_KARYAWAN . '.NoForm', '=', self::T_FORM_MST . '.NoForm')
-                ->join(self::T_FORM_PEKERJAAN, self::T_FORM_PEKERJAAN . '.NoForm', '=', self::T_FORM_MST . '.NoForm')
-                ->groupBy(['NoForm', 'TglPelaksanaan', 'Shift', 'Status']);
-
-            // if(!empty($search)) {
-            //     $sklMaster->where('role_name', 'like', '%' . $search . '%');
-            // }
-
-            $data = $sklMaster->orderBy(self::T_FORM_MST . '.' . $sort, $order)->offset($offset)
-                ->limit($limit);
-
-            $rows = $data->get()->map( function($item) {
-                $item->NamaDepartement = DB::connection(self::CONN_HRD)->table(self::T_DEPARTEMENT)
-                    ->select('Nama')->where('KodeDP', $item->KodeDepartement)->first()->Nama;
-
-                $item->NamaSite = DB::connection(self::CONN_HRD)->table(self::T_SITE)
-                    ->select('Nama')->where('KodeST', $item->KodeST)->first()->Nama;
-
-                return $item;
-            });
-
-            return response()->json([
-                'total' => $data->count(),
-                'totalNotFiltered' => $sklMasterNotFiltered->count(),
-                'rows' => $rows
-            ]);
-
-        } catch (Exception $ex) {
-            return response()->json([
-                'total' => 0,
-                'totalNotFiltered' => 0,
-                'rows' => []
-            ]);
-        }
-    }
+    private const T_KARYAWAN = 'HRD.dbo.TKaryawan';
+    private const T_JABATAN = 'HRD.dbo.tjabatan';
 
     public function create()
     {
@@ -89,12 +27,67 @@ class SKLFormController extends Controller
             ->select('KodeDP', self::T_DEPARTEMENT . '.Nama AS NamaDepartement')->join(self::T_DEPARTEMENT, self::T_DEPARTEMENT . '.KodeDP', '=', self::T_MST_PEKERJAAN . '.KodeDepartement')
             ->orderBy('KodeDP', 'ASC')->get();
 
-        $sites = DB::table(self::T_SITE)->select('KodeST', 'Nama')
-            ->orderBy('Nama', 'asc')->get();
+        // $sites = DB::table(self::T_SITE)->select('KodeST', 'Nama')
+        //     ->orderBy('Nama', 'asc')->get();
 
         return view('SmartForm::skl/form', [
             'departements' => $departements,
-            'sites' => $sites
+            // 'sites' => $sites
         ]);
+    }
+
+    public function getKaryawan(Request $request)
+    {
+        $kodeDP = $request->get('KodeDP');
+        $kodeST = $request->get('KodeST');
+
+        return DB::table(self::T_KARYAWAN)->select('NIK AS id', 'Panggilan AS text', self::T_JABATAN . '.Nama AS jabatan')
+            ->join(self::T_JABATAN, self::T_JABATAN . '.KodeJB', '=', self::T_KARYAWAN . '.KodeJB')
+            ->when(!empty($kodeDP), fn($q) => $q->where('KodeDP', $kodeDP))
+            ->when(!empty($kodeST), fn($q) => $q->where('KodeST', $kodeST))
+            ->where('Panggilan', '!=', '')
+            ->orderBy('Panggilan', 'ASC')->get();
+    }
+
+    public function getKategoriPekerjaan(Request $request)
+    {
+        $kodeDP = $request->get('KodeDP');
+
+        return DB::table(self::T_MST_PEKERJAAN)->select('ID as id', 'Nama AS text')
+            ->where('KodeDepartement', $kodeDP)->orderBy('Nama', 'ASC')->get();
+    }
+
+    public function getApprover(Request $request)
+    {
+        $response = [
+            [
+                'subject' => 'Diketahui Oleh',
+                'jabatan' => 'Kabag. Departemen',
+                'option_atasan' => [],
+            ],
+            [
+                'subject' => 'Diketahui Oleh',
+                'jabatan' => 'Cost Controll',
+                'option_atasan' => [],
+            ],
+            [
+                'subject' => 'Diketahui Oleh',
+                'jabatan' => 'Departemen IC',
+                'option_atasan' => [],
+            ],
+        ];
+
+        return array_map(function($item) {
+            $jabatan = strtr($item['jabatan'], [
+                'Kabag. Departemen' => 'Kepala Bagian',
+                'Cost Controll' => 'Cost Control',
+                'Departemen IC' => 'ICGS',
+            ]);
+
+            $item['option_atasan'] = DB::table(self::T_APPROVER)->select('Nik', 'Nama')
+                ->where('');
+
+            return $item;
+        }, $response);
     }
 }

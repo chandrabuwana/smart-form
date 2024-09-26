@@ -78,11 +78,8 @@
                                 <p class="mb-1">
                                     No. Dok : <span id="requestor" class="fw-bold ms-1">BSS-FRM-ICGS-034</span>
                                 </p>
-                                <p class="mb-1">
-                                    Revisi : <span id="requestor" class="fw-bold ms-1">001</span>
-                                </p>
                                 <p class="mb-0">
-                                    No : <span id="requestor" class="fw-bold ms-1">..../IC/Site/SKL/Bln_Romawi/20..</span>
+                                    Revisi : <span id="requestor" class="fw-bold ms-1">001</span>
                                 </p>
                             </div>
                         </div>
@@ -95,7 +92,7 @@
                                     <label class="ms-0 fs-6">Departement</label>
                                 </div>
                                 <div class="col-md-8">
-                                    <select class="form-select input-text" aria-label="Default select example" id="inputSite" name="inputSite">
+                                    <select class="form-select input-text" aria-label="Default select example" id="inputDepartement" name="inputDepartement">
                                         <option value="">-- Pilih Departement --</option>
                                         @foreach($departements as $item)
                                             <option value="{{ $item->KodeDP }}">{{ $item->NamaDepartement }}</option>
@@ -111,9 +108,18 @@
                                 <div class="col-md-8">
                                     <select class="form-select input-text" aria-label="Default select example" id="inputSite" name="inputSite">
                                         <option value="">-- Pilih Site --</option>
-                                        @foreach($sites as $item)
-                                            <option value="{{ $item->KodeST }}">{{ $item->Nama }}</option>
-                                        @endforeach
+                                        <option value="AGM">AGM</option>
+                                        <option value="TAJ">TAJ</option>
+                                        <option value="MBL">MBL MINING</option>
+                                        <option value="MBL-HAULING">MBL HAULING</option>
+                                        <option value="BSSR">BSSR</option>
+                                        <option value="MSJ">MSJ</option>
+                                        <option value="TDM">TDM</option>
+                                        <option value="MAS">MAS</option>
+                                        <option value="PMSS">PMSS</option>
+                                        <option value="BRAM">BRAM</option>
+                                        <option value="MME">MME</option>
+                                        <option value="CDI">CDI</option>
                                     </select>
                                 </div>
                             </div>
@@ -125,18 +131,7 @@
                                     <label class="ms-0 fs-6">Tanggal Pelaksanaan</label>
                                 </div>
                                 <div class="col-md-8">
-                                    <select class="form-select input-text" aria-label="Default select example" id="inputSite" name="inputSite">
-                                        <option value="">-- Pilih Site --</option>
-                                        <option value="AGM">AGM</option>
-                                        <option value="MBL">MBL</option>
-                                        <option value="MME">MME</option>
-                                        <option value="MAS">MAS</option>
-                                        <option value="PMSS">PMSS</option>
-                                        <option value="TAJ">TAJ</option>
-                                        <option value="BSSR">BSSR</option>
-                                        <option value="TDM">TDM</option>
-                                        <option value="MSJ">MSJ</option>
-                                    </select>
+                                    <input type="date" class="input-text w-full" id="inputTanggal">
                                 </div>
                             </div>
 
@@ -145,22 +140,258 @@
                                     <label class="ms-0 fs-6">Shift</label>
                                 </div>
                                 <div class="col-md-8">
-                                    <select class="form-select input-text" aria-label="Default select example" id="inputSite" name="inputSite">
-                                        <option value="">-- Pilih Site --</option>
-                                        <option value="AGM">AGM</option>
-                                        <option value="MBL">MBL</option>
-                                        <option value="MME">MME</option>
-                                        <option value="MAS">MAS</option>
-                                        <option value="PMSS">PMSS</option>
-                                        <option value="TAJ">TAJ</option>
-                                        <option value="BSSR">BSSR</option>
-                                        <option value="TDM">TDM</option>
-                                        <option value="MSJ">MSJ</option>
+                                    <select class="form-select input-text" aria-label="Default select example" id="inputShift" name="inputShift">
+                                        <option value="">-- Pilih Shift --</option>
+                                        <option value="DS">DS</option>
+                                        <option value="NS">NS</option>
                                     </select>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    <div class="d-flex justify-content-between align-items-end mt-4 mb-3">
+                        <p class="mb-0">
+                            Bersama ini kami sampaikan surat perintah lembur atas nama karyawan kami :
+                        </p>
+
+                        <button class="btn btn-primary btn-xs uploadBtn mb-0"
+                            type="button" onclick="showModalTambahKaryawan()">
+                            <i class="fas fa-plus"></i>
+                            Tambah
+                        </button>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table id="table-karyawan" class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th width="5%" rowspan="2" class="align-middle">
+                                        No
+                                    </th>
+                                    <th rowspan="2" class="align-middle">
+                                        NIK
+                                    </th>
+                                    <th rowspan="2" class="align-middle">
+                                        Nama Karyawan
+                                    </th>
+                                    <th rowspan="2" class="align-middle">
+                                        Jabatan
+                                    </th>
+                                    <th colspan="3" class="text-center">
+                                        Jam Lembur
+                                    </th>
+                                    <th rowspan="2" width="5%"></th>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        Dari
+                                    </th>
+                                    <th>
+                                        Sampai
+                                    </th>
+                                    <th>
+                                        Total
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-end mt-4 mb-3">
+                        <p class="mb-0">
+                            Adapun pekerjaan yang dibutuhkan :
+                        </p>
+
+                        <button class="btn btn-primary btn-xs uploadBtn mb-0"
+                            type="button" onclick="showModalTambahPekerjaan()">
+                            <i class="fas fa-plus"></i>
+                            Tambah
+                        </button>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table id="table-pekerjaan" class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th width="5%">
+                                        No
+                                    </th>
+                                    <th>
+                                        Kategori Pekerjaan
+                                    </th>
+                                    <th>
+                                        Detail Pekerjaan
+                                    </th>
+                                    <th width="5%"></th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+
+                    <small class="mb-0 mt-2">
+                        <i>*Note : Jika ada pekerjaan diluar dari ketentuan diatas, maka Atasan Langsung wajib konfirmasi terlebih dahulu ke Departemen IC</i>
+                    </small>
+
+                    <p class="mt-4 mb-3">
+                        Diketahui dan Disetujui Oleh :
+                    </p>
+
+                    <div class="table-responsive">
+                        <table id="table-approver" class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th width="5%">
+                                    </th>
+                                    <th>
+                                        Jabatan
+                                    </th>
+                                    <th>
+                                        Atasan
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        Dibuat Oleh
+                                    </td>
+                                    <td>
+                                        Atasan Langsung
+                                    </td>
+                                    <td>
+                                        {{ session('username') }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Diketahui Oleh
+                                    </td>
+                                    <td>
+                                        Kabag. Departemen
+                                    </td>
+                                    <td>
+                                        <select class="form-select input-text" aria-label="Pilih Atasan" id="inputSite" name="inputSite">
+                                            <option value="">-- Pilih Atasan --</option>
+                                            <option value="Randika">Randika</option>
+                                            <option value="Abdul">Abdul</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Modal Tambah Karyawan --}}
+    <div class="modal fade" id="modalTambahKaryawan" role="dialog" aria-labelledby="modalTambahKaryawanLabel" aria-hidden="true"
+        data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header px-4">
+                    <h5 class="modal-title" id="modalTambahKaryawanLabel">Form Tambah Karyawan</h5>
+                    <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="form-tambah-karyawan">
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label class="ms-0 fs-6">Karyawan</label>
+                            </div>
+                            <div class="col-md-8">
+                                <select class="form-select input-text w-full" aria-label="Pilih Karyawan" id="inputKaryawan" name="inputKaryawan" required>
+                                    <option value="">-- Pilih Karyawan --</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label class="ms-0 fs-6">Jam Mulai</label>
+                            </div>
+                            <div class="col-md-8">
+                                <input type="time" class="input-text w-full" name="jamMulai" id="inputJamMulai" placeholder="HH.MM" required>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label class="ms-0 fs-6">Jam Selesai</label>
+                            </div>
+                            <div class="col-md-8">
+                                <input type="time" class="input-text w-full" name="jamSelesai" id="inputJamSelesai" placeholder="HH.MM" required>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-4">
+                                <label class="ms-0 fs-6">Total Jam</label>
+                            </div>
+                            <div class="col-md-8">
+                                <input type="text" class="input-text w-full" name="totalJam" id="totalJam" readonly>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end">
+                            <button class="btn btn-primary btn-xs uploadBtn mb-0" type="submit" id="btnTambahKaryawan">
+                                <i class="fas fa-save"></i>
+                                Tambah
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Modal Tambah Pekerjaan --}}
+    <div class="modal fade" id="modalTambahPekerjaan" role="dialog" aria-labelledby="modalTambahPekerjaanLabel" aria-hidden="true"
+        data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header px-4">
+                    <h5 class="modal-title" id="modalTambahPekerjaanLabel">Form Tambah Pekerjaan</h5>
+                    <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="form-tambah-pekerjaan">
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label class="ms-0 fs-6">Kategori</label>
+                            </div>
+                            <div class="col-md-8">
+                                <select class="form-select input-text w-full" aria-label="Pilih Kategori" id="inputPekerjaan" name="inputPekerjaan" required>
+                                    <option value="">-- Pilih Kategori --</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-4">
+                                <label class="ms-0 fs-6">Detail</label>
+                            </div>
+                            <div class="col-md-8">
+                                <textarea rows="4" class="input-text w-full" name="detailPekerjaan" required></textarea>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end">
+                            <button class="btn btn-primary btn-xs uploadBtn mb-0" type="submit" id="btnTambahPekerjaan">
+                                <i class="fas fa-save"></i>
+                                Tambah
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -173,5 +404,349 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script>
+        const karyawans = [];
+        const pekerjaans = [];
+        let optionKaryawan = [];
+        let optionKategoriPekerjaan = [];
+
+        $( function() {
+            $departement = $('#inputDepartement');
+            $site = $('#inputSite');
+            $shift = $('#inputShift');
+            $inputKaryawan = $('#inputKaryawan');
+            $inputJamMulai = $('#inputJamMulai');
+            $inputJamSelesai = $('#inputJamSelesai');
+            $inputPekerjaan = $('#inputPekerjaan');
+
+            function fetchOptionKaryawan() {
+                if( !$departement.val() || !$site.val() ) return;
+
+                if( $('#inputKaryawan').data('select2') ) {
+                    $('#inputKaryawan').select2('destroy');
+                }
+
+                const query = $.param({
+                    KodeDP: $departement.val(),
+                    KodeST: $site.val()
+                });
+
+                $.ajax({
+                    url: `{{ route('bss-skl.get-karyawan') }}?${query}`,
+                    method: 'GET',
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    dataType: 'json',
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'thrownError',
+                            html: errorMessage,
+                            confirmButtonText: 'OK'
+                        });
+                    },
+                    success: function(response) {
+                        optionKaryawan = response;
+                        let options = `<option value="">-- Pilih Karyawan --</option>`;
+
+                        response.forEach( (item) => {
+                            options += `<option value="${item.id}">${item.text}</option>`;
+                        });
+
+                        $('#inputKaryawan').html(options);
+                        $('#inputKaryawan').select2({
+                            width: '100%',
+                            dropdownParent: $('#modalTambahKaryawan')
+                        });
+                    }
+                });
+            }
+
+            function fetchOptionKategoriPekerjaan() {
+                if( !$departement.val() ) return;
+
+                if( $('#inputPekerjaan').data('select2') ) {
+                    $('#inputPekerjaan').select2('destroy');
+                }
+
+                const query = $.param({
+                    KodeDP: $departement.val(),
+                });
+
+                $.ajax({
+                    url: `{{ route('bss-skl.get-kategori-pekerjaan') }}?${query}`,
+                    method: 'GET',
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    dataType: 'json',
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'thrownError',
+                            html: errorMessage,
+                            confirmButtonText: 'OK'
+                        });
+                    },
+                    success: function(response) {
+                        optionKategoriPekerjaan = response;
+                        let options = `<option value="">-- Pilih Kategori --</option>`;
+
+                        response.forEach( (item) => {
+                            options += `<option value="${item.id}">${item.text}</option>`;
+                        });
+
+                        $('#inputPekerjaan').html(options);
+                        $('#inputPekerjaan').select2({
+                            width: '100%',
+                            dropdownParent: $('#modalTambahPekerjaan')
+                        });
+                    }
+                });
+            }
+
+            function fetchOptionApprover() {
+                if( !$departement.val() || !$site.val() ) return;
+
+                const query = $.param({
+                    KodeDP: $departement.val(),
+                    KodeST: $site.val()
+                });
+
+                $.ajax({
+                    url: `{{ route('bss-skl.get-karyawan') }}?${query}`,
+                    method: 'GET',
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    dataType: 'json',
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'thrownError',
+                            html: errorMessage,
+                            confirmButtonText: 'OK'
+                        });
+                    },
+                    success: function(response) {
+                        optionKaryawan = response;
+                        let options = `<option value="">-- Pilih Karyawan --</option>`;
+
+                        response.forEach( (item) => {
+                            options += `<option value="${item.id}">${item.text}</option>`;
+                        });
+
+                        $('#inputKaryawan').html(options);
+                        $('#inputKaryawan').select2({
+                            width: '100%',
+                            dropdownParent: $('#modalTambahKaryawan')
+                        });
+                    }
+                });
+            }
+
+            $departement.change( () => {
+                fetchOptionKaryawan();
+                fetchOptionKategoriPekerjaan();
+                fetchOptionApprover();
+            });
+
+            $site.change( () => {
+                fetchOptionKaryawan();
+                fetchOptionApprover();
+            });
+
+            $('#modalTambahKaryawan').on('hidden.bs.modal', function() {
+                $inputKaryawan.val(null).trigger('change');
+                $('#form-tambah-karyawan')[0].reset();
+            });
+
+            $('#modalTambahPekerjaan').on('hidden.bs.modal', function() {
+                $inputPekerjaan.val(null).trigger('change');
+                $('#form-tambah-pekerjaan')[0].reset();
+            });
+
+            function onJamChange() {
+                if( !$inputJamMulai.val() || !$inputJamSelesai.val() ) {
+                    return;
+                }
+
+                const splitJamMulai = $inputJamMulai.val().split(':');
+                const jamMulaiInMinute = (Number(splitJamMulai[0]) * 60) + Number(splitJamMulai[1]);
+
+                const splitJamSelesai = $inputJamSelesai.val().split(':');
+                const jamSelesaiInMinute = (Number(splitJamSelesai[0]) * 60) + Number(splitJamSelesai[1]);
+
+                if(jamSelesaiInMinute < jamMulaiInMinute) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops!',
+                        html: 'Jam selesai tidak boleh sebelum jam mulai',
+                        confirmButtonText: 'OK'
+                    });
+
+                    $inputJamSelesai.val('');
+                    return;
+                }
+
+                const totalInMinute = (jamSelesaiInMinute - jamMulaiInMinute) / 60;
+                const totalHour = Math.round(totalInMinute * 10) / 10;
+                const splitTotalHour = totalHour.toString().split('.');
+
+                $('#totalJam').val(`${splitTotalHour[0]} jam${ splitTotalHour[1] ? `, ${splitTotalHour[1] * 6} menit` : '' }`);
+            }
+
+            $('#inputJamMulai').change(onJamChange);
+            $('#inputJamSelesai').change(onJamChange);
+
+            $('#form-tambah-karyawan').submit( function(e) {
+                e.preventDefault();
+                const formData = $('#form-tambah-karyawan').serializeArray();
+
+                const payload = {};
+                formData.forEach( (item) => payload[ item.name ] = item.value);
+
+                const selectedOption = optionKaryawan.filter( (item) => item.id == payload.inputKaryawan);
+                if(selectedOption.length == 0) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops!',
+                        html: 'Terjadi kesalahan, karyawan yang di pilih tidak ditemukan',
+                        confirmButtonText: 'OK'
+                    });
+                    return;
+                }
+
+                payload.nama = selectedOption[0].text;
+                payload.jabatan = selectedOption[0].jabatan;
+
+                karyawans.push(payload);
+                mountTableKaryawan();
+                $('#modalTambahKaryawan').modal('hide');
+            });
+
+            $('#form-tambah-pekerjaan').submit( function(e) {
+                e.preventDefault();
+                const formData = $('#form-tambah-pekerjaan').serializeArray();
+
+                const payload = {};
+                formData.forEach( (item) => payload[ item.name ] = item.value);
+
+                const selectedOption = optionKategoriPekerjaan.filter( (item) => item.id == payload.inputPekerjaan);
+                if(selectedOption.length == 0) {
+                    console.log('INI RANNN', optionKategoriPekerjaan);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops!',
+                        html: 'Terjadi kesalahan, pekerjaan yang di pilih tidak ditemukan',
+                        confirmButtonText: 'OK'
+                    });
+                    return;
+                }
+
+                payload.kategori = selectedOption[0].text;
+                pekerjaans.push(payload);
+                mountTablePekerjaan();
+                $('#modalTambahPekerjaan').modal('hide');
+            });
+        });
+
+        function showModalTambahKaryawan() {
+            if( !$('#inputDepartement').val() || !$('#inputSite').val() ) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops!',
+                    html: 'Harap pilih departement dan site terlebih dahulu',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+
+            $('#modalTambahKaryawan').modal('show');
+        }
+
+        function showModalTambahPekerjaan() {
+            if( !$('#inputDepartement').val() ) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops!',
+                    html: 'Harap pilih departement terlebih dahulu',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+
+            $('#modalTambahPekerjaan').modal('show');
+        }
+
+        function deleteKaryawan(index) {
+            karyawans.splice(index, 1);
+            mountTableKaryawan();
+        }
+
+        function mountTableKaryawan() {
+            let tbody = '';
+            karyawans.forEach( (item, index) => {
+                tbody += `
+                    <tr>
+                        <td>
+                            ${ index + 1 }
+                        </td>
+                        <td>
+                            ${ item.inputKaryawan }
+                        </td>
+                        <td>
+                            ${ item.nama }
+                        </td>
+                        <td>
+                            ${ item.jabatan }
+                        </td>
+                        <td>
+                            ${ item.jamMulai }
+                        </td>
+                        <td>
+                            ${ item.jamSelesai }
+                        </td>
+                        <td>
+                            ${ item.totalJam }
+                        </td>
+                        <td>
+                            <button class="btn btn-danger btn-xs uploadBtn mb-0 px-3 py-2" type="button" onclick="deleteKaryawan('${index}')">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tbody += '<tr></tr>';
+            $('#table-karyawan tbody').html(tbody);
+        }
+
+        function deletePekerjaan(index) {
+            pekerjaans.splice(index, 1);
+            mountTablePekerjaan();
+        }
+
+        function mountTablePekerjaan() {
+            let tbody = '';
+            pekerjaans.forEach( (item, index) => {
+                tbody += `
+                    <tr>
+                        <td>
+                            ${ index + 1 }
+                        </td>
+                        <td>
+                            ${ item.kategori }
+                        </td>
+                        <td>
+                            ${ item.detailPekerjaan }
+                        </td>
+                        <td>
+                            <button class="btn btn-danger btn-xs uploadBtn mb-0 px-3 py-2" type="button" onclick="deletePekerjaan('${index}')">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tbody += '<tr></tr>';
+            $('#table-pekerjaan tbody').html(tbody);
+        }
     </script>
 @endsection

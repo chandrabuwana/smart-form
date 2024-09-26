@@ -16,6 +16,7 @@ use Modules\SmartForm\App\Http\Controllers\PLANT\PlantTransmissionController;
 use Modules\SmartForm\App\Http\Controllers\Production\ProductionTimeSheetDashboarController;
 use Modules\SmartForm\App\Http\Controllers\SHE\DashboardSHEFRM19BController;
 use Modules\SmartForm\App\Http\Controllers\SHE\TransactionSHEFRM19BController;
+use Modules\SmartForm\App\Http\Controllers\SKL\DashboardSKLController;
 use Modules\SmartForm\App\Http\Controllers\SKL\SKLFormController;
 use Modules\SmartForm\App\Http\Controllers\SM\AssetRequestController;
 use Modules\SmartForm\App\Http\Controllers\SmartFormController;
@@ -172,10 +173,13 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
     });
 
     Route::prefix('skl')->group( function() {
-        Route::get('/dashboard', [SKLFormController::class, 'dashboard'])->name('bss-skl.dashboard');
-        Route::get('/dashboard/get-data', [SKLFormController::class, 'getDashboardData'])->name('bss-skl.dashboard-get-data');
+        Route::get('/dashboard', [DashboardSKLController::class, 'dashboard'])->name('bss-skl.dashboard');
+        Route::get('/dashboard/get-data', [DashboardSKLController::class, 'getDashboardData'])->name('bss-skl.dashboard-get-data');
         Route::get('/form', [SKLFormController::class, 'create'])->name('bss-skl.create');
         Route::post('/store', [SKLFormController::class, 'store'])->name('bss-skl.store');
+        Route::get('/get-karyawan', [SKLFormController::class, 'getKaryawan'])->name('bss-skl.get-karyawan');
+        Route::get('/get-kategori-pekerjaan', [SKLFormController::class, 'getKategoriPekerjaan'])->name('bss-skl.get-kategori-pekerjaan');
+        Route::get('/get-approver', [SKLFormController::class, 'getApprover'])->name('bss-skl.get-approver');
     });
 
     Route::prefix('approval')->group(function () {
