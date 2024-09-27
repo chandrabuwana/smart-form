@@ -18,6 +18,7 @@ class DashboardSKLController extends Controller
     private const T_MST_PEKERJAAN = 'DB_SPL.dbo.TBL_MST_PEKERJAAN';
     private const T_DEPARTEMENT = 'HRD.dbo.tdepartement';
     private const T_SITE = 'HRD.dbo.tsite';
+    private const T_FORM_APPROVER = 'DB_SPL.dbo.TBL_FORM_APPROVER';
 
     public function dashboard()
     {
@@ -27,7 +28,7 @@ class DashboardSKLController extends Controller
     public function getDashboardData(Request $request)
     {
         $search  = $request->query('search', '');
-        $sort    = $request->query('sort', 'id');
+        $sort    = $request->query('sort', 'created_at');
         $order   = $request->query('order', 'asc');
         $offset  = $request->query('offset', 0);
         $limit   = $request->query('limit', 10);
@@ -41,12 +42,9 @@ class DashboardSKLController extends Controller
                     self::T_FORM_MST . '.TglPelaksanaan',
                     self::T_FORM_MST . '.Shift',
                     self::T_FORM_MST . '.Status',
-                    DB::raw('COUNT(' . self::T_FORM_KARYAWAN . '.ID) AS TotalKaryawan'),
-                    DB::raw('COUNT(' . self::T_FORM_PEKERJAAN . '.ID) AS TotalPekerjaan')
-                )
-                ->join(self::T_FORM_KARYAWAN, self::T_FORM_KARYAWAN . '.NoForm', '=', self::T_FORM_MST . '.NoForm')
-                ->join(self::T_FORM_PEKERJAAN, self::T_FORM_PEKERJAAN . '.NoForm', '=', self::T_FORM_MST . '.NoForm')
-                ->groupBy(['NoForm', 'TglPelaksanaan', 'Shift', 'Status']);
+                    self::T_FORM_MST . '.KodeDepartement',
+                    self::T_FORM_MST . '.KodeST'
+                );
 
             // if(!empty($search)) {
             //     $sklMaster->where('role_name', 'like', '%' . $search . '%');
@@ -59,8 +57,22 @@ class DashboardSKLController extends Controller
                 $item->NamaDepartement = DB::table(self::T_DEPARTEMENT)
                     ->select('Nama')->where('KodeDP', $item->KodeDepartement)->first()->Nama;
 
-                $item->NamaSite = DB::table(self::T_SITE)
-                    ->select('Nama')->where('KodeST', $item->KodeST)->first()->Nama;
+                $approver = DB::table(self::T_FORM_APPROVER)->select('Status')
+                    ->where('NoForm', $item->NoForm)->get();
+
+                if($item->Status == 'Approved') {
+                    $item->ApprovalProgress = $approver->count() . '/' . $approver->count();
+
+                } else {
+                    $approvedCount = 0;
+                    foreach($approver as $appr) {
+                        if($appr->Status == 'Approved') {
+                            $approvedCount++;
+                        }
+                    }
+
+                    $item->ApprovalProgress = $approvedCount . '/' . $approver->count();
+                }
 
                 return $item;
             });
@@ -68,14 +80,15 @@ class DashboardSKLController extends Controller
             return response()->json([
                 'total' => $data->count(),
                 'totalNotFiltered' => $sklMasterNotFiltered->count(),
-                'rows' => $rows
+                'data' => $rows
             ]);
 
         } catch (Exception $ex) {
+            dd($ex);
             return response()->json([
                 'total' => 0,
                 'totalNotFiltered' => 0,
-                'rows' => []
+                'data' => []
             ]);
         }
     }
