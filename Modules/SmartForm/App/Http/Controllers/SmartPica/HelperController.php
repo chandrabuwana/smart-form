@@ -159,61 +159,49 @@ class HelperController extends Controller
     function HelperDataTableStepSolutionPica(Request $table)
     {
         $nik = session("user_id");
-        $query = "WITH dataProgress AS (
+        $query = "  WITH dataProgress AS (
+                        SELECT
+                            id_solution,
+                            nodocpica,
+                            TRY_CAST(progress AS INT) AS progress,
+                            ROW_NUMBER() OVER (PARTITION BY id_solution, nodocpica ORDER BY TRY_CAST(progress AS INT) DESC) AS rn
+                        FROM
+                            history_progress_solution
+                    )
                     SELECT
-                        id_solution,
-                        nodocpica,
-                        progress,
-                        ROW_NUMBER() OVER (PARTITION BY id_solution, nodocpica ORDER BY progress DESC) AS rn,
+                        step_pica.nodocpica,
+                        step_pica.id_master,
+                        ISNULL(dp.progress, 0) AS progress,
+                        UPPER(CASE
+                            WHEN ISNULL(dp.progress, 0) = 0 THEN 'NOT YET'
+                            WHEN ISNULL(dp.progress, 0) > 0 AND ISNULL(dp.progress, 0) < ISNULL(mp.target_master, 0) THEN 'ON PROGRESS'
+                            WHEN ISNULL(dp.progress, 0) = ISNULL(mp.target_master, 0) THEN 'CLOSE'
+                            ELSE 'NOT YET'
+                        END) AS status,
+                        step_pica.nik_master,
+                        step_pica.id,
                         CASE
-                            WHEN TRY_CAST(
-                                    SUBSTRING(progress,
-                                            PATINDEX('%[0-9]%', progress),
-                                            LEN(progress) - PATINDEX('%[0-9]%', progress) + 1
-                                    ) AS INT
-                                ) = 0 THEN 'not yet'
-                            WHEN TRY_CAST(
-                                    SUBSTRING(progress,
-                                            PATINDEX('%[0-9]%', progress),
-                                            LEN(progress) - PATINDEX('%[0-9]%', progress) + 1
-                                    ) AS INT
-                                ) BETWEEN 1 AND 99 THEN 'on progress'
-                            WHEN TRY_CAST(
-                                    SUBSTRING(progress,
-                                            PATINDEX('%[0-9]%', progress),
-                                            LEN(progress) - PATINDEX('%[0-9]%', progress) + 1
-                                    ) AS INT
-                                ) = 100 THEN 'close'
-                            ELSE 'not yet'
-                        END AS status
+                            WHEN step_pica.action = 'ca' THEN 'Corrective'
+                            WHEN step_pica.action = 'pa' THEN 'Preventive'
+                            ELSE step_pica.action
+                        END AS action,
+                        step_pica.note_step,
+                        UPPER(step_pica.ap_tod) AS ap_tod,
+                        step_pica.pic,
+                        step_pica.due_date,
+                        step_pica.position_why,
+                        step_pica.identity_why,
+                        acceptance,
+                        acceptance_reason,
+                        mp.target_master
                     FROM
-                        history_progress_solution
-                )
-                SELECT
-                    step_pica.nodocpica,
-                    step_pica.id_master,
-                    ISNULL(dp.progress, '0') AS progress,
-                    upper(ISNULL(dp.status, 'not yet')) AS status,
-                    step_pica.nik_master,
-                    step_pica.id,
-                    CASE
-                        WHEN step_pica.action = 'ca' THEN 'Corrective'
-                        WHEN step_pica.action = 'pa' THEN 'Preventive'
-                        ELSE step_pica.action
-                    END AS action,
-                    step_pica.note_step,
-                    UPPER(step_pica.ap_tod) AS ap_tod,
-                    step_pica.pic,
-                    step_pica.due_date,
-                    step_pica.position_why,
-                    step_pica.identity_why
-                FROM
-                    new_pica_step step_pica
-                LEFT JOIN
-                    dataProgress dp ON dp.id_solution = step_pica.id
-                        AND dp.nodocpica = step_pica.nodocpica
-                        AND dp.rn = 1 where step_pica.pic = '$nik' ";
-        $countDataUser = DB::select('select count(*) jumlah FROM new_pica_step');
+                        new_pica_step step_pica
+                    LEFT JOIN
+                        dataProgress dp ON dp.id_solution = step_pica.id
+                            AND dp.nodocpica = step_pica.nodocpica
+                            AND dp.rn = 1
+                    JOIN master_pica mp ON mp.nodocpica = step_pica.nodocpica where step_pica.pic = '$nik' ";
+        $countDataUser = DB::select("select count(*) jumlah FROM new_pica_step where pic = '$nik' ");
         $newQuery = $this->GetQueryDataTablePica($query, $table);
 
         $dataUser = DB::select($newQuery);
@@ -227,8 +215,7 @@ class HelperController extends Controller
 
     function HelperDataTableHistoryProgressPica(Request $table)
     {
-        // dd($table);
-        // dd($table->search['IDSOLUTION']);
+
         $query = " SELECT [id]
                     ,[id_solution]
                     ,[id_master]
@@ -252,6 +239,108 @@ class HelperController extends Controller
             "rows" => $dataUser,
         ]);
     }
+
+    function HelperDataTableApprovementStepPica(Request $table)
+    {
+
+        $userID = session("user_id");
+        $dept = session("kode_department");
+        $query = "WITH CTE AS (
+                    SELECT
+                        step_pica.nodocpica,
+                        step_pica.id_master,
+                        step_pica.nik_master,
+                        step_pica.id,
+                        CASE 
+                            WHEN step_pica.identity_why = 1 THEN (SELECT TOP 1 why FROM pica_why1 WHERE id = step_pica.position_why)
+                            WHEN step_pica.identity_why = 2 THEN (SELECT TOP 1 why FROM pica_why2 WHERE id = step_pica.position_why)
+                            WHEN step_pica.identity_why = 3 THEN (SELECT TOP 1 why FROM pica_why3 WHERE id = step_pica.position_why)
+                            WHEN step_pica.identity_why = 4 THEN (SELECT TOP 1 why FROM pica_why4 WHERE id = step_pica.position_why)
+                            WHEN step_pica.identity_why = 5 THEN (SELECT TOP 1 why FROM pica_why5 WHERE id = step_pica.position_why)
+                            ELSE NULL
+                        END AS why,
+                        CASE
+                            WHEN step_pica.action = 'ca' THEN 'Corrective'
+                            WHEN step_pica.action = 'pa' THEN 'Preventive'
+                            ELSE step_pica.action
+                        END AS action,
+                        step_pica.note_step,
+                        UPPER(step_pica.ap_tod) AS ap_tod,
+                        step_pica.pic,
+                        step_pica.due_date,
+                        step_pica.position_why,
+                        step_pica.identity_why,
+                        step_pica.acceptance, 
+                        step_pica.dic,
+                        step_pica.status_approve,
+                        level_approval,
+                        -- Mencari approver berdasarkan level yang lebih tinggi (angka lebih kecil)
+                        CASE 
+                            WHEN step_pica.level_approval = 1 THEN NULL -- Level 1 adalah level tertinggi, tidak ada level di atasnya
+                            WHEN step_pica.level_approval = 2 THEN COALESCE(
+                                (SELECT TOP 1 lvl.Nik 
+                                FROM USR_LVL lvl 
+                                JOIN HRD.dbo.TKaryawan tk ON lvl.Nik = tk.NIK 
+                                WHERE tk.KodeDP = step_pica.dic AND lvl.lvl = 1), NULL)
+                            WHEN step_pica.level_approval = 3 THEN COALESCE(
+                                (SELECT TOP 1 lvl.Nik 
+                                FROM USR_LVL lvl 
+                                JOIN HRD.dbo.TKaryawan tk ON lvl.Nik = tk.NIK 
+                                WHERE tk.KodeDP = step_pica.dic AND lvl.lvl = 1), 
+                                (SELECT TOP 1 lvl.Nik 
+                                FROM USR_LVL lvl 
+                                JOIN HRD.dbo.TKaryawan tk ON lvl.Nik = tk.NIK 
+                                WHERE tk.KodeDP = step_pica.dic AND lvl.lvl = 2), NULL)
+                            WHEN step_pica.level_approval = 4 THEN COALESCE(
+                                (SELECT TOP 1 lvl.Nik 
+                                FROM USR_LVL lvl 
+                                JOIN HRD.dbo.TKaryawan tk ON lvl.Nik = tk.NIK 
+                                WHERE tk.KodeDP = step_pica.dic AND lvl.lvl = 3), 
+                                (SELECT TOP 1 lvl.Nik 
+                                FROM USR_LVL lvl 
+                                JOIN HRD.dbo.TKaryawan tk ON lvl.Nik = tk.NIK 
+                                WHERE tk.KodeDP = step_pica.dic AND lvl.lvl = 2), 
+                                (SELECT TOP 1 lvl.Nik 
+                                FROM USR_LVL lvl 
+                                JOIN HRD.dbo.TKaryawan tk ON lvl.Nik = tk.NIK 
+                                WHERE tk.KodeDP = step_pica.dic AND lvl.lvl = 1), NULL)
+                            WHEN step_pica.level_approval = 5 THEN COALESCE(
+                                (SELECT TOP 1 lvl.Nik 
+                                FROM USR_LVL lvl 
+                                JOIN HRD.dbo.TKaryawan tk ON lvl.Nik = tk.NIK 
+                                WHERE tk.KodeDP = step_pica.dic AND lvl.lvl = 4), 
+                                (SELECT TOP 1 lvl.Nik 
+                                FROM USR_LVL lvl 
+                                JOIN HRD.dbo.TKaryawan tk ON lvl.Nik = tk.NIK 
+                                WHERE tk.KodeDP = step_pica.dic AND lvl.lvl = 3), 
+                                (SELECT TOP 1 lvl.Nik 
+                                FROM USR_LVL lvl 
+                                JOIN HRD.dbo.TKaryawan tk ON lvl.Nik = tk.NIK 
+                                WHERE tk.KodeDP = step_pica.dic AND lvl.lvl = 2), 
+                                (SELECT TOP 1 lvl.Nik 
+                                FROM USR_LVL lvl 
+                                JOIN HRD.dbo.TKaryawan tk ON lvl.Nik = tk.NIK 
+                                WHERE tk.KodeDP = step_pica.dic AND lvl.lvl = 1), NULL)
+                            ELSE NULL
+                        END AS approver
+                    FROM
+                        new_pica_step step_pica
+                )
+                SELECT * 
+                FROM CTE where acceptance = 9 and dic = '$dept' and approver = '$userID' ";
+        $countDataUser = DB::select("select count(*) jumlah FROM new_pica_step where dic = '$dept'");
+        $newQuery = $this->GetQueryDataTablePica($query, $table);
+        $dataUser = DB::select($newQuery);
+
+        return response()->json([
+            'total' => $countDataUser[0]->jumlah,
+            'totalNotFiltered' => $countDataUser[0]->jumlah,
+            "rows" => $dataUser,
+        ]);
+
+
+    }
+
 
 
 }

@@ -15,10 +15,6 @@
             -moz-box-shadow: 2px 2px 10px #aaa;
             -moz-border-radius: 0.5em;
             border-radius: 0.5em;
-            /*
-                                                                                                                                                                                                                                opacity:0.8;
-                                                                                                                                                                                                                                filter:alpha(opacity=80);
-                                                                                                                                                                                                                                */
             width: 30em;
             height: auto;
             padding: 0.5em 0em;
@@ -38,18 +34,8 @@
             -o-box-shadow: 2px 2px 10px #444;
             -webkit-box-shadow: 2px 2px 10px #444;
             -moz-box-shadow: 2px 2px 10px #444;
-            /*
-                                                                                                                                                                                                                        opacity:0.6;
-                                                                                                                                                                                                                        filter:alpha(opacity=60);
-                                                                                                                                                                                                                        */
         }
 
-        /*
-                                                                                                                                                                                                                    .window > div {
-                                                                                                                                                                                                                        margin-top: 19%;
-                                                                                                                                                                                                                        margin-bottom: 19%;
-                                                                                                                                                                                                                    }
-                                                                                                                                                                                                                    */
 
         .hidden {
             display: none;
@@ -243,43 +229,13 @@
                             <div class="container-fluid">
                                 <div class="scrollable-div border" id="scrollableDiv">
                                     <div class="zoomable-content" id="zoomableContent">
-                                        <!-- Add your large content here -->
-
                                         <div style="width: 100000px; height: 1500px;" id="dataWHYYYYY">
                                             <div class="" style="padding-top: 100px">
-
-                                                {{-- <ul id="tree-container" style="margin: 20px">
-
-                                                </ul> --}}
                                                 <div id="treemain">
                                                     <div id="node_0" class="window hidden" data-id="0"
                                                         data-parent="" data-first-child="1" data-next-sibling="">
                                                         Root Problem
                                                     </div>
-                                                    {{-- @foreach ($dataPicaW1 as $key => $w1)
-                                                        <div id="node_1" class="window hidden" data-id="1"
-                                                            data-parent="0" data-first-child="4" data-next-sibling="2">
-                                                            <div class="row" style="margin: 10px">
-                                                                <div class="col-12 my-2">
-                                                                    <div class="row">
-                                                                        <div class="col-4">Kategori </div>
-                                                                        <div class="col">: {{ $w1->kp_name }}</div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row" style="margin: 10px">
-                                                                <div class="col-12">
-                                                                    <div class="row">
-                                                                        <div class="input-group input-group-static">
-                                                                            <label for="input-why">-- WHY -- </label>
-                                                                            <textarea type="textarea" id="input-why" rows="2" disabled class="form-control">{{ $w1->why }}</textarea>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    @endforeach --}}
-
                                                 </div>
                                             </div>
                                         </div>
@@ -1089,10 +1045,8 @@
         function modalViewStep(id, identity) {
             let dataStep = solution.filter(obj => obj.identity_why == identity && obj.position_why == id);
             $('#content-modal-view-step').empty(); // Bersihkan konten modal sebelum menambahkan konten baru
-            console.log(solution);
-            console.log(id);
-            console.log(identity);
             dataStep.forEach((e, index) => {
+                console.log(e);
                 let dataView = `
                     <div class="row" style="margin: 10px">
                         <div class="col">
@@ -1124,15 +1078,6 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-2">
-                                            <div class="input-group input-group-static my-1">
-                                                <label class="ms-0" for="Button_Progress_${index}">Persentase Progress</label>
-                                                <select class="form-control" name="Button_Progress_${index}" id="Button_Progress_${index}" disabled>
-                                                    <option value=""><button type="button" class="btn btn-danger btn-sm" id="Button_Progress_${index}" >${e.progress}</button></option>
-                                                </select>
-
-                                            </div>
-                                        </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-4">
@@ -1157,6 +1102,51 @@
                                                 <select class="form-control picIDHuman" name="DueDate_${index}" id="DueDate_${index}" disabled>
                                                     <option value="">-- ${e.due_date} --</option>
                                                 </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr class="horizontal dark my-sm-3">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="input-group input-group-static mb-4">
+                                                <label for="tensi">Status</label>
+                                                <button class="form-control-button 
+                                                ${ 
+                                                    (e.status_reject == 1 || e.acceptance == 2) ? 'btn-primary' :
+                                                    (e.status_approve == 1) ? 'btn-success' :
+                                                    (e.acceptance == 0) ? 'btn-warning' :
+                                                    (e.acceptance == 1 || e.acceptance == 9) ? 'btn-info' :
+                                                    'btn-secondary' 
+                                                } 
+                                                btn"
+                                                    type="button">${e.status_solution}</button>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="input-group input-group-static mb-4">
+                                                <label for="tensi">Progress</label>
+                                                <button class="form-control-button 
+                                                ${ 
+                                                    (e.status_reject == 1 || e.acceptance == 2) ? 'btn-primary' :
+                                                    (e.status_approve == 1) ? 'btn-success' :
+                                                    (e.acceptance == 0) ? 'btn-warning' :
+                                                    (e.acceptance == 1 || e.acceptance == 9) ? 'btn-info' :
+                                                    'btn-secondary' 
+                                                }  btn"
+                                                    type="button">${e.progress}</button>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="input-group input-group-static mb-4">
+                                                <label for="tensi">Persentase Progress</label>
+                                                <button class="form-control-button ${ 
+                                                    (e.status_reject == 1 || e.acceptance == 2) ? 'btn-primary' :
+                                                    (e.status_approve == 1) ? 'btn-success' :
+                                                    (e.acceptance == 0) ? 'btn-warning' :
+                                                    (e.acceptance == 1 || e.acceptance == 9) ? 'btn-info' :
+                                                    'btn-secondary' 
+                                                }  btn"
+                                                    type="button">${e.progress_percentage}</button>
                                             </div>
                                         </div>
                                     </div>
