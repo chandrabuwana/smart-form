@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Modules\API\App\Http\Controllers\Invoice\InvoiceMobileController;
 use Modules\API\App\Http\Controllers\Login\CateringController;
 use Modules\API\App\Http\Controllers\Login\MobileLoginController;
+use Modules\API\App\Http\Controllers\Order\OrderMobileController;
 use Modules\API\App\Http\Controllers\User\SettingsMobileController;
 use Modules\API\App\Http\Controllers\User\UserMobileController;
 
@@ -63,6 +64,12 @@ Route::prefix('api/v1')->group(function () {
             Route::get('/statistics', [InvoiceMobileController::class, 'statistics'])->name('invoice-vendor-statistics');
             Route::post('/store', [InvoiceMobileController::class, 'store'])->name('invoice-vendor-store');
             Route::post('/detail', [InvoiceMobileController::class, 'detail'])->name('invoice-vendor-detail');
+        });
+
+        Route::prefix('order')->group( function() {
+            Route::get('/', [OrderMobileController::class, 'index'])->name('order-vendor');
+            Route::get('/detail/{id}', [OrderMobileController::class, 'detail'])->name('order-vendor-detail');
+            Route::post('/change-status', [OrderMobileController::class, 'changeStatus'])->name('order-vendor-change-status');
         });
     });
 });
