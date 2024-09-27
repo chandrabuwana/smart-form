@@ -34,13 +34,85 @@
         .reset-bg {
             background-image: none;
         }
+        .notification-container {
+            position: relative;
+        }
+        .notification-items-container {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            width: 300px;
+            max-height: 300px;
+            background-color: whitesmoke;
+            z-index: 99;
+            /* color: wheat; */
+            right: 0;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 8px;
+        }
+        .item-notif {
+            display: flex;
+            flex-direction: row; 
+            gap: 6px;
+            border-bottom: 1px solid #7b809a;
+            padding: 6px 0;
+        }
+        .notification-item {
+            
+        }
+        .notification {
+            display: none;
+            width: 8px;
+            height: 8px;
+            background: #D81B60;
+            border-radius: 5px;
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+        .notification.notification-exists {
+            display: block;
+        }
+
+        .custom-scrollbar {
+            overflow-y: auto;
+            /* border: 1px solid #ccc; */
+
+            /* Firefox */
+            scrollbar-width: thin;
+            scrollbar-color: #888 #f1f1f1;
+        }
+
+        /* WebKit browsers */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #888;
+            border-radius: 10px;
+            border: 2px solid #ccc;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background-color: #555;
+        }
+        .hide {
+            display: none !important;
+        }
     </style>
     @yield('custom-css')
 </head>
 
 <body class="g-sidenav-show  bg-gray-200">
     @include('master.part.menu-navbar-main')
-    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+    <main class="main-content position-relative h-100 border-radius-lg ">
         <!-- Navbar -->
         @include('master.part.navbar-master')
 
@@ -105,6 +177,10 @@
                     $(this).closest('.nav-item').addClass('active');
                 }
             });
+            $("#notification-icon").on("click", function(e) {
+                $("#notification-item").closest(".notification-items-container").css('display') == "flex" ? $("#notification-item").closest(".notification-items-container").css('display', 'none') : $("#notification-item").closest(".notification-items-container").css('display', 'flex')
+                console.log($("#notification-item").closest(".notification-items-container").children().length)
+            })
         });
         var win = navigator.platform.indexOf('Win') > -1;
         if (win && document.querySelector('#sidenav-scrollbar')) {
