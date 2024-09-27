@@ -279,88 +279,152 @@
                                 <thead>
                                     <tr>
                                         <th>Requested By</th>
-                                        <th colspan="2">Acknowledge By</th>
-                                        <th colspan="2">Approved By</th>
+                                        <th colspan="3">Acknowledge By</th>
+                                        @if($approval_status->approved_by_1_nik != null && $approval_status->approved_by_2_nik != null)
+                                            <th colspan="{{ $approval_status->approved_by_2_nik == null ? 1 : 2}}">Approved By {{ $approval_status->approved_by_1_nik == null ? "null" : "tidak null"}} {{$approval_status->approved_by_2_nik == null}}</th>
+                                        @endif
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
                                         <td>{{$approval_status->requested_by}}</td>
-                                        <td>{{$approval_status->acknowledge_by_1_nik}}</td>
-                                        <td>{{$approval_status->acknowledge_by_2_nik}}</td>
-                                        <td>{{$approval_status->approved_by_1_nik}}</td>
-                                        <td>{{$approval_status->approved_by_2_nik}}</td>
+                                        @if($approval_status->acknowledge_by_1_nik)
+                                            <td>{{$approval_status->acknowledge_by_1_nik}}</td>
+                                        @endif
+                                        @if($approval_status->cost_control_nik)
+                                            <td>{{$approval_status->cost_control_nik}}</td>
+                                        @endif
+                                        @if($approval_status->acknowledge_by_2_nik)
+                                            <td>{{$approval_status->acknowledge_by_2_nik}}</td>
+                                        @endif
+                                        @if($approval_status->approved_by_1_nik)
+                                            <td>{{$approval_status->approved_by_1_nik}}</td>
+                                        @endif
+                                        @if($approval_status->approved_by_2_nik)
+                                            <td>{{$approval_status->approved_by_2_nik}}</td>
+                                        @endif
                                     </tr>
                                     <tr>
                                         <td>Done</td>
-                                        <td>{{$approval_status->acknowledge_1 == 1 ? "Done" : "Not Yet"}}</td>
-                                        <td>{{$approval_status->acknowledge_2 == 1 ? "Done" : "Not Yet"}}</td>
-                                        <td>{{$approval_status->approved_1 == 1 ? "Done" : "Not Yet"}}</td>
-                                        <td>{{$approval_status->approved_2 == 1 ? "Done" : "Not Yet"}}</td>
+                                        @if($approval_status->acknowledge_by_1_nik)
+                                            <td>{{$approval_status->acknowledge_1 == 1 ? "Done" : ($approval_status->acknowledge_1 == -1 ? "Rejected" : "Not Yet")}}</td>
+                                        @endif
+                                        @if($approval_status->cost_control_nik)
+                                            <td>{{$approval_status->cost_control == 1 ? "Done" : ($approval_status->cost_control == -1 ? "Rejected" : "Not Yet")}}</td>
+                                        @endif
+                                        @if($approval_status->acknowledge_by_2_nik)
+                                            <td>{{$approval_status->acknowledge_2 == 1 ? "Done" : ($approval_status->acknowledge_2 == -1 ? "Rejected" : "Not Yet")}}</td>
+                                        @endif
+                                        @if($approval_status->approved_by_1_nik)
+                                            <td>{{$approval_status->approved_1 == 1 ? "Done" : ($approval_status->approved_1 == -1 ? "Rejected" : "Not Yet")}}</td>
+                                        @endif
+                                        @if($approval_status->approved_by_2_nik)
+                                            <td>{{$approval_status->approved_2 == 1 ? "Done" : ($approval_status->approved_2 == -1 ? "Rejected" : "Not Yet")}}</td>
+                                        @endif
                                     </tr>
                                     <tr>
                                         <td>{{$approval_status->requested_by_nama}}</td>
-                                        <td>{{$approval_status->acknowledge_by_1_nama}}</td>
-                                        <td>{{$approval_status->acknowledge_by_2_nama}}</td>
-                                        <td>{{$approval_status->approved_by_1_nama}}</td>
-                                        <td>{{$approval_status->approved_by_2_nama}}</td>
+                                        @if($approval_status->acknowledge_by_1_nik)
+                                            <td>{{$approval_status->acknowledge_by_1_nama}}</td>
+                                        @endif
+                                        @if($approval_status->cost_control_nik)
+                                            <td>{{$approval_status->cost_control_nama}}</td>
+                                        @endif
+                                        @if($approval_status->acknowledge_by_2_nik)
+                                            <td>{{$approval_status->acknowledge_by_2_nama}}</td>
+                                        @endif
+                                        @if($approval_status->approved_by_1_nik)
+                                            <td>{{$approval_status->approved_by_1_nama}}</td>
+                                        @endif
+                                        @if($approval_status->approved_by_2_nik)
+                                            <td>{{$approval_status->approved_by_2_nama}}</td>
+                                        @endif
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                         <div class="d-flex align-items-center justify-content-end gap-2">
-
+                            <div>
                                 @if($data['status'] == 0 || $data['status'] == null)
                                     {{-- hanya bisa di validasi ketika sudah acknowledge oleh kedua PIC --}}
                                     {{-- update status ke 1 setelah validated oleh kedua PIC --}}
                                     @if($data['acknowledge_1'] == 0 || $data['acknowledge_1'] == null)
                                         @if(session('user_id') == $data['acknowledge_by_1_nik'])
-                                            <button onclick="actionValidation(this)" class="btn btn-primary ms-auto uploadBtn" id="btnSubmitAssetRequest" data-action="acknowledge1"
+                                            <button onclick="actionValidation(this)" class="btn btn-primary ms-auto uploadBtn" id="btnSubmitAssetRequest" data-nilai="1" data-action="acknowledge1"
                                                 data-alert-title="Acknowledge" data-alert-message="Konfirmasi acknowledge ?">
                                                 <i class="fas fa-save"></i>
                                                 Acknowledge
                                             </button>
+                                            <button onclick="actionValidation(this)" class="btn btn-primary ms-auto uploadBtn" id="btnSubmitAssetRequest" data-nilai="-1" data-action="acknowledge1"
+                                                data-alert-title="Reject" data-alert-message="Konfirmasi acknowledge ?">
+                                                <i class="fas fa-circle-minus"></i>
+                                                Reject
+                                            </button>
                                         @endif
                                     @endif
-                                    @if(($data['acknowledge_2'] == 0 || $data['acknowledge_2'] == null) && $data['acknowledge_1'] == 1)
+                                    @if(($data['cost_control'] == 0 || $data['cost_control'] == null) && $data['acknowledge_1'] == 1)
+                                        @if(session('user_id') == $data['cost_control_nik'])
+                                            <button onclick="actionValidation(this)" class="btn btn-primary ms-auto uploadBtn" id="btnSubmitAssetRequest" data-nilai="1" data-action="cost_control"
+                                                data-alert-title="Acknowledge" data-alert-message="Konfirmasi acknowledge ?">
+                                                <i class="fas fa-circle-minus"></i>
+                                                Acknowledge
+                                            </button>
+                                            <button onclick="actionValidation(this)" class="btn btn-primary ms-auto uploadBtn" id="btnSubmitAssetRequest" data-nilai="-1" data-action="cost_control"
+                                                data-alert-title="Reject" data-alert-message="Konfirmasi acknowledge ?">
+                                                <i class="fas fa-circle-minus"></i>
+                                                Reject
+                                            </button>
+                                        @endif
+                                    @endif
+                                    @if(($data['acknowledge_2'] == 0 || $data['acknowledge_2'] == null) && $data['cost_control'] == 1)
                                         @if(session('user_id') == $data['acknowledge_by_2_nik'])
-                                            <button onclick="actionValidation(this)" class="btn btn-primary ms-auto uploadBtn" id="btnSubmitAssetRequest" data-action="acknowledge2"
+                                            <button onclick="actionValidation(this)" class="btn btn-primary ms-auto uploadBtn" id="btnSubmitAssetRequest" data-nilai="1" data-action="acknowledge2"
                                                 data-alert-title="Acknowledge" data-alert-message="Konfirmasi acknowledge ?">
                                                 <i class="fas fa-save"></i>
                                                 Acknowledge
+                                            </button>
+                                            <button onclick="actionValidation(this)" class="btn btn-primary ms-auto uploadBtn" id="btnSubmitAssetRequest" data-nilai="-1" data-action="acknowledge2"
+                                                data-alert-title="Reject" data-alert-message="Konfirmasi acknowledge ?">
+                                                <i class="fas fa-circle-minus"></i>
+                                                Reject
                                             </button>
                                         @endif
                                     @endif
                                     @if(($data['approved_1'] == 0 || $data['approved_1'] == null) && $data['acknowledge_2'] == 1)
                                         @if(session('user_id') == $data['approved_by_1_nik'])
-                                            <button onclick="actionValidation(this)" class="btn btn-primary ms-auto uploadBtn" id="btnSubmitAssetRequest" data-action="approve1"
+                                            <button onclick="actionValidation(this)" class="btn btn-primary ms-auto uploadBtn" id="btnSubmitAssetRequest" data-nilai="1" data-action="approve1"
                                                 data-alert-title="Approve" data-alert-message="Konfirmasi approve ?">
                                                 <i class="fas fa-save"></i>
                                                 Approve
+                                            </button>
+                                            <button onclick="actionValidation(this)" class="btn btn-primary ms-auto uploadBtn" id="btnSubmitAssetRequest" data-nilai="-1" data-action="approve1"
+                                                data-alert-title="Reject" data-alert-message="Konfirmasi reject ?">
+                                                <i class="fas fa-save fa-circle-minus"></i>
+                                                Reject
                                             </button>
                                         @endif
                                     @endif
                                     @if(($data['approved_2'] == 0 || $data['approved_2'] == null) && $data['approved_1'] == 1)
                                         @if(session('user_id') == $data['approved_by_2_nik'])
-                                            <button onclick="actionValidation(this)" class="btn btn-primary ms-auto uploadBtn" id="btnSubmitAssetRequest" data-action="approve2"
+                                            <button onclick="actionValidation(this)" class="btn btn-primary ms-auto uploadBtn" id="btnSubmitAssetRequest" data-nilai="1" data-action="approve2"
                                                 data-alert-title="Approve" data-alert-message="Konfirmasi approve ?">
                                                 <i class="fas fa-save"></i>
                                                 Approve
+                                            </button>
+                                            <button onclick="actionValidation(this)" class="btn btn-primary ms-auto uploadBtn" id="btnSubmitAssetRequest" data-nilai="-1" data-action="approve2"
+                                                data-alert-title="Reject" data-alert-message="Konfirmasi Reject ?">
+                                                <i class="fas fa-circle-minus"></i>
+                                                Reject
                                             </button>
                                         @endif
                                     @endif
                                 @endif
                                 @if($data['status'] == 1 && $is_user_sm)
                                     {{-- TODO : hanya SM --}}
-                                    <button onclick="actionValidation(this)" class="btn btn-primary uploadBtn" id="btnSubmitAssetRequest" data-action="proses"
+                                    <button onclick="actionValidation(this)" class="btn btn-primary uploadBtn" id="btnSubmitAssetRequest" data-nilai="2" data-action="proses"
                                         data-alert-title="Proses Request" data-alert-message="Konfirmasi approve request ?">
                                         <i class="fas fa-save"></i>
                                         Proses
-                                    </button>
-                                    <button onclick="actionValidation(this)" class="btn btn-primary uploadBtn" id="btnSubmitAssetRequest" data-action="reject"
-                                        data-alert-title="Reject Request" data-alert-message="Konfirmasi reject request ?">
-                                        <i class="fa-solid fa-circle-minus"></i>
-                                        Reject
                                     </button>
                                 @endif
                                 {{-- @if($data['status'] == 2 && $is_user_sm)
@@ -370,7 +434,7 @@
                                         Selesai
                                     </button>
                                 @endif --}}
-
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -501,6 +565,7 @@
         }
         // document.getElementById("btnSubmitAssetRequest").addEventListener("click", function(e) {
         function actionValidation(e) {
+            var validationValue = e.getAttribute('data-nilai')
             // console.log(e.getAttribute('data-alert-title'))
             Swal.fire({
                 title: e.getAttribute('data-alert-title'),
@@ -515,7 +580,8 @@
                     axios.post('/bss-form/sm/validasi-asset-request',
                         {
                             noDoc: noDoc.text(),
-                            action: e.getAttribute('data-action')
+                            action: e.getAttribute('data-action'),
+                            actionValue: validationValue
                         },
                     {
                         headers: {

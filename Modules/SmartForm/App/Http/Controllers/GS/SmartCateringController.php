@@ -2,6 +2,7 @@
 
 namespace Modules\SmartForm\App\Http\Controllers\GS;
 
+use App\Helper;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Exception;
@@ -18,20 +19,23 @@ enum Shift: string {
 }
 
 class SmartCateringController extends Controller {
-    private const TABLE_REQ_MAKAN_MOBILE = "PICA_BETA.dbo.SCT_GS_CT_RQST_MB";
-    private const TABLE_MASTER_MESS = "PICA_BETA.dbo.SCT_GS_MESS_MST";
-    private const TABLE_PENGHUNI_MESS = "PICA_BETA.dbo.SCT_GS_MESS_HUNI";
-    private const TABLE_SUBMIT_ORDER = "PICA_BETA.dbo.SCT_GS_CT_ORDER";
-    // private const TABLE_SUBMIT_ORDER_DETAIL = "PICA_BETA.dbo.SCT_GS_CT_ORDER_DTL";
-    private const TABLE_SUBMIT_ORDER_DETAIL = "PICA_BETA.dbo.SCT_GS_CT_ORDER_DETAIL";
-    private const TABLE_SUBMIT_ORDER_VENDOR = "PICA_BETA.dbo.SCT_GS_CT_ORDER_VNDR";
-    private const TABLE_VENDOR_MAPPING = "PICA_BETA.dbo.SCT_GS_VENDOR_MAPPING";
-    private const TABLE_VENDOR_ORDER = "PICA_BETA.dbo.SCT_GS_CT_ORDER_VNDR";
-    private const TABLE_VENDOR_MASTER = "PICA_BETA.dbo.SCT_GS_VENDOR_MST";
-    private const TABLE_ABSENSI_HRD = "HRD.dbo.TAbsensi";
-    private const TABLE_KARYAWAN_HRD = "HRD.dbo.TKaryawan";
-    private const TABLE_PENEGASAN_CUTI = "HRD.dbo.TPenegasanCuti";
-    private const TABLE_PENGAJUAN_CUTI = "HRD.dbo.tpengajuancuti";
+    private const DB_SMARTFORM = "PICA_BETA";
+    private const DB_HRD = "HRD";
+    private const TABLE_REQ_MAKAN_MOBILE = self::DB_SMARTFORM . ".dbo.SCT_GS_CT_RQST_MB";
+    private const TABLE_MASTER_MESS = self::DB_SMARTFORM . ".dbo.SCT_GS_MESS_MST";
+    private const TABLE_PENGHUNI_MESS = self::DB_SMARTFORM . ".dbo.SCT_GS_MESS_HUNI";
+    private const TABLE_SUBMIT_ORDER = self::DB_SMARTFORM . ".dbo.SCT_GS_CT_ORDER";
+    private const TABLE_SUBMIT_ORDER_ADJUSTMENT_DTL = self::DB_SMARTFORM . ".dbo.SCT_GS_CT_ADJUSTMENT";
+    // private const TABLE_SUBMIT_ORDER_DETAIL = self::DB_SMARTFORM . ".dbo.SCT_GS_CT_ORDER_DTL";
+    private const TABLE_SUBMIT_ORDER_DETAIL = self::DB_SMARTFORM . ".dbo.SCT_GS_CT_ORDER_DETAIL";
+    private const TABLE_SUBMIT_ORDER_VENDOR = self::DB_SMARTFORM . ".dbo.SCT_GS_CT_ORDER_VNDR";
+    private const TABLE_VENDOR_MAPPING = self::DB_SMARTFORM . ".dbo.SCT_GS_VENDOR_MAPPING";
+    private const TABLE_VENDOR_ORDER = self::DB_SMARTFORM . ".dbo.SCT_GS_CT_ORDER_VNDR";
+    private const TABLE_VENDOR_MASTER = self::DB_SMARTFORM . ".dbo.SCT_GS_VENDOR_MST";
+    private const TABLE_ABSENSI_HRD = self::DB_HRD . ".dbo.TAbsensi";
+    private const TABLE_KARYAWAN_HRD = self::DB_HRD . ".dbo.TKaryawan";
+    private const TABLE_PENEGASAN_CUTI = self::DB_HRD . ".dbo.TPenegasanCuti";
+    private const TABLE_PENGAJUAN_CUTI = self::DB_HRD . ".dbo.tpengajuancuti";
     private const DB_CONN_NAME = 'sqlsrv';
 
     function AddPemesanan(Request $request) {
@@ -251,7 +255,17 @@ class SmartCateringController extends Controller {
             'selected.in' => 'Selected tidak sesuai',
         ]);
 
-        Log::info($validator->errors()->all());
+        // Log::info($request->input("listAdjustment", []));
+        // foreach ($request->input("listAdjustment", []) as $adjustmentPerson) {
+        //     $insertAdjustment = [
+        //         'KodeST' => $request->input("site"),
+        //         'kode_pemesanan' => "sf",
+        //         'nik' => $adjustmentPerson['nik'],
+        //         'nama' => $adjustmentPerson['nama'],
+        //         'keterangan' => $adjustmentPerson['keterangan']
+        //     ];
+        //     Log::info($insertAdjustment);
+        // }
         try {
             if(count($validator->errors()->all())) {
                 $errorMessage = $validator->errors()->all();
@@ -267,6 +281,7 @@ class SmartCateringController extends Controller {
                 $selected_pemesanan = $request->input("selected");
                 $detail = $request->input("detail", []);
                 $summaryOrder = $request->input("summaryOrder", []);
+                $detailAdjustment = $request->input("listAdjustment", []);
 
                 $data_order_insert = [
                     'jenis_pemesanan' => $jenisPemesanan,
@@ -358,6 +373,33 @@ class SmartCateringController extends Controller {
                     $summaryPerVendor_new[] = $details;
                     DB::connection(self::DB_CONN_NAME)->table(self::TABLE_SUBMIT_ORDER_VENDOR)->insert($details);
                 }
+                
+                $vendor_id_list = array_filter(array_column($summaryPerVendor_new, 'VendorID'));
+                $sql_notification_vendor = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_VENDOR_MASTER)
+                    ->select('notification_token', 'id')
+                    ->whereIn('id', $vendor_id_list)
+                    ->whereNotNull('notification_token')
+                    ->get();
+
+                foreach ($sql_notification_vendor as $token_firebase_vendor) {
+                    $notification_body = 'Waktu Pemesanan : ' . $summaryPerVendor[$token_firebase_vendor->id]['TanggalOrder'] . ' ' .$summaryPerVendor[$token_firebase_vendor->id]['JenisPemesanan']. ', Jumlah : '. $summaryPerVendor[$token_firebase_vendor->id]['jumlah'];
+                    $notification_title = 'Pesanan Baru : ' . $summaryPerVendor[$token_firebase_vendor->id]['kode_pemesanan'];
+                    Helper::sendPushNotification($token_firebase_vendor->notification_token, $notification_title, $notification_body);
+                }
+
+                foreach ($detailAdjustment as $adjustmentPerson) {
+                    $insertAdjustment = [
+                        'KodeST' => $site,
+                        'kode_pemesanan' => $kode_pemesanan,
+                        'nik' => $adjustmentPerson['nik'],
+                        'nama' => $adjustmentPerson['nama'],
+                        'keterangan' => $adjustmentPerson['keterangan'],
+                        'created_by' => $nik_session,
+                        'created_at' => $tgl
+                    ];
+                    
+                    DB::connection(self::DB_CONN_NAME)->table(self::TABLE_SUBMIT_ORDER_ADJUSTMENT_DTL)->insert($insertAdjustment);
+                }
 
                 Log::debug("SQL hasil match mapping : " . json_encode($newSummaryOrder, JSON_PRETTY_PRINT));
                 Log::debug("Mapping per vendor : " . json_encode($summaryPerVendor_new, JSON_PRETTY_PRINT));
@@ -405,9 +447,18 @@ class SmartCateringController extends Controller {
                 ->select('a.kode_pemesanan', 'a.KodeSite', 'a.TanggalOrder', 'a.Jumlah', 'b.Nama')    
                 ->leftJoin(self::TABLE_VENDOR_MASTER . ' as b', 'a.VendorID', '=', 'b.id')
                 ->where('kode_pemesanan', $kode_pemesanan);
+            $detail_per_lokasi = db::connection(SELF::DB_CONN_NAME)->table(SELF::TABLE_SUBMIT_ORDER_DETAIL . ' as a')
+                ->select('a.id_order as kode_pemesanan', 'a.jenis_pemesanan', 'a.jumlah','c.Nama as nama_vendor',  'd.NamaMess')
+                ->leftJoin(self::TABLE_VENDOR_MAPPING . ' as b', 'a.id_mapping_vendor', '=', 'b.id')
+                ->leftJoin(self::TABLE_VENDOR_MASTER . ' as c', 'b.VendorID', '=', 'c.id')
+                ->leftJoin(self::TABLE_MASTER_MESS . ' as d', 'a.lokasi', '=', 'd.NoDoc')
+                ->where('a.id_order', $kode_pemesanan);
+                
             Log::debug($master_pemesanan->toRawSql());
             Log::debug($data_pemesanan->toRawSql());
+            Log::debug($detail_per_lokasi->toRawSql());
             $data['detail'] = $data_pemesanan->get()->toArray();
+            $data['detail_lokasi'] = $detail_per_lokasi->get()->toArray();
             $data['master'] = $master_pemesanan->first();
         } catch (Exception $ex) {
             Log::error($ex->getMessage());

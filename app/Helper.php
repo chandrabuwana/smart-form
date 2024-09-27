@@ -2,7 +2,12 @@
 
 namespace App;
 
+use Exception;
+use Google_Client;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 
 class Helper
 {
@@ -30,5 +35,85 @@ class Helper
             ->join('MasterMenu', 'MasterMenu.id', 'MS_ROLE_PERMISSION.master_menu_id')
             ->where('users.username', $username)
             ->where('MasterMenu.nama', $moduleName)->count() > 0;
+    }
+
+    public static function getAccessToken() {
+        $credentialsPath = base_path(env('FIREBASE_CREDENTIALS'));
+        $client = new Google_Client();
+        $client->setAuthConfig($credentialsPath);
+        $client->addScope('https://www.googleapis.com/auth/firebase.messaging');
+
+        $data = $client->fetchAccessTokenWithAssertion();
+        Log::debug($data);
+
+        return $data['access_token'];
+    }
+
+    public static function getFirebaseConfig() {
+        $firebase_config = [
+            'type' => '',
+            'project_id' => '',
+            'private_key_id' => '',
+            'private_key' => '',
+            'client_email' => '',
+            'client_id' => '',
+            'auth_uri' => '',
+            'token_uri' => '',
+            'auth_provider_x509_cert_url' => '',
+            'client_x509_cert_url' => '',
+            'universe_domain' => ''
+        ];
+
+        try {
+            $credentialsPath = base_path(env('FIREBASE_CREDENTIALS'));
+            $contents = File::get($credentialsPath);
+            $firebase_config = json_decode(json: $contents, associative: true);
+            // $contents = Storage::json(env('FIREBASE_CREDENTIALS'), JSON_THROW_ON_ERROR);
+
+            Log::debug($credentialsPath);
+            // Log::debug($contents);
+            Log::debug($firebase_config);
+        } catch (Exception $ex) {
+            Log::error($ex->getMessage());
+            Log::error($ex->getTraceAsString());
+        }
+
+        return $firebase_config;
+    }
+
+    public static function sendPushNotification($token, $title, $body) {
+        $client = new Client();
+        $firebase_config = Helper::getFirebaseConfig();
+
+        // URL API FCM v1
+        $url = 'https://fcm.googleapis.com/v1/projects/' . $firebase_config['project_id'] . '/messages:send';
+
+        // Dapatkan access token menggunakan Service Account JSON
+        $accessToken = Helper::getAccessToken();
+
+        // Payload yang dikirim ke API
+        $payload = [
+            'message' => [
+                'token' => $token,
+                'notification' => [
+                    'title' => $title,
+                    'body' => $body,
+                ],
+                'data' => [
+                    'key' => 'value', // Data tambahan
+                ],
+            ],
+        ];
+
+        // Kirim request ke API FCM
+        $response = $client->post($url, [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $accessToken,
+                'Content-Type'  => 'application/json',
+            ],
+            'json' => $payload,
+        ]);
+
+        return $response->getStatusCode();
     }
 }
