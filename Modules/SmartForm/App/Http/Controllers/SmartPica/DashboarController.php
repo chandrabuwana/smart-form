@@ -15,26 +15,26 @@ class DashboarController extends Controller
     {
         // dd(session('user_id'));
         $dataCharts = [
-            'Step Not Yet' => [ 'count' => 0, 'percentage' => 0 ],
-            'Not Any Progres' => [ 'count' => 0, 'percentage' => 0 ],
-            'On Progress' => [ 'count' => 0, 'percentage' => 0 ],
-            'Closed' => [ 'count' => 0, 'percentage' => 0 ],
+            'Step Not Yet' => ['count' => 0, 'percentage' => 0],
+            'Not Any Progres' => ['count' => 0, 'percentage' => 0],
+            'On Progress' => ['count' => 0, 'percentage' => 0],
+            'Closed' => ['count' => 0, 'percentage' => 0],
         ];
 
-        $dataPicas = DB::table('master_pica')->selectRaw('COUNT(id) AS count_pica, status')
-            ->groupBy('status')->get();
+        $dataPicas = DB::table('new_pica_step')->selectRaw('COUNT(id) AS count_pica, acceptance status')
+            ->groupBy('acceptance')->get();
 
-        foreach($dataPicas as $pica) {
+        foreach ($dataPicas as $pica) {
             $status = strtr($pica->status, [
-                '1' => 'Step Not Yet',
-                '2' => 'Not Any Progres',
-                '3' => 'On Progress',
-                '4' => 'Closed',
+                '0' => 'Not Yet ACC',
+                '1' => 'On Progress',
+                '2' => 'Reject By PIC',
+                '9' => 'Closed',
             ]);
 
             $countAll = $dataPicas->pluck('count_pica')->sum();
-            $dataCharts[ $status ]['count'] = $pica->count_pica;
-            $dataCharts[ $status ]['percentage'] = round(($pica->count_pica / $countAll) * 100, 2);
+            $dataCharts[$status]['count'] = $pica->count_pica;
+            $dataCharts[$status]['percentage'] = round(($pica->count_pica / $countAll) * 100, 2);
         }
 
         return view("SmartForm::smartpica/dashboard-smart-pica", [
@@ -168,29 +168,61 @@ class DashboarController extends Controller
         $dataPicaW5 = DB::select("select * from pica_why5 w join kategori_problem k on w.id_kategory = k.kp_id where nodocpica = '$id'");
 
 
-        $solution = DB::select("SELECT nodocpica,
-                        id_master,
-                        nik_master,
-                        id,
-                        CASE
-                            WHEN action = 'ca' THEN 'Corrective'
-                            WHEN action = 'pa' THEN 'Preventive'
-                            ELSE action
-                        END AS action,
-                        note_step,
-                        upper(ap_tod) ap_tod,
-                        upper(dic) dic,
-                        pic,
-                        COALESCE(
-                            (SELECT TOP 1 progress
-                                FROM history_progress_solution s
-                                WHERE n.nodocpica = s.nodocpica
-                                AND s.position_why = n.position_why
-                                AND s.identity_why = n.identity_why
-                                ORDER BY progress DESC),
-                            0
-                        ) progress,
-                       FORMAT(due_date, 'dd MMMM yyyy', 'en-US') AS due_date, position_why, identity_why, k.nama nama_pic FROM [new_pica_step] n join hrd.dbo.TKaryawan k on n.pic = k.NIK where nodocpica = '$id'");
+        $solution = DB::select("SELECT 
+                                        n.nodocpica,
+                                        n.id_master,
+                                        n.nik_master,
+                                        n.id,
+                                        CASE
+                                            WHEN n.action = 'ca' THEN 'Corrective'
+                                            WHEN n.action = 'pa' THEN 'Preventive'
+                                            ELSE n.action
+                                        END AS action,
+                                        n.note_step,
+                                        UPPER(n.ap_tod) AS ap_tod,
+                                        UPPER(n.dic) AS dic,
+                                        n.pic,
+                                        COALESCE(
+                                            (SELECT TOP 1 s.progress
+                                                FROM history_progress_solution s
+                                                WHERE n.nodocpica = s.nodocpica
+                                                AND s.id_solution = n.id
+                                                ORDER BY s.progress DESC),
+                                            0
+                                        ) AS progress,
+                                        -- Menghitung persentase progress berdasarkan target_master
+                                        COALESCE(
+                                            (SELECT TOP 1 CAST(s.progress AS FLOAT) / mp.target_master * 100
+                                                FROM history_progress_solution s
+                                                WHERE n.nodocpica = s.nodocpica
+                                                AND s.id_solution = n.id
+                                                ORDER BY s.progress DESC),
+                                            0
+                                        ) AS progress_percentage,
+                                        FORMAT(n.due_date, 'dd MMMM yyyy', 'en-US') AS due_date,
+                                        n.position_why,
+                                        n.acceptance,
+                                        n.acceptance_reason,
+                                        n.status_reject,
+                                        n.status_approve,
+                                        n.keterangan_reject,
+                                        n.identity_why,
+                                         CASE
+                                        WHEN n.status_reject = 1 THEN 'Close Rejected'
+                                        WHEN n.status_approve = 1 THEN 'Close'
+                                        WHEN n.acceptance = 0 THEN 'Need Accept by PIC'
+                                        WHEN n.acceptance = 1 THEN 'On Progress'
+                                        WHEN n.acceptance = 2 THEN 'Reject By PIC'
+                                        WHEN n.acceptance = 9 THEN 'Need Validation'
+                                        ELSE 'Unknown Status'
+                                    END AS status_solution,
+                                        k.nama AS nama_pic
+                                    FROM 
+                                        new_pica_step n
+                                    JOIN 
+                                        hrd.dbo.TKaryawan k ON n.pic = k.NIK
+                                    JOIN 
+                                        master_pica mp ON mp.nodocpica = n.nodocpica where n.nodocpica = '$id'");
 
         $dataFinal = [
             'dataMaster' => $dataMaster[0],
@@ -207,8 +239,12 @@ class DashboarController extends Controller
 
     function IndexUpdateProgress()
     {
-
         return view("SmartForm::smartpica/update-progress");
+    }
+
+    function IndexApprovementProgress()
+    {
+        return view("SmartForm::smartpica/approvement-pica");
     }
 
 }

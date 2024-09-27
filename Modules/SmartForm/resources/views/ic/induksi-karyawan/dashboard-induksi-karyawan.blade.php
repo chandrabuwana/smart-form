@@ -10,7 +10,7 @@
             <div class="card my-4">
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 my-2">
                     <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                        <h6 class="text-white text-capitalize ps-3">Indukti Karyawan</h6>
+                        <h6 class="text-white text-capitalize ps-3">Induksi Karyawan</h6>
                     </div>
                 </div>
                 <div class="card-header"
@@ -30,8 +30,8 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-4">
                                         <label for="FILTERNIKMENTOR">NIK Mentor</label>
-                                        <input type="text" class="form-control" id="FILTERNIKMENTOR" name="FILTERNIKMENTOR"
-                                            maxlength="7" placeholder=" -- Masukkan NIK Mentor -- ">
+                                        <input type="text" class="form-control" id="FILTERNIKMENTOR"
+                                            name="FILTERNIKMENTOR" maxlength="7" placeholder=" -- Masukkan NIK Mentor -- ">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -54,7 +54,7 @@
                             <div class="row justify-content-end">
                                 <div class="col-sm-2">
                                     <button class="btn btn-primary ms-auto uploadBtn"
-                                        onclick="dataListFormICInduksiKaryawanSearchGenerate(this);">
+                                        onclick="dataListFormICInduksiKaryawanSearchGenerate();">
                                         <i class="fa fa-filter"> Search</i> </button></a>
                                 </div>
 
@@ -167,6 +167,7 @@
     <link href="https://unpkg.com/gijgo@1.9.14/css/gijgo.min.css" rel="stylesheet" type="text/css" />
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
     <script type="text/javascript">
+        let dataUser = <?php echo json_encode(session('user_id')); ?>;
         $('#FILTERTANGGAL').datepicker({
             dateFormat: 'd MM yy',
             monthNames: [
@@ -300,13 +301,59 @@
         }
 
         function dataListFormICInduksiKaryawanActionFormater(value, row, index) {
-            console.log(row);
+
             let data = `
                     <button onclick="RedirectToDetail(this)"><a class="like"  title="Like">
                         <i class="fa fa-pen"></i> Edit
-                    </a></button>
+                    </a></button> 
+                    
                 `
+            if (dataUser == '1020125') {
+                data += `<button onclick="DeletedData(this)"><a class="like"  title="Like">
+                        <i class="fa fa-trash"></i> Delete
+                    </a></button>'`
+            }
+            console.log(dataUser);
             return data;
+        }
+
+        function DeletedData(obj) {
+            let indexDt = $(obj).closest('tr').data('index');
+            let d = $('#dataListFormICInduksiKaryawan').bootstrapTable('getData')[indexDt];
+
+            let dataHapus = {
+                code: d.code
+            }
+
+            $.ajax({
+                type: 'post',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: "/bss-form/induksi-karyawan/delete-induksi",
+                data: dataHapus,
+                dataType: 'json',
+                success: function(response) {
+                    if (response.code == 200) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: response.message,
+                        }).then((result) => {
+                            dataListFormICInduksiKaryawanSearchGenerate()
+                        });
+                    }
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'thrownError',
+                        html: errorMessage,
+                        confirmButtonText: 'OK'
+                    });
+                }
+            })
+
         }
 
         function dataListFormICInduksiKaryawanParamsGenerate(params) {
@@ -328,7 +375,7 @@
             return params;
         }
 
-        function dataListFormICInduksiKaryawanSearchGenerate(obj) {
+        function dataListFormICInduksiKaryawanSearchGenerate() {
             $('#dataListFormICInduksiKaryawan').bootstrapTable('refresh');
             $("#dataListFormICInduksiKaryawan").bootstrapTable("uncheckAll");
         }
