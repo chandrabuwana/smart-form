@@ -82,6 +82,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/form-edit-view-IC-form-induksi/{d}', [ICFM05InduksiKaryawanController::class, 'IndexDetailEditViewFormInduksiKaryawan'])->name("bss-edit-view-form-ic-induksi-karyawan");
             Route::post('/generate-link', [ICFM05InduksiKaryawanController::class, 'GenerateLinkUrl']);
             Route::post('/activated-link', [ICFM05InduksiKaryawanController::class, 'ActivatedLink']);
+            Route::post('/delete-induksi', [ICFM05TransactionController::class, 'DeletedInduksiKaryawan']);
             Route::post('/listing-karyawan-deleted', [ICFM05InduksiKaryawanController::class, 'formDeletedKaryawanListing']);
             Route::post('/check-nik-pdf', [ICFM05InduksiKaryawanController::class, 'checkNIKPDF']);
             Route::get('/download-pdf/{id}', [ICFM05InduksiKaryawanController::class, 'downloadPDF']);
@@ -164,6 +165,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
         Route::get('/data-pica', [HelperController::class, 'HelperDataTablePica']);
         Route::get('/data-update-progress', [HelperController::class, 'HelperDataTableStepSolutionPica']);
         Route::get('/data-history-progress', [HelperController::class, 'HelperDataTableHistoryProgressPica']);
+        Route::get('/data-approvement-step-pica', [HelperController::class, 'HelperDataTableApprovementStepPica']);
     });
 
     Route::prefix('role-management')->group(function () {
@@ -202,16 +204,19 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
         Route::get('/update-progress', [DashboarController::class, 'IndexUpdateProgress'])->name(("dashboard-update-progress-smartpica"));
         Route::get('/create-step/{id}', [DashboarController::class, 'IndexFormStepPica']);
         Route::get('/view-data-detail-pica/{id}', [DashboarController::class, 'IndexViewDataDetailPica']);
+        Route::get('/approvement-pica', [DashboarController::class, 'IndexApprovementProgress']);
 
         Route::post('/add-transaction', [TransactionPicaController::class, 'AddDataTransactionPica']);
         Route::post('/add-step-transaction', [TransactionPicaController::class, 'addDataStepTransactionPica']);
         Route::post('/add-progress-history-transaction', [TransactionPicaController::class, 'addTransactionProgressStepSolutionPica']);
-
         Route::get('/dashboard-level-user', [MappingValidationController::class, 'IndexMappingValidation']);
         Route::get('/list-level-user', [MappingValidationController::class, 'GetListLevelUser']);
         Route::post('/add-level-user', [MappingValidationController::class, 'AddLevelUser']);
         Route::put('/edit-level-user', [MappingValidationController::class, 'EditLevelUser']);
         Route::delete('/delete-level-user', [MappingValidationController::class, 'DeleteLevelUser']);
+        Route::post('/change-acceptance', [TransactionPicaController::class, 'changeAcceptanceStepSolutionPica']);
+        Route::post('/approve-task-closing', [TransactionPicaController::class, 'ApproveClosingTask']);
+      
     });
 
     Route::prefix('approval')->group(function () {

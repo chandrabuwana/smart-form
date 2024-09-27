@@ -631,7 +631,7 @@
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                url: "/add-transaction",
+                url: "add-transaction",
                 data: dataKirim,
                 dataType: 'json',
                 success: function(response) {

@@ -529,7 +529,7 @@
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                url: "/add-step-transaction",
+                url: "/smart-pica/add-step-transaction",
                 data: dataKirim,
                 dataType: 'json',
                 success: function(response) {
@@ -539,7 +539,7 @@
                             title: 'Berhasil!',
                             text: response.message,
                         }).then((result) => {
-                            window.location.href = `/smart-pica`
+                            window.location.href = `/smart-pica/dashboard`
                         })
                     }
                 },

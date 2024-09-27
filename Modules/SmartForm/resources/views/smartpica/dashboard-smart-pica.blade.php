@@ -22,8 +22,8 @@
                                         <div class="card-body p-3">
                                             <div class="row align-items-center">
                                                 <div class="col-md-8">
-                                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Step Not Yet</p>
-                                                    <h2 class="fw-bolder">{{ $dataCharts['Step Not Yet']['count'] }}</h2>
+                                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Step Not Net ACC</p>
+                                                    <h2 class="fw-bolder">{{ $dataCharts['Not Yet ACC']['count'] }}</h2>
                                                 </div>
                                                 <div class="col-md-4 text-end">
                                                     <div class="icon icon-shape bg-gradient-info shadow-info text-center rounded-circle">
@@ -40,8 +40,8 @@
                                         <div class="card-body p-3">
                                             <div class="row align-items-center">
                                                 <div class="col-md-8">
-                                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Not Any Progres</p>
-                                                    <h2 class="fw-bolder">{{ $dataCharts['Not Any Progres']['count'] }}</h2>
+                                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Reject By PIC</p>
+                                                    <h2 class="fw-bolder">{{ $dataCharts['Reject By PIC']['count'] }}</h2>
                                                 </div>
                                                 <div class="col-md-4 text-end">
                                                     <div class="icon icon-shape bg-gradient-danger shadow-danger text-center rounded-circle">
@@ -147,7 +147,7 @@
         new Chart(elChartStatus, {
             type: "pie",
             data: {
-                labels: ['Step Not Yet', 'Not Any Progres', 'On Progress', 'Closed'],
+                labels: ['Not Yet ACC', 'Reject By PIC', 'On Progress', 'Closed'],
                 datasets: [{
                     label: "Projects",
                     weight: 9,
@@ -158,8 +158,8 @@
                     hoverOffset: 4,
                     backgroundColor: ['#49a3f1', '#EF5350', '#FFA726', '#66BB6A'],
                     data: [
-                        {{ $dataCharts['Step Not Yet']['percentage'] }},
-                        {{ $dataCharts['Not Any Progres']['percentage'] }},
+                        {{ $dataCharts['Not Yet ACC']['percentage'] }},
+                        {{ $dataCharts['Reject By PIC']['percentage'] }},
                         {{ $dataCharts['On Progress']['percentage'] }},
                         {{ $dataCharts['Closed']['percentage'] }}
                     ],
@@ -205,7 +205,6 @@
         }
 
         function dataListFormPicaActionFormater(value, row, index) {
-            console.log(row);
             let data = `
                     <button onclick="RedirectViewPica(this)"><a class="like"  title="Like">
                         <i class="fa fa-eye"></i> View

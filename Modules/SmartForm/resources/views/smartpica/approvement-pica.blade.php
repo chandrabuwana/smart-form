@@ -22,9 +22,9 @@
                 <div class="card-body px-0 pb-2">
 
                     <div class="table-responsive p-0">
-                        <table id="dataListUpdateProgress" data-toggle="table"
-                            data-ajax="dataListUpdateProgressGenerateData"
-                            data-query-params="dataListUpdateProgressParamsGenerate" data-side-pagination="server"
+                        <table id="dataListApprovementStep" data-toggle="table"
+                            data-ajax="dataListApprovementStepGenerateData"
+                            data-query-params="dataListApprovementStepParamsGenerate" data-side-pagination="server"
                             data-page-list="[10, 25, 50, 100, all]" data-sortable="true"
                             data-content-type="application/json" data-data-type="json" data-pagination="true"
                             data-unique-id="nodocpica">
@@ -33,18 +33,20 @@
                                     <th data-field="nodocpica" data-align="left" data-halign="text-center"
                                         data-sortable="true">No. Document
                                     </th>
-                                    <th data-field="status" data-align="center" data-halign="center" data-sortable="true">
-                                        Status
+                                    <th data-field="why" data-align="center" data-halign="center" data-sortable="true">
+                                        Permasalahan
                                     </th>
                                     <th data-field="action" data-align="center" data-halign="center">Action</th>
                                     <th data-field="note_step" data-align="left" data-halign="center">Step Solution</th>
                                     <th data-field="ap_tod" data-align="center" data-halign="center">AP/TOD</th>
-                                    <th data-field="target_master" data-align="center" data-halign="center">Target</th>
+                                    <th data-field="pic" data-align="center" data-halign="center">PIC</th>
                                     <th data-field="due_date" data-align="left" data-formatter="dataTableDateFormater"
                                         data-halign="center">Due Date</th>
-                                    <th data-field="progress" data-align="center" data-halign="center">Progress</th>
+                                    <th data-field="status_approve" data-align="center"
+                                        data-formatter="dataTableStatusFormater" data-halign="center">Status Approvement
+                                    </th>
                                     <th data-halign="center" data-align="center"
-                                        data-formatter="dataListUpdateProgressActionFormater">Action
+                                        data-formatter="dataListApprovementStepActionFormater">Action
                                     </th>
                                 </tr>
                             </thead>
@@ -68,7 +70,6 @@
                 <input type="hidden" name="idMaster" id="idMaster" value="">
                 <input type="hidden" name="nikMaster" id="nikMaster" value="">
                 <input type="hidden" name="idSolution" id="idSolution" value="">
-                <input type="hidden" name="targetMaster" id="targetMaster" value="">
                 <div class="modal-header">
                     <div class="row">
                         <div class="col">
@@ -82,9 +83,12 @@
                     <div class="col">
                         <div class="card border" style="">
                             <div class="card-body">
-                                <div class="d-flex align-items-center">
-                                    <button onclick="OpenModalAddProgress()" class="btn btn-primary ms-auto uploadBtn">
-                                        Add Progress</button>
+                                <div class="d-flex align-items-end" id="rejectButton">
+                                    <button onclick="ApproveTaskAndCloseTask(true)"
+                                        class="btn btn-primary ms-2 uploadBtn">
+                                        APPROVE</button>
+                                    <button onclick="openModalRejectClosingTask()" class="btn btn-primary ms-2 uploadBtn">
+                                        REJECT</button>
                                 </div>
                                 <div class="table-responsive p-0">
                                     <table id="dataListHistoryProgress" data-toggle="table"
@@ -95,9 +99,9 @@
                                         data-pagination="true" data-unique-id="id">
                                         <thead>
                                             <tr>
-                                                <th data-field="id" data-align="center" data-halign="text-center"
+                                                {{-- <th data-field="id" data-align="center" data-halign="text-center"
                                                     data-sortable="true">ID Solution
-                                                </th>
+                                                </th> --}}
                                                 <th data-field="note_progress" data-align="left" data-halign="center"
                                                     data-sortable="true">Catatan
                                                 </th>
@@ -126,65 +130,6 @@
                     </div>
                 </div>
 
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="ModalAddProgress" aria-hidden="true" aria-labelledby="exampleModalToggleLabel"
-        tabindex="-1">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div class="row">
-                        <div class="col">
-                            <h5 class="modal-title center" id="exampleModalToggleLabel">Add Progress</h5>
-                            <p id="ProblemHeader"></p>
-                        </div>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
-                </div>
-                <div class="row" style="margin: 10px">
-                    <div class="col">
-                        <div class="card border" style="">
-                            <div class="card-body">
-                                <h5 class="card-title">Progress Pembenahan</h5>
-                                <span id="solutionSpan"></span>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="input-group input-group-static my-4">
-                                            <label for="note_progress">Catatan Progress</label>
-                                            <textarea class="form-control" placeholder="Masukkan Catatan" rows="2" id="note_progress"></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="input-group input-group-static my-4">
-                                            <label for="CCPLink" class="ms-0">CCP Link</label>
-                                            <input class="form-control" type="text"
-                                                placeholder="Masukkan note untuk PIC" name="CCPLink" required
-                                                id="CCPLink">
-                                        </div>
-                                    </div>
-
-                                    <div class="col-2">
-                                        <div class="input-group input-group-static my-4">
-                                            <label for="progress" class="ms-0">Progress</label>
-                                            <input class="form-control" type="text" placeholder="Persentase Progress"
-                                                name="progress" required id="progress">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-footer">
-                            <div class="d-flex align-items-center">
-                                <button class="btn btn-primary ms-auto uploadBtn" id="buttonSubmitDataPICA"
-                                    style="margin : 20px" onclick="SubmitAllDataAndRefreshDataTableHistory()">
-                                    <i class="fas fa-save"></i>
-                                    Save All Data</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -222,7 +167,7 @@
                         <div class="card-footer">
                             <div class="d-flex align-items-center">
                                 <button class="btn btn-primary ms-auto uploadBtn" id="buttonSubmitDataPICA"
-                                    style="margin : 20px" onclick="AcceptanceChange(0, 2)">
+                                    style="margin : 20px" onclick="ApproveTaskAndCloseTask(false)">
                                     <i class="fas fa-save"></i>
                                     Save All Data</button>
                             </div>
@@ -249,109 +194,25 @@
 
         }
 
-        function RedirectViewPica(obj) {
-            var indexDt = $(obj).closest('tr').data('index');
-            window.location.href = "/smart-pica/view-data-detail-pica/" + $('#dataListFormPica').bootstrapTable('getData')[
-                    indexDt]
-                .nodocpica
+        function dataTableStatusFormater(value, row, index) {
+            if (value == 0) {
+                return `<button type="button" class="btn btn-primary btn-sm">Close Need Approve</button>`
+            } else if (value == 1) {
+                return `<button type="button" class="btn btn-success btn-sm">Close</button>`
+            } else {
+                return `<button type="button" class="btn btn-danger btn-sm">Reject</button>`
+            }
         }
 
-        function dataListUpdateProgressActionFormater(value, row, index) {
-            if (row.acceptance == 0) {
-                return `
-                     <button onclick="RedirectViewPica(this)"><a class="like"  title="Like">
-                        <i class="fa fa-eye"></i> View
-                    </a></button>
-                    <button onclick="AcceptanceChange(${row.id}, 1)"><a class="like"  title="Like">
-                        <i class="fa fa-check"></i>
-                    </a> Acccept </button>
-                    <button onclick="modalOpenRejectReason(${row.id})"><a class="like"  title="Like">
-                        <i class="fa fa-circle-xmark"></i>
-                    </a> Reject </button>
-                `
-            } else if (row.acceptance == 1) {
-                return `<button onclick="RedirectViewPica(this)"><a class="like"  title="Like">
-                        <i class="fa fa-eye"></i> View
-                    </a></button>
+        function dataListApprovementStepActionFormater(value, row, index) {
+            return `
                     <button onclick="OpenModalHistory(this)"><a class="like"  title="Like">
                         <i class="fa fa-eye"></i>
-                    </a>Update Progress</button>`
-            } else if (row.acceptance == 9) {
-                return `<button onclick="RedirectViewPica(this)"><a class="like"  title="Like">
-                        <i class="fa fa-eye"></i> View
-                    </a></button>
-                <button disabled><a class="like"  title="Like">
-                    </a>Close</button>`
-            } else {
-                return `<button onclick="RedirectViewPica(this)"><a class="like"  title="Like">
-                        <i class="fa fa-eye"></i> View
-                    </a></button> <button disabled ><a class="like"  title="Like">
-                    </a>Rejected</button>`
-            }
+                    </a> Check</button>
+                `
         }
 
-        function modalOpenRejectReason(id) {
-            $('#RaasonIDOBJECT').val(id);
-            $('#ModalRejectReason').modal("show");
-        }
-
-        function AcceptanceChange(id, bol) {
-
-            let dataKirim = {};
-
-            if (id == 0) {
-                let reason = $('#reasonRejected').val();
-                if (reason == "") {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Validasi Gagal',
-                        text: 'Mohon isikan alasan melakukan rejecting',
-                    });
-                    return false;
-                }
-
-                dataKirim = {
-                    id: $('#RaasonIDOBJECT').val(),
-                    hasil: bol,
-                    reason: reason
-                }
-            } else {
-                dataKirim = {
-                    id: id,
-                    hasil: bol,
-                    reason: ''
-                }
-            }
-
-            $.ajax({
-                type: 'post',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                url: "change-acceptance",
-                data: dataKirim,
-                dataType: 'json',
-                success: function(response) {
-                    if (response.code == 200) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Berhasil!',
-                            text: response.message,
-                        }).then((result) => {
-                            $('#dataListUpdateProgress').bootstrapTable('refresh');
-                            $('#ModalRejectReason').modal("hide");
-                        })
-                    }
-                },
-                error: function(xhr, ajaxOptions, thrownError) {
-                    console.log(thrownError)
-                }
-            })
-
-
-        }
-
-        function dataListUpdateProgressParamsGenerate(params) {
+        function dataListApprovementStepParamsGenerate(params) {
 
             params.search = {
                 'CARNAME': "",
@@ -369,19 +230,19 @@
 
         function RedirectViewPica(obj) {
             var indexDt = $(obj).closest('tr').data('index');
-            window.location.href = "/smart-pica/view-data-detail-pica/" + $('#dataListUpdateProgress').bootstrapTable(
+            window.location.href = "/smart-pica/view-data-detail-pica/" + $('#dataListApprovementStep').bootstrapTable(
                     'getData')[
                     indexDt]
                 .nodocpica
         }
 
-        function dataListUpdateProgressSearchGenerate(obj) {
-            $('#dataListUpdateProgress').bootstrapTable('refresh');
-            $("#dataListUpdateProgress").bootstrapTable("uncheckAll");
+        function dataListApprovementStepSearchGenerate(obj) {
+            $('#dataListApprovementStep').bootstrapTable('refresh');
+            $("#dataListApprovementStep").bootstrapTable("uncheckAll");
         }
 
-        function dataListUpdateProgressGenerateData(params) {
-            var url = '/helper/data-update-progress'
+        function dataListApprovementStepGenerateData(params) {
+            var url = '/helper/data-approvement-step-pica'
             $.get(url + '?' + $.param(params.data)).then(function(res) {
                 params.success(res)
             })
@@ -390,21 +251,103 @@
     <script type="text/javascript">
         function OpenModalHistory(obj) {
             let indexDt = $(obj).closest('tr').data('index');
+            let dataObject = $('#dataListApprovementStep').bootstrapTable('getData')[indexDt]
 
-            $('#positionWhy').val($('#dataListUpdateProgress').bootstrapTable('getData')[indexDt].position_why)
-            $('#identityWhy').val($('#dataListUpdateProgress').bootstrapTable('getData')[indexDt].identity_why)
-            $('#nodocpica').val($('#dataListUpdateProgress').bootstrapTable('getData')[indexDt].nodocpica)
-            $('#idMaster').val($('#dataListUpdateProgress').bootstrapTable('getData')[indexDt].id_master)
-            $('#nikMaster').val($('#dataListUpdateProgress').bootstrapTable('getData')[indexDt].nik_master)
-            $('#idSolution').val($('#dataListUpdateProgress').bootstrapTable('getData')[indexDt].id)
-            $('#targetMaster').val($('#dataListUpdateProgress').bootstrapTable('getData')[indexDt].target_master)
+            $('#positionWhy').val(dataObject.position_why)
+            $('#identityWhy').val(dataObject.identity_why)
+            $('#nodocpica').val(dataObject.nodocpica)
+            $('#idMaster').val(dataObject.id_master)
+            $('#nikMaster').val(dataObject.nik_master)
+            $('#idSolution').val(dataObject.id)
             $('#dataListHistoryProgress').bootstrapTable('refresh');
-            $('#updateProgressHistory').modal("show");
+            if (dataObject.status_approve == 1){
+                $('#rejectButton').addClass("d-none");
+            }
+                $('#updateProgressHistory').modal("show");
         }
 
-        function OpenModalAddProgress(obj) {
+        function openModalRejectClosingTask() {
+            $('#updateProgressHistory').modal("hide");
+            $('#ModalRejectReason').modal("show");
+        }
 
-            $('#ModalAddProgress').modal("show");
+        function ApproveTaskAndCloseTask(obj) {
+            if (obj) {
+                Swal.fire({
+                    title: "Apakah anda ingin close task ?",
+                    showCancelButton: true,
+                    confirmButtonText: "Close Task",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        let dataKirim = {
+                            id: $('#idSolution').val(),
+                            hasil: true,
+                            keterangan: ""
+                        }
+                        kirimDataVerifikasiClosingTask(dataKirim)
+                    }
+                });
+            } else {
+                let dataAlasan = $('#reasonRejected').val();
+
+                if (dataAlasan == "") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Validasi Gagal',
+                        text: 'Isikan alasan reject',
+                    });
+                    return false
+                }
+
+                Swal.fire({
+                    title: "Apakah anda REJECT Closing task ?",
+                    showCancelButton: true,
+                    confirmButtonText: "REJECT Closing",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        let dataKirim = {
+                            id: $('#idSolution').val(),
+                            hasil: false,
+                            keterangan: dataAlasan
+                        }
+                        kirimDataVerifikasiClosingTask(dataKirim)
+                    }
+                });
+            }
+
+        }
+
+        function kirimDataVerifikasiClosingTask(dataKirim) {
+            $.ajax({
+                type: 'post',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: "approve-task-closing",
+                data: dataKirim,
+                dataType: 'json',
+                success: function(response) {
+                    if (response.code == 200) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: response.message,
+                        }).then((result) => {
+                            $('#dataListHistoryProgress').bootstrapTable('refresh');
+                            $('#ModalAddProgress').modal("hide");
+                            $('#positionWhy').val("")
+                            $('#identityWhy').val("")
+                            $('#nodocpica').val("")
+                            $('#idMaster').val("")
+                            $('#nikMaster').val("")
+                            $('#idSolution').val("")
+                        })
+                    }
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    console.log(thrownError)
+                }
+            })
         }
 
         function dataListHistoryProgressActionFormater(value, row, index) {
@@ -463,7 +406,6 @@
             var idMaster = $('#idMaster').val().trim();
             var nikMaster = $('#nikMaster').val().trim();
             var idSolution = $('#idSolution').val().trim();
-            var targetMaster = $('#targetMaster').val().trim();
 
             // Validation
             var isValid = true;
@@ -499,15 +441,6 @@
                 });
             }
 
-            if (parseInt(progress, 10) > parseInt(targetMaster, 10)) {
-                isValid = false;
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Validasi Gagal',
-                    text: 'Progress tidak boleh melebihi angka target yaitu ' + targetMaster,
-                });
-            }
-
             if (isValid) {
                 // If all fields are valid, create an object to store the data
                 var dataKirim = {
@@ -521,55 +454,37 @@
                     nikMaster: nikMaster,
                     idSolution: idSolution
                 };
-                if (parseInt(progress, 10) == parseInt(targetMaster, 10)) {
-                    Swal.fire({
-                        title: "Apakah kamu akan menyelesaikan pekerjaan ?",
-                        showCancelButton: true,
-                        confirmButtonText: "Close Task",
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            updateProgress(dataKirim)
+
+                $.ajax({
+                    type: 'post',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    url: "/add-progress-history-transaction",
+                    data: dataKirim,
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.code == 200) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil!',
+                                text: response.message,
+                            }).then((result) => {
+                                $('#note_progress').val('');
+                                $('#CCPLink').val('');
+                                $('#progress').val('');
+
+                                // Reset hidden inputs
+                                $('#dataListHistoryProgress').bootstrapTable('refresh');
+                                $('#ModalAddProgress').modal("hide");
+                            })
                         }
-                    });
-                } else {
-                    updateProgress(dataKirim)
-                }
-
-
-            }
-        }
-
-
-        function updateProgress(dataKirim) {
-            $.ajax({
-                type: 'post',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                url: "add-progress-history-transaction",
-                data: dataKirim,
-                dataType: 'json',
-                success: function(response) {
-                    if (response.code == 200) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Berhasil!',
-                            text: response.message,
-                        }).then((result) => {
-                            $('#note_progress').val('');
-                            $('#CCPLink').val('');
-                            $('#progress').val('');
-
-                            // Reset hidden inputs
-                            $('#dataListHistoryProgress').bootstrapTable('refresh');
-                            $('#ModalAddProgress').modal("hide");
-                        })
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        console.log(thrownError)
                     }
-                },
-                error: function(xhr, ajaxOptions, thrownError) {
-                    console.log(thrownError)
-                }
-            })
+                })
+            }
         }
     </script>
 @endsection
