@@ -15,9 +15,9 @@ class DashboarController extends Controller
     {
         // dd(session('user_id'));
         $dataCharts = [
-            'Step Not Yet' => ['count' => 0, 'percentage' => 0],
-            'Not Any Progres' => ['count' => 0, 'percentage' => 0],
+            'Not Yet ACC' => ['count' => 0, 'percentage' => 0],
             'On Progress' => ['count' => 0, 'percentage' => 0],
+            'Reject By PIC' => ['count' => 0, 'percentage' => 0],
             'Closed' => ['count' => 0, 'percentage' => 0],
         ];
 
@@ -44,10 +44,10 @@ class DashboarController extends Controller
 
     function IndexFormAdd()
     {
-        $dataDepartment = DB::select("select * from kategori_problem");
+        $dataKategory = DB::select("select * from kategori_problem order by kp_id desc");
 
         $dataJs = [];
-        foreach ($dataDepartment as $a) {
+        foreach ($dataKategory as $a) {
             $dataBaru = [
                 'text' => $a->kp_name,
                 'id' => $a->kp_id
@@ -63,7 +63,8 @@ class DashboarController extends Controller
     function IndexFormStepPica(string $id)
     {
 
-        $dataMaster = DB::select("SELECT * FROM master_pica where nodocpica = '$id'");
+        $dataMaster = DB::select("SELECT * FROM master_pica m join 
+                                            SMF_KPI_MASTER kl ON kl.kpi_code = m.id_kpi join kategori_problem k on m.id_kategory = k.kp_id where m.nodocpica = '$id'");
 
         $dataPicaW1 = DB::select("select * from pica_why1 w join kategori_problem k on w.id_kategory = k.kp_id where nodocpica = '$id'");
         $dataPicaW2 = DB::select("select * from pica_why2 w join kategori_problem k on w.id_kategory = k.kp_id where nodocpica = '$id'");
@@ -159,7 +160,23 @@ class DashboarController extends Controller
 
         // $id = 'PICA-2024-07-04-1';
 
-        $dataMaster = DB::select("select m.* , kl.lea_name, site.Nama nama_site, karyawan.nama nama_karyawan, k.kp_name  from master_pica m join kpi_lea kl on m.id_kpi = kl.lea_id join HRD.dbo.tsite site on m.site = site.KodeST join HRD.dbo.TKaryawan karyawan on karyawan.NIK = m.nik join kategori_problem k on k.kp_id = m.id_kategory where nodocpica = '$id'");
+        $dataMaster = DB::select("SELECT 
+                                        m.*, 
+                                        kl.kpi, 
+                                        site.Nama AS nama_site, 
+                                        karyawan.nama AS nama_karyawan, 
+                                        k.kp_name 
+                                    FROM 
+                                        master_pica m 
+                                    JOIN 
+                                        SMF_KPI_MASTER kl ON m.id_kpi = kl.kpi_code 
+                                    JOIN 
+                                        HRD.dbo.tsite site ON m.site = site.KodeST 
+                                    JOIN 
+                                        HRD.dbo.TKaryawan karyawan ON karyawan.NIK = m.nik 
+                                    JOIN 
+                                        kategori_problem k ON k.kp_id = m.id_kategory 
+                                    WHERE m.nodocpica = '$id'");
 
         $dataPicaW1 = DB::select("select * from pica_why1 w join kategori_problem k on w.id_kategory = k.kp_id where nodocpica = '$id'");
         $dataPicaW2 = DB::select("select * from pica_why2 w join kategori_problem k on w.id_kategory = k.kp_id where nodocpica = '$id'");

@@ -227,13 +227,13 @@ class HelperController extends Controller
 
                     m.problem, 
                     k.kp_name, 
-                    kl.lea_name 
+                    kl.KPI  
                 FROM 
                     master_pica m
                 JOIN 
                     kategori_problem k ON k.kp_id = m.id_kategory 
                 JOIN 
-                    kpi_lea kl ON kl.lea_id = m.id_kpi where 1 = 1";
+                    SMF_KPI_MASTER kl ON kl.kpi_code = m.id_kpi where 1 = 1";
         $countDataUser = DB::select('select count(*) jumlah FROM master_pica');
         $newQuery = $this->GetQueryDataTablePica($query, $table);
 
