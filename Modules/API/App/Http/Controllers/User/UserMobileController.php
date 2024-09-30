@@ -13,16 +13,16 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class UserMobileController extends Controller {
-    private const TABLE_REQ_MAKAN_MOBILE = "PICA_BETA.dbo.SCT_GS_CT_RQST_MB";
-    private const TABLE_MASTER_MESS = "PICA_BETA.dbo.SCT_GS_MESS_MST";
-    private const TABLE_PENGHUNI_MESS = "PICA_BETA.dbo.SCT_GS_MESS_HUNI";
-    private const TABLE_SUBMIT_ORDER = "PICA_BETA.dbo.SCT_GS_CT_ORDER";
-    private const TABLE_SUBMIT_ORDER_DETAIL = "PICA_BETA.dbo.SCT_GS_CT_ORDER_DTL";
+    private const TABLE_REQ_MAKAN_MOBILE = "SCT_GS_CT_RQST_MB";
+    private const TABLE_MASTER_MESS = "SCT_GS_MESS_MST";
+    private const TABLE_PENGHUNI_MESS = "SCT_GS_MESS_HUNI";
+    private const TABLE_SUBMIT_ORDER = "SCT_GS_CT_ORDER";
+    private const TABLE_SUBMIT_ORDER_DETAIL = "SCT_GS_CT_ORDER_DTL";
     private const TABLE_ABSENSI_HRD = "HRD.dbo.TAbsensi";
     private const TABLE_KARYAWAN_HRD = "HRD.dbo.TKaryawan";
     private const TABLE_PENEGASAN_CUTI = "HRD.dbo.TPenegasanCuti";
     private const TABLE_PENGAJUAN_CUTI = "HRD.dbo.tpengajuancuti";
-    private const TABLE_VENDOR_MASTER = 'PICA_BETA.dbo.SCT_GS_VENDOR_MST';
+    private const TABLE_VENDOR_MASTER = 'SCT_GS_VENDOR_MST';
     private const DB_CONN_NAME = 'sqlsrv';
     private const WAKTU_PEMESANAN = [
         [
