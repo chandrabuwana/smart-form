@@ -179,7 +179,7 @@
         }
 
         function fetchSite(cb=function(site) {}) {
-            axios.post("/helper/department", {
+            axios.post("/helper/site", {
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }

@@ -58,7 +58,7 @@ class MappingValidationController extends Controller {
             $filterNIK = $request->query('filterNIK', null); // Default limit
 
             $query_level_user = DB::table(self::TABLE_USER_LEVEL)
-                ->select('id as nomor', 'Nik as nik', 'lvl as level', 'Section as section');
+                ->select('id as nomor', 'Nik as nik', 'lvl as level', 'kode_section as section');
             if($filterNIK == null || $filterNIK == "") {}
             else $query_level_user = $query_level_user->where('Nik', $filterNIK);
             
