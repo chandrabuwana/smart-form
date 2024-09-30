@@ -15,9 +15,9 @@ use Lcobucci\JWT\Validation\ConstraintViolation;
 class VendorController extends Controller {
     private const DB_CONN_NAME = 'sqlsrv';
     private const BASE_DB  = "PICA_BETA.dbo.";
-    private const TABLE_MASTER = self::BASE_DB . 'SCT_GS_VENDOR_MST';
-    private const TABLE_MAPPING_MAKAN_VENDOR = self::BASE_DB . 'SCT_GS_VENDOR_MAPPING';
-    private const TABLE_LOKASI = self::BASE_DB . "SCT_GS_MESS_MST";
+    private const TABLE_MASTER = 'SCT_GS_VENDOR_MST';
+    private const TABLE_MAPPING_MAKAN_VENDOR = 'SCT_GS_VENDOR_MAPPING';
+    private const TABLE_LOKASI = "SCT_GS_MESS_MST";
 
     public function DashboardVendor(Request $request) {
         return view('SmartForm::GS/vendor/dashboard-vendor');

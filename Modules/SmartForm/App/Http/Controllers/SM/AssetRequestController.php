@@ -369,7 +369,7 @@ class AssetRequestController extends Controller {
 
         try {
             // $data['approval_status'] = DB::table('PICA_BETA.dbo.FM_SM_016_MASTER as pfm')
-            $sql_approval = DB::table('PICA_BETA.dbo.FM_SM_016_MASTER as pfm')
+            $sql_approval = DB::table('FM_SM_016_MASTER as pfm')
                 ->leftJoin('HRD.dbo.TKaryawan as k0', 'pfm.requested_by', '=', 'k0.NIK')
                 ->leftJoin('HRD.dbo.TKaryawan as k1', 'pfm.acknowledge_by_1_nik', '=', 'k1.NIK')
                 ->leftJoin('HRD.dbo.TKaryawan as k1a', 'pfm.cost_control_nik', '=', 'k1a.NIK')
