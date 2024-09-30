@@ -25,6 +25,7 @@ use Modules\SmartForm\App\Http\Controllers\SmartFormController;
 use Modules\SmartForm\App\Http\Controllers\SmartPica\DashboarController;
 use Modules\SmartForm\App\Http\Controllers\SmartPica\HelperController;
 use Modules\SmartForm\App\Http\Controllers\SmartPica\MappingValidationController;
+use Modules\SmartForm\App\Http\Controllers\SmartPica\SectionDepartmentController;
 use Modules\SmartForm\App\Http\Controllers\SmartPica\TransactionPicaController;
 use Modules\SmartForm\App\Http\Controllers\TeamManagement\RoleManagementController;
 use Modules\SmartForm\App\Http\Controllers\TeamManagement\UserManagementController;
@@ -212,14 +213,25 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
         Route::post('/add-transaction', [TransactionPicaController::class, 'AddDataTransactionPica']);
         Route::post('/add-step-transaction', [TransactionPicaController::class, 'addDataStepTransactionPica']);
         Route::post('/add-progress-history-transaction', [TransactionPicaController::class, 'addTransactionProgressStepSolutionPica']);
-        Route::get('/dashboard-level-user', [MappingValidationController::class, 'IndexMappingValidation']);
+        Route::get('/dashboard-level-user', [MappingValidationController::class, 'IndexLevelUser']);
         Route::get('/list-level-user', [MappingValidationController::class, 'GetListLevelUser']);
         Route::post('/add-level-user', [MappingValidationController::class, 'AddLevelUser']);
         Route::put('/edit-level-user', [MappingValidationController::class, 'EditLevelUser']);
         Route::delete('/delete-level-user', [MappingValidationController::class, 'DeleteLevelUser']);
         Route::post('/change-acceptance', [TransactionPicaController::class, 'changeAcceptanceStepSolutionPica']);
         Route::post('/approve-task-closing', [TransactionPicaController::class, 'ApproveClosingTask']);
+        
+        Route::get('/dashboard-level-mapping', [MappingValidationController::class, 'IndexlevelMapping']);
+        Route::get('/list-level-mapping', [MappingValidationController::class, 'GetListLevelMapping']);
+        Route::post('/add-level-mapping', [MappingValidationController::class, 'AddLevelMapping']);
+        Route::put('/edit-level-mapping', [MappingValidationController::class, 'EditLevelMapping']);
+        Route::delete('/delete-level-mapping', [MappingValidationController::class, 'DeleteLevelMapping']);
 
+        Route::get('/dashboard-section-department', [SectionDepartmentController::class, 'IndexSectionDepartment']);
+        Route::get('/list-section-department', [SectionDepartmentController::class, 'GetListSectionDepartment']);
+        Route::post('/add-section-department', [SectionDepartmentController::class, 'AddSectionDept']);
+        Route::put('/edit-section-department', [SectionDepartmentController::class, 'EditSectionDept']);
+        Route::delete('/delete-section-department', [SectionDepartmentController::class, 'DeleteSectionDept']);
     });
 
     Route::prefix('skl')->group( function() {

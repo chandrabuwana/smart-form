@@ -2,6 +2,26 @@
 
 @section('custom-css')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.css">
+    <style>
+        .select2.select2-container .select2-selection {
+            border-bottom: 1px solid #ccc;
+            height: 40px;
+            margin-bottom: 15px;
+            outline: none !important;
+            transition: all .15s ease-in-out;
+        }
+        .select2.select2-container .select2-selection .select2-selection__rendered {
+            line-height: 32px;
+            padding: 8px 0px;
+        }
+        .select2-results {
+            max-height: 200px; /* Batasi tinggi maksimum dropdown */
+            overflow-y: auto;  /* Aktifkan scroll vertical */
+        }
+        .w-full {
+            width: 100%;
+        }
+    </style>
 @endsection
 
 @section('content')
@@ -14,33 +34,20 @@
                     </div>
                 </div>
                 <div class="card-body px-0 pb-2">
-                    <div class="row mx-3">
-                        <h5>Cari NIK</h5>
-                        <div class="col-lg-6">
-                            <div class="input-group input-group-static mb-4">
-                                <label for="filterNIK" style="width: 100%;">NIK</label>
-                                <div style="display: flex;width: 100%;gap: 20px">
-                                    <input type="text" class="form-control" id="filterNIK" name="filterNIK" placeholder="Filter berdasarkan NIK">
-                                    <button class="btn btn-primary ms-auto" style="min-width: 100px;margin: 0px;" onclick="resetFilter(this)">Reset</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                     <div class="d-flex align-items-center">
                         <span>
                             <button class="btn btn-primary ms-auto uploadBtn" onclick="openModal(this)">Add new</button>
                         </span>
                     </div>
                     <div class="table-responsive p-0">
-                        <table id="table-level-user" data-toggle="table" data-ajax="dataListValidation" data-side-pagination="server"
+                        <table id="table-level-user" data-toggle="table" data-ajax="getListData" data-side-pagination="server"
                             data-page-list="[10, 25, 50, 100, all]" data-sortable="true"
                             data-content-type="application/json" data-data-type="json" data-pagination="true"
                             data-unique-id="nodocpica">
                             <thead>
                                 <tr>
-                                    <th data-field="nik" data-align="left" data-halign="center">NIK</th>
-                                    <th data-field="level" data-align="left" data-halign="center">Level</th>
+                                    <th data-field="KodeSection" data-align="left" data-halign="center">Kode Section</th>
+                                    <th data-field="Nama" data-align="left" data-halign="center">Nama Section</th>
                                     <th data-halign="center" data-align="center"
                                         data-formatter="actionFormatter">Action
                                     </th>
@@ -55,7 +62,7 @@
 @endsection
 
 @section('modal')
-    <div class="modal fade" id="modal-level-user" aria-hidden="true" aria-labelledby="exampleModalToggleLabel"
+    <div class="modal fade" id="modal-add" aria-hidden="true" aria-labelledby="exampleModalToggleLabel"
         tabindex="-1">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
@@ -80,23 +87,16 @@
                                             <input type="text" style="display: none;" id="inputNomor" name="inputNomor"type="hidden">
                                             <div class="col-12 col-lg-6">
                                                 <div class="input-group input-group-static mb-4">
-                                                    <label for="inputNik" style="width: 100%;">NIK</label>
-                                                    <input type="text" class="form-control" id="inputNik"
-                                                        name="inputNik" placeholder="NIK">
+                                                    <label for="inputKodeSection" style="width: 100%;">Kode Section</label>
+                                                    <input type="text" class="form-control" id="inputKodeSection"
+                                                        name="inputKodeSection" placeholder="Kode Section">
                                                 </div>
                                             </div>
                                             <div class="col-12 col-lg-6">
                                                 <div class="input-group input-group-static mb-4">
-                                                    <label for="inputLevel">Level</label>
-                                                    <select class="form-control form-select" name="inputLevel" id="inputLevel">
-                                                        <option value="">-- Pilih Level --</option>
-                                                        <option value="0">Level 0</option>
-                                                        <option value="1">Level 1</option>
-                                                        <option value="2">Level 2</option>
-                                                        <option value="3">Level 3</option>
-                                                        <option value="4">Level 4</option>
-                                                        <option value="5">Level 5</option>
-                                                    </select>
+                                                    <label for="inputNamaSection" style="width: 100%;">Nama Section</label>
+                                                    <input type="text" class="form-control" id="inputNamaSection"
+                                                        name="inputNamaSection" placeholder="Nama Section">
                                                 </div>
                                             </div>
                                         </div>
@@ -112,7 +112,7 @@
 
                 <div class="row" style="margin:10px">
                     <div class="col text-end" id="masukkanButtonSubmit">
-                        <button onclick="submitLevelUser(this)" data-action="add" class="btn btn-primary ms-auto uploadBtn" id="btnSubmitLevelUser">
+                        <button onclick="submitData(this)" data-action="add" class="btn btn-primary ms-auto uploadBtn" id="btnSubmitData">
                             <i class="fas fa-save"></i>
                             Simpan Data</button>
                     </div>
@@ -122,25 +122,33 @@
     </div>
 @endsection
 
-
 @section('custom-js')
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
         var baseUrl = '/smart-pica'
-        var filterNIK = document.getElementById("filterNIK")
-        var dataFilter = {
-            nik: null
+
+        function getListData(params) {
+            // if(filter.nik) params.data.nik = filter.nik
+            // if(filter.status) params.data.status = filter.status
+            // if(filter.department) params.data.department = filter.department
+            // console.log("filter : ", filter)
+
+            var url = baseUrl + '/list-section-department'
+            // if (dataFilter.nik != null) params.data.filterNIK = dataFilter.nik
+
+            $.get(url + '?' + $.param(params.data)).then(function(res) {
+                params.success(res.data)
+            })
         }
 
         function actionFormatter(value, row, index) {
-            var _nomor = ", '"+ row.nomor + "'"
-            var _nik = ", '"+ row.nik + "'"
-            var _level = ", '"+ row.level + "'"
+            var _KodeSection = ", '"+ row.KodeSection + "'"
+            var _Nama = ", '"+ row.Nama + "'"
             // _nama = _nama.replace("'", "")
 
-            var _clickEvent = 'onclick="actionEdit(this' + _nomor + _nik  + _level +')"'
-            var _clickEventDelete = 'onclick="actionDelete(this' + _nomor +')"'
+            var _clickEvent = 'onclick="actionEdit(this' + _KodeSection + _Nama +')"'
+            var _clickEventDelete = 'onclick="actionDelete(this' + _KodeSection +')"'
 
             // var btnDetail = '<a href="#" data-caption="" '+ _clickEvent +' data-action="detail" data-show="false" data-url=""><i class="fa fa-info-circle cursor-pointer"></i></a>';
             var btnEdit = '<a href="#" '+ _clickEvent +' data-caption="Simpan" data-action="edit" data-url="" data-show="true"><i class="fa fa-pen cursor-pointer text-info"></i></a>'
@@ -149,12 +157,22 @@
             return '<div style="display: flex;justify-content: center;gap: 8px;">' + btnEdit + btnHapus + '</div>'
         }
 
-        function openModal(e) {
-            $('#modal-level-user').modal("show")
+        function actionEdit(e, kode, nama) {
+            console.log({kode: kode, nama: nama})
+            $("#btnSubmitData").attr('data-action', 'edit')
+            $("#inputKodeSection").prop('disabled', true)
+            $("#inputKodeSection").val(kode)
+            $("#inputNamaSection").val(nama)
+            openModal(e)
         }
 
         function actionDelete(e, _nomor) {
             console.log(_nomor)
+            var dataResp = {
+                text: "",
+                title: "",
+                icon: "error",
+            }
 
             Swal.fire({
                 title: "Apakah yakin ingin menghapus?",
@@ -168,10 +186,10 @@
                 if (result.isConfirmed) {
                     axios(
                         {
-                            url: baseUrl + "/delete-level-user",
+                            url: baseUrl + "/delete-section-department",
                             method: "delete",
                             data: {
-                                nomor: _nomor
+                                kode: _nomor
                             },
                             headers: {
                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -193,6 +211,9 @@
                     })
                     .catch(function(err) {
                         console.log(err)
+                        dataResp.icon = "error"
+                        dataResp.text = "Terjadi kesalahan, coba beberapa saat lagi"
+                        dataResp.title = "Gagal!"
                     })
                     .finally(function() {
                         e.disabled = false
@@ -202,65 +223,42 @@
             })
         }
 
-        function actionEdit(e, _nomor, _nik, _level) {
-            console.log({nomor: _nomor, nik: _nik, level: _level})
-            $("#inputLevel").val(_level)
-            $("#inputNik").val(_nik)
-            $("#inputNomor").val(_nomor)
-            $("#inputNik").prop("disabled", true)
-
-            $("#btnSubmitLevelUser").attr("data-action", "edit")
-            $('#modal-level-user').modal("show")
+        function openModal(e) {
+            $('#modal-add').modal("show")
         }
 
-        $('#modal-level-user').on('hidden.bs.modal', function (e) {
-            $("#btnSubmitLevelUser").attr("data-action", "add")
-            $("#inputLevel").val("")
-            $("#inputNik").val("")
-            $("#inputNomor").val("")
-            $("#inputNik").prop("disabled", false)
+        $('#modal-add').on('hidden.bs.modal', function (e) {
+            if($("#btnSubmitData").attr('data-action') == 'edit') {
+                $("#inputKodeSection").val("")
+                $("#inputNamaSection").val("")
+                $("#btnSubmitData").attr('data-action', 'add') 
+                $("#inputKodeSection").prop('disabled', false)
+            }
         })
-
-        function dataListValidation(params) {
-            // if(filter.nik) params.data.nik = filter.nik
-            // if(filter.status) params.data.status = filter.status
-            // if(filter.department) params.data.department = filter.department
-            // console.log("filter : ", filter)
-
-            var url = baseUrl + '/list-level-user'
-            if (dataFilter.nik != null) params.data.filterNIK = dataFilter.nik
-
-            $.get(url + '?' + $.param(params.data)).then(function(res) {
-                params.success(res.data)
-            })
-        }
 
         function validateInput() {
             var validationData = {
                 valid: false,
                 errors : [],
                 data: {
-                    nik: $("#inputNik").val().trim(),
-                    level: $("#inputLevel").val().trim()
+                    kode: $("#inputKodeSection").val().trim(),
+                    nama: $("#inputNamaSection").val().trim(),
                 }  
             }
 
-            if(validationData.data.nik == "" || validationData.data.nik == null) validationData.errors.push("NIK tidak boleh kosong")
-            if(validationData.data.level == "" || validationData.data.level == null) validationData.errors.push("Level tidak boleh kosong")
+            if(validationData.data.kode == "" || validationData.data.kode == null) validationData.errors.push("Kode Section tidak boleh kosong")
 
             validationData.errors.length > 0 ? validationData.valid = false : validationData.valid = true
 
             return validationData
         }
 
-        function submitLevelUser(e) {
+        function submitData(e) {
             var actionSubmit = e.getAttribute("data-action")
-            var urlSubmit = actionSubmit == "add" ? "/add-level-user" : "/edit-level-user"
+            var urlSubmit = actionSubmit == "add" ? "/add-section-department" : "/edit-section-department"
             var submitMethod = actionSubmit == "add" ? "post" : "put"
-            var messageTemplate = actionSubmit == "add" ? "tambah data level user" : "edit data level user"
+            var messageTemplate = actionSubmit == "add" ? "tambah data section" : "edit data section"
             var validateInputData = validateInput()
-
-            if( actionSubmit == "edit") validateInputData.data.nomor = $("#inputNomor").val()
 
             if(validateInputData.valid) {
                 e.disabled = true
@@ -292,6 +290,7 @@
                         dataResp.text = "Gagal " + messageTemplate
                         dataResp.title = "Gagal!"
                     }
+                    Swal.fire(dataResp)
                 })
                 .catch(function(err) {
                     dataResp.icon = "error"
@@ -300,7 +299,6 @@
                 })
                 .finally(function() {
                     e.disabled = false
-                    Swal.fire(dataResp)
                 })
 
             } else {
@@ -316,19 +314,7 @@
                 })
             }
         }
-
-        function resetFilter(e) {
-            dataFilter.nik = null
-            $("#table-level-user").bootstrapTable('refresh')
-        }
-
-        filterNIK.addEventListener("keyup", function(e) {
-            if(e.keyCode == 13 && e.target.value.trim().length > 0) {
-                e.preventDefault()
-                dataFilter.nik = e.target.value
-                $("#table-level-user").bootstrapTable('refresh')
-            }
-        })
         
     </script>
 @endsection
+
