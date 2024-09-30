@@ -7,6 +7,34 @@
             width: 1000px;
             text-align: center;
         }
+
+        .table td {
+            word-wrap: break-word;
+            /* Allows long words to be broken and wrap onto the next line */
+            white-space: normal;
+            /* Allows the text to wrap */
+        }
+
+        .table th {
+            white-space: nowrap;
+            /* Prevents header text from wrapping */
+        }
+
+        .wrap-text-solution {
+            width: 10vw;
+            word-wrap: break-word;
+            /* Allows long words to be broken and wrap onto the next line */
+            white-space: normal;
+            /* Allows the text to wrap */
+        }
+
+        .wrap-text-problem {
+            width: 20vw;
+            word-wrap: break-word;
+            /* Allows long words to be broken and wrap onto the next line */
+            white-space: normal;
+            /* Allows the text to wrap */
+        }
     </style>
 @endsection
 
@@ -33,16 +61,19 @@
                                     <th data-field="nodocpica" data-align="left" data-halign="text-center"
                                         data-sortable="true">No. Document
                                     </th>
-                                    <th data-field="why" data-align="center" data-halign="center" data-sortable="true">
+                                    <th data-field="why" data-align="center" data-halign="center" data-sortable="true"
+                                        class="wrap-text-problem">
                                         Permasalahan
                                     </th>
                                     <th data-field="action" data-align="center" data-halign="center">Action</th>
-                                    <th data-field="note_step" data-align="left" data-halign="center">Step Solution</th>
+                                    <th data-field="note_step" data-align="left" class="wrap-text-solution"
+                                        data-halign="center">Step
+                                        Solutionsss</th>
                                     <th data-field="ap_tod" data-align="center" data-halign="center">AP/TOD</th>
                                     <th data-field="pic" data-align="center" data-halign="center">PIC</th>
                                     <th data-field="due_date" data-align="left" data-formatter="dataTableDateFormater"
                                         data-halign="center">Due Date</th>
-                                    <th data-field="status_approve" data-align="center"
+                                    <th data-field="status_approve" data-align="center" data-halign="center"
                                         data-formatter="dataTableStatusFormater" data-halign="center">Status Approvement
                                     </th>
                                     <th data-halign="center" data-align="center"
@@ -141,7 +172,7 @@
                 <div class="modal-header">
                     <div class="row">
                         <div class="col">
-                            <h5 class="modal-title center" id="exampleModalToggleLabel">Add Progress</h5>
+                            <h5 class="modal-title center" id="exampleModalToggleLabel">Reject Reason</h5>
                             <p id="ProblemHeader"></p>
                         </div>
                     </div>
@@ -152,7 +183,7 @@
                         <input type="hidden" id="RaasonIDOBJECT">
                         <div class="card border" style="">
                             <div class="card-body">
-                                <h5 class="card-title">Reason Reject</h5>
+                                <h5 class="card-title">Reject Reason</h5>
                                 <span id="solutionSpan"></span>
                                 <div class="row">
                                     <div class="col-md-6">
@@ -196,11 +227,11 @@
 
         function dataTableStatusFormater(value, row, index) {
             if (value == 0) {
-                return `<button type="button" class="btn btn-primary btn-sm">Close Need Approve</button>`
+                return `<button type="button" class="btn btn-warning btn-sm">Close Need Approve</button>`
             } else if (value == 1) {
                 return `<button type="button" class="btn btn-success btn-sm">Close</button>`
             } else {
-                return `<button type="button" class="btn btn-danger btn-sm">Reject</button>`
+                return `<button type="button" class="btn btn-primary btn-sm">Reject</button>`
             }
         }
 
@@ -252,7 +283,7 @@
         function OpenModalHistory(obj) {
             let indexDt = $(obj).closest('tr').data('index');
             let dataObject = $('#dataListApprovementStep').bootstrapTable('getData')[indexDt]
-
+            $('#rejectButton').removeClass("d-none");
             $('#positionWhy').val(dataObject.position_why)
             $('#identityWhy').val(dataObject.identity_why)
             $('#nodocpica').val(dataObject.nodocpica)
@@ -260,10 +291,10 @@
             $('#nikMaster').val(dataObject.nik_master)
             $('#idSolution').val(dataObject.id)
             $('#dataListHistoryProgress').bootstrapTable('refresh');
-            if (dataObject.status_approve == 1){
+            if (dataObject.status_approve != 0) {
                 $('#rejectButton').addClass("d-none");
             }
-                $('#updateProgressHistory').modal("show");
+            $('#updateProgressHistory').modal("show");
         }
 
         function openModalRejectClosingTask() {
@@ -341,6 +372,10 @@
                             $('#idMaster').val("")
                             $('#nikMaster').val("")
                             $('#idSolution').val("")
+                            $('#reasonRejected').val("");
+                            $('#updateProgressHistory').modal("hide");
+                            $('#ModalRejectReason').modal("hide");
+                            $('#dataListApprovementStep').bootstrapTable('refresh');
                         })
                     }
                 },

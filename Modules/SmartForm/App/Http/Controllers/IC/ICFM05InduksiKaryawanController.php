@@ -284,6 +284,7 @@ class ICFM05InduksiKaryawanController extends Controller
 
     function IndexDashboard()
     {
+        // dd(session()->all());
         return view("SmartForm::ic/induksi-karyawan/dashboard-induksi-karyawan");
     }
 
