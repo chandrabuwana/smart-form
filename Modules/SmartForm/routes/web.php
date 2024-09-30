@@ -18,6 +18,8 @@ use Modules\SmartForm\App\Http\Controllers\PLANT\PlantTransmissionController;
 use Modules\SmartForm\App\Http\Controllers\Production\ProductionTimeSheetDashboarController;
 use Modules\SmartForm\App\Http\Controllers\SHE\DashboardSHEFRM19BController;
 use Modules\SmartForm\App\Http\Controllers\SHE\TransactionSHEFRM19BController;
+use Modules\SmartForm\App\Http\Controllers\SKL\DashboardSKLController;
+use Modules\SmartForm\App\Http\Controllers\SKL\SKLFormController;
 use Modules\SmartForm\App\Http\Controllers\SM\AssetRequestController;
 use Modules\SmartForm\App\Http\Controllers\SmartFormController;
 use Modules\SmartForm\App\Http\Controllers\SmartPica\DashboarController;
@@ -116,7 +118,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/list-pemesanan', [SmartCateringController::class, 'GetListPemesanan'])->name('list-pemesanan');
             Route::post('/generate-detail', [SmartCateringController::class, 'GenerateDetailPemesanan'])->name('generate-detail-pemesanan-catering');
             Route::post('/order', [SmartCateringController::class, 'SubmitPesanMakan'])->name('submit-makan');
-            
+
             Route::prefix('mess')->group( function() {
                 Route::post('/add-mess', [MessController::class, 'AddMess'])->name('add-mess');
                 Route::post('/add-kamar', [MessController::class, 'AddKamar'])->name('add-kamar');
@@ -229,6 +231,16 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
         Route::post('/add-section-department', [SectionDepartmentController::class, 'AddSectionDept']);
         Route::put('/edit-section-department', [SectionDepartmentController::class, 'EditSectionDept']);
         Route::delete('/delete-section-department', [SectionDepartmentController::class, 'DeleteSectionDept']);
+    });
+
+    Route::prefix('skl')->group( function() {
+        Route::get('/dashboard', [DashboardSKLController::class, 'dashboard'])->name('bss-skl.dashboard');
+        Route::get('/dashboard/get-data', [DashboardSKLController::class, 'getDashboardData'])->name('bss-skl.dashboard-get-data');
+        Route::get('/form', [SKLFormController::class, 'create'])->name('bss-skl.create');
+        Route::post('/store', [SKLFormController::class, 'store'])->name('bss-skl.store');
+        Route::get('/get-karyawan', [SKLFormController::class, 'getKaryawan'])->name('bss-skl.get-karyawan');
+        Route::get('/get-kategori-pekerjaan', [SKLFormController::class, 'getKategoriPekerjaan'])->name('bss-skl.get-kategori-pekerjaan');
+        Route::get('/get-approver', [SKLFormController::class, 'getApprover'])->name('bss-skl.get-approver');
     });
 
     Route::prefix('approval')->group(function () {

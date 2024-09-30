@@ -30,7 +30,7 @@
             text-align: right;
         }
         .input-text {
-            
+
             border: 0;
             border-bottom: 1px solid;
             border-color: rgb(188, 188, 188);
@@ -55,7 +55,7 @@
             cursor: pointer;
         }
     </style>
-    
+
 @endsection
 
 @section('content')
@@ -190,11 +190,11 @@
                         </div>
                         <div class="col-md-4">
                             <span>Problem</span>
-                            <input type="text" class="input-text display-block w-full" id="inputProblem"> 
+                            <input type="text" class="input-text display-block w-full" id="inputProblem">
                         </div>
                         <div class="col-md-4">
                             <span>Material & Seam</span>
-                            <input type="text" class="input-text display-block w-full" id="inputMaterialSeam"> 
+                            <input type="text" class="input-text display-block w-full" id="inputMaterialSeam">
                         </div>
                         <div class="w-1/2 md:w-1/6">
                             <span>Blok</span>
@@ -284,7 +284,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    
+
     <script>
         var hariMapping = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
         var btnSubmitForm = $("#btnSubmitForm");
@@ -340,7 +340,7 @@
                 { value: 'mb', text: '05:00-06:00' },
             ]
         };
-        
+
         function getTodayDate() {
             const today = new Date();
             const year = today.getFullYear();
@@ -351,7 +351,7 @@
 
         inputTanggal.val(getTodayDate());
         inputHari.val(hariMapping[new Date(getTodayDate()).getDay()])
-        
+
         function jamMapper(value, row, index) {
             // console.log("jamMapper " + value)
             var nilai = "";
@@ -485,7 +485,7 @@
                 field: "",
                 message: ""
             }
-            
+
             $("#inputMenitRit").val($("#inputMenitRit").val().trim())
             $("#inputMaterialSeam").val($("#inputMaterialSeam").val().trim())
             $("#inputBlok").val($("#inputBlok").val().trim())
@@ -550,7 +550,7 @@
             var items = {}
             var awal = []
             var akhir = []
-            
+
             $tableSummaryRit.bootstrapTable('removeAll')
             data.sender.data.forEach(function (item, index, arr) {
                 // console.log(item)
@@ -602,7 +602,7 @@
                         field: "jam",
                         sortOrder: "asc"
                     })
-    
+
                     $table.bootstrapTable('append', {
                         jam: inputJam.val(),
                         rit_menit: inputMenitRit.val(),
@@ -632,7 +632,7 @@
                         // window.location.href = `/get-form-detail?no_doc=${response.data.data.no_doc}`;
                     })
                 } else {
-                    var detailData = $table.bootstrapTable('getData'); 
+                    var detailData = $table.bootstrapTable('getData');
                     var dataReq = {
                         site: inputSite.val(),
                         hari: inputHari.val(),
