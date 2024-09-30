@@ -176,7 +176,7 @@
                                     <div class="input-group input-group-static my-2">
                                         <label for="pc_kpi" class="ms-0">Leading KPI </label>
                                         <select class="form-control s2lea" name="pc_kpi" id="pc_kpi" disabled>
-                                            <option value="">{{ $dataMaster->lea_name }}</option>
+                                            <option value="">{{ $dataMaster->kpi }}</option>
                                         </select>
                                         <small class="text-danger">Actual & Target hanya bisa diisi dengan angka dan titik
                                             (.)
@@ -720,7 +720,7 @@
                     </div>
                     <div class="row justify-content-end" style="margin: 10px">
                         <div class="col-3">
-                            <button id="button_${urutan_node}" style="background-color:black; color:white;">Solution</button>
+                            <button id="button_${urutan_node}" onclick="modalViewStep(${dataWhy1[i].id},${dataWhy1[i].identity})" style="background-color:black; color:white;">Solution</button>
                         </div>
                     </div>
                 </div>
@@ -772,7 +772,7 @@
                         </div>
                         <div class="row justify-content-end" style="margin: 10px">
                             <div class="col-3">
-                                <button id="button_${urutan_node}" class="${statusLast ? "" : "d-none"}" style="background-color:black; color:white;">Solution</button>
+                                <button id="button_${urutan_node}" class="${statusLast ? "" : "d-none"}" onclick="modalViewStep(${dataWhy2[i].id},${dataWhy2[i].identity})" style="background-color:black; color:white;">Solution</button>
                             </div>
                         </div>
                     </div>

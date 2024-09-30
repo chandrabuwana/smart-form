@@ -396,6 +396,7 @@
                 params.success(res)
             })
         }
+        
     </script>
     <script type="text/javascript">
         function OpenModalHistory(obj) {
