@@ -89,24 +89,61 @@
                                         <div class="input-group input-group-static mb-4">
                                             <label for="inputDepartment">Department</label>
                                             <select class="form-control form-select-sm" name="inputDepartment" id="inputDepartment" required>
-                                                <option value="">Pilih Department</option>
-                                                <option value="Engineering">Engineering</option>
+                                                @foreach ($list_dept as $key => $item)
+                                                    <option value="{{$key}}">{{ $item }}</option>
+                                                @endforeach
+                                                {{-- <option selected value="">-- Pilih Department --</option>
+                                                <option value="ENG">ENGINEERING</option>
                                                 <option value="SHE">SHE</option>
-                                                <option value="Produksi">Produksi</option>
+                                                <option value="PRD">PRODUKSI</option>
                                                 <option value="SM">SM</option>
-                                                <option value="GS">GS</option>
-                                                <option value="OD">OD</option>
-                                                <option value="IT">IT</option>
                                                 <option value="IC">IC</option>
-                                                <option value="PLANT">PLANT</option>
+                                                <option value="GS">GS</option>
+                                                <option value="RM">PLANT</option>
+                                                <option value="BDV">BUSDEV</option>
+                                                <option value="FIN">FINANCE</option>
+                                                <option value="ATA">Accounting & Tax</option>
+                                                <option value="DTC">DATA CENTER</option>
+                                                <option value="MM">LOGISTIK</option>
+                                                <option value="OPR">OPERATION</option>
+                                                <option value="LEG">LEGAL</option>
+                                                <option value="OD">ORGANIZATION DEVELOPMENT</option>
+                                                <option value="CIVIL">CIVIL</option> --}}
+                                                {{-- <option value="IT">IT</option> --}}
+                                                {{-- <option value="DIR">DIRECTORS</option> --}}
+                                                {{-- <option value="SI">SINERGY INSTITUTE</option>
+                                                <option value="Z001">ASSESSMENT CENTER</option>
+                                                <option value="Z002">LABOR SUPPLY</option>
+                                                <option value="Z003">MANAGEMENT CONSULTANT</option>
+                                                <option value="Z004">SERTIFIKASI</option>
+                                                <option value="TC">TRAINING CENTER</option> --}}
                                             </select>
                                         </div>
                                         <div class="input-group input-group-static mb-4">
                                             <label for="inputProject">Project / Site</label>
                                             <select class="form-control form-select-sm" name="inputProject" id="inputProject" required>
-                                                <option value="1">HO</option>
-                                                <option value="2">AGM</option>
-                                                <option value="3">BSSR</option>
+                                                <option value="JKT">JKT</option>
+                                                <option value="TDM">TDM</option>
+                                                <option value="AGM">AGM</option>
+                                                <option value="PMSS">PMSS</option>
+                                                <option value="MAS">MAS</option>
+                                                <option value="COMEX MSJ">COMEX MSJ</option>
+                                                <option value="COMEX PALARAN">COMEX PALARAN</option>
+                                                <option value="COMEX AGM">COMEX AGM</option>
+                                                <option value="BSSR 2">BSSR 2</option>
+                                                <option value="PKM">PKM</option>
+                                                <option value="SMD">SMD</option>
+                                                <option value="KUP">KUP</option>
+                                                <option value="TAJ">TAJ</option>
+                                                <option value="MME">MME</option>
+                                                <option value="MBL">MBL</option>
+                                                <option value="COMEX-MAS">COMEX-MAS</option>
+                                                <option value="COMEX CILEGON">COMEX CILEGON</option>
+                                                <option value="SAS">SAS</option>
+                                                <option value="BSEE">BSEE</option>
+                                                <option value="BRN">BRN</option>
+                                                <option value="KUD">KUD</option>
+                                                <option value="BYN">BYN</option>
                                             </select>
                                         </div>
                                     </div>
@@ -117,24 +154,61 @@
                                         <div class="input-group input-group-static mb-4">
                                             <label for="inputDepartmentAllocation">Department</label>
                                             <select class="form-control form-select-sm" name="inputDepartmentAllocation" id="inputDepartmentAllocation" required>
-                                                <option selected value="">Pilih Department</option>
-                                                <option value="Engineering">Engineering</option>
+                                                @foreach ($list_dept as $key => $item)
+                                                    <option value="{{$key}}">{{ $item }}</option>
+                                                @endforeach
+                                                {{-- <option selected value="">-- Pilih Department --</option>
+                                                <option value="ENG">ENGINEERING</option>
                                                 <option value="SHE">SHE</option>
-                                                <option value="Produksi">Produksi</option>
+                                                <option value="PRD">PRODUKSI</option>
                                                 <option value="SM">SM</option>
-                                                <option value="GS">GS</option>
-                                                <option value="OD">OD</option>
-                                                <option value="IT">IT</option>
                                                 <option value="IC">IC</option>
-                                                <option value="PLANT">PLANT</option>
+                                                <option value="GS">GS</option>
+                                                <option value="RM">PLANT</option>
+                                                <option value="BDV">BUSDEV</option>
+                                                <option value="FIN">FINANCE</option>
+                                                <option value="ATA">Accounting & Tax</option>
+                                                <option value="DTC">DATA CENTER</option>
+                                                <option value="MM">LOGISTIK</option>
+                                                <option value="OPR">OPERATION</option>
+                                                <option value="LEG">LEGAL</option>
+                                                <option value="OD">ORGANIZATION DEVELOPMENT</option>
+                                                <option value="CIVIL">CIVIL</option> --}}
+                                                {{-- <option value="IT">IT</option> --}}
+                                                {{-- <option value="DIR">DIRECTORS</option> --}}
+                                                {{-- <option value="SI">SINERGY INSTITUTE</option>
+                                                <option value="Z001">ASSESSMENT CENTER</option>
+                                                <option value="Z002">LABOR SUPPLY</option>
+                                                <option value="Z003">MANAGEMENT CONSULTANT</option>
+                                                <option value="Z004">SERTIFIKASI</option>
+                                                <option value="TC">TRAINING CENTER</option> --}}
                                             </select>
                                         </div>
                                         <div class="input-group input-group-static mb-4">
                                             <label for="inputProjectAllocation">Project / Site</label>
                                             <select class="form-control form-select-sm" name="inputProjectAllocation" id="inputProjectAllocation" required>
-                                                <option value="1">HO</option>
-                                                <option value="2">AGM</option>
-                                                <option value="3">BSSR</option>
+                                                <option value="JKT">JKT</option>
+                                                <option value="TDM">TDM</option>
+                                                <option value="AGM">AGM</option>
+                                                <option value="PMSS">PMSS</option>
+                                                <option value="MAS">MAS</option>
+                                                <option value="COMEX MSJ">COMEX MSJ</option>
+                                                <option value="COMEX PALARAN">COMEX PALARAN</option>
+                                                <option value="COMEX AGM">COMEX AGM</option>
+                                                <option value="BSSR 2">BSSR 2</option>
+                                                <option value="PKM">PKM</option>
+                                                <option value="SMD">SMD</option>
+                                                <option value="KUP">KUP</option>
+                                                <option value="TAJ">TAJ</option>
+                                                <option value="MME">MME</option>
+                                                <option value="MBL">MBL</option>
+                                                <option value="COMEX-MAS">COMEX-MAS</option>
+                                                <option value="COMEX CILEGON">COMEX CILEGON</option>
+                                                <option value="SAS">SAS</option>
+                                                <option value="BSEE">BSEE</option>
+                                                <option value="BRN">BRN</option>
+                                                <option value="KUD">KUD</option>
+                                                <option value="BYN">BYN</option>
                                             </select>
                                         </div>
                                     </div>
@@ -155,6 +229,7 @@
                                     <div class="input-group input-group-static mb-4">
                                         <label for="inputPendukungReason">Dokumen Pendukung</label>
                                         <input type="file" multiple class="form-control" id="inputPendukungReason" name="inputPendukungReason">
+                                        <span class="text-xs"><i>max file size: 2mb</i></span>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -205,7 +280,12 @@
                                     <div class="col-md-4 col-lg-3">
                                         <div class="input-group input-group-static mb-4">
                                             <label for="inputCondition">Condition</label>
-                                            <input type="text" class="form-control" id="inputCondition" name="inputCondition">
+                                            <select class="form-control form-select-sm" name="inputCondition" id="inputCondition" required>
+                                                <option selected value="">-- Pilih Condition --</option>
+                                                <option value="new">New</option>
+                                                <option value="used">Used</option>
+                                                <option value="refurbished">Refurbished</option>
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-lg-3">
@@ -452,6 +532,14 @@
             requestedBy: requestornik.text()
         }
 
+        function getTodayDate() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
         function indexFormatter(value, row, index) {
             return index + 1;
         }
@@ -522,6 +610,27 @@
             error: {{ Illuminate\Support\Js::from($error) }},
             errorMessage: {{ Illuminate\Support\Js::from($errorMessage) }}
         }
+
+        checkNotBudgeted.addEventListener("change",(e) => {
+            if(e.target.checked) {
+                checkBudgeted.checked=false
+            }
+        })
+        checkBudgeted.addEventListener("change",(e) => {
+            if(e.target.checked) {
+                checkNotBudgeted.checked=false
+            }
+        })
+        checkReplacement.addEventListener("change",(e) => {
+            if(e.target.checked) {
+                checkAdditional.checked=false
+            }
+        })
+        checkAdditional.addEventListener("change",(e) => {
+            if(e.target.checked) {
+                checkReplacement.checked=false
+            }
+        })
         $(function() {
             if(isError.error) {
                 Swal.fire({
@@ -541,6 +650,9 @@
                 inputProject.val({{ Illuminate\Support\Js::from( $data['project']) }})
                 inputDepartmentAllocation.val({{ Illuminate\Support\Js::from( $data['department_allocation']) }})
                 inputProjectAllocation.val({{ Illuminate\Support\Js::from( $data['project_allocation']) }})
+                estimatedReadyAtSite.val({{ Illuminate\Support\Js::from( $data['estimated_ready_at_site']) }})
+                reasonpurchase.val({{ Illuminate\Support\Js::from( $data['reason_purchase']) }})
+                refDoc.val({{ Illuminate\Support\Js::from( $data['ref_doc']) }})
 
                 dataAssetRequest.replacement = checkReplacement.checked
                 dataAssetRequest.additional = checkAdditional.checked
@@ -565,79 +677,226 @@
                 });
             }
 
+            function validateItem() {
+                var errorValidate = []
+
+                if(inputType.val() == "") {
+                    errorValidate.push({
+                        field: "Type",
+                        message: "Tidak boleh kosong"
+                    })
+                }
+                if(inputCondition.val() == "") {
+                    errorValidate.push({
+                        field: "Condition",
+                        message: "Tidak boleh kosong"
+                    })
+                }
+                if(inputQty.val() == "") {
+                    errorValidate.push({
+                        field: "QTY",
+                        message: "Tidak boleh kosong"
+                    })
+                }
+                if(inputUom.val() == "") {
+                    errorValidate.push({
+                        field: "UOM",
+                        message: "Tidak boleh kosong"
+                    })
+                }
+                if(inputCurrency.val() == "") {
+                    errorValidate.push({
+                        field: "Currency",
+                        message: "Tidak boleh kosong"
+                    })
+                }
+                if(inputPrice.val() == "") {
+                    errorValidate.push({
+                        field: "Price",
+                        message: "Tidak boleh kosong"
+                    })
+                }
+
+                return errorValidate
+            }
+
+            function validateForm() {
+                var errorValidate = []
+
+                if(!checkAdditional.checked && !checkReplacement.checked){
+                    errorValidate.push({
+                        field: "Replacement / Additional",
+                        message: "harus dipilih"
+                    })
+                }
+                if(!checkBudgeted.checked && !checkNotBudgeted.checked){
+                    errorValidate.push({
+                        field: "Budgeted / Not Budgeted",
+                        message: "harus dipilih"
+                    })
+                }
+                if(checkNotBudgeted.checked && inputPendukungReason.files.length < 1) {
+                    errorValidate.push({
+                        field: "Dokumen Pendukung",
+                        message: "tidak boleh kosong jika Not Budgeted"
+                    })
+                }
+                if(inputDepartment.val() == ""){
+                    errorValidate.push({
+                        field: "Department Requestor",
+                        message: "tidak boleh kosong"
+                    })
+                }
+                if(inputProject.val() == ""){
+                    errorValidate.push({
+                        field: "Project/Site Requestor",
+                        message: "tidak boleh kosong"
+                    })
+                }
+                if(inputDepartmentAllocation.val() == ""){
+                    errorValidate.push({
+                        field: "Department Allocation",
+                        message: "tidak boleh kosong"
+                    })
+                }
+                if(inputProjectAllocation.val() == ""){
+                    errorValidate.push({
+                        field: "Project/Site Allocation",
+                        message: "tidak boleh kosong"
+                    })
+                }
+                if(reasonpurchase.val() == ""){
+                    errorValidate.push({
+                        field: "Reason for Purchase",
+                        message: "tidak boleh kosong"
+                    })
+                }
+                if(estimatedReadyAtSite.val() == ""){
+                    errorValidate.push({
+                        field: "Estimated ready",
+                        message: "tidak boleh kosong"
+                    })
+                }
+                if(estimatedReadyAtSite.val() < getTodayDate()){
+                    errorValidate.push({
+                        field: "Estimated ready at site",
+                        message: "tidak boleh back date"
+                    })
+                }
+                if($table.bootstrapTable('getData').length < 1) {
+                    errorValidate.push({
+                        field: "Item",
+                        message: "minimal harus ada 1"
+                    })
+                }
+
+                return errorValidate
+            }
+
             $buttonTambah.click(function (e) {
                 e.preventDefault()
-                $table.bootstrapTable('append', {
-                    type: inputType.val(),
-                    model: inputModel.val(),
-                    brand: inputBrand.val(),
-                    condition: inputCondition.val(),
-                    qty: inputQty.val(),
-                    uom: inputUom.val(),
-                    currency: inputCurrency.val(),
-                    price: inputPrice.val()
-                })
-                $table.bootstrapTable('scrollTo', 'bottom')
+                var errorValidate = validateItem()
+                
+                var msg = "";
+                if(errorValidate.length > 0) {
+                    for (var listErr of errorValidate) {
+                        msg = msg + "<p class='m-0'>" + listErr.field + " " + listErr.message +  "</p>"
+                    }
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        html: msg,
+                    }).then((result) => {
+                        // window.location.href = `/get-form-detail?no_doc=${response.data.data.no_doc}`;
+                    })
+                } else {
+                    $table.bootstrapTable('append', {
+                        type: inputType.val(),
+                        model: inputModel.val(),
+                        brand: inputBrand.val(),
+                        condition: inputCondition.val(),
+                        qty: inputQty.val(),
+                        uom: inputUom.val(),
+                        currency: inputCurrency.val(),
+                        price: inputPrice.val()
+                    })
+                    $table.bootstrapTable('scrollTo', 'bottom')
+                }
             })
 
             btnSubmitAssetRequest.click(function(e) {
                 e.preventDefault();
-                var dataReq = {
-                    formName: dataAssetRequest.formName,
-                    // area: inputArea.val(),
-                    noDoc: noDoc.text(),
-                    tglDoc: formatTgl(),
-                    replacement: checkReplacement.checked,
-                    additional: checkAdditional.checked,
-                    budgeted: checkBudgeted.checked,
-                    notBudgeted: checkNotBudgeted.checked,
-                    department: inputDepartment.val(),
-                    project: inputProject.val(),
-                    departmentAllocation: inputDepartmentAllocation.val(),
-                    projectAllocation: inputProjectAllocation.val(),
-                    // area: inputArea.val(),
-                    reasonPurchase: reasonpurchase.val(),
-                    estimatedReadyAtSite: estimatedReadyAtSite.val(),
-                    estimatedIdr: estimatedIdr.val(),
-                    estimatedUsd: estimatedUsd.val(),
-                    estimatedCny: estimatedCny.val(),
-                    refDoc: refDoc.val(),
-                    requestedBy: requestornik.text(),
-                    // item: dataAssetRequest.item,
-                    totalPrice: totalPrice.text(),
-                    pendukungReason: []
-                }
-                let formData = new FormData();
-
-                for (let i = 0; i < inputPendukungReason.files.length; i++) {
-                    formData.append('pendukungReason[]', inputPendukungReason.files[i]);
-                }
-                formData.append('item',JSON.stringify(dataAssetRequest.item));
-                for (const key in dataReq) {
-                    if(key != "pendukungReason" || key != "item") {
-                        formData.append(key, dataReq[key])
+                var errValidate = validateForm()
+                if(errValidate.length > 0) {
+                    var msg = ""
+                    for (var listErr of errValidate) {
+                        msg = msg + "<p class='m-0'>" + listErr.field + " " + listErr.message +  "</p>"
                     }
-                }
-                // TODO
-                axios.post('/bss-form/sm/submit-edit-asset-request?no_doc='+noDoc.text(), formData, {
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-                        'Content-Type': 'multipart/form-data'
-                    }
-                })
-                .then(function (response) {
-                    console.log(response.data)
                     Swal.fire({
-                            icon: 'success',
-                            title: 'Berhasil!',
-                            text: response.data.data.no_doc,
-                        }).then((result) => {
-                            // window.location.href = `/get-form-detail?no_doc=${response.data.data.no_doc}`;
-                        })
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
+                        icon: 'error',
+                        title: 'Gagal!',
+                        html: msg,
+                    }).then((result) => {
+                        // window.location.href = `/get-form-detail?no_doc=${response.data.data.no_doc}`;
+                    })
+                } else {
+                    var dataReq = {
+                        formName: dataAssetRequest.formName,
+                        // area: inputArea.val(),
+                        noDoc: noDoc.text(),
+                        tglDoc: formatTgl(),
+                        replacement: checkReplacement.checked,
+                        additional: checkAdditional.checked,
+                        budgeted: checkBudgeted.checked,
+                        notBudgeted: checkNotBudgeted.checked,
+                        department: inputDepartment.val(),
+                        project: inputProject.val(),
+                        departmentAllocation: inputDepartmentAllocation.val(),
+                        projectAllocation: inputProjectAllocation.val(),
+                        // area: inputArea.val(),
+                        reasonPurchase: reasonpurchase.val(),
+                        estimatedReadyAtSite: estimatedReadyAtSite.val(),
+                        estimatedIdr: estimatedIdr.val(),
+                        estimatedUsd: estimatedUsd.val(),
+                        estimatedCny: estimatedCny.val(),
+                        refDoc: refDoc.val(),
+                        requestedBy: requestornik.text(),
+                        // item: dataAssetRequest.item,
+                        totalPrice: totalPrice.text(),
+                        pendukungReason: []
+                    }
+                    let formData = new FormData();
+    
+                    for (let i = 0; i < inputPendukungReason.files.length; i++) {
+                        formData.append('pendukungReason[]', inputPendukungReason.files[i]);
+                    }
+                    formData.append('item',JSON.stringify(dataAssetRequest.item));
+                    for (const key in dataReq) {
+                        if(key != "pendukungReason" || key != "item") {
+                            formData.append(key, dataReq[key])
+                        }
+                    }
+                    // TODO
+                    axios.post('/bss-form/sm/submit-edit-asset-request?no_doc='+noDoc.text(), formData, {
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    })
+                    .then(function (response) {
+                        console.log(response.data)
+                        Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil!',
+                                text: response.data.data.no_doc,
+                            }).then((result) => {
+                                // window.location.href = `/get-form-detail?no_doc=${response.data.data.no_doc}`;
+                            })
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+                }
                 // submitAssetRequest(dataReq);
             })
         })

@@ -3,7 +3,7 @@
 @section('custom-css')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.css">
     <style>
-            .select2-dropdown {
+        .select2-dropdown {
             overflow: scroll;
             height: 300px;
         }
@@ -98,7 +98,6 @@
                             <div class="h-100">
                                 <p class="mb-0 fw-bold text-sm">
                                     Creator : {{ session('username') }}
-                                    {{-- session()->get('name') . ' - ' . session()->get('dept') . ' - ' . session()->get('site') --}}
                                 </p>
                             </div>
                         </div>
@@ -162,13 +161,20 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static my-4">
                                         <label for="pc_site" class="ms-0">Site </label>
-                                        <select class="form-control dept" name="pc_site" id="pc_site">
+                                        <select class="form-control site" name="pc_site" id="pc_site">
                                         </select>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-9">
+                                <div class="col-md-4">
+                                    <div class="input-group input-group-static my-4">
+                                        <label for="pc_dept" class="ms-0">Department </label>
+                                        <select class="form-control dept" name="pc_dept" id="pc_dept">
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
                                     <div class="input-group ayyyyy input-group-static my-4">
                                         <label for="pc_kpi" class="ms-0">Leading KPI </label>
                                         <select class="form-control s2lea" name="pc_kpi" id="pc_kpi" required></select>
@@ -180,7 +186,7 @@
                                 <div class="col-md-1">
                                     <div class="input-group input-group-static my-4">
                                         <label for="pc_aktual" class="ms-0">Actual</label>
-                                        <input class="form-control" type="text" inputmode="decimal"
+                                        <input class="form-control" type="text" inputmode="decimal" placeholder="0"
                                             onkeypress="return /[0-9.)]/i.test(event.key)" pattern="[0-9]*[.]?[0-9]*"
                                             name="pc_aktual" required id="pc_aktual">
                                     </div>
@@ -188,7 +194,7 @@
                                 <div class="col-md-1">
                                     <div class="input-group input-group-static my-4">
                                         <label class="ms-0" for="pc_target">Target</label>
-                                        <input class="form-control" type="text" inputmode="decimal" id="pc_target"
+                                        <input class="form-control" type="text" inputmode="decimal" id="pc_target" placeholder="0"
                                             onkeypress="return /[0-9.)]/i.test(event.key)" pattern="[0-9]*[.]?[0-9]*"
                                             name="pc_target" required>
                                     </div>
@@ -207,7 +213,7 @@
                                 <div class="col-md-8">
                                     <div class="input-group input-group-static my-4">
                                         <label for="pc_problem" class="ms-0">Problem Statement </label>
-                                        <textarea class="form-control" name="pc_problem" id="pc_problem" rows="3" required></textarea>
+                                        <textarea class="form-control" name="pc_problem" placeholder="-- Masukkan Problem --" id="pc_problem" rows="3" required></textarea>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -285,6 +291,7 @@
                 data: function(params) {
                     return {
                         query: params.term, // search term
+                        dept : $('#pc_dept').val()
                     };
                 },
                 processResults: function(response) {
@@ -297,7 +304,6 @@
         });
 
         $('#pc_kpi').on('select2:open', function(e) {
-            console.log(e);
             const evt = "scroll.select2";
             $(e.target).parents().off(evt);
             $(window).off(evt);
@@ -352,7 +358,7 @@
             dropdownParent: $('#pc_site').closest('.input-group'),
             placeholder: '--- Cari Site ---',
             ajax: {
-                url: "/helper/department",
+                url: "/helper/site",
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
@@ -380,6 +386,38 @@
             $(window).off(evt);
         });
 
+        $('#pc_dept').select2({
+            theme: 'bootstrap-5', // Menggunakan tema Bootstrap 5
+            dropdownParent: $('#pc_dept').closest('.input-group'),
+            placeholder: '--- Cari Department ---',
+            ajax: {
+                url: "/helper/site",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type: "post",
+                delay: 250,
+                dataType: 'json',
+                data: function(params) {
+                    return {
+                        _token: "{{ csrf_token() }}",
+                        query: params.term, // search term
+                    };
+                },
+                processResults: function(response) {
+                    return {
+                        results: response.data
+                    };
+                },
+                cache: true
+            }
+        });
+
+        $('#pc_dept').on('select2:open', function(e) {
+            const evt = "scroll.select2";
+            $(e.target).parents().off(evt);
+            $(window).off(evt);
+        });
     </script>
     <script>
         $(document).ready(function() {
@@ -631,7 +669,7 @@
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                url: "/add-transaction",
+                url: "add-transaction",
                 data: dataKirim,
                 dataType: 'json',
                 success: function(response) {
@@ -1320,57 +1358,3 @@
         }
     </script>
 @endsection
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

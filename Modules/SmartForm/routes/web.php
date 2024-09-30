@@ -6,7 +6,9 @@ use App\Http\Middleware\PermissionMenu;
 use Illuminate\Support\Facades\Route;
 use Modules\SmartForm\App\Http\Controllers\Admin\AdminController;
 use Modules\SmartForm\App\Http\Controllers\Approval\ApprovalFormController;
+use Modules\SmartForm\App\Http\Controllers\GS\MessController;
 use Modules\SmartForm\App\Http\Controllers\GS\SmartCateringController;
+use Modules\SmartForm\App\Http\Controllers\GS\VendorController;
 use Modules\SmartForm\App\Http\Controllers\IC\ICFM05InduksiKaryawanController;
 use Modules\SmartForm\App\Http\Controllers\IC\ICFM05TransactionController;
 use Modules\SmartForm\App\Http\Controllers\Master\DashboardController;
@@ -16,10 +18,14 @@ use Modules\SmartForm\App\Http\Controllers\PLANT\PlantTransmissionController;
 use Modules\SmartForm\App\Http\Controllers\Production\ProductionTimeSheetDashboarController;
 use Modules\SmartForm\App\Http\Controllers\SHE\DashboardSHEFRM19BController;
 use Modules\SmartForm\App\Http\Controllers\SHE\TransactionSHEFRM19BController;
+use Modules\SmartForm\App\Http\Controllers\SKL\DashboardSKLController;
+use Modules\SmartForm\App\Http\Controllers\SKL\SKLFormController;
 use Modules\SmartForm\App\Http\Controllers\SM\AssetRequestController;
 use Modules\SmartForm\App\Http\Controllers\SmartFormController;
 use Modules\SmartForm\App\Http\Controllers\SmartPica\DashboarController;
 use Modules\SmartForm\App\Http\Controllers\SmartPica\HelperController;
+use Modules\SmartForm\App\Http\Controllers\SmartPica\MappingValidationController;
+use Modules\SmartForm\App\Http\Controllers\SmartPica\SectionDepartmentController;
 use Modules\SmartForm\App\Http\Controllers\SmartPica\TransactionPicaController;
 use Modules\SmartForm\App\Http\Controllers\TeamManagement\RoleManagementController;
 use Modules\SmartForm\App\Http\Controllers\TeamManagement\UserManagementController;
@@ -79,6 +85,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/form-edit-view-IC-form-induksi/{d}', [ICFM05InduksiKaryawanController::class, 'IndexDetailEditViewFormInduksiKaryawan'])->name("bss-edit-view-form-ic-induksi-karyawan");
             Route::post('/generate-link', [ICFM05InduksiKaryawanController::class, 'GenerateLinkUrl']);
             Route::post('/activated-link', [ICFM05InduksiKaryawanController::class, 'ActivatedLink']);
+            Route::post('/delete-induksi', [ICFM05TransactionController::class, 'DeletedInduksiKaryawan']);
             Route::post('/listing-karyawan-deleted', [ICFM05InduksiKaryawanController::class, 'formDeletedKaryawanListing']);
             Route::post('/check-nik-pdf', [ICFM05InduksiKaryawanController::class, 'checkNIKPDF']);
             Route::get('/download-pdf/{id}', [ICFM05InduksiKaryawanController::class, 'downloadPDF']);
@@ -106,9 +113,46 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
 
         Route::prefix('catering')->group( function() {
             Route::get('/pemesanan', [SmartCateringController::class, 'AddPemesanan'])->name('add-pemesanan-catering');
+            Route::get('/dashboard-pemesanan', [SmartCateringController::class, 'DashboardPemesanan'])->name('dashboard-pemesanan-catering');
+            Route::get('/detail-pemesanan', [SmartCateringController::class, 'DetailPemesanan'])->name('detail-pemesanan-catering');
+            Route::get('/list-pemesanan', [SmartCateringController::class, 'GetListPemesanan'])->name('list-pemesanan');
             Route::post('/generate-detail', [SmartCateringController::class, 'GenerateDetailPemesanan'])->name('generate-detail-pemesanan-catering');
             Route::post('/order', [SmartCateringController::class, 'SubmitPesanMakan'])->name('submit-makan');
-    
+
+            Route::prefix('mess')->group( function() {
+                Route::post('/add-mess', [MessController::class, 'AddMess'])->name('add-mess');
+                Route::post('/add-kamar', [MessController::class, 'AddKamar'])->name('add-kamar');
+                Route::post('/add-penghuni', [MessController::class, 'AddPenghuniMess'])->name('add-penghuni');
+                Route::put('/edit-penghuni', [MessController::class, 'EditPenghuniMess'])->name('edit-penghuni');
+                Route::put('/edit-kamar', [MessController::class, 'EditKamar'])->name('edit-kamar');
+                Route::post('/delete-kamar', [MessController::class, 'Deletekamar'])->name('delete-kamar');
+                Route::post('/delete-penghuni-mess', [MessController::class, 'DeletePenghuniMess'])->name('delete-penghuni-mess');
+                Route::get('/dashboard', [MessController::class, 'DashboardMess'])->name('dashboard-mess');
+                Route::get('/dashboard-huni', [MessController::class, 'DashboardHuni'])->name('dashboard-penghuni');
+                Route::get('/dashboard-kamar', [MessController::class, 'DashboardKamar'])->name('dashboard-penghuni');
+                // Route::get('/detail-huni', [MessController::class, 'DashboardHuni'])->name('detail-huni-mess');
+                Route::get('/list-mess', [MessController::class, 'GetListMess'])->name('list-mess');
+                Route::get('/list-huni', [MessController::class, 'GetListHuni'])->name('list-huni');
+                Route::get('/list-kamar', [MessController::class, 'GetListKamar'])->name('list-kamar');
+                Route::get('/helper-mess', [MessController::class, 'HelperMess'])->name('helper-mess');
+                Route::get('/helper-kamar', [MessController::class, 'HelperKamar'])->name('helper-kamar');
+
+            });
+
+            Route::prefix('vendor')->group( function() {
+                Route::get('/helper-vendor', [VendorController::class, 'HelperVendor'])->name('helper-vendor');
+                Route::get('/helper-lokasi', [VendorController::class, 'HelperLokasi'])->name('helper-lokasi');
+                Route::get('/dashboard-vendor', [VendorController::class, 'DashboardVendor'])->name('dashboard-vendor');
+                Route::get('/list-vendor', [VendorController::class, 'ListVendor'])->name('list-vendor');
+                Route::post('/add-vendor', [VendorController::class, 'AddVendor'])->name('add-vendor');
+                Route::post('/add-mapping-vendor', [VendorController::class, 'AddMappingVendor'])->name('add-mapping-vendor');
+                Route::put('/edit-vendor', [VendorController::class, 'EditVendor'])->name('edit-vendor');
+                Route::put('/edit-mapping-vendor', [VendorController::class, 'EditMappingVendor'])->name('edit-mapping-vendor');
+                Route::delete('/delete-vendor', [VendorController::class, 'DeleteVendor'])->name('delete-vendor');
+                Route::delete('/delete-mapping-vendor', [VendorController::class, 'DeleteMappingVendor'])->name('delete-mapping-vendor');
+                Route::get('/dashboard-vendor-mapping', [VendorController::class, 'DashboardVendorMappingCatering'])->name('dashboard-vendor-mapping-catering');
+                Route::get('/list-vendor-mapping', [VendorController::class, 'ListVendorMappingCatering'])->name('list-vendor-mapping');
+            });
         });
     });
 
@@ -119,11 +163,13 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
     Route::prefix('helper')->group(function () {
         Route::post('/kpi-lead-datalist', [HelperController::class, 'HelperSelect2PicaKPILead']);
         Route::post('/week', [HelperController::class, 'HelperSelectWeek']);
+        Route::post('/site', [HelperController::class, 'HelperSelect2PicaKSite']);
         Route::post('/department', [HelperController::class, 'HelperSelect2PicaKDept']);
         Route::post('/karyawan', [HelperController::class, 'HelperSelect2PicaKaryawanByDept']);
         Route::get('/data-pica', [HelperController::class, 'HelperDataTablePica']);
         Route::get('/data-update-progress', [HelperController::class, 'HelperDataTableStepSolutionPica']);
         Route::get('/data-history-progress', [HelperController::class, 'HelperDataTableHistoryProgressPica']);
+        Route::get('/data-approvement-step-pica', [HelperController::class, 'HelperDataTableApprovementStepPica']);
     });
 
     Route::prefix('role-management')->group(function () {
@@ -162,10 +208,42 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
         Route::get('/update-progress', [DashboarController::class, 'IndexUpdateProgress'])->name(("dashboard-update-progress-smartpica"));
         Route::get('/create-step/{id}', [DashboarController::class, 'IndexFormStepPica']);
         Route::get('/view-data-detail-pica/{id}', [DashboarController::class, 'IndexViewDataDetailPica']);
+        Route::get('/approvement-pica', [DashboarController::class, 'IndexApprovementProgress']);
 
         Route::post('/add-transaction', [TransactionPicaController::class, 'AddDataTransactionPica']);
         Route::post('/add-step-transaction', [TransactionPicaController::class, 'addDataStepTransactionPica']);
         Route::post('/add-progress-history-transaction', [TransactionPicaController::class, 'addTransactionProgressStepSolutionPica']);
+        Route::get('/dashboard-level-user', [MappingValidationController::class, 'IndexLevelUser']);
+        Route::get('/list-level-user', [MappingValidationController::class, 'GetListLevelUser']);
+        Route::post('/add-level-user', [MappingValidationController::class, 'AddLevelUser']);
+        Route::put('/edit-level-user', [MappingValidationController::class, 'EditLevelUser']);
+        Route::delete('/delete-level-user', [MappingValidationController::class, 'DeleteLevelUser']);
+        Route::post('/change-acceptance', [TransactionPicaController::class, 'changeAcceptanceStepSolutionPica']);
+        Route::post('/approve-task-closing', [TransactionPicaController::class, 'ApproveClosingTask']);
+        
+        Route::get('/dashboard-level-mapping', [MappingValidationController::class, 'IndexlevelMapping']);
+        Route::get('/list-level-mapping', [MappingValidationController::class, 'GetListLevelMapping']);
+        Route::post('/add-level-mapping', [MappingValidationController::class, 'AddLevelMapping']);
+        Route::put('/edit-level-mapping', [MappingValidationController::class, 'EditLevelMapping']);
+        Route::delete('/delete-level-mapping', [MappingValidationController::class, 'DeleteLevelMapping']);
+
+        Route::get('/dashboard-section-department', [SectionDepartmentController::class, 'IndexSectionDepartment']);
+        Route::get('/list-section-department', [SectionDepartmentController::class, 'GetListSectionDepartment']);
+        Route::post('/add-section-department', [SectionDepartmentController::class, 'AddSectionDept']);
+        Route::put('/edit-section-department', [SectionDepartmentController::class, 'EditSectionDept']);
+        Route::delete('/delete-section-department', [SectionDepartmentController::class, 'DeleteSectionDept']);
+    });
+
+    Route::prefix('skl')->group( function() {
+        Route::get('/dashboard', [DashboardSKLController::class, 'dashboard'])->name('bss-skl.dashboard');
+        Route::get('/dashboard/get-data', [DashboardSKLController::class, 'getDashboardData'])->name('bss-skl.dashboard-get-data');
+        Route::get('/form', [SKLFormController::class, 'create'])->name('bss-skl.create');
+        Route::post('/store', [SKLFormController::class, 'store'])->name('bss-skl.store');
+        Route::get('/get-karyawan', [SKLFormController::class, 'getKaryawan'])->name('bss-skl.get-karyawan');
+        Route::get('/get-kategori-pekerjaan', [SKLFormController::class, 'getKategoriPekerjaan'])->name('bss-skl.get-kategori-pekerjaan');
+        Route::get('/get-approver', [SKLFormController::class, 'getApprover'])->name('bss-skl.get-approver');
+        Route::get('/detail', [DashboardSKLController::class, 'detail'])->name('bss-skl.detail');
+        Route::post('/approval', [DashboardSKLController::class, 'storeApproval'])->name('bss-skl.store-approval');
     });
 
     Route::prefix('approval')->group(function () {
@@ -183,3 +261,4 @@ Route::get('/bss-form/induksi-karyawan/listing-karyawan/{data}', [ICFM05InduksiK
 Route::post('/bss-form/induksi-karyawan/listing-karyawan-add', [ICFM05InduksiKaryawanController::class, 'formAddKaryawanListing']);
 
 Route::get('/helper-download-pdf/{docno}', [HelperPdfMobilisasiFormController::class, 'DownloadPDFHelperPdf']);
+// Route::get('/dashboard-pemesanan', [SmartCateringController::class, 'DashboardPemesanan'])->name('dashboard-pemesanan-catering');

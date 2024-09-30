@@ -33,11 +33,13 @@
                                     <th data-field="nodocpica" data-align="left" data-halign="text-center"
                                         data-sortable="true">No. Document
                                     </th>
-                                    <th data-field="status" data-align="center" data-halign="center" data-sortable="true">Status
+                                    <th data-field="status" data-align="center" data-halign="center" data-sortable="true">
+                                        Status
                                     </th>
                                     <th data-field="action" data-align="center" data-halign="center">Action</th>
                                     <th data-field="note_step" data-align="left" data-halign="center">Step Solution</th>
                                     <th data-field="ap_tod" data-align="center" data-halign="center">AP/TOD</th>
+                                    <th data-field="target_master" data-align="center" data-halign="center">Target</th>
                                     <th data-field="due_date" data-align="left" data-formatter="dataTableDateFormater"
                                         data-halign="center">Due Date</th>
                                     <th data-field="progress" data-align="center" data-halign="center">Progress</th>
@@ -66,6 +68,7 @@
                 <input type="hidden" name="idMaster" id="idMaster" value="">
                 <input type="hidden" name="nikMaster" id="nikMaster" value="">
                 <input type="hidden" name="idSolution" id="idSolution" value="">
+                <input type="hidden" name="targetMaster" id="targetMaster" value="">
                 <div class="modal-header">
                     <div class="row">
                         <div class="col">
@@ -165,8 +168,8 @@
                                     <div class="col-2">
                                         <div class="input-group input-group-static my-4">
                                             <label for="progress" class="ms-0">Progress</label>
-                                            <input class="form-control" type="text" placeholder="Persentase Progress"
-                                                name="progress" required id="progress">
+                                            <input type="text" id="progress" name="progress" class="form-control"
+                                                oninput="this.value = this.value.replace(/[^0-9]/g, '');" />
                                         </div>
                                     </div>
                                 </div>
@@ -185,6 +188,50 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="ModalRejectReason" aria-hidden="true" aria-labelledby="exampleModalToggleLabel"
+        tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="row">
+                        <div class="col">
+                            <h5 class="modal-title center" id="exampleModalToggleLabel">Add Progress</h5>
+                            <p id="ProblemHeader"></p>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
+                </div>
+                <div class="row" style="margin: 10px">
+                    <div class="col">
+                        <input type="hidden" id="RaasonIDOBJECT">
+                        <div class="card border" style="">
+                            <div class="card-body">
+                                <h5 class="card-title">Reason Reject</h5>
+                                <span id="solutionSpan"></span>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="input-group input-group-static my-4">
+                                            <label for="reasonRejected">Alasan Melakukan Reject</label>
+                                            <textarea class="form-control" placeholder=" -- Masukkan Alasan -- " rows="2" id="reasonRejected"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="d-flex align-items-center">
+                                <button class="btn btn-primary ms-auto uploadBtn" id="buttonSubmitDataPICA"
+                                    style="margin : 20px" onclick="AcceptanceChange(0, 2)">
+                                    <i class="fas fa-save"></i>
+                                    Save All Data</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 
@@ -193,6 +240,15 @@
 @section('custom-js')
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
     <script type="text/javascript">
+        const inputField = document.getElementById('angkaInput');
+
+        if (inputField) {
+            inputField.addEventListener('input', function() {
+                // Mengganti karakter yang bukan angka dengan string kosong
+                this.value = this.value.replace(/[^0-9]/g, '');
+            });
+        }
+
         function dataTableDateFormater(value, row, index) {
             var monthNames = ["January", "February", "March", "April", "May", "June",
                 "July", "August", "September", "October", "November", "December"
@@ -202,12 +258,107 @@
 
         }
 
+        function RedirectViewPica(obj) {
+            var indexDt = $(obj).closest('tr').data('index');
+            window.location.href = "/smart-pica/view-data-detail-pica/" + $('#dataListFormPica').bootstrapTable('getData')[
+                    indexDt]
+                .nodocpica
+        }
+
         function dataListUpdateProgressActionFormater(value, row, index) {
-            return `
-                    <button onclick="OpenModalHistory(this)"><a class="like"  title="Like">
-                        <i class="fa fa-eye">View</i>
+            console.log(row)
+            if (row.acceptance == 0) {
+                return `
+                     <button onclick="RedirectViewPica(this)"><a class="like"  title="Like">
+                        <i class="fa fa-eye"></i> View
                     </a></button>
+                    <button onclick="AcceptanceChange(${row.id}, 1)"><a class="like"  title="Like">
+                        <i class="fa fa-check"></i>
+                    </a> Acccept </button>
+                    <button onclick="modalOpenRejectReason(${row.id})"><a class="like"  title="Like">
+                        <i class="fa fa-circle-xmark"></i>
+                    </a> Reject </button>
                 `
+            } else if (row.acceptance == 1) {
+                return `<button onclick="RedirectViewPica(this)"><a class="like"  title="Like">
+                        <i class="fa fa-eye"></i> View
+                    </a></button>
+                    <button onclick="OpenModalHistory(this)"><a class="like"  title="Like">
+                        <i class="fa fa-eye"></i>
+                    </a>Update Progress</button>`
+            } else if (row.acceptance == 9) {
+                return `<button onclick="RedirectViewPica(this)"><a class="like"  title="Like">
+                        <i class="fa fa-eye"></i> View
+                    </a></button>
+                <button disabled><a class="like"  title="Like">
+                    </a>Close</button>`
+            } else {
+                return `<button onclick="RedirectViewPica(this)"><a class="like"  title="Like">
+                        <i class="fa fa-eye"></i> View
+                    </a></button> <button disabled ><a class="like"  title="Like">
+                    </a>Rejected</button>`
+            }
+        }
+
+        function modalOpenRejectReason(id) {
+            $('#RaasonIDOBJECT').val(id);
+            $('#ModalRejectReason').modal("show");
+        }
+
+        function AcceptanceChange(id, bol) {
+
+            let dataKirim = {};
+
+            if (id == 0) {
+                let reason = $('#reasonRejected').val();
+                if (reason == "") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Validasi Gagal',
+                        text: 'Mohon isikan alasan melakukan rejecting',
+                    });
+                    return false;
+                }
+
+                dataKirim = {
+                    id: $('#RaasonIDOBJECT').val(),
+                    hasil: bol,
+                    reason: reason
+                }
+            } else {
+                dataKirim = {
+                    id: id,
+                    hasil: bol,
+                    reason: ''
+                }
+            }
+
+            $.ajax({
+                type: 'post',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: "change-acceptance",
+                data: dataKirim,
+                dataType: 'json',
+                success: function(response) {
+                    if (response.code == 200) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: response.message,
+                        }).then((result) => {
+                            $('#dataListUpdateProgress').bootstrapTable('refresh');
+                            $('#ModalRejectReason').modal("hide");
+                        })
+                    }
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    console.log(thrownError)
+                }
+            })
+
+
         }
 
         function dataListUpdateProgressParamsGenerate(params) {
@@ -228,7 +379,8 @@
 
         function RedirectViewPica(obj) {
             var indexDt = $(obj).closest('tr').data('index');
-            window.location.href = "/smart-pica/view-data-detail-pica/" + $('#dataListUpdateProgress').bootstrapTable('getData')[
+            window.location.href = "/smart-pica/view-data-detail-pica/" + $('#dataListUpdateProgress').bootstrapTable(
+                    'getData')[
                     indexDt]
                 .nodocpica
         }
@@ -244,6 +396,7 @@
                 params.success(res)
             })
         }
+        
     </script>
     <script type="text/javascript">
         function OpenModalHistory(obj) {
@@ -255,6 +408,7 @@
             $('#idMaster').val($('#dataListUpdateProgress').bootstrapTable('getData')[indexDt].id_master)
             $('#nikMaster').val($('#dataListUpdateProgress').bootstrapTable('getData')[indexDt].nik_master)
             $('#idSolution').val($('#dataListUpdateProgress').bootstrapTable('getData')[indexDt].id)
+            $('#targetMaster').val($('#dataListUpdateProgress').bootstrapTable('getData')[indexDt].target_master)
             $('#dataListHistoryProgress').bootstrapTable('refresh');
             $('#updateProgressHistory').modal("show");
         }
@@ -320,10 +474,11 @@
             var idMaster = $('#idMaster').val().trim();
             var nikMaster = $('#nikMaster').val().trim();
             var idSolution = $('#idSolution').val().trim();
+            var targetMaster = $('#targetMaster').val().trim();
 
             // Validation
             var isValid = true;
-            var googleDrivePattern = /^https:\/\/drive\.google\.com\/.+$/;
+            var googleDrivePattern = /^(https?:\/\/)?([\w\-]+(\.[\w\-]+)+)([\/\w\-\._~:?#[\]@!$&'()*+,;=]*)?$/;
 
             if (noteProgress === "") {
                 isValid = false;
@@ -344,7 +499,7 @@
                 Swal.fire({
                     icon: 'error',
                     title: 'Validasi Gagal',
-                    text: 'CCP Link harus berupa link Google Drive yang valid.',
+                    text: 'CCP Link harus berupa link',
                 });
             } else if (progress === "") {
                 isValid = false;
@@ -352,6 +507,15 @@
                     icon: 'error',
                     title: 'Validasi Gagal',
                     text: 'Progress harus diisi.',
+                });
+            }
+
+            if (parseInt(progress, 10) > parseInt(targetMaster, 10)) {
+                isValid = false;
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validasi Gagal',
+                    text: 'Progress tidak boleh melebihi angka target yaitu ' + targetMaster,
                 });
             }
 
@@ -366,39 +530,66 @@
                     nodocpica: nodocpica,
                     idMaster: idMaster,
                     nikMaster: nikMaster,
-                    idSolution: idSolution
+                    idSolution: idSolution,
+                    last: false
                 };
-
-                $.ajax({
-                    type: 'post',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    url: "/add-progress-history-transaction",
-                    data: dataKirim,
-                    dataType: 'json',
-                    success: function(response) {
-                        if (response.code == 200) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Berhasil!',
-                                text: response.message,
-                            }).then((result) => {
-                                $('#note_progress').val('');
-                                $('#CCPLink').val('');
-                                $('#progress').val('');
-
-                                // Reset hidden inputs
-                                $('#dataListHistoryProgress').bootstrapTable('refresh');
-                                $('#ModalAddProgress').modal("hide");
-                            })
+                if (parseInt(progress, 10) == parseInt(targetMaster, 10)) {
+                    Swal.fire({
+                        title: "Apakah kamu akan menyelesaikan pekerjaan ?",
+                        showCancelButton: true,
+                        confirmButtonText: "Close Task",
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            dataKirim.last = true;
+                            updateProgress(dataKirim)
                         }
-                    },
-                    error: function(xhr, ajaxOptions, thrownError) {
-                        console.log(thrownError)
-                    }
-                })
+                    });
+                } else {
+                    updateProgress(dataKirim)
+                }
+
+
             }
+        }
+
+
+        function updateProgress(dataKirim) {
+            $.ajax({
+                type: 'post',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: "add-progress-history-transaction",
+                data: dataKirim,
+                dataType: 'json',
+                success: function(response) {
+                    if (response.code == 200) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: response.message,
+                        }).then((result) => {
+                            $('#note_progress').val('');
+                            $('#CCPLink').val('');
+                            $('#progress').val('');
+
+                            // Reset hidden inputs
+                            $('#dataListHistoryProgress').bootstrapTable('refresh');
+                            $('#dataListUpdateProgress').bootstrapTable('refresh');
+                            $('#ModalAddProgress').modal("hide");
+                        })
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: response.message,
+                        });
+                    }
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    console.log(thrownError)
+                }
+            })
         }
     </script>
 @endsection

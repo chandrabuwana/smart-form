@@ -31,6 +31,39 @@
                         <i class="fa fa-cog fixed-plugin-button-nav cursor-pointer"></i>
                     </a>
                 </li>
+                <li class="nav-item pe-3 d-flex align-items-center">
+                    <a href="#" class="nav-link text-body p-0 reset-bg notification-container" id="notification-icon">
+                        <i class="fa-solid fa-bell fixed-plugin-button-nav cursor-pointer"></i>
+                        <div class="notification {{ count($pica_notification) > 0 ? "notification-exists" : "" }}"></div>
+                        <div class="notification-items-container custom-scrollbar" id="notification-item">
+                            @if(count($pica_notification) > 0)
+                                @foreach($pica_notification as $notif)
+                                    <div class="item-notif">
+                                        @if($notif->category == "warning")
+                                           <i class="fa-solid fa-circle-exclamation" style="color: #facea8; font-size: 18px;padding: 5px 0;"></i>
+                                        @elseif($notif->category == "error")
+                                            <i class="fa-solid fa-circle-xmark" style="color: #f27474; font-size: 18px;padding: 5px 0;"></i>
+                                        @elseif($notif->category == "success")
+                                            <i class="fa-solid fa-circle-check" style="color: #a5dc86; font-size: 18px;padding: 5px 0;"></i>
+                                        @elseif($notif->category == "question")
+                                            <i class="fa-solid fa-circle-question" style="color: #87adbd; font-size: 18px;padding: 5px 0;"></i>
+                                        @else
+                                            <i class="fa-solid fa-circle-info" style="color: #3fc3ee; font-size: 18px;padding: 5px 0;"></i>
+                                        @endif
+                                        <div>
+                                            <h6 style="margin: 0;">{{ $notif->message }}</h6>
+                                            <span style="font-size: smaller;">{{ $notif->created_at }}</span>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @else
+                                <div class="m-3">
+                                    Belum ada pemberitahuan
+                                </div>
+                            @endif
+                        </div>
+                    </a>
+                </li>
                 <li class="nav-item d-flex align-items-center reset-bg">
                     <a href="#" class="nav-link text-body font-weight-bold px-0 reset-bg">
                         <i class="fa fa-user me-sm-1"></i>

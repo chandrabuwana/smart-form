@@ -144,8 +144,7 @@
                     <div class="row">
                         <label for="staticEmail" class="col-sm-2 col-form-label">Leading KPI</label>
                         <div class="col-sm-7">
-                            <input type="text" readonly class="form-control-plaintext"
-                                value="{{ $dataMaster[0]->id_kpi }}">
+                            <input type="text" readonly class="form-control-plaintext" value="{{ $dataMaster[0]->kpi }}">
                         </div>
                     </div>
                     <div class="row">
@@ -166,7 +165,7 @@
                         <label for="staticEmail" class="col-sm-2 col-form-label">AP/PICA</label>
                         <div class="col-sm-7">
                             <input type="text" readonly class="form-control-plaintext"
-                                value="{{ $dataMaster[0]->ap_pica }}">
+                                value="{{ isset($dataMaster[0]) && $dataMaster[0]->ap_pica === 'pc' ? 'PICA' : 'AP' }}">
                         </div>
                     </div>
 
@@ -184,7 +183,7 @@
                         <label for="staticEmail" class="col-sm-2 col-form-label">Kategory</label>
                         <div class="col-sm-9">
                             <input type="text" readonly class="form-control-plaintext"
-                                value="{{ $dataMaster[0]->id_kategory }}">
+                                value="{{ $dataMaster[0]->kp_name }}">
                         </div>
                     </div>
                     <br>
@@ -483,7 +482,6 @@
                         dic: $(`#dicID_${i}`).val(),
                         pic: $(`#picID_${i}`).val(),
                         dueDate: $(`#DueDate_${i}`).val(),
-
                     };
 
                     if (solution.note.trim() === '' ||
@@ -529,7 +527,7 @@
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                url: "/add-step-transaction",
+                url: "/smart-pica/add-step-transaction",
                 data: dataKirim,
                 dataType: 'json',
                 success: function(response) {
@@ -539,7 +537,7 @@
                             title: 'Berhasil!',
                             text: response.message,
                         }).then((result) => {
-                            window.location.href = `/smart-pica`
+                            window.location.href = `/smart-pica/dashboard`
                         })
                     }
                 },

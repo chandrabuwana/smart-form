@@ -80,7 +80,7 @@ class TransactionPicaController extends Controller
 
         $dataDocumentNumeber = $getData[0]->nodoc;
 
-        $dataNIK = '1020125';
+        $dataNIK = session("user_id");
         DB::beginTransaction();
         try {
             $idMaster = DB::table('master_pica')->insertGetId([
@@ -340,6 +340,23 @@ class TransactionPicaController extends Controller
     {
         $params = $d->only(['noteProgress', 'ccpLink', 'progress']);
 
+
+        $checkDataExisting = DB::table('history_progress_solution')
+            ->where([
+                ['nodocpica', '=', $d->nodocpica],
+                ['id_solution', '=', $d->idSolution],
+                ['created_by', '=', session('user_id')]
+            ])->select("max progress")
+            ->max('progress');
+
+        if (isset($checkDataExisting) && $checkDataExisting > $d->progress) {
+            return [
+                'message' => 'Tidak boleh mengisikan progress lebih kecil',
+                'code' => 500
+            ];
+        }
+
+
         if ($this->checkForSQLInjection($params)) {
             return response()->json(['error' => 'SQL Injection detected!'], 400);
         }
@@ -359,6 +376,26 @@ class TransactionPicaController extends Controller
                 'created_at' => now(),
                 'created_by' => session("user_id")
             ]);
+
+            if ($d->last == "true") {
+                DB::table("new_pica_step")
+                    ->where("id", $d->idSolution)
+                    ->update(["acceptance" => 9]);
+            }
+
+            DB::table('master_pica')
+                ->where('nodocpica', $d->nodocpica)
+                ->where('nik', $d->nikMaster)
+                ->update(['status' => 3]);
+
+            DB::commit();
+
+            return [
+                'message' => "Done Progress Tersimpan",
+                'code' => 200
+            ];
+
+
         } catch (QueryException $e) {
             // Rollback the transaction on error
             DB::rollBack();
@@ -368,21 +405,36 @@ class TransactionPicaController extends Controller
             ];
         }
 
-
-        DB::table('master_pica')
-            ->where('nodocpica', $d->nodocpica)
-            ->where('nik', $d->nikMaster)
-            ->update(['status' => 3]);
-
-        DB::commit();
-
-        return [
-            'message' => "Done Progress Tersimpan",
-            'code' => 200
-        ];
-
     }
 
+    function changeAcceptanceStepSolutionPica(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            //code...
+            DB::table("new_pica_step")
+                ->where('id', $request->id)
+                ->update(['acceptance' => $request->hasil]);
+
+            if ($request->hasil == 2) {
+                DB::table("new_pica_step")
+                    ->where('id', $request->id)
+                    ->update(['acceptance_reason' => $request->reason]);
+            }
+            DB::commit();
+            return [
+                'message' => "Done Data Tersimpan",
+                'code' => 200
+            ];
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollBack();
+            return [
+                'message' => 'Failed to insert records',
+                'code' => 500
+            ];
+        }
+    }
     public function checkForSQLInjection(array $params)
     {
         // Common SQL Injection patterns
@@ -400,6 +452,37 @@ class TransactionPicaController extends Controller
         }
 
         return false; // No injection detected
+    }
+
+    function ApproveClosingTask(Request $request)
+    {
+
+        DB::beginTransaction();
+        try {
+            if ($request->hasil == "true") {
+                DB::table("new_pica_step")->where("id", $request->id)->
+                    update(["status_approve" => 1]);
+            } else {
+                DB::table("new_pica_step")->where("id", $request->id)->
+                    update([
+                        "status_approve" => 2,
+                        "keterangan_reject" => $request->keterangan
+                    ]);
+            }
+
+            DB::commit();
+            return [
+                'message' => "Done Data Tersimpan",
+                'code' => 200
+            ];
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return [
+                'message' => 'Failed to insert records',
+                'code' => 500
+            ];
+        }
     }
 }
 

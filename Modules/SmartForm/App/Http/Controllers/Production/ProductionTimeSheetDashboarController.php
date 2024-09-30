@@ -251,6 +251,7 @@ class ProductionTimeSheetDashboarController extends Controller
             try {
                 $query_search = DB::connection('sqlsrv2')
                     ->table('tkaryawan')
+                    ->select('NIK', 'Nama')
                     ->whereAny(
                         ['nama', 'nik'], 'LIKE', "%$search%"
                     );
@@ -267,7 +268,7 @@ class ProductionTimeSheetDashboarController extends Controller
             }
         }
 
-        Log::info(json_encode($response, JSON_PRETTY_PRINT));
+        // Log::info(json_encode($response, JSON_PRETTY_PRINT));
 
         return response()->json($response);
     }
