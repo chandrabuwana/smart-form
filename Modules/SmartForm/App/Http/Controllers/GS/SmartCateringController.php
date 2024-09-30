@@ -369,6 +369,7 @@ class SmartCateringController extends Controller {
                 foreach ($summaryPerVendor as $vendorID => $details) {
                     // Tambahkan 'VendorID' ke array $details
                     $details['VendorID'] = $vendorID;
+                    $details['status'] = 'Pesanan Baru';
                     
                     $summaryPerVendor_new[] = $details;
                     DB::connection(self::DB_CONN_NAME)->table(self::TABLE_SUBMIT_ORDER_VENDOR)->insert($details);
@@ -444,7 +445,7 @@ class SmartCateringController extends Controller {
             $master_pemesanan = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_SUBMIT_ORDER . ' as a')
                 ->where('a.kode_pemesanan', $kode_pemesanan);
             $data_pemesanan = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_VENDOR_ORDER . ' as a')
-                ->select('a.kode_pemesanan', 'a.KodeSite', 'a.TanggalOrder', 'a.Jumlah', 'b.Nama')    
+                ->select('a.kode_pemesanan', 'a.KodeSite', 'a.TanggalOrder', 'a.Jumlah', 'b.Nama', 'a.status')    
                 ->leftJoin(self::TABLE_VENDOR_MASTER . ' as b', 'a.VendorID', '=', 'b.id')
                 ->where('kode_pemesanan', $kode_pemesanan);
             $detail_per_lokasi = db::connection(SELF::DB_CONN_NAME)->table(SELF::TABLE_SUBMIT_ORDER_DETAIL . ' as a')
