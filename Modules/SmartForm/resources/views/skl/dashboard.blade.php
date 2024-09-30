@@ -98,9 +98,9 @@
                                 <label for="filterStatus">Status</label>
                                 <select class="form-control form-select" name="filterStatus" id="filterStatus" required>
                                     <option value="" selected>-- Filter Status --</option>
-                                    <option value="1">Need Approval</option>
-                                    <option value="2">Approved</option>
-                                    <option value="0">Rejected</option>
+                                    <option value="Dalam Review">Dalam Review</option>
+                                    <option value="Approved">Approved</option>
+                                    <option value="Rejected">Rejected</option>
                                 </select>
                             </div>
                         </div>

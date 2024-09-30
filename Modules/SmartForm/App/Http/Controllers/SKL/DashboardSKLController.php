@@ -166,6 +166,11 @@ class DashboardSKLController extends Controller
                 DB::table(self::T_FORM_MST)->where('NoForm', $request->NoForm)->update([
                     'Status' => 'Approved'
                 ]);
+
+            } else if($request->Status == 'Rejected') {
+                DB::table(self::T_FORM_MST)->where('NoForm', $request->NoForm)->update([
+                    'Status' => 'Rejected'
+                ]);
             }
 
             DB::commit();
