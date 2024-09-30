@@ -25,14 +25,21 @@ class DashboardSKLController extends Controller
 
     public function dashboard()
     {
-        return view('SmartForm::skl/dashboard');
+        $departements = DB::table(self::T_MST_PEKERJAAN)->distinct('KodeDepartement')
+            ->select('KodeDP', self::T_DEPARTEMENT . '.Nama AS NamaDepartement')->join(self::T_DEPARTEMENT, self::T_DEPARTEMENT . '.KodeDP', '=', self::T_MST_PEKERJAAN . '.KodeDepartement')
+            ->orderBy('KodeDP', 'ASC')->get();
+
+        return view('SmartForm::skl/dashboard', [
+            'departements' => $departements
+        ]);
     }
 
     public function getDashboardData(Request $request)
     {
-        $search  = $request->query('search', '');
-        $sort    = $request->query('sort', 'created_at');
-        $order   = $request->query('order', 'asc');
+        $departement  = $request->query('departement', '');
+        $site    = $request->query('site', '');
+        $status   = $request->query('status', '');
+        $tanggal   = $request->query('tanggal', '');
         $offset  = $request->query('offset', 0);
         $limit   = $request->query('limit', 10);
 
@@ -49,11 +56,23 @@ class DashboardSKLController extends Controller
                     self::T_FORM_MST . '.KodeST'
                 );
 
-            // if(!empty($search)) {
-            //     $sklMaster->where('role_name', 'like', '%' . $search . '%');
-            // }
+            if(!empty($departement)) {
+                $sklMaster->where('KodeDepartement', $departement);
+            }
 
-            $data = $sklMaster->orderBy(self::T_FORM_MST . '.' . $sort, $order)->offset($offset)
+            if(!empty($site)) {
+                $sklMaster->where('KodeST', $site);
+            }
+
+            if(!empty($status)) {
+                $sklMaster->where('Status', $status);
+            }
+
+            if(!empty($tanggal)) {
+                $sklMaster->whereDate('TglPelaksanaan', $tanggal);
+            }
+
+            $data = $sklMaster->orderBy(self::T_FORM_MST . '.created_at', 'desc')->offset($offset)
                 ->limit($limit);
 
             $rows = $data->get()->map( function($item) {

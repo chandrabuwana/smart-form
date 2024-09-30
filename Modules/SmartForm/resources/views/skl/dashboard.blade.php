@@ -83,12 +83,14 @@
                             </div>
                         </div>
                         <div class="col-6 col-md-3">
-                            <div class="input-group input-group-static mb-4 position-relative">
-                                <label for="filterNama">NIK</label>
-                                <input type="text" class="form-control" name="filterNama" id="filterNama" placeholder="Cari Nama / NIK">
-                                </input>
-                                <div class="suggestion" id="suggest-nik" style="display: none">
-                                </div>
+                            <div class="input-group input-group-static mb-4">
+                                <label for="filterDepartement">Departement</label>
+                                <select class="form-control form-select" name="filterDepartement" id="filterDepartement">
+                                    <option value="">-- Filter Departement --</option>
+                                    @foreach($departements as $item)
+                                        <option value="{{ $item->KodeDP }}">{{ $item->NamaDepartement }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                         <div class="col-6 col-md-3">
@@ -167,12 +169,12 @@
         var btnClearFilter = document.getElementById("btnClearFilter")
         var filterTanggal = document.getElementById("filterTanggal")
         var filterSite = document.getElementById("filterSite")
-        var filterNama = document.getElementById("filterNama")
+        var filterDepartement = document.getElementById("filterDepartement")
         var filterStatus = document.getElementById("filterStatus")
         var additonalQuery = {
             tanggal: null,
             site: null,
-            nama: null,
+            departement: null,
             status: null
         }
 
@@ -183,7 +185,7 @@
             var searchQuery = {
                 tanggal: filterTanggal.value == '' ? null : filterTanggal.value,
                 site: filterSite.value == '' ? null : filterSite.value,
-                nama: filterNama.value == '' ? null : filterNama.value,
+                departement: filterDepartement.value == '' ? null : filterDepartement.value,
                 status: filterStatus.value == '' ? null : filterStatus.value,
             }
             additonalQuery = searchQuery;
