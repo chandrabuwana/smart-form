@@ -39,7 +39,7 @@
         }
         .notification-items-container {
             position: absolute;
-            display: flex;
+            display: none;
             flex-direction: column;
             overflow-y: auto;
             width: 300px;
@@ -179,7 +179,7 @@
             });
             $("#notification-icon").on("click", function(e) {
                 $("#notification-item").closest(".notification-items-container").css('display') == "flex" ? $("#notification-item").closest(".notification-items-container").css('display', 'none') : $("#notification-item").closest(".notification-items-container").css('display', 'flex')
-                console.log($("#notification-item").closest(".notification-items-container").children().length)
+                // console.log($("#notification-item").closest(".notification-items-container").children().length)
             })
         });
         var win = navigator.platform.indexOf('Win') > -1;

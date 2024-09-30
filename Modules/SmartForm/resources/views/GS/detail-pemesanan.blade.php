@@ -87,6 +87,7 @@
                                     <th data-field="site" data-align="center" data-halign="center" >Site</th>
                                     <th data-field="nama" data-align="left" data-halign="center" >Vendor</th>
                                     <th data-field="jumlah" data-align="center" data-halign="center">Jumlah</th>
+                                    <th data-field="status" data-align="center" data-halign="center">Status Pemesanan</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -96,6 +97,7 @@
                                         <td>{{ $detail->KodeSite }}</td>
                                         <td>{{ $detail->Nama }}</td>
                                         <td>{{ $detail->Jumlah }}</td>
+                                        <td>{{ $detail->status }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -179,7 +181,7 @@
         }
 
         function fetchSite(cb=function(site) {}) {
-            axios.post("/helper/department", {
+            axios.post("/helper/site", {
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
