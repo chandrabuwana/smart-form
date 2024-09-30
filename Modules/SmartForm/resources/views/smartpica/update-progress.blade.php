@@ -478,7 +478,7 @@
 
             // Validation
             var isValid = true;
-            var googleDrivePattern = /^https:\/\/drive\.google\.com\/.+$/;
+            var googleDrivePattern = /^(https?:\/\/)?([\w\-]+(\.[\w\-]+)+)([\/\w\-\._~:?#[\]@!$&'()*+,;=]*)?$/;
 
             if (noteProgress === "") {
                 isValid = false;
@@ -499,7 +499,7 @@
                 Swal.fire({
                     icon: 'error',
                     title: 'Validasi Gagal',
-                    text: 'CCP Link harus berupa link Google Drive yang valid.',
+                    text: 'CCP Link harus berupa link',
                 });
             } else if (progress === "") {
                 isValid = false;

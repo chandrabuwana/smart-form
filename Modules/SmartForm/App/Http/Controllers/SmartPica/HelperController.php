@@ -25,7 +25,7 @@ class HelperController extends Controller
         $dataJs = [];
         foreach ($dataKPI as $kPI) {
             $dataBaru = [
-                'text' => $kPI->id . " || " . $kPI->name ,
+                'text' => $kPI->id . " || " . $kPI->name,
                 'id' => $kPI->id
             ];
             $dataJs[] = $dataBaru;
@@ -246,6 +246,31 @@ class HelperController extends Controller
         ]);
     }
 
+
+    public function GetQueryDataTableSolutionPica(string $query, Request $req)
+    {
+        if (isset($req->search['IDSOLUTION']) && $req->search['IDSOLUTION'] != null) {
+            $query = $query . "where id_solution = '" . $req->search['IDSOLUTION'] . "' ";
+        }
+        if (isset($req->search['NODOCPICA']) && $req->search['NODOCPICA'] != null) {
+            $query = $query . " AND nodocpica = '" . $req->search['NODOCPICA'] . "' ";
+        }
+
+        if (isset($req["sort"]) && $req["sort"] != null) {
+            $query = $query . ' ORDER BY ' . $req["sort"] . ' ' . $req["order"];
+        } else {
+            $query = $query . ' ORDER BY ID DESC ';
+        }
+
+        if ($req["offset"] != null) {
+            $query = $query . ' OFFSET ' . $req["offset"] . ' ROWS ';
+        }
+        if ($req["limit"] != null) {
+            $query = $query . "FETCH NEXT " . $req["limit"] . " ROWS ONLY";
+        }
+        return $query;
+    }
+
     function HelperDataTableStepSolutionPica(Request $table)
     {
         $nik = session("user_id");
@@ -292,7 +317,7 @@ class HelperController extends Controller
                             AND dp.rn = 1
                     JOIN master_pica mp ON mp.nodocpica = step_pica.nodocpica where step_pica.pic = '$nik' ";
         $countDataUser = DB::select("select count(*) jumlah FROM new_pica_step where pic = '$nik' ");
-        $newQuery = $this->GetQueryDataTablePica($query, $table);
+        $newQuery = $this->GetQueryDataTableSolutionPica($query, req: $table);
 
         $dataUser = DB::select($newQuery);
 
@@ -303,9 +328,28 @@ class HelperController extends Controller
         ]);
     }
 
-    function HelperDataTableHistoryProgressPica(Request $table)
+
+    public function GetQueryDataTableHistoryTable(string $query, Request $req)
     {
 
+        if (isset($req["sort"]) && $req["sort"] != null) {
+            $query = $query . ' ORDER BY ' . $req["sort"] . ' ' . $req["order"];
+        } else {
+            $query = $query . ' ORDER BY ID DESC ';
+        }
+
+        if ($req["offset"] != null) {
+            $query = $query . ' OFFSET ' . $req["offset"] . ' ROWS ';
+        }
+        if ($req["limit"] != null) {
+            $query = $query . "FETCH NEXT " . $req["limit"] . " ROWS ONLY";
+        }
+        return $query;
+    }
+
+    function HelperDataTableHistoryProgressPica(Request $table)
+    {
+        $nik = session("user_id");
         $query = " SELECT [id]
                     ,[id_solution]
                     ,[id_master]
@@ -317,9 +361,9 @@ class HelperController extends Controller
                     ,[ccp]
                     ,[progress]
                     ,[created_at]
-                FROM [history_progress_solution] ";
-        $countDataUser = DB::select('select count(*) jumlah FROM history_progress_solution');
-        $newQuery = $this->GetQueryDataTablePica($query, $table);
+                FROM [history_progress_solution] where id_solution = '" . $table->search['IDSOLUTION'] . "' and nodocpica = '" . $table->search['NODOCPICA'] . "' ";
+        $countDataUser = DB::select("select count(*) jumlah FROM history_progress_solution where id_solution = '" . $table->search['IDSOLUTION'] . "' and nodocpica = '" . $table->search['NODOCPICA'] . "' ");
+        $newQuery = $this->GetQueryDataTableHistoryTable($query, req: $table);
 
         $dataUser = DB::select($newQuery);
 

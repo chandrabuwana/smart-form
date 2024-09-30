@@ -344,6 +344,7 @@ class TransactionPicaController extends Controller
         $checkDataExisting = DB::table('history_progress_solution')
             ->where([
                 ['nodocpica', '=', $d->nodocpica],
+                ['id_solution', '=', $d->idSolution],
                 ['created_by', '=', session('user_id')]
             ])->select("max progress")
             ->max('progress');
