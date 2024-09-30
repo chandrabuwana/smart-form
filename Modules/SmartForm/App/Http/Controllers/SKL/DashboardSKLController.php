@@ -137,8 +137,16 @@ class DashboardSKLController extends Controller
             ->join(self::T_KARYAWAN, self::T_KARYAWAN . '.NIK', '=', self::T_FORM_APPROVER . '.NIK')
             ->where('NoForm', $NoForm)->get();
 
+        $lastProgressApproval = 0;
+        foreach($formMasterData->approvers as $key => $approver) {
+            if($approver->Status == 'Approved') {
+                $lastProgressApproval = $key;
+            }
+        }
+
         return view('SmartForm::skl/detail', [
-            'formMaster' => $formMasterData
+            'formMaster' => $formMasterData,
+            'lastProgressApproval' => $lastProgressApproval
         ]);
     }
 

@@ -245,7 +245,7 @@
                     </small>
 
                     <div class="row mt-5 align-items-end">
-                        @foreach($formMaster->approvers as $approver)
+                        @foreach($formMaster->approvers as $key => $approver)
                             <div class="col-md-6 col-lg-3 col-xl-2 text-center">
                                 <p class="mb-2">{{ $approver->NamaAtasan }}</p>
 
@@ -261,8 +261,7 @@
                                         </a>
                                     </p>
 
-                                {{-- @elseif($approver->NIK == session('user_id')) --}}
-                                @elseif(true)
+                                @elseif($approver->NIK == session('user_id') && $lastProgressApproval == ($key - 1))
                                     <div class="d-flex align-items-center justify-content-center">
                                         <button type="button" class="btn btn-danger btn-xs text-center px-3 py-2 me-2"
                                             data-bs-toggle="tooltip" title="Reject Pengisian Form" onclick="rejectForm('{{ $formMaster->NoForm }}', '{{ $approver->NIK }}')">

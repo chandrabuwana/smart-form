@@ -179,11 +179,21 @@
         }
 
         btnClearFilter.addEventListener("click", function(e) {
+            additonalQuery.departement = null;
+            additonalQuery.site = null;
+            additonalQuery.status = null;
+            additonalQuery.tanggal = null;
 
+            filterDepartement.value = '';
+            filterSite.value = '';
+            filterStatus.value = '';
+            filterTanggal.value = '';
+
+            $table.bootstrapTable('refresh')
         })
         btnFilterSubmit.addEventListener("click", function(e) {
             var searchQuery = {
-                tanggal: filterTanggal.value == '' ? null : filterTanggal.value,
+                tanggal: filterTanggal.value == '' ? null : c.value,
                 site: filterSite.value == '' ? null : filterSite.value,
                 departement: filterDepartement.value == '' ? null : filterDepartement.value,
                 status: filterStatus.value == '' ? null : filterStatus.value,
@@ -203,6 +213,8 @@
                 formatData = `<span class="text-warning fw-bold">Dalam Review (${row.ApprovalProgress})</span>`
             } else if(value == 'Approved') {
                 formatData = '<span class="text-success fw-bold">Approved</span>'
+            } else if(value == 'Rejected') {
+                formatData = '<span class="text-danger fw-bold">Rejected</span>'
             }
 
             return formatData;
