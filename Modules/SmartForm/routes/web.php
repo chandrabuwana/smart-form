@@ -162,6 +162,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
     Route::prefix('helper')->group(function () {
         Route::post('/kpi-lead-datalist', [HelperController::class, 'HelperSelect2PicaKPILead']);
         Route::post('/week', [HelperController::class, 'HelperSelectWeek']);
+        Route::post('/site', [HelperController::class, 'HelperSelect2PicaKSite']);
         Route::post('/department', [HelperController::class, 'HelperSelect2PicaKDept']);
         Route::post('/karyawan', [HelperController::class, 'HelperSelect2PicaKaryawanByDept']);
         Route::get('/data-pica', [HelperController::class, 'HelperDataTablePica']);

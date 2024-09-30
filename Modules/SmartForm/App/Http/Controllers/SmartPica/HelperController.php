@@ -14,12 +14,18 @@ class HelperController extends Controller
     function HelperSelect2PicaKPILead(Request $d)
     {
         $data = $d->request->get("query");
+        // dd($d->dept);
         $dataFinal = $this->validateAndSanitizeInput($data);
-        $dataKPI = DB::select("SELECT TOP(10) k.lea_id AS id, k.lea_name AS name, UPPER(k.lea_hgb) AS status, k.lea_dept AS dept, s.st_name AS satuan FROM kpi_lea k JOIN satuan s ON s.st_id = k.lea_st WHERE k.lea_id LIKE '%$dataFinal%' OR k.lea_name LIKE '%$dataFinal%' OR UPPER(k.lea_hgb) LIKE '%$dataFinal%' OR k.lea_dept LIKE '%$dataFinal%' OR s.st_name LIKE '%$dataFinal%'");
+        // $dataKPI = DB::select("SELECT TOP(10) k.lea_id AS id, k.lea_name AS name, UPPER(k.lea_hgb) AS status, k.lea_dept AS dept, s.st_name AS satuan FROM kpi_lea k JOIN satuan s ON s.st_id = k.lea_st WHERE k.lea_id LIKE '%$dataFinal%' OR k.lea_name LIKE '%$dataFinal%' OR UPPER(k.lea_hgb) LIKE '%$dataFinal%' OR k.lea_dept LIKE '%$dataFinal%' OR s.st_name LIKE '%$dataFinal%'");
+        $dataKPI = DB::select("SELECT kpi_code id, kpi name, dept, keterangan FROM [SMF_KPI_MASTER] where 
+        dept = '$d->dept' 
+        AND (kpi_code LIKE '%$dataFinal%' 
+        OR kpi LIKE '%$dataFinal%' 
+        OR keterangan LIKE '%$dataFinal%') ");
         $dataJs = [];
         foreach ($dataKPI as $kPI) {
             $dataBaru = [
-                'text' => $kPI->name . " Satuan : " . $kPI->satuan . " || HEIGHT is " . ($kPI->status == "G" ? "GOOD" : ($kPI->status == "B" ? "BAD" : " - ")),
+                'text' => $kPI->id . " || " . $kPI->name ,
                 'id' => $kPI->id
             ];
             $dataJs[] = $dataBaru;
@@ -33,6 +39,27 @@ class HelperController extends Controller
         return json_encode($final);
     }
     function HelperSelect2PicaKDept(Request $d)
+    {
+        $data = $d->request->get("query");
+        $dataFinal = $this->validateAndSanitizeInput($data);
+        $dataDepartment = DB::connection('sqlsrv2')->select("select KodeDP, Nama  from tdepartement where Nama like '%$dataFinal%' or KodeDP like '%$dataFinal%'");
+
+        $dataJs = [];
+        foreach ($dataDepartment as $a) {
+            $dataBaru = [
+                'text' => $a->Nama . " (" . $a->KodeDP . ")",
+                'id' => $a->KodeDP
+            ];
+            $dataJs[] = $dataBaru;
+        }
+        $final = [
+            'data' => $dataJs,
+        ];
+        return json_encode($final);
+
+    }
+
+    function HelperSelect2PicaKSite(Request $d)
     {
         $data = $d->request->get("query");
         $dataFinal = $this->validateAndSanitizeInput($data);
@@ -58,7 +85,7 @@ class HelperController extends Controller
         $data = $d->request->get("query");
         $depart = $d->request->get("dataDepartment");
         $dataFinal = $this->validateAndSanitizeInput($data);
-        $dataDepartment = DB::connection('sqlsrv2')->select("SELECT TOP 5 NIK nomorPunggung, Nama nama  FROM TKaryawan where KodeDP like '%$depart%' and Nama like '%$data%'");
+        $dataDepartment = DB::connection('sqlsrv2')->select("SELECT TOP 5 NIK nomorPunggung, Nama nama  FROM TKaryawan where KodeDP like '%$depart%' and Nama like '%$data%' and AKTIF = 0 ");
 
         $dataJs = [];
         foreach ($dataDepartment as $a) {
@@ -142,8 +169,71 @@ class HelperController extends Controller
 
     function HelperDataTablePica(Request $table)
     {
-        $query = "select nik, nodocpica, CONCAT(FORMAT(DATEFROMPARTS(tahun, bulan, 1), 'MMMM'), ' - ', tahun) AS tahun_bulan, week, site, id_kpi, status, problem, kp_name, lea_name from master_pica m join kategori_problem k
-                    on k.kp_id = m.id_kategory join kpi_lea kl on kl.lea_id = m.id_kpi ";
+        $query = "SELECT 
+                    m.nik, 
+                    m.nodocpica, 
+                    CONCAT(FORMAT(DATEFROMPARTS(m.tahun, m.bulan, 1), 'MMMM'), ' - ', m.tahun) AS tahun_bulan,
+                    m.week, 
+                    m.site, 
+                    m.id_kpi, 
+                    -- Status berdasarkan kondisi acceptance dan status_approve
+                    UPPER(
+                        CASE
+                            WHEN (
+                                SELECT COUNT(*) FROM new_pica_step nps WHERE nps.nodocpica = m.nodocpica
+                            ) = 0 THEN 'STEP NOT SET'  -- Check for no steps
+                            
+                            WHEN (
+                                SELECT COUNT(*) FROM new_pica_step nps WHERE nps.nodocpica = m.nodocpica
+                            ) = (
+                                SELECT COUNT(*) FROM new_pica_step nps WHERE nps.nodocpica = m.nodocpica AND nps.acceptance = 0
+                            ) THEN 'NOT ANY PROGRESS'
+                            
+                            WHEN (
+                                SELECT COUNT(*) FROM new_pica_step nps WHERE nps.nodocpica = m.nodocpica
+                            ) = (
+                                SELECT COUNT(*) FROM new_pica_step nps WHERE nps.nodocpica = m.nodocpica AND nps.acceptance = 2
+                            ) THEN 'ALL TASK REJECTED BY PIC'
+                            
+                            WHEN (
+                                SELECT COUNT(*) FROM new_pica_step nps WHERE nps.nodocpica = m.nodocpica AND nps.acceptance != 2
+                            ) = (
+                                SELECT COUNT(*) FROM new_pica_step nps WHERE nps.nodocpica = m.nodocpica AND nps.acceptance != 2 AND nps.status_approve = 2
+                            ) THEN 'ALL REJECT BY APPROVER'
+                            
+                            WHEN (
+                                SELECT COUNT(*) FROM new_pica_step nps WHERE nps.nodocpica = m.nodocpica AND nps.acceptance != 2
+                            ) = (
+                                SELECT COUNT(*) FROM new_pica_step nps WHERE nps.nodocpica = m.nodocpica AND nps.acceptance != 2 AND nps.status_approve = 1
+                            ) THEN 'PICA CLOSED'
+                            
+                            ELSE 'ON PROGRESS'
+                        END
+                    ) AS status,
+                    
+                    (SELECT COUNT(*) FROM new_pica_step nps WHERE nps.nodocpica = m.nodocpica) AS total_steps,
+
+                    (SELECT COUNT(*) FROM new_pica_step nps WHERE nps.nodocpica = m.nodocpica AND nps.acceptance = 0) AS acceptance_0_not_yet_accepted,
+
+                    (SELECT COUNT(*) FROM new_pica_step nps WHERE nps.nodocpica = m.nodocpica AND nps.acceptance = 1) AS acceptance_1_accepted,
+
+                    (SELECT COUNT(*) FROM new_pica_step nps WHERE nps.nodocpica = m.nodocpica AND nps.acceptance = 2) AS acceptance_2_rejected_by_pic,
+
+                    (SELECT COUNT(*) FROM new_pica_step nps WHERE nps.nodocpica = m.nodocpica AND nps.acceptance = 9) AS acceptance_9_pending_approval,
+
+                    (SELECT COUNT(*) FROM new_pica_step nps WHERE nps.nodocpica = m.nodocpica AND nps.status_approve = 1) AS status_approve_1_approved,
+
+                    (SELECT COUNT(*) FROM new_pica_step nps WHERE nps.nodocpica = m.nodocpica AND nps.status_approve = 2) AS status_approve_2_rejected_by_approver,
+
+                    m.problem, 
+                    k.kp_name, 
+                    kl.lea_name 
+                FROM 
+                    master_pica m
+                JOIN 
+                    kategori_problem k ON k.kp_id = m.id_kategory 
+                JOIN 
+                    kpi_lea kl ON kl.lea_id = m.id_kpi where 1 = 1";
         $countDataUser = DB::select('select count(*) jumlah FROM master_pica');
         $newQuery = $this->GetQueryDataTablePica($query, $table);
 
@@ -274,54 +364,42 @@ class HelperController extends Controller
                         step_pica.dic,
                         step_pica.status_approve,
                         level_approval,
-                        -- Mencari approver berdasarkan level yang lebih tinggi (angka lebih kecil)
+                        -- Mencari approver berdasarkan level yang lebih tinggi
                         CASE 
-                            WHEN step_pica.level_approval = 1 THEN NULL -- Level 1 adalah level tertinggi, tidak ada level di atasnya
-                            WHEN step_pica.level_approval = 2 THEN COALESCE(
-                                (SELECT TOP 1 lvl.Nik 
-                                FROM USR_LVL lvl 
-                                JOIN HRD.dbo.TKaryawan tk ON lvl.Nik = tk.NIK 
-                                WHERE tk.KodeDP = step_pica.dic AND lvl.lvl = 1), NULL)
-                            WHEN step_pica.level_approval = 3 THEN COALESCE(
-                                (SELECT TOP 1 lvl.Nik 
-                                FROM USR_LVL lvl 
-                                JOIN HRD.dbo.TKaryawan tk ON lvl.Nik = tk.NIK 
-                                WHERE tk.KodeDP = step_pica.dic AND lvl.lvl = 1), 
-                                (SELECT TOP 1 lvl.Nik 
-                                FROM USR_LVL lvl 
-                                JOIN HRD.dbo.TKaryawan tk ON lvl.Nik = tk.NIK 
-                                WHERE tk.KodeDP = step_pica.dic AND lvl.lvl = 2), NULL)
-                            WHEN step_pica.level_approval = 4 THEN COALESCE(
-                                (SELECT TOP 1 lvl.Nik 
-                                FROM USR_LVL lvl 
-                                JOIN HRD.dbo.TKaryawan tk ON lvl.Nik = tk.NIK 
-                                WHERE tk.KodeDP = step_pica.dic AND lvl.lvl = 3), 
-                                (SELECT TOP 1 lvl.Nik 
-                                FROM USR_LVL lvl 
-                                JOIN HRD.dbo.TKaryawan tk ON lvl.Nik = tk.NIK 
-                                WHERE tk.KodeDP = step_pica.dic AND lvl.lvl = 2), 
-                                (SELECT TOP 1 lvl.Nik 
-                                FROM USR_LVL lvl 
-                                JOIN HRD.dbo.TKaryawan tk ON lvl.Nik = tk.NIK 
-                                WHERE tk.KodeDP = step_pica.dic AND lvl.lvl = 1), NULL)
-                            WHEN step_pica.level_approval = 5 THEN COALESCE(
-                                (SELECT TOP 1 lvl.Nik 
-                                FROM USR_LVL lvl 
-                                JOIN HRD.dbo.TKaryawan tk ON lvl.Nik = tk.NIK 
-                                WHERE tk.KodeDP = step_pica.dic AND lvl.lvl = 4), 
-                                (SELECT TOP 1 lvl.Nik 
-                                FROM USR_LVL lvl 
-                                JOIN HRD.dbo.TKaryawan tk ON lvl.Nik = tk.NIK 
-                                WHERE tk.KodeDP = step_pica.dic AND lvl.lvl = 3), 
-                                (SELECT TOP 1 lvl.Nik 
-                                FROM USR_LVL lvl 
-                                JOIN HRD.dbo.TKaryawan tk ON lvl.Nik = tk.NIK 
-                                WHERE tk.KodeDP = step_pica.dic AND lvl.lvl = 2), 
-                                (SELECT TOP 1 lvl.Nik 
-                                FROM USR_LVL lvl 
-                                JOIN HRD.dbo.TKaryawan tk ON lvl.Nik = tk.NIK 
-                                WHERE tk.KodeDP = step_pica.dic AND lvl.lvl = 1), NULL)
-                            ELSE NULL
+                            -- Jika PIC ada di level1, ambil approver dari level2
+                            WHEN EXISTS (SELECT 1 FROM SMF_LVL_MAPPING_MASTER SLM
+                                        JOIN USR_LVL UL ON UL.kode_section = SLM.section
+                                        WHERE SLM.level1 = UL.nik AND UL.nik = step_pica.pic) 
+                                THEN (SELECT SLM.level2 FROM SMF_LVL_MAPPING_MASTER SLM WHERE SLM.section = (SELECT UL.kode_section FROM USR_LVL UL WHERE UL.nik = step_pica.pic))
+                            
+                            -- Jika PIC ada di level2, ambil approver dari level3
+                            WHEN EXISTS (SELECT 1 FROM SMF_LVL_MAPPING_MASTER SLM
+                                        JOIN USR_LVL UL ON UL.kode_section = SLM.section
+                                        WHERE SLM.level2 = UL.nik AND UL.nik = step_pica.pic) 
+                                THEN (SELECT SLM.level3 FROM SMF_LVL_MAPPING_MASTER SLM WHERE SLM.section = (SELECT UL.kode_section FROM USR_LVL UL WHERE UL.nik = step_pica.pic))
+                            
+                            -- Jika PIC ada di level3, ambil approver dari level4
+                            WHEN EXISTS (SELECT 1 FROM SMF_LVL_MAPPING_MASTER SLM
+                                        JOIN USR_LVL UL ON UL.kode_section = SLM.section
+                                        WHERE SLM.level3 = UL.nik AND UL.nik = step_pica.pic) 
+                                THEN (SELECT SLM.level4 FROM SMF_LVL_MAPPING_MASTER SLM WHERE SLM.section = (SELECT UL.kode_section FROM USR_LVL UL WHERE UL.nik = step_pica.pic))
+                            
+                            -- Jika PIC ada di level4, ambil approver dari level5
+                            WHEN EXISTS (SELECT 1 FROM SMF_LVL_MAPPING_MASTER SLM
+                                        JOIN USR_LVL UL ON UL.kode_section = SLM.section
+                                        WHERE SLM.level4 = UL.nik AND UL.nik = step_pica.pic) 
+                                THEN (SELECT SLM.level5 FROM SMF_LVL_MAPPING_MASTER SLM WHERE SLM.section = (SELECT UL.kode_section FROM USR_LVL UL WHERE UL.nik = step_pica.pic))
+                            
+                            -- Jika PIC ada di level5, tidak ada approver di atasnya
+                            WHEN EXISTS (SELECT 1 FROM SMF_LVL_MAPPING_MASTER SLM
+                                        JOIN USR_LVL UL ON UL.kode_section = SLM.section
+                                        WHERE SLM.level5 = UL.nik AND UL.nik = step_pica.pic) 
+                                THEN NULL
+                            
+                            -- Jika PIC tidak ditemukan di level manapun, default ke level1
+                            ELSE (SELECT SLM.level1 FROM SMF_LVL_MAPPING_MASTER SLM 
+                                JOIN USR_LVL UL ON UL.kode_section = SLM.section
+                                WHERE UL.nik = step_pica.pic)
                         END AS approver
                     FROM
                         new_pica_step step_pica

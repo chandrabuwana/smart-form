@@ -340,6 +340,22 @@ class TransactionPicaController extends Controller
     {
         $params = $d->only(['noteProgress', 'ccpLink', 'progress']);
 
+
+        $checkDataExisting = DB::table('history_progress_solution')
+            ->where([
+                ['nodocpica', '=', $d->nodocpica],
+                ['created_by', '=', session('user_id')]
+            ])->select("max progress")
+            ->max('progress');
+
+        if (isset($checkDataExisting) && $checkDataExisting > $d->progress) {
+            return [
+                'message' => 'Tidak boleh mengisikan progress lebih kecil',
+                'code' => 500
+            ];
+        }
+
+
         if ($this->checkForSQLInjection($params)) {
             return response()->json(['error' => 'SQL Injection detected!'], 400);
         }
@@ -359,6 +375,26 @@ class TransactionPicaController extends Controller
                 'created_at' => now(),
                 'created_by' => session("user_id")
             ]);
+
+            if ($d->last == "true") {
+                DB::table("new_pica_step")
+                    ->where("id", $d->idSolution)
+                    ->update(["acceptance" => 9]);
+            }
+
+            DB::table('master_pica')
+                ->where('nodocpica', $d->nodocpica)
+                ->where('nik', $d->nikMaster)
+                ->update(['status' => 3]);
+
+            DB::commit();
+
+            return [
+                'message' => "Done Progress Tersimpan",
+                'code' => 200
+            ];
+
+
         } catch (QueryException $e) {
             // Rollback the transaction on error
             DB::rollBack();
@@ -367,19 +403,6 @@ class TransactionPicaController extends Controller
                 'code' => 500
             ];
         }
-
-
-        DB::table('master_pica')
-            ->where('nodocpica', $d->nodocpica)
-            ->where('nik', $d->nikMaster)
-            ->update(['status' => 3]);
-
-        DB::commit();
-
-        return [
-            'message' => "Done Progress Tersimpan",
-            'code' => 200
-        ];
 
     }
 
@@ -435,7 +458,7 @@ class TransactionPicaController extends Controller
 
         DB::beginTransaction();
         try {
-            if ($request->hasil) {
+            if ($request->hasil == "true") {
                 DB::table("new_pica_step")->where("id", $request->id)->
                     update(["status_approve" => 1]);
             } else {

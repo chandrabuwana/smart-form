@@ -168,8 +168,8 @@
                                     <div class="col-2">
                                         <div class="input-group input-group-static my-4">
                                             <label for="progress" class="ms-0">Progress</label>
-                                            <input class="form-control" type="text" placeholder="Persentase Progress"
-                                                name="progress" required id="progress">
+                                            <input type="text" id="progress" name="progress" class="form-control"
+                                                oninput="this.value = this.value.replace(/[^0-9]/g, '');" />
                                         </div>
                                     </div>
                                 </div>
@@ -240,6 +240,15 @@
 @section('custom-js')
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
     <script type="text/javascript">
+        const inputField = document.getElementById('angkaInput');
+
+        if (inputField) {
+            inputField.addEventListener('input', function() {
+                // Mengganti karakter yang bukan angka dengan string kosong
+                this.value = this.value.replace(/[^0-9]/g, '');
+            });
+        }
+
         function dataTableDateFormater(value, row, index) {
             var monthNames = ["January", "February", "March", "April", "May", "June",
                 "July", "August", "September", "October", "November", "December"
@@ -257,6 +266,7 @@
         }
 
         function dataListUpdateProgressActionFormater(value, row, index) {
+            console.log(row)
             if (row.acceptance == 0) {
                 return `
                      <button onclick="RedirectViewPica(this)"><a class="like"  title="Like">
@@ -519,7 +529,8 @@
                     nodocpica: nodocpica,
                     idMaster: idMaster,
                     nikMaster: nikMaster,
-                    idSolution: idSolution
+                    idSolution: idSolution,
+                    last: false
                 };
                 if (parseInt(progress, 10) == parseInt(targetMaster, 10)) {
                     Swal.fire({
@@ -528,6 +539,7 @@
                         confirmButtonText: "Close Task",
                     }).then((result) => {
                         if (result.isConfirmed) {
+                            dataKirim.last = true;
                             updateProgress(dataKirim)
                         }
                     });
@@ -562,8 +574,15 @@
 
                             // Reset hidden inputs
                             $('#dataListHistoryProgress').bootstrapTable('refresh');
+                            $('#dataListUpdateProgress').bootstrapTable('refresh');
                             $('#ModalAddProgress').modal("hide");
                         })
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: response.message,
+                        });
                     }
                 },
                 error: function(xhr, ajaxOptions, thrownError) {

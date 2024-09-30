@@ -483,7 +483,6 @@
                         dic: $(`#dicID_${i}`).val(),
                         pic: $(`#picID_${i}`).val(),
                         dueDate: $(`#DueDate_${i}`).val(),
-
                     };
 
                     if (solution.note.trim() === '' ||
