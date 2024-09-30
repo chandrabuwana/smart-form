@@ -14,12 +14,12 @@ use Illuminate\Validation\Rule;
 class CateringController extends Controller {
     private const DB_SMARTFORM = "PICA_BETA";
     private const DB_HRD = "HRD";
-    private const TABLE_REQ_MAKAN_MOBILE = self::DB_SMARTFORM . ".dbo.SCT_GS_CT_RQST_MB";
-    private const TABLE_MASTER_MESS = self::DB_SMARTFORM . ".dbo.SCT_GS_MESS_MST";
-    private const TABLE_PENGHUNI_MESS = self::DB_SMARTFORM . ".dbo.SCT_GS_MESS_HUNI";
-    private const TABLE_SUBMIT_ORDER = self::DB_SMARTFORM . ".dbo.SCT_GS_CT_ORDER";
-    private const TABLE_SUBMIT_ORDER_DETAIL = self::DB_SMARTFORM . ".dbo.SCT_GS_CT_ORDER_DTL";
-    private const TABLE_REQUEST_MAKAN_MOBILE = self::DB_SMARTFORM . ".dbo.SCT_GS_CT_RQST_MB";
+    private const TABLE_REQ_MAKAN_MOBILE = "SCT_GS_CT_RQST_MB";
+    private const TABLE_MASTER_MESS = "SCT_GS_MESS_MST";
+    private const TABLE_PENGHUNI_MESS = "SCT_GS_MESS_HUNI";
+    private const TABLE_SUBMIT_ORDER = "SCT_GS_CT_ORDER";
+    private const TABLE_SUBMIT_ORDER_DETAIL = "SCT_GS_CT_ORDER_DTL";
+    private const TABLE_REQUEST_MAKAN_MOBILE = "SCT_GS_CT_RQST_MB";
     private const TABLE_ABSENSI_HRD = self::DB_HRD . ".dbo.TAbsensi";
     private const TABLE_KARYAWAN_HRD = self::DB_HRD . ".dbo.TKaryawan";
     private const TABLE_PENEGASAN_CUTI = self::DB_HRD . ".dbo.TPenegasanCuti";
