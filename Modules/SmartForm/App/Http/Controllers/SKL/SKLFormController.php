@@ -122,7 +122,7 @@ class SKLFormController extends Controller
                 'KodeST' => $request->inputSite,
                 'TglPelaksanaan' => $request->tglPelaksanaan,
                 'Shift' => $request->inputShift,
-                'Status' => 'Sedang Diajukan',
+                'Status' => 'Dalam Review',
                 'created_at' => $now,
                 'created_by' => $userid,
             ]);
@@ -150,6 +150,15 @@ class SKLFormController extends Controller
                     'Detail' => $detailPekerjaan
                 ]);
             }
+
+            // atasan langsung
+            DB::table(self::T_FORM_APPROVER)->insert([
+                'NoForm' => $NoForm,
+                'NIK' => session('user_id'),
+                'Subject' => 'Dibuat Oleh',
+                'Jabatan' => 'Atasan Langsung',
+                'Status' => 'Approved'
+            ]);
 
             foreach($request->inputAtasan as $key => $nikAtasan) {
                 $subjectAtasan = $requestAll['subjectAtasan'][$key];

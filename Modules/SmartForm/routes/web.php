@@ -180,6 +180,8 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
         Route::get('/get-karyawan', [SKLFormController::class, 'getKaryawan'])->name('bss-skl.get-karyawan');
         Route::get('/get-kategori-pekerjaan', [SKLFormController::class, 'getKategoriPekerjaan'])->name('bss-skl.get-kategori-pekerjaan');
         Route::get('/get-approver', [SKLFormController::class, 'getApprover'])->name('bss-skl.get-approver');
+        Route::get('/detail', [DashboardSKLController::class, 'detail'])->name('bss-skl.detail');
+        Route::post('/approval', [DashboardSKLController::class, 'storeApproval'])->name('bss-skl.store-approval');
     });
 
     Route::prefix('approval')->group(function () {

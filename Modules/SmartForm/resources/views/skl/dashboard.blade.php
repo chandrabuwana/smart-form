@@ -191,14 +191,13 @@
         })
 
         function actionFormatter(value, row, index) {
-            return '<a href="/bss-form/timesheet/detail?id=' + row.id + '"><button class="btn btn-primary btn-action text-white">detail</button></a>';
+            const url = `{{ route('bss-skl.detail') }}`;
+            return '<a href="' + url + '?NoForm=' + row.NoForm + '"><button class="btn btn-primary btn-action text-white">detail</button></a>';
         }
 
         function statusFormatter(value, row, index) {
-            var formatData = '<span class="text-info fw-bold">Dalam Review (1/3)</span>'
-            if(value == 'Sedang Diajukan') {
-                formatData = '<span class="text-info fw-bold">Sedang Diajukan</span>'
-            } else if(value == 'Dalam Review') {
+            var formatData = ''
+            if(value == 'Dalam Review') {
                 formatData = `<span class="text-warning fw-bold">Dalam Review (${row.ApprovalProgress})</span>`
             } else if(value == 'Approved') {
                 formatData = '<span class="text-success fw-bold">Approved</span>'

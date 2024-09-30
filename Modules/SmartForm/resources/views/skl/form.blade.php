@@ -142,7 +142,8 @@
                                     <label class="ms-0 fs-6">Tanggal Pelaksanaan</label>
                                 </div>
                                 <div class="col-md-8">
-                                    <input type="date" class="input-text w-full" id="inputTanggal" name="tglPelaksanaan" class="tanggalPelaksanaan" required>
+                                    <input type="date" class="input-text w-full" id="inputTanggal" name="tglPelaksanaan"
+                                        class="tanggalPelaksanaan" min="{{ date('Y-m-d') }}" required>
                                 </div>
                             </div>
 
