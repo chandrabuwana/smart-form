@@ -83,12 +83,14 @@
                             </div>
                         </div>
                         <div class="col-6 col-md-3">
-                            <div class="input-group input-group-static mb-4 position-relative">
-                                <label for="filterNama">NIK</label>
-                                <input type="text" class="form-control" name="filterNama" id="filterNama" placeholder="Cari Nama / NIK">
-                                </input>
-                                <div class="suggestion" id="suggest-nik" style="display: none">
-                                </div>
+                            <div class="input-group input-group-static mb-4">
+                                <label for="filterDepartement">Departement</label>
+                                <select class="form-control form-select" name="filterDepartement" id="filterDepartement">
+                                    <option value="">-- Filter Departement --</option>
+                                    @foreach($departements as $item)
+                                        <option value="{{ $item->KodeDP }}">{{ $item->NamaDepartement }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                         <div class="col-6 col-md-3">
@@ -96,9 +98,9 @@
                                 <label for="filterStatus">Status</label>
                                 <select class="form-control form-select" name="filterStatus" id="filterStatus" required>
                                     <option value="" selected>-- Filter Status --</option>
-                                    <option value="1">Need Approval</option>
-                                    <option value="2">Approved</option>
-                                    <option value="0">Rejected</option>
+                                    <option value="Dalam Review">Dalam Review</option>
+                                    <option value="Approved">Approved</option>
+                                    <option value="Rejected">Rejected</option>
                                 </select>
                             </div>
                         </div>
@@ -167,23 +169,33 @@
         var btnClearFilter = document.getElementById("btnClearFilter")
         var filterTanggal = document.getElementById("filterTanggal")
         var filterSite = document.getElementById("filterSite")
-        var filterNama = document.getElementById("filterNama")
+        var filterDepartement = document.getElementById("filterDepartement")
         var filterStatus = document.getElementById("filterStatus")
         var additonalQuery = {
             tanggal: null,
             site: null,
-            nama: null,
+            departement: null,
             status: null
         }
 
         btnClearFilter.addEventListener("click", function(e) {
+            additonalQuery.departement = null;
+            additonalQuery.site = null;
+            additonalQuery.status = null;
+            additonalQuery.tanggal = null;
 
+            filterDepartement.value = '';
+            filterSite.value = '';
+            filterStatus.value = '';
+            filterTanggal.value = '';
+
+            $table.bootstrapTable('refresh')
         })
         btnFilterSubmit.addEventListener("click", function(e) {
             var searchQuery = {
-                tanggal: filterTanggal.value == '' ? null : filterTanggal.value,
+                tanggal: filterTanggal.value == '' ? null : c.value,
                 site: filterSite.value == '' ? null : filterSite.value,
-                nama: filterNama.value == '' ? null : filterNama.value,
+                departement: filterDepartement.value == '' ? null : filterDepartement.value,
                 status: filterStatus.value == '' ? null : filterStatus.value,
             }
             additonalQuery = searchQuery;
@@ -201,6 +213,8 @@
                 formatData = `<span class="text-warning fw-bold">Dalam Review (${row.ApprovalProgress})</span>`
             } else if(value == 'Approved') {
                 formatData = '<span class="text-success fw-bold">Approved</span>'
+            } else if(value == 'Rejected') {
+                formatData = '<span class="text-danger fw-bold">Rejected</span>'
             }
 
             return formatData;
