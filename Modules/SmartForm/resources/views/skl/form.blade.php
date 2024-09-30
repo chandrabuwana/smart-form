@@ -62,7 +62,18 @@
 
     <div class="row">
         <div class="col-12">
-            <div class="card my-4">
+            <form class="card my-4" method="POST" action="{{ route('bss-skl.store') }}" id="form-skl">
+                @csrf
+
+                <input type="hidden" name="noDok" value="BSS-FRM-ICGS-034">
+                <input type="hidden" name="revisi" value="001">
+
+                <div class="d-none" id="form-karyawan">
+                </div>
+
+                <div class="d-none" id="form-pekerjaan">
+                </div>
+
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                     <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
                         <h6 class="text-white text-capitalize ps-3">
@@ -131,7 +142,8 @@
                                     <label class="ms-0 fs-6">Tanggal Pelaksanaan</label>
                                 </div>
                                 <div class="col-md-8">
-                                    <input type="date" class="input-text w-full" id="inputTanggal">
+                                    <input type="date" class="input-text w-full" id="inputTanggal" name="tglPelaksanaan"
+                                        class="tanggalPelaksanaan" min="{{ date('Y-m-d') }}" required>
                                 </div>
                             </div>
 
@@ -140,7 +152,7 @@
                                     <label class="ms-0 fs-6">Shift</label>
                                 </div>
                                 <div class="col-md-8">
-                                    <select class="form-select input-text" aria-label="Default select example" id="inputShift" name="inputShift">
+                                    <select class="form-select input-text" aria-label="Default select example" id="inputShift" name="inputShift" required>
                                         <option value="">-- Pilih Shift --</option>
                                         <option value="DS">DS</option>
                                         <option value="NS">NS</option>
@@ -265,27 +277,21 @@
                                         {{ session('username') }}
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td>
-                                        Diketahui Oleh
-                                    </td>
-                                    <td>
-                                        Kabag. Departemen
-                                    </td>
-                                    <td>
-                                        <select class="form-select input-text" aria-label="Pilih Atasan" id="inputSite" name="inputSite">
-                                            <option value="">-- Pilih Atasan --</option>
-                                            <option value="Randika">Randika</option>
-                                            <option value="Abdul">Abdul</option>
-                                        </select>
-                                    </td>
-                                </tr>
                                 <tr></tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
-            </div>
+
+                <div class="card-footer">
+                    <div class="d-flex align-items-center">
+                        <button class="btn btn-primary ms-auto uploadBtn" id="btnSubmitForm">
+                            <i class="fas fa-save"></i>
+                            Submit Form
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -403,6 +409,17 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
+    @if(session('err'))
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops!',
+                html: `{{ session('err') }}`,
+                confirmButtonText: 'OK'
+            });
+        </script>
+    @endif
+
     <script>
         const karyawans = [];
         const pekerjaans = [];
@@ -510,7 +527,7 @@
                 });
 
                 $.ajax({
-                    url: `{{ route('bss-skl.get-karyawan') }}?${query}`,
+                    url: `{{ route('bss-skl.get-approver') }}?${query}`,
                     method: 'GET',
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     dataType: 'json',
@@ -523,18 +540,36 @@
                         });
                     },
                     success: function(response) {
-                        optionKaryawan = response;
-                        let options = `<option value="">-- Pilih Karyawan --</option>`;
+                        let tbody = '<tr>' + $('#table-approver tbody tr:nth-child(1)').html() + '</tr>';
 
                         response.forEach( (item) => {
-                            options += `<option value="${item.id}">${item.text}</option>`;
+                            let optionAtasan = '';
+
+                            item.option_atasan.forEach( (option) => {
+                                optionAtasan += `<option value="${option.Nik}">${option.Nama}</option>`;
+                            });
+
+                            tbody += `
+                                <tr>
+                                    <td>
+                                        <input type="hidden" name="subjectAtasan[]" value="${item.subject}">
+                                        ${item.subject}
+                                    </td>
+                                    <td>
+                                        <input type="hidden" name="jabatanAtasan[]" value="${item.jabatan}">
+                                        ${item.jabatan}
+                                    </td>
+                                    <td>
+                                        <select class="form-select input-text" aria-label="Pilih Atasan" id="inputAtasan" name="inputAtasan[]" required>
+                                            <option value="">-- Pilih Atasan --</option>
+                                            ${optionAtasan}
+                                        </select>
+                                    </td>
+                                </tr>
+                            `;
                         });
 
-                        $('#inputKaryawan').html(options);
-                        $('#inputKaryawan').select2({
-                            width: '100%',
-                            dropdownParent: $('#modalTambahKaryawan')
-                        });
+                        $('#table-approver tbody').html(`${tbody}<tr></tr>`);
                     }
                 });
             }
@@ -628,7 +663,6 @@
 
                 const selectedOption = optionKategoriPekerjaan.filter( (item) => item.id == payload.inputPekerjaan);
                 if(selectedOption.length == 0) {
-                    console.log('INI RANNN', optionKategoriPekerjaan);
                     Swal.fire({
                         icon: 'error',
                         title: 'Oops!',
@@ -642,6 +676,30 @@
                 pekerjaans.push(payload);
                 mountTablePekerjaan();
                 $('#modalTambahPekerjaan').modal('hide');
+            });
+
+            $('#form-skl').submit( function(e) {
+                if(karyawans.length == 0) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops!',
+                        html: 'Harap input karyawan terlebih dahulu',
+                        confirmButtonText: 'OK'
+                    });
+                    e.preventDefault();
+                    return;
+                }
+
+                if(pekerjaans.length == 0) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops!',
+                        html: 'Harap input detail pekerjaan terlebih dahulu',
+                        confirmButtonText: 'OK'
+                    });
+                    e.preventDefault();
+                    return;
+                }
             });
         });
 
@@ -679,8 +737,15 @@
         }
 
         function mountTableKaryawan() {
+            let inputHiddenKaryawan = '';
+
             let tbody = '';
             karyawans.forEach( (item, index) => {
+                inputHiddenKaryawan += `<input type="hidden" name="nikKaryawan[]" value="${item.inputKaryawan}">`;
+                inputHiddenKaryawan += `<input type="hidden" name="jamMulai[]" value="${item.jamMulai}">`;
+                inputHiddenKaryawan += `<input type="hidden" name="jamSelesai[]" value="${item.jamSelesai}">`;
+                inputHiddenKaryawan += `<input type="hidden" name="totalJam[]" value="${item.totalJam}">`;
+
                 tbody += `
                     <tr>
                         <td>
@@ -713,6 +778,8 @@
                 `;
             });
 
+            $('#form-karyawan').html(inputHiddenKaryawan);
+
             tbody += '<tr></tr>';
             $('#table-karyawan tbody').html(tbody);
         }
@@ -723,8 +790,13 @@
         }
 
         function mountTablePekerjaan() {
+            let inputHiddenPekerjaan = '';
             let tbody = '';
+
             pekerjaans.forEach( (item, index) => {
+                inputHiddenPekerjaan += `<input type="hidden" name="kategoriPekerjaan[]" value="${item.inputPekerjaan}">`;
+                inputHiddenPekerjaan += `<input type="hidden" name="detailPekerjaan[]" value="${item.detailPekerjaan}">`;
+
                 tbody += `
                     <tr>
                         <td>
@@ -744,6 +816,8 @@
                     </tr>
                 `;
             });
+
+            $('#form-pekerjaan').html(inputHiddenPekerjaan);
 
             tbody += '<tr></tr>';
             $('#table-pekerjaan tbody').html(tbody);

@@ -126,7 +126,7 @@
                                     <th data-field="NamaDepartement" data-align="center" data-halign="center" >
                                         Departement
                                     </th>
-                                    <th data-field="NamaSite" data-align="center" data-halign="center" >
+                                    <th data-field="KodeST" data-align="center" data-halign="center" >
                                         Site
                                     </th>
                                     <th data-field="TglPelaksanaan" data-align="left" data-halign="center">
@@ -134,12 +134,6 @@
                                     </th>
                                     <th data-field="Shift" data-align="left" data-halign="center">
                                         Shift
-                                    </th>
-                                    <th data-field="TotalKaryawan" data-align="center">
-                                        Total Karyawan
-                                    </th>
-                                    <th data-field="TotalPekerjaan" data-align="center">
-                                        Total Pekerjaan
                                     </th>
                                     <th data-field="Status" data-align="center"
                                         data-halign="center" data-sortable="true" data-formatter="statusFormatter">
@@ -195,98 +189,18 @@
             additonalQuery = searchQuery;
             $table.bootstrapTable('refresh')
         })
-        // suggestNik.addEventListener("click", function(e) {
-        //     e.target.style.display="none";
-        // })
-        // function searchKaryawan(nama) {
-        //     axios.get('/bss-form/timesheet/search-karyawan?search='+nama, {
-        //             headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
-        //         })
-        //         .then(function(response) {
-        //             // console.log(response.data)
-        //             suggestNik.style.display="inline"
-        //             var elementSuggestedKaryawan = [];
-        //             if(!response.data.isError) {
-        //                 if(response.data.data.length < 1) {
-        //                     elementSuggestedKaryawan.push('<div class="suggestion-child" onclick="clickResultCariKaryawan(this)">Not Found<i class="fa-solid fa-xmark"></i></div>')
-        //                 } else {
-        //                     for (const key in response.data.data) {
-        //                         if (Object.hasOwnProperty.call(response.data.data, key)) {
-        //                             const element = response.data.data[key];
-        //                             // console.log(element)
-        //                             elementSuggestedKaryawan.push('<div onclick="clickResultCariKaryawan(this)" data-nama="'+ element.Nama +'" data-nik="' + element.NIK +'" class="suggestion-child">'+element.NIK +' '+ element.Nama +'</div>')
-        //                         }
-        //                     }
-        //                 }
-
-        //                 suggestNik.innerHTML = elementSuggestedKaryawan.join("")
-        //             }
-        //         })
-        //         .catch(function(err) {
-        //             console.log(err)
-        //         })
-
-        // }
-
-        // function debounce (func, wait){
-        //     let timeout;
-
-        //     return function executedFunction(...args) {
-        //         var later = () => {
-        //             clearTimeout(timeout);
-        //             func(...args);
-        //         };
-
-        //         clearTimeout(timeout);
-        //         timeout = setTimeout(later, wait);
-        //     };
-        // };
-
-        // function clickResultCariKaryawan(event) {
-        //     var nikKaryawan = event.getAttribute("data-nik");
-        //     var namaKaryawan = event.getAttribute("data-nama");
-        //     if(nikKaryawan != null && namaKaryawan != null) filterNama.value = nikKaryawan;
-
-        //     suggestNik.style.display = "none";
-
-        //     // console.log(nikKaryawan)
-        // }
-
-        // function cariKaryawan(event) {
-        //     var value = event.target.value
-        //     // console.log(value);
-        //     searchKaryawan(value)
-        // }
-        // const debounceHandler = debounce(cariKaryawan, 1000);
-
-        // filterNama.addEventListener("focusin", function(e) {
-        //     filterNama.addEventListener("input", debounceHandler, true)
-        // })
-        // filterNama.addEventListener("focusout", function(e) {
-        //     filterNama.removeEventListener("input", debounceHandler, true)
-        //     // suggestNik.style.display = "none";
-        // })
-
-        // function suggestionClick(e) {
-        //     var nik = e.getAttribute("data-nik");
-        //     console.log(nik)
-        // }
 
         function actionFormatter(value, row, index) {
-            return '<a href="/bss-form/timesheet/detail?id=' + row.id + '"><button class="btn btn-primary btn-action text-white">detail</button></a>';
+            const url = `{{ route('bss-skl.detail') }}`;
+            return '<a href="' + url + '?NoForm=' + row.NoForm + '"><button class="btn btn-primary btn-action text-white">detail</button></a>';
         }
 
         function statusFormatter(value, row, index) {
-            var formatData = '<button class="btn btn-info text-white">status</button>'
-            // console.log(value)
-            if(value == null || value == 1) {
-                formatData = '<button class="btn btn-warning text-white">Need Aprroval</button>'
-            }
-            if(value == 2) {
-                formatData = '<button class="btn btn-success text-white">Approved</button>'
-            }
-            if(value == 0) {
-                formatData = '<button class="btn btn-danger text-white">Rejected</button>'
+            var formatData = ''
+            if(value == 'Dalam Review') {
+                formatData = `<span class="text-warning fw-bold">Dalam Review (${row.ApprovalProgress})</span>`
+            } else if(value == 'Approved') {
+                formatData = '<span class="text-success fw-bold">Approved</span>'
             }
 
             return formatData;
@@ -296,8 +210,8 @@
         function fetchFormsData(params) {
             params.data = {...params.data, ...additonalQuery}
             var url = `{{ route('bss-skl.dashboard-get-data') }}`
-            // console.log(params.data)
             $.get(url + '?' + $.param(params.data)).then(function(res) {
+                console.log(res);
                 params.success(res.data)
             })
         }
