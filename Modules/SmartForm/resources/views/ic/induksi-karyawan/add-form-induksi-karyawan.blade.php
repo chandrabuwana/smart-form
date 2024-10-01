@@ -425,7 +425,7 @@
             dropdownParent: $('#pc_site').closest('.input-group'),
             placeholder: '--- Cari Site ---',
             ajax: {
-                url: "/helper/department",
+                url: "/helper/site",
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },

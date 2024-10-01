@@ -61,66 +61,21 @@
             <div class="card my-4">
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                     <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                        <h6 class="text-white text-capitalize ps-3">Dashboard Pemesanan Catering</h6>
+                        <h6 class="text-white text-capitalize ps-3">Detail Pemesanan Catering</h6>
                     </div>
                 </div>
                 <div class="card-body px-0 pb-2">
-                    <div class="d-flex align-items-center">
-                        <a href="">
-                            <button class="btn btn-primary ms-auto uploadBtn" id="coba">
-                                New Form
-                            </button>
-                        </a>
-                    </div>
-                    <h4 class="mx-3">Filter Data</h4>
-                    <div class="mx-4 row">
-                        <div class="col-6 col-md-3">
-                            <div class="input-group input-group-static mb-4">
-                                <label for="filterTanggal">Tanggal</label>
-                                <input type="date" class="form-control" name="filterTanggal" id="filterTanggal">
-                                </input>
-                            </div>
-                        </div>
-                        <div class="col-6 col-md-3">
-                            <div class="input-group input-group-static mb-4">
-                                <label for="filterSite">Site</label>
-                                <select class="form-control form-select" name="filterSite" id="filterSite" style="width: 100%;">
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-6 col-md-3">
-                            <div class="input-group input-group-static mb-4 position-relative">
-                                <label for="filterNama">Selected</label>
-                                <select class="form-control form-select" name="filterSelected" id="filterSelected" required>
-                                    <option value="" selected>-- Filter Jenis Pemesanan --</option>
-                                    <option value="system">By System</option>
-                                    <option value="request">By Request</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-6 col-md-3">
-                            <div class="input-group input-group-static mb-4">
-                                <label for="filterJenis">Waktu</label>
-                                <select class="form-control form-select" name="filterJenis" id="filterJenis" required>
-                                    <option value="" selected>-- Filter Waktu --</option>
-                                    <option value="pagi">Pagi</option>
-                                    <option value="siang">Siang</option>
-                                    <option value="malam">Malam</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div>
-                            <button class="btn btn-primary ms-auto filter-btn" id="btnFilterSubmit">
-                                Filter
-                            </button>
-                            <button class="btn btn-primary ms-auto filter-btn" id="btnClearFilter">
-                                Clear Filter
-                            </button>
-                        </div>
+                    <div class="mx-4">
+                        <h6>Tanggal : {{ $data['master']->tanggal ?? ""}}</h6>
+                        <h6>Adjustment : {{ $data['master']->adjustment ?? 0}}</h6>
+                        <h6>Selected : {{ $data['master']->selected ?? ""}}</h6>
+                        <h6>Jumlah Adjustment : {{ $data['master']->adjustment ?? 0}}</h6>
+                        
+                        <h4>Detail per Vendor</h4>
                     </div>
                     <div class="table-responsive p-0">
-                        <table id="list-form" data-toggle="table" data-ajax="fetchFormsData"
-                            data-side-pagination="server" data-filter-control="true"
+                        <table id="list-form" data-toggle="table"
+                            data-side-pagination="client" data-filter-control="true"
                             data-page-list="[10, 25, 50, 100, all]" data-sortable="true"
                             data-content-type="application/json" data-data-type="json" data-pagination="true"
                             data-unique-id="kode_pemesanan" data-show-export="true" data-show-toggle="true">
@@ -130,11 +85,53 @@
                                         data-sortable="true">Kode Pemesanan
                                     </th>
                                     <th data-field="site" data-align="center" data-halign="center" >Site</th>
-                                    <th data-field="selected" data-align="center" data-halign="center" >Selected</th>
-                                    <th data-field="jenis_pemesanan" data-align="left" data-halign="center">Jenis Pemesanan</th>
-                                    <th data-align="left" data-formatter="actionFormatter" data-halign="center">Action</th>
+                                    <th data-field="nama" data-align="left" data-halign="center" >Vendor</th>
+                                    <th data-field="jumlah" data-align="center" data-halign="center">Jumlah</th>
+                                    <th data-field="status" data-align="center" data-halign="center">Status Pemesanan</th>
                                 </tr>
                             </thead>
+                            <tbody>
+                                @foreach ($data['detail'] as $detail)
+                                    <tr>
+                                        <td>{{ $detail->kode_pemesanan }}</td>
+                                        <td>{{ $detail->KodeSite }}</td>
+                                        <td>{{ $detail->Nama }}</td>
+                                        <td>{{ $detail->Jumlah }}</td>
+                                        <td>{{ $detail->status }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="mx-4">
+                        <h4>Detail per lokasi</h4>
+                    </div>
+                        <table id="list-form" data-toggle="table"
+                            data-side-pagination="client" data-filter-control="true"
+                            data-page-list="[10, 25, 50, 100, all]" data-sortable="true"
+                            data-content-type="application/json" data-data-type="json" data-pagination="true"
+                            data-unique-id="kode_pemesanan" data-show-export="true" data-show-toggle="true">
+                            <thead>
+                                <tr>
+                                    <th data-field="kode_pemesanan" data-align="left" data-halign="text-center"
+                                        data-sortable="true">Kode Pemesanan
+                                    </th>
+                                    <th data-field="site" data-align="left" data-halign="center">Lokasi</th>
+                                    <th data-field="nama" data-align="left" data-halign="center">Vendor</th>
+                                    <th data-field="jumlah" data-align="center" data-halign="center">Jumlah</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($data['detail_lokasi'] as $detail_lokasi)
+                                    <tr>
+                                        <td>{{ $detail_lokasi->kode_pemesanan }}</td>
+                                        <td>{{ $detail_lokasi->NamaMess }}</td>
+                                        <td>{{ $detail_lokasi->nama_vendor }}</td>
+                                        <td>{{ $detail_lokasi->jumlah }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -150,44 +147,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.23.2/dist/extensions/export/bootstrap-table-export.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
-        var baseUrl = "/bss-form/catering"
-        var $table = $("#list-form")
-        var btnFilterSubmit = document.getElementById("btnFilterSubmit")
-        var btnClearFilter = document.getElementById("btnClearFilter")
-        var additonalQuery = {
-            tanggal: null,
-            site: null,
-            selected: null,
-            jenis: null
-        }
-        var filterTanggal = document.getElementById("filterTanggal")
-        var filterSite = document.getElementById("filterSite")
-        var filterSelected = document.getElementById("filterSelected")
-        var filterJenis = document.getElementById("filterJenis")
-        $('#filterSite').select2({
-            theme: 'bootstrap-5', // Menggunakan tema Bootstrap 5
-            dropdownParent: $('#filterSite').closest('.input-group'),
-            placeholder: '--- Cari Site ---'
-        });
-        
-        btnClearFilter.addEventListener("click", function(e) {
-            document.getElementById("filterTanggal").value = ""
-            document.getElementById("filterSite").value = ""
-            document.getElementById("filterSelected").value = ""
-            document.getElementById("filterJenis").value = ""
-        })
-
-        btnFilterSubmit.addEventListener("click", function(e) {
-            var searchQuery = {
-                tanggal: filterTanggal.value == '' ? null : filterTanggal.value,
-                site: filterSite.value == '' ? null : filterSite.value,
-                selected: filterSelected.value == '' ? null : filterSelected.value,
-                jenis: filterJenis.value == '' ? null : filterJenis.value,
-            }
-            additonalQuery = searchQuery;
-            $table.bootstrapTable('refresh')
-        })
-        
+        console.log({{ Illuminate\Support\Js::from($data) }})
         function fetchFormsData(params) {
             params.data = {...params.data, ...additonalQuery}
             var url = '/bss-form/catering/list-pemesanan'
@@ -209,10 +169,9 @@
             // var _clickEventDelete = 'onclick="actionDelete(this'  + _id +')"'
             var _clickEvent = 'onclick="modalDetail(this' + _id + ')"'
             var _clickEventDelete = 'onclick="actionDelete(this)"'
-            var _link_detail = baseUrl + '/detail-pemesanan?id=' + row.kode_pemesanan
 
-            var btnDetail = '<a href="' + _link_detail + '" '+ _clickEvent +' data-action="detail" style="color: black;margin: 0px 4px;"><i class="fa fa-info-circle cursor-pointer"></i></a>';
-            var btnHapus = '<a href="" '+ _clickEventDelete +' data-caption="" data-action="delete" style="color: red;margin: 0px 4px;"><i class="fa-solid fa-trash-can cursor-pointer"></i></a>';
+            var btnDetail = '<a href="#" '+ _clickEvent +' data-action="detail" style="color: black;margin: 0px 4px;"><i class="fa fa-info-circle cursor-pointer"></i></a>';
+            var btnHapus = '<a href="#" '+ _clickEventDelete +' data-caption="" data-action="delete" style="color: red;margin: 0px 4px;"><i class="fa-solid fa-trash-can cursor-pointer"></i></a>';
             
             return btnDetail
         }

@@ -19,6 +19,11 @@ class FetchMenu {
      */
     public function handle(Request $request, Closure $next): Response
     {
+        $data_notification = DB::table('pica_notification')
+            ->select('id as nomor', 'nik', 'message', 'created_at', 'category')
+            ->orderBy('id', 'desc')
+            ->where('nik', $request->session()->get('user_id'))
+            ->get();
         $data = DB::table('MasterMenu')
             ->select('id', 'nama', 'link', 'parent', 'urutan as order', 'role as roles', 'type', 'permission_module_id')
             ->where('status', 1)
@@ -64,6 +69,7 @@ class FetchMenu {
         }
 
         View::share('menu', $data_menu);
+        View::share('pica_notification', $data_notification);
         View::share('userIdToken', User::getUserIdToken());
 
         return $next($request);

@@ -80,6 +80,7 @@ class ICFM05TransactionController extends Controller
             FROM FM_IC_005_BSS_DETAIL_INDUKSI where group_code = ?
             GROUP BY group_code ;", [$d->code]);
 
+
             $dataNotExist = explode(", ", collect($listDataNotExist)->first()->missing_categories);
 
             DB::table('FM_IC_005_BSS_DETAIL_PERTANYAAN_EXT')
@@ -255,6 +256,33 @@ class ICFM05TransactionController extends Controller
         } else {
             // Jika input tidak valid, Anda bisa mengembalikan false atau memicu error
             throw new Exception('Input tidak valid');
+        }
+    }
+
+
+    function DeletedInduksiKaryawan(Request $d)
+    {
+        DB::beginTransaction();
+        try {
+
+            DB::table("FM_IC_005_BSS_LST_KRYWN")->where("code", $d->code)->delete();
+            DB::table("FM_IC_005_BSS_DETAIL_PERTANYAAN_EXT")->where("group_code", $d->code)->delete();
+            DB::table("FM_IC_005_BSS_DETAIL_INDUKSI")->where("group_code", $d->code)->delete();
+            DB::table("FM_IC_005_BSS_LST_GRP")->where("code", $d->code)->delete();
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Done Data Terhapus',
+                'code' => 200
+            ]);
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Failed to Deleted records: ',
+                'code' => 500
+            ]);
         }
     }
 }

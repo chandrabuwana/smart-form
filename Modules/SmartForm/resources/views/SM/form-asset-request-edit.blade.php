@@ -89,16 +89,34 @@
                                         <div class="input-group input-group-static mb-4">
                                             <label for="inputDepartment">Department</label>
                                             <select class="form-control form-select-sm" name="inputDepartment" id="inputDepartment" required>
-                                                <option value="">Pilih Department</option>
-                                                <option value="Engineering">Engineering</option>
+                                                @foreach ($list_dept as $key => $item)
+                                                    <option value="{{$key}}">{{ $item }}</option>
+                                                @endforeach
+                                                {{-- <option selected value="">-- Pilih Department --</option>
+                                                <option value="ENG">ENGINEERING</option>
                                                 <option value="SHE">SHE</option>
-                                                <option value="Produksi">Produksi</option>
+                                                <option value="PRD">PRODUKSI</option>
                                                 <option value="SM">SM</option>
-                                                <option value="GS">GS</option>
-                                                <option value="OD">OD</option>
-                                                <option value="IT">IT</option>
                                                 <option value="IC">IC</option>
-                                                <option value="PLANT">PLANT</option>
+                                                <option value="GS">GS</option>
+                                                <option value="RM">PLANT</option>
+                                                <option value="BDV">BUSDEV</option>
+                                                <option value="FIN">FINANCE</option>
+                                                <option value="ATA">Accounting & Tax</option>
+                                                <option value="DTC">DATA CENTER</option>
+                                                <option value="MM">LOGISTIK</option>
+                                                <option value="OPR">OPERATION</option>
+                                                <option value="LEG">LEGAL</option>
+                                                <option value="OD">ORGANIZATION DEVELOPMENT</option>
+                                                <option value="CIVIL">CIVIL</option> --}}
+                                                {{-- <option value="IT">IT</option> --}}
+                                                {{-- <option value="DIR">DIRECTORS</option> --}}
+                                                {{-- <option value="SI">SINERGY INSTITUTE</option>
+                                                <option value="Z001">ASSESSMENT CENTER</option>
+                                                <option value="Z002">LABOR SUPPLY</option>
+                                                <option value="Z003">MANAGEMENT CONSULTANT</option>
+                                                <option value="Z004">SERTIFIKASI</option>
+                                                <option value="TC">TRAINING CENTER</option> --}}
                                             </select>
                                         </div>
                                         <div class="input-group input-group-static mb-4">
@@ -136,16 +154,34 @@
                                         <div class="input-group input-group-static mb-4">
                                             <label for="inputDepartmentAllocation">Department</label>
                                             <select class="form-control form-select-sm" name="inputDepartmentAllocation" id="inputDepartmentAllocation" required>
-                                                <option selected value="">Pilih Department</option>
-                                                <option value="Engineering">Engineering</option>
+                                                @foreach ($list_dept as $key => $item)
+                                                    <option value="{{$key}}">{{ $item }}</option>
+                                                @endforeach
+                                                {{-- <option selected value="">-- Pilih Department --</option>
+                                                <option value="ENG">ENGINEERING</option>
                                                 <option value="SHE">SHE</option>
-                                                <option value="Produksi">Produksi</option>
+                                                <option value="PRD">PRODUKSI</option>
                                                 <option value="SM">SM</option>
-                                                <option value="GS">GS</option>
-                                                <option value="OD">OD</option>
-                                                <option value="IT">IT</option>
                                                 <option value="IC">IC</option>
-                                                <option value="PLANT">PLANT</option>
+                                                <option value="GS">GS</option>
+                                                <option value="RM">PLANT</option>
+                                                <option value="BDV">BUSDEV</option>
+                                                <option value="FIN">FINANCE</option>
+                                                <option value="ATA">Accounting & Tax</option>
+                                                <option value="DTC">DATA CENTER</option>
+                                                <option value="MM">LOGISTIK</option>
+                                                <option value="OPR">OPERATION</option>
+                                                <option value="LEG">LEGAL</option>
+                                                <option value="OD">ORGANIZATION DEVELOPMENT</option>
+                                                <option value="CIVIL">CIVIL</option> --}}
+                                                {{-- <option value="IT">IT</option> --}}
+                                                {{-- <option value="DIR">DIRECTORS</option> --}}
+                                                {{-- <option value="SI">SINERGY INSTITUTE</option>
+                                                <option value="Z001">ASSESSMENT CENTER</option>
+                                                <option value="Z002">LABOR SUPPLY</option>
+                                                <option value="Z003">MANAGEMENT CONSULTANT</option>
+                                                <option value="Z004">SERTIFIKASI</option>
+                                                <option value="TC">TRAINING CENTER</option> --}}
                                             </select>
                                         </div>
                                         <div class="input-group input-group-static mb-4">
@@ -193,6 +229,7 @@
                                     <div class="input-group input-group-static mb-4">
                                         <label for="inputPendukungReason">Dokumen Pendukung</label>
                                         <input type="file" multiple class="form-control" id="inputPendukungReason" name="inputPendukungReason">
+                                        <span class="text-xs"><i>max file size: 2mb</i></span>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -495,6 +532,14 @@
             requestedBy: requestornik.text()
         }
 
+        function getTodayDate() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
         function indexFormatter(value, row, index) {
             return index + 1;
         }
@@ -605,6 +650,9 @@
                 inputProject.val({{ Illuminate\Support\Js::from( $data['project']) }})
                 inputDepartmentAllocation.val({{ Illuminate\Support\Js::from( $data['department_allocation']) }})
                 inputProjectAllocation.val({{ Illuminate\Support\Js::from( $data['project_allocation']) }})
+                estimatedReadyAtSite.val({{ Illuminate\Support\Js::from( $data['estimated_ready_at_site']) }})
+                reasonpurchase.val({{ Illuminate\Support\Js::from( $data['reason_purchase']) }})
+                refDoc.val({{ Illuminate\Support\Js::from( $data['ref_doc']) }})
 
                 dataAssetRequest.replacement = checkReplacement.checked
                 dataAssetRequest.additional = checkAdditional.checked
@@ -687,6 +735,12 @@
                         message: "harus dipilih"
                     })
                 }
+                if(checkNotBudgeted.checked && inputPendukungReason.files.length < 1) {
+                    errorValidate.push({
+                        field: "Dokumen Pendukung",
+                        message: "tidak boleh kosong jika Not Budgeted"
+                    })
+                }
                 if(inputDepartment.val() == ""){
                     errorValidate.push({
                         field: "Department Requestor",
@@ -721,6 +775,12 @@
                     errorValidate.push({
                         field: "Estimated ready",
                         message: "tidak boleh kosong"
+                    })
+                }
+                if(estimatedReadyAtSite.val() < getTodayDate()){
+                    errorValidate.push({
+                        field: "Estimated ready at site",
+                        message: "tidak boleh back date"
                     })
                 }
                 if($table.bootstrapTable('getData').length < 1) {

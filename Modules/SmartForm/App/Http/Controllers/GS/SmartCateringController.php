@@ -2,6 +2,7 @@
 
 namespace Modules\SmartForm\App\Http\Controllers\GS;
 
+use App\Helper;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Exception;
@@ -18,15 +19,23 @@ enum Shift: string {
 }
 
 class SmartCateringController extends Controller {
-    private const TABLE_REQ_MAKAN_MOBILE = "PICA_BETA.dbo.SCT_GS_CT_RQST_MB";
-    private const TABLE_MASTER_MESS = "PICA_BETA.dbo.SCT_GS_MESS_MST";
-    private const TABLE_PENGHUNI_MESS = "PICA_BETA.dbo.SCT_GS_MESS_HUNI";
-    private const TABLE_SUBMIT_ORDER = "PICA_BETA.dbo.SCT_GS_CT_ORDER";
-    private const TABLE_SUBMIT_ORDER_DETAIL = "PICA_BETA.dbo.SCT_GS_CT_ORDER_DTL";
-    private const TABLE_ABSENSI_HRD = "HRD.dbo.TAbsensi";
-    private const TABLE_KARYAWAN_HRD = "HRD.dbo.TKaryawan";
-    private const TABLE_PENEGASAN_CUTI = "HRD.dbo.TPenegasanCuti";
-    private const TABLE_PENGAJUAN_CUTI = "HRD.dbo.tpengajuancuti";
+    private const DB_SMARTFORM = "PICA_BETA";
+    private const DB_HRD = "HRD";
+    private const TABLE_REQ_MAKAN_MOBILE = "SCT_GS_CT_RQST_MB";
+    private const TABLE_MASTER_MESS = "SCT_GS_MESS_MST";
+    private const TABLE_PENGHUNI_MESS = "SCT_GS_MESS_HUNI";
+    private const TABLE_SUBMIT_ORDER = "SCT_GS_CT_ORDER";
+    private const TABLE_SUBMIT_ORDER_ADJUSTMENT_DTL = "SCT_GS_CT_ADJUSTMENT";
+    // private const TABLE_SUBMIT_ORDER_DETAIL = "SCT_GS_CT_ORDER_DTL";
+    private const TABLE_SUBMIT_ORDER_DETAIL = "SCT_GS_CT_ORDER_DETAIL";
+    private const TABLE_SUBMIT_ORDER_VENDOR = "SCT_GS_CT_ORDER_VNDR";
+    private const TABLE_VENDOR_MAPPING = "SCT_GS_VENDOR_MAPPING";
+    private const TABLE_VENDOR_ORDER = "SCT_GS_CT_ORDER_VNDR";
+    private const TABLE_VENDOR_MASTER = "SCT_GS_VENDOR_MST";
+    private const TABLE_ABSENSI_HRD = self::DB_HRD . ".dbo.TAbsensi";
+    private const TABLE_KARYAWAN_HRD = self::DB_HRD . ".dbo.TKaryawan";
+    private const TABLE_PENEGASAN_CUTI = self::DB_HRD . ".dbo.TPenegasanCuti";
+    private const TABLE_PENGAJUAN_CUTI = self::DB_HRD . ".dbo.tpengajuancuti";
     private const DB_CONN_NAME = 'sqlsrv';
 
     function AddPemesanan(Request $request) {
@@ -35,7 +44,7 @@ class SmartCateringController extends Controller {
 
     function GenerateDetailPemesanan(Request $request) {
         $reqTanggalPemesanan = $request->input('tanggalPemesanan');
-        $reqSite = $request->input('site');
+        $reqSite = $request->input('site') == "JKT" ? "JKT1" : $request->input('site');
         $reqJenisPemesanan = $request->input('jenisPemesanan');
         $errorMessage = [];
         $dataMess = [];
@@ -99,10 +108,13 @@ class SmartCateringController extends Controller {
                 } else {
                     $data_karyawan_absensi = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_ABSENSI_HRD . ' as ta')
                         ->select('ta.NIK', 'ta.Tanggal', 'ta.Masuk')
-                        ->where('KodeST', 'AGM')
+                        ->where('lmasuk', $reqSite)
                         ->whereDate('ta.Tanggal', Carbon::createFromFormat('Y-m-d', $reqTanggalPemesanan)->startOfDay()->format('Y-m-d H:i:s.u'))
                         ->whereBetween('ta.Masuk', [$jam_absensi[$selectedShift]['start'], $jam_absensi[$selectedShift]['end']])
-                        ->get()->toArray();
+                        ;
+                    Log::debug('SQL absensi karyawan : '. $data_karyawan_absensi->toRawSql());
+                    $data_karyawan_absensi = $data_karyawan_absensi->get()->toArray();
+                    Log::debug("Data absensi ". $reqSite . " : " .count($data_karyawan_absensi));
                 }
                     
                 $sql_karyawan_cuti = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_PENEGASAN_CUTI . ' as pc')
@@ -191,51 +203,6 @@ class SmartCateringController extends Controller {
         return response()->json($data);
     }
 
-    function GetListMess(Request $request) {
-        $kode_site = $request->query('kodeSite', '');
-        $data = [
-            'isError' => true,
-            'message' => '',
-            'errorMessage' => '',
-            'data' => null
-        ];
-
-        try {
-            $list_mess = $this->ListMess($kode_site);
-            if(count($list_mess) > 0) {
-                $data['isError'] = false;
-                $data['message'] = "Berhasil";
-                $data['data'] = $list_mess;
-            } else {
-                $data['errorMessage'] = 'Data Mess '. $kode_site . ' tidak ditemukan!';
-            }
-        } catch (Exception $ex) {
-            $data['errorMessage'] = 'Terjadi kesalahan, coba beberapa saat lagi!';
-        }
-
-        return response()->json($data);
-    }
-
-    private function ListMess(string $site): array {
-        $master_mess = [];
-
-        try {
-            $query_mess = DB::connection(self::DB_CONN_NAME)
-                ->table(self::TABLE_MASTER_MESS)
-                ->select('KodeSite', 'NamaMess')
-                ->where('KodeSite', $site);
-            
-                Log::debug("SQL : ". $query_mess->toRawSql());
-            $master_mess = $query_mess->get()->toArray();
-
-        } catch (Exception $ex) {
-            Log::error('ListMess : '. $ex->getMessage());
-            Log::error($ex->getTraceAsString());
-        }
-
-        return $master_mess;
-    }
-
     private function ListPesanMakanMess(string $jenis, $tanggal): array {
         $list_pesan_makan = [];
 
@@ -245,7 +212,7 @@ class SmartCateringController extends Controller {
                 ->select('Nama', 'NIK', 'lokasi', 'TanggalOrder', 'jenis')
                 ->where('jenis', $jenis)
                 ->whereDate('TanggalOrder', $tanggal);
-            Log::debug("SQL : ". $query_order_makan_mess->toRawSql());
+            Log::debug("SQL Pesan Makan: ". $query_order_makan_mess->toRawSql());
             $list_pesan_makan = $query_order_makan_mess->get()->toArray();
 
         } catch (Exception $ex) {
@@ -266,6 +233,7 @@ class SmartCateringController extends Controller {
             'message' => ''
         ];
         $nik_session = $request->session()->get('user_id', '');
+        $tgl = now();
 
         $validator = Validator::make($request->all(), [
             'jenisPemesanan' => ['required',  Rule::in(['pagi', 'siang', 'malam'])],
@@ -287,7 +255,17 @@ class SmartCateringController extends Controller {
             'selected.in' => 'Selected tidak sesuai',
         ]);
 
-        Log::info($validator->errors()->all());
+        // Log::info($request->input("listAdjustment", []));
+        // foreach ($request->input("listAdjustment", []) as $adjustmentPerson) {
+        //     $insertAdjustment = [
+        //         'KodeST' => $request->input("site"),
+        //         'kode_pemesanan' => "sf",
+        //         'nik' => $adjustmentPerson['nik'],
+        //         'nama' => $adjustmentPerson['nama'],
+        //         'keterangan' => $adjustmentPerson['keterangan']
+        //     ];
+        //     Log::info($insertAdjustment);
+        // }
         try {
             if(count($validator->errors()->all())) {
                 $errorMessage = $validator->errors()->all();
@@ -302,6 +280,8 @@ class SmartCateringController extends Controller {
                 $kode_pemesanan = Carbon::createFromFormat('Y-m-d', $tanggal)->startOfDay()->format('Ymd') . '/' .$site . '/' . $jenisPemesanan;
                 $selected_pemesanan = $request->input("selected");
                 $detail = $request->input("detail", []);
+                $summaryOrder = $request->input("summaryOrder", []);
+                $detailAdjustment = $request->input("listAdjustment", []);
 
                 $data_order_insert = [
                     'jenis_pemesanan' => $jenisPemesanan,
@@ -312,6 +292,7 @@ class SmartCateringController extends Controller {
                     'working' => $working,
                     'site' => $site,
                     'selected' => $selected_pemesanan,
+                    'created_at' => $tgl,
                     'created_by' => $nik_session,
                     'tanggal'  => $tanggal
                 ];
@@ -322,34 +303,118 @@ class SmartCateringController extends Controller {
                 DB::connection(self::DB_CONN_NAME)->beginTransaction();
                 $id_pemesanan = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_SUBMIT_ORDER)
                     ->insertGetId($data_order_insert);
+                $extractedLokasi = array_column($summaryOrder, 'lokasi');
+                // Log::info(json_encode(array_column($summaryOrder, 'lokasi')));
+                // Log::info("summary order: " . json_encode($summaryOrder, JSON_PRETTY_PRINT));
+                $vendorMapping = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_VENDOR_MAPPING)
+                    ->select(['id as id_mapping', 'VendorID', 'lokasi'])
+                    ->whereIn('lokasi', $extractedLokasi)
+                    ->where('KodeSite', $site)
+                    ->where('JenisPemesanan', $jenisPemesanan);
                 
-                for($i=0;$i<count($detail);$i++) {
-                    $detail[$i]['id_order'] = $kode_pemesanan;
-                }
-                $batchSize = 100; // Sesuaikan batch size sesuai dengan kebutuhan (misalnya 100 baris per batch)
-                $chunks = array_chunk($detail, $batchSize);
-                foreach ($chunks as $chunk) {
-                    DB::connection(self::DB_CONN_NAME)->table(self::TABLE_SUBMIT_ORDER_DETAIL)->insert($chunk);
-                }
-                // foreach($detail as $dtl_order_makan) {
-                //     $dtl_order_makan['id_order'] = $kode_pemesanan;
-                //     Log::info(json_encode($dtl_order_makan['nik']));
-                // }
-                // Log::info(json_encode($detail, JSON_PRETTY_PRINT));
+                Log::debug("SQL vendor mapping : " . $vendorMapping->toRawSql());
+                // Log::debug("SQL vendor mapping : ");
+                // Log::debug($vendorMapping->get());
+                $vendorMapping = $vendorMapping->get()->toArray();
+                $newSummaryOrder = [];
+                $summaryPerVendor = [];
+                foreach ($summaryOrder as $pesanan) {
+                    // Log::debug("pesanan : ".json_encode($pesanan));
+                    $lokasi_to_find = $pesanan['lokasi'];
+                    $result = array_filter($vendorMapping, function($item) use ($lokasi_to_find) {
+                        return $item->lokasi === $lokasi_to_find;
+                    });
 
-                // $dtl_pemesanan = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_SUBMIT_ORDER_DETAIL)
-                //     ->insert($detail);
+                    $result = reset($result);
+                    // Log::debug("result : ".json_encode($result));
+                    // $pesanan['id_mapping'] = !$result ? null : $result->id_mapping;
+                    $vendor_id = !$result ? null : $result->VendorID;
+                    $_temp_pesanan = [
+                        'id_order' => $kode_pemesanan,
+                        'id_mapping_vendor' => !$result ? null : $result->id_mapping,
+                        'lokasi' => $pesanan['lokasi'],
+                        'site' => $pesanan['site'],
+                        'jenis_pemesanan' => $pesanan['jenis'],
+                        'jumlah' => $pesanan['jumlah'],
+                        'created_at' => $tgl,
+                        'created_by' => $nik_session
+                    ];
+
+                    $insert_pesanan = $_temp_pesanan;
+                    $_temp_pesanan['VendorID'] = $vendor_id;
+
+                    DB::connection(self::DB_CONN_NAME)->table(self::TABLE_SUBMIT_ORDER_DETAIL)->insert($insert_pesanan);
+
+                    array_push($newSummaryOrder, $_temp_pesanan);
+                }
+
+                foreach($newSummaryOrder as $ordr) {
+                    // Log::info($summaryPerVendor);
+                    if(!array_key_exists($ordr['VendorID'], $summaryPerVendor)) {
+                        $summaryPerVendor[$ordr['VendorID']] = [
+                            'kode_pemesanan' => $kode_pemesanan,
+                            'jumlah' => $ordr['jumlah'],
+                            'TanggalOrder' => Carbon::createFromFormat('Y-m-d', $tanggal)->startOfDay()->format('Ymd'),
+                            'JenisPemesanan' => $ordr['jenis_pemesanan'],
+                            'KodeSite' => $ordr['site'],
+                            'created_by' => $nik_session,
+                            'created_at' => $tgl
+                        ];
+                    } else {
+                        $summaryPerVendor[$ordr['VendorID']]['jumlah'] = $summaryPerVendor[$ordr['VendorID']]['jumlah'] + $ordr['jumlah'];
+                    }
+                }
+
+                $summaryPerVendor_new = [];
+                foreach ($summaryPerVendor as $vendorID => $details) {
+                    // Tambahkan 'VendorID' ke array $details
+                    $details['VendorID'] = $vendorID;
+                    $details['status'] = 'Pesanan Baru';
+                    
+                    $summaryPerVendor_new[] = $details;
+                    DB::connection(self::DB_CONN_NAME)->table(self::TABLE_SUBMIT_ORDER_VENDOR)->insert($details);
+                }
+                
+                $vendor_id_list = array_filter(array_column($summaryPerVendor_new, 'VendorID'));
+                $sql_notification_vendor = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_VENDOR_MASTER)
+                    ->select('notification_token', 'id')
+                    ->whereIn('id', $vendor_id_list)
+                    ->whereNotNull('notification_token')
+                    ->get();
+
+                foreach ($sql_notification_vendor as $token_firebase_vendor) {
+                    $notification_body = 'Waktu Pemesanan : ' . $summaryPerVendor[$token_firebase_vendor->id]['TanggalOrder'] . ' ' .$summaryPerVendor[$token_firebase_vendor->id]['JenisPemesanan']. ', Jumlah : '. $summaryPerVendor[$token_firebase_vendor->id]['jumlah'];
+                    $notification_title = 'Pesanan Baru : ' . $summaryPerVendor[$token_firebase_vendor->id]['kode_pemesanan'];
+                    Helper::sendPushNotification($token_firebase_vendor->notification_token, $notification_title, $notification_body);
+                }
+
+                foreach ($detailAdjustment as $adjustmentPerson) {
+                    $insertAdjustment = [
+                        'KodeST' => $site,
+                        'kode_pemesanan' => $kode_pemesanan,
+                        'nik' => $adjustmentPerson['nik'],
+                        'nama' => $adjustmentPerson['nama'],
+                        'keterangan' => $adjustmentPerson['keterangan'],
+                        'created_by' => $nik_session,
+                        'created_at' => $tgl
+                    ];
+                    
+                    DB::connection(self::DB_CONN_NAME)->table(self::TABLE_SUBMIT_ORDER_ADJUSTMENT_DTL)->insert($insertAdjustment);
+                }
+
+                Log::debug("SQL hasil match mapping : " . json_encode($newSummaryOrder, JSON_PRETTY_PRINT));
+                Log::debug("Mapping per vendor : " . json_encode($summaryPerVendor_new, JSON_PRETTY_PRINT));
 
                 DB::connection(self::DB_CONN_NAME)->commit();
                 $isError = false;
                 $message = 'Berhasil';
-                // $data['id_pemesanan'] = $id_pemesanan;
             }
         } catch (Exception $ex) {
             Log::error($ex->getMessage());
             Log::error($ex->getTraceAsString());
             
             $message = 'Terjadi kesalahan, coba beberapa saat lagi!';
+            if(str_contains($ex->getMessage(), "Violation of PRIMARY KEY")) $message = "Sudah ada pemesanan";
 
             DB::connection(self::DB_CONN_NAME)->rollBack();
         }
@@ -364,6 +429,45 @@ class SmartCateringController extends Controller {
 
     function DashboardPemesanan(Request $request) {
         return view("SmartForm::GS/dashboard-pemesanan");
+    }
+
+    function DetailPemesanan(Request $request) {
+        $data = [
+            'isSucces' => false,
+            'message' => 'halo',
+            'detail' => [],
+            'master' => null
+        ];
+
+        $kode_pemesanan = $request->input('id');
+
+        try {
+            $master_pemesanan = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_SUBMIT_ORDER . ' as a')
+                ->where('a.kode_pemesanan', $kode_pemesanan);
+            $data_pemesanan = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_VENDOR_ORDER . ' as a')
+                ->select('a.kode_pemesanan', 'a.KodeSite', 'a.TanggalOrder', 'a.Jumlah', 'b.Nama', 'a.status')    
+                ->leftJoin(self::TABLE_VENDOR_MASTER . ' as b', 'a.VendorID', '=', 'b.id')
+                ->where('kode_pemesanan', $kode_pemesanan);
+            $detail_per_lokasi = db::connection(SELF::DB_CONN_NAME)->table(SELF::TABLE_SUBMIT_ORDER_DETAIL . ' as a')
+                ->select('a.id_order as kode_pemesanan', 'a.jenis_pemesanan', 'a.jumlah','c.Nama as nama_vendor',  'd.NamaMess')
+                ->leftJoin(self::TABLE_VENDOR_MAPPING . ' as b', 'a.id_mapping_vendor', '=', 'b.id')
+                ->leftJoin(self::TABLE_VENDOR_MASTER . ' as c', 'b.VendorID', '=', 'c.id')
+                ->leftJoin(self::TABLE_MASTER_MESS . ' as d', 'a.lokasi', '=', 'd.NoDoc')
+                ->where('a.id_order', $kode_pemesanan);
+                
+            Log::debug($master_pemesanan->toRawSql());
+            Log::debug($data_pemesanan->toRawSql());
+            Log::debug($detail_per_lokasi->toRawSql());
+            $data['detail'] = $data_pemesanan->get()->toArray();
+            $data['detail_lokasi'] = $detail_per_lokasi->get()->toArray();
+            $data['master'] = $master_pemesanan->first();
+        } catch (Exception $ex) {
+            Log::error($ex->getMessage());
+            Log::error($ex->getTraceAsString());
+        }
+
+
+        return view('SmartForm::GS/detail-pemesanan', ['data' => $data]);
     }
 
     function GetListPemesanan(Request $request) {
