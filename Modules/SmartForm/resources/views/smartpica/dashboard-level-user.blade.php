@@ -136,7 +136,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
-        var baseUrl = '/smart-pica'
+        var baseUrl = ''
         var filterNIK = document.getElementById("filterNIK")
         var dataFilter = {
             nik: null

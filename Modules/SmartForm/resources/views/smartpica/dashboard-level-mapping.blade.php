@@ -186,7 +186,7 @@
         var headers = {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
-        var baseUrl = '/smart-pica'
+        var baseUrl = ''
         var filterNIK = document.getElementById("filterNIK")
         var dataFilter = {
             nik: null
