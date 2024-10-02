@@ -233,8 +233,8 @@
                                             <div class="" style="padding-top: 100px">
                                                 <div id="treemain">
                                                     <div id="node_0" class="window hidden" data-id="0"
-                                                        data-parent="" data-first-child="1" data-next-sibling="">
-                                                        Root Problem
+                                                        data-parent="" data-first-child="1" data-next-sibling="" style="font-size: 1.5vw">
+                                                        {{ $dataMaster->problem }}
                                                     </div>
                                                 </div>
                                             </div>
