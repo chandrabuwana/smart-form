@@ -60,7 +60,7 @@
 @endsection
 
 @section('modal')
-    <div class="modal fade" id="modalFormMedis" aria-hidden="true" aria-labelledby="exampleModalToggleLabel"
+    <div class="modal fade" id="modalForm" aria-hidden="true" aria-labelledby="exampleModalToggleLabel"
         tabindex="-1">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
@@ -80,6 +80,7 @@
                                 <div class="row">
                                     <div class="col">
                                         {{-- <h6 class="card-title">Biodata Karyawan</h6> --}}
+                                        <input type="hidden" id="idMenu" style="display: none">
                                         <hr class="horizontal dark my-sm-1">
                                         <div class="row">
                                             <div class="col-md-2">
@@ -107,7 +108,7 @@
                                                 <div class="input-group input-group-static mb-4">
                                                     <label for="parentMenu">Parent</label>
                                                     <select class="form-control form-select" name="parentMenu" id="parentMenu" required>
-                                                        <option value="null">-- Pilih Parent --</option>
+                                                        <option value="">-- Pilih Parent --</option>
                                                         @foreach ($menu as $key => $item)
                                                             <option value="{{$key}}">{{ $item['nama'] }}</option>
                                                         @endforeach
@@ -118,6 +119,7 @@
                                                 <div class="input-group input-group-static mb-4">
                                                     <label for="statusMenu">Status</label>
                                                     <select class="form-control form-select" name="statusMenu" id="statusMenu" required>
+                                                        <option value="" selected>-- Pilih Status --</option>
                                                         <option value="1" selected>Aktif</option>
                                                         <option value="0" selected>Nonaktif</option>
                                                     </select>
@@ -135,10 +137,11 @@
                 <hr class="horizontal dark my-sm-3">
 
                 <div class="row" style="margin:10px">
-                    <div class="col text-end" id="masukkanButtonSubmit">
-                        <button class="btn btn-primary ms-auto uploadBtn" id="btnSubmitMenu">
+                    <div class="col text-end" id="btnSubmitModal">
+                        <button class="btn btn-primary ms-auto uploadBtn" id="btnSubmitMenu" data-action="add">
                             <i class="fas fa-save"></i>
-                            Submit Data</button>
+                            Submit Data
+                        </button>
                     </div>
                 </div>
             </div>
@@ -158,39 +161,210 @@
         var statusMenu = document.getElementById("statusMenu");
 
         btnSubmitMenu.addEventListener("click", function(e) {
+            var baseURL = ""
+            var actionSubmit = e.target.getAttribute("data-action")
+            var urlSubmit = actionSubmit == "add" ? "/add-new-menu" : "/edit-menu"
+            var submitMethod = actionSubmit == "add" ? "post" : "put"
+            var messageTemplate = actionSubmit == "add" ? "tambah data menu" : "edit data menu"
+            var validateInputData = validateInput()
+
             var payload = {
-                nama: namaMenu.value,
-                link: linkMenu.value,
-                urutan: urutanMenu.value,
-                parent: parentMenu.value == "null" ? null : parentMenu.value,
-                status: statusMenu.value
+                nama: validateInputData.data.namaMenu,
+                link: validateInputData.data.linkMenu,
+                urutan: validateInputData.data.urutanMenu,
+                parent: validateInputData.data.parentMenu == "null" ? null : validateInputData.data.parentMenu ,
+                status: validateInputData.data.statusMenu
             }
 
+            if(actionSubmit == "edit") payload.idMenu = validateInputData.data.idMenu
+
             console.log(payload)
-            axios.post('/add-new-menu', payload, 
+            axios(
                 {
+                    url: urlSubmit,
+                    method: submitMethod,
+                    data: payload,
                     headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
-                })
+                }
+            )
                 .then(function (response) {
-                    console.log(response.data)
-                    $('#modalFormMedis').modal("hide");
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Berhasil!',
-                        text: `${response.data.message} `,
-                    }).then((result) => {
-                        
-                    })
+                    // console.log(response.data)
+                    var alertData = {
+                        icon: 'error',
+                        title: '',
+                        text: ''
+                    }
+
+                    if(response.data.isSuccess) {
+                        alertData.icon = 'success'
+                        alertData.title = 'Berhasil!'
+                        alertData.text = response.data.message
+                        $("#table-dashboard-menu").bootstrapTable("refresh")
+                    } else {
+                        alertData.icon = 'error'
+                        alertData.title = 'Gagal!'
+                        alertData.text = response.data.message
+                    }
+
+                    Swal.fire(alertData)
                 })
                 .catch(function (error) {
                     console.log(error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        text: 'Terjadi kesalahan, coba beberapa saat lagi!'
+                    })
                 });
         }) 
+
         $("#tambah-menu").click(function(e) {
-            $('#modalFormMedis').modal("show");
+            $('#modalForm').modal("show");
         })
+        
         function actionFormatter(value, row, index) {
-            return '<button class="btn btn-primary btn-action"><a href="#">detail</a></button><button class="btn btn-primary btn-action"><a href="#">detail</a></button>';
+            var _id = ", '"+ row.id + "'"
+            var _nama = ", '"+ row.nama + "'"
+            var _link = ", '"+ row.link + "'"
+            var _order = ", '"+ row.order + "'"
+            var _status = ", '"+ row.status + "'"
+            var _parent = ", '"+ row.parent + "'"
+            var _parent_nama = ", '"+ row.parent_nama + "'"
+            // _nama = _nama.replace("'", "")
+
+            var _clickEvent = 'onclick="actionEdit(this' + _id +_nama + _link + _order + _status + _parent + _parent_nama +')"'
+            var _clickEventDelete = 'onclick="actionDelete(this' + _id +')"'
+
+            // var btnDetail = '<a href="#" data-caption="" '+ _clickEvent +' data-action="detail" data-show="false" data-url=""><i class="fa fa-info-circle cursor-pointer"></i></a>';
+            var btnEdit = '<a href="#" '+ _clickEvent +' data-caption="Simpan" data-action="edit" data-url="" data-show="true"><i class="fa fa-pen cursor-pointer text-info"></i></a>'
+            var btnHapus = '<a href="#" '+ _clickEventDelete +' data-caption="" data-url="" data-show="true" data-action="delete"><i class="fa-solid fa-trash-can cursor-pointer text-danger"></i></a>'
+            
+            return '<div style="display: flex;justify-content: center;gap: 8px;">' + btnEdit + btnHapus + '</div>'
+        }
+
+        function actionEdit(e, _id, _nama, _link, _order, _status, _parent, _parent_nama) {
+            if(_id == "null") _id = ""
+            if(_nama == "null") _nama = ""
+            if(_link == "null") _link = ""
+            if(_order == "null") _order = ""
+            if(_status == "null") _status = ""
+            if(_parent == "null") _parent = ""
+            if(_parent_nama == "null") _parent_nama = ""
+
+            $("#idMenu").val(_id)
+            $("#namaMenu").val(_nama)
+            $("#urutanMenu").val(_order)
+            $("#linkMenu").val(_link)
+            $("#parentMenu").val(_parent)
+            $("#statusMenu").val(_status)
+            $("#btnSubmitMenu").attr("data-action", "edit")
+
+            $("#modalForm").modal("show")
+        }
+
+        function actionDelete(e, _id) {
+            console.log(_id)
+            var dataResp = {
+                icon: "error",
+                text: "",
+                title: ""
+            }
+
+            Swal.fire({
+                title: "Apakah yakin ingin menghapus?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "Hapus",
+                cancelButtonText: "Batal",
+                cancelButtonColor: "#3085d6",
+                confirmButtonColor: "#d33"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    axios(
+                        {
+                            url: "/delete-menu",
+                            method: "delete",
+                            data: {
+                                idMenu: _id
+                            },
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                    
+                        }
+                    )
+                    .then(function(resp) {
+                        if(resp.data.isSuccess) {
+                            dataResp.icon = "success"
+                            dataResp.text = "Berhasil hapus data!"
+                            dataResp.title = "Berhasil!"
+                            $("#table-dashboard-menu").bootstrapTable("refresh")
+                        } else {
+                            dataResp.icon = "error"
+                            dataResp.text = "Gagal hapus data"
+                            dataResp.title = "Gagal!"
+                        }
+                        // Swal.fire(dataResp)
+                    })
+                    .catch(function(err) {
+                        Swal.fire({
+                            icon: "error",
+                            text: "Terjadi kesalahan, coba beberapa saat lagi",
+                            title: "Gagal"
+                        })
+                    })
+                    .finally(function() {
+                        e.disabled = false
+                        Swal.fire(dataResp)
+                    })
+                }
+            })
+        }
+
+        $('#modalForm').on('hidden.bs.modal', function (e) {
+            if($("#btnSubmitMenu").attr("data-action") == "edit") {
+                $("#idMenu").val("")
+                $("#namaMenu").val("")
+                $("#urutanMenu").val("")
+                $("#linkMenu").val("")
+                $("#parentMenu").val("")
+                $("#statusMenu").val("")
+
+                $("#btnSubmitModal").attr("data-action", "add")
+            }
+        })
+
+        function validateInput() {
+            var validationData = {
+                valid: false,
+                errors : [],
+                data: {
+                    idMenu: $("#idMenu").val(),
+                    namaMenu: $("#namaMenu").val(),
+                    urutanMenu: $("#urutanMenu").val(),
+                    linkMenu: $("#linkMenu").val(),
+                    parentMenu: $("#parentMenu").val(),
+                    statusMenu: $("#statusMenu").val(),
+                }  
+            }
+
+            if(validationData.data.namaMenu == "" || validationData.data.namaMenu == null) validationData.errors.push("Nama Menu tidak boleh kosong")
+            if(validationData.data.urutanMenu == "" || validationData.data.urutanMenu == null) validationData.errors.push("Urutan Menu tidak boleh kosong")
+            if(validationData.data.linkMenu == "" || validationData.data.linkMenu == null) validationData.errors.push("Link Menu tidak boleh kosong")
+            if(validationData.data.statusMenu == "" || validationData.data.statusMenu == null) validationData.errors.push("Status Menu tidak boleh kosong")
+
+            validationData.errors.length > 0 ? validationData.valid = false : validationData.valid = true
+
+            return validationData
+        }
+
+        function submitData() {
+            var baseURL = ""
+            var actionSubmit = e.getAttribute("data-action")
+            var urlSubmit = actionSubmit == "add" ? "/add-level-mapping" : "/edit-level-mapping"
+            var submitMethod = actionSubmit == "add" ? "post" : "put"
+            var messageTemplate = actionSubmit == "add" ? "tambah data level user" : "edit data level user"
+            var validateInputData = validateInput()
         }
 
         function statusFormatter(value, row, index) {

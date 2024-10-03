@@ -105,6 +105,9 @@
                                                     <label for="inputSection">Section</label>
                                                     <select class="form-control form-select" name="inputSection" id="inputSection">
                                                         <option value="">-- Pilih Section --</option>
+                                                        @foreach($data_section as $section)
+                                                            <option value="{{ $section->KodeSection }}">{{ $section->Nama}}</option>
+                                                        @endforeach
                                                     </select>
                                                 </div>
                                             </div>
@@ -136,7 +139,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
-        var baseUrl = '/smart-pica'
+        var baseUrl = ''
         var filterNIK = document.getElementById("filterNIK")
         var dataFilter = {
             nik: null
@@ -216,7 +219,7 @@
             console.log({nomor: _nomor, nik: _nik, level: _level})
             $("#inputLevel").val(_level)
             $("#inputNik").val(_nik)
-            $("#inputSection").val(_nik)
+            $("#inputSection").val(_section == "null" ? "" : _section)
             $("#inputNomor").val(_nomor)
             $("#inputNik").prop("disabled", true)
 
