@@ -7,6 +7,26 @@
             width: 1000px;
             text-align: center;
         }
+
+        .table td {
+            word-wrap: break-word;
+            /* Allows long words to be broken and wrap onto the next line */
+            white-space: normal;
+            /* Allows the text to wrap */
+        }
+
+        .table th {
+            white-space: nowrap;
+            /* Prevents header text from wrapping */
+        }
+
+        .wrap-text {
+            width: 20vw;
+            word-wrap: break-word;
+            /* Allows long words to be broken and wrap onto the next line */
+            white-space: normal;
+            /* Allows the text to wrap */
+        }
     </style>
 @endsection
 
@@ -38,7 +58,7 @@
                                         Status
                                     </th>
                                     <th data-field="action" data-align="center" data-halign="center">Action</th>
-                                    <th data-field="note_step" data-align="left" data-halign="center">Step Solution</th>
+                                    <th data-field="note_step" data-align="left" data-halign="center" class="wrap-text">Step Solution</th>
                                     <th data-field="ap_tod" data-align="center" data-halign="center">AP/TOD</th>
                                     <th data-field="target_master" data-align="center" data-halign="center">Target</th>
                                     <th data-field="due_date" data-align="left" data-formatter="dataTableDateFormater"
@@ -297,7 +317,7 @@
                     </a></button>
                     <button onclick="AcceptanceChange(${row.id}, 1)"><a class="like"  title="Like">
                         <i class="fa fa-check"></i>
-                    </a> Acccept </button>
+                    </a> Accept </button>
                     <button onclick="modalOpenRejectReason(${row.id})"><a class="like"  title="Like">
                         <i class="fa fa-circle-xmark"></i>
                     </a> Reject </button>
