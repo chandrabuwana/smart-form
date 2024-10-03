@@ -46,10 +46,12 @@ class SKLFormController extends Controller
         $kodeST = $request->get('KodeST');
 
         return DB::table(self::T_KARYAWAN)->select('NIK AS id', 'Panggilan AS text', self::T_JABATAN . '.Nama AS jabatan')
+            ->distinct('NIK')
             ->join(self::T_JABATAN, self::T_JABATAN . '.KodeJB', '=', self::T_KARYAWAN . '.KodeJB')
             ->when(!empty($kodeDP), fn($q) => $q->where('KodeDP', $kodeDP))
             ->when(!empty($kodeST), fn($q) => $q->where('KodeST', $kodeST))
             ->where('Panggilan', '!=', '')
+            ->where('AKTIF', '0')
             ->orderBy('Panggilan', 'ASC')->get();
     }
 
@@ -72,9 +74,14 @@ class SKLFormController extends Controller
                 'jabatan' => 'Kabag. Departemen',
                 'option_atasan' => DB::table(self::T_APPROVER)
                     ->select('Nik', 'Nama')->distinct('Nik')
-                    // ->where('Site', $kodeST)->where('Departement', $kodeDP)
+                    ->where('Site', $kodeST)->where('Departement', $kodeDP)
                     ->where('jabatan', 'like', '%Kepala Bagian%')
                     ->orderBy('Nama', 'asc')->get(),
+                'option_backup' => DB::table(self::T_APPROVER)
+                    ->select('Nik', 'Nama')->distinct('Nik')
+                    ->where('Site', $kodeST)->where('Departement', $kodeDP)
+                    ->where('jabatan', 'like', '%Kepala Seksi%')
+                    ->orderBy('Nama', 'asc')->get()
             ],
             [
                 'subject' => 'Diketahui Oleh',
@@ -84,6 +91,10 @@ class SKLFormController extends Controller
                     ->where('Site', $kodeST)
                     ->where('jabatan', 'like', '%Cost Control%')
                     ->orderBy('Nama', 'asc')->get(),
+                'option_backup' => DB::table(self::T_APPROVER)
+                    ->select('Nik', 'Nama')->distinct('Nik')
+                    ->where('jabatan', 'like', '%Cost Control%')
+                    ->orderBy('Nama', 'asc')->get()
             ],
             [
                 'subject' => 'Disetujui Oleh',
@@ -91,6 +102,10 @@ class SKLFormController extends Controller
                 'option_atasan' => DB::table(self::T_APPROVER)
                     ->select('Nik', 'Nama')->distinct('Nik')
                     ->where('Site', $kodeST)->where('Departement', 'ICGS')
+                    ->orderBy('Nama', 'asc')->get(),
+                'option_backup' => DB::table(self::T_APPROVER)
+                    ->select('Nik', 'Nama')->distinct('Nik')
+                    ->where('Departement', 'ICGS')
                     ->orderBy('Nama', 'asc')->get(),
             ],
         ];
@@ -123,6 +138,7 @@ class SKLFormController extends Controller
                 'TglPelaksanaan' => $request->tglPelaksanaan,
                 'Shift' => $request->inputShift,
                 'Status' => 'Dalam Review',
+                'HariKeTujuh' => $request->tipeLembur == 'Hari ke-7' ? '1' : '0',
                 'created_at' => $now,
                 'created_by' => $userid,
             ]);
