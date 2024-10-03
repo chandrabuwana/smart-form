@@ -40,7 +40,17 @@ class MappingValidationController extends Controller {
     }
 
     public function IndexLevelUser(Request $request) {
-        return view('SmartForm::smartpica/dashboard-level-user');
+        $data_section = [];
+        try {
+            $data_section = DB::table(self::TABLE_SECTION_DEPT . ' as a')
+                ->select('a.KodeSection', 'a.Nama')
+                ->get()->toArray();
+        } catch (Exception $ex) {
+            Log::error($ex->getMessage());
+            Log::error($ex->getTraceAsString());
+        }
+
+        return view('SmartForm::smartpica/dashboard-level-user', ['data_section' => $data_section]);
     }
 
     public function GetListLevelUser(Request $request) {
@@ -315,7 +325,7 @@ class MappingValidationController extends Controller {
                 $id =$request->input('nomor');
                 $data_update = [
                     'lvl' => $request->input('level'),
-                    'Section' => $request->input('section')
+                    'kode_section' => $request->input('section')
                 ];
 
                 DB::beginTransaction();
