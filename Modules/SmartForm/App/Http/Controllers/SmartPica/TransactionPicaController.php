@@ -69,7 +69,7 @@ class TransactionPicaController extends Controller
 
                     if (!$this->validateObject($object)) {
                         return [
-                            'message' => "Error Input Data Why",
+                            'message' => "Error Input Data",
                             'code' => 500
                         ];
                     }
@@ -217,7 +217,7 @@ class TransactionPicaController extends Controller
             DB::commit();
 
             return [
-                'message' => "Done save semua data why",
+                'message' => "Data Tersimpan",
                 'code' => 200,
                 'nodoc' => $dataDocumentNumeber
             ];
@@ -311,7 +311,7 @@ class TransactionPicaController extends Controller
         DB::commit();
 
         return [
-            'message' => "Done Solution Tersimpan",
+            'message' => "Solution Tersimpan",
             'code' => 200
         ];
     }
@@ -344,6 +344,7 @@ class TransactionPicaController extends Controller
         $checkDataExisting = DB::table('history_progress_solution')
             ->where([
                 ['nodocpica', '=', $d->nodocpica],
+                ['id_solution', '=', $d->idSolution],
                 ['created_by', '=', session('user_id')]
             ])->select("max progress")
             ->max('progress');
@@ -390,7 +391,35 @@ class TransactionPicaController extends Controller
             DB::commit();
 
             return [
-                'message' => "Done Progress Tersimpan",
+                'message' => "Progress Tersimpan",
+                'code' => 200
+            ];
+
+
+        } catch (QueryException $e) {
+            // Rollback the transaction on error
+            DB::rollBack();
+            return [
+                'message' => 'Failed to insert records' . $e->getMessage(),
+                'code' => 500
+            ];
+        }
+
+    }
+
+    function deleteTransactionProgressStepSolutionPica(Request $d)
+    {
+
+        DB::beginTransaction();
+
+        try {
+            DB::table('history_progress_solution')
+                ->where('id', $d->id)
+                ->delete();
+            DB::commit();
+
+            return [
+                'message' => "Progress Terhapus",
                 'code' => 200
             ];
 
@@ -422,7 +451,7 @@ class TransactionPicaController extends Controller
             }
             DB::commit();
             return [
-                'message' => "Done Data Tersimpan",
+                'message' => "Data Tersimpan",
                 'code' => 200
             ];
         } catch (\Throwable $th) {
@@ -462,16 +491,28 @@ class TransactionPicaController extends Controller
                 DB::table("new_pica_step")->where("id", $request->id)->
                     update(["status_approve" => 1]);
             } else {
-                DB::table("new_pica_step")->where("id", $request->id)->
-                    update([
-                        "status_approve" => 2,
+                $maxProgress = DB::table('history_progress_solution')
+                    ->where('id_solution', $request->id)
+                    ->where('status_reject', 0)
+                    ->max('progress');
+
+                DB::table('history_progress_solution')
+                    ->where('id_solution', $request->id)
+                    ->where('status_reject', 0)
+                    ->where('progress', $maxProgress)
+                    ->update([
+                        "status_reject" => 1,
                         "keterangan_reject" => $request->keterangan
                     ]);
+
+                DB::table("new_pica_step")->where("id", $request->id)->
+                    update(["acceptance" => 1]);
+
             }
 
             DB::commit();
             return [
-                'message' => "Done Data Tersimpan",
+                'message' => "Data Tersimpan",
                 'code' => 200
             ];
 

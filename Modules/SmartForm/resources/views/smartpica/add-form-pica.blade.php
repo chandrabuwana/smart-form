@@ -391,7 +391,7 @@
             dropdownParent: $('#pc_dept').closest('.input-group'),
             placeholder: '--- Cari Department ---',
             ajax: {
-                url: "/helper/site",
+                url: "/helper/department",
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },

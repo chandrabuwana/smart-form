@@ -145,6 +145,59 @@
                             </div>
                         </div>
                     </div>
+                    {{-- <div class="row card-header"
+                        style="margin : 10px;border-radius: 10px; background-color: rgba(209, 209, 209, 0.301); color:white !important;">
+                        <div class="row">
+                            <div class="col">
+                                <h6 class="card-title">Filter</h6>
+                                <hr class="horizontal dark my-sm-1">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="input-group input-group-static mb-4">
+                                            <label for="FILTERNIK">NIK</label>
+                                            <input type="text" class="form-control" id="FILTERNIK" name="FILTERNIK"
+                                                maxlength="7" placeholder=" -- Masukkan NIK -- ">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="input-group input-group-static mb-4">
+                                            <label for="FILTERLOKASI">LOKASI</label>
+                                            <input type="text" class="form-control" id="FILTERLOKASI" name="FILTERLOKASI"
+                                                maxlength="7" placeholder="-- Masukkan Lokasi -- ">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="input-group input-group-static mb-4">
+                                            <label for="FILTERSHIFT">SHIFT</label>
+                                            <select class="form-control" name="FILTERSHIFT" id="FILTERSHIFT" required>
+                                                <option value=""> -- Pilih Shift -- </option>
+                                                <option value="DS">PAGI</option>
+                                                <option value="NS">MALAM</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="input-group input-group-static mb-4">
+                                            <label for="FILTERTANGGAL" class="">Tanggal</label>
+                                            <div class="input-group input-group-static my-2">
+                                                <input class="form-control due-date-picker" type="text"
+                                                    placeholder="DD/MM/YYYY" name="FILTERTANGGAL" required
+                                                    id="FILTERTANGGAL">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-end">
+                                    <div class="col-sm-2">
+                                        <button class="btn btn-primary ms-auto uploadBtn"
+                                            onclick="dataListFormSHE019BSearchGenerate(this);">
+                                            <i class="fa fa-filter"> Search</i> </button></a>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div> --}}
 
                     <div class="d-flex align-items-center">
                         <a href="{{ route('add-smart-pica') }}"><button class="btn btn-primary ms-auto uploadBtn">

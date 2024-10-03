@@ -33,7 +33,8 @@
                                     <th data-field="nodocpica" data-align="left" data-halign="text-center"
                                         data-sortable="true">No. Document
                                     </th>
-                                    <th data-field="status" data-align="center" data-halign="center" data-sortable="true">
+                                    <th data-field="status" data-align="center" data-formatter="statusFormaterStepSolution"
+                                        data-halign="center" data-sortable="true">
                                         Status
                                     </th>
                                     <th data-field="action" data-align="center" data-halign="center">Action</th>
@@ -83,9 +84,13 @@
                         <div class="card border" style="">
                             <div class="card-body">
                                 <div class="d-flex align-items-center">
+                                    <div id="divKeteranganReject">
+                                        <h4>Keterangan Reject</h4><span id="idKeteranganReject">asdkajdbajhdbasdjh</span>
+                                    </div>
                                     <button onclick="OpenModalAddProgress()" class="btn btn-primary ms-auto uploadBtn">
                                         Add Progress</button>
                                 </div>
+                                <br>
                                 <div class="table-responsive p-0">
                                     <table id="dataListHistoryProgress" data-toggle="table"
                                         data-ajax="dataListHistoryProgressGenerateData"
@@ -249,6 +254,24 @@
             });
         }
 
+        function statusFormaterStepSolution(value, row, index) {
+            if (value == "NEED APPROVE") {
+                return `<button type="button" class="btn btn-info btn-sm">NEED APPROVE</button>`
+            } else if (value == 'NOT YET') {
+                return `<button type="button" class="btn btn-secondary btn-sm">${value}</button>`
+            } else if (value == 'REJECT BY PIC') {
+                return `<button type="button" class="btn btn-danger btn-sm">${value}</button>`
+            } else if (value == 'CLOSE') {
+                return `<button type="button" class="btn btn-success btn-sm">${value}</button>`
+            } else if (value == 'ON PROGRESS') {
+                return `<button type="button" class="btn btn-warning btn-sm">${value}</button>`
+            } else if (value == 'REVISION') {
+                return `<button type="button" class="btn btn-warning btn-sm">${value}</button>`
+            } else {
+                return `<button type="button" class="btn btn-secondary btn-sm">?</button>`
+            }
+        }
+
         function dataTableDateFormater(value, row, index) {
             var monthNames = ["January", "February", "March", "April", "May", "June",
                 "July", "August", "September", "October", "November", "December"
@@ -396,19 +419,23 @@
                 params.success(res)
             })
         }
-        
     </script>
     <script type="text/javascript">
         function OpenModalHistory(obj) {
+            $('#divKeteranganReject').addClass("d-none");
             let indexDt = $(obj).closest('tr').data('index');
-
-            $('#positionWhy').val($('#dataListUpdateProgress').bootstrapTable('getData')[indexDt].position_why)
-            $('#identityWhy').val($('#dataListUpdateProgress').bootstrapTable('getData')[indexDt].identity_why)
-            $('#nodocpica').val($('#dataListUpdateProgress').bootstrapTable('getData')[indexDt].nodocpica)
-            $('#idMaster').val($('#dataListUpdateProgress').bootstrapTable('getData')[indexDt].id_master)
-            $('#nikMaster').val($('#dataListUpdateProgress').bootstrapTable('getData')[indexDt].nik_master)
-            $('#idSolution').val($('#dataListUpdateProgress').bootstrapTable('getData')[indexDt].id)
-            $('#targetMaster').val($('#dataListUpdateProgress').bootstrapTable('getData')[indexDt].target_master)
+            let dataObject = $('#dataListUpdateProgress').bootstrapTable('getData')[indexDt];
+            $('#positionWhy').val(dataObject.position_why)
+            $('#identityWhy').val(dataObject.identity_why)
+            $('#nodocpica').val(dataObject.nodocpica)
+            $('#idMaster').val(dataObject.id_master)
+            $('#nikMaster').val(dataObject.nik_master)
+            $('#idSolution').val(dataObject.id)
+            $('#targetMaster').val(dataObject.target_master)
+            $('#idKeteranganReject').html(dataObject.keterangan_reject)
+            if (dataObject.status == "REVISION") {
+                $('#divKeteranganReject').removeClass("d-none");
+            }
             $('#dataListHistoryProgress').bootstrapTable('refresh');
             $('#updateProgressHistory').modal("show");
         }
@@ -419,11 +446,70 @@
         }
 
         function dataListHistoryProgressActionFormater(value, row, index) {
-            return `
+            if (row.status_reject == 1) {
+                return `
+                    <button onclick="deleteDataProgress(this)"><a class="like"  title="Like">
+                        <i class="fa fa-trash"></i> Delete Data
+                    </a></button> `
+            } else {
+                return `
                     <button onclick="openFileCCP(this)"><a class="like"  title="Like">
                         <i class="fa fa-file-import"> CCP</i>
                     </a></button>
                 `
+            }
+        }
+
+        function deleteDataProgress(obj) {
+            let indexDt = $(obj).closest('tr').data('index');
+            let dataObject = $('#dataListHistoryProgress').bootstrapTable('getData')[indexDt];
+            Swal.fire({
+                title: "Hapus Data Progress?",
+                showCancelButton: true,
+                confirmButtonText: "Close Task",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    submitDataDelete(dataObject);
+                }
+            });
+        }
+
+        function submitDataDelete(dataKirim) {
+            $.ajax({
+                type: 'post',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: "deleted-progress-history-transaction",
+                data: dataKirim,
+                dataType: 'json',
+                success: function(response) {
+                    if (response.code == 200) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: response.message,
+                        }).then((result) => {
+                            $('#note_progress').val('');
+                            $('#CCPLink').val('');
+                            $('#progress').val('');
+
+                            // Reset hidden inputs
+                            $('#dataListHistoryProgress').bootstrapTable('refresh');
+                        })
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: response.message,
+                        });
+                    }
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    console.log(thrownError)
+                }
+            })
+
         }
 
         function openFileCCP(obj) {
@@ -478,7 +564,7 @@
 
             // Validation
             var isValid = true;
-            var googleDrivePattern = /^https:\/\/drive\.google\.com\/.+$/;
+            var googleDrivePattern = /^(https?:\/\/)?([\w\-]+(\.[\w\-]+)+)([\/\w\-\._~:?#[\]@!$&'()*+,;=]*)?$/;
 
             if (noteProgress === "") {
                 isValid = false;
@@ -499,7 +585,7 @@
                 Swal.fire({
                     icon: 'error',
                     title: 'Validasi Gagal',
-                    text: 'CCP Link harus berupa link Google Drive yang valid.',
+                    text: 'CCP Link harus berupa link',
                 });
             } else if (progress === "") {
                 isValid = false;
@@ -535,7 +621,7 @@
                 };
                 if (parseInt(progress, 10) == parseInt(targetMaster, 10)) {
                     Swal.fire({
-                        title: "Apakah kamu akan menyelesaikan pekerjaan ?",
+                        title: "Apakah Pekerjaan sudah selesai?",
                         showCancelButton: true,
                         confirmButtonText: "Close Task",
                     }).then((result) => {

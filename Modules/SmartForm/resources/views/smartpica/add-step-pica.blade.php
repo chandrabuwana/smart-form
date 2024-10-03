@@ -1,7 +1,18 @@
 @extends('master.master_page')
 
 @section('custom-css')
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <style>
+        /* .gj-icon {
+                            display: none !important;
+                        } */
+
+        /* Hide the datepicker button */
+        .gj-datepicker button {
+            display: none !important;
+        }
+
+
         .select2-container--bootstrap-5 .select2-selection--single {
             height: calc(1.5em + .75rem + 2px);
             /* Menyesuaikan dengan form-control di Bootstrap 5 */
@@ -332,10 +343,10 @@
                                                     id="picID_{{ $i }}"></select>
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
                                             <label for="DueDate_{{ $i }}" class="">Due Date
-                                                (PIC)</label>
-                                            <div class="input-group input-group-static my-2">
+                                                (PIC)sssss</label>
+                                            <div class="input-group input-group-static d-flex">
                                                 <input class="form-control due-date-picker" type="text"
                                                     placeholder="DD/MM/YYYY" name="DueDate_{{ $i }}" required
                                                     id="DueDate_{{ $i }}">
@@ -369,26 +380,21 @@
         function resetFormStep() {
             for (let i = 1; i <= 5; i++) {
                 // Reset select elements
-                $(`#pc_thn_${i}`).val('');
+                $(`#pc_action_${i}`).val('');
                 $(`#pc_aktual_${i}`).val('');
                 $(`#pc_ap_pica_${i}`).val('pc');
                 $(`#dicID_${i}`).val(null).trigger('change'); // Reset dan trigger change untuk Select2
                 $(`#picID_${i}`).val(null).trigger('change'); // Reset dan trigger change untuk Select2
+                $(`#DueDate_${i}`).val(""); // Reset dan trigger change untuk Select2
             }
-
-            // Reset DueDate input
-            $('#DueDate').val('');
         }
 
         $('.due-date-picker').each(function() {
             $(this).datepicker({
-                dateFormat: 'd MM yy',
-                monthNames: [
-                    'January', 'February', 'March', 'April', 'May', 'June',
-                    'July', 'August', 'September', 'October', 'November', 'December'
-                ],
-                dayNamesMin: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
-            });
+                uiLibrary: 'bootstrap5', // or 'bootstrap5' if you're using Bootstrap 5
+                format: 'dd mmmm yyyy',
+                weekStartDay: 0,
+            })
         });
 
         function OpenModal(obj, key) {
@@ -468,6 +474,32 @@
     <script type="text/javascript">
         var dataFinalStep = [];
 
+        function convertDateFormat(dateString) {
+            const months = {
+                January: '01',
+                February: '02',
+                March: '03',
+                April: '04',
+                May: '05',
+                June: '06',
+                July: '07',
+                August: '08',
+                September: '09',
+                October: '10',
+                November: '11',
+                December: '12'
+            };
+
+            // Split the date string into components
+            const parts = dateString.split(' ');
+            const day = String(parts[0]).padStart(2, '0'); // Get the day and pad with 0
+            const month = months[parts[1]]; // Get the month number
+            const year = parts[2]; // Get the year
+
+            // Return the formatted date
+            return `${month}/${day}/${year}`;
+        }
+
         function submitDataStepSolution(key) {
 
             let data = [];
@@ -481,14 +513,14 @@
                         ap_tod: $(`select[name="pc_ap_pica_${i}"]`).val(),
                         dic: $(`#dicID_${i}`).val(),
                         pic: $(`#picID_${i}`).val(),
-                        dueDate: $(`#DueDate_${i}`).val(),
+                        dueDate: convertDateFormat($(`#DueDate_${i}`).val()),
                     };
 
-                    if (solution.note.trim() === '' ||
-                        solution.ap_tod === '' ||
-                        solution.dic.trim() === '' ||
-                        solution.pic.trim() === '' ||
-                        solution.dueDate.trim() === '') {
+                    if (solution.note.trim() == '' ||
+                        solution.ap_tod == '' ||
+                        solution.dic.trim() == '' ||
+                        solution.pic.trim() == '' ||
+                        solution.dueDate.trim() == '') {
 
                         Swal.fire({
                             icon: 'error',
