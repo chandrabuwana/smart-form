@@ -101,7 +101,7 @@
                                 </div>
                             </div>
 
-                            <div class="row">
+                            <div class="row mb-2">
                                 <div class="col-md-4">
                                     <label class="ms-0 fs-6">Site</label>
                                 </div>
@@ -131,6 +131,19 @@
                                 <div class="col-md-8">
                                     <select class="form-select input-text" aria-label="Default select example" id="inputShift" name="inputShift" required>
                                         <option value="{{ $formMaster->Shift }}" selected disabled>{{ $formMaster->Shift }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label class="ms-0 fs-6">Tipe Lembur</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <select class="form-select input-text" id="inputTipeLembur" name="tipeLembur" required>
+                                        <option value="{{ $formMaster->HariKeTujuh == '1' ? 'Hari ke-7' : 'Hari Normal' }}" selected disabled>Hari Normal</option>
                                     </select>
                                 </div>
                             </div>
@@ -250,7 +263,7 @@
                                 <p class="mb-2">{{ $approver->NamaAtasan }}</p>
 
                                 @if($approver->Status == 'Approved')
-                                    <img src="{{ url('img/paraf.jpg') }}" class="mx-auto" style="height: 35px;" alt="Paraf">
+                                    <img src="{{ url('img/approved-stamp.png') }}" class="mx-auto" style="height: 50px;" alt="Approved">
 
                                 @elseif($approver->Status == 'Rejected')
                                     <p class="mb-0 text-danger fw-bold d-flex align-items-center justify-content-center">
@@ -284,6 +297,8 @@
                             </div>
                         @endforeach
                     </div>
+
+                    <small class="d-block mt-4">* Dokumen ini resmi dan diakui oleh perusahaan</small>
                 </div>
             </div>
         </div>

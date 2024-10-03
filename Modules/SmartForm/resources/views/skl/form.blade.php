@@ -112,7 +112,7 @@
                                 </div>
                             </div>
 
-                            <div class="row">
+                            <div class="row mb-2">
                                 <div class="col-md-4">
                                     <label class="ms-0 fs-6">Site</label>
                                 </div>
@@ -121,8 +121,8 @@
                                         <option value="">-- Pilih Site --</option>
                                         <option value="AGM">AGM</option>
                                         <option value="TAJ">TAJ</option>
-                                        <option value="MBL">MBL MINING</option>
-                                        <option value="MBL-HAULING">MBL HAULING</option>
+                                        <option value="MBL MINING">MBL MINING</option>
+                                        <option value="MBL HAULING">MBL HAULING</option>
                                         <option value="BSSR">BSSR</option>
                                         <option value="MSJ">MSJ</option>
                                         <option value="TDM">TDM</option>
@@ -142,8 +142,7 @@
                                     <label class="ms-0 fs-6">Tanggal Pelaksanaan</label>
                                 </div>
                                 <div class="col-md-8">
-                                    <input type="date" class="input-text w-full" id="inputTanggal" name="tglPelaksanaan"
-                                        class="tanggalPelaksanaan" min="{{ date('Y-m-d') }}" required>
+                                    <input type="date" class="input-text w-full" id="inputTanggal" name="tglPelaksanaan" min="{{ date('Y-m-d') }}" required>
                                 </div>
                             </div>
 
@@ -156,6 +155,20 @@
                                         <option value="">-- Pilih Shift --</option>
                                         <option value="DS">DS</option>
                                         <option value="NS">NS</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label class="ms-0 fs-6">Tipe Lembur</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <select class="form-select input-text" id="inputTipeLembur" name="tipeLembur" required>
+                                        <option value="Hari Normal" selected>Hari Normal</option>
+                                        <option value="Hari ke-7">Hari ke-7</option>
                                     </select>
                                 </div>
                             </div>
@@ -425,6 +438,7 @@
         const pekerjaans = [];
         let optionKaryawan = [];
         let optionKategoriPekerjaan = [];
+        let optionApprover = [];
 
         $( function() {
             $departement = $('#inputDepartement');
@@ -541,6 +555,7 @@
                     },
                     success: function(response) {
                         let tbody = '<tr>' + $('#table-approver tbody tr:nth-child(1)').html() + '</tr>';
+                        optionApprover = response;
 
                         response.forEach( (item) => {
                             let optionAtasan = '';
@@ -557,7 +572,13 @@
                                     </td>
                                     <td>
                                         <input type="hidden" name="jabatanAtasan[]" value="${item.jabatan}">
-                                        ${item.jabatan}
+                                        <div class="d-flex align-items-center">
+                                            <span class="jabatanAtasan">${item.jabatan}</span>
+                                            <div class="form-check ps-0 align-items-end ms-3">
+                                                <input class="form-check-input" type="checkbox" name="check_represent[]" value="true" onchange="toggleBackupAtasan('${item.jabatan}')">
+                                                <label class="custom-control-label mb-0">diwakilkan</label>
+                                            </div>
+                                        </div>
                                     </td>
                                     <td>
                                         <select class="form-select input-text" aria-label="Pilih Atasan" id="inputAtasan" name="inputAtasan[]" required>
@@ -702,6 +723,27 @@
                 }
             });
         });
+
+        function toggleBackupAtasan(jabatan) {
+            optionApprover.forEach( (item, key) => {
+                if(item.jabatan == jabatan) {
+                    const $tr = $(`#table-approver tbody tr:nth-child(${key + 2})`);
+                    const represented = $tr.find('[name*=check_represent]').is(':checked');
+                    const optionFiltered = represented ? item.option_backup : item.option_atasan;
+
+                    let optionAtasan = '<option value="">-- Pilih Atasan --</option>';
+                    optionFiltered.forEach( (option) => {
+                        optionAtasan += `<option value="${option.Nik}">${option.Nama}</option>`;
+                    });
+
+                    $tr.find('[name*=inputAtasan]').html(optionAtasan);
+
+                    jabatan = jabatan == 'Kabag. Departemen' && represented ? 'Kasi. Departemen' : jabatan;
+                    $tr.find('td:nth-child(2) .jabatanAtasan').html(jabatan);
+                    $tr.find('td:nth-child(2) [name*=jabatanAtasan]').val(jabatan);
+                }
+            });
+        }
 
         function showModalTambahKaryawan() {
             if( !$('#inputDepartement').val() || !$('#inputSite').val() ) {
