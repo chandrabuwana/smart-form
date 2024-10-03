@@ -356,10 +356,6 @@ class TransactionPicaController extends Controller
             ];
         }
 
-
-        if ($this->checkForSQLInjection($params)) {
-            return response()->json(['error' => 'SQL Injection detected!'], 400);
-        }
         DB::beginTransaction();
 
         try {
@@ -462,24 +458,6 @@ class TransactionPicaController extends Controller
                 'code' => 500
             ];
         }
-    }
-    public function checkForSQLInjection(array $params)
-    {
-        // Common SQL Injection patterns
-        $patterns = [
-            '/(\b)(SELECT|INSERT|UPDATE|DELETE|DROP|UNION|OR|AND|NOT)(\b)/i', // SQL Keywords
-            '/(\b)(--|#|\/\*|\*\/|;)(\b)/' // SQL Comment Syntax
-        ];
-
-        foreach ($params as $key => $value) {
-            foreach ($patterns as $pattern) {
-                if (preg_match($pattern, $value)) {
-                    return true; // Injection detected
-                }
-            }
-        }
-
-        return false; // No injection detected
     }
 
     function ApproveClosingTask(Request $request)
