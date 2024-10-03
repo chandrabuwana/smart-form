@@ -163,13 +163,12 @@
                         <div class="col-md-6">
                             <div class="row">
                                 <div class="col-md-4">
-                                    <label class="ms-0 fs-6">Tipe Lembur</label>
+                                    <label class="ms-0 fs-6">Lembur Hari ke-7</label>
                                 </div>
                                 <div class="col-md-8">
-                                    <select class="form-select input-text" id="inputTipeLembur" name="tipeLembur" required>
-                                        <option value="Hari Normal" selected>Hari Normal</option>
-                                        <option value="Hari ke-7">Hari ke-7</option>
-                                    </select>
+                                    <div class="form-check ps-0 align-items-end">
+                                        <input class="form-check-input" type="checkbox" name="hariKeTujuh" value="true">
+                                    </div>
                                 </div>
                             </div>
                         </div>

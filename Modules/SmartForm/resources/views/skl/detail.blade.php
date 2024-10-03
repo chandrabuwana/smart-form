@@ -170,7 +170,7 @@
                                     <th rowspan="2" class="align-middle">
                                         Jabatan
                                     </th>
-                                    <th colspan="3" class="text-center">
+                                    <th colspan="5" class="text-center">
                                         Jam Lembur
                                     </th>
                                 </tr>
@@ -183,6 +183,12 @@
                                     </th>
                                     <th>
                                         Total
+                                    </th>
+                                    <th>
+                                        Absensi
+                                    </th>
+                                    <th>
+                                        Konversi
                                     </th>
                                 </tr>
                             </thead>
