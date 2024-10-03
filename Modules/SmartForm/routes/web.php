@@ -234,11 +234,6 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
         Route::post('/add-step-transaction', [TransactionPicaController::class, 'addDataStepTransactionPica']);
         Route::post('/add-progress-history-transaction', [TransactionPicaController::class, 'addTransactionProgressStepSolutionPica']);
         Route::post('/deleted-progress-history-transaction', [TransactionPicaController::class, 'deleteTransactionProgressStepSolutionPica']);
-        Route::get('/dashboard-level-user', [MappingValidationController::class, 'IndexLevelUser']);
-        Route::get('/list-level-user', [MappingValidationController::class, 'GetListLevelUser']);
-        Route::post('/add-level-user', [MappingValidationController::class, 'AddLevelUser']);
-        Route::put('/edit-level-user', [MappingValidationController::class, 'EditLevelUser']);
-        Route::delete('/delete-level-user', [MappingValidationController::class, 'DeleteLevelUser']);
         Route::post('/change-acceptance', [TransactionPicaController::class, 'changeAcceptanceStepSolutionPica']);
         Route::post('/approve-task-closing', [TransactionPicaController::class, 'ApproveClosingTask']);
         
