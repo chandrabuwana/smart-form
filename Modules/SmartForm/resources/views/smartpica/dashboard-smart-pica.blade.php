@@ -35,6 +35,16 @@
             white-space: normal;
             /* Allows the text to wrap */
         }
+
+        .select2-container--bootstrap5 .select2-selection--single {
+            color: gray;
+            /* Ensures text is black */
+        }
+
+        .select2-results__option {
+            color: gray;
+            /* Ensures dropdown options are black */
+        }
     </style>
 @endsection
 
@@ -145,6 +155,56 @@
                             </div>
                         </div>
                     </div>
+                    <hr class="horizontal dark my-sm-3">
+                    <div class="row card-header"
+                        style="margin : 10px;border-radius: 10px; background-color: rgba(209, 209, 209, 0.301); color:white !important;">
+                        <div class="row">
+                            <div class="col">
+                                <h6 class="card-title">Filter</h6>
+                                <hr class="horizontal dark my-sm-1">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="input-group select-div input-group-static my-2">
+                                            <label for="FILTERNIK" class="ms-0">NIK</label>
+                                            <select class="form-control s2lea" name="FILTERNIK" id="FILTERNIK"
+                                                required></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="input-group select-div input-group-static my-2">
+                                            <label for="FILTERDEPARTMENT" class="ms-0">Department </label>
+                                            <select class="form-control dept" name="FILTERDEPARTMENT" id="FILTERDEPARTMENT">
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="input-group select-div input-group-static my-2">
+                                            <label for="FILTERSITE" class="ms-0">Site </label>
+                                            <select class="form-control site" name="FILTERSITE" id="FILTERSITE">
+                                            </select>
+                                        </div>
+                                    </div>
+                                    {{-- <div class="col-md-2">
+                                        <div class="input-group input-group-static mb-4">
+                                            <label for="FILTERTANGGAL" class="">Tanggal</label>
+                                            <div class="input-group input-group-static my-2">
+                                                <input class="form-control due-date-picker" type="text"
+                                                    placeholder="DD/MM/YYYY" name="FILTERTANGGAL" required
+                                                    id="FILTERTANGGAL">
+                                            </div>
+                                        </div>
+                                    </div> --}}
+                                </div>
+                                <div class="row justify-content-end">
+                                    <div class="col-sm-2">
+                                        <button class="btn btn-primary ms-auto uploadBtn"
+                                            onclick="dataListFormPicaSearchGenerate(this);">
+                                            <i class="fa fa-filter"> Search</i> </button></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="d-flex align-items-center">
                         <a href="{{ route('add-smart-pica') }}"><button class="btn btn-primary ms-auto uploadBtn">
@@ -190,6 +250,96 @@
     </script>
     <script type="text/javascript">
         var elChartStatus = document.getElementById("chart-status").getContext("2d");
+
+        function formatSelectingAfterSelectNIK(repo) {
+            $("#nNama").val(repo.name);
+            $("#nDept").val(repo.dept);
+
+            return repo.text;
+        }
+        $('#FILTERNIK').select2({
+            theme: 'bootstrap5', // Menggunakan tema Bootstrap 5
+            dropdownParent: $('#FILTERNIK').closest('.select-div'),
+            placeholder: '--- Cari/Pilih NIK ---',
+            ajax: {
+                url: "/bss-form/induksi-karyawan/helper-data-nik",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type: "post",
+                delay: 250,
+                dataType: 'json',
+                data: function(params) {
+                    return {
+                        query: params.term, // search term
+                    };
+                },
+                processResults: function(response) {
+                    return {
+                        results: response.data
+                    };
+                },
+                cache: true
+            },
+            templateSelection: formatSelectingAfterSelectNIK
+        });
+
+        $('#FILTERDEPARTMENT').select2({
+            theme: 'bootstrap5', // Menggunakan tema Bootstrap 5
+            dropdownParent: $('#FILTERDEPARTMENT').closest('.input-group'),
+            placeholder: '--- Cari Department ---',
+            ajax: {
+                url: "/helper/department",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type: "post",
+                delay: 250,
+                dataType: 'json',
+                data: function(params) {
+                    return {
+                        _token: "{{ csrf_token() }}",
+                        query: params.term, // search term
+                    };
+                },
+                processResults: function(response) {
+                    return {
+                        results: response.data
+                    };
+                },
+                cache: true
+            }
+        });
+
+
+        $('#FILTERSITE').select2({
+            theme: 'bootstrap5', // Menggunakan tema Bootstrap 5
+            dropdownParent: $('#FILTERSITE').closest('.input-group'),
+            placeholder: '--- Cari Site ---',
+            ajax: {
+                url: "/helper/site",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type: "post",
+                delay: 250,
+                dataType: 'json',
+                data: function(params) {
+                    return {
+                        _token: "{{ csrf_token() }}",
+                        query: params.term, // search term
+                    };
+                },
+                processResults: function(response) {
+                    return {
+                        results: response.data
+                    };
+                },
+                cache: true
+            }
+        });
+
+
         new Chart(elChartStatus, {
             type: "pie",
             data: {
@@ -277,7 +427,10 @@
         function dataListFormPicaParamsGenerate(params) {
 
             params.search = {
-                'CARNAME': "",
+                'FILTERNIK': $('#FILTERNIK').val(),
+                'FILTERDEPARTMENT': $('#FILTERDEPARTMENT').val(),
+                'FILTERSITE': $('#FILTERSITE').val()
+                // 'FILTERTANGGAL': $('#FILTERTANGGAL').val(),
             };
 
             if (params.sort == undefined) {

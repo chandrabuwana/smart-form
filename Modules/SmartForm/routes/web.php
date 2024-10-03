@@ -213,6 +213,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
         Route::post('/add-transaction', [TransactionPicaController::class, 'AddDataTransactionPica']);
         Route::post('/add-step-transaction', [TransactionPicaController::class, 'addDataStepTransactionPica']);
         Route::post('/add-progress-history-transaction', [TransactionPicaController::class, 'addTransactionProgressStepSolutionPica']);
+        Route::post('/deleted-progress-history-transaction', [TransactionPicaController::class, 'deleteTransactionProgressStepSolutionPica']);
         Route::get('/dashboard-level-user', [MappingValidationController::class, 'IndexLevelUser']);
         Route::get('/list-level-user', [MappingValidationController::class, 'GetListLevelUser']);
         Route::post('/add-level-user', [MappingValidationController::class, 'AddLevelUser']);

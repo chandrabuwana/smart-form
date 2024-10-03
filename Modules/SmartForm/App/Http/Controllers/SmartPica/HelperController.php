@@ -42,7 +42,7 @@ class HelperController extends Controller
     {
         $data = $d->request->get("query");
         $dataFinal = $this->validateAndSanitizeInput($data);
-        $dataDepartment = DB::connection('sqlsrv2')->select("select KodeDP, Nama  from tdepartement where Nama like '%$dataFinal%' or KodeDP like '%$dataFinal%'");
+        $dataDepartment = DB::connection('sqlsrv2')->select("select TOP 10 KodeDP, Nama  from tdepartement where Nama like '%$dataFinal%' or KodeDP like '%$dataFinal%'");
 
         $dataJs = [];
         foreach ($dataDepartment as $a) {
@@ -63,7 +63,7 @@ class HelperController extends Controller
     {
         $data = $d->request->get("query");
         $dataFinal = $this->validateAndSanitizeInput($data);
-        $dataDepartment = DB::connection('sqlsrv2')->select("select * from tsite where AKTIF = 0 and Nama like '%$dataFinal%' or kodest like '%$dataFinal%'");
+        $dataDepartment = DB::connection('sqlsrv2')->select("select TOP 10 * from tsite where AKTIF = 0 and Nama like '%$dataFinal%' or kodest like '%$dataFinal%'");
 
         $dataJs = [];
         foreach ($dataDepartment as $a) {
@@ -145,11 +145,14 @@ class HelperController extends Controller
 
     public function GetQueryDataTablePica(string $query, Request $req)
     {
-        if (isset($req->search['IDSOLUTION']) && $req->search['IDSOLUTION'] != null) {
-            $query = $query . "where id_solution = '" . $req->search['IDSOLUTION'] . "' ";
+        if (isset($req->search['FILTERNIK']) && $req->search['FILTERNIK'] != null) {
+            $query = $query . " AND '" . $req->search['FILTERNIK'] . "'  IN (Select PIC from new_pica_step where nodocpica = m.nodocpica) ";
         }
-        if (isset($req->search['NODOCPICA']) && $req->search['NODOCPICA'] != null) {
-            $query = $query . " AND nodocpica = '" . $req->search['NODOCPICA'] . "' ";
+        if (isset($req->search['FILTERDEPARTMENT']) && $req->search['FILTERDEPARTMENT'] != null) {
+            $query = $query . " AND m.site = '" . $req->search['FILTERDEPARTMENT'] . "' ";
+        }
+        if (isset($req->search['FILTERSITE']) && $req->search['FILTERSITE'] != null) {
+            $query = $query . " AND m.site = '" . $req->search['FILTERSITE'] . "' ";
         }
 
         if (isset($req["sort"]) && $req["sort"] != null) {
@@ -175,42 +178,43 @@ class HelperController extends Controller
                     CONCAT(FORMAT(DATEFROMPARTS(m.tahun, m.bulan, 1), 'MMMM'), ' - ', m.tahun) AS tahun_bulan,
                     m.week, 
                     m.site, 
-                    m.id_kpi, 
+                    m.id_kpi,
+                     
                     -- Status berdasarkan kondisi acceptance dan status_approve
                     UPPER(
                         CASE
                             WHEN (
                                 SELECT COUNT(*) FROM new_pica_step nps WHERE nps.nodocpica = m.nodocpica
                             ) = 0 THEN 'STEP NOT SET'  -- Check for no steps
-                            
+                                            
                             WHEN (
                                 SELECT COUNT(*) FROM new_pica_step nps WHERE nps.nodocpica = m.nodocpica
                             ) = (
                                 SELECT COUNT(*) FROM new_pica_step nps WHERE nps.nodocpica = m.nodocpica AND nps.acceptance = 0
                             ) THEN 'NOT ANY PROGRESS'
-                            
+                                            
                             WHEN (
                                 SELECT COUNT(*) FROM new_pica_step nps WHERE nps.nodocpica = m.nodocpica
                             ) = (
                                 SELECT COUNT(*) FROM new_pica_step nps WHERE nps.nodocpica = m.nodocpica AND nps.acceptance = 2
                             ) THEN 'ALL TASK REJECTED BY PIC'
-                            
+                                            
                             WHEN (
                                 SELECT COUNT(*) FROM new_pica_step nps WHERE nps.nodocpica = m.nodocpica AND nps.acceptance != 2
                             ) = (
                                 SELECT COUNT(*) FROM new_pica_step nps WHERE nps.nodocpica = m.nodocpica AND nps.acceptance != 2 AND nps.status_approve = 2
                             ) THEN 'ALL REJECT BY APPROVER'
-                            
+                                            
                             WHEN (
                                 SELECT COUNT(*) FROM new_pica_step nps WHERE nps.nodocpica = m.nodocpica AND nps.acceptance != 2
                             ) = (
                                 SELECT COUNT(*) FROM new_pica_step nps WHERE nps.nodocpica = m.nodocpica AND nps.acceptance != 2 AND nps.status_approve = 1
                             ) THEN 'PICA CLOSED'
-                            
+                                            
                             ELSE 'ON PROGRESS'
                         END
                     ) AS status,
-                    
+                                    
                     (SELECT COUNT(*) FROM new_pica_step nps WHERE nps.nodocpica = m.nodocpica) AS total_steps,
 
                     (SELECT COUNT(*) FROM new_pica_step nps WHERE nps.nodocpica = m.nodocpica AND nps.acceptance = 0) AS acceptance_0_not_yet_accepted,
@@ -236,6 +240,8 @@ class HelperController extends Controller
                     SMF_KPI_MASTER kl ON kl.kpi_code = m.id_kpi where 1 = 1";
         $countDataUser = DB::select('select count(*) jumlah FROM master_pica');
         $newQuery = $this->GetQueryDataTablePica($query, $table);
+
+        // dd($newQuery);
 
         $dataUser = DB::select($newQuery);
 
@@ -274,11 +280,13 @@ class HelperController extends Controller
     function HelperDataTableStepSolutionPica(Request $table)
     {
         $nik = session("user_id");
-        $query = "  WITH dataProgress AS (
+        $query = " WITH dataProgress AS (
                         SELECT
                             id_solution,
                             nodocpica,
                             TRY_CAST(progress AS INT) AS progress,
+                            status_reject,
+                            keterangan_reject,
                             ROW_NUMBER() OVER (PARTITION BY id_solution, nodocpica ORDER BY TRY_CAST(progress AS INT) DESC) AS rn
                         FROM
                             history_progress_solution
@@ -288,13 +296,17 @@ class HelperController extends Controller
                         step_pica.id_master,
                         ISNULL(dp.progress, 0) AS progress,
                         UPPER(CASE
+                            WHEN ISNULL(step_pica.acceptance, 0) = 2 THEN 'REJECT BY PIC'
+                            WHEN ISNULL(step_pica.acceptance, 0) = 9 AND ISNULL(step_pica.status_approve, 0) = 0 AND ISNULL(step_pica.status_reject, 0) = 0  THEN 'NEED APPROVE'
                             WHEN ISNULL(dp.progress, 0) = 0 THEN 'NOT YET'
                             WHEN ISNULL(dp.progress, 0) > 0 AND ISNULL(dp.progress, 0) < ISNULL(mp.target_master, 0) THEN 'ON PROGRESS'
-                            WHEN ISNULL(dp.progress, 0) = ISNULL(mp.target_master, 0) THEN 'CLOSE'
+                            WHEN ISNULL(step_pica.acceptance, 0) = 9 AND ISNULL(step_pica.status_approve, 0) = 1 THEN 'CLOSE'
+                            WHEN ISNULL(dp.status_reject,0) = 1 THEN 'REVISION'
                             ELSE 'NOT YET'
                         END) AS status,
                         step_pica.nik_master,
                         step_pica.id,
+                        dp.keterangan_reject,
                         CASE
                             WHEN step_pica.action = 'ca' THEN 'Corrective'
                             WHEN step_pica.action = 'pa' THEN 'Preventive'
@@ -361,6 +373,7 @@ class HelperController extends Controller
                     ,[ccp]
                     ,[progress]
                     ,[created_at]
+                    ,status_reject
                 FROM [history_progress_solution] where id_solution = '" . $table->search['IDSOLUTION'] . "' and nodocpica = '" . $table->search['NODOCPICA'] . "' ";
         $countDataUser = DB::select("select count(*) jumlah FROM history_progress_solution where id_solution = '" . $table->search['IDSOLUTION'] . "' and nodocpica = '" . $table->search['NODOCPICA'] . "' ");
         $newQuery = $this->GetQueryDataTableHistoryTable($query, req: $table);
@@ -372,6 +385,30 @@ class HelperController extends Controller
             'totalNotFiltered' => $countDataUser[0]->jumlah,
             "rows" => $dataUser,
         ]);
+    }
+
+    public function GetQueryDataTableApprovementPica(string $query, Request $req)
+    {
+        if (isset($req->search['IDSOLUTION']) && $req->search['IDSOLUTION'] != null) {
+            $query = $query . "where id_solution = '" . $req->search['IDSOLUTION'] . "' ";
+        }
+        if (isset($req->search['NODOCPICA']) && $req->search['NODOCPICA'] != null) {
+            $query = $query . " AND nodocpica = '" . $req->search['NODOCPICA'] . "' ";
+        }
+
+        if (isset($req["sort"]) && $req["sort"] != null) {
+            $query = $query . ' ORDER BY ' . $req["sort"] . ' ' . $req["order"];
+        } else {
+            $query = $query . ' ORDER BY ID DESC ';
+        }
+
+        if ($req["offset"] != null) {
+            $query = $query . ' OFFSET ' . $req["offset"] . ' ROWS ';
+        }
+        if ($req["limit"] != null) {
+            $query = $query . "FETCH NEXT " . $req["limit"] . " ROWS ONLY";
+        }
+        return $query;
     }
 
     function HelperDataTableApprovementStepPica(Request $table)
@@ -451,7 +488,7 @@ class HelperController extends Controller
                 SELECT * 
                 FROM CTE where acceptance = 9 and dic = '$dept' and approver = '$userID' ";
         $countDataUser = DB::select("select count(*) jumlah FROM new_pica_step where dic = '$dept'");
-        $newQuery = $this->GetQueryDataTablePica($query, $table);
+        $newQuery = $this->GetQueryDataTableApprovementPica($query, $table);
         $dataUser = DB::select($newQuery);
 
         return response()->json([
