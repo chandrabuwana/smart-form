@@ -138,7 +138,7 @@ class SKLFormController extends Controller
                 'TglPelaksanaan' => $request->tglPelaksanaan,
                 'Shift' => $request->inputShift,
                 'Status' => 'Dalam Review',
-                'HariKeTujuh' => $request->tipeLembur == 'Hari ke-7' ? '1' : '0',
+                'HariKeTujuh' => $request->hariKeTujuh ? '1' : '0',
                 'created_at' => $now,
                 'created_by' => $userid,
             ]);
