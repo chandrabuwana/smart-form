@@ -16,7 +16,7 @@ class PermissionMenu
             'Master Data' => [
                 'master-form-pic',
             ],
-            'Team Management' => [
+            'Admin' => [
                 'role-management',
                 'user-management',
             ],
