@@ -177,7 +177,7 @@ class AssetRequestController extends Controller {
     function DashboardForm(Request $req) {
         $nik_session = $req->session()->get('user_id', '');
 
-        return view("SmartForm::SM/dashboard-form-sm", ['nik_session' => $nik_session]);
+        return view("SmartForm::SM/dashboard-form-sm", ['nik_session' => $nik_session, 'list_dept' => self::LIST_DEPT]);
     }
 
     function SubmitFormAssetRequest(Request $req) {

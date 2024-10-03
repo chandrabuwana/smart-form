@@ -7,11 +7,13 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class AdminController extends Controller {
+    private const TABLE_MASTER_MENU = 'MasterMenu';
 
     function index() {
-        $count_parent = DB::table('MasterMenu')
+        $count_parent = DB::table(self::TABLE_MASTER_MENU)
             ->select('urutan as order')
             ->where('status', 1)
             ->where('parent', null)
@@ -34,7 +36,7 @@ class AdminController extends Controller {
         $offset = $request->query('offset', 0); // Default offset
         $limit = $request->query('limit', 10);
 
-        $data = DB::table('MasterMenu as a')
+        $data = DB::table(self::TABLE_MASTER_MENU . ' as a')
             ->select('a.id', 'a.nama', 'a.link', 'a.urutan as order', 'a.status', 'a.parent', 'b.nama as parent_nama')
             ->leftJoin('MasterMenu as b', 'a.parent', '=', 'b.id')
             ->where('a.status', 1)
@@ -43,7 +45,7 @@ class AdminController extends Controller {
             ->skip($offset)->take($limit)
             ->get();
 
-        $totalNotFiltered = DB::table('MasterMenu as a')->count();
+        $totalNotFiltered = DB::table(self::TABLE_MASTER_MENU . ' as a')->count();
 
         return response()->json(['total'=> $totalNotFiltered, 'totalNotFiltered'=> $totalNotFiltered,'rows' => $data]);
     }
@@ -66,7 +68,7 @@ class AdminController extends Controller {
             );
 
             DB::beginTransaction();
-            $insert_menu = DB::table('MasterMenu')
+            $insert_menu = DB::table(self::TABLE_MASTER_MENU)
                 ->insertGetId($body_value);
             DB::commit();
 
@@ -81,4 +83,122 @@ class AdminController extends Controller {
 
         return response()->json($response);
     }
+
+    public function EditMenu(Request $request) {
+        $isSucces = false;
+        $message = '';
+        $data = null;
+
+        $nik_session = $request->session()->get('user_id', '');
+        $validator = Validator::make(
+            $request->all(), 
+            [
+                'idMenu' => ['required'],
+            ],
+            [
+                'idMenu.required' => 'Kode Section tidak valid',
+            ]
+        );
+
+        $data = $request->input();
+        $errorList = $validator->errors()->all();
+
+        if(count($errorList) > 0) {
+            
+            $message = "Error mandatory field";
+            $errorMessage = $errorList;
+        
+        } else {
+            try {
+                $id = $request->input('idMenu');
+                $data_update = [
+                    'nama' => $request->input('nama'),
+                    'link' => $request->input('link'),
+                    'urutan' => $request->input('urutan'),
+                    'parent' => $request->input('parent'),
+                    'status' => $request->input('status'),
+                ];
+                Log::info(json_encode($data_update, JSON_PRETTY_PRINT));
+
+                DB::beginTransaction();
+                DB::table(self::TABLE_MASTER_MENU)
+                    ->where('id', $id)
+                    ->update($data_update);
+
+                DB::commit();
+                $message = 'Berhasil update data!';
+                $isSucces = true;
+            } catch (Exception $ex) {
+                DB::rollBack();
+                $message = "Terjadi kesalahan, coba beberapa saat lagi";
+                $isSucces = false;
+
+                Log::error($ex->getMessage());
+                Log::error($ex->getTraceAsString());
+            }
+        }
+
+        return response()->json(
+            [
+                'isSuccess' => $isSucces,
+                'message' => $message,
+                'data' => null
+            ]
+        );
+    }
+
+    public function DeleteMenu(Request $request) {
+        $isSucces = false;
+        $message = '';
+        $data = null;
+        $nik_session = $request->session()->get('user_id', '');
+        $validator = Validator::make(
+            $request->all(), 
+            [
+                'idMenu' => ['required']
+            ],
+            [
+                'idMenu.required' => 'Nomor tidak valid'
+            ]
+        );
+
+        $data = $request->input();
+        $errorList = $validator->errors()->all();
+
+        if(count($errorList) > 0) {
+            
+            $message = "Error mandatory field";
+            $errorMessage = $errorList;
+        
+        } else {
+            $id = $request->input("idMenu");
+
+            try {
+                DB::beginTransaction();
+                DB::table(self::TABLE_MASTER_MENU)
+                    ->where('id', $id)
+                    ->delete();
+                DB::commit();
+
+                $message = "Berhasil menghapus data level user";
+                $isSucces = true;
+            } catch (Exception $ex) {
+                DB::rollBack();
+                $message = "Terjadi kesalahan, coba beberapa saat lagi";
+                $isSucces = false;
+
+                Log::error($ex->getMessage());
+                Log::error($ex->getTraceAsString());
+            }
+        }
+
+        return response()->json(
+            [
+                'isSuccess' => $isSucces,
+                'message' => $message,
+                'data' => null
+            ]
+        );
+    }
+
 }
