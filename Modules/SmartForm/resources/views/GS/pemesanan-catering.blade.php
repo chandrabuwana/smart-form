@@ -84,7 +84,7 @@
                                 <tr>
                                     <th data-field="nik" data-align="center">NIK</th>
                                     <th data-field="kodesite" data-align="center">Site</th>
-                                    <th data-field="lokasi" data-align="left">Lokasi</th>
+                                    <th data-field="lokasi" data-align="left" data-formatter="lokasiFormatter">Lokasi</th>
                                     <th data-field="status" data-align="left" data-formatter='statusFormatter' data-filter-control="select">Status</th>
                                     <th data-field="cuti" data-align="left" data-formatter='cutiFormatter'>Cuti</th>
                                 </tr>
@@ -551,12 +551,21 @@
 
             return nilai
         }
+
         function cutiFormatter(value) {
             var nilai = null;
             if(value==0) nilai="Masuk/Off"
             if(value==1) nilai="Cuti"
 
             return nilai
+        }
+        
+        function lokasiFormatter(value, row, index) {
+            console.log({value: value, row: row.NamaMess})
+            var lokasiHuniMess = value
+            if(value == 'mess')  lokasiHuniMess = row.NamaMess 
+
+            return lok
         }
 
         $tableWorking.on('post-body.bs.table', function(data) {
@@ -624,6 +633,7 @@
                         status: response.data.dataMess[dataMess].status,
                         cuti: response.data.dataMess[dataMess].cuti,
                         noDoc: response.data.dataMess[dataMess].NoDoc,
+                        NamaMess: response.data.dataMess[dataMess].NamaMess,
                     })
                     if(response.data.dataMess[dataMess].cuti == 1) cutiNIK.push(response.data.dataMess[dataMess].Nik)
                 }
