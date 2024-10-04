@@ -52,6 +52,9 @@
             padding: 2px 4px;
             border-bottom: 1px solid rgba(85, 83, 83, 0.534);
         }
+        .btn.disabled {
+            color: #f0f2f5;
+        }
     </style>
 @endsection
 
@@ -74,7 +77,7 @@
                         <h4>Detail per Vendor</h4>
                     </div>
                     <div class="table-responsive p-0">
-                        <table id="list-form" data-toggle="table" data-ajax="fetchPerVendor"
+                        <table id="data-per-vendor" data-toggle="table" data-ajax="fetchPerVendor"
                             data-side-pagination="client" data-filter-control="true"
                             data-page-list="[10, 25, 50, 100, all]" data-sortable="true"
                             data-content-type="application/json" data-data-type="json" data-pagination="true"
@@ -88,6 +91,7 @@
                                     <th data-field="NamaVendor" data-align="left" data-halign="center" >Vendor</th>
                                     <th data-field="Jumlah" data-align="center" data-halign="center">Jumlah</th>
                                     <th data-field="status" data-align="center" data-halign="center">Status Pemesanan</th>
+                                    <th data-align="center" data-halign="center" data-formatter="actionPerVendor">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -143,12 +147,24 @@
         // console.log({{ Illuminate\Support\Js::from($data) }})
 
         function actionFormatter(value, row, index) {
-            console.log(row)
+            console.log(row.status)
             var _id = ", '"+ row.id_detail + "'"
             var _dataStatus = 'data-status="' + row.status + '"'
-            var isDisabled = row.status == "Diterima GS" ? "disabled" : ""
+            var isDisabled = ""
+            if(row.status == "Diterima GS" || row.status == "Dalam Proses" || row.status == "Pesanan Baru" || row.status == null || row.status == "null") isDisabled = "disabled"
   
             var btnTerima = '<button class="btn btn-primary ' + isDisabled +  '" ' + _dataStatus  + ' onclick="actionTerima(this'+ _id +')"'+'>Terima</button>'
+            
+            return btnTerima
+        }
+
+        function actionPerVendor(value, row, index) {
+            var _id = ", '"+ row.id_detail_vendor + "'"
+            var _dataStatus = 'data-status="' + row.status + '"'
+            var isDisabled = ""
+            if(row.status == "Diterima GS" || row.status == "Dalam Proses" || row.status == "Pesanan Baru" || row.status == null || row.status == "null") isDisabled = "disabled"
+  
+            var btnTerima = '<button class="btn btn-primary ' + isDisabled +  '" ' + _dataStatus  + ' onclick="actionTerimaVendor(this'+ _id +')"'+'>Terima</button>'
             
             return btnTerima
         }
@@ -164,7 +180,7 @@
                 title: "Apakah yakin ingin terima?",
                 icon: "question",
                 showCancelButton: true,
-                confirmButtonText: "Hapus",
+                confirmButtonText: "Terima",
                 cancelButtonText: "Batal",
                 cancelButtonColor: "#3085d6",
                 confirmButtonColor: "#d33"
@@ -187,6 +203,54 @@
                             dataMsgTerima.title = "Berhasil!"
                             dataMsgTerima.text = resp.data.message
                             $("#data-per-lokasi").bootstrapTable("refresh")
+                        } else {
+                            dataMsgTerima.icon = "error"
+                            dataMsgTerima.title = "Gagal!"
+                            dataMsgTerima.html = resp.data.errorMessage.join("<br>")
+                        }
+                    })
+                    .catch(function(err) {
+                        dataMsgTerima.icon = "error"
+                        dataMsgTerima.title = "Gagal!"
+                        dataMsgTerima.text = "Terjadi kesalahan, coba beberapa saat lagi"
+                    })
+                    .finally(function() {
+                        e.disabled = false
+                        Swal.fire(dataMsgTerima)
+                    })
+                }
+            })
+        }
+
+        function actionTerimaVendor(e, idDetail) {
+            // console.log(idDetail)
+            Swal.fire({
+                title: "Apakah yakin ingin terima?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "Terima",
+                cancelButtonText: "Batal",
+                cancelButtonColor: "#3085d6",
+                confirmButtonColor: "#d33"
+            }).then(function(result) {
+                if (result.isConfirmed) {
+                    e.disabled = true
+                    var dataMsgTerima = {
+                        icon: "error",
+                        title: ""
+                    }
+                    var reBodyTerima = {status: "Diterima GS", id_detail_vendor: idDetail}
+                    axios.put(baseURL + '/update-status-pemesanan-vendor', reBodyTerima , {
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    })
+                    .then(function(resp) {
+                        if(resp.data.isSuccess) {
+                            dataMsgTerima.icon = "success"
+                            dataMsgTerima.title = "Berhasil!"
+                            dataMsgTerima.text = resp.data.message
+                            $("#data-per-vendor").bootstrapTable("refresh")
                         } else {
                             dataMsgTerima.icon = "error"
                             dataMsgTerima.title = "Gagal!"

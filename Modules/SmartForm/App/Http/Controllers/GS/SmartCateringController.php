@@ -614,7 +614,7 @@ class SmartCateringController extends Controller {
 
         try {
             $sql_data_pemesanan = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_VENDOR_ORDER . ' as a')
-                ->select('a.kode_pemesanan', 'a.KodeSite', 'a.TanggalOrder', 'a.Jumlah', 'b.Nama as NamaVendor', 'b.id as IDVendor', 'a.status')    
+                ->select('a.id as id_detail_vendor', 'a.kode_pemesanan', 'a.KodeSite', 'a.TanggalOrder', 'a.Jumlah', 'b.Nama as NamaVendor', 'b.id as IDVendor', 'a.status')    
                 ->leftJoin(self::TABLE_VENDOR_MASTER . ' as b', 'a.VendorID', '=', 'b.id')
                 ->where('kode_pemesanan', $idPemesanan);
                 
@@ -688,6 +688,73 @@ class SmartCateringController extends Controller {
                 // unset($data_input['id']);
 
                 $sql_update_data = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_SUBMIT_ORDER_DETAIL)
+                    ->where('id', $id)
+                    ->update($data_update);
+
+                DB::connection(self::DB_CONN_NAME)->commit();
+                $message = "Ok";
+                $isSuccess = true;
+            } catch (Exception $ex) {
+
+                $message = "Terjadi kesalahan, coba beberapa saat lagi";
+                $errorMessage = [$message];
+
+                DB::connection(self::DB_CONN_NAME)->rollBack();
+
+
+                Log::error(get_class($ex). " | ". $ex->getMessage());
+                Log::error($ex->getTraceAsString());
+            }
+        }
+
+        return response()->json([
+            'isSuccess' => $isSuccess,
+            'message' => $message,
+            'errorMessage' => $errorMessage,
+            'data' => $data
+        ]);
+
+    }
+
+    public function UpdateStatusPemesananVendor(Request $request) {
+        $isSuccess = false;
+        $message = '';
+        $errorMessage = [];
+        $data = null;
+        $nik_session = $request->session()->get('user_id', '');
+        $validator = Validator::make(
+            $request->all(), 
+            [
+                'status' => ['required'], 
+                'id_detail_vendor' => ['required']
+            ],
+            [
+                'status.required' => 'Status tidak valid',
+                'id_detail_vendor.required' => 'ID detail tidak valid'
+            ]
+        );
+
+        $data = $request->input();
+        $errorList = $validator->errors()->all();
+
+        if(count($errorList) > 0) {
+            
+            $message = "Error mandatory field";
+            $errorMessage = $errorList;
+
+        } else {
+            $data_update = [
+                'status' => $request->input('status'),
+                'updated_at' => now(),
+                'updated_by' => $nik_session
+            ];
+
+            try {
+                DB::connection(self::DB_CONN_NAME)->beginTransaction();
+                $id = $request->input('id_detail_vendor');
+                // unset($data_input['id']);
+
+                $sql_update_data = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_SUBMIT_ORDER_VENDOR)
                     ->where('id', $id)
                     ->update($data_update);
 
