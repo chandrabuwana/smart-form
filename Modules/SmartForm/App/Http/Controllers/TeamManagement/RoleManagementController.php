@@ -147,17 +147,21 @@ class RoleManagementController extends Controller
             ]);
 
             // delete first..
-            DB::table('MS_ROLE_PERMISSION')->where('role_id', $id)->delete();
+            DB::table('MS_ROLE_PERMISSION')->where('role_id', $id)
+                ->whereNotIn('master_menu_id', $requestData['module_permission'])->delete();
 
             foreach($requestData['module_permission'] as $moduleId) {
-                DB::table('MS_ROLE_PERMISSION')->insert([
-                    'role_id' => $id,
-                    'master_menu_id' => $moduleId,
-                    'created_at' => now(),
-                    'created_by' => session("user_id"),
-                    'updated_at' => now(),
-                    'updated_by' => session("user_id")
-                ]);
+                DB::table('MS_ROLE_PERMISSION')->updateOrInsert(
+                    ['role_id' => $id, 'master_menu_id' => $moduleId],
+                    [
+                        'role_id' => $id,
+                        'master_menu_id' => $moduleId,
+                        'created_at' => now(),
+                        'created_by' => session("user_id"),
+                        'updated_at' => now(),
+                        'updated_by' => session("user_id")
+                    ]
+                );
             }
 
             DB::commit();

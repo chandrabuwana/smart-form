@@ -55,26 +55,10 @@
                             <div class="input-group input-group-static mb-4">
                                 <label for="filterDepartment">Department Requestor</label>
                                 <select style="width: 100%" id="filterDepartment" name="filterDepartment">
-                                    <option selected value="">-- Pilih Department --</option>
-                                        <option value="ENG">ENGINEERING</option>
-                                        <option value="SHE">SHE</option>
-                                        <option value="Produksi">PRODUKSI</option>
-                                        <option value="SM">SM</option>
-                                        <option value="OD">OD</option>
-                                        <option value="IT">IT</option>
-                                        <option value="IC">IC</option>
-                                        <option value="GS">GS</option>
-                                        <option value="RM">PLANT</option>
-                                        <option value="BDV">BUSDEV</option>
-                                        <option value="DIR">DIRECTORS</option>
-                                        <option value="FAT">FAT</option>
-                                        <option value="DTC">DATA CENTER</option>
-                                        <option value="MM">LOGISTIK</option>
-                                        <option value="OPR">OPERATION</option>
-                                        <option value="SI">SINERGY INSTITUTE</option>
-                                        <option value="LEG">LEGAL</option>
-                                        <option value="OD">ORGANIZATION DEVELOPMENT</option>
-                        </select>
+                                    @foreach ($list_dept as $key => $item)
+                                        <option value="{{$key}}">{{ $item }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                         <div class="col-6 col-md-3">
