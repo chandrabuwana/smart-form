@@ -11,191 +11,35 @@
      </div>
      <hr class="horizontal light mt-0 mb-2">
      <div class="collapse navbar-collapse w-auto " id="sidenav-collapse-main">
+         <div class="navbar-search mb-3 " style="background-color: white; margin:10px; border-radius: 20px">
+             <input type="text" id="navbarSearch" class="form-control" placeholder="Search menu..."
+                 style="margin:10px">
+         </div>
          <ul class="navbar-nav">
-            @foreach ($menu as $nav)
-                <li class="nav-item">
-                    <a class="nav-link text-white active bg-gradient-primary nav-menu-utama" href="#">
-                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="fa fa-sitemap"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">{{ $nav['nama'] }}</span>
-                    </a>
+             @foreach ($menu as $nav)
+                 <li class="nav-item">
+                     <a class="nav-link text-white active bg-gradient-primary nav-menu-utama" href="#">
+                         <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                             <i class="fa fa-sitemap"></i>
+                         </div>
+                         <span class="nav-link-text ms-1">{{ $nav['nama'] }}</span>
+                     </a>
 
-                    <ul class="submenu navbar-nav">
-                        @for ($i = 0; $i < count($nav['child']); $i++)
-                            <li class="nav-item">
-                                <a class="nav-link text-white " id="{{ $nav['child'][$i]['id']}}"
-                                    href="{{ $nav['child'][$i]['type'] == 'redirect' ? env('EXT_APP_URL') . $nav['child'][$i]['link'] . '?id=' . $userIdToken : $nav['child'][$i]['link'] }}">
-                                    <div class="text-white text-center d-flex align-items-center justify-content-center">
-                                    </div>
-                                    <span class="nav-link-text">{{ $nav['child'][$i]['nama'] }}</span>
-                                </a>
-                            </li>
-                        @endfor
-                    </ul>
-                </li>
-            @endforeach
-            <!--
-             <li class="nav-item">
-                 <a class="nav-link text-white active bg-gradient-primary" href="#" id="menuSmartPica">
-                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                         <i class="fa fa-sitemap"></i>
-                     </div>
-                     <span class="nav-link-text ms-1">Smart Pica</span>
-                 </a>
-                 <ul class="submenu navbar-nav">
-                     <li class="nav-item">
-                         <a class="nav-link text-white " href="{{ route('dashboard-smart-pica') }}" id="dahsboardPica">
-                             <div class="text-white text-center d-flex align-items-center justify-content-center">
-                             </div>
-                             <span class="nav-link-text">Dashboard</span>
-                         </a>
-                     </li>
-                     <li class="nav-item">
-                         <a class="nav-link text-white " href="{{ route('add-smart-pica') }}" id="dahsboardPica">
-                             <div class="text-white text-center d-flex align-items-center justify-content-center">
-                             </div>
-                             <span class="nav-link-text">Add Pica</span>
-                         </a>
-                     </li>
-                     <li class="nav-item">
-                         <a class="nav-link text-white " href="{{ route('dashboard-update-progress-smartpica') }}"
-                             id="progressPica">
-                             <div class="text-white text-center d-flex align-items-center justify-content-center">
-                             </div>
-                             <span class="nav-link-text">Update Progress</span>
-                         </a>
-                     </li>
-                 </ul>
-             </li>
-             <li class="nav-item">
-                 <a class="nav-link text-white active bg-gradient-primary" href="#" id="menuSHE">
-                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                         <i class="fa fa-sitemap"></i>
-                     </div>
-                     <span class="nav-link-text ms-1">SHE</span>
-                 </a>
-                 <ul class="submenu navbar-nav">
-                     <li class="nav-item">
-                         <a class="nav-link text-white " href="{{ route('bss-form-she-019B') }}" id="dahsboardPica">
-                             <div class="text-white text-center d-flex align-items-center justify-content-center">
-                             </div>
-                             <span class="nav-link-text">Fatigue Check</span>
-                         </a>
-                     </li>
-
-                 </ul>
-             </li>
-             <li class="nav-item">
-                 <a class="nav-link text-white active bg-gradient-primary" href="#" id="menuIC">
-                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                         <i class="fa fa-sitemap"></i>
-                     </div>
-                     <span class="nav-link-text ms-1">Intellectual Capital</span>
-                 </a>
-                 <ul class="submenu navbar-nav">
-                     <li class="nav-item">
-                         <a class="nav-link text-white " href="{{ route('bss-dahboard-ic-induksi-karyawan') }}"
-                             id="dashboardICInduksiKaryawan">
-                             <div class="text-white text-center d-flex align-items-center justify-content-center">
-                             </div>
-                             <span class="nav-link-text">Dashboard Induksi Karyawan</span>
-                         </a>
-                     </li>
-                     <li class="nav-item">
-                         <a class="nav-link text-white " href="{{ route('bss-form-ic-induksi-karyawan') }}"
-                             id="dashboardICInduksiKaryawan">
-                             <div class="text-white text-center d-flex align-items-center justify-content-center">
-                             </div>
-                             <span class="nav-link-text">Add Induksi Karyawan</span>
-                         </a>
-                     </li>
-                 </ul>
-             </li>
-
-             <li class="nav-item">
-                 <a class="nav-link text-white active bg-gradient-primary" href="#" id="menuSM">
-                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                         <i class="fa fa-sitemap"></i>
-                     </div>
-                     <span class="nav-link-text ms-1">SM</span>
-                 </a>
-                 <ul class="submenu navbar-nav">
-                     <li class="nav-item">
-                         <a class="nav-link text-white " href="{{ route('bss-form.sm.dashboard') }}" id="form-asset-request-nav">
-                             <div class="text-white text-center d-flex align-items-center justify-content-center">
-                             </div>
-                             <span class="nav-link-text">Dashboard</span>
-                         </a>
-                     </li>
-                     <li class="nav-item">
-                         <a class="nav-link text-white " href="{{ route('bss-form.sm.form-asset-request') }}" id="form-asset-request-nav">
-                             <div class="text-white text-center d-flex align-items-center justify-content-center">
-                             </div>
-                             <span class="nav-link-text">Form Asset Request</span>
-                         </a>
-                     </li>
-                 </ul>
-             </li>
-
-             <li class="nav-item">
-                 <a class="nav-link text-white active bg-gradient-primary" href="#" id="menuPLANT">
-                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                         <i class="fa fa-sitemap"></i>
-                     </div>
-                     <span class="nav-link-text ms-1">PLANT</span>
-                 </a>
-                 <ul class="submenu navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link text-white " href="{{ route('bss-form.plant-transmission.dashboard') }}" id="form-asset-request-nav">
-                            <div class="text-white text-center d-flex align-items-center justify-content-center">
-                            </div>
-                            <span class="nav-link-text">Dashboard</span>
-                        </a>
-                    </li>
-                     <li class="nav-item">
-                         <a class="nav-link text-white " href="{{ route('bss-form.plant-transmission.form') }}" id="form-asset-request-nav">
-                            <span class="nav-link-text">Form Transmission Test</span>
-                         </a>
-                     </li>
-                           <span class="nav-link-text">Transmission Test</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white " href="{{ route('bss-form.undercarriage.dashboard') }}" id="form-asset-request-nav">
-                            <div class="text-white text-center d-flex align-items-center justify-content-center">
-                            </div>
-                            <span class="nav-link-text">Under Carriage Inspection</span>
-                        </a>
-                    </li>
-                 </ul>
-             </li>
-
-            <li class="nav-item">
-                <a class="nav-link text-white active bg-gradient-primary" href="#" id="menuProduksi">
-                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="fa fa-sitemap"></i>
-                    </div>
-                    <span class="nav-link-text ms-1">Produksi</span>
-                </a>
-                <ul class="submenu navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link text-white " href="{{ route('bss-form-prod-timesheet') }}" id="dashboard-timesheet-produksi">
-                            <div class="text-white text-center d-flex align-items-center justify-content-center">
-                            </div>
-                            <span class="nav-link-text">Dashboard</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white " href="{{ route('form-timesheet-produksi') }}" id="form-timesheet-produksi">
-                            <div class="text-white text-center d-flex align-items-center justify-content-center">
-                            </div>
-                            <span class="nav-link-text">Timesheet Produksi</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-        -->
+                     <ul class="submenu navbar-nav">
+                         @for ($i = 0; $i < count($nav['child']); $i++)
+                             <li class="nav-item">
+                                 <a class="nav-link text-white " id="{{ $nav['child'][$i]['id'] }}"
+                                     href="{{ $nav['child'][$i]['type'] == 'redirect' ? env('EXT_APP_URL') . $nav['child'][$i]['link'] . '?id=' . $userIdToken : $nav['child'][$i]['link'] }}">
+                                     <div
+                                         class="text-white text-center d-flex align-items-center justify-content-center">
+                                     </div>
+                                     <span class="nav-link-text">{{ $nav['child'][$i]['nama'] }}</span>
+                                 </a>
+                             </li>
+                         @endfor
+                     </ul>
+                 </li>
+             @endforeach
          </ul>
 
      </div>

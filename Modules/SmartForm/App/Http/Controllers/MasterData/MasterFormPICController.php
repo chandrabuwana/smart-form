@@ -19,11 +19,12 @@ class MasterFormPICController extends Controller
 
     public function getDashboardData(Request $request)
     {
-        $search  = $request->query('search', '');
-        $sort    = $request->query('sort', 'id');
-        $order   = $request->query('order', 'asc');
-        $offset  = $request->query('offset', 0);
-        $limit   = $request->query('limit', 10);
+        $formName     = $request->query('form_name', '');
+        $picUsername  = $request->query('pic_username', '');
+        $sort         = $request->query('sort', 'id');
+        $order        = $request->query('order', 'asc');
+        $offset       = $request->query('offset', 0);
+        $limit        = $request->query('limit', 10);
 
         try {
             $formPICNotFiltered = DB::table('MS_FORM_PIC')->select('id');
@@ -31,19 +32,22 @@ class MasterFormPICController extends Controller
             $formPIC = DB::table('MS_FORM_PIC')
                 ->select('id', 'form_name', 'form_slug', 'pic_username');
 
-            if(!empty($search)) {
-                $formPIC->where('form_name', 'like', '%' . $search . '%')
-                    ->orWhere('form_slug', 'like', '%' . $search . '%')
-                    ->orWhere('pic_username', 'like', '%' . $search . '%');
+            if(!empty($formName)) {
+                $formPIC->where('form_name', 'like', '%' . $formName . '%')
+                    ->orWhere('form_slug', 'like', '%' . $formName . '%');
+            }
+
+            if(!empty($picUsername)) {
+                $formPIC->where('pic_username', 'like', '%' . $picUsername . '%');
             }
 
             $data = $formPIC->orderBy($sort, $order)->offset($offset)
-                ->limit($limit);
+                ->limit($limit)->get();
 
             return response()->json([
                 'total' => $data->count(),
                 'totalNotFiltered' => $formPICNotFiltered->count(),
-                'rows' => $data->get()
+                'rows' => $data
             ]);
 
         } catch (Exception $ex) {
