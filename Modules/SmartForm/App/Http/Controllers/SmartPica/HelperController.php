@@ -387,6 +387,98 @@ class HelperController extends Controller
         ]);
     }
 
+    public function GetQueryDataTableDashboardHistoryTable(string $query, Request $req)
+    {
+        if (isset($req->search['FILTERNIKSOLUTION']) && $req->search['FILTERNIKSOLUTION'] != null) {
+            $query = $query . " AND step_pica.pic = '" . $req->search['FILTERNIKSOLUTION'] . "' ";
+        }
+        if (isset($req->search['FILTERDEPARTMENTSOLUTION']) && $req->search['FILTERDEPARTMENTSOLUTION'] != null) {
+            $query = $query . " AND step_pica.dic = '" . $req->search['FILTERDEPARTMENTSOLUTION'] . "' ";
+        }
+        if (isset($req->search['FILTERSITESOLUTION']) && $req->search['FILTERSITESOLUTION'] != null) {
+            $query = $query . " AND mp.site = '" . $req->search['FILTERSITESOLUTION'] . "' ";
+        }
+
+        if (isset($req["sort"]) && $req["sort"] != null) {
+            $query = $query . ' ORDER BY ' . $req["sort"] . ' ' . $req["order"];
+        } else {
+            $query = $query . ' ORDER BY ID DESC ';
+        }
+
+        if ($req["offset"] != null) {
+            $query = $query . ' OFFSET ' . $req["offset"] . ' ROWS ';
+        }
+        if ($req["limit"] != null) {
+            $query = $query . "FETCH NEXT " . $req["limit"] . " ROWS ONLY";
+        }
+        return $query;
+    }
+
+
+
+
+    function HelperDataTableDashboardHistoryProgressPica(Request $table)
+    {
+        $query = " WITH dataProgress AS (
+            SELECT
+                id_solution,
+                nodocpica,
+                TRY_CAST(progress AS INT) AS progress,
+                status_reject,
+                keterangan_reject,
+                ROW_NUMBER() OVER (PARTITION BY id_solution, nodocpica ORDER BY TRY_CAST(progress AS INT) DESC) AS rn
+            FROM
+                history_progress_solution
+        )
+        SELECT
+            step_pica.nodocpica,
+            step_pica.id_master,
+            ISNULL(dp.progress, 0) AS progress,
+            UPPER(CASE
+                WHEN ISNULL(step_pica.acceptance, 0) = 2 THEN 'REJECT BY PIC'
+                WHEN ISNULL(step_pica.acceptance, 0) = 9 AND ISNULL(step_pica.status_approve, 0) = 0 AND ISNULL(step_pica.status_reject, 0) = 0  THEN 'NEED APPROVE'
+                WHEN ISNULL(dp.progress, 0) = 0 THEN 'NOT YET'
+                WHEN ISNULL(dp.progress, 0) > 0 AND ISNULL(dp.progress, 0) < ISNULL(mp.target_master, 0) THEN 'ON PROGRESS'
+                WHEN ISNULL(step_pica.acceptance, 0) = 9 AND ISNULL(step_pica.status_approve, 0) = 1 THEN 'CLOSE'
+                WHEN ISNULL(dp.status_reject,0) = 1 THEN 'REVISION'
+                ELSE 'NOT YET'
+            END) AS status,
+            step_pica.nik_master,
+            step_pica.id,
+            dp.keterangan_reject,
+            CASE
+                WHEN step_pica.action = 'ca' THEN 'Corrective'
+                WHEN step_pica.action = 'pa' THEN 'Preventive'
+                ELSE step_pica.action
+            END AS action,
+            step_pica.note_step,
+            UPPER(step_pica.ap_tod) AS ap_tod,
+            step_pica.pic,
+            step_pica.due_date,
+            step_pica.position_why,
+            step_pica.identity_why,
+            acceptance,
+            acceptance_reason,
+            mp.target_master
+        FROM
+            new_pica_step step_pica
+        LEFT JOIN
+            dataProgress dp ON dp.id_solution = step_pica.id
+                AND dp.nodocpica = step_pica.nodocpica
+                AND dp.rn = 1
+        JOIN master_pica mp ON mp.nodocpica = step_pica.nodocpica where 1 = 1 ";
+        $countDataUser = DB::select("select count(*) jumlah FROM new_pica_step where 1 = 1 ");
+        $newQuery = $this->GetQueryDataTableDashboardHistoryTable($query, req: $table);
+
+        $dataUser = DB::select($newQuery);
+
+        return response()->json([
+            'total' => $countDataUser[0]->jumlah,
+            'totalNotFiltered' => $countDataUser[0]->jumlah,
+            "rows" => $dataUser,
+        ]);
+    }
+
     public function GetQueryDataTableApprovementPica(string $query, Request $req)
     {
         if (isset($req->search['IDSOLUTION']) && $req->search['IDSOLUTION'] != null) {
