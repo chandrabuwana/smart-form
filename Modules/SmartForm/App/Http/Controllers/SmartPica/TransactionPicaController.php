@@ -19,6 +19,7 @@ class TransactionPicaController extends Controller
         $dataMasterBulan = $dataInputer->dataMaster['bulan'];
         $dataMasterWeek = $dataInputer->dataMaster['week'];
         $dataMasterSite = $dataInputer->dataMaster['site'];
+        $dataMasterDept = $dataInputer->dataMaster['dept'];
         $dataMasterLeadKpi = $dataInputer->dataMaster['lead_kpi'];
         $dataMasterActual = $dataInputer->dataMaster['actual'];
         $dataMasterTarget = $dataInputer->dataMaster['target'];
@@ -39,6 +40,7 @@ class TransactionPicaController extends Controller
             $dataMasterTahun,
             $dataMasterBulan,
             $dataMasterWeek,
+            $dataMasterDept,
             $dataMasterSite,
             $dataMasterLeadKpi,
             $dataMasterActual,
@@ -89,6 +91,7 @@ class TransactionPicaController extends Controller
                 'tahun' => $dataMasterTahun,
                 'bulan' => $dataMasterBulan,
                 'week' => 3,
+                'dept' => $dataMasterDept,
                 'site' => $dataMasterSite,
                 'id_kpi' => $dataMasterLeadKpi,
                 'problem' => $dataMasterProblem,
