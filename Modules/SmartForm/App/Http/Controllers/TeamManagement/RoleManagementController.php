@@ -37,12 +37,12 @@ class RoleManagementController extends Controller
             }
 
             $data = $roleMaster->orderBy('MS_ROLE.' . $sort, $order)->offset($offset)
-                ->limit($limit);
+                ->limit($limit)->get();
 
             return response()->json([
                 'total' => $data->count(),
                 'totalNotFiltered' => $roleMasterNotFiltered->count(),
-                'rows' => $data->get()
+                'rows' => $data
             ]);
 
         } catch (Exception $ex) {
