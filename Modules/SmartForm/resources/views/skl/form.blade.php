@@ -259,7 +259,78 @@
                         <i>*Note : Jika ada pekerjaan diluar dari ketentuan diatas, maka Atasan Langsung wajib konfirmasi terlebih dahulu ke Departemen IC</i>
                     </small>
 
-                    <p class="mt-4 mb-3">
+                    <div class="form-check mt-4 mb-2 ps-0">
+                        <input class="form-check-input" type="checkbox" name="baPekerjaan" value="true" id="baPekerjaan">
+                        <label class="custom-control-label" for="customCheck1">BA Pekerjaan Diluar Standar</label>
+                    </div>
+
+                    <div id="form-ba-pekerjaan" class="d-none">
+                        <div class="input-group input-group-static">
+                            <label>Adapun pekerjaan yang dibutuhkan :</label>
+                            <textarea name="baDetailPekerjaan" class="form-control" rows="3"></textarea>
+                        </div>
+
+                        <h2 class="fw-bold mt-4 mb-2 fs-5">Remark (Analisa SEFTO) :</h2>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row mb-3 align-items-end">
+                                    <div class="col-md-4">
+                                        <label class="ms-0 mb-0 fs-6">Strategy</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input class="form-control input-text" id="seftoStrategy" name="seftoStrategy" placeholder="--- Sefto Strategy ---">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="row mb-3 align-items-end">
+                                    <div class="col-md-4">
+                                        <label class="ms-0 mb-0 fs-6">Economy</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input class="form-control input-text" id="seftoEconomy" name="seftoEconomy" placeholder="--- Sefto Economy ---">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="row mb-3 align-items-end">
+                                    <div class="col-md-4">
+                                        <label class="ms-0 mb-0 fs-6">Financial</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input class="form-control input-text" id="seftoFinancial" name="seftoFinancial" placeholder="--- Sefto Financial ---">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="row mb-3 align-items-end">
+                                    <div class="col-md-4">
+                                        <label class="ms-0 mb-0 fs-6">Technology</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input class="form-control input-text" id="seftoTechnology" name="seftoTechnology" placeholder="--- Sefto Technology ---">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="row mb-3 align-items-end">
+                                    <div class="col-md-4">
+                                        <label class="ms-0 mb-0 fs-6">Operational</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input class="form-control input-text" id="seftoOperational" name="seftoOperational" placeholder="--- Sefto Operational ---">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="mt-4 mb-2">
                         Diketahui dan Disetujui Oleh :
                     </p>
 
@@ -605,6 +676,17 @@
                 fetchOptionApprover();
             });
 
+            $('#baPekerjaan').change( function() {
+                const checked = $('#baPekerjaan:checked').length > 0;
+                if(checked) {
+                    $('[name=baDetailPekerjaan]').attr('required', true);
+                    $('#form-ba-pekerjaan').removeClass('d-none');
+                } else {
+                    $('#form-ba-pekerjaan').addClass('d-none');
+                    $('[name=baDetailPekerjaan]').removeAttr('required');
+                }
+            });
+
             $('#modalTambahKaryawan').on('hidden.bs.modal', function() {
                 $inputKaryawan.val(null).trigger('change');
                 $('#form-tambah-karyawan')[0].reset();
@@ -710,7 +792,8 @@
                     return;
                 }
 
-                if(pekerjaans.length == 0) {
+                const isBaPekerjaan = $('#baPekerjaan:checked').length > 0;
+                if(!isBaPekerjaan && pekerjaans.length == 0) {
                     Swal.fire({
                         icon: 'error',
                         title: 'Oops!',
