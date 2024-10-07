@@ -225,8 +225,7 @@
             params.data = {...params.data, ...additonalQuery}
             var url = `{{ route('bss-skl.dashboard-get-data') }}`
             $.get(url + '?' + $.param(params.data)).then(function(res) {
-                console.log(res);
-                params.success(res.data)
+                params.success(res)
             })
         }
 

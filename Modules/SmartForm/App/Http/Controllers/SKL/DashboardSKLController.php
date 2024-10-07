@@ -100,9 +100,9 @@ class DashboardSKLController extends Controller
             });
 
             return response()->json([
-                'total' => $data->count(),
+                'total' => $rows->count(),
                 'totalNotFiltered' => $sklMasterNotFiltered->count(),
-                'data' => $rows
+                'rows' => $rows
             ]);
 
         } catch (Exception $ex) {
