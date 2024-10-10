@@ -39,7 +39,7 @@ class SmartCateringController extends Controller {
     private const DB_CONN_NAME = 'sqlsrv';
 
     function AddPemesanan(Request $request) {
-        return view("SmartForm::GS/add-pemesanan");
+        return view("SmartForm::GS/pemesanan-catering");
     }
 
     function GenerateDetailPemesanan(Request $request) {
@@ -336,6 +336,7 @@ class SmartCateringController extends Controller {
                         'site' => $pesanan['site'],
                         'jenis_pemesanan' => $pesanan['jenis'],
                         'jumlah' => $pesanan['jumlah'],
+                        'status' => 'Pesanan Baru',
                         'created_at' => $tgl,
                         'created_by' => $nik_session
                     ];
@@ -445,11 +446,11 @@ class SmartCateringController extends Controller {
             $master_pemesanan = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_SUBMIT_ORDER . ' as a')
                 ->where('a.kode_pemesanan', $kode_pemesanan);
             $data_pemesanan = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_VENDOR_ORDER . ' as a')
-                ->select('a.kode_pemesanan', 'a.KodeSite', 'a.TanggalOrder', 'a.Jumlah', 'b.Nama', 'a.status')    
+                ->select('a.kode_pemesanan', 'a.KodeSite', 'a.TanggalOrder', 'a.Jumlah', 'b.NamaVendor', 'a.status')    
                 ->leftJoin(self::TABLE_VENDOR_MASTER . ' as b', 'a.VendorID', '=', 'b.id')
                 ->where('kode_pemesanan', $kode_pemesanan);
             $detail_per_lokasi = db::connection(SELF::DB_CONN_NAME)->table(SELF::TABLE_SUBMIT_ORDER_DETAIL . ' as a')
-                ->select('a.id_order as kode_pemesanan', 'a.jenis_pemesanan', 'a.jumlah','c.Nama as nama_vendor',  'd.NamaMess')
+                ->select('a.id_order as kode_pemesanan', 'a.jenis_pemesanan', 'a.jumlah','c.Nama as nama_vendor',  'd.NamaMess', 'a.status')
                 ->leftJoin(self::TABLE_VENDOR_MAPPING . ' as b', 'a.id_mapping_vendor', '=', 'b.id')
                 ->leftJoin(self::TABLE_VENDOR_MASTER . ' as c', 'b.VendorID', '=', 'c.id')
                 ->leftJoin(self::TABLE_MASTER_MESS . ' as d', 'a.lokasi', '=', 'd.NoDoc')
@@ -540,6 +541,246 @@ class SmartCateringController extends Controller {
             'message' => $message,
             'data' => $data
         ]);
+    }
+
+    function GetListPemesananPerLokasi(Request $request) {
+        $isSuccess = false;
+        $message = '';
+        $data = [
+            'total' => 0,
+            'totalNotFiltered' => 0,
+            'rows' => null
+        ];
+
+        $idPemesanan = $request->query('id', null);
+        $sort = $request->query('sort', 'id'); // Default sort by id
+        $order = $request->query('order', 'asc'); // Default order is ascending
+        $offset = $request->query('offset', 0); // Default offset
+        $limit = $request->query('limit', null);
+
+        try {
+            $sql_master_data = db::connection(SELF::DB_CONN_NAME)->table(SELF::TABLE_SUBMIT_ORDER_DETAIL . ' as a')
+            ->select('a.id as id_detail', 'a.id_order as kode_pemesanan', 'a.jenis_pemesanan', 'a.jumlah','c.Nama as nama_vendor',  'd.NamaMess as lokasi', 'a.status')
+            ->leftJoin(self::TABLE_VENDOR_MAPPING . ' as b', 'a.id_mapping_vendor', '=', 'b.id')
+            ->leftJoin(self::TABLE_VENDOR_MASTER . ' as c', 'b.VendorID', '=', 'c.id')
+            ->leftJoin(self::TABLE_MASTER_MESS . ' as d', 'a.lokasi', '=', 'd.NoDoc')
+            ->where('a.id_order', $idPemesanan);
+                
+            $jml = $sql_master_data->count();
+            if($limit == null || $limit == 'null' || $limit == '') {
+                $sql_master_data->skip($offset);
+            } else {
+                $sql_master_data->skip($offset)->limit($limit);
+            }
+            Log::info('SQL : ' . $sql_master_data->toRawSql());
+            $master_data = $sql_master_data->get();
+
+            $message= "Ok";
+            $isSuccess = true;
+            $data = [
+                'total' => $jml,
+                'totalNotFiltered' => $jml,
+                'rows' => $master_data
+            ];
+        } catch (Exception $ex) {
+            Log::error($ex->getMessage());
+            Log::error($ex->getTraceAsString());
+            
+            $message= $ex->getMessage();
+            $isSuccess = false;
+        }
+
+        return response()->json([
+            'isSuccess' => $isSuccess,
+            'message' => $message,
+            'data' => $data
+        ]);
+    }
+
+    function GetListPemesananPerVendor(Request $request) {
+        $isSuccess = false;
+        $message = '';
+        $data = [
+            'total' => 0,
+            'totalNotFiltered' => 0,
+            'rows' => null
+        ];
+
+        $idPemesanan = $request->query('id', null);
+        $sort = $request->query('sort', 'id'); // Default sort by id
+        $order = $request->query('order', 'asc'); // Default order is ascending
+        $offset = $request->query('offset', 0); // Default offset
+        $limit = $request->query('limit', null);
+
+        try {
+            $sql_data_pemesanan = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_VENDOR_ORDER . ' as a')
+                ->select('a.id as id_detail_vendor', 'a.kode_pemesanan', 'a.KodeSite', 'a.TanggalOrder', 'a.Jumlah', 'b.Nama as NamaVendor', 'b.id as IDVendor', 'a.status')    
+                ->leftJoin(self::TABLE_VENDOR_MASTER . ' as b', 'a.VendorID', '=', 'b.id')
+                ->where('kode_pemesanan', $idPemesanan);
+                
+            $jml = $sql_data_pemesanan->count();
+            if($limit == null || $limit == 'null' || $limit == '') {
+                $sql_data_pemesanan->skip($offset);
+            } else {
+                $sql_data_pemesanan->skip($offset)->limit($limit);
+            }
+            Log::info('SQL : ' . $sql_data_pemesanan->toRawSql());
+            $master_data = $sql_data_pemesanan->get();
+
+            $message= "Ok";
+            $isSuccess = true;
+            $data = [
+                'total' => $jml,
+                'totalNotFiltered' => $jml,
+                'rows' => $master_data
+            ];
+        } catch (Exception $ex) {
+            Log::error($ex->getMessage());
+            Log::error($ex->getTraceAsString());
+            
+            $message= $ex->getMessage();
+            $isSuccess = false;
+        }
+
+        return response()->json([
+            'isSuccess' => $isSuccess,
+            'message' => $message,
+            'data' => $data
+        ]);
+    }
+    
+    public function UpdateStatusPemesanan(Request $request) {
+        $isSuccess = false;
+        $message = '';
+        $errorMessage = [];
+        $data = null;
+        $nik_session = $request->session()->get('user_id', '');
+        $validator = Validator::make(
+            $request->all(), 
+            [
+                'status' => ['required'], 
+                'id_detail' => ['required']
+            ],
+            [
+                'status.required' => 'Status tidak valid',
+                'id_detail.required' => 'ID detail tidak valid'
+            ]
+        );
+
+        $data = $request->input();
+        $errorList = $validator->errors()->all();
+
+        if(count($errorList) > 0) {
+            
+            $message = "Error mandatory field";
+            $errorMessage = $errorList;
+
+        } else {
+            $data_update = [
+                'status' => $request->input('status'),
+                'updated_at' => now(),
+                'updated_by' => $nik_session
+            ];
+
+            try {
+                DB::connection(self::DB_CONN_NAME)->beginTransaction();
+                $id = $request->input('id_detail');
+                // unset($data_input['id']);
+
+                $sql_update_data = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_SUBMIT_ORDER_DETAIL)
+                    ->where('id', $id)
+                    ->update($data_update);
+
+                DB::connection(self::DB_CONN_NAME)->commit();
+                $message = "Ok";
+                $isSuccess = true;
+            } catch (Exception $ex) {
+
+                $message = "Terjadi kesalahan, coba beberapa saat lagi";
+                $errorMessage = [$message];
+
+                DB::connection(self::DB_CONN_NAME)->rollBack();
+
+
+                Log::error(get_class($ex). " | ". $ex->getMessage());
+                Log::error($ex->getTraceAsString());
+            }
+        }
+
+        return response()->json([
+            'isSuccess' => $isSuccess,
+            'message' => $message,
+            'errorMessage' => $errorMessage,
+            'data' => $data
+        ]);
+
+    }
+
+    public function UpdateStatusPemesananVendor(Request $request) {
+        $isSuccess = false;
+        $message = '';
+        $errorMessage = [];
+        $data = null;
+        $nik_session = $request->session()->get('user_id', '');
+        $validator = Validator::make(
+            $request->all(), 
+            [
+                'status' => ['required'], 
+                'id_detail_vendor' => ['required']
+            ],
+            [
+                'status.required' => 'Status tidak valid',
+                'id_detail_vendor.required' => 'ID detail tidak valid'
+            ]
+        );
+
+        $data = $request->input();
+        $errorList = $validator->errors()->all();
+
+        if(count($errorList) > 0) {
+            
+            $message = "Error mandatory field";
+            $errorMessage = $errorList;
+
+        } else {
+            $data_update = [
+                'status' => $request->input('status'),
+                'updated_at' => now(),
+                'updated_by' => $nik_session
+            ];
+
+            try {
+                DB::connection(self::DB_CONN_NAME)->beginTransaction();
+                $id = $request->input('id_detail_vendor');
+                // unset($data_input['id']);
+
+                $sql_update_data = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_SUBMIT_ORDER_VENDOR)
+                    ->where('id', $id)
+                    ->update($data_update);
+
+                DB::connection(self::DB_CONN_NAME)->commit();
+                $message = "Ok";
+                $isSuccess = true;
+            } catch (Exception $ex) {
+
+                $message = "Terjadi kesalahan, coba beberapa saat lagi";
+                $errorMessage = [$message];
+
+                DB::connection(self::DB_CONN_NAME)->rollBack();
+
+
+                Log::error(get_class($ex). " | ". $ex->getMessage());
+                Log::error($ex->getTraceAsString());
+            }
+        }
+
+        return response()->json([
+            'isSuccess' => $isSuccess,
+            'message' => $message,
+            'errorMessage' => $errorMessage,
+            'data' => $data
+        ]);
+
     }
 }
 

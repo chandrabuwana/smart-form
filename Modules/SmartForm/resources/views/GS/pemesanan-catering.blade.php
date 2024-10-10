@@ -68,7 +68,7 @@
                             </div>
                         </div>
                         <a href="#" id="generate-detail-pemesanan" class="w-auto">
-                            <button class="btn btn-primary ms-auto">Generate <i class="spinner-border" style="width: 14px; height: 14px; border-width: 2px"></i></button>
+                            <button class="btn btn-primary ms-auto">Generate</button>
                         </a>
                     </div>
                     <h5 class="text-black text-capitalize ps-3">Mess</h5>
@@ -84,7 +84,7 @@
                                 <tr>
                                     <th data-field="nik" data-align="center">NIK</th>
                                     <th data-field="kodesite" data-align="center">Site</th>
-                                    <th data-field="lokasi" data-align="left">Lokasi</th>
+                                    <th data-field="lokasi" data-align="left" data-formatter="lokasiFormatter">Lokasi</th>
                                     <th data-field="status" data-align="left" data-formatter='statusFormatter' data-filter-control="select">Status</th>
                                     <th data-field="cuti" data-align="left" data-formatter='cutiFormatter'>Cuti</th>
                                 </tr>
@@ -365,6 +365,7 @@
         })
 
         document.getElementById("submit-pemesanan").addEventListener("click", function(e) {
+            showLoading()
             var detail = []
             var dataMess = $('#table').bootstrapTable('getData').filter((data) => data.lokasi == "mess").filter((data) => data.cuti == 0); 
             var dataWorking = $('#table-working').bootstrapTable('getData'); 
@@ -515,6 +516,9 @@
                 }).then((result) => {
                 })
             })
+            .finally(function() {
+                stopLoading()
+            })
         })
 
         $('#inputSite').select2({
@@ -551,12 +555,21 @@
 
             return nilai
         }
+
         function cutiFormatter(value) {
             var nilai = null;
             if(value==0) nilai="Masuk/Off"
             if(value==1) nilai="Cuti"
 
             return nilai
+        }
+        
+        function lokasiFormatter(value, row, index) {
+            // console.log({value: value, row: row.NamaMess})
+            var lokasiHuniMess = value
+            if(value == 'mess')  lokasiHuniMess = row.NamaMess 
+
+            return lokasiHuniMess
         }
 
         $tableWorking.on('post-body.bs.table', function(data) {
@@ -583,7 +596,8 @@
 
         btnGenerateDetailPemesanan.addEventListener("click", function(e) {
             e.preventDefault()
-            console.log("halo")
+            showLoading()
+            // console.log("halo")
             axios.post('/bss-form/catering/generate-detail', 
                 {
                     tanggalPemesanan: inputTanggalPemesanan.val(),
@@ -624,6 +638,7 @@
                         status: response.data.dataMess[dataMess].status,
                         cuti: response.data.dataMess[dataMess].cuti,
                         noDoc: response.data.dataMess[dataMess].NoDoc,
+                        NamaMess: response.data.dataMess[dataMess].NamaMess,
                     })
                     if(response.data.dataMess[dataMess].cuti == 1) cutiNIK.push(response.data.dataMess[dataMess].Nik)
                 }
@@ -683,6 +698,7 @@
                 })
             })
             .catch(function (error) {
+                console.log(error)
                 Swal.fire({
                     icon: 'error',
                     title: 'Gagal!',
@@ -692,7 +708,7 @@
                 })
             })
             .finally(function() {
-
+                stopLoading()
             });
         })
 
@@ -746,5 +762,15 @@
 
             reader.readAsArrayBuffer(file);
         })
+
+        function showLoading() {
+            $("body").css("overflow-y", "hidden")
+            $("#loading-animation").css("display", "flex")
+        }
+
+        function stopLoading() {
+            $("body").css("overflow-y", "auto")
+            $("#loading-animation").css("display", "none")
+        }
     </script>
 @endsection
