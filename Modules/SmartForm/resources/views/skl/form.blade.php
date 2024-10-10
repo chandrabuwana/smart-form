@@ -112,7 +112,7 @@
                                 </div>
                             </div>
 
-                            <div class="row">
+                            <div class="row mb-2">
                                 <div class="col-md-4">
                                     <label class="ms-0 fs-6">Site</label>
                                 </div>
@@ -121,8 +121,8 @@
                                         <option value="">-- Pilih Site --</option>
                                         <option value="AGM">AGM</option>
                                         <option value="TAJ">TAJ</option>
-                                        <option value="MBL">MBL MINING</option>
-                                        <option value="MBL-HAULING">MBL HAULING</option>
+                                        <option value="MBL MINING">MBL MINING</option>
+                                        <option value="MBL HAULING">MBL HAULING</option>
                                         <option value="BSSR">BSSR</option>
                                         <option value="MSJ">MSJ</option>
                                         <option value="TDM">TDM</option>
@@ -142,8 +142,7 @@
                                     <label class="ms-0 fs-6">Tanggal Pelaksanaan</label>
                                 </div>
                                 <div class="col-md-8">
-                                    <input type="date" class="input-text w-full" id="inputTanggal" name="tglPelaksanaan"
-                                        class="tanggalPelaksanaan" min="{{ date('Y-m-d') }}" required>
+                                    <input type="date" class="input-text w-full" id="inputTanggal" name="tglPelaksanaan" min="{{ date('Y-m-d') }}" required>
                                 </div>
                             </div>
 
@@ -157,6 +156,19 @@
                                         <option value="DS">DS</option>
                                         <option value="NS">NS</option>
                                     </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label class="ms-0 fs-6">Lembur Hari ke-7</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="form-check ps-0 align-items-end">
+                                        <input class="form-check-input" type="checkbox" name="hariKeTujuh" value="true">
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -247,7 +259,78 @@
                         <i>*Note : Jika ada pekerjaan diluar dari ketentuan diatas, maka Atasan Langsung wajib konfirmasi terlebih dahulu ke Departemen IC</i>
                     </small>
 
-                    <p class="mt-4 mb-3">
+                    <div class="form-check mt-4 mb-2 ps-0">
+                        <input class="form-check-input" type="checkbox" name="baPekerjaan" value="true" id="baPekerjaan">
+                        <label class="custom-control-label" for="customCheck1">BA Pekerjaan Diluar Standar</label>
+                    </div>
+
+                    <div id="form-ba-pekerjaan" class="d-none">
+                        <div class="input-group input-group-static">
+                            <label>Adapun pekerjaan yang dibutuhkan :</label>
+                            <textarea name="baDetailPekerjaan" class="form-control" rows="3"></textarea>
+                        </div>
+
+                        <h2 class="fw-bold mt-4 mb-2 fs-5">Remark (Analisa SEFTO) :</h2>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row mb-3 align-items-end">
+                                    <div class="col-md-4">
+                                        <label class="ms-0 mb-0 fs-6">Strategy</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input class="form-control input-text" id="seftoStrategy" name="seftoStrategy" placeholder="--- Sefto Strategy ---">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="row mb-3 align-items-end">
+                                    <div class="col-md-4">
+                                        <label class="ms-0 mb-0 fs-6">Economy</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input class="form-control input-text" id="seftoEconomy" name="seftoEconomy" placeholder="--- Sefto Economy ---">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="row mb-3 align-items-end">
+                                    <div class="col-md-4">
+                                        <label class="ms-0 mb-0 fs-6">Financial</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input class="form-control input-text" id="seftoFinancial" name="seftoFinancial" placeholder="--- Sefto Financial ---">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="row mb-3 align-items-end">
+                                    <div class="col-md-4">
+                                        <label class="ms-0 mb-0 fs-6">Technology</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input class="form-control input-text" id="seftoTechnology" name="seftoTechnology" placeholder="--- Sefto Technology ---">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="row mb-3 align-items-end">
+                                    <div class="col-md-4">
+                                        <label class="ms-0 mb-0 fs-6">Operational</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input class="form-control input-text" id="seftoOperational" name="seftoOperational" placeholder="--- Sefto Operational ---">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="mt-4 mb-2">
                         Diketahui dan Disetujui Oleh :
                     </p>
 
@@ -425,6 +508,7 @@
         const pekerjaans = [];
         let optionKaryawan = [];
         let optionKategoriPekerjaan = [];
+        let optionApprover = [];
 
         $( function() {
             $departement = $('#inputDepartement');
@@ -541,6 +625,7 @@
                     },
                     success: function(response) {
                         let tbody = '<tr>' + $('#table-approver tbody tr:nth-child(1)').html() + '</tr>';
+                        optionApprover = response;
 
                         response.forEach( (item) => {
                             let optionAtasan = '';
@@ -557,7 +642,13 @@
                                     </td>
                                     <td>
                                         <input type="hidden" name="jabatanAtasan[]" value="${item.jabatan}">
-                                        ${item.jabatan}
+                                        <div class="d-flex align-items-center">
+                                            <span class="jabatanAtasan">${item.jabatan}</span>
+                                            <div class="form-check ps-0 align-items-end ms-3">
+                                                <input class="form-check-input" type="checkbox" name="check_represent[]" value="true" onchange="toggleBackupAtasan('${item.jabatan}')">
+                                                <label class="custom-control-label mb-0">diwakilkan</label>
+                                            </div>
+                                        </div>
                                     </td>
                                     <td>
                                         <select class="form-select input-text" aria-label="Pilih Atasan" id="inputAtasan" name="inputAtasan[]" required>
@@ -583,6 +674,17 @@
             $site.change( () => {
                 fetchOptionKaryawan();
                 fetchOptionApprover();
+            });
+
+            $('#baPekerjaan').change( function() {
+                const checked = $('#baPekerjaan:checked').length > 0;
+                if(checked) {
+                    $('[name=baDetailPekerjaan]').attr('required', true);
+                    $('#form-ba-pekerjaan').removeClass('d-none');
+                } else {
+                    $('#form-ba-pekerjaan').addClass('d-none');
+                    $('[name=baDetailPekerjaan]').removeAttr('required');
+                }
             });
 
             $('#modalTambahKaryawan').on('hidden.bs.modal', function() {
@@ -690,7 +792,8 @@
                     return;
                 }
 
-                if(pekerjaans.length == 0) {
+                const isBaPekerjaan = $('#baPekerjaan:checked').length > 0;
+                if(!isBaPekerjaan && pekerjaans.length == 0) {
                     Swal.fire({
                         icon: 'error',
                         title: 'Oops!',
@@ -702,6 +805,27 @@
                 }
             });
         });
+
+        function toggleBackupAtasan(jabatan) {
+            optionApprover.forEach( (item, key) => {
+                if(item.jabatan == jabatan) {
+                    const $tr = $(`#table-approver tbody tr:nth-child(${key + 2})`);
+                    const represented = $tr.find('[name*=check_represent]').is(':checked');
+                    const optionFiltered = represented ? item.option_backup : item.option_atasan;
+
+                    let optionAtasan = '<option value="">-- Pilih Atasan --</option>';
+                    optionFiltered.forEach( (option) => {
+                        optionAtasan += `<option value="${option.Nik}">${option.Nama}</option>`;
+                    });
+
+                    $tr.find('[name*=inputAtasan]').html(optionAtasan);
+
+                    jabatan = jabatan == 'Kabag. Departemen' && represented ? 'Kasi. Departemen' : jabatan;
+                    $tr.find('td:nth-child(2) .jabatanAtasan').html(jabatan);
+                    $tr.find('td:nth-child(2) [name*=jabatanAtasan]').val(jabatan);
+                }
+            });
+        }
 
         function showModalTambahKaryawan() {
             if( !$('#inputDepartement').val() || !$('#inputSite').val() ) {

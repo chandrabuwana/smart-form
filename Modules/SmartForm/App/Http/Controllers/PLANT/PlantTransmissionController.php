@@ -26,11 +26,13 @@ class PlantTransmissionController extends Controller
 
     public function getDashboardData(Request $request)
     {
-        $search  = $request->query('search', '');
-        $sort    = $request->query('sort', 'id');
-        $order   = $request->query('order', 'asc');
-        $offset  = $request->query('offset', 0);
-        $limit   = $request->query('limit', 10);
+        $machine    = $request->query('machine', '');
+        $jobsite    = $request->query('jobsite', '');
+        $checkdate  = $request->query('checkdate', '');
+        $sort       = $request->query('sort', 'id');
+        $order      = $request->query('order', 'asc');
+        $offset     = $request->query('offset', 0);
+        $limit      = $request->query('limit', 10);
 
         try {
             $plantMasterNotFiltered = DB::table('FM_PLANT_PPM_TRANSMISI_CMT_BSS_MASTER')->select('id');
@@ -38,21 +40,26 @@ class PlantTransmissionController extends Controller
             $plantMaster = DB::table('FM_PLANT_PPM_TRANSMISI_CMT_BSS_MASTER')
                 ->select('id', 'machine_number', 'machine_model', 'machine_serial_no', 'machine_smr', 'jobsite', 'checkdate');
 
-            if(!empty($search)) {
-                $plantMaster->where('machine_number', 'like', '%' . $search . '%')
-                    ->orWhere('machine_model', 'like', '%' . $search . '%')
-                    ->orWhere('machine_serial_no', 'like', '%' . $search . '%')
-                    ->orWhere('machine_smr', 'like', '%' . $search . '%')
-                    ->orWhere('jobsite', 'like', '%' . $search . '%');
+            if(!empty($machine)) {
+                $plantMaster->where('machine_number', 'like', '%' . $machine . '%')
+                    ->orWhere('machine_serial_no', 'like', '%' . $machine . '%');
+            }
+
+            if(!empty($jobsite)) {
+                $plantMaster->where('jobsite', 'like', '%' . $jobsite . '%');
+            }
+
+            if(!empty($checkdate)) {
+                $plantMaster->where('checkdate', 'like', '%' . $checkdate . '%');
             }
 
             $data = $plantMaster->orderBy($sort, $order)->offset($offset)
-                ->limit($limit);
+                ->limit($limit)->get();
 
             return response()->json([
                 'total' => $data->count(),
                 'totalNotFiltered' => $plantMasterNotFiltered->count(),
-                'rows' => $data->get()
+                'rows' => $data
             ]);
 
         } catch (Exception $ex) {

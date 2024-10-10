@@ -19,6 +19,7 @@ class TransactionPicaController extends Controller
         $dataMasterBulan = $dataInputer->dataMaster['bulan'];
         $dataMasterWeek = $dataInputer->dataMaster['week'];
         $dataMasterSite = $dataInputer->dataMaster['site'];
+        $dataMasterDept = $dataInputer->dataMaster['dept'];
         $dataMasterLeadKpi = $dataInputer->dataMaster['lead_kpi'];
         $dataMasterActual = $dataInputer->dataMaster['actual'];
         $dataMasterTarget = $dataInputer->dataMaster['target'];
@@ -39,6 +40,7 @@ class TransactionPicaController extends Controller
             $dataMasterTahun,
             $dataMasterBulan,
             $dataMasterWeek,
+            $dataMasterDept,
             $dataMasterSite,
             $dataMasterLeadKpi,
             $dataMasterActual,
@@ -89,6 +91,7 @@ class TransactionPicaController extends Controller
                 'tahun' => $dataMasterTahun,
                 'bulan' => $dataMasterBulan,
                 'week' => 3,
+                'dept' => $dataMasterDept,
                 'site' => $dataMasterSite,
                 'id_kpi' => $dataMasterLeadKpi,
                 'problem' => $dataMasterProblem,
@@ -356,10 +359,6 @@ class TransactionPicaController extends Controller
             ];
         }
 
-
-        if ($this->checkForSQLInjection($params)) {
-            return response()->json(['error' => 'SQL Injection detected!'], 400);
-        }
         DB::beginTransaction();
 
         try {
@@ -462,24 +461,6 @@ class TransactionPicaController extends Controller
                 'code' => 500
             ];
         }
-    }
-    public function checkForSQLInjection(array $params)
-    {
-        // Common SQL Injection patterns
-        $patterns = [
-            '/(\b)(SELECT|INSERT|UPDATE|DELETE|DROP|UNION|OR|AND|NOT)(\b)/i', // SQL Keywords
-            '/(\b)(--|#|\/\*|\*\/|;)(\b)/' // SQL Comment Syntax
-        ];
-
-        foreach ($params as $key => $value) {
-            foreach ($patterns as $pattern) {
-                if (preg_match($pattern, $value)) {
-                    return true; // Injection detected
-                }
-            }
-        }
-
-        return false; // No injection detected
     }
 
     function ApproveClosingTask(Request $request)

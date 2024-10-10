@@ -22,6 +22,7 @@ class DashboardSKLController extends Controller
     private const T_FORM_APPROVER = 'DB_SPL.dbo.TBL_FORM_APPROVER';
     private const T_KARYAWAN = 'HRD.dbo.TKaryawan';
     private const T_JABATAN = 'HRD.dbo.tjabatan';
+    private const T_FORM_BA_PEKERJAAN = 'DB_SPL.dbo.TBL_FORM_BA_PEKERJAAN';
 
     public function dashboard()
     {
@@ -100,9 +101,9 @@ class DashboardSKLController extends Controller
             });
 
             return response()->json([
-                'total' => $data->count(),
+                'total' => $rows->count(),
                 'totalNotFiltered' => $sklMasterNotFiltered->count(),
-                'data' => $rows
+                'rows' => $rows
             ]);
 
         } catch (Exception $ex) {
@@ -143,6 +144,9 @@ class DashboardSKLController extends Controller
                 $lastProgressApproval = $key;
             }
         }
+
+        $formMasterData->baPekerjaan = DB::table(self::T_FORM_BA_PEKERJAAN)
+            ->where('NoForm', $NoForm)->first();
 
         return view('SmartForm::skl/detail', [
             'formMaster' => $formMasterData,

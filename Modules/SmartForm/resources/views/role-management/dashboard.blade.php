@@ -14,12 +14,31 @@
                     </div>
                 </div>
                 <div class="card-body px-0 pb-2">
-                    <div class="d-flex align-items-center">
+                    <div class="d-flex align-items-center ms-3">
                         <a href="{{ route('role-management.create') }}">
                             <button class="btn btn-primary ms-auto uploadBtn" id="coba">
                                 New Role
                             </button>
                         </a>
+                    </div>
+
+                    <h4 class="mx-3">Filter Data</h4>
+                    <div class="mx-3 row mb-3">
+                        <div class="col-6 col-md-3 ps-0">
+                            <div class="input-group input-group-static mb-4">
+                                <label for="filterNik">Role Name / Code</label>
+                                <input style="width: 100%" id="filterKeyword" class="form-control" name="filterKeyword" placeholder="--- Cari Role Name atau Code ---">
+                            </div>
+                        </div>
+
+                        <div class="ps-0">
+                            <button class="btn btn-primary ms-auto filter-btn" id="btnClearFilter" onclick="clearFilter(this)">
+                                Clear Filter
+                            </button>
+                            <button class="btn btn-primary ms-auto filter-btn" id="btnFilterSubmit" onclick="applyFilter(this)">
+                                Filter
+                            </button>
+                        </div>
                     </div>
 
                     <div class="table-responsive p-0">
@@ -56,6 +75,24 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script type="text/javascript">
         var $table = $("#list-role");
+        const filter = {
+            search: ''
+        }
+
+        $('#filterKeyword').change( function(e) {
+            filter.search = e.target.value;
+        });
+
+        function applyFilter(e) {
+            $table.bootstrapTable('refresh')
+        }
+
+        function clearFilter(e) {
+            filter.search = null
+            $('#filterKeyword').val('');
+
+            $table.bootstrapTable('refresh')
+        }
 
         function actionFormatter(value, row, index) {
             return `
@@ -65,6 +102,8 @@
         }
 
         function fetchFormsData(params) {
+            if(filter.search) params.data.search = filter.search
+
             var url = `<?= route('role-management.get-dashboard-data') ?>`
             $.get(url + '?' + $.param(params.data)).then(function(res) {
                 params.success(res)

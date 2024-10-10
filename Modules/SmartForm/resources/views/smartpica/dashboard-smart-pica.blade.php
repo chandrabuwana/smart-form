@@ -35,6 +35,16 @@
             white-space: normal;
             /* Allows the text to wrap */
         }
+
+        .select2-container--bootstrap5 .select2-selection--single {
+            color: gray;
+            /* Ensures text is black */
+        }
+
+        .select2-results__option {
+            color: gray;
+            /* Ensures dropdown options are black */
+        }
     </style>
 @endsection
 
@@ -145,38 +155,36 @@
                             </div>
                         </div>
                     </div>
-                    {{-- <div class="row card-header"
+                    <hr class="horizontal dark my-sm-3">
+                    <div class="row card-header"
                         style="margin : 10px;border-radius: 10px; background-color: rgba(209, 209, 209, 0.301); color:white !important;">
                         <div class="row">
                             <div class="col">
                                 <h6 class="card-title">Filter</h6>
                                 <hr class="horizontal dark my-sm-1">
                                 <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="input-group input-group-static mb-4">
-                                            <label for="FILTERNIK">NIK</label>
-                                            <input type="text" class="form-control" id="FILTERNIK" name="FILTERNIK"
-                                                maxlength="7" placeholder=" -- Masukkan NIK -- ">
+                                    <div class="col-md-3">
+                                        <div class="input-group select-div input-group-static my-2">
+                                            <label for="FILTERNIK" class="ms-0">NIK</label>
+                                            <select class="form-control s2lea" name="FILTERNIK" id="FILTERNIK"
+                                                required></select>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <div class="input-group input-group-static mb-4">
-                                            <label for="FILTERLOKASI">LOKASI</label>
-                                            <input type="text" class="form-control" id="FILTERLOKASI" name="FILTERLOKASI"
-                                                maxlength="7" placeholder="-- Masukkan Lokasi -- ">
+                                    {{-- <div class="col-md-4">
+                                        <div class="input-group select-div input-group-static my-2">
+                                            <label for="FILTERDEPARTMENT" class="ms-0">Department </label>
+                                            <select class="form-control dept" name="FILTERDEPARTMENT" id="FILTERDEPARTMENT">
+                                            </select>
                                         </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="input-group input-group-static mb-4">
-                                            <label for="FILTERSHIFT">SHIFT</label>
-                                            <select class="form-control" name="FILTERSHIFT" id="FILTERSHIFT" required>
-                                                <option value=""> -- Pilih Shift -- </option>
-                                                <option value="DS">PAGI</option>
-                                                <option value="NS">MALAM</option>
+                                    </div> --}}
+                                    <div class="col-md-4">
+                                        <div class="input-group select-div input-group-static my-2">
+                                            <label for="FILTERSITE" class="ms-0">Site </label>
+                                            <select class="form-control site" name="FILTERSITE" id="FILTERSITE">
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-2">
+                                    {{-- <div class="col-md-2">
                                         <div class="input-group input-group-static mb-4">
                                             <label for="FILTERTANGGAL" class="">Tanggal</label>
                                             <div class="input-group input-group-static my-2">
@@ -185,19 +193,18 @@
                                                     id="FILTERTANGGAL">
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </div>
                                 <div class="row justify-content-end">
                                     <div class="col-sm-2">
                                         <button class="btn btn-primary ms-auto uploadBtn"
-                                            onclick="dataListFormSHE019BSearchGenerate(this);">
+                                            onclick="dataListFormPicaSearchGenerate(this);">
                                             <i class="fa fa-filter"> Search</i> </button></a>
                                     </div>
-
                                 </div>
                             </div>
                         </div>
-                    </div> --}}
+                    </div>
 
                     <div class="d-flex align-items-center">
                         <a href="{{ route('add-smart-pica') }}"><button class="btn btn-primary ms-auto uploadBtn">
@@ -232,10 +239,159 @@
                     </div>
                 </div>
             </div>
+            <br>
+            <div class="card my-4">
+                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                    <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+                        <h6 class="text-white text-capitalize ps-3">Solution Dashboard</h6>
+                    </div>
+                </div>
+                <div class="card-body px-0 pb-2">
+                    <div class="row card-header"
+                        style="margin : 10px;border-radius: 10px; background-color: rgba(209, 209, 209, 0.301); color:white !important;">
+                        <div class="row">
+                            <div class="col">
+                                <h6 class="card-title">Filter</h6>
+                                <hr class="horizontal dark my-sm-1">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="input-group select-div input-group-static my-2">
+                                            <label for="FILTERNIKSOLUTION" class="ms-0">NIK</label>
+                                            <select class="form-control s2lea" name="FILTERNIKSOLUTION"
+                                                id="FILTERNIKSOLUTION" required></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="input-group select-div input-group-static my-2">
+                                            <label for="FILTERDEPARTMENTSOLUTION" class="ms-0">Department </label>
+                                            <select class="form-control dept" name="FILTERDEPARTMENTSOLUTION"
+                                                id="FILTERDEPARTMENTSOLUTION">
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="input-group select-div input-group-static my-2">
+                                            <label for="FILTERSITESOLUTION" class="ms-0">Site </label>
+                                            <select class="form-control site" name="FILTERSITESOLUTION"
+                                                id="FILTERSITESOLUTION">
+                                            </select>
+                                        </div>
+                                    </div>
+                                    {{-- <div class="col-md-2">
+                                        <div class="input-group input-group-static mb-4">
+                                            <label for="FILTERTANGGAL" class="">Tanggal</label>
+                                            <div class="input-group input-group-static my-2">
+                                                <input class="form-control due-date-picker" type="text"
+                                                    placeholder="DD/MM/YYYY" name="FILTERTANGGAL" required
+                                                    id="FILTERTANGGAL">
+                                            </div>
+                                        </div>
+                                    </div> --}}
+                                </div>
+                                <div class="row justify-content-end">
+                                    <div class="col-sm-2">
+                                        <button class="btn btn-primary ms-auto uploadBtn"
+                                            onclick="dataListFormDashboardHistoryProgress(this);">
+                                            <i class="fa fa-filter"> Search</i> </button></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive p-0">
+                        <table id="dataListHistoryDashboard" data-toggle="table"
+                            data-ajax="dataListHistoryDashboardGenerateData"
+                            data-query-params="dataListHistoryDashboardParamsGenerate" data-side-pagination="server"
+                            data-page-list="[10, 25, 50, 100, all]" data-sortable="true"
+                            data-content-type="application/json" data-data-type="json" data-pagination="true"
+                            data-unique-id="nodocpica">
+                            <thead>
+                                <tr>
+                                    <th data-field="nodocpica" data-align="left" data-halign="text-center"
+                                        data-sortable="true">No. Document
+                                    </th>
+                                    <th data-field="status" data-align="center"
+                                        data-formatter="statusFormaterStepSolution" data-halign="center"
+                                        data-sortable="true">
+                                        Status
+                                    </th>
+                                    <th data-field="pic" data-align="center" data-halign="center">PIC</th>
+                                    <th data-field="note_step" data-align="left" data-halign="center" class="wrap-text">
+                                        Step Solution</th>
+                                    <th data-field="ap_tod" data-align="center" data-halign="center">AP/TOD</th>
+                                    <th data-field="target_master" data-align="center" data-halign="center">Target</th>
+                                    <th data-field="due_date" data-align="left" data-formatter="dataTableDateFormater"
+                                        data-halign="center">Due Date</th>
+                                    <th data-field="progress" data-align="center" data-halign="center">Progress</th>
+                                    <th data-halign="center" data-align="center"
+                                        data-formatter="dataListHistoryDashboardActionFormater">Action
+                                    </th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 @endsection
 
+@section('modal')
+    <div class="modal fade" id="updateProgressHistory" aria-hidden="true" aria-labelledby="exampleModalToggleLabel"
+        tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <input type="hidden" name="positionWhy" id="positionWhy" value="">
+                <input type="hidden" name="identityWhy" id="identityWhy" value="">
+                <input type="hidden" name="nodocpica" id="nodocpica" value="">
+                <input type="hidden" name="idMaster" id="idMaster" value="">
+                <input type="hidden" name="nikMaster" id="nikMaster" value="">
+                <input type="hidden" name="idSolution" id="idSolution" value="">
+                <input type="hidden" name="targetMaster" id="targetMaster" value="">
+                <div class="modal-header">
+                    <div class="row">
+                        <div class="col">
+                            <h5 class="modal-title center" id="exampleModalToggleLabel">View History Progress</h5>
+                            <p id="ProblemHeader"></p>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
+                </div>
+                <div class="row" style="margin: 10px">
+                    <div class="col">
+                        <div class="card border" style="">
+                            <div class="card-body">
+                                <br>
+                                <div class="table-responsive p-0">
+                                    <table id="dataListHistoryProgress" data-toggle="table"
+                                        data-ajax="dataListHistoryProgressGenerateData"
+                                        data-query-params="dataListHistoryProgressParamsGenerate"
+                                        data-side-pagination="server" data-page-list="[10, 25, 50, 100, all]"
+                                        data-sortable="true" data-content-type="application/json" data-data-type="json"
+                                        data-pagination="true" data-unique-id="id">
+                                        <thead>
+                                            <tr>
+                                                <th data-field="note_progress" data-align="left" data-halign="center"
+                                                    data-sortable="true">Catatan
+                                                </th>
+                                                <th data-field="progress" data-align="center" data-halign="center">
+                                                    Progress</th>
+                                                <th data-field="created_at" data-formatter="dataTableDateFormater"
+                                                    data-align="center" data-halign="center">Updated At
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
 
 @section('custom-js')
     <script src="https://unpkg.com/bootstrap-table/dist/bootstrap-table.min.js"></script>
@@ -243,6 +399,116 @@
     </script>
     <script type="text/javascript">
         var elChartStatus = document.getElementById("chart-status").getContext("2d");
+
+        function formatSelectingAfterSelectNIK(repo) {
+            $("#nNama").val(repo.name);
+            $("#nDept").val(repo.dept);
+
+            return repo.text;
+        }
+
+
+
+        function initializeSelect2NIK(elementId) {
+            $(elementId).select2({
+                theme: 'bootstrap5', // Menggunakan tema Bootstrap 5
+                dropdownParent: $(elementId).closest('.select-div'),
+                placeholder: '--- Cari/Pilih NIK ---',
+                ajax: {
+                    url: "/bss-form/induksi-karyawan/helper-data-nik",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    type: "post",
+                    delay: 250,
+                    dataType: 'json',
+                    data: function(params) {
+                        return {
+                            query: params.term
+                        }; // search term
+                    },
+                    processResults: function(response) {
+                        return {
+                            results: response.data
+                        };
+                    },
+                    cache: true
+                },
+                templateSelection: formatSelectingAfterSelectNIK
+            });
+        }
+
+        initializeSelect2NIK('#FILTERNIK');
+        initializeSelect2NIK('#FILTERNIKSOLUTION');
+
+        function initializeSelect2Department(elementId) {
+            $(elementId).select2({
+                theme: 'bootstrap5', // Menggunakan tema Bootstrap 5
+                dropdownParent: $(elementId).closest('.input-group'),
+                placeholder: '--- Cari Department ---',
+                ajax: {
+                    url: "/helper/department",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    type: "post",
+                    delay: 250,
+                    dataType: 'json',
+                    data: function(params) {
+                        return {
+                            _token: "{{ csrf_token() }}",
+                            query: params.term, // search term
+                        };
+                    },
+                    processResults: function(response) {
+                        return {
+                            results: response.data
+                        };
+                    },
+                    cache: true
+                }
+            });
+        }
+
+        // Initialize for both elements
+        initializeSelect2Department('#FILTERDEPARTMENT');
+        initializeSelect2Department('#FILTERDEPARTMENTSOLUTION');
+
+
+
+        function initializeSelect2Site(elementId) {
+            $(elementId).select2({
+                theme: 'bootstrap5', // Menggunakan tema Bootstrap 5
+                dropdownParent: $(elementId).closest('.input-group'),
+                placeholder: '--- Cari Site ---',
+                ajax: {
+                    url: "/helper/site",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    type: "post",
+                    delay: 250,
+                    dataType: 'json',
+                    data: function(params) {
+                        return {
+                            _token: "{{ csrf_token() }}",
+                            query: params.term, // search term
+                        };
+                    },
+                    processResults: function(response) {
+                        return {
+                            results: response.data
+                        };
+                    },
+                    cache: true
+                }
+            });
+        }
+
+        // Initialize for both elements
+        initializeSelect2Site('#FILTERSITE');
+        initializeSelect2Site('#FILTERSITESOLUTION');
+
         new Chart(elChartStatus, {
             type: "pie",
             data: {
@@ -281,11 +547,11 @@
         });
 
         function dataTableDateFormater(value, row, index) {
-            var monthNames = ["January", "February", "March", "April", "May", "June",
-                "July", "August", "September", "October", "November", "December"
+            var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
             ];
             var t = new Date(value);
-            return t.getDate() + '-' + monthNames[t.getMonth()] + '-' + t.getFullYear();
+            return t.getDate() + ' ' + monthNames[t.getMonth()] + ' ' + t.getFullYear();
 
         }
 
@@ -330,7 +596,10 @@
         function dataListFormPicaParamsGenerate(params) {
 
             params.search = {
-                'CARNAME': "",
+                'FILTERNIK': $('#FILTERNIK').val(),
+                'FILTERDEPARTMENT': $('#FILTERDEPARTMENT').val(),
+                'FILTERSITE': $('#FILTERSITE').val()
+                // 'FILTERTANGGAL': $('#FILTERTANGGAL').val(),
             };
 
             if (params.sort == undefined) {
@@ -357,6 +626,115 @@
 
         function dataListFormPicaGenerateData(params) {
             var url = '/helper/data-pica'
+            $.get(url + '?' + $.param(params.data)).then(function(res) {
+                params.success(res)
+            })
+        }
+    </script>
+    <script type="text/javascript">
+        function dataListFormDashboardHistoryProgress(obj) {
+            $('#dataListHistoryDashboard').bootstrapTable('refresh');
+            $("#dataListHistoryDashboard").bootstrapTable("uncheckAll");
+        }
+
+        function dataListHistoryDashboardParamsGenerate(params) {
+
+            params.search = {
+                'FILTERNIKSOLUTION': $('#FILTERNIKSOLUTION').val(),
+                'FILTERDEPARTMENTSOLUTION': $('#FILTERDEPARTMENTSOLUTION').val(),
+                'FILTERSITESOLUTION': $('#FILTERSITESOLUTION').val(),
+            };
+
+            if (params.sort == undefined) {
+                return {
+                    limit: params.limit,
+                    offset: params.offset,
+                    search: params.search
+                }
+            }
+            return params;
+        }
+
+        function OpenModalHistory(obj) {
+            $('#divKeteranganReject').addClass("d-none");
+            let indexDt = $(obj).closest('tr').data('index');
+            let dataObject = $('#dataListHistoryDashboard').bootstrapTable('getData')[indexDt];
+            console.log(dataObject)
+            $('#positionWhy').val(dataObject.position_why)
+            $('#identityWhy').val(dataObject.identity_why)
+            $('#nodocpica').val(dataObject.nodocpica)
+            $('#idMaster').val(dataObject.id_master)
+            $('#nikMaster').val(dataObject.nik_master)
+            $('#idSolution').val(dataObject.id)
+            $('#targetMaster').val(dataObject.target_master)
+            $('#idKeteranganReject').html(dataObject.keterangan_reject)
+            if (dataObject.status == "REVISION") {
+                $('#divKeteranganReject').removeClass("d-none");
+            }
+            $('#dataListHistoryProgress').bootstrapTable('refresh');
+            $('#updateProgressHistory').modal("show");
+        }
+
+        function dataListHistoryDashboardSearchGenerate(obj) {
+            $('#dataListHistoryDashboard').bootstrapTable('refresh');
+            $("#dataListHistoryDashboard").bootstrapTable("uncheckAll");
+        }
+
+        function dataListHistoryDashboardGenerateData(params) {
+            var url = '/helper/data-dashboard-history-progress'
+            $.get(url + '?' + $.param(params.data)).then(function(res) {
+                params.success(res)
+            })
+        }
+
+        function statusFormaterStepSolution(value, row, index) {
+            if (value == "NEED APPROVE") {
+                return `<button type="button" class="btn btn-info btn-sm">NEED APPROVE</button>`
+            } else if (value == 'NOT YET') {
+                return `<button type="button" class="btn btn-secondary btn-sm">${value}</button>`
+            } else if (value == 'REJECT BY PIC') {
+                return `<button type="button" class="btn btn-danger btn-sm">${value}</button>`
+            } else if (value == 'CLOSE') {
+                return `<button type="button" class="btn btn-success btn-sm">${value}</button>`
+            } else if (value == 'ON PROGRESS') {
+                return `<button type="button" class="btn btn-warning btn-sm">${value}</button>`
+            } else if (value == 'REVISION') {
+                return `<button type="button" class="btn btn-warning btn-sm">${value}</button>`
+            } else {
+                return `<button type="button" class="btn btn-secondary btn-sm">?</button>`
+            }
+        }
+
+        function dataListHistoryDashboardActionFormater(value, row, index) {
+            return ` <button onclick="OpenModalHistory(this)"><a class="like"  title="Like">
+                        <i class="fa fa-eye"></i>
+                    </a>View</button>`
+        }
+
+        function dataListHistoryProgressParamsGenerate(params) {
+
+            params.search = {
+                'IDSOLUTION': $("#idSolution").val(),
+                'NODOCPICA': $("#nodocpica").val(),
+            };
+
+            if (params.sort == undefined) {
+                return {
+                    limit: params.limit,
+                    offset: params.offset,
+                    search: params.search
+                }
+            }
+            return params;
+        }
+
+        function dataListHistoryProgressSearchGenerate(obj) {
+            $('#dataListHistoryProgress').bootstrapTable('refresh');
+            $("#dataListHistoryProgress").bootstrapTable("uncheckAll");
+        }
+
+        function dataListHistoryProgressGenerateData(params) {
+            var url = '/helper/data-history-progress'
             $.get(url + '?' + $.param(params.data)).then(function(res) {
                 params.success(res)
             })

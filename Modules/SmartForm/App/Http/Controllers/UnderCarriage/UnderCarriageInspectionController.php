@@ -164,11 +164,13 @@ class UnderCarriageInspectionController extends Controller
 
     public function getDashboardData(Request $request)
     {
-        $search  = $request->query('search', '');
-        $sort    = $request->query('sort', 'id');
-        $order   = $request->query('order', 'desc');
-        $offset  = $request->query('offset', 0);
-        $limit   = $request->query('limit', 10);
+        $sn               = $request->query('sn', '');
+        $workOperation    = $request->query('work_operation', '');
+        $inspectionDate   = $request->query('inspection_date', '');
+        $sort             = $request->query('sort', 'id');
+        $order            = $request->query('order', 'desc');
+        $offset           = $request->query('offset', 0);
+        $limit            = $request->query('limit', 10);
 
         try {
             $underCarriageMasterNotFiltered = DB::table('FM_PLANT_UNDERCARRIAGE_INSPECTION_MASTER')->select('id');
@@ -176,21 +178,25 @@ class UnderCarriageInspectionController extends Controller
             $underCarriageMaster = DB::table('FM_PLANT_UNDERCARRIAGE_INSPECTION_MASTER')
                 ->select('id', 'document_no', 'unit_model', 'unit_sn', 'unit_smr_hm', 'work_operation', 'ground_condition', 'condition_area_frame', 'inspection_date');
 
-            if(!empty($search)) {
-                $underCarriageMaster->where('document_no', 'like', '%' . $search . '%')
-                    ->orWhere('unit_model', 'like', '%' . $search . '%')
-                    ->orWhere('unit_sn', 'like', '%' . $search . '%')
-                    ->orWhere('unit_smr_hm', 'like', '%' . $search . '%')
-                    ->orWhere('work_operation', 'like', '%' . $search . '%');
+            if(!empty($sn)) {
+                $underCarriageMaster->where('unit_sn', 'like', '%' . $sn . '%');
+            }
+
+            if(!empty($workOperation)) {
+                $underCarriageMaster->where('work_operation', 'like', '%' . $workOperation . '%');
+            }
+
+            if(!empty($inspectionDate)) {
+                $underCarriageMaster->where('inspection_date', $inspectionDate);
             }
 
             $data = $underCarriageMaster->orderBy($sort, $order)->offset($offset)
-                ->limit($limit);
+                ->limit($limit)->get();
 
             return response()->json([
                 'total' => $data->count(),
                 'totalNotFiltered' => $underCarriageMasterNotFiltered->count(),
-                'rows' => $data->get()
+                'rows' => $data
             ]);
 
         } catch (Exception $ex) {

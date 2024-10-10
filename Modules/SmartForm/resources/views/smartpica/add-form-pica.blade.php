@@ -194,9 +194,9 @@
                                 <div class="col-md-1">
                                     <div class="input-group input-group-static my-4">
                                         <label class="ms-0" for="pc_target">Target</label>
-                                        <input class="form-control" type="text" inputmode="decimal" id="pc_target" placeholder="0"
-                                            onkeypress="return /[0-9.)]/i.test(event.key)" pattern="[0-9]*[.]?[0-9]*"
-                                            name="pc_target" required>
+                                        <input class="form-control" type="text" inputmode="decimal" id="pc_target"
+                                            placeholder="0" onkeypress="return /[0-9.)]/i.test(event.key)"
+                                            pattern="[0-9]*[.]?[0-9]*" name="pc_target" required>
                                     </div>
                                 </div>
                                 <div class="col-md-1">
@@ -213,7 +213,8 @@
                                 <div class="col-md-8">
                                     <div class="input-group input-group-static my-4">
                                         <label for="pc_problem" class="ms-0">Problem Statement </label>
-                                        <textarea class="form-control" name="pc_problem" placeholder="-- Masukkan Problem --" id="pc_problem" rows="3" required></textarea>
+                                        <textarea class="form-control" name="pc_problem" placeholder="-- Masukkan Problem --" id="pc_problem"
+                                            rows="3" required></textarea>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -291,7 +292,7 @@
                 data: function(params) {
                     return {
                         query: params.term, // search term
-                        dept : $('#pc_dept').val()
+                        dept: $('#pc_dept').val()
                     };
                 },
                 processResults: function(response) {
@@ -605,7 +606,7 @@
             let pc_week = $('#pc_week').val();
             let pc_site = $('#pc_site').val();
             let pc_kpi = $('#pc_kpi').val();
-            console.log(pc_kpi);
+            let pc_dept = $('#pc_dept').val();
             let pc_aktual = $('#pc_aktual').val();
             let pc_target = $('#pc_target').val();
             let pc_ap_pica = $('select[name="pc_ap_pica"]').val();
@@ -624,6 +625,7 @@
             validateField(pc_thn, 'pc_thn', 'Tahun');
             validateField(pc_bln, 'pc_bln', 'Bulan');
             validateField(pc_week, 'pc_week', 'Minggu');
+            validateField(pc_dept, 'pc_dept', 'Department');
             validateField(pc_site, 'pc_site', 'Site');
             validateField(pc_kpi, 'pc_kpi', 'KPI');
             validateField(pc_aktual, 'pc_aktual', 'Aktual');
@@ -648,6 +650,7 @@
                     tahun: pc_thn,
                     bulan: pc_bln,
                     week: pc_week,
+                    dept: pc_dept,
                     site: pc_site,
                     lead_kpi: pc_kpi,
                     actual: pc_aktual,

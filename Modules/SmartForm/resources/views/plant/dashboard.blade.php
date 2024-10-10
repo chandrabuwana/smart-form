@@ -14,12 +14,45 @@
                     </div>
                 </div>
                 <div class="card-body px-0 pb-2">
-                    <div class="d-flex align-items-center">
+                    <div class="d-flex align-items-center ms-3">
                         <a href="{{ route('bss-form.plant-transmission.form') }}">
                             <button class="btn btn-primary ms-auto uploadBtn" id="coba">
                                 New Form
                             </button>
                         </a>
+                    </div>
+
+                    <h4 class="mx-3">Filter Data</h4>
+                    <div class="mx-3 row mb-3">
+                        <div class="col-6 col-md-3 ps-0">
+                            <div class="input-group input-group-static mb-4">
+                                <label for="filterMachine">Machine Number / Serial No</label>
+                                <input style="width: 100%" id="filterMachine" class="form-control" name="filterMachine" placeholder="--- Cari Machine Number atau Serial No ---">
+                            </div>
+                        </div>
+
+                        <div class="col-6 col-md-3 ps-0">
+                            <div class="input-group input-group-static mb-4">
+                                <label for="filterJobsite">Jobsite</label>
+                                <input style="width: 100%" id="filterJobsite" class="form-control" name="filterJobsite" placeholder="--- Cari Jobsite ---">
+                            </div>
+                        </div>
+
+                        <div class="col-6 col-md-3 ps-0">
+                            <div class="input-group input-group-static mb-4">
+                                <label for="filterCheckdate">Check Date</label>
+                                <input style="width: 100%" id="filterCheckdate" class="form-control" name="filterCheckdate" placeholder="--- Cari Check Date ---">
+                            </div>
+                        </div>
+
+                        <div class="ps-0">
+                            <button class="btn btn-primary ms-auto filter-btn" id="btnFilterSubmit" onclick="applyFilter(this)">
+                                Filter
+                            </button>
+                            <button class="btn btn-primary ms-auto filter-btn" id="btnClearFilter" onclick="clearFilter(this)">
+                                Clear Filter
+                            </button>
+                        </div>
                     </div>
 
                     <div class="table-responsive p-0">
@@ -66,11 +99,50 @@
     <script type="text/javascript">
         var $table = $("#list-form");
 
+        const filter = {
+            machine: '',
+            jobsite: '',
+            checkdate: ''
+        }
+
+        $('#filterMachine').change( function(e) {
+            filter.machine = e.target.value;
+        });
+
+        $('#filterJobsite').change( function(e) {
+            filter.jobsite = e.target.value;
+        });
+
+        $('#filterCheckdate').change( function(e) {
+            filter.checkdate = e.target.value;
+        });
+
+        function applyFilter(e) {
+            $table.bootstrapTable('refresh')
+        }
+
+        function clearFilter(e) {
+            filter.machine = null
+            $('#filterMachine').val('');
+
+            filter.jobsite = null
+            $('#filterJobsite').val('');
+
+            filter.checkdate = null
+            $('#filterCheckdate').val('');
+
+            $table.bootstrapTable('refresh')
+        }
+
         function actionFormatter(value, row, index) {
             return '<a class="btn btn-primary btn-action" href="/bss-form/plant-transmission/dashboard/detail/' + row.id + '">detail</a>';
         }
 
         function fetchFormsData(params) {
+            if(filter.machine) params.data.machine = filter.machine;
+            if(filter.jobsite) params.data.jobsite = filter.jobsite;
+            if(filter.checkdate) params.data.checkdate = filter.checkdate;
+
             var url = `<?= route('bss-form.plant-transmission.get-data-dashboard') ?>`
             $.get(url + '?' + $.param(params.data)).then(function(res) {
                 params.success(res)

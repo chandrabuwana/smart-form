@@ -101,7 +101,7 @@
                                 </div>
                             </div>
 
-                            <div class="row">
+                            <div class="row mb-2">
                                 <div class="col-md-4">
                                     <label class="ms-0 fs-6">Site</label>
                                 </div>
@@ -135,6 +135,19 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label class="ms-0 fs-6">Lembur Hari ke-7</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="form-check ps-0 align-items-end">
+                                        <input class="form-check-input" type="checkbox" name="hariKeTujuh" value="true" {{ $formMaster->HariKeTujuh == 1 ? 'checked' : '' }}>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <p class="mt-4 mb-3">
@@ -157,7 +170,7 @@
                                     <th rowspan="2" class="align-middle">
                                         Jabatan
                                     </th>
-                                    <th colspan="3" class="text-center">
+                                    <th colspan="5" class="text-center">
                                         Jam Lembur
                                     </th>
                                 </tr>
@@ -170,6 +183,12 @@
                                     </th>
                                     <th>
                                         Total
+                                    </th>
+                                    <th>
+                                        Absensi
+                                    </th>
+                                    <th>
+                                        Konversi
                                     </th>
                                 </tr>
                             </thead>
@@ -199,6 +218,7 @@
                                         </td>
                                     </tr>
                                 @endforeach
+                                <tr></tr>
                             </tbody>
                         </table>
                     </div>
@@ -236,6 +256,7 @@
                                         </td>
                                     </tr>
                                 @endforeach
+                                <tr></tr>
                             </tbody>
                         </table>
                     </div>
@@ -244,13 +265,90 @@
                         <i>*Note : Jika ada pekerjaan diluar dari ketentuan diatas, maka Atasan Langsung wajib konfirmasi terlebih dahulu ke Departemen IC</i>
                     </small>
 
+                    <div class="form-check mt-4 mb-2 ps-0">
+                        <input class="form-check-input mt-0" type="checkbox" name="baPekerjaan" value="true" id="baPekerjaan"
+                            {{ !empty($formMaster->baPekerjaan) ? 'checked' : '' }} readonly>
+                        <label class="custom-control-label mb-0" for="customCheck1">BA Pekerjaan Diluar Standar</label>
+                    </div>
+
+                    @if(!empty($formMaster->baPekerjaan))
+                        <div class="input-group input-group-static">
+                            <label>Adapun pekerjaan yang dibutuhkan :</label>
+                            <textarea name="baDetailPekerjaan" class="form-control" rows="3" readonly>{{ $formMaster->baPekerjaan->Pekerjaan }}</textarea>
+                        </div>
+
+                        <h2 class="fw-bold mt-4 mb-2 fs-5">Remark (Analisa SEFTO) :</h2>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row mb-3 align-items-end">
+                                    <div class="col-md-4">
+                                        <label class="ms-0 mb-0 fs-6">Strategy</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input class="form-control input-text" id="seftoStrategy" name="seftoStrategy" placeholder="--- Sefto Strategy ---"
+                                            value="{{ $formMaster->baPekerjaan->Strategy }}" readonly>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="row mb-3 align-items-end">
+                                    <div class="col-md-4">
+                                        <label class="ms-0 mb-0 fs-6">Economy</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input class="form-control input-text" id="seftoEconomy" name="seftoEconomy" placeholder="--- Sefto Economy ---"
+                                            value="{{ $formMaster->baPekerjaan->Economy }}" readonly>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="row mb-3 align-items-end">
+                                    <div class="col-md-4">
+                                        <label class="ms-0 mb-0 fs-6">Financial</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input class="form-control input-text" id="seftoFinancial" name="seftoFinancial" placeholder="--- Sefto Financial ---"
+                                            value="{{ $formMaster->baPekerjaan->Financial }}" readonly>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="row mb-3 align-items-end">
+                                    <div class="col-md-4">
+                                        <label class="ms-0 mb-0 fs-6">Technology</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input class="form-control input-text" id="seftoTechnology" name="seftoTechnology" placeholder="--- Sefto Technology ---"
+                                            value="{{ $formMaster->baPekerjaan->Technology }}" readonly>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="row mb-3 align-items-end">
+                                    <div class="col-md-4">
+                                        <label class="ms-0 mb-0 fs-6">Operational</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input class="form-control input-text" id="seftoOperational" name="seftoOperational" placeholder="--- Sefto Operational ---"
+                                            value="{{ $formMaster->baPekerjaan->Operational }}" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
                     <div class="row mt-5 align-items-end">
                         @foreach($formMaster->approvers as $key => $approver)
                             <div class="col-md-6 col-lg-3 col-xl-2 text-center">
                                 <p class="mb-2">{{ $approver->NamaAtasan }}</p>
 
                                 @if($approver->Status == 'Approved')
-                                    <img src="{{ url('img/paraf.jpg') }}" class="mx-auto" style="height: 35px;" alt="Paraf">
+                                    <img src="{{ url('img/approved-stamp.png') }}" class="mx-auto" style="height: 50px;" alt="Approved">
 
                                 @elseif($approver->Status == 'Rejected')
                                     <p class="mb-0 text-danger fw-bold d-flex align-items-center justify-content-center">
@@ -284,6 +382,8 @@
                             </div>
                         @endforeach
                     </div>
+
+                    <small class="d-block mt-4">* Dokumen ini resmi dan diakui oleh perusahaan</small>
                 </div>
             </div>
         </div>
