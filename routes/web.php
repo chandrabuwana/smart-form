@@ -1,34 +1,9 @@
 <?php
 
 use App\Http\Controllers\absensi\CompareAbsensiController;
-use App\Http\Controllers\admin\AdminController;
-use App\Http\Controllers\Approval\ApprovalFormController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\DB;
-
-use App\Http\Controllers\PDF\HelperPdfMobilisasiFormController;
-use App\Http\Controllers\Master\DashboardController;
-use App\Http\Controllers\SmartPica\DashboarController;
-use App\Http\Controllers\SmartPica\HelperController;
-use App\Http\Controllers\SmartPica\TransactionPicaController;
 use App\Http\Controllers\Login\LoginKaryawanController;
-use App\Http\Controllers\SM\AssetRequestController;
-
-
-use App\Http\Controllers\SHE\DashboardSHEFRM19BController;
-use App\Http\Controllers\SHE\TransactionSHEFRM19BController;
-
-
-use App\Http\Controllers\Production\ProductionTimeSheetDashboarController;
-
-use App\Http\Controllers\IC\ICFM05InduksiKaryawanController;
-use App\Http\Controllers\IC\ICFM05TransactionController;
-use App\Http\Controllers\MasterData\MasterFormPICController;
-use App\Http\Controllers\TeamManagement\RoleManagementController;
-use App\Http\Controllers\TeamManagement\UserManagementController;
-use App\Http\Controllers\UnderCarriage\UnderCarriageInspectionController;
-use App\Http\Middleware\FetchMenu;
-use Modules\SmartForm\App\Http\Controllers\PLANT\PlantTransmissionController;
+use App\Http\Controllers\REVA\produksi\RevaProduksiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,3 +20,10 @@ Route::post('/login', [LoginKaryawanController::class, 'ProcessLogin'])->name("l
 Route::get('/logout', [LoginKaryawanController::class, 'LogoutAuthenticationProcess'])->name("logout");
 Route::get('/absensi', [CompareAbsensiController::class, 'Absensi'])->name('absensi');
 Route::get('/compare-absensi', [CompareAbsensiController::class, 'CompareAbsensi'])->name('compare-absensi');
+
+Route::prefix('reva')->group( function(){
+    Route::get('produksi', [RevaProduksiController::class, 'index']);
+    Route::get('api/ob', [RevaProduksiController::class, 'getOB']);
+    Route::get('api/const', [RevaProduksiController::class, 'getConstraint']);
+    Route::get('api/event', [RevaProduksiController::class, 'getEvent']);
+});

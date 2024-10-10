@@ -220,5 +220,6 @@ return [
 
     'user_sm' => env('USER_SM', '1008491,1008492,1008493,1008494,1008526'),
     'pengawas_produksi' => env('PENGAWAS_PRODUKSI', '1020340'),
-    'jwt_secret' => env('JWT_SECRET', null)
+    'jwt_secret' => env('JWT_SECRET', null),
+    'reva_db_json' => env('REVA_DB_JSON', null),
 ];
