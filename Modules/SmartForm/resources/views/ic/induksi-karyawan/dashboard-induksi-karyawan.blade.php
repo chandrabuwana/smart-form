@@ -308,7 +308,7 @@
                     </a></button> 
                     
                 `
-            if (dataUser == '1020125') {
+            if (dataUser == '1006104') {
                 data += `<button onclick="DeletedData(this)"><a class="like"  title="Like">
                         <i class="fa fa-trash"></i> Delete
                     </a></button>'`
