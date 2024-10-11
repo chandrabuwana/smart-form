@@ -318,41 +318,50 @@
         }
 
         function DeletedData(obj) {
-            let indexDt = $(obj).closest('tr').data('index');
-            let d = $('#dataListFormICInduksiKaryawan').bootstrapTable('getData')[indexDt];
+            Swal.fire({
+                title: "Apakah yakin dihapus?",
+                showCancelButton: true,
+                confirmButtonText: "Hapus Data",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let indexDt = $(obj).closest('tr').data('index');
+                    let d = $('#dataListFormICInduksiKaryawan').bootstrapTable('getData')[indexDt];
 
-            let dataHapus = {
-                code: d.code
-            }
-
-            $.ajax({
-                type: 'post',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                url: "/bss-form/induksi-karyawan/delete-induksi",
-                data: dataHapus,
-                dataType: 'json',
-                success: function(response) {
-                    if (response.code == 200) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Berhasil!',
-                            text: response.message,
-                        }).then((result) => {
-                            dataListFormICInduksiKaryawanSearchGenerate()
-                        });
+                    let dataHapus = {
+                        code: d.code
                     }
-                },
-                error: function(xhr, ajaxOptions, thrownError) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'thrownError',
-                        html: errorMessage,
-                        confirmButtonText: 'OK'
-                    });
+
+                    $.ajax({
+                        type: 'post',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        url: "/bss-form/induksi-karyawan/delete-induksi",
+                        data: dataHapus,
+                        dataType: 'json',
+                        success: function(response) {
+                            if (response.code == 200) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Berhasil!',
+                                    text: response.message,
+                                }).then((result) => {
+                                    dataListFormICInduksiKaryawanSearchGenerate()
+                                });
+                            }
+                        },
+                        error: function(xhr, ajaxOptions, thrownError) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'thrownError',
+                                html: errorMessage,
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    })
                 }
-            })
+            });
+
 
         }
 
