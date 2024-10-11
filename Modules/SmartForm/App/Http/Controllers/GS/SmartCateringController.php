@@ -30,6 +30,7 @@ class SmartCateringController extends Controller {
     private const TABLE_SUBMIT_ORDER_DETAIL = "SCT_GS_CT_ORDER_DETAIL";
     private const TABLE_SUBMIT_ORDER_VENDOR = "SCT_GS_CT_ORDER_VNDR";
     private const TABLE_VENDOR_MAPPING = "SCT_GS_VENDOR_MAPPING";
+    private const TABLE_VENDOR_MAPPING_DAY = "SCT_GS_VENDOR_MAPPING_DAY";
     private const TABLE_VENDOR_ORDER = "SCT_GS_CT_ORDER_VNDR";
     private const TABLE_VENDOR_MASTER = "SCT_GS_VENDOR_MST";
     private const TABLE_ABSENSI_HRD = self::DB_HRD . ".dbo.TAbsensi";
@@ -37,6 +38,7 @@ class SmartCateringController extends Controller {
     private const TABLE_PENEGASAN_CUTI = self::DB_HRD . ".dbo.TPenegasanCuti";
     private const TABLE_PENGAJUAN_CUTI = self::DB_HRD . ".dbo.tpengajuancuti";
     private const DB_CONN_NAME = 'sqlsrv';
+    private const MAPPING_COLUMN_VENDOR_DAY = [1 => 'senin', 2 => 'selasa', 3 => 'rabu', 4 => 'kamis', 5 => 'jumat', 6 => 'sabtu', 7 => 'minggu'];
 
     function AddPemesanan(Request $request) {
         return view("SmartForm::GS/pemesanan-catering");
@@ -282,6 +284,7 @@ class SmartCateringController extends Controller {
                 $detail = $request->input("detail", []);
                 $summaryOrder = $request->input("summaryOrder", []);
                 $detailAdjustment = $request->input("listAdjustment", []);
+                $column_hari = self::MAPPING_COLUMN_VENDOR_DAY[Carbon::parse($request->input("tanggal"))->dayOfWeekIso];
 
                 $data_order_insert = [
                     'jenis_pemesanan' => $jenisPemesanan,
@@ -306,8 +309,9 @@ class SmartCateringController extends Controller {
                 $extractedLokasi = array_column($summaryOrder, 'lokasi');
                 // Log::info(json_encode(array_column($summaryOrder, 'lokasi')));
                 // Log::info("summary order: " . json_encode($summaryOrder, JSON_PRETTY_PRINT));
-                $vendorMapping = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_VENDOR_MAPPING)
-                    ->select(['id as id_mapping', 'VendorID', 'lokasi'])
+                // $vendorMapping = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_VENDOR_MAPPING)
+                $vendorMapping = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_VENDOR_MAPPING_DAY)
+                    ->select(['id as id_mapping', $column_hari . ' as VendorID', 'lokasi'])
                     ->whereIn('lokasi', $extractedLokasi)
                     ->where('KodeSite', $site)
                     ->where('JenisPemesanan', $jenisPemesanan);
@@ -316,6 +320,7 @@ class SmartCateringController extends Controller {
                 // Log::debug("SQL vendor mapping : ");
                 // Log::debug($vendorMapping->get());
                 $vendorMapping = $vendorMapping->get()->toArray();
+                // Log::debug("SQL result vendor mapping : " . json_encode($vendorMapping, JSON_PRETTY_PRINT));
                 $newSummaryOrder = [];
                 $summaryPerVendor = [];
                 foreach ($summaryOrder as $pesanan) {
@@ -343,6 +348,7 @@ class SmartCateringController extends Controller {
 
                     $insert_pesanan = $_temp_pesanan;
                     $_temp_pesanan['VendorID'] = $vendor_id;
+                    // Log::info("insert_pesanan : " . json_encode($insert_pesanan, JSON_PRETTY_PRINT));
 
                     DB::connection(self::DB_CONN_NAME)->table(self::TABLE_SUBMIT_ORDER_DETAIL)->insert($insert_pesanan);
 
@@ -443,25 +449,30 @@ class SmartCateringController extends Controller {
         $kode_pemesanan = $request->input('id');
 
         try {
+            
             $master_pemesanan = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_SUBMIT_ORDER . ' as a')
                 ->where('a.kode_pemesanan', $kode_pemesanan);
-            $data_pemesanan = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_VENDOR_ORDER . ' as a')
-                ->select('a.kode_pemesanan', 'a.KodeSite', 'a.TanggalOrder', 'a.Jumlah', 'b.NamaVendor', 'a.status')    
-                ->leftJoin(self::TABLE_VENDOR_MASTER . ' as b', 'a.VendorID', '=', 'b.id')
-                ->where('kode_pemesanan', $kode_pemesanan);
-            $detail_per_lokasi = db::connection(SELF::DB_CONN_NAME)->table(SELF::TABLE_SUBMIT_ORDER_DETAIL . ' as a')
-                ->select('a.id_order as kode_pemesanan', 'a.jenis_pemesanan', 'a.jumlah','c.Nama as nama_vendor',  'd.NamaMess', 'a.status')
-                ->leftJoin(self::TABLE_VENDOR_MAPPING . ' as b', 'a.id_mapping_vendor', '=', 'b.id')
-                ->leftJoin(self::TABLE_VENDOR_MASTER . ' as c', 'b.VendorID', '=', 'c.id')
-                ->leftJoin(self::TABLE_MASTER_MESS . ' as d', 'a.lokasi', '=', 'd.NoDoc')
-                ->where('a.id_order', $kode_pemesanan);
+            $vendor_id = self::MAPPING_COLUMN_VENDOR_DAY[Carbon::parse($master_pemesanan->first()->tanggal)->dayOfWeekIso];
+            Log::debug('Tanggal mapping : ' . $vendor_id);
+            // $data_pemesanan = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_VENDOR_ORDER . ' as a')
+            //     ->select('a.kode_pemesanan', 'a.KodeSite', 'a.TanggalOrder', 'a.Jumlah', 'b.Nama as NamaVendor', 'a.status')    
+            //     ->leftJoin(self::TABLE_VENDOR_MASTER . ' as b', 'a.VendorID', '=', 'b.id')
+            //     ->where('kode_pemesanan', $kode_pemesanan);
+            // $detail_per_lokasi = db::connection(SELF::DB_CONN_NAME)->table(SELF::TABLE_SUBMIT_ORDER_DETAIL . ' as a')
+            //     ->select('a.id_order as kode_pemesanan', 'a.jenis_pemesanan', 'a.jumlah','c.Nama as nama_vendor',  'd.NamaMess', 'a.status')
+            //     ->leftJoin(self::TABLE_VENDOR_MAPPING_DAY . ' as b', 'a.id_mapping_vendor', '=', 'b.id')
+            //     ->leftJoin(self::TABLE_VENDOR_MASTER . ' as c', 'b.'.$vendor_id , '=', 'c.id')
+            //     ->leftJoin(self::TABLE_MASTER_MESS . ' as d', 'a.lokasi', '=', 'd.NoDoc')
+            //     ->where('a.id_order', $kode_pemesanan);
                 
-            Log::debug($master_pemesanan->toRawSql());
-            Log::debug($data_pemesanan->toRawSql());
-            Log::debug($detail_per_lokasi->toRawSql());
-            $data['detail'] = $data_pemesanan->get()->toArray();
-            $data['detail_lokasi'] = $detail_per_lokasi->get()->toArray();
+            Log::debug('SQL master_pemesanan : ' . $master_pemesanan->toRawSql());
+            // Log::debug('SQL data_pemesanan : '.$data_pemesanan->toRawSql());
+            // Log::debug('SQL detail_per_lokasi : '.$detail_per_lokasi->toRawSql());
+            // $data['detail'] = $data_pemesanan->get()->toArray();
+            // $data['detail_lokasi'] = $detail_per_lokasi->get()->toArray();
             $data['master'] = $master_pemesanan->first();
+
+            Log::debug(json_encode($data, JSON_PRETTY_PRINT));
         } catch (Exception $ex) {
             Log::error($ex->getMessage());
             Log::error($ex->getTraceAsString());
@@ -559,10 +570,12 @@ class SmartCateringController extends Controller {
         $limit = $request->query('limit', null);
 
         try {
+
+            $vendor_id = self::MAPPING_COLUMN_VENDOR_DAY[Carbon::parse(explode('/', $idPemesanan)[0])->dayOfWeekIso];
             $sql_master_data = db::connection(SELF::DB_CONN_NAME)->table(SELF::TABLE_SUBMIT_ORDER_DETAIL . ' as a')
             ->select('a.id as id_detail', 'a.id_order as kode_pemesanan', 'a.jenis_pemesanan', 'a.jumlah','c.Nama as nama_vendor',  'd.NamaMess as lokasi', 'a.status')
-            ->leftJoin(self::TABLE_VENDOR_MAPPING . ' as b', 'a.id_mapping_vendor', '=', 'b.id')
-            ->leftJoin(self::TABLE_VENDOR_MASTER . ' as c', 'b.VendorID', '=', 'c.id')
+            ->leftJoin(self::TABLE_VENDOR_MAPPING_DAY . ' as b', 'a.id_mapping_vendor', '=', 'b.id')
+            ->leftJoin(self::TABLE_VENDOR_MASTER . ' as c', 'b.'.$vendor_id , '=', 'c.id')
             ->leftJoin(self::TABLE_MASTER_MESS . ' as d', 'a.lokasi', '=', 'd.NoDoc')
             ->where('a.id_order', $idPemesanan);
                 
@@ -572,8 +585,10 @@ class SmartCateringController extends Controller {
             } else {
                 $sql_master_data->skip($offset)->limit($limit);
             }
-            Log::info('SQL : ' . $sql_master_data->toRawSql());
+
             $master_data = $sql_master_data->get();
+            // Log::info('SQL Pemesanan per lokasi : ' . $sql_master_data->toRawSql());
+            // Log::info('SQL Pemesanan per lokasi data: ' . json_encode($master_data, JSON_PRETTY_PRINT));
 
             $message= "Ok";
             $isSuccess = true;
@@ -624,7 +639,7 @@ class SmartCateringController extends Controller {
             } else {
                 $sql_data_pemesanan->skip($offset)->limit($limit);
             }
-            Log::info('SQL : ' . $sql_data_pemesanan->toRawSql());
+            // Log::info('SQL sql_data_pemesanan : ' . $sql_data_pemesanan->toRawSql());
             $master_data = $sql_data_pemesanan->get();
 
             $message= "Ok";

@@ -90,8 +90,8 @@
                                     <th data-field="KodeSite" data-align="center" data-halign="center" >Site</th>
                                     <th data-field="NamaVendor" data-align="left" data-halign="center" >Vendor</th>
                                     <th data-field="Jumlah" data-align="center" data-halign="center">Jumlah</th>
-                                    <th data-field="status" data-align="center" data-halign="center">Status Pemesanan</th>
-                                    <th data-align="center" data-halign="center" data-formatter="actionPerVendor">Actions</th>
+                                    {{-- <th data-field="status" data-align="center" data-halign="center">Status Pemesanan</th> --}}
+                                    {{-- <th data-align="center" data-halign="center" data-formatter="actionPerVendor">Actions</th> --}}
                                 </tr>
                             </thead>
                             <tbody>
