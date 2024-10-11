@@ -14,12 +14,38 @@
                     </div>
                 </div>
                 <div class="card-body px-0 pb-2">
-                    <div class="d-flex align-items-center">
+                    <div class="d-flex align-items-center ms-3">
                         <a href="{{ route('master-form-pic.create') }}">
                             <button class="btn btn-primary ms-auto uploadBtn" id="coba">
                                 New Form
                             </button>
                         </a>
+                    </div>
+
+                    <h4 class="mx-3">Filter Data</h4>
+                    <div class="mx-3 row mb-3">
+                        <div class="col-6 col-md-3 ps-0">
+                            <div class="input-group input-group-static mb-4">
+                                <label for="filterFormName">Form Name</label>
+                                <input style="width: 100%" id="filterFormName" class="form-control" name="filterFormName" placeholder="--- Cari Form Name ---">
+                            </div>
+                        </div>
+
+                        <div class="col-6 col-md-3 ps-0">
+                            <div class="input-group input-group-static mb-4">
+                                <label for="filterPICUsername">PIC Username</label>
+                                <input style="width: 100%" id="filterPICUsername" class="form-control" name="filterPICUsername" placeholder="--- Cari PIC Username ---">
+                            </div>
+                        </div>
+
+                        <div class="ps-0">
+                            <button class="btn btn-primary ms-auto filter-btn" id="btnFilterSubmit" onclick="applyFilter(this)">
+                                Filter
+                            </button>
+                            <button class="btn btn-primary ms-auto filter-btn" id="btnClearFilter" onclick="clearFilter(this)">
+                                Clear Filter
+                            </button>
+                        </div>
                     </div>
 
                     <div class="table-responsive p-0">
@@ -56,6 +82,33 @@
     <script type="text/javascript">
         var $table = $("#list-form-pic");
 
+        const filter = {
+            formName: '',
+            picUsername: ''
+        }
+
+        $('#filterFormName').change( function(e) {
+            filter.formName = e.target.value;
+        });
+
+        $('#filterPicUsername').change( function(e) {
+            filter.picUsername = e.target.value;
+        });
+
+        function applyFilter(e) {
+            $table.bootstrapTable('refresh')
+        }
+
+        function clearFilter(e) {
+            filter.formName = null
+            $('#filterFormName').val('');
+
+            filter.picUsername = null
+            $('#filterPicUsername').val('');
+
+            $table.bootstrapTable('refresh')
+        }
+
         function actionFormatter(value, row, index) {
             return `
                 <a class="btn btn-primary btn-action btn-sm me-1" href="/master-form-pic/edit/${row.id}">Edit</a>
@@ -64,6 +117,9 @@
         }
 
         function fetchFormsData(params) {
+            if(filter.formName) params.data.form_name = filter.formName;
+            if(filter.picUsername) params.data.pic_username = filter.picUsername;
+
             var url = `<?= route('master-form-pic.get-dashboard-data') ?>`
             $.get(url + '?' + $.param(params.data)).then(function(res) {
                 params.success(res)

@@ -3,6 +3,7 @@
 namespace Modules\API\App\Http\Controllers\Order;
 
 use App\Http\Controllers\Controller;
+use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -15,6 +16,8 @@ class OrderMobileController extends Controller
     private const TABLE_ORDER_DETAIL = 'PICA_BETA.dbo.SCT_GS_CT_ORDER_DETAIL';
     private const TABLE_VENDOR_MASTER = 'PICA_BETA.dbo.SCT_GS_VENDOR_MST';
     private const TABLE_MAPPING_VENDOR = 'PICA_BETA.dbo.SCT_GS_VENDOR_MAPPING';
+    private const TABLE_MAPPING_VENDOR_DAY = 'PICA_BETA.dbo.SCT_GS_VENDOR_MAPPING_DAY';
+    private const TABLE_MESS_MASTER = 'PICA_BETA.dbo.SCT_GS_MESS_MST';
 
     public function index(Request $request)
     {
@@ -93,10 +96,26 @@ class OrderMobileController extends Controller
             $user = DB::table(self::TABLE_VENDOR_MASTER)
                 ->where('Email', $emailFromToken)->first();
 
-            $order->details = DB::table(self::TABLE_ORDER_DETAIL)->select(self::TABLE_ORDER_DETAIL . '.lokasi', self::TABLE_ORDER_DETAIL . '.jumlah')
-                ->join(self::TABLE_MAPPING_VENDOR, self::TABLE_MAPPING_VENDOR . '.id', '=', 'id_mapping_vendor')
-                ->where('id_order', $order->kode_pemesanan)->where('VendorID', $user->id)
-                ->orderBy(self::TABLE_ORDER_DETAIL . '.created_at', 'ASC')->get();
+            $day = strtr( date('D', strtotime($order->TanggalOrder)), [
+                'Mon' => 'senin',
+                'Tue' => 'selasa',
+                'Wed' => 'rabu',
+                'Thu' => 'kamis',
+                'Fri' => 'jumat',
+                'Sat' => 'sabtu',
+                'Sun' => 'minggu',
+            ]);
+
+            $order->details = DB::table(self::TABLE_ORDER_DETAIL)
+                ->select(self::TABLE_ORDER_DETAIL . '.id', self::TABLE_MESS_MASTER . '.NamaMess AS lokasi', self::TABLE_ORDER_DETAIL . '.jumlah', self::TABLE_ORDER_DETAIL . '.status', 'file_evidence')
+                ->join(self::TABLE_MAPPING_VENDOR_DAY, self::TABLE_MAPPING_VENDOR_DAY . '.id', '=', self::TABLE_ORDER_DETAIL . '.id_mapping_vendor')
+                ->join(self::TABLE_MESS_MASTER, self::TABLE_MESS_MASTER . '.NoDoc', '=', self::TABLE_ORDER_DETAIL . '.lokasi')
+                ->where('id_order', $order->kode_pemesanan)->where($day, $user->id)
+                ->orderBy(self::TABLE_ORDER_DETAIL . '.created_at', 'ASC')
+                ->get()->map( function($item) {
+                    $item->file_evidence = !empty($item->file_evidence) ? url('storage/' . $item->file_evidence) : null;
+                    return $item;
+                });
 
             $data = $order;
         }
@@ -120,6 +139,7 @@ class OrderMobileController extends Controller
         $validator = Validator::make($request->all(), [
             'id' => 'required',
             'status' => 'required|in:Pesanan Baru,Dalam Proses,Selesai',
+            'file_evidence' => !empty($request->id_detail) && $request->status == 'Selesai' ? 'required|file|mimes:jpg,jpeg,png' : ''
         ], [
             'required' => 'Kolom :attribute wajib diisi.',
             'in' => 'Nilai kolom :attribute tidak valid'
@@ -140,16 +160,82 @@ class OrderMobileController extends Controller
             $errorMessage[] = 'Data order tidak ditemukan';
 
         } else {
-            DB::table(self::TABLE_ORDER_MASTER)
-                ->where('id', $request->id)
-                ->update([
-                    'status' => $request->status
+            try {
+                $emailFromToken = $request->get('email_from_token');
+                $user = DB::table(self::TABLE_VENDOR_MASTER)
+                    ->where('Email', $emailFromToken)->first();
+
+                $day = strtr( date('D', strtotime($order->TanggalOrder)), [
+                    'Mon' => 'senin',
+                    'Tue' => 'selasa',
+                    'Wed' => 'rabu',
+                    'Thu' => 'kamis',
+                    'Fri' => 'jumat',
+                    'Sat' => 'sabtu',
+                    'Sun' => 'minggu',
                 ]);
 
-            $isSuccess = true;
-            $httpRespCode = 200;
-            $message = 'Berhasil!';
-            $data = $order;
+                if(!empty($request->id_detail)) {
+                    DB::table(self::TABLE_ORDER_DETAIL)->where('id', $request->id_detail)->update([
+                        'status' => $request->status,
+                    ]);
+
+                    if($request->status == 'Selesai') {
+                        $filePath = $request->file('file_evidence')->store('catering-evidence');
+
+                        DB::table(self::TABLE_ORDER_DETAIL)
+                            ->where('id', $request->id_detail)
+                            ->where('id_order', $order->kode_pemesanan)
+                            ->update([
+                                'file_evidence' => $filePath,
+                                'status' => $request->status
+                            ]);
+
+                        $progressItem = DB::table(self::TABLE_ORDER_DETAIL)
+                            ->join(self::TABLE_MAPPING_VENDOR_DAY, self::TABLE_MAPPING_VENDOR_DAY . '.id', '=', 'id_mapping_vendor')
+                            ->where('id_order', $order->kode_pemesanan)
+                            ->where($day, $user->id)
+                            ->where(self::TABLE_ORDER_DETAIL . '.id', '!=', $request->id_detail)
+                            ->where('status', 'Dalam Proses')->count(self::TABLE_ORDER_DETAIL . '.id');
+
+                        if($progressItem == 0) {
+                            DB::table(self::TABLE_ORDER_MASTER)
+                                ->where('id', $request->id)
+                                ->update([
+                                    'status' => 'Selesai'
+                                ]);
+
+                            $order->status = 'Selesai';
+                        }
+                    }
+
+                } else {
+                    DB::table(self::TABLE_ORDER_MASTER)
+                        ->where('id', $request->id)
+                        ->update([
+                            'status' => $request->status
+                        ]);
+
+                    if($request->status == 'Dalam Proses') {
+                        DB::table(self::TABLE_ORDER_DETAIL)
+                            ->join(self::TABLE_MAPPING_VENDOR_DAY, self::TABLE_MAPPING_VENDOR_DAY . '.id', '=', 'id_mapping_vendor')
+                            ->where('id_order', $order->kode_pemesanan)
+                            ->where($day, $user->id)
+                            ->update(['status' => 'Dalam Proses']);
+                    }
+
+                    $order->status = $request->status;
+                }
+
+                DB::commit();
+                $isSuccess = true;
+                $httpRespCode = 200;
+                $message = 'Berhasil!';
+                $data = $order;
+
+            } catch(Exception $e) {
+                DB::rollBack();
+            }
         }
 
         return response()->json(

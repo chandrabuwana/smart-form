@@ -111,11 +111,44 @@
         .hide {
             display: none !important;
         }
+
+        .loader {
+            border: 8px solid #f3f3f3; /* Light grey */
+            border-top: 8px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            animation: spin 2s linear infinite;
+        }
+
+        /* Keyframes untuk animasi berputar */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Pusatkan loader di tengah layar */
+        .center {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            position: absolute;
+            z-index: 999;
+            /* left: 50%; */
+            /* height: 50%; */
+            width: 100%;
+            background: #55555598;
+        }
     </style>
     @yield('custom-css')
 </head>
 
 <body class="g-sidenav-show  bg-gray-200">
+    <div class="center" id="loading-animation">
+        <div class="loader"></div>
+    </div>
+    
     @include('master.part.menu-navbar-main')
     <main class="main-content position-relative h-100 border-radius-lg ">
         <!-- Navbar -->

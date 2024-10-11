@@ -52,6 +52,9 @@
             padding: 2px 4px;
             border-bottom: 1px solid rgba(85, 83, 83, 0.534);
         }
+        .btn.disabled {
+            color: #f0f2f5;
+        }
     </style>
 @endsection
 
@@ -74,7 +77,7 @@
                         <h4>Detail per Vendor</h4>
                     </div>
                     <div class="table-responsive p-0">
-                        <table id="list-form" data-toggle="table"
+                        <table id="data-per-vendor" data-toggle="table" data-ajax="fetchPerVendor"
                             data-side-pagination="client" data-filter-control="true"
                             data-page-list="[10, 25, 50, 100, all]" data-sortable="true"
                             data-content-type="application/json" data-data-type="json" data-pagination="true"
@@ -84,22 +87,23 @@
                                     <th data-field="kode_pemesanan" data-align="left" data-halign="text-center"
                                         data-sortable="true">Kode Pemesanan
                                     </th>
-                                    <th data-field="site" data-align="center" data-halign="center" >Site</th>
-                                    <th data-field="nama" data-align="left" data-halign="center" >Vendor</th>
-                                    <th data-field="jumlah" data-align="center" data-halign="center">Jumlah</th>
-                                    <th data-field="status" data-align="center" data-halign="center">Status Pemesanan</th>
+                                    <th data-field="KodeSite" data-align="center" data-halign="center" >Site</th>
+                                    <th data-field="NamaVendor" data-align="left" data-halign="center" >Vendor</th>
+                                    <th data-field="Jumlah" data-align="center" data-halign="center">Jumlah</th>
+                                    {{-- <th data-field="status" data-align="center" data-halign="center">Status Pemesanan</th> --}}
+                                    {{-- <th data-align="center" data-halign="center" data-formatter="actionPerVendor">Actions</th> --}}
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($data['detail'] as $detail)
+                                {{-- @foreach ($data['detail'] as $detail)
                                     <tr>
                                         <td>{{ $detail->kode_pemesanan }}</td>
                                         <td>{{ $detail->KodeSite }}</td>
-                                        <td>{{ $detail->Nama }}</td>
+                                        <td>{{ $detail->NamaVendor }}</td>
                                         <td>{{ $detail->Jumlah }}</td>
                                         <td>{{ $detail->status }}</td>
                                     </tr>
-                                @endforeach
+                                @endforeach --}}
                             </tbody>
                         </table>
                     </div>
@@ -107,8 +111,8 @@
                     <div class="mx-4">
                         <h4>Detail per lokasi</h4>
                     </div>
-                        <table id="list-form" data-toggle="table"
-                            data-side-pagination="client" data-filter-control="true"
+                        <table id="data-per-lokasi" data-toggle="table"
+                            data-side-pagination="server" data-filter-control="true" data-ajax="ajaxRequest"
                             data-page-list="[10, 25, 50, 100, all]" data-sortable="true"
                             data-content-type="application/json" data-data-type="json" data-pagination="true"
                             data-unique-id="kode_pemesanan" data-show-export="true" data-show-toggle="true">
@@ -117,21 +121,13 @@
                                     <th data-field="kode_pemesanan" data-align="left" data-halign="text-center"
                                         data-sortable="true">Kode Pemesanan
                                     </th>
-                                    <th data-field="site" data-align="left" data-halign="center">Lokasi</th>
-                                    <th data-field="nama" data-align="left" data-halign="center">Vendor</th>
+                                    <th data-field="lokasi" data-align="left" data-halign="center">Lokasi</th>
+                                    <th data-field="nama_vendor" data-align="left" data-halign="center">Vendor</th>
                                     <th data-field="jumlah" data-align="center" data-halign="center">Jumlah</th>
+                                    <th data-field="status" data-align="center" data-halign="center" data-formatter="statusFormatter">Status</th>
+                                    <th data-field="action" data-align="center" data-halign="center" data-formatter="actionFormatter">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                @foreach ($data['detail_lokasi'] as $detail_lokasi)
-                                    <tr>
-                                        <td>{{ $detail_lokasi->kode_pemesanan }}</td>
-                                        <td>{{ $detail_lokasi->NamaMess }}</td>
-                                        <td>{{ $detail_lokasi->nama_vendor }}</td>
-                                        <td>{{ $detail_lokasi->jumlah }}</td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -147,33 +143,155 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.23.2/dist/extensions/export/bootstrap-table-export.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
-        console.log({{ Illuminate\Support\Js::from($data) }})
-        function fetchFormsData(params) {
-            params.data = {...params.data, ...additonalQuery}
-            var url = '/bss-form/catering/list-pemesanan'
-            // console.log(params.data)
-            $.get(url + '?' + $.param(params.data)).then(function(res) {
+        var baseURL = "/bss-form/catering"
+        // console.log({{ Illuminate\Support\Js::from($data) }})
+
+        function actionFormatter(value, row, index) {
+            console.log(row.status)
+            var _id = ", '"+ row.id_detail + "'"
+            var _dataStatus = 'data-status="' + row.status + '"'
+            var isDisabled = ""
+            if(row.status == "Diterima GS" || row.status == "Dalam Proses" || row.status == "Pesanan Baru" || row.status == null || row.status == "null") isDisabled = "disabled"
+  
+            var btnTerima = '<button class="btn btn-primary ' + isDisabled +  '" ' + _dataStatus  + ' onclick="actionTerima(this'+ _id +')"'+'>Terima</button>'
+            
+            return btnTerima
+        }
+
+        function actionPerVendor(value, row, index) {
+            var _id = ", '"+ row.id_detail_vendor + "'"
+            var _dataStatus = 'data-status="' + row.status + '"'
+            var isDisabled = ""
+            if(row.status == "Diterima GS" || row.status == "Dalam Proses" || row.status == "Pesanan Baru" || row.status == null || row.status == "null") isDisabled = "disabled"
+  
+            var btnTerima = '<button class="btn btn-primary ' + isDisabled +  '" ' + _dataStatus  + ' onclick="actionTerimaVendor(this'+ _id +')"'+'>Terima</button>'
+            
+            return btnTerima
+        }
+        
+        function statusFormatter(value, row, index) {
+            if(!value) return "Dalam Proses"
+            else return value
+        }
+
+        function actionTerima(e, idDetail) {
+            console.log(idDetail)
+            Swal.fire({
+                title: "Apakah yakin ingin terima?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "Terima",
+                cancelButtonText: "Batal",
+                cancelButtonColor: "#3085d6",
+                confirmButtonColor: "#d33"
+            }).then(function(result) {
+                if (result.isConfirmed) {
+                    e.disabled = true
+                    var dataMsgTerima = {
+                        icon: "error",
+                        title: ""
+                    }
+                    var reBodyTerima = {status: "Diterima GS", id_detail: idDetail}
+                    axios.put(baseURL + '/update-status-pemesanan', reBodyTerima , {
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    })
+                    .then(function(resp) {
+                        if(resp.data.isSuccess) {
+                            dataMsgTerima.icon = "success"
+                            dataMsgTerima.title = "Berhasil!"
+                            dataMsgTerima.text = resp.data.message
+                            $("#data-per-lokasi").bootstrapTable("refresh")
+                        } else {
+                            dataMsgTerima.icon = "error"
+                            dataMsgTerima.title = "Gagal!"
+                            dataMsgTerima.html = resp.data.errorMessage.join("<br>")
+                        }
+                    })
+                    .catch(function(err) {
+                        dataMsgTerima.icon = "error"
+                        dataMsgTerima.title = "Gagal!"
+                        dataMsgTerima.text = "Terjadi kesalahan, coba beberapa saat lagi"
+                    })
+                    .finally(function() {
+                        e.disabled = false
+                        Swal.fire(dataMsgTerima)
+                    })
+                }
+            })
+        }
+
+        function actionTerimaVendor(e, idDetail) {
+            // console.log(idDetail)
+            Swal.fire({
+                title: "Apakah yakin ingin terima?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "Terima",
+                cancelButtonText: "Batal",
+                cancelButtonColor: "#3085d6",
+                confirmButtonColor: "#d33"
+            }).then(function(result) {
+                if (result.isConfirmed) {
+                    e.disabled = true
+                    var dataMsgTerima = {
+                        icon: "error",
+                        title: ""
+                    }
+                    var reBodyTerima = {status: "Diterima GS", id_detail_vendor: idDetail}
+                    axios.put(baseURL + '/update-status-pemesanan-vendor', reBodyTerima , {
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    })
+                    .then(function(resp) {
+                        if(resp.data.isSuccess) {
+                            dataMsgTerima.icon = "success"
+                            dataMsgTerima.title = "Berhasil!"
+                            dataMsgTerima.text = resp.data.message
+                            $("#data-per-vendor").bootstrapTable("refresh")
+                        } else {
+                            dataMsgTerima.icon = "error"
+                            dataMsgTerima.title = "Gagal!"
+                            dataMsgTerima.html = resp.data.errorMessage.join("<br>")
+                        }
+                    })
+                    .catch(function(err) {
+                        dataMsgTerima.icon = "error"
+                        dataMsgTerima.title = "Gagal!"
+                        dataMsgTerima.text = "Terjadi kesalahan, coba beberapa saat lagi"
+                    })
+                    .finally(function() {
+                        e.disabled = false
+                        Swal.fire(dataMsgTerima)
+                    })
+                }
+            })
+        }
+
+        function ajaxRequest(params) {
+            var url = baseURL + '/list-pemesanan-lokasi'
+            var queryString = window.location.search;
+            var urlParams = new URLSearchParams(queryString);
+            params.data.id = urlParams.get('id')
+
+            $.get(url + '?' + $.param(params.data)).then(function (res) {
+                console.log(res)
                 params.success(res.data)
             })
         }
 
-        function actionFormatter(value, row, index) {
-            var _id = ", '"+ row.kode_pemesanan + "'"
-            // var _id_vendor = ", '"+ row.id_vendor + "'"
-            // var _site = ", '"+ row.site + "'"
-            // var _jenis_pemesanan = ", '"+ row.jenis_pemesanan + "'"
-            // var _lokasi = ", '"+ row.lokasi + "'"
-            // var _nama_vendor = ", '"+ row.nama_vendor + "'"
+        function fetchPerVendor(params) {
+            var url = baseURL + '/list-pemesanan-per-vendor'
+            var queryString = window.location.search;
+            var urlParams = new URLSearchParams(queryString);
+            params.data.id = urlParams.get('id')
 
-            // var _clickEvent = 'onclick="modalDetail(this'  + _id + _id_vendor + _site + _jenis_pemesanan + _lokasi + _nama_vendor +')"'
-            // var _clickEventDelete = 'onclick="actionDelete(this'  + _id +')"'
-            var _clickEvent = 'onclick="modalDetail(this' + _id + ')"'
-            var _clickEventDelete = 'onclick="actionDelete(this)"'
-
-            var btnDetail = '<a href="#" '+ _clickEvent +' data-action="detail" style="color: black;margin: 0px 4px;"><i class="fa fa-info-circle cursor-pointer"></i></a>';
-            var btnHapus = '<a href="#" '+ _clickEventDelete +' data-caption="" data-action="delete" style="color: red;margin: 0px 4px;"><i class="fa-solid fa-trash-can cursor-pointer"></i></a>';
-            
-            return btnDetail
+            $.get(url + '?' + $.param(params.data)).then(function (res) {
+                console.log(res)
+                params.success(res.data)
+            })
         }
 
         function modalDetail(e, _id) {

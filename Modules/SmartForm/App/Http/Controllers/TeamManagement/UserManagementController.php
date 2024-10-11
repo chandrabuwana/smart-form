@@ -19,11 +19,12 @@ class UserManagementController extends Controller
 
     public function getDashboardData(Request $request)
     {
-        $search  = $request->query('search', '');
-        $sort    = $request->query('sort', 'userid');
-        $order   = $request->query('order', 'desc');
-        $offset  = $request->query('offset', 0);
-        $limit   = $request->query('limit', 10);
+        $username  = $request->query('username', '');
+        $role      = $request->query('role', '');
+        $sort      = $request->query('sort', 'userid');
+        $order     = $request->query('order', 'desc');
+        $offset    = $request->query('offset', 0);
+        $limit     = $request->query('limit', 10);
 
         try {
             $userMasterNotFiltered = DB::table('users')->select('id');
@@ -31,17 +32,21 @@ class UserManagementController extends Controller
             $userMaster = DB::table('users')->select('userid', 'username', 'last_login', 'last_logout', 'device', 'role_name')
                 ->join('MS_ROLE', 'MS_ROLE.role_code', '=', 'users.role');
 
-            if(!empty($search)) {
-                $userMaster->where('role_name', 'like', '%' . $search . '%');
+            if(!empty($username)) {
+                $userMaster->where('username', 'like', '%' . $username . '%');
+            }
+
+            if(!empty($role)) {
+                $userMaster->where('role', 'like', '%' . $role . '%');
             }
 
             $data = $userMaster->orderBy($sort, $order)->offset($offset)
-                ->limit($limit);
+                ->limit($limit)->get();
 
             return response()->json([
                 'total' => $data->count(),
                 'totalNotFiltered' => $userMasterNotFiltered->count(),
-                'rows' => $data->get()
+                'rows' => $data
             ]);
 
         } catch (Exception $ex) {
