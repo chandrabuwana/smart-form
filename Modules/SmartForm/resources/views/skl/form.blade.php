@@ -67,6 +67,7 @@
 
                 <input type="hidden" name="noDok" value="BSS-FRM-ICGS-034">
                 <input type="hidden" name="revisi" value="001">
+                <input type="hidden" name="catatan" value="">
 
                 <div class="d-none" id="form-karyawan">
                 </div>
@@ -256,7 +257,7 @@
                     </div>
 
                     <small class="mb-0 mt-2">
-                        <i>*Note : Jika ada pekerjaan diluar dari ketentuan diatas, maka Atasan Langsung wajib konfirmasi terlebih dahulu ke Departemen IC</i>
+                        <i>*Note : Jika ada pekerjaan diluar dari ketentuan di atas, silakan centang keterangan BA dibawah ini</i>
                     </small>
 
                     <div class="form-check mt-4 mb-2 ps-0">
@@ -707,12 +708,24 @@
 
                 const splitJamSelesai = $inputJamSelesai.val().split(':');
                 const jamSelesaiInMinute = (Number(splitJamSelesai[0]) * 60) + Number(splitJamSelesai[1]);
+                const totalJam = (jamSelesaiInMinute - jamMulaiInMinute) / 60;
 
                 if(jamSelesaiInMinute < jamMulaiInMinute) {
                     Swal.fire({
                         icon: 'error',
                         title: 'Oops!',
                         html: 'Jam selesai tidak boleh sebelum jam mulai',
+                        confirmButtonText: 'OK'
+                    });
+
+                    $inputJamSelesai.val('');
+                    return;
+
+                } else if(totalJam > 3) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops!',
+                        html: 'Total jam lembur tidak boleh lebih dari 3 jam',
                         confirmButtonText: 'OK'
                     });
 
@@ -753,6 +766,7 @@
 
                 karyawans.push(payload);
                 mountTableKaryawan();
+                checkCatatanPengajuan();
                 $('#modalTambahKaryawan').modal('hide');
             });
 
@@ -858,6 +872,23 @@
         function deleteKaryawan(index) {
             karyawans.splice(index, 1);
             mountTableKaryawan();
+            checkCatatanPengajuan();
+        }
+
+        function checkCatatanPengajuan() {
+            $('[name=catatan]').val('');
+
+            karyawans.forEach( (item, index) => {
+                const d = (new Date());
+                const splitJamMulai = item.jamMulai.split(':');
+                const deviasiPengajuan = d - (new Date(d.getFullYear(), d.getMonth(), d.getDate(), splitJamMulai[0], splitJamMulai[1]));
+                const deviasiInHour = (deviasiPengajuan / 1000) / 3600;
+                console.log('TESTT RANN', deviasiInHour);
+
+                if(deviasiInHour < 3) {
+                    $('[name=catatan]').val('Pengajuan lembur ini diajukan tidak sesuai dengan prosedur');
+                }
+            });
         }
 
         function mountTableKaryawan() {

@@ -262,7 +262,7 @@
                     </div>
 
                     <small class="mb-0 mt-2">
-                        <i>*Note : Jika ada pekerjaan diluar dari ketentuan diatas, maka Atasan Langsung wajib konfirmasi terlebih dahulu ke Departemen IC</i>
+                        <i>*Note : Jika ada pekerjaan diluar dari ketentuan di atas, silakan centang keterangan BA dibawah ini</i>
                     </small>
 
                     <div class="form-check mt-4 mb-2 ps-0">
