@@ -23,6 +23,7 @@ class DashboardSKLController extends Controller
     private const T_KARYAWAN = 'HRD.dbo.TKaryawan';
     private const T_JABATAN = 'HRD.dbo.tjabatan';
     private const T_FORM_BA_PEKERJAAN = 'DB_SPL.dbo.TBL_FORM_BA_PEKERJAAN';
+    private const V_JAM_KONVERSI = 'DB_SPL.dbo.VW_Jam_Konversi_SPL';
 
     public function dashboard()
     {
@@ -126,7 +127,16 @@ class DashboardSKLController extends Controller
             ->select(self::T_FORM_KARYAWAN . '.NIK', self::T_KARYAWAN . '.Panggilan', 'JamMulai', 'JamSelesai', 'TotalJam', self::T_JABATAN . '.Nama AS NamaJabatan')
             ->join(self::T_KARYAWAN, self::T_KARYAWAN . '.NIK', '=', self::T_FORM_KARYAWAN . '.NIK')
             ->join(self::T_JABATAN, self::T_JABATAN . '.KodeJB', '=', self::T_KARYAWAN . '.KodeJB')
-            ->where('NoForm', $NoForm)->get();
+            ->where('NoForm', $NoForm)
+            ->get()->map( function($item) use($NoForm) {
+                $viewSklData = DB::table(self::V_JAM_KONVERSI)->where('NoForm', $NoForm)
+                    ->where('NIK', $item->NIK)->first();
+
+                $item->JamAbsensi = $viewSklData->JamAbsensi ?? '';
+                $item->TotalKonversi = ($viewSklData->total_konversi_jam ?? '') . ' jam';
+
+                return $item;
+            });
 
         $formMasterData->pekerjaans = DB::table(self::T_FORM_PEKERJAAN)
             ->select(self::T_MST_PEKERJAAN . '.Nama AS KategoriPekerjaan', self::T_FORM_PEKERJAAN . '.Detail')
@@ -150,7 +160,7 @@ class DashboardSKLController extends Controller
 
         return view('SmartForm::skl/detail', [
             'formMaster' => $formMasterData,
-            'lastProgressApproval' => $lastProgressApproval
+            'lastProgressApproval' => $lastProgressApproval,
         ]);
     }
 
