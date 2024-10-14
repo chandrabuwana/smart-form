@@ -216,6 +216,12 @@
                                         <td>
                                             {{ $karyawan->TotalJam }}
                                         </td>
+                                        <td>
+                                            {{ $karyawan->JamAbsensi }}
+                                        </td>
+                                        <td>
+                                            {{ $karyawan->TotalKonversi }}
+                                        </td>
                                     </tr>
                                 @endforeach
                                 <tr></tr>
