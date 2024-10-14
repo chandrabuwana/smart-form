@@ -156,6 +156,11 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
                 Route::delete('/delete-mapping-vendor', [VendorController::class, 'DeleteMappingVendor'])->name('delete-mapping-vendor');
                 Route::get('/dashboard-vendor-mapping', [VendorController::class, 'DashboardVendorMappingCatering'])->name('dashboard-vendor-mapping-catering');
                 Route::get('/list-vendor-mapping', [VendorController::class, 'ListVendorMappingCatering'])->name('list-vendor-mapping');
+                Route::get('/helper-vendor-waktu-lokasi', [VendorController::class, 'HelperVendorByLokasiAndWaktu'])->name('helper-vendor-waktu-lokasi');
+                Route::post('/add-mapping-vendor-day', [VendorController::class, 'AddMappingVendorDay'])->name('add-mapping-vendor-day');
+                Route::put('/edit-mapping-vendor-day', [VendorController::class, 'EditMappingVendorDay'])->name('edit-mapping-vendor-day');
+                Route::get('/list-vendor-mapping-day', [VendorController::class, 'ListVendorMappingCateringDay'])->name('list-vendor-mapping-day');
+                Route::delete('/delete-mapping-vendor-day', [VendorController::class, 'DeleteMappingVendorDay'])->name('delete-mapping-vendor-day');
             });
         });
     });

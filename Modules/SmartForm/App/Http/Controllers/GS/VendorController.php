@@ -17,6 +17,7 @@ class VendorController extends Controller {
     private const BASE_DB  = "PICA_BETA.dbo.";
     private const TABLE_MASTER = 'SCT_GS_VENDOR_MST';
     private const TABLE_MAPPING_MAKAN_VENDOR = 'SCT_GS_VENDOR_MAPPING';
+    private const TABLE_MAPPING_MAKAN_VENDOR_DAY = 'SCT_GS_VENDOR_MAPPING_DAY';
     private const TABLE_LOKASI = "SCT_GS_MESS_MST";
 
     public function DashboardVendor(Request $request) {
@@ -264,7 +265,7 @@ class VendorController extends Controller {
             $data = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_MAPPING_MAKAN_VENDOR)
                 ->where([
                     ['KodeSite', '=', $site],
-                    ['JenisPemesanan', '=', $jenis_pemesanan],
+                    // ['JenisPemesanan', '=', $jenis_pemesanan],
                     ['lokasi', '=', $lokasi]
                 ]);
             
@@ -306,13 +307,13 @@ class VendorController extends Controller {
                 'site' => ['required'], 
                 'lokasi' => ['required'], 
                 'vendor' => ['required'], 
-                'jenisPemesanan' => ['required']
+                // 'jenisPemesanan' => ['required']
             ],
             [
                 'site.required' => 'Site wajib diisi',
                 'lokasi.required' => 'Lokasi wajib diisi',
                 'vendor.required' => 'Vendro wajib diisi',
-                'jenisPemesanan.required' => 'Waktu Makan wajib diisi.'
+                // 'jenisPemesanan.required' => 'Waktu Makan wajib diisi.'
             ]
         );
 
@@ -328,10 +329,10 @@ class VendorController extends Controller {
 
         // Log::debug(json_encode($checkMappingExist));
 
-        if($checkMappingExist['isExists']) {
-            $message = "Mapping sudah ada";
-            $errorMessage = $errorList;
-        } else {
+        // if($checkMappingExist['isExists']) {
+        //     $message = "Mapping sudah ada";
+        //     $errorMessage = $errorList;
+        // } else {
             if(count($errorList) > 0) {
                 
                 $message = "Error mandatory field";
@@ -341,7 +342,7 @@ class VendorController extends Controller {
                 $data_input = [
                     'KodeSite' => $request->input('site'),
                     'VendorID' => $request->input('vendor'),
-                    'JenisPemesanan' => $request->input('jenisPemesanan'),
+                    // 'JenisPemesanan' => $request->input('jenisPemesanan'),
                     'lokasi' => $request->input('lokasi'),
                 ];
     
@@ -367,7 +368,106 @@ class VendorController extends Controller {
     
             }
 
-        }
+        // }
+        
+        return response()->json([
+            'isSuccess' => $isSuccess,
+            'message' => $message,
+            'errorMessage' => $errorMessage,
+            'data' => $data
+        ]);
+    }
+
+    public function AddMappingVendorDay(Request $request) {
+        $isSuccess = false;
+        $message = '';
+        $errorMessage = [];
+        $data = null;
+        $nik_session = $request->session()->get('user_id', '');
+        $tgl = now();
+        // {
+        //     "site": "AGM",
+        //     "lokasi": "MSS/AGM/000003",
+        //     "vendor": "002",
+        //     "jenisPemesanan": "siang",
+        //     "idMapping": "3"
+        // }
+        $validator = Validator::make(
+            $request->all(), 
+            [
+                'site' => ['required'], 
+                'lokasi' => ['required'], 
+                // 'vendor' => ['required'], 
+                'jenisPemesanan' => ['required']
+            ],
+            [
+                'site.required' => 'Site wajib diisi',
+                'lokasi.required' => 'Lokasi wajib diisi',
+                // 'vendor.required' => 'Vendro wajib diisi',
+                'jenisPemesanan.required' => 'Waktu Makan wajib diisi.'
+            ]
+        );
+
+        $data = $request->input();
+        $errorList = $validator->errors()->all();
+
+        // $checkMappingExist = $this->checkMappingVendorExist(
+        //     $request->input('vendor'),
+        //     $request->input('site'),
+        //     $request->input('jenisPemesanan'),
+        //     $request->input('lokasi')
+        // );
+
+        // Log::debug(json_encode($checkMappingExist));
+
+        // if($checkMappingExist['isExists']) {
+        //     $message = "Mapping sudah ada";
+        //     $errorMessage = $errorList;
+        // } else {
+            if(count($errorList) > 0) {
+                
+                $message = "Error mandatory field";
+                $errorMessage = $errorList;
+    
+            } else {
+                $data_input = [
+                    'KodeSite' => $request->input('site'),
+                    'JenisPemesanan' => $request->input('jenisPemesanan'),
+                    'lokasi' => $request->input('lokasi'),
+                    'senin' => $request->input('vendorSenin'),
+                    'selasa' => $request->input('vendorSelasa'),
+                    'rabu' => $request->input('vendorRabu'),
+                    'kamis' => $request->input('vendorKamis'),
+                    'jumat' => $request->input('vendorJumat'),
+                    'sabtu' => $request->input('vendorSabtu'),
+                    'minggu' => $request->input('vendorMinggu'),
+                    'created_at' => $tgl,
+                    'created_by' => $nik_session
+                ];
+    
+                try {
+                    DB::connection(self::DB_CONN_NAME)->beginTransaction();
+    
+                    $sql_insert_vendor = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_MAPPING_MAKAN_VENDOR_DAY)
+                        ->insert($data_input);
+    
+                    DB::connection(self::DB_CONN_NAME)->commit();
+                    $message = "Ok";
+                    $isSuccess = true;
+                } catch (Exception $ex) {
+
+                    $message = "Terjadi kesalahan, coba beberapa saat lagi";
+                    $errorMessage = [$message];
+    
+                    DB::connection(self::DB_CONN_NAME)->rollBack();
+    
+                    Log::error(get_class($ex). " | ". $ex->getMessage());
+                    Log::error($ex->getTraceAsString());
+                }
+    
+            }
+
+        // }
         
         return response()->json([
             'isSuccess' => $isSuccess,
@@ -460,6 +560,60 @@ class VendorController extends Controller {
 
     }
 
+    public function DeleteMappingVendorDay(Request $request) {
+        $isSuccess = false;
+        $message = '';
+        $errorMessage = '';
+        $data = null;
+        $nik_session = $request->session()->get('user_id', '');
+        $validator = Validator::make(
+            $request->all(), 
+            [ 
+                'id' => ['required']
+            ],
+            [
+                'id.required' => 'ID Mapping wajib diisi.'
+            ]
+        );
+
+        $data = $request->input();
+        $errorList = $validator->errors()->all();
+
+        if(count($errorList) > 0) {
+            
+            $message = "Error mandatory field";
+            $errorMessage = $errorList;
+
+        } else {
+            try {
+                DB::connection(self::DB_CONN_NAME)->beginTransaction();
+                $id = $request->input("id");
+
+                $sql_delete_vendor = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_MAPPING_MAKAN_VENDOR_DAY)
+                    ->where('id', $id)
+                    ->delete();
+                
+                DB::connection(self::DB_CONN_NAME)->commit();
+                $message = "Berhasil menghapus mapping vendor " . $id;
+                $isSuccess = true;
+
+            } catch (Exception $ex) {
+                DB::connection(self::DB_CONN_NAME)->rollBack();
+                $message = "Terjadi kesalahan, coba beberapa saat lagi";
+                $errorMessage = [$message];
+
+                Log::error($ex->getMessage());
+                Log::error($ex->getTraceAsString());
+            }
+        }
+
+        return response()->json([
+            'isSuccess' => $isSuccess,
+            'message' => $message,
+            'errorMessage' => $errorMessage,
+            'data' => $data
+        ]);
+    }
     public function DeleteMappingVendor(Request $request) {
         $isSuccess = false;
         $message = '';
@@ -514,7 +668,6 @@ class VendorController extends Controller {
             'data' => $data
         ]);
     }
-
 
     public function DeleteVendor(Request $request) {
         $isSuccess = false;
@@ -682,6 +835,35 @@ class VendorController extends Controller {
         return response()->json(['data' => $data]);
     }
 
+    public function HelperVendorByLokasiAndWaktu(Request $request) {
+        $site = $request->query("site", "");
+        $lokasi = $request->query("lokasi", "");
+        $waktu_pemesanan = $request->query("waktu_pemesanan", "");
+        $specific_id = $request->query("id", "");
+
+        $data = [];
+
+        // if(strlen($vendor) > 0) {
+            try {
+                $data_vendor_by_lokasi_waktu = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_MAPPING_MAKAN_VENDOR . ' as a')
+                    ->select('VendorID as id', 'b.Nama as text')
+                    ->leftJoin(self::TABLE_MASTER . ' as b', 'a.VendorID', '=', 'b.id')
+                    ->where('a.KodeSite', $site)
+                    ->where('a.lokasi', $lokasi);
+                    // ->where('a.JenisPemesanan', $waktu_pemesanan);
+    
+                Log::debug('SQL : '. $data_vendor_by_lokasi_waktu->toRawSql());
+                $data = $data_vendor_by_lokasi_waktu->get()->toArray(); 
+    
+            } catch (Exception $ex) {
+                Log::error($ex->getMessage());
+                Log::error($ex->getTraceAsString());
+            }
+        // }
+
+        return response()->json(['data' => $data]);
+    }
+
     public function HelperLokasi(Request $request) {
         $query = $request->query("query", "");
 
@@ -719,6 +901,159 @@ class VendorController extends Controller {
         }
 
         return response()->json(['data' => $new_data]);
+    }
+
+    public function ListVendorMappingCateringDay(Request $request) {
+        $data = [
+            'total' => 0,
+            'totalNotFiltered' => 0,
+            'rows' => []
+        ];
+        $isSuccess = false;
+        $message = '';
+        $errorMessage = '';
+
+        $sort = $request->query('sort', 'id'); // Default sort by id
+        $order = $request->query('order', 'asc'); // Default order is ascending
+        $offset = $request->query('offset', 0); // Default offset
+        $limit = $request->query('limit', null);
+
+        try {
+            $sql_master_data = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_MAPPING_MAKAN_VENDOR_DAY . ' as a')
+                ->select('a.id', 'a.KodeSite as site', 'a.JenisPemesanan as waktu_makan', 
+                        'a.senin', 'b.Nama as senin_nama', 'a.selasa', 'c.Nama as selasa_nama', 
+                        'a.rabu', 'd.Nama as rabu_nama', 'a.kamis', 'e.Nama as kamis_nama', 'a.jumat', 'f.Nama as jumat_nama', 
+                        'a.sabtu', 'g.Nama as sabtu_nama', 'a.minggu', 'h.Nama as minggu_nama', 'a.lokasi', 'i.NamaMess as nama_lokasi')
+                ->leftJoin(self::TABLE_MASTER. ' as b' ,'a.senin', '=', 'b.id')
+                ->leftJoin(self::TABLE_MASTER. ' as c' ,'a.selasa', '=', 'c.id')
+                ->leftJoin(self::TABLE_MASTER. ' as d' ,'a.rabu', '=', 'd.id')
+                ->leftJoin(self::TABLE_MASTER. ' as e' ,'a.kamis', '=', 'e.id')
+                ->leftJoin(self::TABLE_MASTER. ' as f' ,'a.jumat', '=', 'f.id')
+                ->leftJoin(self::TABLE_MASTER. ' as g' ,'a.sabtu', '=', 'g.id')
+                ->leftJoin(self::TABLE_MASTER. ' as h' ,'a.minggu', '=', 'h.id')
+                ->leftJoin(self::TABLE_LOKASI. ' as i', 'a.lokasi', '=', 'i.NoDoc');
+
+            $jml = $sql_master_data->count();
+
+            if($limit == null || $limit == 'null' || $limit == '') {
+                $sql_master_data->skip($offset);
+            } else {
+                $sql_master_data->skip($offset)->limit($limit);
+            }
+            $master_data = $sql_master_data->get();
+            // foreach($master_data as $data) {
+            //     $data->email = $this->maskEmail($data->email);
+            // }
+
+            $data = [
+                'total' => $jml,
+                'totalNotFiltered' => $jml,
+                'rows' => $master_data
+            ];
+
+            $message= "Ok";
+            $isSuccess = true;
+        }  catch (Exception $ex) {
+            $message = 'Terjadi kesalahan, coba beberapa saat lagi!';
+            $errorMessage = [$message];
+
+            Log::error($ex->getMessage());
+            Log::error($ex->getTraceAsString());
+        }
+
+        return response()->json([
+            'isSuccess' => $isSuccess,
+            'message' => $message,
+            'errorMessage' => $errorMessage,
+            'data' => $data
+        ]);
+    }
+
+    public function EditMappingVendorDay(Request $request) {
+        $isSuccess = false;
+        $message = '';
+        $errorMessage = [];
+        $data = null;
+        $nik_session = $request->session()->get('user_id', '');
+        $validator = Validator::make(
+            $request->all(), 
+            [
+                'site' => ['required'], 
+                'lokasi' => ['required'], 
+                'jenisPemesanan' => ['required'],
+                'idMapping' => ['required'],
+            ],
+            [
+                'site.required' => 'Site wajib diisi',
+                'lokasi.required' => 'Lokasi wajib diisi',
+                'jenisPemesanan.required' => 'Waktu Makan wajib diisi.',
+                'idMapping.required' => 'ID Mapping tidak sesuai wajib diisi.'
+            ]
+        );
+
+        $data = $request->input();
+        $errorList = $validator->errors()->all();
+
+        if(count($errorList) > 0) {
+            
+            $message = "Error mandatory field";
+            $errorMessage = $errorList;
+        
+        } else {
+
+            $data_input = [
+                'KodeSite' => $request->input('site'),
+                'lokasi' => $request->input('lokasi'),
+                'JenisPemesanan' => $request->input('jenisPemesanan'),
+                'senin' => $request->input('vendorSenin'),
+                'selasa' => $request->input('vendorSelasa'),
+                'rabu' => $request->input('vendorRabu'),
+                'kamis' => $request->input('vendorKamis'),
+                'jumat' => $request->input('vendorJumat'),
+                'sabtu' => $request->input('vendorSabtu'),
+                'minggu' => $request->input('vendorMinggu'),
+                'updated_at' => now(),
+                'updated_by' => $nik_session
+            ];
+
+            // $checkMappingExist = $this->checkMappingVendorExist(
+            //     $data_input['VendorID'],
+            //     $data_input['KodeSite'],
+            //     $data_input['JenisPemesanan'],
+            //     $data_input['lokasi']
+            // );
+
+            try {
+                DB::connection(self::DB_CONN_NAME)->beginTransaction();
+                $id_mapping = $request->input('idMapping');
+
+                $sql_insert_vendor = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_MAPPING_MAKAN_VENDOR_DAY)
+                    ->where('id', $id_mapping)
+                    ->update($data_input);
+
+                DB::connection(self::DB_CONN_NAME)->commit();
+                $message = "Ok";
+                $isSuccess = true;
+            } catch (Exception $ex) {
+
+                $message = "Terjadi kesalahan, coba beberapa saat lagi";
+                $errorMessage = [$message];
+
+                DB::connection(self::DB_CONN_NAME)->rollBack();
+
+
+                Log::error(get_class($ex). " | ". $ex->getMessage());
+                Log::error($ex->getTraceAsString());
+            }
+        }
+
+        return response()->json([
+            'isSuccess' => $isSuccess,
+            'message' => $message,
+            'errorMessage' => $errorMessage,
+            'data' => $data
+        ]);
+
     }
 
 }

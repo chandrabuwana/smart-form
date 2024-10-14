@@ -130,6 +130,7 @@ class SKLFormController extends Controller
         $NoForm = $this->_genNoForm($request);
 
         try {
+            dd($request->all());
             DB::table(self::T_FORM_MST)->insert([
                 'NoForm' => $NoForm,
                 'NoDok' => $request->noDok,
@@ -140,6 +141,7 @@ class SKLFormController extends Controller
                 'Shift' => $request->inputShift,
                 'Status' => 'Dalam Review',
                 'HariKeTujuh' => $request->hariKeTujuh ? '1' : '0',
+                'Catatan' => $request->catatan,
                 'created_at' => $now,
                 'created_by' => $userid,
             ]);
