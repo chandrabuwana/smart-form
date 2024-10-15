@@ -148,6 +148,19 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label class="ms-0 fs-6">Catatan</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="form-check ps-0 align-items-end">
+                                        <input class="form-check-input" type="checkbox" name="hariKeTujuh" value="true" {{ $formMaster->HariKeTujuh == 1 ? 'checked' : '' }}>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <p class="mt-4 mb-3">
