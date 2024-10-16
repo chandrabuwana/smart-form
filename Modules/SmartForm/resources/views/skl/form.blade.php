@@ -628,7 +628,7 @@
                         let tbody = '<tr>' + $('#table-approver tbody tr:nth-child(1)').html() + '</tr>';
                         optionApprover = response;
 
-                        response.forEach( (item) => {
+                        response.forEach( (item, key) => {
                             let optionAtasan = '';
 
                             item.option_atasan.forEach( (option) => {
@@ -646,7 +646,7 @@
                                         <div class="d-flex align-items-center">
                                             <span class="jabatanAtasan">${item.jabatan}</span>
                                             <div class="form-check ps-0 align-items-end ms-3">
-                                                <input class="form-check-input" type="checkbox" name="check_represent[]" value="true" onchange="toggleBackupAtasan('${item.jabatan}')">
+                                                <input class="form-check-input" type="checkbox" name="check_represent[${ key }]" value="true" onchange="toggleBackupAtasan('${item.jabatan}')">
                                                 <label class="custom-control-label mb-0">diwakilkan</label>
                                             </div>
                                         </div>
@@ -834,9 +834,9 @@
 
                     $tr.find('[name*=inputAtasan]').html(optionAtasan);
 
-                    jabatan = jabatan == 'Kabag. Departemen' && represented ? 'Kasi. Departemen' : jabatan;
+                    /*jabatan = jabatan == 'Kabag. Departemen' && represented ? 'Kasi. Departemen' : jabatan;
                     $tr.find('td:nth-child(2) .jabatanAtasan').html(jabatan);
-                    $tr.find('td:nth-child(2) [name*=jabatanAtasan]').val(jabatan);
+                    $tr.find('td:nth-child(2) [name*=jabatanAtasan]').val(jabatan);*/
                 }
             });
         }
