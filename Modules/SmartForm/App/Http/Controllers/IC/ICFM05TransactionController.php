@@ -68,25 +68,53 @@ class ICFM05TransactionController extends Controller
         $dataNOW = now();
         try {
 
-            $listDataNotExist = DB::select("SELECT group_code,
-                STUFF(
-                    CONCAT(
-                        CASE WHEN MAX(CASE WHEN index_pertanyaan LIKE 'ICGS%' THEN 1 ELSE 0 END) = 0 THEN ', ICGS' ELSE '' END,
-                        CASE WHEN MAX(CASE WHEN index_pertanyaan LIKE 'OD%' THEN 1 ELSE 0 END) = 0 THEN ', OD' ELSE '' END,
-                        CASE WHEN MAX(CASE WHEN index_pertanyaan LIKE 'DEPT%' THEN 1 ELSE '' END) = 0 THEN ', DEPT' ELSE '' END,
-                        CASE WHEN MAX(CASE WHEN index_pertanyaan LIKE 'SHE%' THEN 1 ELSE 0 END) = 0 THEN ', SHE' ELSE '' END
-                    ), 1, 2, ''
-                ) AS missing_categories
-            FROM FM_IC_005_BSS_DETAIL_INDUKSI where group_code = ?
-            GROUP BY group_code ;", [$d->code]);
+            $listDataNotExist = DB::select("
+                                    WITH CategoryCheck AS (
+                                        SELECT 
+                                            group_code,
+                                            MAX(CASE WHEN index_pertanyaan LIKE 'ICGS%' THEN 1 ELSE 0 END) AS has_icgs,
+                                            MAX(CASE WHEN index_pertanyaan LIKE 'OD%' THEN 1 ELSE 0 END) AS has_od,
+                                            MAX(CASE WHEN index_pertanyaan LIKE 'DEPT%' THEN 1 ELSE 0 END) AS has_dept,
+                                            MAX(CASE WHEN index_pertanyaan LIKE 'SHE%' THEN 1 ELSE 0 END) AS has_she
+                                        FROM FM_IC_005_BSS_DETAIL_INDUKSI
+                                        WHERE group_code = ?
+                                        GROUP BY group_code
+                                    )
+                                    SELECT 
+                                        group_code,
+                                        STUFF(
+                                            CONCAT(
+                                                CASE WHEN has_icgs = 0 THEN ', ICGS' ELSE '' END,
+                                                CASE WHEN has_od = 0 THEN ', OD' ELSE '' END,
+                                                CASE WHEN has_dept = 0 THEN ', DEPT' ELSE '' END,
+                                                CASE WHEN has_she = 0 THEN ', SHE' ELSE '' END
+                                            ), 1, 2, ''
+                                        ) AS missing_categories
+                                    FROM CategoryCheck
+                                    UNION ALL
+                                    -- Handle case where no data exists at all
+                                    SELECT 
+                                        ? AS group_code,
+                                        'ICGS, OD, DEPT, SHE' AS missing_categories
+                                    WHERE NOT EXISTS (
+                                        SELECT 1 
+                                        FROM FM_IC_005_BSS_DETAIL_INDUKSI 
+                                        WHERE group_code = ?
+                                    );
+                                ", [$d->code, $d->code, $d->code]);
 
 
-            $dataNotExist = explode(", ", collect($listDataNotExist)->first()->missing_categories);
+
+            $dataNotExist = !empty($listDataNotExist) && collect($listDataNotExist)->first()->missing_categories
+                ? explode(", ", collect($listDataNotExist)->first()->missing_categories)
+                : [];
+
 
             DB::table('FM_IC_005_BSS_DETAIL_PERTANYAAN_EXT')
                 ->where('group_code', $d->code)
                 ->delete();
 
+            // Iterasi melalui $dataNotExist, hanya lakukan jika array tidak kosong
             foreach ($dataNotExist as $z) {
                 if (!empty($d->$z)) {
                     foreach ($d->$z as $value) {

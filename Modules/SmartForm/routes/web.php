@@ -124,6 +124,9 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::put('/update-status-pemesanan-vendor', [SmartCateringController::class, 'UpdateStatusPemesananVendor'])->name('update-status-pemesanan-vendor');
             Route::post('/helper-site', [SmartCateringController::class, 'HelperSite']);
 
+            Route::get('/import-mapping-gs', [SmartCateringController::class, 'viewImportMappingGS'])->name('view-import-mapping-gs-catering');
+            Route::post('/import-mapping-gs/store', [SmartCateringController::class, 'importMappingGS'])->name('import-mapping-gs-catering');
+
             Route::prefix('mess')->group( function() {
                 Route::post('/add-mess', [MessController::class, 'AddMess'])->name('add-mess');
                 Route::post('/add-kamar', [MessController::class, 'AddKamar'])->name('add-kamar');
@@ -171,19 +174,19 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
     Route::post('/add-new-menu', [AdminController::class, 'AddNewMenu'])->name('add-new-menu');
     Route::put('/edit-menu', [AdminController::class, 'EditMenu'])->name('edit-menu');
     Route::delete('/delete-menu', [AdminController::class, 'DeleteMenu'])->name('delete-menu');
-    
+
     Route::get('/dashboard-level-user', [MappingValidationController::class, 'IndexLevelUser']);
     Route::get('/list-level-user', [MappingValidationController::class, 'GetListLevelUser']);
     Route::post('/add-level-user', [MappingValidationController::class, 'AddLevelUser']);
     Route::put('/edit-level-user', [MappingValidationController::class, 'EditLevelUser']);
     Route::delete('/delete-level-user', [MappingValidationController::class, 'DeleteLevelUser']);
-    
+
     Route::get('/dashboard-level-mapping', [MappingValidationController::class, 'IndexlevelMapping']);
     Route::get('/list-level-mapping', [MappingValidationController::class, 'GetListLevelMapping']);
     Route::post('/add-level-mapping', [MappingValidationController::class, 'AddLevelMapping']);
     Route::put('/edit-level-mapping', [MappingValidationController::class, 'EditLevelMapping']);
     Route::delete('/delete-level-mapping', [MappingValidationController::class, 'DeleteLevelMapping']);
-    
+
     Route::get('/dashboard-section-department', [SectionDepartmentController::class, 'IndexSectionDepartment']);
     Route::get('/list-section-department', [SectionDepartmentController::class, 'GetListSectionDepartment']);
     Route::post('/add-section-department', [SectionDepartmentController::class, 'AddSectionDept']);
@@ -247,7 +250,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
         Route::post('/deleted-progress-history-transaction', [TransactionPicaController::class, 'deleteTransactionProgressStepSolutionPica']);
         Route::post('/change-acceptance', [TransactionPicaController::class, 'changeAcceptanceStepSolutionPica']);
         Route::post('/approve-task-closing', [TransactionPicaController::class, 'ApproveClosingTask']);
-        
+
     });
 
     Route::prefix('skl')->group( function() {

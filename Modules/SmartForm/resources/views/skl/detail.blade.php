@@ -143,11 +143,26 @@
                                 </div>
                                 <div class="col-md-8">
                                     <div class="form-check ps-0 align-items-end">
-                                        <input class="form-check-input" type="checkbox" name="hariKeTujuh" value="true" {{ $formMaster->HariKeTujuh == 1 ? 'checked' : '' }}>
+                                        <input class="form-check-input" type="checkbox" name="hariKeTujuh" value="true" {{ $formMaster->HariKeTujuh == 1 ? 'checked' : '' }} disabled>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
+                        @if(!empty($formMaster->Catatan))
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label class="ms-0 fs-6">Catatan</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="form-check ps-0 align-items-end">
+                                            <span class="text-danger">* {{ $formMaster->Catatan }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
                     </div>
 
                     <p class="mt-4 mb-3">
@@ -273,7 +288,7 @@
 
                     <div class="form-check mt-4 mb-2 ps-0">
                         <input class="form-check-input mt-0" type="checkbox" name="baPekerjaan" value="true" id="baPekerjaan"
-                            {{ !empty($formMaster->baPekerjaan) ? 'checked' : '' }} readonly>
+                            {{ !empty($formMaster->baPekerjaan) ? 'checked' : '' }} disabled>
                         <label class="custom-control-label mb-0" for="customCheck1">BA Pekerjaan Diluar Standar</label>
                     </div>
 
@@ -385,6 +400,9 @@
                                 @endif
 
                                 <small class="mt-2 d-block"><i>{{ $approver->Jabatan }}</i></small>
+                                @if($approver->Diwakilkan == 1)
+                                    <small class="mt-2 d-block"><i>(Diwakilkan)</i></small>
+                                @endif
                             </div>
                         @endforeach
                     </div>
