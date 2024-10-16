@@ -761,6 +761,7 @@ class VendorController extends Controller {
         $message = '';
         $errorMessage = '';
 
+        $site = $request->query('query', null); 
         $sort = $request->query('sort', 'id'); // Default sort by id
         $order = $request->query('order', 'asc'); // Default order is ascending
         $offset = $request->query('offset', 0); // Default offset
@@ -771,6 +772,10 @@ class VendorController extends Controller {
                 ->select('a.id', 'b.id as id_vendor', 'a.KodeSite as site', 'a.JenisPemesanan as jenis_pemesanan', 'a.lokasi', 'b.Nama as nama_vendor', 'c.NamaMess as nama_lokasi')
                 ->leftJoin(self::TABLE_MASTER. ' as b' ,'a.VendorID', '=', 'b.id')
                 ->leftJoin(self::TABLE_LOKASI. ' as c', 'a.lokasi', '=', 'c.NoDoc');
+
+            if($site) $sql_master_data = $sql_master_data->where('a.KodeSite', $site);
+
+            Log::debug('SQL Vendor Mapping : '. $sql_master_data->toRawSql());
 
             $jml = $sql_master_data->count();
 
@@ -913,6 +918,7 @@ class VendorController extends Controller {
         $message = '';
         $errorMessage = '';
 
+        $site = $request->query('query', null); // Default sort by id
         $sort = $request->query('sort', 'id'); // Default sort by id
         $order = $request->query('order', 'asc'); // Default order is ascending
         $offset = $request->query('offset', 0); // Default offset
@@ -932,6 +938,7 @@ class VendorController extends Controller {
                 ->leftJoin(self::TABLE_MASTER. ' as g' ,'a.sabtu', '=', 'g.id')
                 ->leftJoin(self::TABLE_MASTER. ' as h' ,'a.minggu', '=', 'h.id')
                 ->leftJoin(self::TABLE_LOKASI. ' as i', 'a.lokasi', '=', 'i.NoDoc');
+            if($site) $sql_master_data = $sql_master_data->where('a.KodeSite', $site);
 
             $jml = $sql_master_data->count();
 
@@ -940,6 +947,8 @@ class VendorController extends Controller {
             } else {
                 $sql_master_data->skip($offset)->limit($limit);
             }
+            Log::debug('SQL Vendor mapping day : ' . $site . '  ' . $sql_master_data->toRawSql());
+
             $master_data = $sql_master_data->get();
             // foreach($master_data as $data) {
             //     $data->email = $this->maskEmail($data->email);

@@ -587,8 +587,8 @@ class SmartCateringController extends Controller {
             }
 
             $master_data = $sql_master_data->get();
-            // Log::info('SQL Pemesanan per lokasi : ' . $sql_master_data->toRawSql());
-            // Log::info('SQL Pemesanan per lokasi data: ' . json_encode($master_data, JSON_PRETTY_PRINT));
+            Log::info('SQL Pemesanan per lokasi : ' . $sql_master_data->toRawSql());
+            Log::info('SQL Pemesanan per lokasi data: ' . json_encode($master_data, JSON_PRETTY_PRINT));
 
             $message= "Ok";
             $isSuccess = true;
@@ -795,6 +795,36 @@ class SmartCateringController extends Controller {
             'errorMessage' => $errorMessage,
             'data' => $data
         ]);
+
+    }
+
+    function HelperSite(Request $d)
+    {
+        $data = $d->request->get("query");
+        $dataFinal = $data;
+        $dataDepartment = DB::connection('sqlsrv2')
+            ->table('tsite')
+            ->where('AKTIF', 0);
+            
+        
+            // ->select("select * from tsite where AKTIF = 0 and Nama like '%$dataFinal%' or kodest like '%$dataFinal%'");
+        if($data) $dataDepartment->where('Nama', 'like', "%$dataFinal%")->orWhere('KodeST', 'like', "%$dataFinal%");
+        Log::debug('SQL helper site : '. $dataDepartment->toRawSql());
+        
+        $dataDepartment = $dataDepartment->get();
+        
+        $dataJs = [];
+        foreach ($dataDepartment as $a) {
+            $dataBaru = [
+                'text' => $a->Nama . " (" . $a->KodeST . ")",
+                'id' => $a->KodeST
+            ];
+            $dataJs[] = $dataBaru;
+        }
+        $final = [
+            'data' => $dataJs,
+        ];
+        return json_encode($final);
 
     }
 }

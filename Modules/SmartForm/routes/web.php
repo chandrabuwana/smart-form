@@ -122,6 +122,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/order', [SmartCateringController::class, 'SubmitPesanMakan'])->name('submit-makan');
             Route::put('/update-status-pemesanan', [SmartCateringController::class, 'UpdateStatusPemesanan'])->name('update-status-pemesanan');
             Route::put('/update-status-pemesanan-vendor', [SmartCateringController::class, 'UpdateStatusPemesananVendor'])->name('update-status-pemesanan-vendor');
+            Route::post('/helper-site', [SmartCateringController::class, 'HelperSite']);
 
             Route::prefix('mess')->group( function() {
                 Route::post('/add-mess', [MessController::class, 'AddMess'])->name('add-mess');

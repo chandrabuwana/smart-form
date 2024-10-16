@@ -83,6 +83,25 @@
                             </button>
                         </a>
                     </div>
+                    <h4 class="mx-3">Filter Data</h4>
+                    <div class="mx-4 row">
+                        <div class="col-6 col-md-3">
+                            <div class="input-group input-group-static mb-4">
+                                <label for="filterSite1">Site</label>
+                                <select class="form-control form-select" name="filterSite1" id="filterSite1">
+                                    <option value="">-- Filter Site --</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="btn btn-primary" id="btnFilter1" onclick="applyFilter1(this)">
+                                Filter
+                            </button>
+                            <button class="btn btn-primary" id="btnClearFilter1" onclick="resetFilter1(this)">
+                                Clear Filter
+                            </button>
+                        </div>
+                    </div>
                     <div class="table-responsive p-0">
                         <table id="table-dashboard-vendor" data-toggle="table" data-ajax="getDataMappingVendor" data-side-pagination="client"
                             data-page-list="[10, 25, 50, 100, all]" data-sortable="true"
@@ -108,6 +127,25 @@
                                 New Mapping
                             </button>
                         </a>
+                    </div>
+                    <h4 class="mx-3">Filter Data</h4>
+                    <div class="mx-4 row">
+                        <div class="col-6 col-md-3">
+                            <div class="input-group input-group-static mb-4">
+                                <label for="filterSite">Site</label>
+                                <select class="form-control form-select" name="filterSite" id="filterSite">
+                                    <option value="">-- Filter Site --</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="btn btn-primary" id="btnFilter" onclick="applyFilter(this)">
+                                Filter
+                            </button>
+                            <button class="btn btn-primary" id="btnClearFilter" onclick="resetFilter(this)">
+                                Clear Filter
+                            </button>
+                        </div>
                     </div>
                     <div class="table-responsive p-0">
                         <table id="table-dashboard-vendor-day" data-toggle="table" data-ajax="getDataMappingVendorDay" data-side-pagination="client"
@@ -340,11 +378,16 @@
         var addLokasi = document.getElementById('addLokasi');
         var btnSubmitMapping = document.getElementById('btnSubmitMapping');
 
-        var filterParams = {
-
+        var filterData = {
+            query: null
         }
 
         var modalElement = $("#modalAddVendor")
+
+        $('#filterSite1').on("select2:select", function (e) { 
+            console.log(e.params.data.id)
+            filterData.query = e.params.data.id
+        })
 
         $('#addSite').on("select2:select", function (e) { 
             fetchLokasi(e.params.data.id, function(data) {
@@ -380,6 +423,17 @@
             theme: 'bootstrap-5', // Menggunakan tema Bootstrap 5
             dropdownParent: $('#addLokasi').closest('.input-group'),
             placeholder: '--- Cari Lokasi ---'
+        });
+
+        $('#filterSite1').select2({
+            theme: 'bootstrap-5', // Menggunakan tema Bootstrap 5
+            dropdownParent: $('#filterSite1').closest('.input-group'),
+            placeholder: '--- Cari Site ---'
+        });
+        $('#filterSite').select2({
+            theme: 'bootstrap-5', // Menggunakan tema Bootstrap 5
+            dropdownParent: $('#filterSite').closest('.input-group'),
+            placeholder: '--- Cari Site ---'
         });
 
         $('#addVendor').select2({
@@ -476,7 +530,7 @@
                             title: "Berhasil!",
                             text: _successMessage,
                         }
-                        // $("#table-dashboard-vendor").bootstrapTable('refresh')
+                        $("#table-dashboard-vendor").bootstrapTable('refresh')
                     } else {
                         resp.data.errorMessage.forEach(element => {
                             errorResp.push("<span>" + element + "</span>")
@@ -647,7 +701,7 @@
         function getDataMappingVendor(params) {
             var listVendorMappingURL = baseUrl + '/list-vendor-mapping'
             // console.log("halojuga")
-            // params.data.site = filter.site
+            params.data.query = filterData.query
             // params.data.mess = filter.mess
 
             // if(params.data.site != null || params.data.mess != null) {
@@ -660,7 +714,7 @@
         }
 
         function fetchSite(cb=function(site) {}) {
-            axios.post("/helper/site", {
+            axios.post("/bss-form/catering/helper-site", {
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
@@ -783,11 +837,20 @@
             data.forEach(function(opt) {
                 $('#addSite').append(new Option(opt.text, opt.id))
                 $('#addSite1').append(new Option(opt.text, opt.id))
+                $('#filterSite').append(new Option(opt.text, opt.id))
+                $('#filterSite1').append(new Option(opt.text, opt.id))
             })
             // data.forEach(function(opt) {
             //     $('#editSite').append(opt)
             // })
         })
-        
+        function applyFilter1(e) {
+            $("#table-dashboard-vendor").bootstrapTable('refresh')
+        }
+
+        function resetFilter1(e) {
+            filterData.query = null
+            $("#table-dashboard-vendor").bootstrapTable('refresh')
+        }
     </script>
 @endsection

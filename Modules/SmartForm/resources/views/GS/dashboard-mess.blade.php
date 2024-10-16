@@ -249,7 +249,7 @@
         });
 
         function fetchSite() {
-            axios.post("/helper/site", {
+            axios.post("/bss-form/catering/helper-site", {
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }

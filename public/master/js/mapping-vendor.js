@@ -1,4 +1,11 @@
 var modalElementJadwal = $("#modalAddJadwal")
+var filterParams = {
+    query: null
+}
+
+$('#filterSite').on("select2:select", function (e) { 
+    filterParams.query = e.params.data.id
+});
 
 function fetchVendorByLokasiAndWaktu(site, lokasi, cb=function(site) {}) {
     var qSite = site ? "site="+site : ""
@@ -283,7 +290,7 @@ function submitMappingVendorDay(e) {
 function getDataMappingVendorDay(params) {
     var listVendorMappingURL = "/bss-form/catering/vendor" + '/list-vendor-mapping-day'
     // console.log("halojuga")
-    // params.data.site = filter.site
+    params.data.query = filterParams.query
     // params.data.mess = filter.mess
 
     // if(params.data.site != null || params.data.mess != null) {
@@ -460,4 +467,13 @@ function actionDeleteDay(e, _id) {
         }
     })
     
+}
+
+function applyFilter(e) {
+    $("#table-dashboard-vendor-day").bootstrapTable('refresh')
+}
+
+function resetFilter(e) {
+    filterParams.query = null
+    $("#table-dashboard-vendor-day").bootstrapTable('refresh')
 }
