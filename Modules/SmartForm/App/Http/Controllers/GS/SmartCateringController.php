@@ -11,6 +11,11 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 enum Shift: string {
     case Pagi = 'pagi';
@@ -69,20 +74,20 @@ class SmartCateringController extends Controller {
                 'end' => '19:15'
             ]
         ];
-        
-        
+
+
         $message = '';
         $tgl = null;
         $validator = Validator::make($request->all(), [
             'tanggalPemesanan' => 'required|regex:/^\d{4}-\d{2}-\d{2}$/',
             'site' => 'required',
-            'jenisPemesanan' => ['required', Rule::in(['pagi', 'siang', 'malam'])], 
+            'jenisPemesanan' => ['required', Rule::in(['pagi', 'siang', 'malam'])],
         ],[
             'tanggalPemesanan.required' => 'Field tanggal wajib diisi.',
             'tanggalPemesanan.regex' => 'Format tanggal harus sesuai dengan format YYYY-MM-DD.',
             'jenisPemesanan.in' => 'Nilai shift harus salah satu dari: pagi, siang, malam.'
         ]);
-        
+
         // $selectedBulan = 0;
         // $selectedTahun = 0;
         // $selectedDate = 0;
@@ -102,7 +107,7 @@ class SmartCateringController extends Controller {
                     ->select('dh.KodeSite', 'dh.Nik', 'dh.NoDoc', 'dm.NamaMess')
                     ->join(self::TABLE_MASTER_MESS.' as dm', 'dh.NoDoc', '=', 'dm.NoDoc')
                     ->where('dh.KodeSite', $reqSite)->get();
-                    
+
                 $data_karyawan_absensi = [];
                 $pesan_makan = $this->ListPesanMakanMess($reqJenisPemesanan, $tgl);
                 if($reqJenisPemesanan == 'pagi') {
@@ -118,7 +123,7 @@ class SmartCateringController extends Controller {
                     $data_karyawan_absensi = $data_karyawan_absensi->get()->toArray();
                     Log::debug("Data absensi ". $reqSite . " : " .count($data_karyawan_absensi));
                 }
-                    
+
                 $sql_karyawan_cuti = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_PENEGASAN_CUTI . ' as pc')
                     ->join(self::TABLE_PENGAJUAN_CUTI . ' as pcuti', 'pc.NoPengajuan', '=', 'pcuti.nopengajuancuti')
                     ->join(self::TABLE_KARYAWAN_HRD . ' as tk', 'pcuti.nik', '=', 'tk.nik')
@@ -143,7 +148,7 @@ class SmartCateringController extends Controller {
                 // $data_karyawan_mess_filter_by_absensi = array_filter($data_karyawan_mess->get()->toArray(), function($item) use ($nik_data_karyawan_absensi) {
                 //     return !in_array($item->Nik, $nik_data_karyawan_absensi);
                 // });
-                
+
                 $data_clone = [];
                 $sum_mess = 0;
                 $sum_working = 0;
@@ -166,7 +171,7 @@ class SmartCateringController extends Controller {
                     } else {
                         $pushed_data['status'] = 0;
                     }
-                    
+
                     if (in_array($data->Nik, $nik_karyawan_cuti)){
                         $pushed_data['cuti'] = 1;
                     } else {
@@ -302,7 +307,7 @@ class SmartCateringController extends Controller {
 
                 Log::info($kode_pemesanan . ' | '.json_encode($data_order_insert, JSON_PRETTY_PRINT));
                 Log::info('detail ' .count($detail));
-                
+
                 DB::connection(self::DB_CONN_NAME)->beginTransaction();
                 $id_pemesanan = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_SUBMIT_ORDER)
                     ->insertGetId($data_order_insert);
@@ -315,7 +320,7 @@ class SmartCateringController extends Controller {
                     ->whereIn('lokasi', $extractedLokasi)
                     ->where('KodeSite', $site)
                     ->where('JenisPemesanan', $jenisPemesanan);
-                
+
                 Log::debug("SQL vendor mapping : " . $vendorMapping->toRawSql());
                 // Log::debug("SQL vendor mapping : ");
                 // Log::debug($vendorMapping->get());
@@ -377,11 +382,11 @@ class SmartCateringController extends Controller {
                     // Tambahkan 'VendorID' ke array $details
                     $details['VendorID'] = $vendorID;
                     $details['status'] = 'Pesanan Baru';
-                    
+
                     $summaryPerVendor_new[] = $details;
                     DB::connection(self::DB_CONN_NAME)->table(self::TABLE_SUBMIT_ORDER_VENDOR)->insert($details);
                 }
-                
+
                 $vendor_id_list = array_filter(array_column($summaryPerVendor_new, 'VendorID'));
                 $sql_notification_vendor = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_VENDOR_MASTER)
                     ->select('notification_token', 'id')
@@ -405,7 +410,7 @@ class SmartCateringController extends Controller {
                         'created_by' => $nik_session,
                         'created_at' => $tgl
                     ];
-                    
+
                     DB::connection(self::DB_CONN_NAME)->table(self::TABLE_SUBMIT_ORDER_ADJUSTMENT_DTL)->insert($insertAdjustment);
                 }
 
@@ -419,7 +424,7 @@ class SmartCateringController extends Controller {
         } catch (Exception $ex) {
             Log::error($ex->getMessage());
             Log::error($ex->getTraceAsString());
-            
+
             $message = 'Terjadi kesalahan, coba beberapa saat lagi!';
             if(str_contains($ex->getMessage(), "Violation of PRIMARY KEY")) $message = "Sudah ada pemesanan";
 
@@ -449,13 +454,13 @@ class SmartCateringController extends Controller {
         $kode_pemesanan = $request->input('id');
 
         try {
-            
+
             $master_pemesanan = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_SUBMIT_ORDER . ' as a')
                 ->where('a.kode_pemesanan', $kode_pemesanan);
             $vendor_id = self::MAPPING_COLUMN_VENDOR_DAY[Carbon::parse($master_pemesanan->first()->tanggal)->dayOfWeekIso];
             Log::debug('Tanggal mapping : ' . $vendor_id);
             // $data_pemesanan = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_VENDOR_ORDER . ' as a')
-            //     ->select('a.kode_pemesanan', 'a.KodeSite', 'a.TanggalOrder', 'a.Jumlah', 'b.Nama as NamaVendor', 'a.status')    
+            //     ->select('a.kode_pemesanan', 'a.KodeSite', 'a.TanggalOrder', 'a.Jumlah', 'b.Nama as NamaVendor', 'a.status')
             //     ->leftJoin(self::TABLE_VENDOR_MASTER . ' as b', 'a.VendorID', '=', 'b.id')
             //     ->where('kode_pemesanan', $kode_pemesanan);
             // $detail_per_lokasi = db::connection(SELF::DB_CONN_NAME)->table(SELF::TABLE_SUBMIT_ORDER_DETAIL . ' as a')
@@ -464,7 +469,7 @@ class SmartCateringController extends Controller {
             //     ->leftJoin(self::TABLE_VENDOR_MASTER . ' as c', 'b.'.$vendor_id , '=', 'c.id')
             //     ->leftJoin(self::TABLE_MASTER_MESS . ' as d', 'a.lokasi', '=', 'd.NoDoc')
             //     ->where('a.id_order', $kode_pemesanan);
-                
+
             Log::debug('SQL master_pemesanan : ' . $master_pemesanan->toRawSql());
             // Log::debug('SQL data_pemesanan : '.$data_pemesanan->toRawSql());
             // Log::debug('SQL detail_per_lokasi : '.$detail_per_lokasi->toRawSql());
@@ -503,7 +508,7 @@ class SmartCateringController extends Controller {
         try {
             $sql_master_data = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_SUBMIT_ORDER)
                 ->select('kode_pemesanan', 'site', 'selected', 'jenis_pemesanan');
-                
+
             if($filterTanggal == null || $filterTanggal == 'null') {
             } else {
                 // Log::debug('Debug : '. now()->format($filterTanggal));
@@ -542,7 +547,7 @@ class SmartCateringController extends Controller {
         } catch (Exception $ex) {
             Log::error($ex->getMessage());
             Log::error($ex->getTraceAsString());
-            
+
             $message= $ex->getMessage();
             $isSuccess = false;
         }
@@ -578,7 +583,7 @@ class SmartCateringController extends Controller {
             ->leftJoin(self::TABLE_VENDOR_MASTER . ' as c', 'b.'.$vendor_id , '=', 'c.id')
             ->leftJoin(self::TABLE_MASTER_MESS . ' as d', 'a.lokasi', '=', 'd.NoDoc')
             ->where('a.id_order', $idPemesanan);
-                
+
             $jml = $sql_master_data->count();
             if($limit == null || $limit == 'null' || $limit == '') {
                 $sql_master_data->skip($offset);
@@ -600,7 +605,7 @@ class SmartCateringController extends Controller {
         } catch (Exception $ex) {
             Log::error($ex->getMessage());
             Log::error($ex->getTraceAsString());
-            
+
             $message= $ex->getMessage();
             $isSuccess = false;
         }
@@ -629,10 +634,10 @@ class SmartCateringController extends Controller {
 
         try {
             $sql_data_pemesanan = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_VENDOR_ORDER . ' as a')
-                ->select('a.id as id_detail_vendor', 'a.kode_pemesanan', 'a.KodeSite', 'a.TanggalOrder', 'a.Jumlah', 'b.Nama as NamaVendor', 'b.id as IDVendor', 'a.status')    
+                ->select('a.id as id_detail_vendor', 'a.kode_pemesanan', 'a.KodeSite', 'a.TanggalOrder', 'a.Jumlah', 'b.Nama as NamaVendor', 'b.id as IDVendor', 'a.status')
                 ->leftJoin(self::TABLE_VENDOR_MASTER . ' as b', 'a.VendorID', '=', 'b.id')
                 ->where('kode_pemesanan', $idPemesanan);
-                
+
             $jml = $sql_data_pemesanan->count();
             if($limit == null || $limit == 'null' || $limit == '') {
                 $sql_data_pemesanan->skip($offset);
@@ -652,7 +657,7 @@ class SmartCateringController extends Controller {
         } catch (Exception $ex) {
             Log::error($ex->getMessage());
             Log::error($ex->getTraceAsString());
-            
+
             $message= $ex->getMessage();
             $isSuccess = false;
         }
@@ -663,7 +668,7 @@ class SmartCateringController extends Controller {
             'data' => $data
         ]);
     }
-    
+
     public function UpdateStatusPemesanan(Request $request) {
         $isSuccess = false;
         $message = '';
@@ -671,9 +676,9 @@ class SmartCateringController extends Controller {
         $data = null;
         $nik_session = $request->session()->get('user_id', '');
         $validator = Validator::make(
-            $request->all(), 
+            $request->all(),
             [
-                'status' => ['required'], 
+                'status' => ['required'],
                 'id_detail' => ['required']
             ],
             [
@@ -686,7 +691,7 @@ class SmartCateringController extends Controller {
         $errorList = $validator->errors()->all();
 
         if(count($errorList) > 0) {
-            
+
             $message = "Error mandatory field";
             $errorMessage = $errorList;
 
@@ -738,9 +743,9 @@ class SmartCateringController extends Controller {
         $data = null;
         $nik_session = $request->session()->get('user_id', '');
         $validator = Validator::make(
-            $request->all(), 
+            $request->all(),
             [
-                'status' => ['required'], 
+                'status' => ['required'],
                 'id_detail_vendor' => ['required']
             ],
             [
@@ -753,7 +758,7 @@ class SmartCateringController extends Controller {
         $errorList = $validator->errors()->all();
 
         if(count($errorList) > 0) {
-            
+
             $message = "Error mandatory field";
             $errorMessage = $errorList;
 
@@ -796,6 +801,251 @@ class SmartCateringController extends Controller {
             'data' => $data
         ]);
 
+    }
+
+    public function viewImportMappingGS(Request $request) {
+        return view('SmartForm::GS/import-mapping-gs');
+    }
+
+    private function _upsertVendorMst($site, $vendorName, &$vendorCounter) {
+        $checkVendor = DB::table('SCT_GS_VENDOR_MST')->where('Nama', $vendorName)->first();
+        if(!$checkVendor) {
+            $vendorId = str_pad($vendorCounter, 5, '0', STR_PAD_LEFT);
+
+            DB::table('SCT_GS_VENDOR_MST')->insert([
+                'KodeSite' => $site,
+                'id' => str_pad($vendorCounter, 5, '0', STR_PAD_LEFT),
+                'Nama' => $vendorName,
+                'Email' => Str::slug($vendorName, '_') . '@gmail.com',
+                'pwd' => Hash::make('password')
+            ]);
+
+            $vendorCounter++;
+        } else {
+            $vendorId = $checkVendor->id;
+        }
+
+        return $vendorId;
+    }
+
+    public function importMappingGS(Request $request) {
+        DB::beginTransaction();
+
+        try {
+            $tempFile = Storage::disk('public')->putFile($request->file('file_excel'));
+
+            $reader = new Xlsx();
+            $spreadsheet = $reader->load( storage_path('app/public/' . $tempFile) );
+            $sheetNames = $spreadsheet->getSheetNames();
+
+            // import Master Mess
+            $masterMessCounter = 1;
+
+            foreach($sheetNames as $sheetName) {
+                if($sheetName == 'ROOSTER CATERING TAMBANG' || $sheetName == 'ROOSTER CATERING MESS' || $sheetName == 'Pemetaan Karyawan') {
+                    continue;
+                }
+
+                $sheetMess = $spreadsheet->getSheetByName($sheetName);
+                $kapasitas = $sheetMess->getCell('B1')->getValue();
+                $keterangan = $sheetMess->getCell('B2')->getValue();
+                $noDoc = 'MSS/' . $request->site . '/' . str_pad($masterMessCounter, 5, '0', STR_PAD_LEFT);
+
+                DB::table('SCT_GS_MESS_MST')->insert([
+                    'KodeSite' => strtoupper($request->site),
+                    'NoDoc' => $noDoc,
+                    'NamaMess' => $sheetName,
+                    'Status' => '1',
+                    'DayaTampung' => $kapasitas,
+                    'JumlahKamar' => '1',
+                    'Keterangan' => $keterangan,
+                    'created_at' => now()
+                ]);
+
+                DB::table('SCT_GS_MESS_KAMAR')->insert([
+                    'KodeSite' => $request->site,
+                    'NoDoc' => $noDoc,
+                    'NoKamar' => '1',
+                    'kapasitas' => $kapasitas,
+                    'created_at' => now(),
+                ]);
+
+                $i = 7;
+                while(true) {
+                    $nama = $sheetMess->getCell('B' . $i)->getValue();
+                    $nik = $sheetMess->getCell('C' . $i)->getValue();
+                    $keterangan = $sheetMess->getCell('D' . $i)->getValue();
+
+                    if(empty($nama)) {
+                        break;
+                    }
+
+                    DB::table('SCT_GS_MESS_HUNI')->insert([
+                        'KodeSite' => $request->site,
+                        'NoDoc' => $noDoc,
+                        'Nik' => $nik,
+                        'Keterangan' => $keterangan,
+                        'status' => '1',
+                        'NoKamar' => '1',
+                        'created_at' => now()
+                    ]);
+
+                    $i++;
+                }
+
+                $masterMessCounter++;
+            }
+
+            $sheetMess = $spreadsheet->getSheetByName('ROOSTER CATERING MESS');
+            $vendorCounter = DB::table('SCT_GS_VENDOR_MST')->where('KodeSite', $request->site)->count('id') + 1;
+
+            foreach(['siang', 'malam', 'pagi'] as $shift) {
+                $i = 7;
+                while(true) {
+                    switch($shift) {
+                        case 'pagi':
+                            $messName = $sheetMess->getCell('B' . $i)->getValue();
+                            $senin = $sheetMess->getCell('C' . $i)->getValue();
+                            $selasa = $sheetMess->getCell('D' . $i)->getValue();
+                            $rabu = $sheetMess->getCell('E' . $i)->getValue();
+                            $kamis = $sheetMess->getCell('F' . $i)->getValue();
+                            $jumat = $sheetMess->getCell('G' . $i)->getValue();
+                            $sabtu = $sheetMess->getCell('H' . $i)->getValue();
+                            $minggu = $sheetMess->getCell('I' . $i)->getValue();
+                            break;
+
+                        case 'siang':
+                            $messName = $sheetMess->getCell('K' . $i)->getValue();
+                            $senin = $sheetMess->getCell('L' . $i)->getValue();
+                            $selasa = $sheetMess->getCell('M' . $i)->getValue();
+                            $rabu = $sheetMess->getCell('N' . $i)->getValue();
+                            $kamis = $sheetMess->getCell('O' . $i)->getValue();
+                            $jumat = $sheetMess->getCell('P' . $i)->getValue();
+                            $sabtu = $sheetMess->getCell('Q' . $i)->getValue();
+                            $minggu = $sheetMess->getCell('R' . $i)->getValue();
+                            break;
+
+                        case 'malam':
+                            $messName = $sheetMess->getCell('T' . $i)->getValue();
+                            $senin = $sheetMess->getCell('U' . $i)->getValue();
+                            $selasa = $sheetMess->getCell('V' . $i)->getValue();
+                            $rabu = $sheetMess->getCell('W' . $i)->getValue();
+                            $kamis = $sheetMess->getCell('X' . $i)->getValue();
+                            $jumat = $sheetMess->getCell('Y' . $i)->getValue();
+                            $sabtu = $sheetMess->getCell('Z' . $i)->getValue();
+                            $minggu = $sheetMess->getCell('AA' . $i)->getValue();
+                            break;
+                    }
+
+                    if(empty($messName)) {
+                        break;
+
+                    } else {
+                        $messMst = DB::table('SCT_GS_MESS_MST')->where('KodeSite', $request->site)->where('NamaMess', $messName)->first('NoDoc');
+                        if(is_null($messMst)) {
+                            DB::rollBack();
+                            dd($messName);
+                        }
+
+                        $weeks = [
+                            'senin' => null,
+                            'selasa' => null,
+                            'rabu' => null,
+                            'kamis' => null,
+                            'jumat' => null,
+                            'sabtu' => null,
+                            'minggu' => null
+                        ];
+
+                        foreach(array_keys($weeks) as $day) {
+                            $vendorDay = $this->_upsertVendorMst($request->site, $$day, $vendorCounter);
+                            $weeks[ $day ] = $vendorDay;
+
+                            DB::table('SCT_GS_VENDOR_MAPPING')->updateOrInsert(
+                                [
+                                    'KodeSite' => $request->site,
+                                    'JenisPemesanan' => $shift,
+                                    'lokasi' => $messMst->NoDoc,
+                                ],
+                                [
+                                    'KodeSite' => $request->site,
+                                    'VendorID' => $vendorDay,
+                                    'JenisPemesanan' => $shift,
+                                    'lokasi' => $messMst->NoDoc,
+                                ]
+                            );
+                        }
+
+                        DB::table('SCT_GS_VENDOR_MAPPING_DAY')->insert([
+                            'KodeSite' => $request->site,
+                            'lokasi' => $messMst->NoDoc,
+                            'JenisPemesanan' => $shift,
+                            'senin' => $weeks['senin'],
+                            'selasa' => $weeks['selasa'],
+                            'rabu' => $weeks['rabu'],
+                            'kamis' => $weeks['kamis'],
+                            'jumat' => $weeks['jumat'],
+                            'sabtu' => $weeks['sabtu'],
+                            'minggu' => $weeks['minggu'],
+                        ]);
+
+                        $i++;
+                    }
+                }
+            }
+
+            $sheetTambang = $spreadsheet->getSheetByName('ROOSTER CATERING TAMBANG');
+
+            foreach(['siang', 'malam'] as $shift) {
+                $senin = $sheetTambang->getCell(($shift == 'malam' ? 'F' : 'C') . '5')->getValue();
+                $selasa = $sheetTambang->getCell(($shift == 'malam' ? 'F' : 'C') . '6')->getValue();
+                $rabu = $sheetTambang->getCell(($shift == 'malam' ? 'F' : 'C') . '7')->getValue();
+                $kamis = $sheetTambang->getCell(($shift == 'malam' ? 'F' : 'C') . '8')->getValue();
+                $jumat = $sheetTambang->getCell(($shift == 'malam' ? 'F' : 'C') . '9')->getValue();
+                $sabtu = $sheetTambang->getCell(($shift == 'malam' ? 'F' : 'C') . '10')->getValue();
+                $minggu = $sheetTambang->getCell(($shift == 'malam' ? 'F' : 'C') . '11')->getValue();
+
+                $weeks = [
+                    'senin' => null,
+                    'selasa' => null,
+                    'rabu' => null,
+                    'kamis' => null,
+                    'jumat' => null,
+                    'sabtu' => null,
+                    'minggu' => null
+                ];
+
+                foreach(array_keys($weeks) as $day) {
+                    $vendorDay = $this->_upsertVendorMst($request->site, $$day, $vendorCounter);
+                    $weeks[ $day ] = $vendorDay;
+                }
+
+                DB::table('SCT_GS_VENDOR_MAPPING_DAY')->insert([
+                    'KodeSite' => $request->site,
+                    'lokasi' => 'working',
+                    'JenisPemesanan' => $shift,
+                    'senin' => $weeks['senin'],
+                    'selasa' => $weeks['selasa'],
+                    'rabu' => $weeks['rabu'],
+                    'kamis' => $weeks['kamis'],
+                    'jumat' => $weeks['jumat'],
+                    'sabtu' => $weeks['sabtu'],
+                    'minggu' => $weeks['minggu'],
+                ]);
+            }
+
+            DB::commit();
+            @unlink( storage_path('app/public/' . $tempFile) );
+
+            return response()->json([
+                'message' => "Berhasil import mapping GS untuk site {$request->site}!",
+                'code' => 200
+            ]);
+
+        } catch(\Throwable $e) {
+            DB::rollBack();
+            dd($e);
+        }
     }
 }
 
