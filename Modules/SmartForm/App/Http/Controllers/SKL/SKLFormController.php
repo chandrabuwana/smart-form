@@ -130,7 +130,6 @@ class SKLFormController extends Controller
         $NoForm = $this->_genNoForm($request);
 
         try {
-            dd($request->all());
             DB::table(self::T_FORM_MST)->insert([
                 'NoForm' => $NoForm,
                 'NoDok' => $request->noDok,
@@ -196,20 +195,21 @@ class SKLFormController extends Controller
             foreach($request->inputAtasan as $key => $nikAtasan) {
                 $subjectAtasan = $requestAll['subjectAtasan'][$key];
                 $jabatanAtasan = $requestAll['jabatanAtasan'][$key];
+                $isRepresent = isset($requestAll['check_represent'][$key]);
 
                 DB::table(self::T_FORM_APPROVER)->insert([
                     'NoForm' => $NoForm,
                     'NIK' => $nikAtasan,
                     'Subject' => $subjectAtasan,
                     'Jabatan' => $jabatanAtasan,
-                    'Status' => 'Menunggu'
+                    'Status' => 'Menunggu',
+                    'Diwakilkan' => $isRepresent ? 1 : 0
                 ]);
 
-                DB::table(self::T_ALARM)->insert([
-                    'NIK' => $nikAtasan,
-                    'Message' => "Pengajuan lembur baru dengan nomor : {$NoForm}",
-                    'Status' => 'Pending'
-                ]);
+                $atasan = DB::table(self::T_KARYAWAN)->select('Panggilan')->where('NIK', $nikAtasan)->first();
+                $url = url('skl/detail') . '?NoForm=' . $NoForm;
+                $message = "'Kepada YTH Bapak/Ibu {$atasan->Panggilan}, terdapat pengajuan lembur baru dengan nomor : {$NoForm}. Silakan klik link dibawah ini untuk menyetujui pengajuan berikut :' + CHAR(13) + CHAR(10) + '{$url}'";
+                DB::statement("INSERT INTO TBL_ALARM_SPL (NIK, Message) VALUES ('{$nikAtasan}', {$message})");
             }
 
             DB::commit();
@@ -217,7 +217,6 @@ class SKLFormController extends Controller
 
         } catch (Exception $ex) {
             DB::rollBack();
-            dd($ex);
             Log::error($ex->getMessage());
             return redirect(route('bss-skl.create'))->with('err', 'Terjadi kesalahan pada sistem');
         }
