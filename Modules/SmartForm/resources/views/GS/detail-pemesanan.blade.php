@@ -147,13 +147,14 @@
         // console.log({{ Illuminate\Support\Js::from($data) }})
 
         function actionFormatter(value, row, index) {
-            console.log(row.status)
+            console.log({status: row.status, file_evidence: row.file_evidence})
             var _id = ", '"+ row.id_detail + "'"
             var _dataStatus = 'data-status="' + row.status + '"'
+            var _dataFileEvidence = ", '" + row.file_evidence + "'"
             var isDisabled = ""
             if(row.status == "Diterima GS" || row.status == "Dalam Proses" || row.status == "Pesanan Baru" || row.status == null || row.status == "null") isDisabled = "disabled"
   
-            var btnTerima = '<button class="btn btn-primary ' + isDisabled +  '" ' + _dataStatus  + ' onclick="actionTerima(this'+ _id +')"'+'>Terima</button>'
+            var btnTerima = '<button class="btn btn-primary ' + isDisabled +  '" ' + _dataStatus  + ' onclick="actionTerima(this'+ _id + _dataFileEvidence + ')"'+'>Terima</button>'
             
             return btnTerima
         }
@@ -174,12 +175,15 @@
             else return value
         }
 
-        function actionTerima(e, idDetail) {
+        function actionTerima(e, idDetail, dataFileEvidence) {
             console.log(idDetail)
             Swal.fire({
                 title: "Apakah yakin ingin terima?",
                 icon: "question",
                 html: "",
+                imageUrl: "/storage/" + dataFileEvidence,
+                // imageWidth: 400,
+                imageAlt: "Custom image",
                 showCancelButton: true,
                 confirmButtonText: "Terima",
                 cancelButtonText: "Batal",
