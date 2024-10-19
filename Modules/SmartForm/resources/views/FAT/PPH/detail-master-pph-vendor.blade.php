@@ -160,6 +160,26 @@
                                             <span>Daftar dokument yang sudah terupload</span>
                                         </legend>
                                         <div class="form-horizontal">
+                                            <div class="row">
+                                                <div class="col-md-2">
+                                                    <div class="input-group input-group-static mb-4">
+                                                        <label for="FILTERNAMAVENDOR">Vendor</label>
+                                                        <input type="text" class="form-control" id="FILTERNAMAVENDOR"
+                                                            name="FILTERNAMAVENDOR" maxlength="7"
+                                                            placeholder=" -- Masukkan Nama Vendor -- ">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="input-group input-group-static mb-4">
+                                                        <label for="FILTERNPWPVENDOR">NPWP / NIK</label>
+                                                        <input type="text" class="form-control" id="FILTERNIK"
+                                                            name="FILTERNIK" maxlength="7"
+                                                            placeholder=" -- Masukkan NIK -- ">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
                                             <table id="tableListOfDocumentUploaded" data-toggle="table"
                                                 data-ajax="tableListOfDocumentUploadedGenerateData"
                                                 data-query-params="tableListOfDocumentUploadedParamsGenerate"
@@ -356,7 +376,8 @@
         function tableListOfDocumentUploadedParamsGenerate(params) {
 
             params.search = {
-                'FILTERNODOC': $('#nodocpph').val()
+                'FILTERNPWPVENDOR': $('#FILTERNPWPVENDOR').val()
+                'FILTERNAMAVENDOR': $('#FILTERNAMAVENDOR').val()
             };
 
             if (params.sort == undefined) {

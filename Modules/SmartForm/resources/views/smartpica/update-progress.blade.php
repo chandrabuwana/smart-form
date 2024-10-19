@@ -58,9 +58,10 @@
                                         Status
                                     </th>
                                     <th data-field="action" data-align="center" data-halign="center">Action</th>
-                                    <th data-field="note_step" data-align="left" data-halign="center" class="wrap-text">Step Solution</th>
+                                    <th data-field="note_step" data-align="left" data-halign="center" class="wrap-text">Step
+                                        Solution</th>
                                     <th data-field="ap_tod" data-align="center" data-halign="center">AP/TOD</th>
-                                    <th data-field="target_master" data-align="center" data-halign="center">Target</th>
+                                    <th data-field="100%" data-align="center" data-formatter="targetFormaterDefault" data-halign="center">Target</th>
                                     <th data-field="due_date" data-align="left" data-formatter="dataTableDateFormater"
                                         data-halign="center">Due Date</th>
                                     <th data-field="progress" data-align="center" data-halign="center">Progress</th>
@@ -105,7 +106,7 @@
                             <div class="card-body">
                                 <div class="d-flex align-items-center">
                                     <div id="divKeteranganReject">
-                                        <h4>Keterangan Reject</h4><span id="idKeteranganReject">asdkajdbajhdbasdjh</span>
+                                        <h4>Keterangan Reject</h4><span id="idKeteranganReject"></span>
                                     </div>
                                     <button onclick="OpenModalAddProgress()" class="btn btn-primary ms-auto uploadBtn">
                                         Add Progress</button>
@@ -272,6 +273,10 @@
                 // Mengganti karakter yang bukan angka dengan string kosong
                 this.value = this.value.replace(/[^0-9]/g, '');
             });
+        }
+
+        function targetFormaterDefault(value, row, index) {
+            return "100%"; // Mengembalikan "100$" sebagai default
         }
 
         function statusFormaterStepSolution(value, row, index) {
@@ -451,7 +456,8 @@
             $('#idMaster').val(dataObject.id_master)
             $('#nikMaster').val(dataObject.nik_master)
             $('#idSolution').val(dataObject.id)
-            $('#targetMaster').val(dataObject.target_master)
+            // $('#targetMaster').val(dataObject.target_master)
+            $('#targetMaster').val(100)
             $('#idKeteranganReject').html(dataObject.keterangan_reject)
             if (dataObject.status == "REVISION") {
                 $('#divKeteranganReject').removeClass("d-none");
