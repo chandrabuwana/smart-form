@@ -4,8 +4,8 @@
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <style>
         /* .gj-icon {
-                            display: none !important;
-                        } */
+                                    display: none !important;
+                                } */
 
         /* Hide the datepicker button */
         .gj-datepicker button {
@@ -319,8 +319,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-4" style="">
-                                            <div class="input-group input-group-static my-4"
-                                                id="leading-kpi-group_{{ $i }}">
+                                            <div class="input-group input-group-static my-4">
                                                 <label for="dicID_{{ $i }}" class="">Department in
                                                     Charge (DIC)</label>
                                                 <select class="form-control DICDepartment"
@@ -335,8 +334,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-4" style="">
-                                            <div class="input-group input-group-static my-4"
-                                                id="leading-kpi-group_{{ $i }}">
+                                            <div class="input-group input-group-static my-4">
                                                 <label for="picID_{{ $i }}" class="">Person In Charge
                                                     (PIC)</label>
                                                 <select class="form-control picIDHuman" name="picID_{{ $i }}"
@@ -345,11 +343,22 @@
                                         </div>
                                         <div class="col-md-3">
                                             <label for="DueDate_{{ $i }}" class="">Due Date
-                                                (PIC)sssss</label>
+                                                (PIC)</label>
                                             <div class="input-group input-group-static d-flex">
                                                 <input class="form-control due-date-picker" type="text"
                                                     placeholder="DD/MM/YYYY" name="DueDate_{{ $i }}" required
                                                     id="DueDate_{{ $i }}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr class="horizontal dark my-sm-3">
+                                    <div class="row">
+                                        <div class="col-md-4" style="">
+                                            <div class="input-group input-group-static my-4">
+                                                <label for="atasan_ID_{{ $i }}" class="">Atasan
+                                                    (PIC)</label>
+                                                <select class="form-control picIDAtasan" name="atasan_ID_{{ $i }}"
+                                                    id="atasan_ID_{{ $i }}"></select>
                                             </div>
                                         </div>
                                     </div>
@@ -385,6 +394,7 @@
                 $(`#pc_ap_pica_${i}`).val('pc');
                 $(`#dicID_${i}`).val(null).trigger('change'); // Reset dan trigger change untuk Select2
                 $(`#picID_${i}`).val(null).trigger('change'); // Reset dan trigger change untuk Select2
+                $(`#atasan_ID_${i}`).val(null).trigger('change'); // Reset dan trigger change untuk Select2
                 $(`#DueDate_${i}`).val(""); // Reset dan trigger change untuk Select2
             }
         }
@@ -463,6 +473,13 @@
             initializeSelect2('picID_4', '--- Pilih PIC ---', "/helper/karyawan", 'dicID_4');
             initializeSelect2('picID_5', '--- Pilih PIC ---', "/helper/karyawan", 'dicID_5');
 
+            // atasan
+            initializeSelect2('atasan_ID_1', '--- Pilih Atasan PIC ---', "/helper/karyawan", 'dicID_1');
+            initializeSelect2('atasan_ID_2', '--- Pilih Atasan PIC ---', "/helper/karyawan", 'dicID_2');
+            initializeSelect2('atasan_ID_3', '--- Pilih Atasan PIC ---', "/helper/karyawan", 'dicID_3');
+            initializeSelect2('atasan_ID_4', '--- Pilih Atasan PIC ---', "/helper/karyawan", 'dicID_4');
+            initializeSelect2('atasan_ID_5', '--- Pilih Atasan PIC ---', "/helper/karyawan", 'dicID_5');
+
             // Inisialisasi Select2 untuk Department PIC
             initializeSelect2('dicID_1', '--- Pilih Department PIC ---');
             initializeSelect2('dicID_2', '--- Pilih Department PIC ---');
@@ -513,6 +530,7 @@
                         ap_tod: $(`select[name="pc_ap_pica_${i}"]`).val(),
                         dic: $(`#dicID_${i}`).val(),
                         pic: $(`#picID_${i}`).val(),
+                        atasan: $(`#atasan_ID_${i}`).val(),
                         dueDate: convertDateFormat($(`#DueDate_${i}`).val()),
                     };
 
@@ -520,6 +538,7 @@
                         solution.ap_tod == '' ||
                         solution.dic.trim() == '' ||
                         solution.pic.trim() == '' ||
+                        solution.atasan.trim() == '' ||
                         solution.dueDate.trim() == '') {
 
                         Swal.fire({
