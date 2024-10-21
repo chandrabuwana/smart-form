@@ -168,6 +168,10 @@ class RevaProduksiController extends Controller {
                 }
     
                 $hasil = DB::connection('REVA_'. $site)->select('EXEC CUSP_REVA_EVENT ?, ?', [$startDate, $endDate]);
+                foreach($hasil as $key => $data) {
+                    $hasil[$key]->Durasi2 = (float) $hasil[$key]->Durasi2;
+                }
+                // Log::info('HASIL Event : '. json_encode($hasil, JSON_PRETTY_PRINT));
                 
                 $data = $hasil;
     

@@ -70,6 +70,7 @@
                                 <select class="form-control form-select w-full" name="filterSite" id="filterSite">
                                     <option value="">-- Filter Site --</option>
                                 </select>
+                                
                             </div>
                         </div>
                         <div class="col-12 col-md-3">
@@ -335,7 +336,7 @@
         });
 
         function fetchSite(cb=function(site) {}) {
-            axios.post("/helper/site", {
+            axios.post("/bss-form/catering/helper-site", {
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }

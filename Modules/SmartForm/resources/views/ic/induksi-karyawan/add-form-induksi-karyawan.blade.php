@@ -448,6 +448,15 @@
         });
 
         function AddDAtaKaryawan() {
+            if ($("#FILTERCODE").val() == "") {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Harus Generate Link Terlebih Dahulu!'
+                });
+                return false;
+            }
+
             var nJenisInduksi = $('#nJenisInduksi').val();
             var nNama = $('#nNama').val().trim();
             var nNik = $('#nNik').val().trim();
@@ -518,7 +527,7 @@
                 instansi: $('#nInstansi').val(),
                 jenisInduksi: $('#nJenisInduksi').val(),
                 group: $('#fm_jenisInduksi').val(),
-                code: <?php echo json_encode($code); ?>
+                code: $('#FILTERCODE').val()
             }
 
             let dataKirim = {
@@ -692,6 +701,7 @@
         }
 
         $(document).ready(function() {
+            $('#FILTERCODE').val("")
 
             $("#linkKaryawanList").html(window.location.origin + linkKaryawan)
 

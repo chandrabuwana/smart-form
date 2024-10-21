@@ -14,6 +14,24 @@
             z-index: 9999;
             background-color: #0000001f
         }
+        .search-input {
+            border-radius: 0;
+            border-bottom: 1px solid #e91e63;
+            height: 40px;
+            margin-bottom: 15px;
+            outline: none !important;
+            transition: all .15s ease-in-out;
+            margin-right: 12px;
+        }
+        .search-input:valid {
+            border-radius: 0;
+            border-bottom: 1px solid #e91e63;
+            height: 40px;
+            margin-bottom: 15px;
+            outline: none !important;
+            transition: all .15s ease-in-out;
+            margin-right: 12px;
+        }
     </style>
 @endsection
 
@@ -75,7 +93,7 @@
                     <h6 class="text-black text-capitalize ps-3">Total data Mess : </h6>
                     <div class="table-responsive p-0 mb-4">
                         <table id="table" data-toggle="table" data-ajax="" data-side-pagination="client"
-                            data-query-params=""
+                            data-query-params="" data-search="true"
                             data-page-list="[10, 25, 50, 100, all]" data-sortable="true"
                             data-content-type="application/json" data-data-type="json" data-pagination="true"
                             data-filter-control="true"
@@ -96,7 +114,7 @@
                     <h6 class="text-black text-capitalize ps-3">Total working : </h6>
                     <div class="table-responsive p-0 mb-4">
                         <table id="table-working" data-toggle="table" data-ajax="" data-side-pagination="client"
-                            data-query-params=""
+                            data-query-params="" data-search="true"
                             data-page-list="[10, 25, 50, 100, all]" data-sortable="true"
                             data-content-type="application/json" data-data-type="json" data-pagination="true"
                             data-unique-id="" data-header-style="headerStyle">
@@ -114,7 +132,7 @@
                     <h6 class="text-black text-capitalize ps-3">Total request makan mess : </h6>
                     <div class="table-responsive p-0 mb-4">
                         <table id="table-request-makan" data-toggle="table" data-ajax="" data-side-pagination="client"
-                            data-query-params=""
+                            data-query-params="" data-search="true"
                             data-page-list="[10, 25, 50, 100, all]" data-sortable="true"
                             data-content-type="application/json" data-data-type="json" data-pagination="true"
                             data-unique-id="" data-header-style="headerStyle">
