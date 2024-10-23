@@ -104,13 +104,20 @@
                                 </select>
                             </div>
                         </div>
-                        <div>
-                            <button class="btn btn-primary ms-auto filter-btn" id="btnFilterSubmit">
-                                Filter
-                            </button>
-                            <button class="btn btn-primary ms-auto filter-btn" id="btnClearFilter">
-                                Clear Filter
-                            </button>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex">
+                                <button class="btn btn-primary ms-auto filter-btn me-2" id="btnFilterSubmit">
+                                    Filter
+                                </button>
+                                <button class="btn btn-primary ms-auto filter-btn" id="btnClearFilter">
+                                    Clear Filter
+                                </button>
+                            </div>
+
+                            <a class="btn btn-success ms-auto filter-btn" href="javascript:;" id="download-excel">
+                                Download Excel
+                            </a>
                         </div>
                     </div>
                     <div class="table-responsive p-0">
@@ -118,7 +125,7 @@
                             data-side-pagination="server" data-filter-control="true"
                             data-page-list="[10, 25, 50, 100, all]" data-sortable="true"
                             data-content-type="application/json" data-data-type="json" data-pagination="true"
-                            data-unique-id="id" data-show-export="true" data-show-toggle="true">
+                            data-unique-id="id" data-show-export="false" data-show-toggle="true">
                             <thead>
                                 <tr>
                                     <th data-field="NoForm" data-align="left" data-halign="text-center"
@@ -201,6 +208,18 @@
             additonalQuery = searchQuery;
             $table.bootstrapTable('refresh')
         })
+
+        $('#download-excel').click( function() {
+            const url = `{{ route('bss-skl.download-excel') }}`;
+            const searchQuery = {
+                tanggal: filterTanggal.value == '' ? '' : c.value,
+                site: filterSite.value == '' ? '' : filterSite.value,
+                departement: filterDepartement.value == '' ? '' : filterDepartement.value,
+                status: filterStatus.value == '' ? '' : filterStatus.value,
+            }
+
+            window.open(url + '?' + (new URLSearchParams(searchQuery)).toString());
+        });
 
         function actionFormatter(value, row, index) {
             const url = `{{ route('bss-skl.detail') }}`;
