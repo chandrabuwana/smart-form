@@ -33,6 +33,8 @@ class LoginKaryawanController extends Controller
             'password.required' => 'Password harus diisi.',
         ]);
 
+        
+
         // Cek validasi
         if ($validator->fails()) {
             return back()
@@ -42,7 +44,7 @@ class LoginKaryawanController extends Controller
 
         // Lakukan proses otentikasi
         $credentials = $request->only('username', 'password');
-
+        $this->logEvent($request->ip(),"POST",json_encode($request->all()),"/login","0");
         if (Auth::attempt($credentials)) {
             // Jika otentikasi berhasil
 

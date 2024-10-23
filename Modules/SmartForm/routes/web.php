@@ -30,6 +30,8 @@ use Modules\SmartForm\App\Http\Controllers\SmartPica\TransactionPicaController;
 use Modules\SmartForm\App\Http\Controllers\TeamManagement\RoleManagementController;
 use Modules\SmartForm\App\Http\Controllers\TeamManagement\UserManagementController;
 use Modules\SmartForm\App\Http\Controllers\UnderCarriage\UnderCarriageInspectionController;
+use Modules\SmartForm\App\Http\Controllers\FAT\PPH\PPHDashboardController;
+use Modules\SmartForm\App\Http\Controllers\FAT\PPH\HelperPPHController;
 
 /*
 |--------------------------------------------------------------------------
@@ -91,6 +93,19 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/download-pdf/{id}', [ICFM05InduksiKaryawanController::class, 'downloadPDF']);
         });
 
+        Route::prefix('fat')->group(function () {
+            Route::prefix('pph')->group(function () {
+                Route::get('/dashboard', [PPHDashboardController::class, 'DashboardIndex'])->name("bss-dahboard-fat-pph-dashboard");
+                Route::get('/add-data-upload', [PPHDashboardController::class, 'AddDatadIndex'])->name("bss-dahboard-fat-pph-add");
+                Route::get('/lst-fat-doc-list-uploaded', [HelperPPHController::class, 'helperDataListHasilUploadDocument']);
+                Route::get('/lst-fat-doc-list-master', [HelperPPHController::class, 'helperDataListMasterUploadDocumentPPH']);
+                Route::post('/process-data-upload', [PPHDashboardController::class, 'ProcessZIPUpload']);
+                Route::post('/hapus-document-potongan', [HelperPPHController::class, 'HapusDocumentPotonganPPH']);
+                Route::post('/update-document-potongan', [HelperPPHController::class, 'UpdateDocumentPotonganPPH']);
+                Route::get('/view-detail-master-potongan-pph/{id}', [PPHDashboardController::class, 'indexViewDataDetailMasterPPh']);
+            });
+        });
+
         Route::prefix('she-019B')->group(function () {
             Route::get('/dashboard', [DashboardSHEFRM19BController::class, 'DashboardIndex'])->name("bss-form-she-019B");
             Route::get('/bss-form-she-019B-add-frm', [DashboardSHEFRM19BController::class, 'AddForm'])->name("add-bss-form-she-019B");
@@ -111,7 +126,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             // Route::post('/generate-detail-pemesanan-catering', [SmartCateringController::class, 'GenerateDetailPemesanan'])->name('generate-detail-pemesanan-catering');
         });
 
-        Route::prefix('catering')->group( function() {
+        Route::prefix('catering')->group(function () {
             Route::get('/pemesanan', [SmartCateringController::class, 'AddPemesanan'])->name('add-pemesanan-catering');
             Route::get('/dashboard-pemesanan', [SmartCateringController::class, 'DashboardPemesanan'])->name('dashboard-pemesanan-catering');
             Route::get('/detail-pemesanan', [SmartCateringController::class, 'DetailPemesanan'])->name('detail-pemesanan-catering');
@@ -127,10 +142,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/import-mapping-gs', [SmartCateringController::class, 'viewImportMappingGS'])->name('view-import-mapping-gs-catering');
             Route::post('/import-mapping-gs/store', [SmartCateringController::class, 'importMappingGS'])->name('import-mapping-gs-catering');
 
-            Route::get('/import-mapping-gs', [SmartCateringController::class, 'viewImportMappingGS'])->name('view-import-mapping-gs-catering');
-            Route::post('/import-mapping-gs/store', [SmartCateringController::class, 'importMappingGS'])->name('import-mapping-gs-catering');
-
-            Route::prefix('mess')->group( function() {
+            Route::prefix('mess')->group(function () {
                 Route::post('/add-mess', [MessController::class, 'AddMess'])->name('add-mess');
                 Route::post('/add-kamar', [MessController::class, 'AddKamar'])->name('add-kamar');
                 Route::post('/add-penghuni', [MessController::class, 'AddPenghuniMess'])->name('add-penghuni');
@@ -150,7 +162,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
 
             });
 
-            Route::prefix('vendor')->group( function() {
+            Route::prefix('vendor')->group(function () {
                 Route::get('/helper-vendor', [VendorController::class, 'HelperVendor'])->name('helper-vendor');
                 Route::get('/helper-lokasi', [VendorController::class, 'HelperLokasi'])->name('helper-lokasi');
                 Route::get('/dashboard-vendor', [VendorController::class, 'DashboardVendor'])->name('dashboard-vendor');
@@ -256,7 +268,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
 
     });
 
-    Route::prefix('skl')->group( function() {
+    Route::prefix('skl')->group(function () {
         Route::get('/dashboard', [DashboardSKLController::class, 'dashboard'])->name('bss-skl.dashboard');
         Route::get('/dashboard/get-data', [DashboardSKLController::class, 'getDashboardData'])->name('bss-skl.dashboard-get-data');
         Route::get('/form', [SKLFormController::class, 'create'])->name('bss-skl.create');
@@ -266,7 +278,9 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
         Route::get('/get-approver', [SKLFormController::class, 'getApprover'])->name('bss-skl.get-approver');
         Route::get('/detail', [DashboardSKLController::class, 'detail'])->name('bss-skl.detail');
         Route::post('/approval', [DashboardSKLController::class, 'storeApproval'])->name('bss-skl.store-approval');
+        Route::get('/download', [DashboardSKLController::class, 'downloadExcel'])->name('bss-skl.download-excel');
     });
+
 
     Route::prefix('approval')->group(function () {
         Route::post('/form', [ApprovalFormController::class, 'approveForm'])->name('bss-approval-form');
@@ -277,6 +291,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
     });
 
     Route::get('/landing-page-dashboard', [DashboardController::class, 'DashboardIndex']);
+
 });
 
 Route::get('/bss-form/induksi-karyawan/listing-karyawan/{data}', [ICFM05InduksiKaryawanController::class, 'indexFormAddKaryawanListing']);

@@ -283,6 +283,7 @@ class TransactionPicaController extends Controller
                             'dic' => $item['dic'],
                             'pic' => $item['pic'],
                             'due_date' => $item['dueDate'],
+                            'approver' => $item['atasan'],
                             'created_at' => now(),
                             'created_by' => session("user_id"), // Example value, replace with actual value
                         ]);
@@ -466,29 +467,54 @@ class TransactionPicaController extends Controller
     function ApproveClosingTask(Request $request)
     {
 
+        $dataDetail = DB::table("new_pica_step")->where("id", $request->id)->first();
+
         DB::beginTransaction();
         try {
-            if ($request->hasil == "true") {
-                DB::table("new_pica_step")->where("id", $request->id)->
-                    update(["status_approve" => 1]);
+            if ($dataDetail->approver == session("user_id")) {
+                if ($request->hasil == "true") {
+                    DB::table("new_pica_step")->where("id", $request->id)->
+                        update(["acceptance" => 10]);
+                } else {
+                    $maxProgress = DB::table('history_progress_solution')
+                        ->where('id_solution', $request->id)
+                        ->where('status_reject', 0)
+                        ->max('progress');
+
+                    DB::table('history_progress_solution')
+                        ->where('id_solution', $request->id)
+                        ->where('status_reject', 0)
+                        ->where('progress', $maxProgress)
+                        ->update([
+                            "status_reject" => 1,
+                            "keterangan_reject" => "By ATASAN - " . $request->keterangan
+                        ]);
+
+                    DB::table("new_pica_step")->where("id", $request->id)->
+                        update(["acceptance" => 1]);
+                }
+
             } else {
-                $maxProgress = DB::table('history_progress_solution')
-                    ->where('id_solution', $request->id)
-                    ->where('status_reject', 0)
-                    ->max('progress');
+                if ($request->hasil == "true") {
+                    DB::table("new_pica_step")->where("id", $request->id)->
+                        update(["status_approve" => 1]);
+                } else {
+                    $maxProgress = DB::table('history_progress_solution')
+                        ->where('id_solution', $request->id)
+                        ->where('status_reject', 0)
+                        ->max('progress');
 
-                DB::table('history_progress_solution')
-                    ->where('id_solution', $request->id)
-                    ->where('status_reject', 0)
-                    ->where('progress', $maxProgress)
-                    ->update([
-                        "status_reject" => 1,
-                        "keterangan_reject" => $request->keterangan
-                    ]);
-
-                DB::table("new_pica_step")->where("id", $request->id)->
-                    update(["acceptance" => 1]);
-
+                    DB::table('history_progress_solution')
+                        ->where('id_solution', $request->id)
+                        ->where('status_reject', 0)
+                        ->where('progress', $maxProgress)
+                        ->update([
+                            "status_reject" => 1,
+                            "keterangan_reject" => $request->keterangan
+                        ]);
+                    DB::table("new_pica_step")->where("id", $request->id)->
+                        update(["acceptance" => 1]);
+                }
             }
 
             DB::commit();
