@@ -265,6 +265,10 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
         Route::post('/deleted-progress-history-transaction', [TransactionPicaController::class, 'deleteTransactionProgressStepSolutionPica']);
         Route::post('/change-acceptance', [TransactionPicaController::class, 'changeAcceptanceStepSolutionPica']);
         Route::post('/approve-task-closing', [TransactionPicaController::class, 'ApproveClosingTask']);
+        Route::post('/update-master-pica', [TransactionPicaController::class, 'UpdateMasterPica']);
+        Route::post('/add-why-spesific-data', [TransactionPicaController::class, 'AddWhySpesificData']);
+        Route::post('/edit-why-spesific-data', [TransactionPicaController::class, 'EditWhySpesificData']);
+        Route::post('/check-data-step', [TransactionPicaController::class, 'checkDataStep']);
 
     });
 
