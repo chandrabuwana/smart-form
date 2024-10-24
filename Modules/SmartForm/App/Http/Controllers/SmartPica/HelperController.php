@@ -85,7 +85,7 @@ class HelperController extends Controller
         $data = $d->request->get("query");
         $depart = $d->request->get("dataDepartment");
         $dataFinal = $this->validateAndSanitizeInput($data);
-        $dataDepartment = DB::connection('sqlsrv2')->select("SELECT TOP 5 NIK nomorPunggung, Nama nama  FROM TKaryawan where KodeDP like '%$depart%' and Nama like '%$data%' and AKTIF = 0 ");
+        $dataDepartment = DB::connection('sqlsrv2')->select("SELECT TOP 5 NIK nomorPunggung, Nama nama  FROM TKaryawan where KodeDP like '%$depart%' and ( Nama like '%$data%' OR NIK like '%$data%') and AKTIF = 0 ");
 
         $dataJs = [];
         foreach ($dataDepartment as $a) {

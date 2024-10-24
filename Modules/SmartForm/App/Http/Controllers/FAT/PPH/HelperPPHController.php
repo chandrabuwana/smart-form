@@ -74,7 +74,15 @@ class HelperPPHController extends Controller
 
     function helperDataListMasterUploadDocumentPPH(Request $table)
     {
-        $query = "SELECT *, FORMAT(DATEFROMPARTS(tahun, bulan, 1), 'MMMM yyyy') as concat_bulan FROM FM_FAT_PPH_MASTER ms where 1 = 1 ";
+        $query = "SELECT 
+        nodocpph,
+        tsite,
+        tahun,
+        bulan,
+        created_at,
+        status,
+        (select count(1) from FM_FAT_PPH_DETAIL_DOCUMENT d where d.nodocpph = ms.nodocpph) jumlah,
+        FORMAT(DATEFROMPARTS(tahun, bulan, 1), 'MMMM yyyy') as concat_bulan FROM FM_FAT_PPH_MASTER ms where 1 = 1  ";
         $countDataUser = DB::select("select count(*) jumlah FROM FM_FAT_PPH_MASTER ms where 1 = 1 ");
         $newQuery = $this->GetQueryListMasterUploadDocumentPPH($query, $table);
 

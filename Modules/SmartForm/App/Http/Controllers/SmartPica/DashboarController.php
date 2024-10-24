@@ -241,6 +241,17 @@ class DashboarController extends Controller
                                     JOIN 
                                         master_pica mp ON mp.nodocpica = n.nodocpica where n.nodocpica = '$id'");
 
+        $dataKategory = DB::select("select * from kategori_problem order by kp_id desc");
+
+        $dataJs = [];
+        foreach ($dataKategory as $a) {
+            $dataBaru = [
+                'text' => $a->kp_name,
+                'id' => $a->kp_id
+            ];
+            $dataJs[] = $dataBaru;
+        }
+
         $dataFinal = [
             'dataMaster' => $dataMaster[0],
             'dataPicaW1' => $dataPicaW1,
@@ -249,6 +260,7 @@ class DashboarController extends Controller
             'dataPicaW4' => $dataPicaW4,
             'dataPicaW5' => $dataPicaW5,
             'solution' => $solution,
+            'dataKategory' => $dataJs
         ];
 
         return view("SmartForm::smartpica/view-data-pica", $dataFinal);

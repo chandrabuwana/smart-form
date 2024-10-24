@@ -271,22 +271,45 @@ class TransactionPicaController extends Controller
                             $nodocpica = $d['nodocWhy'];
                             $nik_master = $d['nikMaster'];
                         }
-                        DB::table('new_pica_step')->insert([
-                            'id_master' => $d['idMaster'], // Adjust as per your application logic
-                            'nik_master' => $d['nikMaster'], // Adjust as per your application logic
-                            'nodocpica' => $d['nodocWhy'],
-                            'position_why' => $d['idWhy'],
-                            'identity_why' => $d['identityWhy'],
-                            'action' => $item['action'],
-                            'note_step' => $item['note'],
-                            'ap_tod' => $item['ap_tod'],
-                            'dic' => $item['dic'],
-                            'pic' => $item['pic'],
-                            'due_date' => $item['dueDate'],
-                            'approver' => $item['atasan'],
-                            'created_at' => now(),
-                            'created_by' => session("user_id"), // Example value, replace with actual value
-                        ]);
+                        if ($item['edit']) {
+                            DB::table("new_pica_step")
+                                ->where([
+                                    "id" => $item['edit'],
+                                    'id_master' => $d['idMaster'],
+                                    'nik_master' => $d['nikMaster'],
+                                    'nodocpica' => $d['nodocWhy'],
+                                    'position_why' => $d['idWhy']
+                                ])
+                                ->update([
+                                    'action' => $item['action'],
+                                    'note_step' => $item['note'],
+                                    'ap_tod' => $item['ap_tod'],
+                                    'dic' => $item['dic'],
+                                    'pic' => $item['pic'],
+                                    'due_date' => $item['dueDate'],
+                                    'approver' => $item['atasan'],
+                                    'updated_at' => now(),
+                                    'updated_by' => session("user_id"),
+                                ]);
+                        } else {
+                            DB::table('new_pica_step')->insert([
+                                'id_master' => $d['idMaster'],
+                                'nik_master' => $d['nikMaster'],
+                                'nodocpica' => $d['nodocWhy'],
+                                'position_why' => $d['idWhy'],
+                                'identity_why' => $d['identityWhy'],
+                                'action' => $item['action'],
+                                'note_step' => $item['note'],
+                                'ap_tod' => $item['ap_tod'],
+                                'dic' => $item['dic'],
+                                'pic' => $item['pic'],
+                                'due_date' => $item['dueDate'],
+                                'approver' => $item['atasan'],
+                                'created_at' => now(),
+                                'created_by' => session("user_id"), // Example value, replace with actual value
+                            ]);
+                        }
+
                     }
                 } else {
                     return [
@@ -530,6 +553,428 @@ class TransactionPicaController extends Controller
                 'code' => 500
             ];
         }
+    }
+
+    function UpdateMasterPica(Request $r)
+    {
+        DB::beginTransaction();
+        try {
+            foreach ($r->dataHapus as $key => $d) {
+                DB::table("pica_why" . $d['identity_why'])->where([
+                    "id_master" => $d['idMaster_why'], // akses elemen array dengan tanda kurung
+                    "id" => $d['id_why']
+                ])->delete();
+
+                DB::table("new_pica_step")
+                    ->where([
+                        "id_master" => $d['idMaster_why'],
+                        "position_why" => $d['id_why'],
+                        "identity_why" => $d['identity_why']
+                    ])
+                    ->delete();
+            }
+            DB::commit();
+            return [
+                'message' => "Data Telah Terhapus",
+                'code' => 200
+            ];
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return [
+                'message' => 'Failed to insert records',
+                'code' => 500
+            ];
+        }
+    }
+
+    function AddWhySpesificData(Request $r)
+    {
+        // dd($r->identity);
+
+        DB::beginTransaction();
+        if ($r->identity == 0) {
+            try {
+                $dataTerakhirWhy = DB::table("pica_why1")->where([
+                    "id_master" => $r->master,
+                    "nik_master" => $r->nik,
+                    "nodocpica" => $r->nodocpica,
+                ])->orderBy("index_w1", "desc")->first();
+
+                DB::table("pica_why1")->insert([
+                    "id_master" => $r->master,
+                    "nik_master" => $r->nik,
+                    "nodocpica" => $r->nodocpica,
+                    "index_w1" => ($dataTerakhirWhy ? $dataTerakhirWhy->index_w1 + 1 : 1),
+                    "why" => $r->why,
+                    "id_kategory" => $r->kategory,
+                    "created_at" => now(),
+                    "created_by" => session("user_id"),
+                    "updated_at" => now(),
+                    "updated_by" => session("user_id"),
+                    "identity" => 1
+                ]);
+
+                DB::commit();
+                return [
+                    'message' => "Data Tersimpan",
+                    'code' => 200
+                ];
+
+            } catch (\Throwable $th) {
+                DB::rollBack();
+                return [
+                    'message' => 'Failed to insert records',
+                    'code' => 500
+                ];
+            }
+        } else if ($r->identity == 1) {
+            try {
+                $dataTerakhirWhy = DB::table("pica_why2")->where([
+                    "id_master" => $r->master,
+                    "nik_master" => $r->nik,
+                    "nodocpica" => $r->nodocpica,
+                    "index_w1" => $r->w1,
+                ])->orderBy("index_w2", "desc")->first();
+                if ($dataTerakhirWhy && $dataTerakhirWhy->index_w2 == 5) {
+                    return [
+                        'message' => 'Sudah melebihi quota',
+                        'code' => 500
+                    ];
+                }
+                DB::table("pica_why2")->insert([
+                    "id_master" => $r->master,
+                    "nik_master" => $r->nik,
+                    "nodocpica" => $r->nodocpica,
+                    "index_w1" => $r->w1,
+                    "index_w2" => ($dataTerakhirWhy ? $dataTerakhirWhy->index_w2 + 1 : 1),
+                    "why" => $r->why,
+                    "id_kategory" => $r->kategory,
+                    "created_at" => now(),
+                    "created_by" => session("user_id"),
+                    "updated_at" => now(),
+                    "updated_by" => session("user_id"),
+                    "identity" => 2
+                ]);
+
+                DB::commit();
+                return [
+                    'message' => "Data Tersimpan",
+                    'code' => 200
+                ];
+
+            } catch (\Throwable $th) {
+                DB::rollBack();
+                return [
+                    'message' => 'Failed to insert records',
+                    'code' => 500
+                ];
+            }
+        } else if ($r->identity == 2) {
+            try {
+
+                $dataTerakhirWhy = DB::table("pica_why3")->where([
+                    "id_master" => $r->master,
+                    "nik_master" => $r->nik,
+                    "nodocpica" => $r->nodocpica,
+                    "index_w1" => $r->w1,
+                    "index_w2" => $r->w2,
+                ])->orderBy("index_w3", "desc")->first();
+                if ($dataTerakhirWhy && $dataTerakhirWhy->index_w3 == 5) {
+                    return [
+                        'message' => 'Sudah melebihi quota',
+                        'code' => 500
+                    ];
+                }
+
+                DB::table("pica_why3")->insert([
+                    "id_master" => $r->master,
+                    "nik_master" => $r->nik,
+                    "nodocpica" => $r->nodocpica,
+                    "index_w1" => $r->w1,
+                    "index_w2" => $r->w2,
+                    "index_w3" => ($dataTerakhirWhy ? $dataTerakhirWhy->index_w3 + 1 : 1),
+                    "why" => $r->why,
+                    "id_kategory" => $r->kategory,
+                    "created_at" => now(),
+                    "created_by" => session("user_id"),
+                    "updated_at" => now(),
+                    "updated_by" => session("user_id"),
+                    "identity" => 3
+                ]);
+
+                DB::commit();
+                return [
+                    'message' => "Data Tersimpan",
+                    'code' => 200
+                ];
+
+            } catch (\Throwable $th) {
+                DB::rollBack();
+                return [
+                    'message' => 'Failed to insert records',
+                    'code' => 500
+                ];
+            }
+        } else if ($r->identity == 3) {
+            try {
+                $dataTerakhirWhy = DB::table("pica_why4")->where([
+                    "id_master" => $r->master,
+                    "nik_master" => $r->nik,
+                    "nodocpica" => $r->nodocpica,
+                    "index_w1" => $r->w1,
+                    "index_w2" => $r->w2,
+                    "index_w3" => $r->w3,
+                ])->orderBy("index_w4", "desc")->first();
+                if ($dataTerakhirWhy && $dataTerakhirWhy->index_w4 == 5) {
+                    return [
+                        'message' => 'Sudah melebihi quota',
+                        'code' => 500
+                    ];
+                }
+                DB::table("pica_why4")->insert([
+                    "id_master" => $r->master,
+                    "nik_master" => $r->nik,
+                    "nodocpica" => $r->nodocpica,
+                    "index_w1" => $r->w1,
+                    "index_w2" => $r->w2,
+                    "index_w3" => $r->w3,
+                    "index_w4" => ($dataTerakhirWhy ? $dataTerakhirWhy->index_w4 + 1 : 1),
+                    "why" => $r->why,
+                    "id_kategory" => $r->kategory,
+                    "created_at" => now(),
+                    "created_by" => session("user_id"),
+                    "updated_at" => now(),
+                    "updated_by" => session("user_id"),
+                    "identity" => 4
+                ]);
+
+                DB::commit();
+                return [
+                    'message' => "Data Tersimpan",
+                    'code' => 200
+                ];
+
+            } catch (\Throwable $th) {
+                DB::rollBack();
+                return [
+                    'message' => 'Failed to insert records',
+                    'code' => 500
+                ];
+            }
+        } else if ($r->identity == 4) {
+            try {
+                $dataTerakhirWhy = DB::table("pica_why5")->where([
+                    "id_master" => $r->master,
+                    "nik_master" => $r->nik,
+                    "nodocpica" => $r->nodocpica,
+                    "index_w1" => $r->w1,
+                    "index_w2" => $r->w2,
+                    "index_w3" => $r->w3,
+                    "index_w4" => $r->w4,
+                ])->orderBy("index_w5", "desc")->first();
+                if ($dataTerakhirWhy && $dataTerakhirWhy->index_w5 == 5) {
+                    return [
+                        'message' => 'Sudah melebihi quota',
+                        'code' => 500
+                    ];
+                }
+                DB::table("pica_why5")->insert([
+                    "id_master" => $r->master,
+                    "nik_master" => $r->nik,
+                    "nodocpica" => $r->nodocpica,
+                    "index_w1" => $r->w1,
+                    "index_w2" => $r->w2,
+                    "index_w3" => $r->w3,
+                    "index_w4" => $r->w4,
+                    "index_w5" => ($dataTerakhirWhy ? $dataTerakhirWhy->index_w5 + 1 : 1),
+                    "why" => $r->why,
+                    "id_kategory" => $r->kategory,
+                    "created_at" => now(),
+                    "created_by" => session("user_id"),
+                    "updated_at" => now(),
+                    "updated_by" => session("user_id"),
+                    "identity" => 5
+                ]);
+
+                DB::commit();
+                return [
+                    'message' => "Data Tersimpan",
+                    'code' => 200
+                ];
+
+            } catch (\Throwable $th) {
+                DB::rollBack();
+                return [
+                    'message' => 'Failed to insert records',
+                    'code' => 500
+                ];
+            }
+
+        } else {
+            return [
+                'message' => 'Failed Please Contact Admin',
+                'code' => 500
+            ];
+        }
+    }
+
+    function EditWhySpesificData(Request $r)
+    {
+        DB::beginTransaction();
+        if ($r->identity == 1) {
+            try {
+                DB::table("pica_why1")->where([
+                    "id" => $r->id,
+                    "identity" => $r->identity,
+                    "nodocpica" => $r->nodocpica,
+                ])->update([
+                            "why" => $r->why,
+                            "id_kategory" => $r->kategori,
+                        ]);
+
+                DB::commit();
+                return [
+                    'message' => "Data Tersimpan",
+                    'code' => 200
+                ];
+
+            } catch (\Throwable $th) {
+                DB::rollBack();
+                return [
+                    'message' => 'Failed to insert records',
+                    'code' => 500
+                ];
+            }
+        } else if ($r->identity == 2) {
+            try {
+                $dataTerakhirWhy = DB::table("pica_why2")->where([
+                    "id" => $r->id,
+                    "identity" => $r->identity,
+                    "nodocpica" => $r->nodocpica,
+                ])->update([
+                            "why" => $r->why,
+                            "id_kategory" => $r->kategori,
+                        ]);
+
+                DB::commit();
+                return [
+                    'message' => "Data Tersimpan",
+                    'code' => 200
+                ];
+
+            } catch (\Throwable $th) {
+                DB::rollBack();
+                return [
+                    'message' => 'Failed to insert records',
+                    'code' => 500
+                ];
+            }
+        } else if ($r->identity == 3) {
+            try {
+                $dataTerakhirWhy = DB::table("pica_why3")->where([
+                    "id" => $r->id,
+                    "identity" => $r->identity,
+                    "nodocpica" => $r->nodocpica,
+                ])->update([
+                            "why" => $r->why,
+                            "id_kategory" => $r->kategori,
+                        ]);
+
+                DB::commit();
+                return [
+                    'message' => "Data Tersimpan",
+                    'code' => 200
+                ];
+
+            } catch (\Throwable $th) {
+                DB::rollBack();
+                return [
+                    'message' => 'Failed to insert records',
+                    'code' => 500
+                ];
+            }
+        } else if ($r->identity == 4) {
+            try {
+                // dd($r);
+                $dataTerakhirWhy = DB::table("pica_why4")->where([
+                    "id" => $r->id,
+                    "identity" => $r->identity,
+                    "nodocpica" => $r->nodocpica,
+                ])->update([
+                            "why" => $r->why,
+                            "id_kategory" => $r->kategori,
+                        ]);
+
+                DB::commit();
+                return [
+                    'message' => "Data Tersimpan",
+                    'code' => 200
+                ];
+
+            } catch (\Throwable $th) {
+                DB::rollBack();
+                return [
+                    'message' => 'Failed to insert records',
+                    'code' => 500
+                ];
+            }
+        } else if ($r->identity == 5) {
+            try {
+                $dataTerakhirWhy = DB::table("pica_why5")->where([
+                    "id" => $r->id,
+                    "identity" => $r->identity,
+                    "nodocpica" => $r->nodocpica,
+                ])->update([
+                            "why" => $r->why,
+                            "id_kategory" => $r->kategori,
+                        ]);
+
+                DB::commit();
+                return [
+                    'message' => "Data Tersimpan",
+                    'code' => 200
+                ];
+
+            } catch (\Throwable $th) {
+                DB::rollBack();
+                return [
+                    'message' => 'Failed to insert records',
+                    'code' => 500
+                ];
+            }
+
+        } else {
+            return [
+                'message' => 'Failed Please Contact Admin',
+                'code' => 500
+            ];
+        }
+    }
+
+    function checkDataStep(Request $r)
+    {
+        try {
+            $dataList = DB::table("new_pica_step")
+                ->where([
+                    "id_master" => $r->id_master,
+                    "nik_master" => $r->nik_master,
+                    "nodocpica" => $r->nodocWhy,
+                    "position_why" => $r->id_why,
+                    "identity_why" => $r->identity
+                ])->select()->get();
+
+            return [
+                "data" => $dataList,
+                "code" => 200
+            ];
+        } catch (\Throwable $th) {
+            return [
+                'message' => 'Failed Please Contact Admin',
+                'code' => 500
+            ];
+        }
+
     }
 }
 
