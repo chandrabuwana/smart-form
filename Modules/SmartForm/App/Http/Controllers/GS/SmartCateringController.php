@@ -229,8 +229,9 @@ class SmartCateringController extends Controller {
 
         try {
             $query_order_makan_mess = DB::connection(self::DB_CONN_NAME)
-                ->table(self::TABLE_REQ_MAKAN_MOBILE)
-                ->select('Nama', 'NIK', 'lokasi', 'TanggalOrder', 'jenis')
+                ->table(self::TABLE_REQ_MAKAN_MOBILE. ' as a')
+                ->select('a.Nama', 'a.NIK', 'a.lokasi', 'a.TanggalOrder', 'a.jenis', 'b.NamaMess as lokasi_name')
+                ->leftJoin(self::TABLE_MASTER_MESS . ' as b', 'a.lokasi', '=', 'b.NoDoc')
                 ->where('jenis', $jenis)
                 ->whereDate('TanggalOrder', $tanggal);
             Log::debug("SQL Pesan Makan: ". $query_order_makan_mess->toRawSql());

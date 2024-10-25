@@ -66,7 +66,7 @@
                 </div>
                 <div class="card-body px-0 pb-2">
                     <div class="d-flex align-items-center">
-                        <a href="">
+                        <a href="{{ route('add-pemesanan-catering') }}">
                             <button class="btn btn-primary ms-auto uploadBtn" id="coba">
                                 New Form
                             </button>
