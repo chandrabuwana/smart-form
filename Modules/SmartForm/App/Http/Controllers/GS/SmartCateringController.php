@@ -521,7 +521,7 @@ class SmartCateringController extends Controller {
 
         try {
             $sql_master_data = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_SUBMIT_ORDER)
-                ->select('kode_pemesanan', 'site', 'selected', 'jenis_pemesanan');
+                ->select('kode_pemesanan', 'site', 'selected', 'jenis_pemesanan', 'tanggal')->orderBy('tanggal', 'desc');
 
             if($filterTanggal == null || $filterTanggal == 'null') {
             } else {
