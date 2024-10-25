@@ -254,6 +254,7 @@
                                 <h6 class="card-title">Filter</h6>
                                 <hr class="horizontal dark my-sm-1">
                                 <div class="row">
+                                    <input type="hidden" name="id_user_login" id="UserLoginNIK" value="{{session("user_id")}}">
                                     <div class="col-md-3">
                                         <div class="input-group select-div input-group-static my-2">
                                             <label for="FILTERNIKSOLUTION" class="ms-0">NIK</label>
@@ -579,7 +580,7 @@
                         <i class="fa fa-eye"></i> View
                     </a></button>
                 `
-            if (row.status == "STEP NOT SET") {
+            if (row.nik == $("#UserLoginNIK").val()) {
                 data += `<button onclick="redirectToAddStepPica(this)"><a class="like" title="Like">
                         <i class="fa fa-plus"></i> Step
                     </a></button>`
