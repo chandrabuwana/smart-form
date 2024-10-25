@@ -129,6 +129,7 @@
                                     <th data-field="kode_pemesanan" data-align="left" data-halign="text-center"
                                         data-sortable="true">Kode Pemesanan
                                     </th>
+                                    <th data-field="tanggal" data-align="center" data-halign="center" data-formatter="tglFormatter">Tanggal</th>
                                     <th data-field="site" data-align="center" data-halign="center" >Site</th>
                                     <th data-field="selected" data-align="center" data-halign="center" >Selected</th>
                                     <th data-field="jenis_pemesanan" data-align="left" data-halign="center">Jenis Pemesanan</th>
@@ -263,5 +264,17 @@
             //     $('#editSite').append(opt)
             // })
         })
+
+        function tglFormatter(value, row, index) {
+            try{
+                const tglObj = new Date(value)
+                const bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
+
+                return tglObj.getDate() + ' ' + bulan[tglObj.getMonth()] + ' ' + tglObj.getFullYear()
+            } catch (err) {
+                console.log(err)
+                return value
+            }
+        }
     </script>
 @endsection
