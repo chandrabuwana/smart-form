@@ -760,8 +760,9 @@
                         loadedData.push({
                             nama: row[0] !== undefined ? row[0] : "",
                             nik: row[1] !== undefined ? row[1] : "",
-                            lokasi: row[2] !== undefined ? row[2] : "",
-                            keterangan: row[3] !== undefined ? row[3] : ""
+                            // lokasi: row[2] !== undefined ? row[2] : "",
+                            // keterangan: row[3] !== undefined ? row[3] : ""
+                            keterangan: row[2] !== undefined ? row[2] : ""
                         })
                         jumlahData++
                         // var newRow = table.insertRow();

@@ -121,7 +121,7 @@
                                     <th data-field="kode_pemesanan" data-align="left" data-halign="text-center"
                                         data-sortable="true">Kode Pemesanan
                                     </th>
-                                    <th data-field="lokasi" data-align="left" data-halign="center">Lokasi</th>
+                                    <th data-field="lokasi" data-align="left" data-halign="center" data-formatter="lokasiFormatter">Lokasi</th>
                                     <th data-field="nama_vendor" data-align="left" data-halign="center">Vendor</th>
                                     <th data-field="jumlah" data-align="center" data-halign="center">Jumlah</th>
                                     <th data-field="status" data-align="center" data-halign="center" data-formatter="statusFormatter">Status</th>
@@ -145,6 +145,12 @@
     <script>
         var baseURL = "/bss-form/catering"
         // console.log({{ Illuminate\Support\Js::from($data) }})
+
+        function lokasiFormatter(value, row, index) {
+            if(value == null || value == 'null') return 'Lapangan'
+            
+            return value
+        }
 
         function actionFormatter(value, row, index) {
             console.log({status: row.status, file_evidence: row.file_evidence})
