@@ -127,6 +127,9 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/import-mapping-gs', [SmartCateringController::class, 'viewImportMappingGS'])->name('view-import-mapping-gs-catering');
             Route::post('/import-mapping-gs/store', [SmartCateringController::class, 'importMappingGS'])->name('import-mapping-gs-catering');
 
+            Route::get('/import-mapping-gs', [SmartCateringController::class, 'viewImportMappingGS'])->name('view-import-mapping-gs-catering');
+            Route::post('/import-mapping-gs/store', [SmartCateringController::class, 'importMappingGS'])->name('import-mapping-gs-catering');
+
             Route::prefix('mess')->group( function() {
                 Route::post('/add-mess', [MessController::class, 'AddMess'])->name('add-mess');
                 Route::post('/add-kamar', [MessController::class, 'AddKamar'])->name('add-kamar');
