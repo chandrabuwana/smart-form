@@ -534,7 +534,7 @@ class TransactionPicaController extends Controller
             if ($dataDetail->approver == session("user_id")) {
                 if ($request->hasil == "true") {
                     DB::table("new_pica_step")->where("id", $request->id)->
-                        update(["acceptance" => 10]);
+                        update(["status_approve" => 1]);
                 } else {
                     $maxProgress = DB::table('history_progress_solution')
                         ->where('id_solution', $request->id)
@@ -549,39 +549,24 @@ class TransactionPicaController extends Controller
                             "status_reject" => 1,
                             "keterangan_reject" => "By ATASAN - " . $request->keterangan
                         ]);
-
                     DB::table("new_pica_step")->where("id", $request->id)->
                         update(["acceptance" => 1]);
                 }
+                DB::commit();
+                return [
+                    'message' => "Data Tersimpan",
+                    'code' => 200
+                ];
+
+
 
             } else {
-                if ($request->hasil == "true") {
-                    DB::table("new_pica_step")->where("id", $request->id)->
-                        update(["status_approve" => 1]);
-                } else {
-                    $maxProgress = DB::table('history_progress_solution')
-                        ->where('id_solution', $request->id)
-                        ->where('status_reject', 0)
-                        ->max('progress');
-
-                    DB::table('history_progress_solution')
-                        ->where('id_solution', $request->id)
-                        ->where('status_reject', 0)
-                        ->where('progress', $maxProgress)
-                        ->update([
-                            "status_reject" => 1,
-                            "keterangan_reject" => $request->keterangan
-                        ]);
-                    DB::table("new_pica_step")->where("id", $request->id)->
-                        update(["acceptance" => 1]);
-                }
+                return [
+                    'message' => 'Kamu tidak punya akses',
+                    'code' => 500
+                ];
             }
 
-            DB::commit();
-            return [
-                'message' => "Data Tersimpan",
-                'code' => 200
-            ];
 
         } catch (\Throwable $th) {
             DB::rollBack();

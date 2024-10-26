@@ -549,7 +549,7 @@ class HelperController extends Controller
                         new_pica_step step_pica
                 )
                 SELECT * 
-                FROM CTE where ('OD' = '$dept' AND acceptance = 10) OR ('OD' != '$dept' AND ( acceptance = 9 OR acceptance = 10)  AND approver = '$userID' ) ";
+                FROM CTE where  acceptance = 9  AND approver = '$userID'  ";
 
         $countDataUser = DB::select("select count(*) jumlah FROM new_pica_step where dic = '$dept'");
         $newQuery = $this->GetQueryDataTableApprovementStepPica($query, $table);
@@ -566,11 +566,14 @@ class HelperController extends Controller
 
     public function GetQueryDataTableApprovementPica(string $query, Request $req)
     {
-        if (isset($req->search['IDSOLUTION']) && $req->search['IDSOLUTION'] != null) {
-            $query = $query . "where id_solution = '" . $req->search['IDSOLUTION'] . "' ";
+        if (isset($req->search['FILTERNIK']) && $req->search['FILTERNIK'] != null) {
+            $query = $query . "where ms.nik = '" . $req->search['FILTERNIK'] . "' ";
         }
-        if (isset($req->search['NODOCPICA']) && $req->search['NODOCPICA'] != null) {
-            $query = $query . " AND nodocpica = '" . $req->search['NODOCPICA'] . "' ";
+        if (isset($req->search['FILTERDEPARTMENT']) && $req->search['FILTERDEPARTMENT'] != null) {
+            $query = $query . " AND ms.dept = '" . $req->search['FILTERDEPARTMENT'] . "' ";
+        }
+        if (isset($req->search['FILTERSITE']) && $req->search['FILTERSITE'] != null) {
+            $query = $query . " AND ms.site = '" . $req->search['FILTERSITE'] . "' ";
         }
 
         if (isset($req["sort"]) && $req["sort"] != null) {

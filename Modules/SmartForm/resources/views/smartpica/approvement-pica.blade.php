@@ -48,6 +48,46 @@
                             <h6 class="text-white text-capitalize ps-3">Smart PICA OD APPROVE</h6>
                         </div>
                     </div>
+                    <hr class="horizontal dark my-sm-3">
+                    <div class="row card-header"
+                        style="margin : 10px;border-radius: 10px; background-color: rgba(209, 209, 209, 0.301);">
+                        <div class="row">
+                            <div class="col">
+                                <h6 class="card-title">Filter</h6>
+                                <hr class="horizontal dark my-sm-1">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="input-group select-div input-group-static my-3">
+                                            <label for="FILTERNIK" class="ms-2">NIK</label>
+                                            <select class="form-control s2lea" name="FILTERNIK" id="FILTERNIK"
+                                                required></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="input-group select-div input-group-static my-3">
+                                            <label for="FILTERDEPARTMENT" class="ms-2">Department </label>
+                                            <select class="form-control dept" name="FILTERDEPARTMENT" id="FILTERDEPARTMENT">
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="input-group select-div input-group-static my-3">
+                                            <label for="FILTERSITE" class="ms-2">Site </label>
+                                            <select class="form-control site" name="FILTERSITE" id="FILTERSITE">
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-end">
+                                    <div class="col-sm-2">
+                                        <button class="btn btn-primary ms-auto uploadBtn"
+                                            onclick="dataListApprovementPicaMasterSearchGenerate(this);">
+                                            <i class="fa fa-filter"> Search</i> </button></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="card-body px-0 pb-2">
                         <div class="table-responsive p-0">
                             <table id="dataListApprovementPicaMaster" data-toggle="table"
@@ -266,6 +306,110 @@
 @section('custom-js')
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
     <script type="text/javascript">
+        function formatSelectingAfterSelectNIK(repo) {
+            return repo.text;
+        }
+
+        function initializeSelect2NIK(elementId) {
+            $(elementId).select2({
+                theme: 'bootstrap5', // Menggunakan tema Bootstrap 5
+                dropdownParent: $(elementId).closest('.select-div'),
+                placeholder: '--- Cari/Pilih NIK ---',
+                ajax: {
+                    url: "/bss-form/induksi-karyawan/helper-data-nik",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    type: "post",
+                    delay: 250,
+                    dataType: 'json',
+                    data: function(params) {
+                        return {
+                            query: params.term
+                        }; // search term
+                    },
+                    processResults: function(response) {
+                        return {
+                            results: response.data
+                        };
+                    },
+                    cache: true
+                },
+                templateSelection: formatSelectingAfterSelectNIK
+            });
+        }
+
+        initializeSelect2NIK('#FILTERNIK');
+
+        function initializeSelect2Department(elementId, textPlaceHolder) {
+            $(elementId).select2({
+                theme: 'bootstrap-5', // Menggunakan tema Bootstrap 5
+                dropdownParent: $(elementId).closest('.input-group'),
+                placeholder: textPlaceHolder,
+                width: '100%',
+                ajax: {
+                    url: "/helper/department",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    type: "post",
+                    delay: 250,
+                    dataType: 'json',
+                    data: function(params) {
+                        return {
+                            _token: "{{ csrf_token() }}",
+                            query: params.term, // search term
+                        };
+                    },
+                    processResults: function(response) {
+                        return {
+                            results: response.data
+                        };
+                    },
+                    cache: true
+                }
+            });
+        }
+
+        // Initialize for both elements
+        initializeSelect2Department('#FILTERDEPARTMENT', '--- Cari Department ---');
+
+        function initializeSelect2Site(elementId) {
+            $(elementId).select2({
+                theme: 'bootstrap-5', // Menggunakan tema Bootstrap 5
+                dropdownParent: $(elementId).closest('.input-group'),
+                placeholder: '--- Cari Site ---',
+                ajax: {
+                    url: "/helper/site",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    type: "post",
+                    delay: 250,
+                    dataType: 'json',
+                    data: function(params) {
+                        return {
+                            _token: "{{ csrf_token() }}",
+                            query: params.term, // search term
+                        };
+                    },
+                    processResults: function(response) {
+                        return {
+                            results: response.data
+                        };
+                    },
+                    cache: true
+                }
+            });
+        }
+        // Initialize for both elements
+        initializeSelect2Site('#FILTERSITE');
+    </script>
+    <script type="text/javascript">
+        function dataListApprovementPicaMasterSearchGenerate() {
+            $('#dataListApprovementPicaMaster').bootstrapTable('refresh');
+        }
+
         function dataTableDateFormater(value, row, index) {
             var monthNames = ["January", "February", "March", "April", "May", "June",
                 "July", "August", "September", "October", "November", "December"
@@ -372,7 +516,9 @@
         function dataListApprovementPicaMasterParamsGenerate(params) {
 
             params.search = {
-                'CARNAME': "",
+                'FILTERNIK': $("#FILTERNIK").val(),
+                'FILTERDEPARTMENT': $("#FILTERDEPARTMENT").val(),
+                'FILTERSITE': $("#FILTERSITE").val(),
             };
 
             if (params.sort == undefined) {
@@ -550,7 +696,7 @@
                             $('#reasonRejected').val("");
                             $('#updateProgressHistory').modal("hide");
                             $('#ModalRejectReason').modal("hide");
-                            $('#dataListApprovementStep').bootstrapTable('refresh');
+                            $('#dataListApprovementPicaMaster').bootstrapTable('refresh');
                         })
                     }
                 },
