@@ -343,6 +343,43 @@ class TransactionPicaController extends Controller
         ];
     }
 
+    function changeSolutionPIC(Request $r)
+    {
+        // dd($r);
+        try {
+            DB::table("new_pica_step")
+                ->where([
+                    "id" => $r->id,
+                    "id_master" => $r->id_master,
+                    "nodocpica" => $r->nodocpica,
+                    "nik_master" => $r->nikMaster
+                ])
+                ->update([
+                    'action' => $r->action,
+                    'note_step' => $r->note,
+                    'ap_tod' => $r->ap_pica,
+                    'dic' => $r->dic,
+                    'pic' => $r->pic,
+                    'due_date' => $r->duedate,
+                    'approver' => $r->atasan,
+                    'updated_at' => now(),
+                    'updated_by' => session("user_id"),
+                ]);
+
+            DB::commit();
+            return [
+                'message' => "Solution Tersimpan",
+                'code' => 200
+            ];
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return [
+                'message' => 'Failed to insert records',
+                'code' => 500
+            ];
+        }
+    }
+
     function isValidData($data)
     {
         // Define a pattern that allows only alphanumeric characters and some special characters like spaces, hyphens, underscores, etc.
@@ -540,6 +577,37 @@ class TransactionPicaController extends Controller
                 }
             }
 
+            DB::commit();
+            return [
+                'message' => "Data Tersimpan",
+                'code' => 200
+            ];
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return [
+                'message' => 'Failed to insert records',
+                'code' => 500
+            ];
+        }
+    }
+    function ApproveMasterPica(Request $request)
+    {
+
+        DB::beginTransaction();
+        try {
+            if ($request->hasil == "true") {
+                DB::table("master_pica")->where("nodocpica", $request->id)
+                    ->update([
+                        "approval" => "approved"
+                    ]);
+            } else {
+                DB::table("master_pica")->where("nodocpica", $request->id)
+                    ->update([
+                        "approval" => "rejected",
+                        "keterangan_reject" => "BY " . session("user_id") . " : " . $request->keterangan
+                    ]);
+            }
             DB::commit();
             return [
                 'message' => "Data Tersimpan",
