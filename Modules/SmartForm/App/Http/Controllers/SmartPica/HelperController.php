@@ -333,7 +333,7 @@ class HelperController extends Controller
                         dataProgress dp ON dp.id_solution = step_pica.id
                             AND dp.nodocpica = step_pica.nodocpica
                             AND dp.rn = 1
-                    JOIN master_pica mp ON mp.nodocpica = step_pica.nodocpica where step_pica.pic = '$nik' ";
+                    JOIN master_pica mp ON mp.nodocpica = step_pica.nodocpica and mp.approval = 'approved' where step_pica.pic = '$nik' ";
         $countDataUser = DB::select("select count(*) jumlah FROM new_pica_step where pic = '$nik' ");
         $newQuery = $this->GetQueryDataTableSolutionPica($query, req: $table);
 
