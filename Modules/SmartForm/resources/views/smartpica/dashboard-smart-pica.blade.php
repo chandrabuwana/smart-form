@@ -174,13 +174,13 @@
                                                 required></select>
                                         </div>
                                     </div>
-                                    {{-- <div class="col-md-4">
+                                    <div class="col-md-4">
                                         <div class="input-group select-div input-group-static my-2">
                                             <label for="FILTERDEPARTMENT" class="ms-0">Department </label>
                                             <select class="form-control dept" name="FILTERDEPARTMENT" id="FILTERDEPARTMENT">
                                             </select>
                                         </div>
-                                    </div> --}}
+                                    </div>
                                     <div class="col-md-4">
                                         <div class="input-group select-div input-group-static my-2">
                                             <label for="FILTERSITE" class="ms-0">Site </label>
@@ -498,8 +498,8 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="input-group input-group-static mb-4">
-                                                <label for="tensi">Alasan</label>
-                                                <button class="form-control-button  btn-info btn" type="button">karena
+                                                <label for="alasan">Alasan</label>
+                                                <button class="form-control-button  btn-info btn" id="alasanDiv" type="button">karena
                                                     lapas</button>
                                             </div>
                                         </div>
@@ -774,7 +774,6 @@
                         <i class="fa fa-eye"></i> View
                     </a></button>
                 `
-            console.log(row);
             if (row.nik == $("#UserLoginNIK").val() && (row.approval != "approved")) {
                 data += `<button onclick="redirectToAddStepPica(this)"><a class="like" title="Like">
                         <i class="fa fa-plus"></i> Step
@@ -904,11 +903,11 @@
             let dataHtml = ` <button onclick="OpenModalHistory(this)"><a class="like"  title="Like">
                         <i class="fa fa-eye"></i>
                     </a>View</button>`
-
-            dataHtml += ` <button onclick="openModalChangePIC(this)"><a class="like"  title="Like">
+            if (row.nik_master == $("#UserLoginNIK").val() && (row.acceptance == 2)) {
+                dataHtml += ` <button onclick="openModalChangePIC(this)"><a class="like"  title="Like">
                         <i class="fa fa-pen"></i>
                     </a>Change PIC</button>`
-
+            }
             return dataHtml;
         }
 
@@ -916,6 +915,7 @@
             let indexDt = $(obj).closest('tr').data('index');
             let dataObj = $('#dataListHistoryDashboard').bootstrapTable('getData')[indexDt];
 
+            console.log(dataObj);
             initializeSelect2Department('#dicID', `--- ${dataObj.dic} ---`);
             initializeSelect2('picID', `--- ${dataObj.pic} ---`, "/helper/karyawan", 'dicID');
             initializeSelect2('atasan_ID', `--- ${dataObj.approver} ---`, "/helper/karyawan", 'dicID');
@@ -929,6 +929,11 @@
             $("#id_master").val(dataObj.id_master);
             $("#nodocpica").val(dataObj.nodocpica);
             $("#nikMaster").val(dataObj.nik_master);
+            if(dataObj.acceptance_reason){
+                $("#alasanDiv").html(dataObj.acceptance_reason);
+            }else{
+                $("#alasanDiv").html("-");
+            }
             $("#stepSolutionChangePIC").modal("show");
         }
 
