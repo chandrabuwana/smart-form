@@ -161,21 +161,24 @@ class DashboarController extends Controller
         // $id = 'PICA-2024-07-04-1';
 
         $dataMaster = DB::select("SELECT 
-                                        m.*, 
-                                        kl.kpi, 
-                                        site.Nama AS nama_site, 
-                                        karyawan.nama AS nama_karyawan, 
-                                        k.kp_name 
-                                    FROM 
-                                        master_pica m 
-                                    JOIN 
-                                        SMF_KPI_MASTER kl ON m.id_kpi = kl.kpi_code 
-                                    JOIN 
-                                        HRD.dbo.tsite site ON m.site = site.KodeST 
-                                    JOIN 
-                                        HRD.dbo.TKaryawan karyawan ON karyawan.NIK = m.nik 
-                                    JOIN 
-                                        kategori_problem k ON k.kp_id = m.id_kategory 
+                                            m.*, 
+                                            kl.kpi, 
+                                            site.Nama AS nama_site, 
+                                            karyawan.nama AS nama_karyawan, 
+                                            k.kp_name,
+                                            dep.Nama AS nama_department
+                                        FROM 
+                                            master_pica m 
+                                        JOIN 
+                                            SMF_KPI_MASTER kl ON m.id_kpi = kl.kpi_code 
+                                        JOIN 
+                                            HRD.dbo.tsite site ON m.site = site.KodeST
+                                        JOIN 
+                                        HRD.dbo.tdepartement dep ON m.dept = dep.KodeDP
+                                        JOIN 
+                                            HRD.dbo.TKaryawan karyawan ON karyawan.NIK = m.nik 
+                                        JOIN 
+                                            kategori_problem k ON k.kp_id = m.id_kategory 
                                     WHERE m.nodocpica = '$id'");
 
         $dataPicaW1 = DB::select("select * from pica_why1 w join kategori_problem k on w.id_kategory = k.kp_id where nodocpica = '$id'");

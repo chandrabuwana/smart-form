@@ -105,6 +105,7 @@
             <div class="card my-4">
                 <input type="hidden" name="id_user_login" id="UserLoginNIK" value="{{ session('user_id') }}">
                 <input type="hidden" name="id_user_creator" id="UserCreatorNIK" value="{{ $dataMaster->nik }}">
+                <input type="hidden" name="status_edit" id="status_edit" value="{{ $dataMaster->approval }}">
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                     <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
                         <h6 class="text-white text-capitalize ps-3">Form PICA</h6>
@@ -174,7 +175,15 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-9">
+                                <div class="col-md-4">
+                                    <div class="input-group input-group-static my-4">
+                                        <label for="pc_dept" class="ms-0">Department </label>
+                                        <select class="form-control dept" name="pc_dept" id="pc_dept" disabled>
+                                            <option value="">{{ $dataMaster->nama_department }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
                                     <div class="input-group input-group-static my-2">
                                         <label for="pc_kpi" class="ms-0">Leading KPI </label>
                                         <select class="form-control s2lea" name="pc_kpi" id="pc_kpi" disabled>
@@ -853,7 +862,7 @@
                 $('#treemain').append(dataDIVNode);
             }
 
-            if ($("#UserLoginNIK").val() != $("#UserCreatorNIK").val()) {
+            if ($("#UserLoginNIK").val() != $("#UserCreatorNIK").val() || $("#status_edit").val() == "approved") {
                 $(".hiddenButtonByCreated").addClass("d-none")
             } else {
                 $(".hiddenButtonByCreated").removeClass("d-none")
@@ -1211,9 +1220,8 @@
                                         <div class="col-md-6">
                                             <div class="input-group input-group-static  my-1">
                                                 <label for="pc_aktual_${index}" class="ms-0">Note Step</label>
-                                                <input class="form-control" type="text" inputmode="decimal"
-                                                    placeholder="Masukkan note untuk PIC" value="${e.note_step}" name="pc_aktual_${index}"
-                                                    id="pc_aktual_${index}" disabled>
+                                                <textarea class="form-control" name="pc_problem" value="${e.note_step}" id="pc_aktual_${index}" disabled
+                                                    rows="2" required>${e.note_step}</textarea>
                                             </div>
                                         </div>
                                         <div class="col-2">

@@ -149,7 +149,7 @@ class HelperController extends Controller
             $query = $query . " AND '" . $req->search['FILTERNIK'] . "'  IN (Select PIC from new_pica_step where nodocpica = m.nodocpica) ";
         }
         if (isset($req->search['FILTERDEPARTMENT']) && $req->search['FILTERDEPARTMENT'] != null) {
-            $query = $query . " AND m.site = '" . $req->search['FILTERDEPARTMENT'] . "' ";
+            $query = $query . " AND m.dept = '" . $req->search['FILTERDEPARTMENT'] . "' ";
         }
         if (isset($req->search['FILTERSITE']) && $req->search['FILTERSITE'] != null) {
             $query = $query . " AND m.site = '" . $req->search['FILTERSITE'] . "' ";
