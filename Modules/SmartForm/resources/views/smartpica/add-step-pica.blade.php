@@ -4,8 +4,8 @@
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <style>
         /* .gj-icon {
-                                                                                                                                                                                                                                                                                                                        display: none !important;
-                                                                                                                                                                                                                                                                                                                    } */
+                                                                                                                                                                                                                                                                                                                                        display: none !important;
+                                                                                                                                                                                                                                                                                                                                    } */
 
         /* Hide the datepicker button */
         .gj-datepicker button {
@@ -406,8 +406,8 @@
         function resetFormStep() {
             for (let i = 1; i <= 5; i++) {
                 // Reset select elements
-                $(`#pc_action_${i}`).val('');
-                $(`#pc_aktual_${i}`).val('');
+                $(`#pc_action_${i}`).val("");
+                $(`#pc_aktual_${i}`).val("");
                 $(`#pc_ap_pica_${i}`).val('pc');
                 $(`#dicID_${i}`).val(null).trigger('change');
                 $(`#picID_${i}`).val(null).trigger('change');
@@ -610,12 +610,20 @@
         }
 
         function submitDataStepSolution(key) {
-
             let data = [];
             for (let i = 1; i <= 5; i++) {
                 let action = $(`#pc_action_${i}`).val();
+                if (i == 1 && action.trim() == "") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        text: `Action belum terisi atau Harus mengisikan 1 solution`
+                    })
+                    return false;
+                }
+
                 // Memeriksa apakah action diisi
-                if (action.trim() !== '') {
+                if (action.trim() != '') {
                     console.log($(`#picID_${i}`).val());
                     console.log($(`#hiddenPIC_${i}`).val())
                     let solution = {
