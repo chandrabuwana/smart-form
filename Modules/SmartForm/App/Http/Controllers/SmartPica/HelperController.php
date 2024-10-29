@@ -15,13 +15,27 @@ class HelperController extends Controller
     {
         $data = $d->request->get("query");
         // dd($d->dept);
+       
+        $dataDepartment = "";
+       
         $dataFinal = $this->validateAndSanitizeInput($data);
-        // $dataKPI = DB::select("SELECT TOP(10) k.lea_id AS id, k.lea_name AS name, UPPER(k.lea_hgb) AS status, k.lea_dept AS dept, s.st_name AS satuan FROM kpi_lea k JOIN satuan s ON s.st_id = k.lea_st WHERE k.lea_id LIKE '%$dataFinal%' OR k.lea_name LIKE '%$dataFinal%' OR UPPER(k.lea_hgb) LIKE '%$dataFinal%' OR k.lea_dept LIKE '%$dataFinal%' OR s.st_name LIKE '%$dataFinal%'");
-        $dataKPI = DB::select("SELECT kpi_code id, kpi name, dept, keterangan FROM [SMF_KPI_MASTER] where 
-        dept = '$d->dept' 
-        AND (kpi_code LIKE '%$dataFinal%' 
+
+
+        $query = "SELECT kpi_code id, kpi name, dept, keterangan FROM [SMF_KPI_MASTER] where 
+        (kpi_code LIKE '%$dataFinal%' 
         OR kpi LIKE '%$dataFinal%' 
-        OR keterangan LIKE '%$dataFinal%') ");
+        OR keterangan LIKE '%$dataFinal%') ";
+
+        if($d->dept == "HRD") {
+            $query .= " AND dept in ('IC','GS')";
+        }else{
+            $query .= " AND dept = '$d->dept' ";
+        }
+
+        // $dataKPI = DB::select("SELECT TOP(10) k.lea_id AS id, k.lea_name AS name, UPPER(k.lea_hgb) AS status, k.lea_dept AS dept, s.st_name AS satuan FROM kpi_lea k JOIN satuan s ON s.st_id = k.lea_st WHERE k.lea_id LIKE '%$dataFinal%' OR k.lea_name LIKE '%$dataFinal%' OR UPPER(k.lea_hgb) LIKE '%$dataFinal%' OR k.lea_dept LIKE '%$dataFinal%' OR s.st_name LIKE '%$dataFinal%'");
+        $dataKPI = DB::select($query);
+
+
         $dataJs = [];
         foreach ($dataKPI as $kPI) {
             $dataBaru = [
