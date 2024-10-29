@@ -590,7 +590,7 @@ class TransactionPicaController extends Controller
                 DB::table("master_pica")->where("nodocpica", $request->id)
                     ->update([
                         "approval" => "rejected",
-                        "keterangan_reject" => "BY " . session("user_id") . " : " . $request->keterangan
+                        "keterangan_reject" => "BY " . session("username") . " : " . $request->keterangan
                     ]);
             }
             DB::commit();

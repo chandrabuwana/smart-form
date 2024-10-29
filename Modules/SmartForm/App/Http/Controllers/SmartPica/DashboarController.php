@@ -158,8 +158,6 @@ class DashboarController extends Controller
     function IndexViewDataDetailPica(string $id)
     {
 
-        // $id = 'PICA-2024-07-04-1';
-
         $dataMaster = DB::select("SELECT 
                                             m.*, 
                                             kl.kpi, 

@@ -235,6 +235,17 @@
                                     </div>
                                 </div>
                             </div>
+                            <br>
+                            @if ($dataMaster->approval == 'rejected')
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <button style="text-align: left !important"
+                                            class="form-control-button btn-primary btn" type="button">Revision
+                                            {{ $dataMaster->keterangan_reject }}</button>
+                                    </div>
+                                </div>
+                            @endif
+                            <br>
                         </div>
                         <div class="row">
                             <div class="container-fluid">
