@@ -12,12 +12,12 @@ use Illuminate\Support\Facades\Validator;
 
 class OrderMobileController extends Controller
 {
-    private const TABLE_ORDER_MASTER = 'PICA_BETA.dbo.SCT_GS_CT_ORDER_VNDR';
-    private const TABLE_ORDER_DETAIL = 'PICA_BETA.dbo.SCT_GS_CT_ORDER_DETAIL';
-    private const TABLE_VENDOR_MASTER = 'PICA_BETA.dbo.SCT_GS_VENDOR_MST';
-    private const TABLE_MAPPING_VENDOR = 'PICA_BETA.dbo.SCT_GS_VENDOR_MAPPING';
-    private const TABLE_MAPPING_VENDOR_DAY = 'PICA_BETA.dbo.SCT_GS_VENDOR_MAPPING_DAY';
-    private const TABLE_MESS_MASTER = 'PICA_BETA.dbo.SCT_GS_MESS_MST';
+    private const DB_CONN = 'sqlsrv';
+    private const TABLE_ORDER_MASTER = 'SCT_GS_CT_ORDER_VNDR';
+    private const TABLE_ORDER_DETAIL = 'SCT_GS_CT_ORDER_DETAIL';
+    private const TABLE_VENDOR_MASTER = 'SCT_GS_VENDOR_MST';
+    private const TABLE_MAPPING_VENDOR_DAY = 'SCT_GS_VENDOR_MAPPING_DAY';
+    private const TABLE_MESS_MASTER = 'SCT_GS_MESS_MST';
 
     public function index(Request $request)
     {
@@ -30,10 +30,10 @@ class OrderMobileController extends Controller
         $filterText = $request->get('keyword');
 
         $emailFromToken = $request->get('email_from_token');
-        $user = DB::table(self::TABLE_VENDOR_MASTER)
+        $user = DB::connection(self::DB_CONN)->table(self::TABLE_VENDOR_MASTER)
             ->where('Email', $emailFromToken)->first();
 
-        $data = DB::table(self::TABLE_ORDER_MASTER)
+        $data = DB::connection(self::DB_CONN)->table(self::TABLE_ORDER_MASTER)
             ->select(['id', 'kode_pemesanan', 'jumlah', 'status', 'created_at', 'JenisPemesanan', 'KodeSite', 'TanggalOrder'])
             ->where('VendorID', $user->id)
             ->when($filterStatus, function($q) use($filterStatus) {
@@ -76,7 +76,7 @@ class OrderMobileController extends Controller
         $errorMessage = [];
         $data = null;
 
-        $order = DB::table(self::TABLE_ORDER_MASTER)
+        $order = DB::connection(self::DB_CONN)->table(self::TABLE_ORDER_MASTER)
             ->where('id', $id)->first();
 
         if(!$order) {
@@ -93,7 +93,7 @@ class OrderMobileController extends Controller
             $order->Jam = $matchCreated[0];
             $emailFromToken = $request->get('email_from_token');
 
-            $user = DB::table(self::TABLE_VENDOR_MASTER)
+            $user = DB::connection(self::DB_CONN)->table(self::TABLE_VENDOR_MASTER)
                 ->where('Email', $emailFromToken)->first();
 
             $day = strtr( date('D', strtotime($order->TanggalOrder)), [
@@ -106,7 +106,7 @@ class OrderMobileController extends Controller
                 'Sun' => 'minggu',
             ]);
 
-            $order->details = DB::table(self::TABLE_ORDER_DETAIL)
+            $order->details = DB::connection(self::DB_CONN)->table(self::TABLE_ORDER_DETAIL)
                 ->select(self::TABLE_ORDER_DETAIL . '.id', self::TABLE_MESS_MASTER . '.NamaMess AS lokasi', self::TABLE_ORDER_DETAIL . '.jumlah', self::TABLE_ORDER_DETAIL . '.status', 'file_evidence')
                 ->join(self::TABLE_MAPPING_VENDOR_DAY, self::TABLE_MAPPING_VENDOR_DAY . '.id', '=', self::TABLE_ORDER_DETAIL . '.id_mapping_vendor')
                 ->join(self::TABLE_MESS_MASTER, self::TABLE_MESS_MASTER . '.NoDoc', '=', self::TABLE_ORDER_DETAIL . '.lokasi')
@@ -151,7 +151,7 @@ class OrderMobileController extends Controller
         $errorMessage = [];
         $data = null;
 
-        $order = DB::table(self::TABLE_ORDER_MASTER)
+        $order = DB::connection(self::DB_CONN)->table(self::TABLE_ORDER_MASTER)
             ->where('id', $request->id)->first();
 
         if(count($validator->errors()) > 0) {
@@ -162,7 +162,7 @@ class OrderMobileController extends Controller
         } else {
             try {
                 $emailFromToken = $request->get('email_from_token');
-                $user = DB::table(self::TABLE_VENDOR_MASTER)
+                $user = DB::connection(self::DB_CONN)->table(self::TABLE_VENDOR_MASTER)
                     ->where('Email', $emailFromToken)->first();
 
                 $day = strtr( date('D', strtotime($order->TanggalOrder)), [
@@ -176,14 +176,14 @@ class OrderMobileController extends Controller
                 ]);
 
                 if(!empty($request->id_detail)) {
-                    DB::table(self::TABLE_ORDER_DETAIL)->where('id', $request->id_detail)->update([
+                    DB::connection(self::DB_CONN)->table(self::TABLE_ORDER_DETAIL)->where('id', $request->id_detail)->update([
                         'status' => $request->status,
                     ]);
 
                     if($request->status == 'Selesai') {
                         $filePath = $request->file('file_evidence')->store('catering-evidence');
 
-                        DB::table(self::TABLE_ORDER_DETAIL)
+                        DB::connection(self::DB_CONN)->table(self::TABLE_ORDER_DETAIL)
                             ->where('id', $request->id_detail)
                             ->where('id_order', $order->kode_pemesanan)
                             ->update([
@@ -191,7 +191,7 @@ class OrderMobileController extends Controller
                                 'status' => $request->status
                             ]);
 
-                        $progressItem = DB::table(self::TABLE_ORDER_DETAIL)
+                        $progressItem = DB::connection(self::DB_CONN)->table(self::TABLE_ORDER_DETAIL)
                             ->join(self::TABLE_MAPPING_VENDOR_DAY, self::TABLE_MAPPING_VENDOR_DAY . '.id', '=', 'id_mapping_vendor')
                             ->where('id_order', $order->kode_pemesanan)
                             ->where($day, $user->id)
@@ -199,7 +199,7 @@ class OrderMobileController extends Controller
                             ->where('status', 'Dalam Proses')->count(self::TABLE_ORDER_DETAIL . '.id');
 
                         if($progressItem == 0) {
-                            DB::table(self::TABLE_ORDER_MASTER)
+                            DB::connection(self::DB_CONN)->table(self::TABLE_ORDER_MASTER)
                                 ->where('id', $request->id)
                                 ->update([
                                     'status' => 'Selesai'
@@ -210,14 +210,14 @@ class OrderMobileController extends Controller
                     }
 
                 } else {
-                    DB::table(self::TABLE_ORDER_MASTER)
+                    DB::connection(self::DB_CONN)->table(self::TABLE_ORDER_MASTER)
                         ->where('id', $request->id)
                         ->update([
                             'status' => $request->status
                         ]);
 
                     if($request->status == 'Dalam Proses') {
-                        DB::table(self::TABLE_ORDER_DETAIL)
+                        DB::connection(self::DB_CONN)->table(self::TABLE_ORDER_DETAIL)
                             ->join(self::TABLE_MAPPING_VENDOR_DAY, self::TABLE_MAPPING_VENDOR_DAY . '.id', '=', 'id_mapping_vendor')
                             ->where('id_order', $order->kode_pemesanan)
                             ->where($day, $user->id)

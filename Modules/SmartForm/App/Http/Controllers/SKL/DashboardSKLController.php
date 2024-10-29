@@ -9,6 +9,10 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use App\Helper;
 
 class DashboardSKLController extends Controller
 {
@@ -208,5 +212,88 @@ class DashboardSKLController extends Controller
                 'code' => 500
             ], 500);
         }
+    }
+
+    public function downloadExcel(Request $request)
+    {
+        $userid = session('user_id');
+        $spreadsheet = new Spreadsheet();
+        $worksheet = $spreadsheet->getActiveSheet();
+
+        $departement  = $request->query('departement', '');
+        $site    = $request->query('site', '');
+        $status   = $request->query('status', '');
+        $tanggal   = $request->query('tanggal', '');
+        $offset  = $request->query('offset', 0);
+        $limit   = $request->query('limit', 10);
+
+        $headers = [
+            'No. Form',
+            'Departement',
+            'Site',
+            'Shift',
+            'Nama',
+            'NIK',
+            'Jabatan',
+            // 'Kategori Pekerjaan',
+            // 'Detail Pekerjaan',
+            // 'Jam Mulai',
+            // 'Jam Selesai',
+            // 'Jam Konversi',
+        ];
+
+        foreach(range('A', 'F') as $key => $column) {
+            $worksheet->getColumnDimension($column)->setAutoSize(true);
+
+            $cellStyle = $worksheet->getStyle($column . '1');
+            $cellStyle->getFont()->setBold(true);
+            $cellStyle->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER)->setVertical(Alignment::VERTICAL_CENTER);
+
+            $worksheet->getCell($column . '1')->setValue( $headers[$key] );
+        }
+
+        $qExport = DB::table(self::T_FORM_KARYAWAN)->select(self::T_FORM_MST . '.NoForm', self::T_DEPARTEMENT . '.Nama AS NamaDP', self::T_SITE . '.Nama AS NamaSite', self::T_FORM_MST . '.Shift', self::T_KARYAWAN . '.Nama AS NamaKaryawan', self::T_KARYAWAN . '.NIK', self::T_JABATAN . '.Nama AS NamaJabatan')
+            ->join(self::T_FORM_MST, self::T_FORM_MST . '.NoForm', '=', self::T_FORM_KARYAWAN . '.NoForm')
+            ->join(self::T_SITE, self::T_SITE . '.KodeST', '=', self::T_FORM_MST . '.KodeST')
+            ->join(self::T_DEPARTEMENT, self::T_DEPARTEMENT . '.KodeDP', '=', self::T_FORM_MST . '.KodeDepartement')
+            ->join(self::T_KARYAWAN, self::T_KARYAWAN . '.NIK', '=', self::T_FORM_KARYAWAN . '.NIK')
+            ->join(self::T_JABATAN, self::T_JABATAN . '.KodeJB', '=', self::T_KARYAWAN . '.KodeJB')
+            ->where('created_by', $userid);
+
+        if(!empty($departement)) {
+            $qExport->where(self::T_FORM_MST . '.KodeDepartement', $departement);
+        }
+
+        if(!empty($site)) {
+            $qExport->where(self::T_FORM_MST . '.KodeST', $site);
+        }
+
+        if(!empty($status)) {
+            $qExport->where(self::T_FORM_MST . '.Status', $status);
+        }
+
+        if(!empty($tanggal) && Helper::validateDateFormat('Y-m-d', $tanggal)) {
+            $qExport->whereDate(self::T_FORM_MST . '.TglPelaksanaan', $tanggal);
+        }
+
+        $dataExport = $qExport->orderBy(self::T_FORM_MST . '.created_at', 'DESC')->get();
+        $i = 2;
+
+        foreach($dataExport as $item) {
+            $worksheet->getCell('A' . $i)->setValue($item->NoForm);
+            $worksheet->getCell('B' . $i)->setValue($item->NamaDP);
+            $worksheet->getCell('C' . $i)->setValue($item->NamaSite);
+            $worksheet->getCell('D' . $i)->setValue($item->Shift);
+            $worksheet->getCell('E' . $i)->setValue($item->NamaKaryawan);
+            $worksheet->getCell('F' . $i)->setValue($item->NIK);
+            $worksheet->getCell('F' . $i)->setValue($item->NamaJabatan);
+
+            $i++;
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="test.xlsx"');
+        $writer->save('php://output');
     }
 }

@@ -285,6 +285,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
         Route::get('/get-approver', [SKLFormController::class, 'getApprover'])->name('bss-skl.get-approver');
         Route::get('/detail', [DashboardSKLController::class, 'detail'])->name('bss-skl.detail');
         Route::post('/approval', [DashboardSKLController::class, 'storeApproval'])->name('bss-skl.store-approval');
+        Route::get('/download', [DashboardSKLController::class, 'downloadExcel'])->name('bss-skl.download-excel');
     });
 
 
