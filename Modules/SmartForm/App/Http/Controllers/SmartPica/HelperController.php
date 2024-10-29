@@ -27,7 +27,7 @@ class HelperController extends Controller
         OR keterangan LIKE '%$dataFinal%') ";
 
         if($d->dept == "HRD") {
-            $query .= " AND dept in ('IC','GS')";
+            $query .= " AND dept in ('IC','GS','CVL')";
         }else{
             $query .= " AND dept = '$d->dept' ";
         }
