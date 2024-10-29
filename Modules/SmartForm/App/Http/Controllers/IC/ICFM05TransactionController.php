@@ -162,7 +162,7 @@ class ICFM05TransactionController extends Controller
         }
     }
 
-    public function GetQueryListHasilInduksi(string $query, Request $req)
+    public function GetQueryListHasilInduksi(string $query, Request $req, bool $r)
     {
 
         if (isset($req->search['FILTERNIK']) && $req->search['FILTERNIK'] != null) {
@@ -180,19 +180,23 @@ class ICFM05TransactionController extends Controller
         // if (isset($req->search['FILTERTANGGAL']) && $req->search['FILTERTANGGAL'] != null) {
         //     $query = $query . " AND ms.created_at = '" . $req->search['FILTERTANGGAL'] . "' ";
         // }
+        if ($r) {
+            if ($req->has('sort') && $req->sort != null) {
+                $query .= ' ORDER BY ' . $req->sort . ' ' . ($req->order ?? 'ASC');
+            } else {
+                $query .= ' ORDER BY created_at DESC ';
+            }
 
-        if (isset($req["sort"]) && $req["sort"] != null) {
-            $query = $query . ' ORDER BY ' . $req["sort"] . ' ' . $req["order"];
-        } else {
-            $query = $query . ' ORDER BY created_at DESC ';
+            if ($req->has('offset')) {
+                $query .= ' OFFSET ' . intval($req->offset) . ' ROWS ';
+            }
+            if ($req->has('limit')) {
+                $query .= ' FETCH NEXT ' . intval($req->limit) . ' ROWS ONLY';
+            }
         }
 
-        if ($req["offset"] != null) {
-            $query = $query . ' OFFSET ' . $req["offset"] . ' ROWS ';
-        }
-        if ($req["limit"] != null) {
-            $query = $query . "FETCH NEXT " . $req["limit"] . " ROWS ONLY";
-        }
+
+        // dd($query);
         return $query;
     }
 
@@ -222,11 +226,39 @@ class ICFM05TransactionController extends Controller
                 SELECT *
                 FROM MentorData
                 WHERE 1 = 1 ";
-        $countDataUser = DB::select('select count(*) jumlah FROM FM_IC_005_BSS_LST_GRP');
-        $newQuery = $this->GetQueryListHasilInduksi($query, $table);
 
+        $queryCount = "WITH MentorData AS (
+                    SELECT *, 
+                        (SELECT COUNT(*) 
+                        FROM FM_IC_005_BSS_LST_KRYWN k 
+                        WHERE k.code = grp.code) AS jml_karyawan,
+
+                        (SELECT STUFF((
+                            SELECT DISTINCT ',' + LEFT(index_pertanyaan, CHARINDEX('_', index_pertanyaan) - 1)
+                            FROM FM_IC_005_BSS_DETAIL_INDUKSI d 
+                            WHERE d.group_code = grp.code
+                            FOR XML PATH('')
+                        ), 1, 1, '') AS group_names) AS pertanyaan,
+
+                        (SELECT STUFF((
+                            SELECT DISTINCT ',' + mentor 
+                            FROM FM_IC_005_BSS_DETAIL_INDUKSI d 
+                            WHERE d.group_code = grp.code
+                            FOR XML PATH('')
+                        ), 1, 1, '') AS mentors) AS mentor_names
+                    FROM FM_IC_005_BSS_LST_GRP grp
+                )
+                SELECT count(*) as jumlah
+                FROM MentorData
+                WHERE 1 = 1 ";
+
+
+        $newQuery = $this->GetQueryListHasilInduksi($query, $table, true);
+        $newQueryCount = $this->GetQueryListHasilInduksi($queryCount, $table, false);
+        // dd($newQueryCount);
+        $countDataUser = DB::select($newQueryCount);
         $dataUser = DB::select($newQuery);
-
+        // dd($dataUser);
         return response()->json([
             'total' => $countDataUser[0]->jumlah,
             'totalNotFiltered' => $countDataUser[0]->jumlah,
