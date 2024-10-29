@@ -174,6 +174,9 @@ class ICFM05TransactionController extends Controller
         if (isset($req->search['FILTERNIKMENTOR']) && $req->search['FILTERNIKMENTOR'] != null) {
             $query = $query . " AND mentor_names like  '%" . $req->search['FILTERNIKMENTOR'] . "%'";
         }
+        if (isset($req->search['FILTERSITE']) && $req->search['FILTERSITE'] != null) {
+            $query = $query . " AND site like  '%" . $req->search['FILTERSITE'] . "%'";
+        }
         // if (isset($req->search['FILTERTANGGAL']) && $req->search['FILTERTANGGAL'] != null) {
         //     $query = $query . " AND ms.created_at = '" . $req->search['FILTERTANGGAL'] . "' ";
         // }
