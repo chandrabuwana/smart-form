@@ -142,7 +142,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/import-mapping-gs', [SmartCateringController::class, 'viewImportMappingGS'])->name('view-import-mapping-gs-catering');
             Route::post('/import-mapping-gs/store', [SmartCateringController::class, 'importMappingGS'])->name('import-mapping-gs-catering');
 
-            Route::prefix('mess')->group(function () {
+            Route::prefix('mess')->group( function() {
                 Route::post('/add-mess', [MessController::class, 'AddMess'])->name('add-mess');
                 Route::post('/add-kamar', [MessController::class, 'AddKamar'])->name('add-kamar');
                 Route::post('/add-penghuni', [MessController::class, 'AddPenghuniMess'])->name('add-penghuni');
@@ -219,6 +219,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
         Route::get('/data-history-progress', [HelperController::class, 'HelperDataTableHistoryProgressPica']);
         Route::get('/data-dashboard-history-progress', [HelperController::class, 'HelperDataTableDashboardHistoryProgressPica']);
         Route::get('/data-approvement-step-pica', [HelperController::class, 'HelperDataTableApprovementStepPica']);
+        Route::get('/data-approvement-master-pica', [HelperController::class, 'HelperDataTableApprovementMasterPica']);
     });
 
     Route::prefix('role-management')->group(function () {
@@ -261,10 +262,16 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
 
         Route::post('/add-transaction', [TransactionPicaController::class, 'AddDataTransactionPica']);
         Route::post('/add-step-transaction', [TransactionPicaController::class, 'addDataStepTransactionPica']);
+        Route::post('/change-pic-solution', [TransactionPicaController::class, 'changeSolutionPIC']);
         Route::post('/add-progress-history-transaction', [TransactionPicaController::class, 'addTransactionProgressStepSolutionPica']);
         Route::post('/deleted-progress-history-transaction', [TransactionPicaController::class, 'deleteTransactionProgressStepSolutionPica']);
         Route::post('/change-acceptance', [TransactionPicaController::class, 'changeAcceptanceStepSolutionPica']);
         Route::post('/approve-task-closing', [TransactionPicaController::class, 'ApproveClosingTask']);
+        Route::post('/approve-pica-master', [TransactionPicaController::class, 'ApproveMasterPica']);
+        Route::post('/update-master-pica', [TransactionPicaController::class, 'UpdateMasterPica']);
+        Route::post('/add-why-spesific-data', [TransactionPicaController::class, 'AddWhySpesificData']);
+        Route::post('/edit-why-spesific-data', [TransactionPicaController::class, 'EditWhySpesificData']);
+        Route::post('/check-data-step', [TransactionPicaController::class, 'checkDataStep']);
 
     });
 

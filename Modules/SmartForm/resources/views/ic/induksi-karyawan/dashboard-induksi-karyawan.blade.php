@@ -14,7 +14,7 @@
                     </div>
                 </div>
                 <div class="card-header"
-                    style="margin : 10px;border-radius: 10px; background-color: rgba(209, 209, 209, 0.301); color:white !important;">
+                    style="margin : 10px;border-radius: 10px; background-color: rgba(209, 209, 209, 0.301);">
                     <div class="row">
                         <div class="col">
                             <h6 class="card-title">Filter</h6>
@@ -39,6 +39,13 @@
                                         <label for="FILTERNAMA">Nama</label>
                                         <input type="text" class="form-control" id="FILTERNAMA" name="FILTERNAMA"
                                             maxlength="7" placeholder="-- Masukkan Nama Karyawan Induksi -- ">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="input-group select-div input-group-static my-2">
+                                        <label for="FILTERSITE" class="ms-0">Site </label>
+                                        <select class="form-control site" name="FILTERSITE" id="FILTERSITE">
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-md-2">
@@ -372,6 +379,7 @@
                 'FILTERNAMA': $('#FILTERNAMA').val(),
                 'FILTERTANGGAL': $('#FILTERTANGGAL').val(),
                 'FILTERNIKMENTOR': $('#FILTERNIKMENTOR').val(),
+                'FILTERSITE': $('#FILTERSITE').val(),
             };
 
             if (params.sort == undefined) {
@@ -447,5 +455,36 @@
         function TiggerBukaModalUntukDownlaodPDF() {
             $('#ModalUntukDownload').modal("show");
         }
+    </script>
+    <script type="text/javascript">
+        function initializeSelect2Site(elementId) {
+            $(elementId).select2({
+                theme: 'bootstrap-5', // Menggunakan tema Bootstrap 5
+                dropdownParent: $(elementId).closest('.input-group'),
+                placeholder: '--- Cari Site ---',
+                ajax: {
+                    url: "/helper/site",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    type: "post",
+                    delay: 250,
+                    dataType: 'json',
+                    data: function(params) {
+                        return {
+                            _token: "{{ csrf_token() }}",
+                            query: params.term, // search term
+                        };
+                    },
+                    processResults: function(response) {
+                        return {
+                            results: response.data
+                        };
+                    },
+                    cache: true
+                }
+            });
+        }
+        initializeSelect2Site('#FILTERSITE');
     </script>
 @endsection

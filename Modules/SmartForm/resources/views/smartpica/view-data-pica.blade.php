@@ -103,6 +103,9 @@
     <div class="row">
         <div class="col-12">
             <div class="card my-4">
+                <input type="hidden" name="id_user_login" id="UserLoginNIK" value="{{ session('user_id') }}">
+                <input type="hidden" name="id_user_creator" id="UserCreatorNIK" value="{{ $dataMaster->nik }}">
+                <input type="hidden" name="status_edit" id="status_edit" value="{{ $dataMaster->approval }}">
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                     <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
                         <h6 class="text-white text-capitalize ps-3">Form PICA</h6>
@@ -172,7 +175,15 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-9">
+                                <div class="col-md-4">
+                                    <div class="input-group input-group-static my-4">
+                                        <label for="pc_dept" class="ms-0">Department </label>
+                                        <select class="form-control dept" name="pc_dept" id="pc_dept" disabled>
+                                            <option value="">{{ $dataMaster->nama_department }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
                                     <div class="input-group input-group-static my-2">
                                         <label for="pc_kpi" class="ms-0">Leading KPI </label>
                                         <select class="form-control s2lea" name="pc_kpi" id="pc_kpi" disabled>
@@ -224,6 +235,17 @@
                                     </div>
                                 </div>
                             </div>
+                            <br>
+                            @if ($dataMaster->approval == 'rejected')
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <button style="text-align: left !important"
+                                            class="form-control-button btn-primary btn" type="button">Revision
+                                            {{ $dataMaster->keterangan_reject }}</button>
+                                    </div>
+                                </div>
+                            @endif
+                            <br>
                         </div>
                         <div class="row">
                             <div class="container-fluid">
@@ -233,7 +255,8 @@
                                             <div class="" style="padding-top: 100px">
                                                 <div id="treemain">
                                                     <div id="node_0" class="window hidden" data-id="0"
-                                                        data-parent="" data-first-child="1" data-next-sibling="" style="font-size: 1.5vw">
+                                                        data-parent="" data-first-child="1" data-next-sibling=""
+                                                        style="font-size: 1.5vw">
                                                         {{ $dataMaster->problem }}
                                                     </div>
                                                 </div>
@@ -283,6 +306,133 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="ModalAddDataWhy" aria-hidden="true" aria-labelledby="exampleModalToggleLabel"
+        tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="row">
+                        <div class="col">
+                            <h5 class="modal-title center" id="exampleModalToggleLabel">Masukkan Why</h5>
+                            <p id="ProblemHeader"></p>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
+                </div>
+                <div class="row" style="margin: 10px">
+                    <div class="col">
+                        <div class="card border" style="">
+                            <input type="hidden" id="id">
+                            <input type="hidden" id="identity">
+                            <input type="hidden" id="master">
+                            <input type="hidden" id="nodocpica">
+                            <input type="hidden" id="nik">
+                            <input type="hidden" id="w1">
+                            <input type="hidden" id="w2">
+                            <input type="hidden" id="w3">
+                            <input type="hidden" id="w4">
+                            <div class="card-body">
+                                <h5 class="card-title">Penambahan WHY</h5>
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="input-group input-group-static my-4">
+                                            <label for="pc_why" class="ms-0">Problem Statement </label>
+                                            <textarea class="form-control" name="pc_why" placeholder="-- Masukkan Problem --" id="pc_why" rows="3"
+                                                required></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="input-group input-group-static my-4">
+                                            <label class="ms-0" for="pc_kategori">Kategori Problem </label>
+                                            <select class="form-control" name="pc_kategori" id="pc_kategori" required>
+                                                <option value="">-- Pilih Kategori Problem --</option>
+                                                @foreach ($dataKategory as $d)
+                                                    <option value="{{ $d['id'] }}">{{ $d['text'] }}</option>
+                                                @endForeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="d-flex align-items-center">
+                                <button class="btn btn-primary ms-auto uploadBtn" id="buttonSubmitDataPICA"
+                                    style="margin : 20px" onclick="SaveDataAddWhy()">
+                                    <i class="fas fa-save"></i>
+                                    Save Data</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="ModalUpdateWhy" aria-hidden="true" aria-labelledby="exampleModalToggleLabel"
+        tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="row">
+                        <div class="col">
+                            <h5 class="modal-title center" id="exampleModalToggleLabel">Masukkan Why</h5>
+                            <p id="ProblemHeaderUpdate"></p>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
+                </div>
+                <div class="row" style="margin: 10px">
+                    <div class="col">
+                        <div class="card border" style="">
+                            <input type="hidden" id="update_id">
+                            <input type="hidden" id="update_identity">
+                            <input type="hidden" id="update_master">
+                            <input type="hidden" id="update_nodocpica">
+                            <input type="hidden" id="update_nik">
+                            <input type="hidden" id="update_w1">
+                            <input type="hidden" id="update_w2">
+                            <input type="hidden" id="update_w3">
+                            <input type="hidden" id="update_w4">
+                            <div class="card-body">
+                                <h5 class="card-title">Edit WHY</h5>
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="input-group input-group-static my-4">
+                                            <label for="update_pc_why" class="ms-0">Problem Statement </label>
+                                            <textarea class="form-control" name="update_pc_why" placeholder="-- Masukkan Problem --" id="update_pc_why"
+                                                rows="3" required></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="input-group input-group-static my-4">
+                                            <label class="ms-0" for="update_pc_kategori">Kategori Problem </label>
+                                            <select class="form-control" name="update_pc_kategori"
+                                                id="update_pc_kategori" required>
+                                                <option value="">-- Pilih Kategori Problem --</option>
+                                                @foreach ($dataKategory as $d)
+                                                    <option value="{{ $d['id'] }}">{{ $d['text'] }}</option>
+                                                @endForeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="d-flex align-items-center">
+                                <button class="btn btn-primary ms-auto uploadBtn" id="buttonSubmitDataPICA"
+                                    style="margin : 20px" onclick="SaveDataUpdateWhy()">
+                                    <i class="fas fa-save"></i>
+                                    Save Data</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('custom-js')
@@ -329,311 +479,7 @@
             });
         });
     </script>
-    <script type="text/javascript">
-        function SubmitAllDataWhy() {
-            let getAllDataWhy1 = [];
-            let isValid = true;
-            let errorMessage = '';
 
-            for (let i = 1; i <= listOFWhy1.length; i++) {
-                let masalah = $(`#input-m-w1-${i}`).val();
-                let kategory = $(`#input-k-w1-${i}`).val();
-                let data = {
-                    w1: i,
-                    masalah: masalah,
-                    kategori: kategory
-                }
-                getAllDataWhy1.push(data);
-
-                if (masalah === '') {
-                    isValid = false;
-                    errorMessage += `Masalah for W1-${i} is .<br>`;
-                }
-
-                if (kategory === '') {
-                    isValid = false;
-                    errorMessage += `Kategori for W1-${i} is .<br>`;
-                }
-            }
-
-            let getAllDataWhy2 = listOFWhy2.map(item => {
-                let w1 = item.w1;
-                let position = item.position;
-                let masalah = $(`#input-m-${w1}-w2-${position}`).val().trim();
-                let kategori = $(`#input-k-${w1}-w2-${position}`).val().trim();
-
-                if (masalah === '') {
-                    isValid = false;
-                    errorMessage += `Masalah for W1-${w1} W2-${position} is .<br>`;
-                }
-
-                if (kategori === '') {
-                    isValid = false;
-                    errorMessage += `Kategori for W1-${w1} W2-${position} is .<br>`;
-                }
-
-                return {
-                    w1: w1,
-                    w2: position,
-                    masalah: masalah,
-                    kategori: kategori
-                };
-            });
-
-            let getAllDataWhy3 = listOFWhy3.map(item => {
-                let w1 = item.w1;
-                let w2 = item.w2;
-                let position = item.position;
-                let masalah = $(`#input-m-${w1}-${w2}-w3-${position}`).val().trim();
-                let kategori = $(`#input-k-${w1}-${w2}-w3-${position}`).val().trim();
-
-                if (masalah === '') {
-                    isValid = false;
-                    errorMessage += `Masalah for W1-${w1} W2-${w2} W3-${position} is .<br>`;
-                }
-
-                if (kategori === '') {
-                    isValid = false;
-                    errorMessage += `Kategori for W1-${w1} W2-${w2} W3-${position} is .<br>`;
-                }
-
-                return {
-                    w1: w1,
-                    w2: w2,
-                    w3: position,
-                    masalah: masalah,
-                    kategori: kategori
-                };
-            });
-
-            let getAllDataWhy4 = listOFWhy4.map(item => {
-                let w1 = item.w1;
-                let w2 = item.w2;
-                let w3 = item.w3;
-                let position = item.position;
-                let masalah = $(`#input-m-${w1}-${w2}-${w3}-w4-${position}`).val().trim();
-                let kategori = $(`#input-k-${w1}-${w2}-${w3}-w4-${position}`).val().trim();
-
-                if (masalah === '') {
-                    isValid = false;
-                    errorMessage += `Masalah for W1-${w1} W2-${w2} W3-${w3} W4-${position} is .<br>`;
-                }
-
-                if (kategori === '') {
-                    isValid = false;
-                    errorMessage += `Kategori for W1-${w1} W2-${w2} W3-${w3} W4-${position} is .<br>`;
-                }
-
-                return {
-                    w1: w1,
-                    w2: w2,
-                    w3: w3,
-                    w4: position,
-                    masalah: masalah,
-                    kategori: kategori
-                };
-            });
-
-            let getAllDataWhy5 = listOFWhy5.map(item => {
-                let w1 = item.w1;
-                let w2 = item.w2;
-                let w3 = item.w3;
-                let w4 = item.w4;
-                let position = item.position;
-                let masalah = $(`#input-m-${w1}-${w2}-${w3}-${w4}-w5-${position}`).val().trim();
-                let kategori = $(`#input-k-${w1}-${w2}-${w3}-${w4}-w5-${position}`).val().trim();
-
-                if (masalah === '') {
-                    isValid = false;
-                    errorMessage +=
-                        `Masalah for W1-${w1} W2-${w2} W3-${w3} W4-${w4} W5-${position} is .<br>`;
-                }
-
-                if (kategori === '') {
-                    isValid = false;
-                    errorMessage +=
-                        `Kategori for W1-${w1} W2-${w2} W3-${w3} W4-${w4} W5-${position} is .<br>`;
-                }
-
-                return {
-                    w1: w1,
-                    w2: w2,
-                    w3: w3,
-                    w4: w4,
-                    w5: position,
-                    masalah: masalah,
-                    kategori: kategori
-                };
-            });
-
-
-
-            let pc_thn = $('#pc_thn').val();
-            let pc_bln = $('#pc_bln').val();
-            let pc_week = $('#pc_week').val();
-            let pc_site = $('#pc_site').val();
-            let pc_kpi = $('#pc_kpi').val();
-            let pc_aktual = $('#pc_aktual').val();
-            let pc_target = $('#pc_target').val();
-            let pc_ap_pica = $('select[name="pc_ap_pica"]').val();
-            let pc_problem = $('#pc_problem').val();
-            let pc_kp = $('#pc_kp').val();
-            let pc_es = $('#pc_es').val();
-
-            // Helper function to validate and highlight
-            function validateField(field, fieldName, fieldLabel) {
-                if (field === '') {
-                    isValid = false;
-                    errorMessage += `${fieldLabel} is .<br>`;
-                }
-            }
-
-            validateField(pc_thn, 'pc_thn', 'Tahun');
-            validateField(pc_bln, 'pc_bln', 'Bulan');
-            validateField(pc_week, 'pc_week', 'Minggu');
-            validateField(pc_site, 'pc_site', 'Site');
-            validateField(pc_kpi, 'pc_kpi', 'KPI');
-            validateField(pc_aktual, 'pc_aktual', 'Aktual');
-            validateField(pc_target, 'pc_target', 'Target');
-            validateField(pc_ap_pica, 'pc_ap_pica', 'AP PICA');
-            validateField(pc_problem, 'pc_problem', 'Problem');
-            validateField(pc_kp, 'pc_kp', 'Kategori Problem');
-            validateField(pc_es, 'pc_es', 'Estimated Solution');
-
-            if (!isValid) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Validation Error',
-                    html: errorMessage,
-                    confirmButtonText: 'OK'
-                });
-            }
-
-
-            let dataKirim = {
-                dataMaster: {
-                    tahun: pc_thn,
-                    bulan: pc_bln,
-                    week: pc_week,
-                    site: pc_site,
-                    lead_kpi: pc_kpi,
-                    actual: pc_aktual,
-                    target: pc_target,
-                    ap_pica: pc_ap_pica,
-                    problem: pc_problem,
-                    kategori: pc_kp,
-                    estimasi_pica: pc_es,
-                },
-                dataWhy1: getAllDataWhy1,
-                dataWhy2: getAllDataWhy2,
-                dataWhy3: getAllDataWhy3,
-                dataWhy4: getAllDataWhy4,
-                dataWhy5: getAllDataWhy5,
-            };
-
-            $.ajax({
-                type: 'post',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                url: "/add-transaction",
-                data: dataKirim,
-                dataType: 'json',
-                success: function(response) {
-                    if (response.code == 200) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Berhasil!',
-                            text: response.message,
-                        }).then((result) => {
-                            reset();
-                            window.location.href = `/smart-pica/create-step/${response.nodoc}`;
-                        })
-                    }
-                },
-                error: function(xhr, ajaxOptions, thrownError) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'thrownError',
-                        html: errorMessage,
-                        confirmButtonText: 'OK'
-                    });
-                    console.log()
-                }
-            })
-
-
-        }
-
-        function reset() {
-            $('#pc_thn').prop('selectedIndex', 0);
-
-            $('#pc_bln').prop('selectedIndex', 0);
-
-            $('#pc_week').prop('selectedIndex', 0);
-
-            $('#pc_site').val(null).trigger('change');
-
-            $('#pc_kpi').val(null).trigger('change');
-
-            $('#pc_aktual').val('');
-
-            $('#pc_target').val('');
-
-            $('#pc_ap_pica').prop('selectedIndex', 0);
-
-            $('#pc_problem').val('');
-
-            $('#pc_kp').prop('selectedIndex', 0);
-
-            let dataHTMLBaru = `
-            <div class="row rw-1 " style="margin:3em; font-size:11px;">
-                <div class="col cl-1 master" style="margin: 0px !important">
-                    <div class="row row-cols-6 r1">
-                        <div class="col-2">
-                            <fieldset style="margin: 30px">
-                                <legend style="width: auto">Why 1</legend>
-                                <div class="row">
-                                    <div class="col-5">
-                                        <div class="input-group input-group-static my-4">
-                                            <label class="ms-0" for="input-why">Why 1 - 1</label>
-                                            <textarea type="textarea" id="input-why" rows="1" class="form-control"></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="col-5">
-                                        <div class="input-group input-group-static my-4">
-                                            <label for="input-kategori" class="ms-0 kategory-why">Kategori </label>
-                                            <select class="form-control" name="input-kategori"  >
-                                                <option value="">-- Pilih Kategori --</option>
-                                                ${optionsHtml}
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-2 d-flex justify-content-center align-items-center">
-                                        <button type="button" onclick="AddWhy2(1,1)" class="btn btn-primary">Why2</button>
-                                    </div>
-                                </div>
-                            </fieldset>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row rw-1 " style="margin:3em; font-size:11px;">
-                <div class="col-5 d-flex justify-content-start align-items-left">
-                    <button type="button" class="btn btn-primary" onclick="AddWhy1()">Why1</button>
-                </div>
-            </div>`
-            listOFWhy1 = [1];
-            listOFWhy2 = [];
-            listOFWhy3 = [];
-            listOFWhy4 = [];
-            listOFWhy5 = [];
-            initialWhy1 = 1;
-            rowCount = 1;
-
-            $('#dataWHYYYYY').html(dataHTMLBaru);
-        }
-    </script>
     <script type="text/javascript">
         $(document).ready(function() {
             var targetString = "smart-pica/view-data-detail-pica";
@@ -664,6 +510,13 @@
     </script>
 
     <script type="text/javascript">
+        var urutan_node = 1;
+        var dataUrutanDivWhy1 = [];
+        var dataUrutanDivWhy2 = [];
+        var dataUrutanDivWhy3 = [];
+        var dataUrutanDivWhy4 = [];
+        var dataUrutanDivWhy5 = [];
+
         function findPosition(params, ...dataSets) {
             for (let data of dataSets) {
                 let result = data.find(item => {
@@ -680,21 +533,19 @@
         function checkStep(id, identity, solution) {
             return solution.some(obj => obj.identity_why === identity && obj.position_why === id);
         }
+
         $(document).ready(function() {
-            $('#scrollableDiv').scrollTop(0).scrollLeft(0);
+            window.onload = function() {
+                window.scrollTo(0, scrollPosition);
+            };
+            // $('#scrollableDiv').scrollTop(0).scrollLeft(0);
             let dataWhy1 = <?php echo json_encode($dataPicaW1); ?>;
             let dataWhy2 = <?php echo json_encode($dataPicaW2); ?>;
             let dataWhy3 = <?php echo json_encode($dataPicaW3); ?>;
             let dataWhy4 = <?php echo json_encode($dataPicaW4); ?>;
             let dataWhy5 = <?php echo json_encode($dataPicaW5); ?>;
             var solution = <?php echo json_encode($solution); ?>;
-            // console.log(solution);
-            var urutan_node = 1;
-            var dataUrutanDivWhy1 = [];
-            var dataUrutanDivWhy2 = [];
-            var dataUrutanDivWhy3 = [];
-            var dataUrutanDivWhy4 = [];
-            var dataUrutanDivWhy5 = [];
+
 
             for (let i = 0; i < dataWhy1.length; i++) {
                 let dataDIVNode = `
@@ -710,6 +561,9 @@
                     </div>
                     <div class="row" style="margin: 10px">
                         <div class="col-12">
+                            <input type="hidden" id="identity_why${urutan_node}" value="${dataWhy1[i].identity}" />
+                             <input type="hidden" id="id_why${urutan_node}" value="${dataWhy1[i].id}" />
+                                <input type="hidden" id="idMaster_why${urutan_node}" value="${dataWhy1[i].id_master}" />
                             <div class="row">
                                 <div class="input-group input-group-static">
                                     <label for="input-why">-- WHY -- </label>
@@ -718,8 +572,15 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row justify-content-end" style="margin: 10px">
-                        <div class="col-3">
+                    <div class="row">
+                        <div class="col-sm-5">
+                            <button class="hiddenButtonByCreated" id="button_delete_${urutan_node}" onclick="DeleteStep('${urutan_node}')" style="background-color:black; color:white;">Delete Child</button>
+                            <button class="hiddenButtonByCreated" id="button_edit_${urutan_node}" onclick="UpdateStep(${dataWhy1[i].id},${dataWhy1[i].identity},'${dataWhy1[i].nodocpica}', '${ dataWhy1[i].id_kategory }', '${ dataWhy1[i].why }')" style="background-color:black; color:white;">Update</button>
+                        </div>
+                        <div class="col-sm-4">
+                            <button class="hiddenButtonByCreated" onclick="addWhy(${dataWhy1[i].id},${dataWhy1[i].identity}, ${dataWhy1[i].id_master}, '${dataWhy1[i].nodocpica}', ${dataWhy1[i].nik_master}, ${dataWhy1[i].index_w1},0,0,0)" style="background-color:black; color:white;">Add Why 2</button>
+                        </div>
+                        <div class="col-sm-3">
                             <button id="button_${urutan_node}" onclick="modalViewStep(${dataWhy1[i].id},${dataWhy1[i].identity})" style="background-color:black; color:white;">Solution</button>
                         </div>
                     </div>
@@ -762,6 +623,9 @@
                         </div>
                         <div class="row" style="margin: 10px">
                             <div class="col-12">
+                                <input type="hidden" id="identity_why${urutan_node}" value="${dataWhy2[i].identity}" />
+                                 <input type="hidden" id="id_why${urutan_node}" value="${dataWhy2[i].id}" />
+                                <input type="hidden" id="idMaster_why${urutan_node}" value="${dataWhy2[i].id_master}" />
                                 <div class="row">
                                     <div class="input-group input-group-static">
                                         <label for="input-why">-- WHY -- </label>
@@ -770,8 +634,15 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row justify-content-end" style="margin: 10px">
-                            <div class="col-3">
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <button class="hiddenButtonByCreated" id="button_delete_${urutan_node}" onclick="DeleteStep('${urutan_node}')" style="background-color:black; color:white;">Delete Child</button>
+                                <button class="hiddenButtonByCreated" id="button_edit_${urutan_node}" onclick="UpdateStep(${dataWhy2[i].id},${dataWhy2[i].identity},'${dataWhy2[i].nodocpica}', '${ dataWhy2[i].id_kategory }', '${ dataWhy2[i].why }')" style="background-color:black; color:white;">Update</button>
+                            </div>
+                            <div class="col-sm-4">
+                                <button class="hiddenButtonByCreated" onclick="addWhy(${dataWhy2[i].id},${dataWhy2[i].identity}, ${dataWhy2[i].id_master}, '${dataWhy2[i].nodocpica}', ${dataWhy2[i].nik_master}, ${dataWhy2[i].index_w1}, ${dataWhy2[i].index_w2},0,0)" style="background-color:black; color:white;">Add Why 3</button>
+                            </div>
+                            <div class="col-sm-3">
                                 <button id="button_${urutan_node}" class="${statusLast ? "" : "d-none"}" onclick="modalViewStep(${dataWhy2[i].id},${dataWhy2[i].identity})" style="background-color:black; color:white;">Solution</button>
                             </div>
                         </div>
@@ -786,8 +657,6 @@
                 dataUrutanDivWhy2.push(dataTMPDIVPosition);
                 $('#treemain').append(dataDIVNode);
             }
-
-
 
             var dataBaruW1 = 0;
             var dataBaruW2 = 0;
@@ -820,6 +689,9 @@
                         </div>
                         <div class="row" style="margin: 10px">
                             <div class="col-12">
+                                <input type="hidden" id="identity_why${urutan_node}" value="${dataWhy3[i].identity}" />
+                                 <input type="hidden" id="id_why${urutan_node}" value="${dataWhy3[i].id}" />
+                                <input type="hidden" id="idMaster_why${urutan_node}" value="${dataWhy3[i].id_master}" />
                                 <div class="row">
                                     <div class="input-group input-group-static">
                                         <label for="input-why">-- WHY -- </label>
@@ -828,8 +700,15 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row justify-content-end" style="margin: 10px">
-                            <div class="col-3">
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <button class="hiddenButtonByCreated" id="button_delete_${urutan_node}" onclick="DeleteStep('${urutan_node}')" style="background-color:black; color:white;">Delete Child</button>
+                                <button class="hiddenButtonByCreated" id="button_edit_${urutan_node}" onclick="UpdateStep(${dataWhy3[i].id},${dataWhy3[i].identity},'${dataWhy3[i].nodocpica}', '${ dataWhy3[i].id_kategory }', '${ dataWhy3[i].why }')" style="background-color:black; color:white;">Update</button>
+                            </div>
+                            <div class="col-sm-4">
+                                <button class="hiddenButtonByCreated" onclick="addWhy(${dataWhy3[i].id},${dataWhy3[i].identity}, ${dataWhy3[i].id_master}, '${dataWhy3[i].nodocpica}', ${dataWhy3[i].nik_master}, ${dataWhy3[i].index_w1}, ${dataWhy3[i].index_w2},${dataWhy3[i].index_w3}, 0)" style="background-color:black; color:white;">Add Why 4</button>
+                            </div>
+                            <div class="col-sm-3">
                                 <button id="button_${urutan_node}" class="${statusLast ? "" : "d-none"}" onclick="modalViewStep(${dataWhy3[i].id},${dataWhy3[i].identity})" style="background-color:black; color:white;">Solution</button>
                             </div>
                         </div>
@@ -882,6 +761,9 @@
                         </div>
                         <div class="row" style="margin: 10px">
                             <div class="col-12">
+                                <input type="hidden" id="identity_why${urutan_node}" value="${dataWhy4[i].identity}" />
+                                <input type="hidden" id="id_why${urutan_node}" value="${dataWhy4[i].id}" />
+                                <input type="hidden" id="idMaster_why${urutan_node}" value="${dataWhy4[i].id_master}" />
                                 <div class="row">
                                     <div class="input-group input-group-static">
                                         <label for="input-why">-- WHY -- </label>
@@ -890,8 +772,15 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row justify-content-end" style="margin: 10px">
-                            <div class="col-3">
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <button id="button_delete_${urutan_node}" class="hiddenButtonByCreated" onclick="DeleteStep('${urutan_node}')" style="background-color:black; color:white;">Delete Child</button>
+                                <button id="button_edit_${urutan_node}" class="hiddenButtonByCreated" onclick="UpdateStep(${dataWhy4[i].id},${dataWhy4[i].identity},'${dataWhy4[i].nodocpica}', '${ dataWhy4[i].id_kategory }', '${ dataWhy4[i].why }')" style="background-color:black; color:white;">Update</button>
+                            </div>
+                            <div class="col-sm-4">
+                                <button class="hiddenButtonByCreated" onclick="addWhy(${dataWhy4[i].id},${dataWhy4[i].identity}, ${dataWhy4[i].id_master}, '${dataWhy4[i].nodocpica}', ${dataWhy4[i].nik_master}, ${dataWhy4[i].index_w1}, ${dataWhy4[i].index_w2},${dataWhy4[i].index_w3}, ${dataWhy4[i].index_w4})" style="background-color:black; color:white;">Add Why 5</button>
+                            </div>
+                            <div class="col-sm-3">
                                 <button id="button_${urutan_node}" class="${statusLast ? "" : "d-none"}" onclick="modalViewStep(${dataWhy4[i].id},${dataWhy4[i].identity})" style="background-color:black; color:white;">Solution</button>
                             </div>
                         </div>
@@ -949,6 +838,9 @@
                         </div>
                         <div class="row" style="margin: 10px">
                             <div class="col-12">
+                                <input type="hidden" id="identity_why${urutan_node}" value="${dataWhy5[i].identity}" />
+                                <input type="hidden" id="id_why${urutan_node}" value="${dataWhy5[i].id}" />
+                                <input type="hidden" id="idMaster_why${urutan_node}" value="${dataWhy5[i].id_master}" />
                                 <div class="row">
                                     <div class="input-group input-group-static">
                                         <label for="input-why">-- WHY -- </label>
@@ -957,19 +849,22 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row justify-content-end" style="margin: 10px">
-                            <div class="col-3">
-                                <button id="button_${urutan_node}" class="${statusLast ? "" : "d-none"}" onclick="modalViewStep(${dataWhy4[i].id},${dataWhy4[i].identity})" style="background-color:black; color:white;">Solution</button>
+                        <div class="row">
+                            <div class="col-sm-5 ">
+                                <button class="hiddenButtonByCreated" id="button_edit_${urutan_node}" onclick="UpdateStep(${dataWhy5[i].id},${dataWhy5[i].identity},'${dataWhy5[i].nodocpica}', '${ dataWhy5[i].id_kategory }', '${ dataWhy5[i].why }')" style="background-color:black; color:white;">Update</button>
+                            </div>
+                            <div class="col-sm-3">
+                                <button id="button_${urutan_node}" class="${statusLast ? "" : "d-none"}" onclick="modalViewStep(${dataWhy5[i].id},${dataWhy5[i].identity})" style="background-color:black; color:white;">Solution</button>
                             </div>
                         </div>
                     </div>
                 `;
 
                 let dataTMPDIVPosition = {
-                    w1: dataWhy4[i].index_w1,
-                    w2: dataWhy4[i].index_w2,
-                    w3: dataWhy4[i].index_w3,
-                    w4: dataWhy4[i].index_w4,
+                    w1: dataWhy5[i].index_w1,
+                    w2: dataWhy5[i].index_w2,
+                    w3: dataWhy5[i].index_w3,
+                    w4: dataWhy5[i].index_w4,
                     w5: dataWhy5[i].index_w5,
                     position: urutan_node
                 }
@@ -978,7 +873,11 @@
                 $('#treemain').append(dataDIVNode);
             }
 
-
+            if ($("#UserLoginNIK").val() != $("#UserCreatorNIK").val() || $("#status_edit").val() == "approved") {
+                $(".hiddenButtonByCreated").addClass("d-none")
+            } else {
+                $(".hiddenButtonByCreated").removeClass("d-none")
+            }
 
             var connectorPaintStyle = {
                 lineWidth: 2,
@@ -1038,8 +937,275 @@
             tree.init();
             window.treemain = tree;
         })
+
+
+        function getChildNodeIdsWithValues(parentNodeId) {
+            let nodesData = [];
+            let parentNode = $(`#node_${parentNodeId}`);
+            // nodesData.push({
+            //     id: parentNodeId,
+            //     id_why: $(`#id_why${parentNodeId}`).val() || null,
+            //     idMaster_why: $(`#idMaster_why${parentNodeId}`).val() || null
+            // });
+            let firstChildId = parentNode.data('first-child');
+
+            while (firstChildId) {
+                let childNode = $(`#node_${firstChildId}`);
+                if (!nodesData.some(node => node.id === firstChildId)) {
+                    nodesData.push({
+                        id: firstChildId,
+                        identity_why: $(`#identity_why${firstChildId}`).val() || null,
+                        id_why: $(`#id_why${firstChildId}`).val() || null,
+                        idMaster_why: $(`#idMaster_why${firstChildId}`).val() || null
+                    });
+                }
+                nodesData = nodesData.concat(getChildNodeIdsWithValues(firstChildId));
+                firstChildId = childNode.data('next-sibling');
+            }
+
+            return nodesData;
+        }
     </script>
     <script type="text/javascript">
+        function UpdateStep(id, identity, nodocpica, kp, why) {
+            $("#update_id").val(id);
+            $("#update_identity").val(identity);
+            $("#update_nodocpica").val(nodocpica);
+            $("#update_pc_why").val(why);
+            $("#update_pc_kategori").val(kp);
+            $("#ModalUpdateWhy").modal("show");
+        }
+        let scrollPosition = window.scrollY || document.documentElement.scrollTop;
+
+        function DeleteStep(node) {
+            Swal.fire({
+                title: "Apakah yakin menghapus semua child?",
+                showCancelButton: true,
+                confirmButtonText: "Hapus Data",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let allNode1ChildrenData = getChildNodeIdsWithValues(node);
+                    dataKirim = {
+                        dataHapus: allNode1ChildrenData
+                    }
+                    $.ajax({
+                        type: 'post',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        url: "/smart-pica/update-master-pica",
+                        data: dataKirim,
+                        dataType: 'json',
+                        success: function(response) {
+                            if (response.code == 200) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Berhasil!',
+                                    text: response.message,
+                                })
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error While Add Data',
+                                    html: message,
+                                    confirmButtonText: 'OK'
+                                });
+                            }
+                            location.reload();
+                        },
+                        error: function(xhr, ajaxOptions, thrownError) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'thrownError',
+                                html: errorMessage,
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    })
+                }
+            });
+        }
+
+        function addWhy(id, identity, master, nodocpica, nik, w1, w2, w3, w4) {
+            $("#id").val(id);
+            $("#identity").val(identity);
+            $("#master").val(master);
+            $("#nodocpica").val(nodocpica);
+            $("#nik").val(nik);
+            $("#w1").val(w1);
+            $("#w2").val(w2);
+            $("#w3").val(w3);
+            $("#w4").val(w4);
+            $("#ModalAddDataWhy").modal("show")
+
+        }
+
+        function SaveDataAddWhy() {
+            let id = $("#id").val();
+            let identity = $("#identity").val();
+            let master = $("#master").val();
+            let nodocpica = $("#nodocpica").val();
+            let nik = $("#nik").val();
+            let w1 = $("#w1").val();
+            let w2 = $("#w2").val();
+            let w3 = $("#w3").val();
+            let w4 = $("#w4").val();
+            let why = $("#pc_why").val();
+
+            let kategori = $("#pc_kategori").val();
+            if (!why) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Oops...',
+                    text: 'Silakan isi alasan (why) terlebih dahulu!',
+                });
+                return false;
+            } else if (!kategori) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Oops...',
+                    text: 'Silakan isi kategori terlebih dahulu!',
+                });
+                return false;
+            }
+            let dataKirim = {
+                id: id,
+                identity: identity,
+                master: master,
+                nodocpica: nodocpica,
+                nik: nik,
+                w1: w1,
+                w2: w2,
+                w3: w3,
+                w4: w4,
+                why: why,
+                kategory: kategori
+            }
+
+            $.ajax({
+                type: 'post',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: "/smart-pica/add-why-spesific-data",
+                data: dataKirim,
+                dataType: 'json',
+                success: function(response) {
+                    if (response.code == 200) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: response.message,
+                        })
+                        $("#id").val("");
+                        $("#identity").val("");
+                        $("#master").val("");
+                        $("#nodocpica").val("");
+                        $("#nik").val("");
+                        $("#w1").val("");
+                        $("#w2").val("");
+                        $("#w3").val("");
+                        $("#w4").val("");
+                        $("#pc_why").val("");
+                        $("#pc_kategori").val("");
+                        location.reload();
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error While Add Data',
+                            html: message,
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'thrownError',
+                        html: errorMessage,
+                        confirmButtonText: 'OK'
+                    });
+                }
+            })
+        }
+
+        function SaveDataUpdateWhy() {
+            let id = $("#update_id").val();
+            let identity = $("#update_identity").val();
+            let nodocpica = $("#update_nodocpica").val();
+            let why = $("#update_pc_why").val();
+            let kategori = $("#update_pc_kategori").val();
+            if (!why) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Oops...',
+                    text: 'Silakan isi alasan (why) terlebih dahulu!',
+                });
+                return false;
+            } else if (!kategori) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Oops...',
+                    text: 'Silakan isi kategori terlebih dahulu!',
+                });
+                return false;
+            }
+            let dataKirim = {
+                id: id,
+                identity: identity,
+                nodocpica: nodocpica,
+                why: why,
+                kategori: kategori
+            }
+
+            $.ajax({
+                type: 'post',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: "/smart-pica/edit-why-spesific-data",
+                data: dataKirim,
+                dataType: 'json',
+                success: function(response) {
+                    if (response.code == 200) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: response.message,
+                        })
+                        $("#id").val("");
+                        $("#identity").val("");
+                        $("#master").val("");
+                        $("#nodocpica").val("");
+                        $("#nik").val("");
+                        $("#w1").val("");
+                        $("#w2").val("");
+                        $("#w3").val("");
+                        $("#w4").val("");
+                        $("#pc_why").val("");
+                        $("#pc_kategori").val("");
+                        location.reload();
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error While Add Data',
+                            html: message,
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'thrownError',
+                        html: errorMessage,
+                        confirmButtonText: 'OK'
+                    });
+                }
+            })
+
+        }
+
         var solution = <?php echo json_encode($solution); ?>;
 
         function modalViewStep(id, identity) {
@@ -1065,9 +1231,8 @@
                                         <div class="col-md-6">
                                             <div class="input-group input-group-static  my-1">
                                                 <label for="pc_aktual_${index}" class="ms-0">Note Step</label>
-                                                <input class="form-control" type="text" inputmode="decimal"
-                                                    placeholder="Masukkan note untuk PIC" value="${e.note_step}" name="pc_aktual_${index}"
-                                                    id="pc_aktual_${index}" disabled>
+                                                <textarea class="form-control" name="pc_problem" value="${e.note_step}" id="pc_aktual_${index}" disabled
+                                                    rows="2" required>${e.note_step}</textarea>
                                             </div>
                                         </div>
                                         <div class="col-2">

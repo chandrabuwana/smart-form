@@ -874,8 +874,11 @@
         }
 
         function removeFieldset(idDiv, kordinatObj, why) {
-            console.log(kordinatObj);
-            removeObjectFromLists(kordinatObj, listOFWhy2, listOFWhy3, listOFWhy4, listOFWhy5);
+            if (why == 1) {
+                listOFWhy1.pop();
+            } else {
+                removeObjectFromLists(kordinatObj, listOFWhy2, listOFWhy3, listOFWhy4, listOFWhy5);
+            }
             var divElement = $('#divWHY_' + idDiv);
             $(`#${idDiv}`).remove();
 
@@ -902,7 +905,7 @@
             identityDIV += 1;
             listOFWhy1.push(initialWhy1);
             // Generate options HTML from PHP data
-
+            let dataKirimJson = JSON.stringify(listOFWhy1)
 
             // Append new Why1 fieldset
             $(".master").append(`
@@ -910,7 +913,7 @@
                     <div class="col-2">
                         <fieldset style="margin: 30px" id="divWHY_${identityDIV}">
                             <legend style="width: auto">Why 1 - ${initialWhy1}</legend>
-                            <button type="button" id="remove_w1-${initialWhy1}" class="close-button-why" onclick="removeFieldset('divWHY_${identityDIV}')">X</button>
+                            <button type="button" id="remove_w1-${initialWhy1}" class="close-button-why" onclick="removeFieldset('divWHY_${identityDIV}', '${dataKirimJson}', '1')">X</button>
                             <div class="row">
                                 <div class="col-5">
                                     <div class="input-group input-group-static my-4">

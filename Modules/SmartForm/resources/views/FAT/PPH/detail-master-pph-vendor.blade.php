@@ -376,7 +376,7 @@
         function tableListOfDocumentUploadedParamsGenerate(params) {
 
             params.search = {
-                'FILTERNPWPVENDOR': $('#FILTERNPWPVENDOR').val()
+                'FILTERNPWPVENDOR': $('#FILTERNPWPVENDOR').val(),
                 'FILTERNAMAVENDOR': $('#FILTERNAMAVENDOR').val()
             };
 

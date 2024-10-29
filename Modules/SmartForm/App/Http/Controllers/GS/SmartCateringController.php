@@ -43,6 +43,19 @@ class SmartCateringController extends Controller {
     private const TABLE_PENGAJUAN_CUTI = self::DB_HRD . ".dbo.tpengajuancuti";
     private const DB_CONN_NAME = 'sqlsrv';
     private const MAPPING_COLUMN_VENDOR_DAY = [1 => 'senin', 2 => 'selasa', 3 => 'rabu', 4 => 'kamis', 5 => 'jumat', 6 => 'sabtu', 7 => 'minggu'];
+    private $DB_LINK = [
+        'MME' => 'DMME.',
+        'JKT' => '',
+        'JKT1' => '',
+        'CDI' => 'CDI',
+        'PMSS' => 'DPMSS',
+        'MASS' => 'DMAS',
+        'AGM' => 'DAGM',
+        'BSSR' => 'DBSSR',
+        'MBL' => 'DMBL',
+        'MSJ' => 'DMSJ',
+        'TAJ' => 'DTAJ'
+    ];
 
     function AddPemesanan(Request $request) {
         return view("SmartForm::GS/pemesanan-catering");
@@ -105,7 +118,8 @@ class SmartCateringController extends Controller {
                 $data_karyawan_mess = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_PENGHUNI_MESS . " as dh")
                     ->select('dh.KodeSite', 'dh.Nik', 'dh.NoDoc', 'dm.NamaMess')
                     ->join(self::TABLE_MASTER_MESS.' as dm', 'dh.NoDoc', '=', 'dm.NoDoc')
-                    ->where('dh.KodeSite', $reqSite)->get();
+                    ->where('dh.KodeSite', $reqSite)
+                    ->get();
 
                 $data_karyawan_absensi = [];
                 $pesan_makan = $this->ListPesanMakanMess($reqJenisPemesanan, $tgl);
@@ -123,9 +137,9 @@ class SmartCateringController extends Controller {
                     Log::debug("Data absensi ". $reqSite . " : " .count($data_karyawan_absensi));
                 }
 
-                $sql_karyawan_cuti = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_PENEGASAN_CUTI . ' as pc')
-                    ->join(self::TABLE_PENGAJUAN_CUTI . ' as pcuti', 'pc.NoPengajuan', '=', 'pcuti.nopengajuancuti')
-                    ->join(self::TABLE_KARYAWAN_HRD . ' as tk', 'pcuti.nik', '=', 'tk.nik')
+                $sql_karyawan_cuti = DB::connection(self::DB_CONN_NAME)->table($this->DB_LINK[$reqSite]. self::TABLE_PENEGASAN_CUTI . ' as pc')
+                    ->leftJoin($this->DB_LINK[$reqSite]. self::TABLE_PENGAJUAN_CUTI . ' as pcuti', 'pc.NoPengajuan', '=', 'pcuti.nopengajuancuti')
+                    ->leftJoin(self::TABLE_KARYAWAN_HRD . ' as tk', 'pcuti.nik', '=', 'tk.nik')
                     ->select('pc.Nodoc', 'pcuti.nik', 'pc.TglAwal', 'pc.TglAkhir', 'tk.Nama')
                     ->where('pc.aprovehrd', 1)
                     ->where('pc.Batal', 0)
@@ -134,7 +148,7 @@ class SmartCateringController extends Controller {
                     ->orderBy('pc.tanggal', 'desc');
                 $karyawan_cuti = $sql_karyawan_cuti->get()->toArray();
 
-                // Log::info("SQL : " .$sql_karyawan_cuti->toRawSql());
+                Log::info("SQL karyawan cuti : " .$sql_karyawan_cuti->toRawSql());
                 // Log::info("result : " .json_encode($karyawan_cuti));
                 $nik_data_karyawan_absensi = array_column($data_karyawan_absensi, 'NIK');
                 $nik_pesan_makan = array_column($pesan_makan, 'NIK');
@@ -214,8 +228,9 @@ class SmartCateringController extends Controller {
 
         try {
             $query_order_makan_mess = DB::connection(self::DB_CONN_NAME)
-                ->table(self::TABLE_REQ_MAKAN_MOBILE)
-                ->select('Nama', 'NIK', 'lokasi', 'TanggalOrder', 'jenis')
+                ->table(self::TABLE_REQ_MAKAN_MOBILE. ' as a')
+                ->select('a.Nama', 'a.NIK', 'a.lokasi', 'a.TanggalOrder', 'a.jenis', 'b.NamaMess as lokasi_name')
+                ->leftJoin(self::TABLE_MASTER_MESS . ' as b', 'a.lokasi', '=', 'b.NoDoc')
                 ->where('jenis', $jenis)
                 ->whereDate('TanggalOrder', $tanggal);
             Log::debug("SQL Pesan Makan: ". $query_order_makan_mess->toRawSql());
@@ -506,7 +521,7 @@ class SmartCateringController extends Controller {
 
         try {
             $sql_master_data = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_SUBMIT_ORDER)
-                ->select('kode_pemesanan', 'site', 'selected', 'jenis_pemesanan');
+                ->select('kode_pemesanan', 'site', 'selected', 'jenis_pemesanan', 'tanggal')->orderBy('tanggal', 'desc');
 
             if($filterTanggal == null || $filterTanggal == 'null') {
             } else {
@@ -577,7 +592,7 @@ class SmartCateringController extends Controller {
 
             $vendor_id = self::MAPPING_COLUMN_VENDOR_DAY[Carbon::parse(explode('/', $idPemesanan)[0])->dayOfWeekIso];
             $sql_master_data = db::connection(SELF::DB_CONN_NAME)->table(SELF::TABLE_SUBMIT_ORDER_DETAIL . ' as a')
-            ->select('a.id as id_detail', 'a.id_order as kode_pemesanan', 'a.jenis_pemesanan', 'a.jumlah','c.Nama as nama_vendor',  'd.NamaMess as lokasi', 'a.status')
+            ->select('a.id as id_detail', 'a.id_order as kode_pemesanan', 'a.jenis_pemesanan', 'a.jumlah','c.Nama as nama_vendor',  'd.NamaMess as lokasi', 'a.status', 'a.file_evidence')
             ->leftJoin(self::TABLE_VENDOR_MAPPING_DAY . ' as b', 'a.id_mapping_vendor', '=', 'b.id')
             ->leftJoin(self::TABLE_VENDOR_MASTER . ' as c', 'b.'.$vendor_id , '=', 'c.id')
             ->leftJoin(self::TABLE_MASTER_MESS . ' as d', 'a.lokasi', '=', 'd.NoDoc')

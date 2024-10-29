@@ -15,13 +15,27 @@ class HelperController extends Controller
     {
         $data = $d->request->get("query");
         // dd($d->dept);
+       
+        $dataDepartment = "";
+       
         $dataFinal = $this->validateAndSanitizeInput($data);
-        // $dataKPI = DB::select("SELECT TOP(10) k.lea_id AS id, k.lea_name AS name, UPPER(k.lea_hgb) AS status, k.lea_dept AS dept, s.st_name AS satuan FROM kpi_lea k JOIN satuan s ON s.st_id = k.lea_st WHERE k.lea_id LIKE '%$dataFinal%' OR k.lea_name LIKE '%$dataFinal%' OR UPPER(k.lea_hgb) LIKE '%$dataFinal%' OR k.lea_dept LIKE '%$dataFinal%' OR s.st_name LIKE '%$dataFinal%'");
-        $dataKPI = DB::select("SELECT kpi_code id, kpi name, dept, keterangan FROM [SMF_KPI_MASTER] where 
-        dept = '$d->dept' 
-        AND (kpi_code LIKE '%$dataFinal%' 
+
+
+        $query = "SELECT kpi_code id, kpi name, dept, keterangan FROM [SMF_KPI_MASTER] where 
+        (kpi_code LIKE '%$dataFinal%' 
         OR kpi LIKE '%$dataFinal%' 
-        OR keterangan LIKE '%$dataFinal%') ");
+        OR keterangan LIKE '%$dataFinal%') ";
+
+        if($d->dept == "HRD") {
+            $query .= " AND dept in ('IC','GS','CVL')";
+        }else{
+            $query .= " AND dept = '$d->dept' ";
+        }
+
+        // $dataKPI = DB::select("SELECT TOP(10) k.lea_id AS id, k.lea_name AS name, UPPER(k.lea_hgb) AS status, k.lea_dept AS dept, s.st_name AS satuan FROM kpi_lea k JOIN satuan s ON s.st_id = k.lea_st WHERE k.lea_id LIKE '%$dataFinal%' OR k.lea_name LIKE '%$dataFinal%' OR UPPER(k.lea_hgb) LIKE '%$dataFinal%' OR k.lea_dept LIKE '%$dataFinal%' OR s.st_name LIKE '%$dataFinal%'");
+        $dataKPI = DB::select($query);
+
+
         $dataJs = [];
         foreach ($dataKPI as $kPI) {
             $dataBaru = [
@@ -85,7 +99,7 @@ class HelperController extends Controller
         $data = $d->request->get("query");
         $depart = $d->request->get("dataDepartment");
         $dataFinal = $this->validateAndSanitizeInput($data);
-        $dataDepartment = DB::connection('sqlsrv2')->select("SELECT TOP 5 NIK nomorPunggung, Nama nama  FROM TKaryawan where KodeDP like '%$depart%' and Nama like '%$data%' and AKTIF = 0 ");
+        $dataDepartment = DB::connection('sqlsrv2')->select("SELECT TOP 5 NIK nomorPunggung, Nama nama  FROM TKaryawan where KodeDP like '%$depart%' and ( Nama like '%$data%' OR NIK like '%$data%') and AKTIF = 0 ");
 
         $dataJs = [];
         foreach ($dataDepartment as $a) {
@@ -149,7 +163,7 @@ class HelperController extends Controller
             $query = $query . " AND '" . $req->search['FILTERNIK'] . "'  IN (Select PIC from new_pica_step where nodocpica = m.nodocpica) ";
         }
         if (isset($req->search['FILTERDEPARTMENT']) && $req->search['FILTERDEPARTMENT'] != null) {
-            $query = $query . " AND m.site = '" . $req->search['FILTERDEPARTMENT'] . "' ";
+            $query = $query . " AND m.dept = '" . $req->search['FILTERDEPARTMENT'] . "' ";
         }
         if (isset($req->search['FILTERSITE']) && $req->search['FILTERSITE'] != null) {
             $query = $query . " AND m.site = '" . $req->search['FILTERSITE'] . "' ";
@@ -178,11 +192,17 @@ class HelperController extends Controller
                     CONCAT(FORMAT(DATEFROMPARTS(m.tahun, m.bulan, 1), 'MMMM'), ' - ', m.tahun) AS tahun_bulan,
                     m.week, 
                     m.site, 
+                    m.approval,
                     m.id_kpi,
                      
                     -- Status berdasarkan kondisi acceptance dan status_approve
                     UPPER(
                         CASE
+
+                            WHEN m.approval = 'pending' THEN 'NEED APPROVE BY OD'
+                            -- WHEN m.approval = 'approved' THEN 'NOT ANY PROGRESS'
+                            WHEN m.approval = 'rejected' THEN 'NEED REVISION'
+
                             WHEN (
                                 SELECT COUNT(*) FROM new_pica_step nps WHERE nps.nodocpica = m.nodocpica
                             ) = 0 THEN 'STEP NOT SET'  -- Check for no steps
@@ -237,7 +257,7 @@ class HelperController extends Controller
                 JOIN 
                     kategori_problem k ON k.kp_id = m.id_kategory 
                 JOIN 
-                    SMF_KPI_MASTER kl ON kl.kpi_code = m.id_kpi where 1 = 1";
+                    SMF_KPI_MASTER kl ON kl.kpi_code = m.id_kpi where 1 = 1 ";
         $countDataUser = DB::select('select count(*) jumlah FROM master_pica');
         $newQuery = $this->GetQueryDataTablePica($query, $table);
 
@@ -327,7 +347,7 @@ class HelperController extends Controller
                         dataProgress dp ON dp.id_solution = step_pica.id
                             AND dp.nodocpica = step_pica.nodocpica
                             AND dp.rn = 1
-                    JOIN master_pica mp ON mp.nodocpica = step_pica.nodocpica where step_pica.pic = '$nik' ";
+                    JOIN master_pica mp ON mp.nodocpica = step_pica.nodocpica and mp.approval = 'approved' where step_pica.pic = '$nik' ";
         $countDataUser = DB::select("select count(*) jumlah FROM new_pica_step where pic = '$nik' ");
         $newQuery = $this->GetQueryDataTableSolutionPica($query, req: $table);
 
@@ -339,7 +359,6 @@ class HelperController extends Controller
             "rows" => $dataUser,
         ]);
     }
-
 
     public function GetQueryDataTableHistoryTable(string $query, Request $req)
     {
@@ -452,14 +471,17 @@ class HelperController extends Controller
                 ELSE step_pica.action
             END AS action,
             step_pica.note_step,
-            UPPER(step_pica.ap_tod) AS ap_tod,
+            step_pica.ap_tod AS ap_tod,
             step_pica.pic,
             step_pica.due_date,
             step_pica.position_why,
             step_pica.identity_why,
             acceptance,
             acceptance_reason,
-            mp.target_master
+            mp.target_master,
+            step_pica.action,
+            step_pica.dic,
+            step_pica.approver
         FROM
             new_pica_step step_pica
         LEFT JOIN
@@ -479,7 +501,7 @@ class HelperController extends Controller
         ]);
     }
 
-    public function GetQueryDataTableApprovementPica(string $query, Request $req)
+    public function GetQueryDataTableApprovementStepPica(string $query, Request $req)
     {
         if (isset($req->search['IDSOLUTION']) && $req->search['IDSOLUTION'] != null) {
             $query = $query . "where id_solution = '" . $req->search['IDSOLUTION'] . "' ";
@@ -541,10 +563,10 @@ class HelperController extends Controller
                         new_pica_step step_pica
                 )
                 SELECT * 
-                FROM CTE where ('OD' = '$dept' AND acceptance = 10) OR ('OD' != '$dept' AND ( acceptance = 9 OR acceptance = 10)  AND approver = '$userID' ) ";
+                FROM CTE where  acceptance = 9  AND approver = '$userID'  ";
 
         $countDataUser = DB::select("select count(*) jumlah FROM new_pica_step where dic = '$dept'");
-        $newQuery = $this->GetQueryDataTableApprovementPica($query, $table);
+        $newQuery = $this->GetQueryDataTableApprovementStepPica($query, $table);
         $dataUser = DB::select($newQuery);
 
         return response()->json([
@@ -554,6 +576,50 @@ class HelperController extends Controller
         ]);
 
 
+    }
+
+    public function GetQueryDataTableApprovementPica(string $query, Request $req)
+    {
+        if (isset($req->search['FILTERNIK']) && $req->search['FILTERNIK'] != null) {
+            $query = $query . "where ms.nik = '" . $req->search['FILTERNIK'] . "' ";
+        }
+        if (isset($req->search['FILTERDEPARTMENT']) && $req->search['FILTERDEPARTMENT'] != null) {
+            $query = $query . " AND ms.dept = '" . $req->search['FILTERDEPARTMENT'] . "' ";
+        }
+        if (isset($req->search['FILTERSITE']) && $req->search['FILTERSITE'] != null) {
+            $query = $query . " AND ms.site = '" . $req->search['FILTERSITE'] . "' ";
+        }
+
+        if (isset($req["sort"]) && $req["sort"] != null) {
+            $query = $query . ' ORDER BY ' . $req["sort"] . ' ' . $req["order"];
+        } else {
+            $query = $query . ' ORDER BY ID DESC ';
+        }
+
+        if ($req["offset"] != null) {
+            $query = $query . ' OFFSET ' . $req["offset"] . ' ROWS ';
+        }
+        if ($req["limit"] != null) {
+            $query = $query . "FETCH NEXT " . $req["limit"] . " ROWS ONLY";
+        }
+        return $query;
+    }
+
+    function HelperDataTableApprovementMasterPica(Request $table)
+    {
+        $userID = session("user_id");
+        $dept = session("kode_department");
+        $query = "SELECT ms.*, kpi.kpi FROM master_pica ms join SMF_KPI_MASTER kpi on ms.id_kpi = kpi.kpi_code where 1 = 1 ";
+
+        $countDataUser = DB::select("select count(*) jumlah FROM master_pica where 1 = 1 ");
+        $newQuery = $this->GetQueryDataTableApprovementPica($query, $table);
+        $dataUser = DB::select($newQuery);
+        // dd($dataUser);
+        return response()->json([
+            'total' => $countDataUser[0]->jumlah,
+            'totalNotFiltered' => $countDataUser[0]->jumlah,
+            "rows" => $dataUser,
+        ]);
     }
 
 

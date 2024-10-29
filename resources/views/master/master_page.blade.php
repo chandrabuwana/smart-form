@@ -184,7 +184,7 @@
             var currentUrl = window.location.href;
             $('.nav-link').each(function() {
                 if (this.href === currentUrl) {
-                    $(this).addClass('bg-gradient-danger');
+                    $(this).addClass('bg-gradient-faded-primary');
                     // Ensure the parent submenu is visible
                     $(this).closest('.submenu').show();
                     // Add a class to the parent nav-item to keep the submenu open

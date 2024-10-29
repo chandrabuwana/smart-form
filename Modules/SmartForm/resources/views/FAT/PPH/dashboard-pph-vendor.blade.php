@@ -74,7 +74,7 @@
                             <thead>
                                 <tr>
                                     <th data-field="nodocpph" data-align="center" data-halign="center">No. Doc.</th>
-                                    <th data-field="jumlah_document" data-align="center" data-halign="center">Jumlah</th>
+                                    <th data-field="jumlah" data-align="center" data-halign="center" data-formatter="JumlahFormaterMasterPPH">Jumlah</th>
                                     <th data-field="tsite" data-align="center" data-halign="center">Site</th>
                                     <th data-field="concat_bulan" data-align="center" data-halign="center">Bulan</th>
                                     <th data-halign="center" data-align="center"
@@ -115,6 +115,10 @@
             var t = new Date(value);
             return t.getDate() + '-' + monthNames[t.getMonth()] + '-' + t.getFullYear();
 
+        }
+
+        function JumlahFormaterMasterPPH(value, row, index) {
+            return value + " Document";
         }
 
         function dataListMasterBuktiPotonganActionFormater(value, row, index) {

@@ -140,7 +140,7 @@
                                 <tr>
                                     <th data-field="nik" data-align="center">NIK</th>
                                     <th data-field="tanggal" data-align="left">Tanggal</th>
-                                    <th data-field="lokasi" data-align="left">lokasi</th>
+                                    <th data-field="lokasi_name" data-align="left">lokasi</th>
                                 </tr>
                             </thead>
                         </table>
@@ -674,7 +674,8 @@
                     data_request_makan_mess.push({
                         nik: response.data.dataPesanMakanMess[pesanMakan].NIK,
                         tanggal: response.data.dataPesanMakanMess[pesanMakan].TanggalOrder,
-                        lokasi: response.data.dataPesanMakanMess[pesanMakan].lokasi
+                        lokasi: response.data.dataPesanMakanMess[pesanMakan].lokasi,
+                        lokasi_name: response.data.dataPesanMakanMess[pesanMakan].lokasi_name
                     })
                 }
                 // data mess dikurangi cuti
@@ -759,8 +760,9 @@
                         loadedData.push({
                             nama: row[0] !== undefined ? row[0] : "",
                             nik: row[1] !== undefined ? row[1] : "",
-                            lokasi: row[2] !== undefined ? row[2] : "",
-                            keterangan: row[3] !== undefined ? row[3] : ""
+                            // lokasi: row[2] !== undefined ? row[2] : "",
+                            // keterangan: row[3] !== undefined ? row[3] : ""
+                            keterangan: row[2] !== undefined ? row[2] : ""
                         })
                         jumlahData++
                         // var newRow = table.insertRow();

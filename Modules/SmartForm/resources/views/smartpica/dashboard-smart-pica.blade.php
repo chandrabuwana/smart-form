@@ -4,6 +4,10 @@
     {{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.css"> --}}
     <link rel="stylesheet" href="https://unpkg.com/bootstrap-table/dist/bootstrap-table.min.css">
     <style>
+        .gj-datepicker button {
+            display: none !important;
+        }
+
         .fixed-table-container {
             position: relative;
         }
@@ -170,13 +174,13 @@
                                                 required></select>
                                         </div>
                                     </div>
-                                    {{-- <div class="col-md-4">
+                                    <div class="col-md-4">
                                         <div class="input-group select-div input-group-static my-2">
                                             <label for="FILTERDEPARTMENT" class="ms-0">Department </label>
                                             <select class="form-control dept" name="FILTERDEPARTMENT" id="FILTERDEPARTMENT">
                                             </select>
                                         </div>
-                                    </div> --}}
+                                    </div>
                                     <div class="col-md-4">
                                         <div class="input-group select-div input-group-static my-2">
                                             <label for="FILTERSITE" class="ms-0">Site </label>
@@ -254,6 +258,8 @@
                                 <h6 class="card-title">Filter</h6>
                                 <hr class="horizontal dark my-sm-1">
                                 <div class="row">
+                                    <input type="hidden" name="id_user_login" id="UserLoginNIK"
+                                        value="{{ session('user_id') }}">
                                     <div class="col-md-3">
                                         <div class="input-group select-div input-group-static my-2">
                                             <label for="FILTERNIKSOLUTION" class="ms-0">NIK</label>
@@ -391,11 +397,183 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="stepSolutionChangePIC" aria-hidden="true" aria-labelledby="exampleModalToggleLabel"
+        tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <input type="hidden" name="id" id="id" value="">
+                <input type="hidden" name="id_master" id="id_master" value="">
+                <input type="hidden" name="nodocpica" id="nodocpica" value="">
+                <input type="hidden" name="nikMaster" id="nikMaster" value="">
+                <div class="modal-header">
+                    <div class="row">
+                        <div class="col">
+                            <h5 class="modal-title center" id="exampleModalToggleLabel">FORM Step Solution</h5>
+                            <p id="ProblemHeader"></p>
+
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
+                </div>
+                <div id="content-modal-view-step">
+                    <div class="row" style="margin: 10px">
+                        <div class="col">
+                            <div class="card border" style="">
+                                <div class="card-body">
+                                    <h5 class="card-title">Edit Solution</h5>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <div class="input-group input-group-static  my-1">
+                                                <label for="pc_action" class="ms-0">Action</label>
+                                                <select class="form-control" name="pc_action" id="pc_action" disabled>
+                                                    <option value="">-- Pilih Action --</option>
+                                                    <option value="ca">Corrective</option>
+                                                    <option value="pa">Preventive</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="input-group input-group-static  my-1">
+                                                <label for="pc_aktual" class="ms-0">Note Step</label>
+                                                <input class="form-control" type="text" inputmode="decimal"
+                                                    placeholder="Masukkan note untuk PIC" value="${e.note_step}"
+                                                    name="pc_aktual" id="pc_aktual" disabled>
+                                            </div>
+                                        </div>
+                                        <div class="col-2">
+                                            <div class="input-group input-group-static  my-1">
+                                                <label class="ms-0" for="pc_ap_pica">AP/TOD</label>
+                                                <select class="form-control" name="pc_ap_pica" id="pc_ap_pica">
+                                                    <option value="ap">AP</option>
+                                                    <option value="tod">TOD</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="input-group input-group-static my-1">
+                                                <label for="dicID" class="ms-0">Department in Charge
+                                                    (DIC)</label>
+                                                <select class="form-control dept" name="dicID" id="dicID">
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="input-group input-group-static my-1">
+                                                <label for="picID" class="">Person In Charge (PIC)</label>
+                                                <select class="form-control picIDHuman" name="picID" id="picID">
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="DueDate" class="">Due Date
+                                                (PIC)</label>
+                                            <div class="input-group input-group-static d-flex">
+                                                <input class="form-control due-date-picker" type="text"
+                                                    placeholder="DD/MM/YYYY" name="DueDate" required id="DueDate">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr class="horizontal dark my-sm-3">
+                                    <div class="row">
+                                        <div class="col-md-4" style="">
+                                            <div class="input-group input-group-static my-4">
+                                                <label for="atasan_ID" class="">Atasan
+                                                    (PIC)</label>
+                                                <select class="form-control picIDAtasan" name="atasan_ID"
+                                                    id="atasan_ID"></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr class="horizontal dark my-sm-3">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="input-group input-group-static mb-4">
+                                                <label for="tensi">Status</label>
+                                                <button class="form-control-button  btn-primary btn"
+                                                    type="button">REJECTED BY PIC</button>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="input-group input-group-static mb-4">
+                                                <label for="alasan">Alasan</label>
+                                                <button class="form-control-button  btn-info btn" id="alasanDiv" type="button">karena
+                                                    lapas</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr class="horizontal dark my-sm-3">
+
+                <div class="row" style="margin:10px">
+                    <div class="col text-end">
+                        <button class="btn btn-primary ms-auto uploadBtn" id="buttonSubmitDocumentData"
+                            onclick="SubmitChangePICSolution()">
+                            <i class="fas fa-save"></i>
+                            Submit</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('custom-js')
+    <script src="https://unpkg.com/gijgo@1.9.14/js/gijgo.min.js" type="text/javascript"></script>
+    <link href="https://unpkg.com/gijgo@1.9.14/css/gijgo.min.css" rel="stylesheet" type="text/css" />
     <script src="https://unpkg.com/bootstrap-table/dist/bootstrap-table.min.js"></script>
     <script src="https://unpkg.com/bootstrap-table/dist/extensions/fixed-columns/bootstrap-table-fixed-columns.min.js">
+    </script>
+    <script type="text/javascript">
+        $('.due-date-picker').each(function() {
+            $(this).datepicker({
+                uiLibrary: 'bootstrap5', // or 'bootstrap5' if you're using Bootstrap 5
+                format: 'dd mmmm yyyy',
+                weekStartDay: 0,
+            })
+        });
+
+        function initializeSelect2(elementId, placeholderText, ajaxUrl, dataDepartmentId) {
+            $('#' + elementId).select2({
+                theme: 'bootstrap-5', // Menggunakan tema Bootstrap 5
+                dropdownParent: $('#' + elementId).closest('.input-group'),
+                placeholder: placeholderText,
+                width: '100%',
+                ajax: ajaxUrl ? {
+                    url: ajaxUrl,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    type: "post",
+                    delay: 250,
+                    dataType: 'json',
+                    data: function(params) {
+                        return {
+                            query: params.term, // search term
+                            dataDepartment: $('#' + dataDepartmentId).val()
+                        };
+                    },
+                    processResults: function(response) {
+                        return {
+                            results: response.data
+                        };
+                    },
+                    cache: true
+                } : null
+            });
+        }
+        $(document).ready(function() {
+            initializeSelect2('picID', '--- Pilih PIC ---', "/helper/karyawan", 'dicID');
+            initializeSelect2('atasan_ID', '--- Pilih Atasan PIC ---', "/helper/karyawan", 'dicID');
+
+        });
     </script>
     <script type="text/javascript">
         var elChartStatus = document.getElementById("chart-status").getContext("2d");
@@ -407,6 +585,19 @@
             return repo.text;
         }
 
+        function formatDate(dateString) {
+            let dateParts = dateString.split('-');
+            if (dateParts[2].length === 1) {
+                dateParts[2] = '0' + dateParts[2];
+            }
+            let date = new Date(`${dateParts[0]}-${dateParts[1]}-${dateParts[2]}`);
+            let options = {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            };
+            return date.toLocaleDateString('en-GB', options);
+        }
 
 
         function initializeSelect2NIK(elementId) {
@@ -441,11 +632,12 @@
         initializeSelect2NIK('#FILTERNIK');
         initializeSelect2NIK('#FILTERNIKSOLUTION');
 
-        function initializeSelect2Department(elementId) {
+        function initializeSelect2Department(elementId, textPlaceHolder) {
             $(elementId).select2({
                 theme: 'bootstrap5', // Menggunakan tema Bootstrap 5
                 dropdownParent: $(elementId).closest('.input-group'),
-                placeholder: '--- Cari Department ---',
+                placeholder: textPlaceHolder,
+                width: '100%',
                 ajax: {
                     url: "/helper/department",
                     headers: {
@@ -471,9 +663,8 @@
         }
 
         // Initialize for both elements
-        initializeSelect2Department('#FILTERDEPARTMENT');
-        initializeSelect2Department('#FILTERDEPARTMENTSOLUTION');
-
+        initializeSelect2Department('#FILTERDEPARTMENT', '--- Cari Department ---');
+        initializeSelect2Department('#FILTERDEPARTMENTSOLUTION', '--- Cari Department ---');
 
 
         function initializeSelect2Site(elementId) {
@@ -568,6 +759,10 @@
                 return `<button type="button" class="btn btn-danger btn-sm">${value}</button>`
             } else if (value == 'ON PROGRESS') {
                 return `<button type="button" class="btn btn-warning btn-sm">${value}</button>`
+            } else if (value == 'NEED APPROVE BY OD') {
+                return `<button type="button" class="btn btn-warning btn-sm">${value}</button>`
+            } else if (value == 'NEED REVISION') {
+                return `<button type="button" class="btn btn-danger btn-sm">${value}</button>`
             } else {
                 return `<button type="button" class="btn btn-secondary btn-sm">?</button>`
             }
@@ -579,7 +774,7 @@
                         <i class="fa fa-eye"></i> View
                     </a></button>
                 `
-            if (row.status == "STEP NOT SET") {
+            if (row.nik == $("#UserLoginNIK").val() && (row.approval != "approved")) {
                 data += `<button onclick="redirectToAddStepPica(this)"><a class="like" title="Like">
                         <i class="fa fa-plus"></i> Step
                     </a></button>`
@@ -677,7 +872,6 @@
 
         function dataListHistoryDashboardSearchGenerate(obj) {
             $('#dataListHistoryDashboard').bootstrapTable('refresh');
-            $("#dataListHistoryDashboard").bootstrapTable("uncheckAll");
         }
 
         function dataListHistoryDashboardGenerateData(params) {
@@ -706,9 +900,107 @@
         }
 
         function dataListHistoryDashboardActionFormater(value, row, index) {
-            return ` <button onclick="OpenModalHistory(this)"><a class="like"  title="Like">
+            let dataHtml = ` <button onclick="OpenModalHistory(this)"><a class="like"  title="Like">
                         <i class="fa fa-eye"></i>
                     </a>View</button>`
+            if (row.nik_master == $("#UserLoginNIK").val() && (row.acceptance == 2)) {
+                dataHtml += ` <button onclick="openModalChangePIC(this)"><a class="like"  title="Like">
+                        <i class="fa fa-pen"></i>
+                    </a>Change PIC</button>`
+            }
+            return dataHtml;
+        }
+
+        function openModalChangePIC(obj) {
+            let indexDt = $(obj).closest('tr').data('index');
+            let dataObj = $('#dataListHistoryDashboard').bootstrapTable('getData')[indexDt];
+
+            console.log(dataObj);
+            initializeSelect2Department('#dicID', `--- ${dataObj.dic} ---`);
+            initializeSelect2('picID', `--- ${dataObj.pic} ---`, "/helper/karyawan", 'dicID');
+            initializeSelect2('atasan_ID', `--- ${dataObj.approver} ---`, "/helper/karyawan", 'dicID');
+
+            $("#pc_action").val(dataObj.action);
+            $("#pc_aktual").val(dataObj.note_step);
+            $("#pc_ap_pica").val(dataObj.ap_tod);
+            $("#dicID").val(dataObj.dic).trigger('change');
+            $("#DueDate").val(formatDate(dataObj.due_date));
+            $("#id").val(dataObj.id);
+            $("#id_master").val(dataObj.id_master);
+            $("#nodocpica").val(dataObj.nodocpica);
+            $("#nikMaster").val(dataObj.nik_master);
+            if(dataObj.acceptance_reason){
+                $("#alasanDiv").html(dataObj.acceptance_reason);
+            }else{
+                $("#alasanDiv").html("-");
+            }
+            $("#stepSolutionChangePIC").modal("show");
+        }
+
+        function SubmitChangePICSolution() {
+            let dataKirim = {
+                action: $("#pc_action").val(),
+                note: $("#pc_aktual").val(),
+                ap_pica: $("#pc_ap_pica").val(),
+                dic: $("#dicID").val(),
+                pic: $("#picID").val(),
+                atasan: $("#atasan_ID").val(),
+                duedate: $("#DueDate").val(),
+                id: $("#id").val(),
+                id_master: $("#id_master").val(),
+                nodocpica: $("#nodocpica").val(),
+                nikMaster: $("#nikMaster").val()
+            };
+
+
+            for (let key in dataKirim) {
+                if (!dataKirim[key]) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Data Tidak Lengkap',
+                        text: `Field ${key} wajib diisi. Silakan lengkapi semua data.`
+                    });
+                    return false; // Hentikan fungsi jika ada nilai yang kosong
+                }
+            }
+
+            $.ajax({
+                type: 'post',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: "change-pic-solution",
+                data: dataKirim,
+                dataType: 'json',
+                success: function(response) {
+                    if (response.code == 200) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: response.message,
+                        }).then((result) => {
+                            $("#stepSolutionChangePIC").modal("hide");
+                            $('#dataListHistoryDashboard').bootstrapTable('refresh');
+                        })
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: `Error 00003`,
+                            html: response.message,
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: `Error 00002`,
+                        html: message,
+                        confirmButtonText: 'OK'
+                    });
+                }
+            })
+
         }
 
         function dataListHistoryProgressParamsGenerate(params) {
