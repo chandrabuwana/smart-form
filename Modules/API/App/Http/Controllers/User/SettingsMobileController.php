@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Validator;
 
 class SettingsMobileController extends Controller
 {
-    private const TABLE_VENDOR_MASTER = 'PICA_BETA.dbo.SCT_GS_VENDOR_MST';
+    private const TABLE_VENDOR_MASTER = 'SCT_GS_VENDOR_MST';
     private const DB_CONN_NAME = 'sqlsrv';
 
     public function UpdateAccount(Request $request) {

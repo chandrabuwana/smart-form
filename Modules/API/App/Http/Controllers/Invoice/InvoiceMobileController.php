@@ -14,9 +14,9 @@ use Illuminate\Support\Facades\Validator;
 
 class InvoiceMobileController extends Controller
 {
-    private const TABLE_VENDOR_MASTER = 'PICA_BETA.dbo.SCT_GS_VENDOR_MST';
-    private const TABLE_INVOICE_MASTER = 'PICA_BETA.dbo.SCT_GS_INVOICE_MST';
-    private const TABLE_INVOICE_DOCS = 'PICA_BETA.dbo.SCT_GS_INVOICE_DOCS';
+    private const TABLE_VENDOR_MASTER = 'SCT_GS_VENDOR_MST';
+    private const TABLE_INVOICE_MASTER = 'SCT_GS_INVOICE_MST';
+    private const TABLE_INVOICE_DOCS = 'SCT_GS_INVOICE_DOCS';
     private const DB_CONN_NAME = 'sqlsrv';
 
     public function index(Request $request) {
