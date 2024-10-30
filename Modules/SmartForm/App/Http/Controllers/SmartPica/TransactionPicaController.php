@@ -643,9 +643,17 @@ class TransactionPicaController extends Controller
 
     function AddWhySpesificData(Request $r)
     {
-        // dd($r->identity);
 
         DB::beginTransaction();
+
+        DB::table("new_pica_step")
+            ->where([
+                "nodocpica" => $r->nodocpica,
+                "position_why" => $r->id,
+                "identity_why" => $r->identity,
+                "id_master" => $r->master
+            ])->delete();
+
         if ($r->identity == 0) {
             try {
                 $dataTerakhirWhy = DB::table("pica_why1")->where([
