@@ -161,7 +161,7 @@
                                     <div class="input-group input-group-static my-2">
                                         <label for="pc_week" class="ms-0">Week </label>
                                         <select class="form-control" name="pc_week" disabled id="pc_week" disabled>
-                                            <option value="">{{ $dataMaster->week }}</option>
+                                            <option value="">Week {{ $dataMaster->week + 1 }}</option>
                                         </select>
                                     </div>
                                 </div>
