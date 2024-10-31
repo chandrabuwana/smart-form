@@ -119,7 +119,7 @@
                     Swal.fire({
                         icon: 'error',
                         title: 'thrownError',
-                        html: errorMessage,
+                        html: 'Terjadi kesalahan tidak terduga',
                         confirmButtonText: 'OK'
                     });
                 },

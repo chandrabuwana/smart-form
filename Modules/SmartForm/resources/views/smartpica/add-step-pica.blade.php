@@ -4,8 +4,8 @@
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <style>
         /* .gj-icon {
-                            display: none !important;
-                        } */
+                                                                                                                                                                                                                                                                                                                        display: none !important;
+                                                                                                                                                                                                                                                                                                                    } */
 
         /* Hide the datepicker button */
         .gj-datepicker button {
@@ -277,87 +277,113 @@
                     </div>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
                 </div>
-                @for ($i = 1; $i <= 5; $i++)
-                    <div class="row" style="margin: 10px">
-                        <div class="col">
-                            <div class="card border" style="">
-                                <div class="card-body">
-                                    <h5 class="card-title">Solution {{ $i }}</h5>
-                                    <div class="row">
-                                        <div class="col-md-2">
-                                            <div class="input-group input-group-static my-4">
-                                                <label for="pc_action_{{ $i }}" class="ms-0">Action</label>
-                                                <select class="form-control" name="pc_action_{{ $i }}"
-                                                    id="pc_action_{{ $i }}" required>
-                                                    <option value="">-- Pilih Action --</option>
-                                                    <option value="ca">Corrective</option>
-                                                    <option value="pa">Preventive</option>
-                                                </select>
+                <div class="" id="DataStepMasuk">
+                    @for ($i = 1; $i <= 5; $i++)
+                        <div class="row" style="margin: 10px">
+                            <input type="hidden" name="editID_{{ $i }}" id="editID_{{ $i }}"
+                                value="">
+                            <div class="col">
+                                <div class="card border" style="">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Solution {{ $i }}
+                                            <p id="pic_exist_{{ $i }}"></p>
+                                            <p id="atasan_exist_{{ $i }}"></p>
+                                        </h5>
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <div class="input-group input-group-static my-4">
+                                                    <label for="pc_action_{{ $i }}"
+                                                        class="ms-0">Action</label>
+                                                    <select class="form-control" name="pc_action_{{ $i }}"
+                                                        id="pc_action_{{ $i }}" required>
+                                                        <option value="">-- Pilih Action --</option>
+                                                        <option value="ca">Corrective</option>
+                                                        <option value="pa">Preventive</option>
+                                                    </select>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="input-group input-group-static my-4">
-                                                <label for="pc_aktual_{{ $i }}" class="ms-0">Note
-                                                    Step</label>
-                                                <input class="form-control" type="text" inputmode="decimal"
-                                                    placeholder="Masukkan note untuk PIC"
-                                                    name="pc_aktual_{{ $i }}" required
-                                                    id="pc_aktual_{{ $i }}">
+                                            <div class="col-md-6">
+                                                <div class="input-group input-group-static my-4">
+                                                    <label for="pc_aktual_{{ $i }}" class="ms-0">Note
+                                                        Step</label>
+                                                    <input class="form-control" type="text" inputmode="decimal"
+                                                        placeholder="Masukkan note untuk PIC"
+                                                        name="pc_aktual_{{ $i }}" required
+                                                        id="pc_aktual_{{ $i }}">
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        <div class="col-2">
-                                            <div class="input-group input-group-static my-4">
-                                                <label class="ms-0" for="pc_ap_pica_{{ $i }}">AP/TOD</label>
-                                                <select class="form-control" name="pc_ap_pica_{{ $i }}"
-                                                    required>
-                                                    <option value="ap">AP</option>
-                                                    <option value="tod">TOD</option>
-                                                </select>
+                                            <div class="col-2">
+                                                <div class="input-group input-group-static my-4">
+                                                    <label class="ms-0"
+                                                        for="pc_ap_pica_{{ $i }}">AP/TOD</label>
+                                                    <select class="form-control" name="pc_ap_pica_{{ $i }}"
+                                                        required>
+                                                        <option value="ap">AP</option>
+                                                        <option value="tod">TOD</option>
+                                                    </select>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-4" style="">
-                                            <div class="input-group input-group-static my-4"
-                                                id="leading-kpi-group_{{ $i }}">
-                                                <label for="dicID_{{ $i }}" class="">Department in
-                                                    Charge (DIC)</label>
-                                                <select class="form-control DICDepartment"
-                                                    name="dicID_{{ $i }}" id="dicID_{{ $i }}"
-                                                    required>
-                                                    @foreach ($dataDepartment as $q)
-                                                        <option value="{{ $q->KodeDP }}">
-                                                            {{ $q->Nama . ' - ' . $q->KodeDP }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
+                                        <div class="row">
+                                            <div class="col-md-4" style="">
+                                                <div class="input-group input-group-static my-4">
+                                                    <label for="dicID_{{ $i }}" class="">Department in
+                                                        Charge (DIC)</label>
+                                                    <select class="form-control DICDepartment"
+                                                        name="dicID_{{ $i }}" id="dicID_{{ $i }}"
+                                                        required>
+                                                        @foreach ($dataDepartment as $q)
+                                                            <option value="{{ $q->KodeDP }}">
+                                                                {{ $q->Nama . ' - ' . $q->KodeDP }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col-md-4" style="">
-                                            <div class="input-group input-group-static my-4"
-                                                id="leading-kpi-group_{{ $i }}">
-                                                <label for="picID_{{ $i }}" class="">Person In Charge
+                                            <div class="col-md-4" style="">
+                                                <div class="input-group input-group-static my-4">
+                                                    <input type="hidden" name="hiddenPIC_{{ $i }}"
+                                                        id="hiddenPIC_{{ $i }}">
+                                                    <label for="picID_{{ $i }}" class="">Person In
+                                                        Charge
+                                                        (PIC)</label>
+                                                    <select class="form-control picIDHuman"
+                                                        name="picID_{{ $i }}"
+                                                        id="picID_{{ $i }}"></select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input type="hidden" name="hiddenAtasan_{{ $i }}"
+                                                    id="hiddenAtasan_{{ $i }}">
+                                                <label for="DueDate_{{ $i }}" class="">Due Date
                                                     (PIC)</label>
-                                                <select class="form-control picIDHuman" name="picID_{{ $i }}"
-                                                    id="picID_{{ $i }}"></select>
+                                                <div class="input-group input-group-static d-flex">
+                                                    <input class="form-control due-date-picker" type="text"
+                                                        placeholder="DD/MM/YYYY" name="DueDate_{{ $i }}"
+                                                        required id="DueDate_{{ $i }}">
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
-                                            <label for="DueDate_{{ $i }}" class="">Due Date
-                                                (PIC)sssss</label>
-                                            <div class="input-group input-group-static d-flex">
-                                                <input class="form-control due-date-picker" type="text"
-                                                    placeholder="DD/MM/YYYY" name="DueDate_{{ $i }}" required
-                                                    id="DueDate_{{ $i }}">
+                                        <hr class="horizontal dark my-sm-3">
+                                        <div class="row">
+                                            <div class="col-md-4" style="">
+                                                <div class="input-group input-group-static my-4">
+                                                    <label for="atasan_ID_{{ $i }}" class="">Atasan
+                                                        (PIC)</label>
+                                                    <select class="form-control picIDAtasan"
+                                                        name="atasan_ID_{{ $i }}"
+                                                        id="atasan_ID_{{ $i }}"></select>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                @endfor
+                    @endfor
+                </div>
+
 
                 <hr class="horizontal dark my-sm-3">
 
@@ -383,9 +409,14 @@
                 $(`#pc_action_${i}`).val('');
                 $(`#pc_aktual_${i}`).val('');
                 $(`#pc_ap_pica_${i}`).val('pc');
-                $(`#dicID_${i}`).val(null).trigger('change'); // Reset dan trigger change untuk Select2
-                $(`#picID_${i}`).val(null).trigger('change'); // Reset dan trigger change untuk Select2
-                $(`#DueDate_${i}`).val(""); // Reset dan trigger change untuk Select2
+                $(`#dicID_${i}`).val(null).trigger('change');
+                $(`#picID_${i}`).val(null).trigger('change');
+                $(`#atasan_ID_${i}`).val(null).trigger('change');
+                $(`#DueDate_${i}`).val("");
+                $(`#hiddenPIC_${i}`).val("");
+                $(`#hiddenAtasan_${i}`).val("");
+                $(`#pic_exist_${i}`).html("");
+                $(`#atasan_exist_${i}`).html("");
             }
         }
 
@@ -397,8 +428,22 @@
             })
         });
 
+        function formatDate(dateString) {
+            let dateParts = dateString.split('-');
+            if (dateParts[2].length === 1) {
+                dateParts[2] = '0' + dateParts[2];
+            }
+            let date = new Date(`${dateParts[0]}-${dateParts[1]}-${dateParts[2]}`);
+            let options = {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            };
+            return date.toLocaleDateString('en-GB', options);
+        }
+
         function OpenModal(obj, key) {
-            console.log(obj);
+            resetFormStep();
             let objString = JSON.stringify(obj).replace(/"/g, '&quot;');
             let dataHtml = `<button class="btn btn-primary ms-auto uploadBtn" id="buttonSubmitDataPICA_{{ $key }}"
                             onclick="submitDataStepSolution(${key})">
@@ -412,12 +457,96 @@
             $('#idMaster').val(obj.id_master);
             $('#nodocWhy').val(obj.nodocpica);
 
-            $('#masukkanButtonSubmit').html(dataHtml);
-            $('#stepSolution').modal("show");
+
+
+            let dataKirim = {
+                identity: obj.identity,
+                id_why: obj.id,
+                nik_master: obj.nik_master,
+                id_master: obj.id_master,
+                nodocWhy: obj.nodocpica
+            }
+
+            $.ajax({
+                type: 'post',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: "/smart-pica/check-data-step",
+                data: dataKirim,
+                dataType: 'json',
+                success: function(response) {
+                    if (response.code == 200) {
+                        let datas = response.data;
+                        for (let i = 1; i <= datas.length; i++) {
+                            $(`#pc_action_${i}`).val(datas[i - 1].action);
+                            $(`#pc_aktual_${i}`).val(datas[i - 1].note_step);
+                            $(`select[name="pc_ap_pica_${i}"]`).val(datas[i - 1].ap_tod);
+                            $(`#dicID_${i}`).val(datas[i - 1].dic).trigger('change');
+                            $(`#picID_${i}`).val(datas[i - 1].pic).trigger('change');
+                            $(`#atasan_ID_${i}`).val(datas[i - 1].approver).trigger('change');
+                            $(`#editID_${i}`).val(datas[i - 1].id);
+                            $(`#hiddenPIC_${i}`).val(datas[i - 1].pic);
+                            $(`#hiddenAtasan_${i}`).val(datas[i - 1].approver);
+                            initializeSelect2(`picID_${i}`, '--- Change PIC ---', "/helper/karyawan",
+                                `dicID_${i}`);
+                            initializeSelect2(`atasan_ID_${i}`, '--- Change PIC ---', "/helper/karyawan",
+                                `dicID_${i}`);
+                            $(`#DueDate_${i}`).val(formatDate(datas[i - 1].due_date));
+                            $(`#pic_exist_${i}`).html("PIC exist : " + datas[i - 1].pic +
+                                "<br> PIC Atasan exist : " + datas[i - 1].approver)
+                        }
+                    }
+                    $('#masukkanButtonSubmit').html(dataHtml);
+                    $('#stepSolution').modal("show");
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error 001',
+                        html: message,
+                        confirmButtonText: 'OK'
+                    });
+                }
+            })
+
         }
     </script>
+
     <script type="text/javascript">
+        function initializeSelect2(elementId, placeholderText, ajaxUrl, dataDepartmentId) {
+            $('#' + elementId).select2({
+                theme: 'bootstrap-5', // Menggunakan tema Bootstrap 5
+                dropdownParent: $('#' + elementId).closest('.input-group'),
+                placeholder: placeholderText,
+                width: '100%',
+                ajax: ajaxUrl ? {
+                    url: ajaxUrl,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    type: "post",
+                    delay: 250,
+                    dataType: 'json',
+                    data: function(params) {
+                        return {
+                            query: params.term, // search term
+                            dataDepartment: $('#' + dataDepartmentId).val()
+                        };
+                    },
+                    processResults: function(response) {
+                        return {
+                            results: response.data
+                        };
+                    },
+                    cache: true
+                } : null
+            });
+        }
         $(document).ready(function() {
+
+
+
 
             var targetString = "add-step-smart-pica";
 
@@ -426,35 +555,7 @@
                 $("#progressPica").closest('.submenu').show();
             }
 
-            function initializeSelect2(elementId, placeholderText, ajaxUrl, dataDepartmentId) {
-                $('#' + elementId).select2({
-                    theme: 'bootstrap-5', // Menggunakan tema Bootstrap 5
-                    dropdownParent: $('#' + elementId).closest('.input-group'),
-                    placeholder: placeholderText,
-                    width: '100%',
-                    ajax: ajaxUrl ? {
-                        url: ajaxUrl,
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        },
-                        type: "post",
-                        delay: 250,
-                        dataType: 'json',
-                        data: function(params) {
-                            return {
-                                query: params.term, // search term
-                                dataDepartment: $('#' + dataDepartmentId).val()
-                            };
-                        },
-                        processResults: function(response) {
-                            return {
-                                results: response.data
-                            };
-                        },
-                        cache: true
-                    } : null
-                });
-            }
+
 
             // Inisialisasi Select2 untuk PIC
             initializeSelect2('picID_1', '--- Pilih PIC ---', "/helper/karyawan", 'dicID_1');
@@ -462,6 +563,13 @@
             initializeSelect2('picID_3', '--- Pilih PIC ---', "/helper/karyawan", 'dicID_3');
             initializeSelect2('picID_4', '--- Pilih PIC ---', "/helper/karyawan", 'dicID_4');
             initializeSelect2('picID_5', '--- Pilih PIC ---', "/helper/karyawan", 'dicID_5');
+
+            // atasan
+            initializeSelect2('atasan_ID_1', '--- Pilih Atasan PIC ---', "/helper/karyawan", 'dicID_1');
+            initializeSelect2('atasan_ID_2', '--- Pilih Atasan PIC ---', "/helper/karyawan", 'dicID_2');
+            initializeSelect2('atasan_ID_3', '--- Pilih Atasan PIC ---', "/helper/karyawan", 'dicID_3');
+            initializeSelect2('atasan_ID_4', '--- Pilih Atasan PIC ---', "/helper/karyawan", 'dicID_4');
+            initializeSelect2('atasan_ID_5', '--- Pilih Atasan PIC ---', "/helper/karyawan", 'dicID_5');
 
             // Inisialisasi Select2 untuk Department PIC
             initializeSelect2('dicID_1', '--- Pilih Department PIC ---');
@@ -471,6 +579,7 @@
             initializeSelect2('dicID_5', '--- Pilih Department PIC ---');
         });
     </script>
+
     <script type="text/javascript">
         var dataFinalStep = [];
 
@@ -507,19 +616,27 @@
                 let action = $(`#pc_action_${i}`).val();
                 // Memeriksa apakah action diisi
                 if (action.trim() !== '') {
+                    console.log($(`#picID_${i}`).val());
+                    console.log($(`#hiddenPIC_${i}`).val())
                     let solution = {
                         action: action,
                         note: $(`#pc_aktual_${i}`).val(),
                         ap_tod: $(`select[name="pc_ap_pica_${i}"]`).val(),
                         dic: $(`#dicID_${i}`).val(),
-                        pic: $(`#picID_${i}`).val(),
+                        pic: !$(`#picID_${i}`).val() ? ($(`#hiddenPIC_${i}`).val() == "" ? "" : $(
+                            `#hiddenPIC_${i}`).val()) : $(`#picID_${i}`).val(),
+                        atasan: !$(`#atasan_ID_${i}`).val() ? ($(`#hiddenAtasan_${i}`).val() == "" ? "" : $(
+                            `#hiddenAtasan_${i}`).val()) : $(`#atasan_ID_${i}`).val(),
+                        edit: $(`#editID_${i}`).val(),
                         dueDate: convertDateFormat($(`#DueDate_${i}`).val()),
                     };
+                    console.log(solution)
 
                     if (solution.note.trim() == '' ||
                         solution.ap_tod == '' ||
                         solution.dic.trim() == '' ||
-                        solution.pic.trim() == '' ||
+                        solution.pic.trim() == "" ||
+                        solution.atasan.trim() == "" ||
                         solution.dueDate.trim() == '') {
 
                         Swal.fire({
@@ -530,8 +647,6 @@
                         return;
                     }
                     data.push(solution);
-                } else {
-                    console.log(`Info: Action ke-${i} tidak diisi, item ini tidak dimasukkan ke dalam data`);
                 }
             }
             let dataKirim = {
@@ -571,10 +686,22 @@
                         }).then((result) => {
                             window.location.href = `/smart-pica/dashboard`
                         })
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: `Error 00003`,
+                            html: response.message,
+                            confirmButtonText: 'OK'
+                        });
                     }
                 },
                 error: function(xhr, ajaxOptions, thrownError) {
-                    console.log(thrownError)
+                    Swal.fire({
+                        icon: 'error',
+                        title: `Error 00002`,
+                        html: message,
+                        confirmButtonText: 'OK'
+                    });
                 }
             })
         }

@@ -85,7 +85,7 @@ class HelperController extends Controller
         $data = $d->request->get("query");
         $depart = $d->request->get("dataDepartment");
         $dataFinal = $this->validateAndSanitizeInput($data);
-        $dataDepartment = DB::connection('sqlsrv2')->select("SELECT TOP 5 NIK nomorPunggung, Nama nama  FROM TKaryawan where KodeDP like '%$depart%' and Nama like '%$data%' and AKTIF = 0 ");
+        $dataDepartment = DB::connection('sqlsrv2')->select("SELECT TOP 5 NIK nomorPunggung, Nama nama  FROM TKaryawan where KodeDP like '%$depart%' and ( Nama like '%$data%' OR NIK like '%$data%') and AKTIF = 0 ");
 
         $dataJs = [];
         foreach ($dataDepartment as $a) {
@@ -299,7 +299,7 @@ class HelperController extends Controller
                             WHEN ISNULL(step_pica.acceptance, 0) = 2 THEN 'REJECT BY PIC'
                             WHEN ISNULL(step_pica.acceptance, 0) = 9 AND ISNULL(step_pica.status_approve, 0) = 0 AND ISNULL(step_pica.status_reject, 0) = 0  THEN 'NEED APPROVE'
                             WHEN ISNULL(dp.progress, 0) = 0 THEN 'NOT YET'
-                            WHEN ISNULL(dp.progress, 0) > 0 AND ISNULL(dp.progress, 0) < ISNULL(mp.target_master, 0) THEN 'ON PROGRESS'
+                            WHEN ISNULL(dp.progress, 0) > 0 AND ISNULL(dp.progress, 0) < 100 THEN 'ON PROGRESS'  -- ISNULL(mp.target_master, 0) THEN 'ON PROGRESS'
                             WHEN ISNULL(step_pica.acceptance, 0) = 9 AND ISNULL(step_pica.status_approve, 0) = 1 THEN 'CLOSE'
                             WHEN ISNULL(dp.status_reject,0) = 1 THEN 'REVISION'
                             ELSE 'NOT YET'
@@ -536,49 +536,13 @@ class HelperController extends Controller
                         step_pica.acceptance, 
                         step_pica.dic,
                         step_pica.status_approve,
-                        level_approval,
-                        -- Mencari approver berdasarkan level yang lebih tinggi
-                        CASE 
-                            -- Jika PIC ada di level1, ambil approver dari level2
-                            WHEN EXISTS (SELECT 1 FROM SMF_LVL_MAPPING_MASTER SLM
-                                        JOIN USR_LVL UL ON UL.kode_section = SLM.section
-                                        WHERE SLM.level1 = UL.nik AND UL.nik = step_pica.pic) 
-                                THEN (SELECT SLM.level2 FROM SMF_LVL_MAPPING_MASTER SLM WHERE SLM.section = (SELECT UL.kode_section FROM USR_LVL UL WHERE UL.nik = step_pica.pic))
-                            
-                            -- Jika PIC ada di level2, ambil approver dari level3
-                            WHEN EXISTS (SELECT 1 FROM SMF_LVL_MAPPING_MASTER SLM
-                                        JOIN USR_LVL UL ON UL.kode_section = SLM.section
-                                        WHERE SLM.level2 = UL.nik AND UL.nik = step_pica.pic) 
-                                THEN (SELECT SLM.level3 FROM SMF_LVL_MAPPING_MASTER SLM WHERE SLM.section = (SELECT UL.kode_section FROM USR_LVL UL WHERE UL.nik = step_pica.pic))
-                            
-                            -- Jika PIC ada di level3, ambil approver dari level4
-                            WHEN EXISTS (SELECT 1 FROM SMF_LVL_MAPPING_MASTER SLM
-                                        JOIN USR_LVL UL ON UL.kode_section = SLM.section
-                                        WHERE SLM.level3 = UL.nik AND UL.nik = step_pica.pic) 
-                                THEN (SELECT SLM.level4 FROM SMF_LVL_MAPPING_MASTER SLM WHERE SLM.section = (SELECT UL.kode_section FROM USR_LVL UL WHERE UL.nik = step_pica.pic))
-                            
-                            -- Jika PIC ada di level4, ambil approver dari level5
-                            WHEN EXISTS (SELECT 1 FROM SMF_LVL_MAPPING_MASTER SLM
-                                        JOIN USR_LVL UL ON UL.kode_section = SLM.section
-                                        WHERE SLM.level4 = UL.nik AND UL.nik = step_pica.pic) 
-                                THEN (SELECT SLM.level5 FROM SMF_LVL_MAPPING_MASTER SLM WHERE SLM.section = (SELECT UL.kode_section FROM USR_LVL UL WHERE UL.nik = step_pica.pic))
-                            
-                            -- Jika PIC ada di level5, tidak ada approver di atasnya
-                            WHEN EXISTS (SELECT 1 FROM SMF_LVL_MAPPING_MASTER SLM
-                                        JOIN USR_LVL UL ON UL.kode_section = SLM.section
-                                        WHERE SLM.level5 = UL.nik AND UL.nik = step_pica.pic) 
-                                THEN NULL
-                            
-                            -- Jika PIC tidak ditemukan di level manapun, default ke level1
-                            ELSE (SELECT SLM.level1 FROM SMF_LVL_MAPPING_MASTER SLM 
-                                JOIN USR_LVL UL ON UL.kode_section = SLM.section
-                                WHERE UL.nik = step_pica.pic)
-                        END AS approver
+                        approver
                     FROM
                         new_pica_step step_pica
                 )
                 SELECT * 
-                FROM CTE where acceptance = 9 and dic = '$dept' and approver = '$userID' ";
+                FROM CTE where ('OD' = '$dept' AND acceptance = 10) OR ('OD' != '$dept' AND ( acceptance = 9 OR acceptance = 10)  AND approver = '$userID' ) ";
+
         $countDataUser = DB::select("select count(*) jumlah FROM new_pica_step where dic = '$dept'");
         $newQuery = $this->GetQueryDataTableApprovementPica($query, $table);
         $dataUser = DB::select($newQuery);

@@ -152,15 +152,6 @@
                         </div>
                     </div>
                 </div>
-
-                <hr class="horizontal dark my-sm-3">
-
-                <div class="row" style="margin:10px">
-                    <div class="col text-end" id="masukkanButtonSubmit">
-
-                    </div>
-                </div>
-
             </div>
         </div>
     </div>
@@ -182,6 +173,8 @@
                     <div class="col">
                         <input type="hidden" id="RaasonIDOBJECT">
                         <div class="card border" style="">
+                            <input type="hidden" name="dept_user" id="dept_user"
+                                value="{{ session('kode_department') }}">
                             <div class="card-body">
                                 <h5 class="card-title">Reject Reason</h5>
                                 <span id="solutionSpan"></span>
@@ -226,7 +219,9 @@
         }
 
         function dataTableStatusFormater(value, row, index) {
-            if (value == 0) {
+            if (row.acceptance == 10 && row.status_approve == 0) {
+                return `<button type="button" class="btn btn-info btn-sm">Need Approve OD</button>`
+            } else if (value == 0) {
                 return `<button type="button" class="btn btn-warning btn-sm">Close Need Approve</button>`
             } else if (value == 1) {
                 return `<button type="button" class="btn btn-success btn-sm">Close</button>`
@@ -291,7 +286,11 @@
             $('#nikMaster').val(dataObject.nik_master)
             $('#idSolution').val(dataObject.id)
             $('#dataListHistoryProgress').bootstrapTable('refresh');
-            if (dataObject.status_approve != 0) {
+            if ($("#dept_user").val() == "OD" && dataObject.status_approve == 0) {
+                $('#rejectButton').removeClass("d-none");
+            } else if ($("#dept_user").val() != "OD" && dataObject.acceptance == 9) {
+                $('#rejectButton').removeClass("d-none");
+            } else {
                 $('#rejectButton').addClass("d-none");
             }
             $('#updateProgressHistory').modal("show");

@@ -209,7 +209,7 @@ class SKLFormController extends Controller
                 $atasan = DB::table(self::T_KARYAWAN)->select('Panggilan')->where('NIK', $nikAtasan)->first();
                 $url = url('skl/detail') . '?NoForm=' . $NoForm;
                 $message = "'Kepada YTH Bapak/Ibu {$atasan->Panggilan}, terdapat pengajuan lembur baru dengan nomor : {$NoForm}. Silakan klik link dibawah ini untuk menyetujui pengajuan berikut :' + CHAR(13) + CHAR(10) + '{$url}'";
-                DB::statement("INSERT INTO TBL_ALARM_SPL (NIK, Message) VALUES ('{$nikAtasan}', {$message})");
+                DB::statement("INSERT INTO " . self::T_ALARM . " (NIK, Message) VALUES ('{$nikAtasan}', {$message})");
             }
 
             DB::commit();

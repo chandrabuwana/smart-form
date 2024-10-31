@@ -837,14 +837,14 @@ class SmartCateringController extends Controller {
         $dataDepartment = DB::connection('sqlsrv2')
             ->table('tsite')
             ->where('AKTIF', 0);
-            
-        
+
+
             // ->select("select * from tsite where AKTIF = 0 and Nama like '%$dataFinal%' or kodest like '%$dataFinal%'");
         if($data) $dataDepartment->where('Nama', 'like', "%$dataFinal%")->orWhere('KodeST', 'like', "%$dataFinal%");
         Log::debug('SQL helper site : '. $dataDepartment->toRawSql());
-        
+
         $dataDepartment = $dataDepartment->get();
-        
+
         $dataJs = [];
         foreach ($dataDepartment as $a) {
             $dataBaru = [
@@ -858,7 +858,7 @@ class SmartCateringController extends Controller {
         ];
         return json_encode($final);
     }
-  
+
     public function viewImportMappingGS(Request $request) {
         return view('SmartForm::GS/import-mapping-gs');
     }
@@ -910,7 +910,7 @@ class SmartCateringController extends Controller {
                 DB::table('SCT_GS_MESS_MST')->insert([
                     'KodeSite' => strtoupper($request->site),
                     'NoDoc' => $noDoc,
-                    'NamaMess' => $sheetName,
+                    'NamaMess' => trim($sheetName),
                     'Status' => '1',
                     'DayaTampung' => $kapasitas,
                     'JumlahKamar' => '1',
@@ -997,10 +997,11 @@ class SmartCateringController extends Controller {
                         break;
 
                     } else {
+                        $messName = trim($messName);
+
                         $messMst = DB::table('SCT_GS_MESS_MST')->where('KodeSite', $request->site)->where('NamaMess', $messName)->first('NoDoc');
                         if(is_null($messMst)) {
                             DB::rollBack();
-                            dd($messName);
                         }
 
                         $weeks = [
@@ -1072,6 +1073,7 @@ class SmartCateringController extends Controller {
                 ];
 
                 foreach(array_keys($weeks) as $day) {
+                    $$day = trim($$day);
                     $vendorDay = $this->_upsertVendorMst($request->site, $$day, $vendorCounter);
                     $weeks[ $day ] = $vendorDay;
                 }
@@ -1100,6 +1102,7 @@ class SmartCateringController extends Controller {
 
         } catch(\Throwable $e) {
             DB::rollBack();
+            @unlink( storage_path('app/public/' . $tempFile) );
             dd($e);
         }
     }
