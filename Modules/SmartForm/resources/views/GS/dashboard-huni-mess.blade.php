@@ -124,6 +124,7 @@
                             <thead>
                                 <tr>
                                     <th data-field="nik" data-align="center">NIK</th>
+                                    <th data-field="nama" data-align="left">Nama</th>
                                     <th data-field="nama_mess" data-align="left" data-halign="center">Nama Mess</th>
                                     <th data-field="site" data-align="left">Site</th>
                                     <th data-field="status" data-align="left" data-formatter="statusFormatter">Status</th>
