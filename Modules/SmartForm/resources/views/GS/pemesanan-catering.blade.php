@@ -32,6 +32,21 @@
             transition: all .15s ease-in-out;
             margin-right: 12px;
         }
+        .select2.select2-container .select2-selection {
+            border-bottom: 1px solid #ccc;
+            height: 40px;
+            margin-bottom: 15px;
+            outline: none !important;
+            transition: all .15s ease-in-out;
+        }
+        .select2.select2-container .select2-selection .select2-selection__rendered {
+            line-height: 32px;
+            padding: 8px 0px;
+        }
+        .select2-results {
+            max-height: 200px; /* Batasi tinggi maksimum dropdown */
+            overflow-y: auto;  /* Aktifkan scroll vertical */
+        }
     </style>
 @endsection
 
@@ -101,6 +116,7 @@
                             <thead>
                                 <tr>
                                     <th data-field="nik" data-align="center">NIK</th>
+                                    <th data-field="nama" data-align="center">Nama</th>
                                     <th data-field="kodesite" data-align="center">Site</th>
                                     <th data-field="lokasi" data-align="left" data-formatter="lokasiFormatter">Lokasi</th>
                                     <th data-field="status" data-align="left" data-formatter='statusFormatter' data-filter-control="select">Status</th>
@@ -121,6 +137,7 @@
                             <thead>
                                 <tr>
                                     <th data-field="nik" data-align="center">NIK</th>
+                                    <th data-field="nama" data-align="center">Nama</th>
                                     <th data-field="tanggal" data-align="left">Tanggal</th>
                                     <th data-field="masuk" data-align="left">Masuk</th>
                                 </tr>
@@ -150,7 +167,7 @@
                     <h6 class="text-black text-capitalize ps-3">Total Adjustment : </h6>
                     <div class="col-md-4 mx-3">
                         <div class="input-group input-group-static mb-4">
-                            <label for="uploadExcell">Template Excell</label>
+                            <label for="uploadExcell"><i class="fa-solid fa-file-excel"></i> <a href="/storage/AdjustmentCatering.xlsx">Download Template Excell</a></label>
                             <input type="file" multiple class="form-control" id="uploadExcell" name="uploadExcell">
                         </div>
                     </div>
@@ -164,7 +181,7 @@
                                 <tr>
                                     <th data-field="nama" data-align="center">Nama</th>
                                     <th data-field="nik" data-align="left">NIK</th>
-                                    <th data-field="lokasi" data-align="left">lokasi</th>
+                                    {{-- <th data-field="lokasi" data-align="left">lokasi</th> --}}
                                     <th data-field="keterangan" data-align="left">keterangan</th>
                                 </tr>
                             </thead>
@@ -651,6 +668,7 @@
                     // console.log(response.data.dataMess[dataMess].cuti)
                     data_tabel.push({
                         nik: response.data.dataMess[dataMess].Nik,
+                        nama: response.data.dataMess[dataMess].nama,
                         kodesite: response.data.dataMess[dataMess].KodeSite,
                         lokasi: response.data.dataMess[dataMess].lokasi,
                         status: response.data.dataMess[dataMess].status,
@@ -665,6 +683,7 @@
                     workingNIK.push(response.data.dataWorking[working].NIK)
                     data_working.push({
                         nik: response.data.dataWorking[working].NIK,
+                        nama: response.data.dataWorking[working].Nama,
                         tanggal: response.data.dataWorking[working].Tanggal,
                         masuk: response.data.dataWorking[working].Masuk
                     })

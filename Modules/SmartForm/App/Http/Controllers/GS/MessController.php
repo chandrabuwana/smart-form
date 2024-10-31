@@ -629,8 +629,9 @@ class MessController extends Controller {
 
         try {
             $sql_data_mess = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_PENGHUNI_MESS . ' as a')
-                ->select('a.KodeSite as site', 'a.Nik as nik', 'a.status', 'a.keterangan', 'b.NamaMess as nama_mess', 'a.NoDoc as kode_mess', 'a.NoKamar as no_kamar')
+                ->select('a.KodeSite as site', 'a.Nik as nik', 'a.status', 'a.keterangan', 'b.NamaMess as nama_mess', 'a.NoDoc as kode_mess', 'a.NoKamar as no_kamar', 'c.nama')
                 ->leftJoin(self::TABLE_MASTER_MESS.' as b', 'a.NoDoc', '=', 'b.NoDoc')
+                ->leftJoin(self::TABLE_KARYAWAN_HRD. ' as c', 'a.Nik', '=', 'c.nik')
                 ->orderByDesc('a.created_at')
                 ->where('a.NoDoc', $mess)
                 ->where('a.KodeSite', $site)
