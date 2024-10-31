@@ -38,6 +38,7 @@ class SmartCateringController extends Controller {
     private const TABLE_VENDOR_ORDER = "SCT_GS_CT_ORDER_VNDR";
     private const TABLE_VENDOR_MASTER = "SCT_GS_VENDOR_MST";
     private const TABLE_ABSENSI_HRD = self::DB_HRD . ".dbo.TAbsensi";
+    private const TABLE_FINGERLOG_HRD = self::DB_HRD . ".dbo.TFingerlog";
     private const TABLE_KARYAWAN_HRD = self::DB_HRD . ".dbo.TKaryawan";
     private const TABLE_PENEGASAN_CUTI = self::DB_HRD . ".dbo.TPenegasanCuti";
     private const TABLE_PENGAJUAN_CUTI = self::DB_HRD . ".dbo.tpengajuancuti";
@@ -47,17 +48,18 @@ class SmartCateringController extends Controller {
         'MME' => 'DMME.',
         'JKT' => '',
         'JKT1' => '',
-        'CDI' => 'CDI',
-        'PMSS' => 'DPMSS',
-        'MASS' => 'DMAS',
-        'AGM' => 'DAGM',
-        'BSSR' => 'DBSSR',
-        'MBL' => 'DMBL',
-        'MSJ' => 'DMSJ',
-        'TAJ' => 'DTAJ'
+        'CDI' => 'CDI.',
+        'PMSS' => 'DPMSS.',
+        'MASS' => 'DMAS.',
+        'AGM' => 'DAGM.',
+        'BSSR' => 'DBSSR.',
+        'MBL' => 'DMBL.',
+        'MSJ' => 'DMSJ.',
+        'TAJ' => 'DTAJ.'
     ];
 
     function AddPemesanan(Request $request) {
+        Helper::getAccessToken();
         return view("SmartForm::GS/pemesanan-catering");
     }
 
@@ -79,11 +81,11 @@ class SmartCateringController extends Controller {
         $jam_absensi = [
             'DS' => [
                 'start' => '05:00',
-                'end' => '07:15'
+                'end' => '07:30'
             ],
             'NS' => [
                 'start' => '17:00',
-                'end' => '19:15'
+                'end' => '19:30'
             ]
         ];
 
@@ -107,6 +109,7 @@ class SmartCateringController extends Controller {
         if(count($validator->errors()) > 0) {
             // TODO: error valdiasi
             $message = 'Error validasi request';
+            $errorMessage[] = $validator->errors()->all();
         } else {
             $tgl = Carbon::createFromFormat('Y-m-d', $reqTanggalPemesanan);
             // $selectedTahun = $tgl->year;
@@ -116,8 +119,9 @@ class SmartCateringController extends Controller {
             // Log::info('selectedTahun: '. $selectedTahun . ', selectedBulan: '. $selectedBulan . ', selectedDate: '. $selectedDate);
             try {
                 $data_karyawan_mess = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_PENGHUNI_MESS . " as dh")
-                    ->select('dh.KodeSite', 'dh.Nik', 'dh.NoDoc', 'dm.NamaMess')
-                    ->join(self::TABLE_MASTER_MESS.' as dm', 'dh.NoDoc', '=', 'dm.NoDoc')
+                    ->select('dh.KodeSite', 'dh.Nik', 'dh.NoDoc', 'dm.NamaMess', 'tk.Nama as nama')
+                    ->leftJoin(self::TABLE_MASTER_MESS.' as dm', 'dh.NoDoc', '=', 'dm.NoDoc')
+                    ->leftJoin(self::TABLE_KARYAWAN_HRD . ' as tk', 'dh.nik', '=', 'tk.nik')
                     ->where('dh.KodeSite', $reqSite)
                     ->get();
 
@@ -126,12 +130,18 @@ class SmartCateringController extends Controller {
                 if($reqJenisPemesanan == 'pagi') {
 
                 } else {
-                    $data_karyawan_absensi = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_ABSENSI_HRD . ' as ta')
-                        ->select('ta.NIK', 'ta.Tanggal', 'ta.Masuk')
-                        ->where('lmasuk', $reqSite)
-                        ->whereDate('ta.Tanggal', Carbon::createFromFormat('Y-m-d', $reqTanggalPemesanan)->startOfDay()->format('Y-m-d H:i:s.u'))
-                        ->whereBetween('ta.Masuk', [$jam_absensi[$selectedShift]['start'], $jam_absensi[$selectedShift]['end']])
-                        ;
+                    // $data_karyawan_absensi = DB::connection(self::DB_CONN_NAME)->table($this->DB_LINK[$reqSite] . self::TABLE_ABSENSI_HRD . ' as ta')
+                    //     ->select('ta.NIK', 'ta.Tanggal', 'ta.Masuk')
+                    //     ->where('lmasuk', $reqSite)
+                    //     ->whereDate('ta.Tanggal', Carbon::createFromFormat('Y-m-d', $reqTanggalPemesanan)->startOfDay()->format('Y-m-d H:i:s.u'))
+                    //     ->whereBetween('ta.Masuk', [$jam_absensi[$selectedShift]['start'], $jam_absensi[$selectedShift]['end']])
+                    //     ;
+                    $data_karyawan_absensi = DB::connection(self::DB_CONN_NAME)->table($this->DB_LINK[$reqSite] . self::TABLE_FINGERLOG_HRD . ' as tf')
+                        ->select('tf.IP', 'tf.NIK', 'tf.Tanggal', 'tf.Jam as Masuk', 'tk.Nama')
+                        ->leftJoin(self::TABLE_KARYAWAN_HRD . ' as tk', 'tk.Nik', '=', 'tf.Nik')
+                        ->where('tf.Status', 'IN')
+                        ->whereDate('tf.Tanggal', Carbon::createFromFormat('Y-m-d', $reqTanggalPemesanan)->startOfDay()->format('Y-m-d H:i:s.u'))
+                        ->whereBetween('tf.Jam', [$jam_absensi[$selectedShift]['start'], $jam_absensi[$selectedShift]['end']]);
                     Log::debug('SQL absensi karyawan : '. $data_karyawan_absensi->toRawSql());
                     $data_karyawan_absensi = $data_karyawan_absensi->get()->toArray();
                     Log::debug("Data absensi ". $reqSite . " : " .count($data_karyawan_absensi));
@@ -197,19 +207,21 @@ class SmartCateringController extends Controller {
                 // Log::info('array_b_filtered ('. count($data_karyawan_mess_filter_by_absensi) .') : '. json_encode($data_karyawan_mess_filter_by_absensi, JSON_PRETTY_PRINT));
                 // Log::info('data_clone : '. json_encode($data_clone));
                 // Log::info('mess: '.$sum_mess. ', working: '.$sum_working);
-
+                $isError = false;
             } catch (Exception $ex) {
+                $message = 'Terjadi Kesalahan, coba beberapa saat lagi';
+                $errorMessage[] = $ex->getMessage();
                 Log::error($ex->getMessage());
                 Log::error($ex->getTraceAsString());
             }
 
-            $isError = false;
+            // $isError = false;
         }
 
         $data = [
             'isError' => $isError,
             'message' => $message,
-            'errorMessage'=> $validator->errors(),
+            'errorMessage'=> $errorMessage,
             'dataMess' => $dataMess,
             'dataWorking' => $dataWorking,
             'dataPesanMakanMess' => $pesan_makan,
