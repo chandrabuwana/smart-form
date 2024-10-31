@@ -131,12 +131,14 @@ class SmartCateringController extends Controller {
                 if($reqJenisPemesanan == 'pagi') {
 
                 } else {
+                    // tabel absensi
                     // $data_karyawan_absensi = DB::connection(self::DB_CONN_NAME)->table($this->DB_LINK[$reqSite] . self::TABLE_ABSENSI_HRD . ' as ta')
                     //     ->select('ta.NIK', 'ta.Tanggal', 'ta.Masuk')
                     //     ->where('lmasuk', $reqSite)
                     //     ->whereDate('ta.Tanggal', Carbon::createFromFormat('Y-m-d', $reqTanggalPemesanan)->startOfDay()->format('Y-m-d H:i:s.u'))
                     //     ->whereBetween('ta.Masuk', [$jam_absensi[$selectedShift]['start'], $jam_absensi[$selectedShift]['end']])
                     //     ;
+                    // table fingerlog
                     $data_karyawan_absensi = DB::connection(self::DB_CONN_NAME)->table($this->DB_LINK[$reqSite] . self::TABLE_FINGERLOG_HRD . ' as tf')
                         ->select('tf.IP', 'tf.NIK', 'tf.Tanggal', 'tf.Jam as Masuk', 'tk.Nama')
                         ->leftJoin(self::TABLE_KARYAWAN_HRD . ' as tk', 'tk.Nik', '=', 'tf.Nik')
@@ -144,7 +146,8 @@ class SmartCateringController extends Controller {
                         ->whereDate('tf.Tanggal', Carbon::createFromFormat('Y-m-d', $reqTanggalPemesanan)->startOfDay()->format('Y-m-d H:i:s.u'))
                         ->whereBetween('tf.Jam', [$jam_absensi[$selectedShift]['start'], $jam_absensi[$selectedShift]['end']]);
                     Log::debug('SQL absensi karyawan : '. $data_karyawan_absensi->toRawSql());
-                    $data_karyawan_absensi = $data_karyawan_absensi->get()->toArray();
+                    $data_karyawan_absensi = collect($data_karyawan_absensi->get()->toArray());
+                    $data_karyawan_absensi = $data_karyawan_absensi->unique('NIK')->values()->all();
                     Log::debug("Data absensi ". $reqSite . " : " .count($data_karyawan_absensi));
                 }
 
