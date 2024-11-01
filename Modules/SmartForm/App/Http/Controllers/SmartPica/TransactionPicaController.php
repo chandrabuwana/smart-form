@@ -84,13 +84,14 @@ class TransactionPicaController extends Controller
 
         $dataNIK = session("user_id");
         DB::beginTransaction();
+
         try {
             $idMaster = DB::table('master_pica')->insertGetId([
                 'nik' => $dataNIK,
                 'nodocpica' => $dataDocumentNumeber,
                 'tahun' => $dataMasterTahun,
                 'bulan' => $dataMasterBulan,
-                'week' => 3,
+                'week' => $dataMasterWeek,
                 'dept' => $dataMasterDept,
                 'site' => $dataMasterSite,
                 'id_kpi' => $dataMasterLeadKpi,

@@ -152,9 +152,13 @@
                                 <div class="col-md-3">
                                     <div class="input-group input-group-static my-4">
                                         <label for="pc_week" class="ms-0">Week </label>
-                                        <select class="form-control" name="pc_week" id="pc_week" disabled>
+                                        <select class="form-control" name="pc_week" id="pc_week">
                                             <option value="">-- Pilih Week --</option>
-
+                                            <option value="1">Week 1</option>
+                                            <option value="2">Week 2</option>
+                                            <option value="3">Week 3</option>
+                                            <option value="4">Week 4</option>
+                                            <option value="5">Week 5</option>
                                         </select>
                                     </div>
                                 </div>
@@ -310,49 +314,49 @@
             $(window).off(evt);
         });
 
-        $('#pc_thn, #pc_bln').change(function() {
-            // Mendapatkan nilai tahun dan bulan yang dipilih
-            var tahun = $('#pc_thn').val();
-            var bulan = $('#pc_bln').val();
+        // $('#pc_thn, #pc_bln').change(function() {
+        //     // Mendapatkan nilai tahun dan bulan yang dipilih
+        //     var tahun = $('#pc_thn').val();
+        //     var bulan = $('#pc_bln').val();
 
-            // Jika tahun dan bulan telah dipilih
-            if (tahun !== '' && bulan !== '') {
-                // Aktifkan dropdown #pc_week
-                $('#pc_week').prop('disabled', false);
+        //     // Jika tahun dan bulan telah dipilih
+        //     if (tahun !== '' && bulan !== '') {
+        //         // Aktifkan dropdown #pc_week
+        //         $('#pc_week').prop('disabled', false);
 
-                // Lakukan request Ajax untuk mendapatkan data week
-                $.ajax({
-                    url: '/helper/week', // Ganti dengan URL yang sesuai untuk permintaan Ajax Anda
-                    type: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    data: {
-                        tahun: tahun,
-                        bulan: bulan
-                    },
-                    dataType: 'json',
-                    success: function(response) {
-                        $('#pc_week').empty();
+        //         // Lakukan request Ajax untuk mendapatkan data week
+        //         $.ajax({
+        //             url: '/helper/week', // Ganti dengan URL yang sesuai untuk permintaan Ajax Anda
+        //             type: 'POST',
+        //             headers: {
+        //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //             },
+        //             data: {
+        //                 tahun: tahun,
+        //                 bulan: bulan
+        //             },
+        //             dataType: 'json',
+        //             success: function(response) {
+        //                 $('#pc_week').empty();
 
-                        for (let i = 0; i < response.data.length; i++) {
-                            $('#pc_week').append('<option value="' + response.data[i] + '">' + response
-                                .data[i] + '</option>');
-                        }
-                        $('#pc_week').prop("disable", false);
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Terjadi kesalahan dalam melakukan request Ajax: ' + error);
-                        // Optionally, handle errors here
-                    }
-                });
-            } else {
-                // Jika tahun atau bulan belum dipilih, nonaktifkan dropdown #pc_week
-                $('#pc_week').prop('disabled', true);
-                // Kosongkan opsi dropdown
-                $('#pc_week').empty().append('<option value="">-- Pilih Week --</option>');
-            }
-        });
+        //                 for (let i = 0; i < response.data.length; i++) {
+        //                     $('#pc_week').append('<option value="' + response.data[i] + '">' + response
+        //                         .data[i] + '</option>');
+        //                 }
+        //                 $('#pc_week').prop("disable", false);
+        //             },
+        //             error: function(xhr, status, error) {
+        //                 console.error('Terjadi kesalahan dalam melakukan request Ajax: ' + error);
+        //                 // Optionally, handle errors here
+        //             }
+        //         });
+        //     } else {
+        //         // Jika tahun atau bulan belum dipilih, nonaktifkan dropdown #pc_week
+        //         $('#pc_week').prop('disabled', true);
+        //         // Kosongkan opsi dropdown
+        //         $('#pc_week').empty().append('<option value="">-- Pilih Week --</option>');
+        //     }
+        // });
 
         $('#pc_site').select2({
             theme: 'bootstrap-5', // Menggunakan tema Bootstrap 5
