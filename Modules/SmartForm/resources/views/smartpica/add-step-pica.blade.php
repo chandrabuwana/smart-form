@@ -4,8 +4,8 @@
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <style>
         /* .gj-icon {
-                                                                                                                                                                                                                                                                                                                                            display: none !important;
-                                                                                                                                                                                                                                                                                                                                        } */
+                                                                                                                                                                                                                                                                                                                                                display: none !important;
+                                                                                                                                                                                                                                                                                                                                            } */
 
         /* Hide the datepicker button */
         .gj-datepicker button {
@@ -146,7 +146,7 @@
                         <label for="staticEmail" class="col-sm-2 col-form-label">Week</label>
                         <div class="col-sm-7">
                             <input type="text" readonly class="form-control-plaintext"
-                                value="Week {{ $dataMaster[0]->week + 1 }}">
+                                value="Week {{ $dataMaster[0]->week }}">
                         </div>
                     </div>
                     <div class="row">
