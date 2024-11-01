@@ -112,7 +112,7 @@
                             data-page-list="[10, 25, 50, 100, all]" data-sortable="true"
                             data-content-type="application/json" data-data-type="json" data-pagination="true"
                             data-filter-control="true"
-                            data-unique-id="" data-header-style="headerStyle">
+                            data-unique-id="nik" data-header-style="headerStyle">
                             <thead>
                                 <tr>
                                     <th data-field="nik" data-align="center">NIK</th>
@@ -133,7 +133,7 @@
                             data-query-params="" data-search="true"
                             data-page-list="[10, 25, 50, 100, all]" data-sortable="true"
                             data-content-type="application/json" data-data-type="json" data-pagination="true"
-                            data-unique-id="" data-header-style="headerStyle">
+                            data-unique-id="nik" data-header-style="headerStyle">
                             <thead>
                                 <tr>
                                     <th data-field="nik" data-align="center">NIK</th>
@@ -654,7 +654,8 @@
                 }
                 var workingNIK = []
                 var cutiNIK = []
-
+                document.getElementById('uploadExcell').value = null
+                $tableAdjustmentMakan.bootstrapTable('removeAll')
                 if(response.data.isSuccess) {
                     data.icon = 'success'
                     data.title = "Berhasil!"
@@ -719,7 +720,7 @@
                 totalMessSummaryBySystem.innerText = filteredWorkingNik.length
                 totalPesananBySystem.innerText = filteredWorkingNik.length + data_working.length + $tableAdjustmentMakan.bootstrapTable("getData").length
                 
-                document.getElementById("totalAdjustment").innerText = $tableAdjustmentMakan.bootstrapTable("getData").length
+                // document.getElementById("totalAdjustment").innerText = $tableAdjustmentMakan.bootstrapTable("getData").length
 
                 if(response.data.isError) {
                     data.icon='error';
@@ -773,17 +774,36 @@
 
                 // Loop untuk menambah baris baru dari data Excel
                 var jumlahData = 0
+                var duplicatePenghuniMess = []
                 excelRows.forEach(function(row, index) {
                     if(index > 0) { // Skip header row
-                        console.log(row)
-                        loadedData.push({
-                            nama: row[0] !== undefined ? row[0] : "",
-                            nik: row[1] !== undefined ? row[1] : "",
-                            // lokasi: row[2] !== undefined ? row[2] : "",
-                            // keterangan: row[3] !== undefined ? row[3] : ""
-                            keterangan: row[2] !== undefined ? row[2] : ""
-                        })
-                        jumlahData++
+                        // console.log(row)
+                        let nikExcell = row[0] !== undefined ? row[0] : ""
+                        let namaExcell = row[1] !== undefined ? row[1] : ""
+                        var dataDuplicate = $table.bootstrapTable('getRowByUniqueId', nikExcell)
+                        //console.log(dataDuplicate)
+                        if (dataDuplicate) {
+                            if(dataDuplicate.cuti == 0 && dataDuplicate.lokasi == "mess") {
+                                dataDuplicate.lokasi = 'working'
+                                $table.bootstrapTable('updateCellByUniqueId', {
+                                    id: nikExcell,
+                                    field: 'lokasi',
+                                    value: 'working',
+                                    reinit: true
+                                })
+                            }
+                        } 
+                        
+                        if($tableWorking.bootstrapTable('getRowByUniqueId', nikExcell) == null) {
+                            loadedData.push({
+                                nik: nikExcell,
+                                nama: namaExcell,
+                                // lokasi: row[2] !== undefined ? row[2] : "",
+                                // keterangan: row[3] !== undefined ? row[3] : ""
+                                keterangan: row[2] !== undefined ? row[2] : ""
+                            })
+                            jumlahData++
+                        }
                         // var newRow = table.insertRow();
                         // row.forEach(function(cell) {
                         //     // var newCell = newRow.insertCell();
@@ -792,6 +812,14 @@
                         // });
                     }
                 });
+                // duplicatePenghuniMess.forEach(value => {
+                //     value.lokasi = "working"
+                // });
+                // console.log(filterMessByAdjustment)
+                var filteredWorkingAndCutiNik = $table.bootstrapTable('getData').filter(function(item) {
+                    return item.lokasi == 'mess' && item.cuti == 0
+                })
+                totalMessSummaryBySystem.innerText = filteredWorkingAndCutiNik.length
                 $tableAdjustmentMakan.bootstrapTable('load', loadedData)
                 document.getElementById("totalAdjustment").innerText = new String(jumlahData)
                 totalPesananBySystem.innerText = parseInt(totalPesananBySystem.innerText) + jumlahData

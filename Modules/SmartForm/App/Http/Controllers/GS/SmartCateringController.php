@@ -133,11 +133,12 @@ class SmartCateringController extends Controller {
                 } else {
                     // tabel absensi
                     $data_karyawan_absensi = DB::connection(self::DB_CONN_NAME)->table($this->DB_LINK[$reqSite] . self::TABLE_ABSENSI_HRD . ' as ta')
-                        ->select('ta.NIK', 'ta.Tanggal', 'ta.Masuk')
-                        ->where('lmasuk', $reqSite)
-                        ->where('Shift', 'DS')
+                        ->select('ta.NIK', 'ta.Tanggal', 'ta.Masuk', 'tk.Nama')
+                        ->leftJoin(self::TABLE_KARYAWAN_HRD . ' as tk', 'tk.Nik', '=', 'ta.Nik')
+                        ->where('ta.lmasuk', $reqSite)
+                        ->where('ta.Shift', $selectedShift)
                         ->whereDate('ta.Tanggal', Carbon::createFromFormat('Y-m-d', $reqTanggalPemesanan)->startOfDay()->format('Y-m-d H:i:s.u'))
-                        ->whereBetween('ta.Masuk', [$jam_absensi[$selectedShift]['start'], $jam_absensi[$selectedShift]['end']])
+                        // ->whereBetween('ta.Masuk', [$jam_absensi[$selectedShift]['start'], $jam_absensi[$selectedShift]['end']])
                         ;
                     
                     // table fingerlog
