@@ -212,26 +212,26 @@
                             <tr>
                                 <td>Mess</td>
                                 <td>:</td>
-                                <td id="totalMessSummary"></td>
-                                <td id="totalMessSummaryBySystem"></td>
+                                <td class="text-center" id="totalMessSummary"></td>
+                                <td class="text-center" id="totalMessSummaryBySystem"></td>
                             </tr>
                             <tr>
                                 <td>Working</td>
                                 <td>:</td>
-                                <td id="totalWorkingSummary"></td>
-                                <td id="totalWorkingSummaryBySystem" colspan="2"></td>
+                                <td class="text-center" id="totalWorkingSummary"></td>
+                                <td class="text-center" id="totalWorkingSummaryBySystem" colspan="2"></td>
                             </tr>
                             <tr>
                                 <td>Adjustment</td>
                                 <td>:</td>
-                                <td colspan="2" id="totalAdjustment"></td>
+                                <td class="text-center" style="background-color: #e91e63"  colspan="2" id="totalAdjustment"></td>
                             </tr>
                         </tbody>
                         <tfoot>
                             <tr>
                                 <td colspan="2">Total</td>
-                                <td id="totalPesanan"></td>
-                                <td id="totalPesananBySystem"></td>
+                                <td class="text-center" id="totalPesanan"></td>
+                                <td class="text-center" id="totalPesananBySystem"></td>
                             </tr>
                             <tr>
                                 <td colspan="2">Jenis Pemesanan</td>
@@ -662,6 +662,7 @@
                 var cutiNIK = []
                 document.getElementById('uploadExcell').value = null
                 $tableAdjustmentMakan.bootstrapTable('removeAll')
+                document.getElementById("totalAdjustment").innerText = 0
                 if(response.data.isSuccess) {
                     data.icon = 'success'
                     data.title = "Berhasil!"
@@ -782,13 +783,14 @@
                 // Loop untuk menambah baris baru dari data Excel
                 var jumlahData = 0
                 var duplicatePenghuniMess = []
+                var cty = 0
                 excelRows.forEach(function(row, index) {
                     if(index > 0 && ( row[0] || row[1])) { // Skip header row
                         // console.log(row)
                         let nikExcell = row[0] !== undefined ? row[0] : ""
                         let namaExcell = row[1] !== undefined ? row[1] : ""
                         var dataDuplicate = $table.bootstrapTable('getRowByUniqueId', nikExcell)
-                        //console.log(dataDuplicate)
+                        // console.log({dataDuplicate: dataDuplicate})
                         if (dataDuplicate) {
                             if(dataDuplicate.cuti == 0 && dataDuplicate.lokasi == "mess") {
                                 dataDuplicate.lokasi = 'working'
@@ -798,6 +800,8 @@
                                     value: 'working',
                                     reinit: true
                                 })
+                                cty++
+                                console.log({cty: cty})
                             }
                         } 
                         
@@ -827,10 +831,12 @@
                     return item.lokasi == 'mess' && item.cuti == 0
                 })
                 totalMessSummaryBySystem.innerText = filteredWorkingAndCutiNik.length
+                console.log({filtered: filteredWorkingAndCutiNik, totalMessSummaryBySystem : totalMessSummaryBySystem.innerText, jumlahData: jumlahData, totalAdjustment: loadedData.length})
                 $tableAdjustmentMakan.bootstrapTable('load', loadedData)
                 document.getElementById("totalAdjustment").innerText = new String(jumlahData)
-                totalPesananBySystem.innerText = parseInt(totalPesananBySystem.innerText) + jumlahData
-                totalPesanan.innerText = parseInt(totalPesanan.innerText) + jumlahData
+                console.log({totalPesananBySystem: totalPesananBySystem.innerText})
+                totalPesananBySystem.innerText = filteredWorkingAndCutiNik.length + jumlahData + $tableWorking.bootstrapTable('getData').length
+                totalPesanan.innerText = parseInt(totalPesanan.innerText) + jumlahData +  $tableRequestMakan.bootstrapTable('getData').length
 
             };
 
