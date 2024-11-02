@@ -644,6 +644,12 @@
                 }
             )
             .then(function (response) {
+                totalMessSummary.innerText = 0
+                totalWorkingSummary.innerText = 0
+                totalPesanan.innerText = 0
+                totalWorkingSummaryBySystem.innerText = 0
+                totalMessSummaryBySystem.innerText =0
+                totalPesananBySystem.innerText = 0
                 var data_tabel = []
                 var data_working = []
                 var data_request_makan_mess = []
@@ -718,7 +724,8 @@
                 totalPesanan.innerText = data_request_makan_mess.length + data_working.length
                 totalWorkingSummaryBySystem.innerText = data_working.length
                 totalMessSummaryBySystem.innerText = filteredWorkingNik.length
-                totalPesananBySystem.innerText = filteredWorkingNik.length + data_working.length + $tableAdjustmentMakan.bootstrapTable("getData").length
+                // totalPesananBySystem.innerText = filteredWorkingNik.length + data_working.length + $tableAdjustmentMakan.bootstrapTable("getData").length
+                totalPesananBySystem.innerText = filteredWorkingNik.length + data_working.length 
                 
                 // document.getElementById("totalAdjustment").innerText = $tableAdjustmentMakan.bootstrapTable("getData").length
 
@@ -776,7 +783,7 @@
                 var jumlahData = 0
                 var duplicatePenghuniMess = []
                 excelRows.forEach(function(row, index) {
-                    if(index > 0) { // Skip header row
+                    if(index > 0 && ( row[0] || row[1])) { // Skip header row
                         // console.log(row)
                         let nikExcell = row[0] !== undefined ? row[0] : ""
                         let namaExcell = row[1] !== undefined ? row[1] : ""
