@@ -2,6 +2,7 @@
 
 namespace App;
 
+use DateTime;
 use Exception;
 use Google_Client;
 use GuzzleHttp\Client;
@@ -130,5 +131,10 @@ class Helper
             }
         }
         return $returnValue;
+    }
+
+    public static function validateDateFormat($format, $date) {
+        $dt = DateTime::createFromFormat($format, $date);
+        return $dt !== false && !array_sum($dt::getLastErrors());
     }
 }
