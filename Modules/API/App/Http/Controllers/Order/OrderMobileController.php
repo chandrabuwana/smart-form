@@ -111,10 +111,11 @@ class OrderMobileController extends Controller
                 ->leftJoin(self::TABLE_MAPPING_VENDOR_DAY, self::TABLE_MAPPING_VENDOR_DAY . '.id', '=', self::TABLE_ORDER_DETAIL . '.id_mapping_vendor')
                 ->leftJoin(self::TABLE_MESS_MASTER, self::TABLE_MESS_MASTER . '.NoDoc', '=', self::TABLE_ORDER_DETAIL . '.lokasi')
                 ->where('id_order', $order->kode_pemesanan)
-                ->where( function($sq) use($day, $user) {
-                    $sq->where($day, $user->id)
-                        ->orWhere(self::TABLE_ORDER_DETAIL . '.lokasi', 'working');
-                })
+                ->where($day, $user->id)
+                // ->where( function($sq) use($day, $user) {
+                //     $sq->where($day, $user->id)
+                //         ->orWhere(self::TABLE_ORDER_DETAIL . '.lokasi', 'working');
+                // })
                 ->orderBy(self::TABLE_ORDER_DETAIL . '.created_at', 'ASC')
                 ->get()->map( function($item) {
                     if(empty($item->lokasi)) $item->lokasi = 'Lapangan';
