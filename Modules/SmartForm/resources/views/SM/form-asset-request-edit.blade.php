@@ -631,6 +631,17 @@
                 checkReplacement.checked=false
             }
         })
+
+        function showLoading() {
+            $("body").css("overflow-y", "hidden")
+            $("#loading-animation").css("display", "flex")
+        }
+
+        function stopLoading() {
+            $("body").css("overflow-y", "auto")
+            $("#loading-animation").css("display", "none")
+        }
+
         $(function() {
             if(isError.error) {
                 Swal.fire({
@@ -885,17 +896,21 @@
                     })
                     .then(function (response) {
                         console.log(response.data)
+                        showLoading()
                         Swal.fire({
                                 icon: 'success',
                                 title: 'Berhasil!',
                                 text: response.data.data.no_doc,
                             }).then((result) => {
-                                // window.location.href = `/get-form-detail?no_doc=${response.data.data.no_doc}`;
+                                window.location.href = `/get-form-detail?no_doc=${response.data.data.no_doc}`;
                             })
                     })
                     .catch(function (error) {
                         console.log(error);
-                    });
+                    })
+                    .finally(function() {
+                        stopLoading()
+                    })
                 }
                 // submitAssetRequest(dataReq);
             })

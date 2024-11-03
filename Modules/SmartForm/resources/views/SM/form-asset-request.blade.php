@@ -650,6 +650,16 @@
             }
         })
 
+        function showLoading() {
+            $("body").css("overflow-y", "hidden")
+            $("#loading-animation").css("display", "flex")
+        }
+
+        function stopLoading() {
+            $("body").css("overflow-y", "auto")
+            $("#loading-animation").css("display", "none")
+        }
+
         $(function() {
             noDoc.text(generateNoDoc())
             tglDoc.text(formatTgl() || "-")
@@ -862,63 +872,68 @@
                     })
                 } else {
                     var dataReq = {
-                    formName: dataAssetRequest.formName,
-                    noDok: "BSS-FRM-SM-016",
-                    tglDok: "01-01-2023",
-                    // area: inputArea.val(),
-                    noDoc: noDoc.text(),
-                    tglDoc: formatTgl(),
-                    replacement: checkReplacement.checked,
-                    additional: checkAdditional.checked,
-                    budgeted: checkBudgeted.checked,
-                    notBudgeted: checkNotBudgeted.checked,
-                    department: inputDepartment.val(),
-                    project: inputProject.val(),
-                    departmentAllocation: inputDepartmentAllocation.val(),
-                    projectAllocation: inputProjectAllocation.val(),
-                    // area: inputArea.val(),
-                    reasonPurchase: reasonpurchase.val(),
-                    estimatedReadyAtSite: estimatedReadyAtSite.val(),
-                    estimatedIdr: estimatedIdr.val(),
-                    estimatedUsd: estimatedUsd.val(),
-                    estimatedCny: estimatedCny.val(),
-                    refDoc: refDoc.val(),
-                    requestedBy: requestornik.text(),
-                    // item: dataAssetRequest.item,
-                    totalPrice: totalPrice.text(),
-                    pendukungReason: []
-                }
-                let formData = new FormData();
+                        formName: dataAssetRequest.formName,
+                        noDok: "BSS-FRM-SM-016",
+                        tglDok: "01-01-2023",
+                        // area: inputArea.val(),
+                        noDoc: noDoc.text(),
+                        tglDoc: formatTgl(),
+                        replacement: checkReplacement.checked,
+                        additional: checkAdditional.checked,
+                        budgeted: checkBudgeted.checked,
+                        notBudgeted: checkNotBudgeted.checked,
+                        department: inputDepartment.val(),
+                        project: inputProject.val(),
+                        departmentAllocation: inputDepartmentAllocation.val(),
+                        projectAllocation: inputProjectAllocation.val(),
+                        // area: inputArea.val(),
+                        reasonPurchase: reasonpurchase.val(),
+                        estimatedReadyAtSite: estimatedReadyAtSite.val(),
+                        estimatedIdr: estimatedIdr.val(),
+                        estimatedUsd: estimatedUsd.val(),
+                        estimatedCny: estimatedCny.val(),
+                        refDoc: refDoc.val(),
+                        requestedBy: requestornik.text(),
+                        // item: dataAssetRequest.item,
+                        totalPrice: totalPrice.text(),
+                        pendukungReason: []
+                    }
+                    let formData = new FormData();
 
-                for (let i = 0; i < inputPendukungReason.files.length; i++) {
-                    formData.append('pendukungReason[]', inputPendukungReason.files[i]);
-                }
-                formData.append('item',JSON.stringify(dataAssetRequest.item));
-                for (const key in dataReq) {
-                    if(key != "pendukungReason" || key != "item") {
-                        formData.append(key, dataReq[key])
+                    for (let i = 0; i < inputPendukungReason.files.length; i++) {
+                        formData.append('pendukungReason[]', inputPendukungReason.files[i]);
                     }
-                }
-                console.log(dataReq)
-                axios.post('/bss-form/sm/add-asset-request', formData, {
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-                        'Content-Type': 'multipart/form-data'
+                    formData.append('item',JSON.stringify(dataAssetRequest.item));
+                    for (const key in dataReq) {
+                        if(key != "pendukungReason" || key != "item") {
+                            formData.append(key, dataReq[key])
+                        }
                     }
-                })
-                .then(function (response) {
-                    console.log(response.data)
-                    Swal.fire({
-                            icon: 'success',
-                            title: 'Berhasil!',
-                            text: response.data.data.no_doc,
-                        }).then((result) => {
-                            // window.location.href = `/get-form-detail?no_doc=${response.data.data.no_doc}`;
-                        })
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
+                    console.log(dataReq)
+                    axios.post('/bss-form/sm/add-asset-request', formData, {
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    })
+                    .then(function (response) {
+                        showLoading()
+                        console.log(response.data)
+                        Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil!',
+                                text: response.data.data.no_doc,
+                            }).then((result) => {
+                                window.location.href = `/get-form-detail?no_doc=${response.data.data.no_doc}`;
+                            })
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        stopLoading()
+                    })
+                    .finally(function() {
+                        stopLoading()
+                    });
                 }
                 
                 // submitAssetRequest(dataReq);
