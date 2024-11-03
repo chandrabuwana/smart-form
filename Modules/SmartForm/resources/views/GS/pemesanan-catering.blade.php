@@ -104,6 +104,8 @@
                             <button class="btn btn-primary ms-auto">Generate</button>
                         </a>
                     </div>
+                    <h3 class="text-black text-capitalize ps-3">Tanggal Pemesanan : <span id="tglPemesanan"></span></h3>
+                    <h3 class="text-black text-capitalize ps-3">Jenis Pemesanan : <span id="jenisPemesanan"></span></h3>
                     <h5 class="text-black text-capitalize ps-3">Mess</h5>
                     <h6 class="text-black text-capitalize ps-3">Total data Mess : </h6>
                     <div class="table-responsive p-0 mb-4">
@@ -166,14 +168,16 @@
                     <h5 class="text-black text-capitalize ps-3">Data Adjustment</h5>
                     <h6 class="text-black text-capitalize ps-3">Total Adjustment : </h6>
                     <div class="col-md-4 mx-3">
-                        <div class="input-group input-group-static mb-4">
-                            <label for="uploadExcell"><i class="fa-solid fa-file-excel"></i> <a href="/storage/AdjustmentCatering.xlsx">Download Template Excell</a></label>
-                            <input type="file" multiple class="form-control" id="uploadExcell" name="uploadExcell">
+                        <label for="uploadExcell"><i class="fa-solid fa-file-excel"></i> <a href="/storage/PLAN_ORDER_PACKMEAL.xls">Download Template Excell</a></label>
+                        <div class="input-group mb-4">
+                            <input type="file" class="form-control" id="uploadExcell" name="uploadExcell">
+                            {{-- <button class="btn btn-danger" type="button" style="padding: 8px 12px; border-radius: 4px;"><i class="fa-solid fa-file-excel"></i></button> --}}
                         </div>
+                        
                     </div>
                     <div class="table-responsive p-0 mb-4">
                         <table id="table-adjustment-makan" data-toggle="table" data-ajax="" data-side-pagination="client"
-                            data-query-params=""
+                            data-query-params="" data-search="true"
                             data-page-list="[10, 25, 50, 100, all]" data-sortable="true"
                             data-content-type="application/json" data-data-type="json" data-pagination="true"
                             data-unique-id="" data-header-style="headerStyle">
@@ -224,7 +228,7 @@
                             <tr>
                                 <td>Adjustment</td>
                                 <td>:</td>
-                                <td class="text-center" style="background-color: #e91e63"  colspan="2" id="totalAdjustment"></td>
+                                <td class="text-center" style="background-color: #e91e63; color: antiquewhite"  colspan="2" id="totalAdjustment"></td>
                             </tr>
                         </tbody>
                         <tfoot>
@@ -353,6 +357,10 @@
         var $tableRequestMakan = $('#table-request-makan')
         var $tableAdjustmentMakan = $('#table-adjustment-makan')
         var elChartStatus = document.getElementById("chart-status").getContext("2d");
+        const mappingPemesanan = {
+            'siang': 'DS',
+            'malam': 'NS'
+        }
 
         var chart = new Chart(elChartStatus, {
             type: "pie",
@@ -397,6 +405,10 @@
                 chart.data.datasets[0].data = [jumlahDiMess, totalWorkingSummary.innerText, totalAdjustment.innerText]
                 chart.update("active")
             }  
+        })
+
+        inputJenisPemesanan.on('change', function(e) {
+            // console.log(e.target.value)
         })
 
         document.getElementById("submit-pemesanan").addEventListener("click", function(e) {
@@ -615,11 +627,10 @@
 
         })
 
-        function getTodayDate() {
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const day = String(today.getDate()).padStart(2, '0');
+        function getTodayDate(tgl = new Date()) {
+            const year = tgl.getFullYear();
+            const month = String(tgl.getMonth() + 1).padStart(2, '0');
+            const day = String(tgl.getDate()).padStart(2, '0');
             return `${year}-${month}-${day}`;
         }
 
@@ -631,6 +642,23 @@
 
         btnGenerateDetailPemesanan.addEventListener("click", function(e) {
             e.preventDefault()
+            let validateTglPesan = isNaN(new Date(inputTanggalPemesanan.val()))
+            let validateInputSite = inputSite.val() == null
+
+            if( validateTglPesan || validateInputSite) {
+                let listErr = []
+                if(validateTglPesan) listErr.push('Tanggal pemesanan belum dipilih')
+                if(validateInputSite) listErr.push('Site belum dipilih')
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    html: listErr.join('<br>')
+                })
+
+                return
+            }
+
             showLoading()
             // console.log("halo")
             axios.post('/bss-form/catering/generate-detail', 
@@ -663,15 +691,16 @@
                 document.getElementById('uploadExcell').value = null
                 $tableAdjustmentMakan.bootstrapTable('removeAll')
                 document.getElementById("totalAdjustment").innerText = 0
-                if(response.data.isSuccess) {
-                    data.icon = 'success'
-                    data.title = "Berhasil!"
-                    data.text = response.data.message
-                } else {
-                    data.icon = 'error'
-                    data.title = "Gagal!"
-                    data.text = response.data.message
-                }
+                // if(response.data.isSuccess) {
+                //     data.icon = 'success'
+                //     data.title = "Berhasil!"
+                //     data.text = response.data.message
+                //     $("#tglPemesanan").text(getTodayDate().split('-').reverse().join('-'))
+                // } else {
+                //     data.icon = 'error'
+                //     data.title = "Gagal!"
+                //     data.text = response.data.message
+                // }
                 for (var dataMess in response.data.dataMess) {
                     // console.log(response.data.dataMess[dataMess].cuti)
                     data_tabel.push({
@@ -738,6 +767,8 @@
                     data.icon='success';
                     data.text=response.data.message
                     data.title='Berhasil!'
+                    $("#tglPemesanan").text(getTodayDate(new Date(inputTanggalPemesanan.val())).split('-').reverse().join('-'))
+                    $("#jenisPemesanan").text(inputJenisPemesanan.val())
                 }
 
                 Swal.fire(data).then((result) => {
@@ -764,6 +795,23 @@
             var reader = new FileReader();
 
             reader.onload = function(e) {
+                
+                if(($("#jenisPemesanan").text() != 'siang' || $("#jenisPemesanan").text() != 'malam') && inputSite.val() == null && isNaN(new Date($("#tglPemesanan").text()))) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        text: 'Adjustment hanya bisa siang / malam'
+                    })
+
+                    console.log('error')
+                    document.getElementById('uploadExcell').value = null
+
+                    return
+                }
+
+                
+                var colIndexStart = 4 
+                // console.log({selectedTgl: selectedTgl, colIndexStart: colIndexStart})
                 var data = new Uint8Array(e.target.result);
                 var workbook = XLSX.read(data, {type: 'array'});
                 var loadedData = [];
@@ -773,6 +821,9 @@
 
                 // Konversi sheet ke JSON
                 var excelRows = XLSX.utils.sheet_to_json(firstSheet, {header: 1});
+                var selectedTgl = new Date($("#tglPemesanan").text().split("-").reverse().join("/"))
+                var selectedData = {selectedTgl: selectedTgl.getDate(), colIndexStart: colIndexStart}
+                // {nik: row[1], nama: row[2], shift: row[selectedData.selectedTgl + selectedData.colIndexStart]}
 
                 // Ambil referensi tabel
                 // var table = document.getElementById('excelDataTable').getElementsByTagName('tbody')[0];
@@ -785,10 +836,13 @@
                 var duplicatePenghuniMess = []
                 var cty = 0
                 excelRows.forEach(function(row, index) {
-                    if(index > 0 && ( row[0] || row[1])) { // Skip header row
-                        // console.log(row)
-                        let nikExcell = row[0] !== undefined ? row[0] : ""
-                        let namaExcell = row[1] !== undefined ? row[1] : ""
+                    if(index > 3 && ( row[1] || row[2])) { // Skip header row
+                        // console.log({shiftExcell: row[selectedData.selectedTgl + selectedData.colIndexStart]})
+                        // let extractedData = {nik: row[1], nama: row[2], shift: row[selectedData.selectedTgl + selectedData.colIndexStart]}
+                        let nikExcell = row[1] !== undefined ? row[1] : ""
+                        let namaExcell = row[2] !== undefined ? row[2] : ""
+                        let keteranganNik = row[3] !== undefined ? row[3] : ""
+                        
                         var dataDuplicate = $table.bootstrapTable('getRowByUniqueId', nikExcell)
                         // console.log({dataDuplicate: dataDuplicate})
                         if (dataDuplicate) {
@@ -806,14 +860,19 @@
                         } 
                         
                         if($tableWorking.bootstrapTable('getRowByUniqueId', nikExcell) == null) {
-                            loadedData.push({
-                                nik: nikExcell,
-                                nama: namaExcell,
-                                // lokasi: row[2] !== undefined ? row[2] : "",
-                                // keterangan: row[3] !== undefined ? row[3] : ""
-                                keterangan: row[2] !== undefined ? row[2] : ""
-                            })
-                            jumlahData++
+                            // var selectedData = {selectedTgl: new Date($("#tglPemesanan").text()).getDate(), colIndexStart: 4}
+                            let shiftExcell = new String(row[selectedData.selectedTgl + selectedData.colIndexStart]).toString()
+                            // console.log({mappingPemesanan: mappingPemesanan[$("#jenisPemesanan").text()], shiftExcell: shiftExcell, idx: selectedData.selectedTgl + selectedData.colIndexStart})
+                            // console.log({shiftExcell: shiftExcell})
+                            if (!shiftExcell) {}
+                            else if (shiftExcell.toUpperCase() == mappingPemesanan[$("#jenisPemesanan").text()]) {
+                                loadedData.push({
+                                    nik: nikExcell,
+                                    nama: namaExcell,
+                                    keterangan: keteranganNik
+                                })
+                                jumlahData++
+                            }
                         }
                         // var newRow = table.insertRow();
                         // row.forEach(function(cell) {
@@ -837,7 +896,16 @@
                 console.log({totalPesananBySystem: totalPesananBySystem.innerText})
                 totalPesananBySystem.innerText = filteredWorkingAndCutiNik.length + jumlahData + $tableWorking.bootstrapTable('getData').length
                 totalPesanan.innerText = parseInt(totalPesanan.innerText) + jumlahData +  $tableRequestMakan.bootstrapTable('getData').length
-
+                // excelRows.forEach(function(row, index) {
+                //     if (index > 3) {
+                //         var selectedData = {selectedTgl: selectedTgl.getDate(), colIndexStart: colIndexStart}
+                //         if(row[1] || row[2]) {
+                //             if(row[selectedData.selectedTgl + selectedData.colIndexStart] == 'NS') {
+                //                 console.log({nik: row[1], nama: row[2], shift: row[selectedData.selectedTgl + selectedData.colIndexStart]})
+                //             }
+                //         }
+                //     }
+                // })
             };
 
             reader.readAsArrayBuffer(file);
