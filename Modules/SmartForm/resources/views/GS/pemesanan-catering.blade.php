@@ -2,6 +2,9 @@
 
 @section('custom-css')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.23.2/dist/bootstrap-table.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/extensions/filter-control/bootstrap-table-filter-control.css">
     <style>
         .center-container {
             display: none;
@@ -113,7 +116,7 @@
                             data-query-params="" data-search="true"
                             data-page-list="[10, 25, 50, 100, all]" data-sortable="true"
                             data-content-type="application/json" data-data-type="json" data-pagination="true"
-                            data-filter-control="true"
+                            data-filter-control="true" data-show-export="true"
                             data-unique-id="nik" data-header-style="headerStyle">
                             <thead>
                                 <tr>
@@ -337,6 +340,9 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script lang="javascript" src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/shim.min.js"></script>
     <script lang="javascript" src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.29.0/tableExport.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.29.0/libs/jsPDF/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.23.2/dist/extensions/export/bootstrap-table-export.min.js"></script>
     <script>
         var inputTanggalPemesanan = $("#inputTanggalPemesanan");
         var inputJenisPemesanan = $("#inputJenisPemesanan");
@@ -845,8 +851,9 @@
                         
                         var dataDuplicate = $table.bootstrapTable('getRowByUniqueId', nikExcell)
                         // console.log({dataDuplicate: dataDuplicate})
+                        let shiftExcell = new String(row[selectedData.selectedTgl + selectedData.colIndexStart]).toString()
                         if (dataDuplicate) {
-                            if(dataDuplicate.cuti == 0 && dataDuplicate.lokasi == "mess") {
+                            if(dataDuplicate.cuti == 0 && dataDuplicate.lokasi == "mess" && (shiftExcell.toUpperCase() == mappingPemesanan[$("#jenisPemesanan").text()])) {
                                 dataDuplicate.lokasi = 'working'
                                 $table.bootstrapTable('updateCellByUniqueId', {
                                     id: nikExcell,
