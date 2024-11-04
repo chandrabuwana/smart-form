@@ -468,6 +468,19 @@
     <script type="text/javascript">
         function SubmitAllDataWhy() {
 
+            let actual = parseFloat($('#pc_aktual').val());
+            let target = parseFloat($('#pc_target').val());
+
+            if (actual > target) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Validation Error",
+                    html: "Actual tidak boleh lebih dari Target",
+                    confirmButtonText: 'OK'
+                });
+                return false;
+            }
+
             let getAllDataWhy1 = [];
             let isValid = true;
             let errorMessage = '';
@@ -617,6 +630,8 @@
             let pc_problem = $('#pc_problem').val();
             let pc_kp = $('#pc_kp').val();
             let pc_es = $('#pc_es').val();
+
+
 
             // Helper function to validate and highlight
             function validateField(field, fieldName, fieldLabel) {
