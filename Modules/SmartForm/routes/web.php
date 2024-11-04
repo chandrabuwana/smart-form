@@ -142,7 +142,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/import-mapping-gs', [SmartCateringController::class, 'viewImportMappingGS'])->name('view-import-mapping-gs-catering');
             Route::post('/import-mapping-gs/store', [SmartCateringController::class, 'importMappingGS'])->name('import-mapping-gs-catering');
 
-            Route::prefix('mess')->group( function() {
+            Route::prefix('mess')->group(function () {
                 Route::post('/add-mess', [MessController::class, 'AddMess'])->name('add-mess');
                 Route::post('/add-kamar', [MessController::class, 'AddKamar'])->name('add-kamar');
                 Route::post('/add-penghuni', [MessController::class, 'AddPenghuniMess'])->name('add-penghuni');
@@ -282,6 +282,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
         Route::get('/get-approver', [SKLFormController::class, 'getApprover'])->name('bss-skl.get-approver');
         Route::get('/detail', [DashboardSKLController::class, 'detail'])->name('bss-skl.detail');
         Route::post('/approval', [DashboardSKLController::class, 'storeApproval'])->name('bss-skl.store-approval');
+        Route::get('/download', [DashboardSKLController::class, 'downloadExcel'])->name('bss-skl.download-excel');
     });
 
 
