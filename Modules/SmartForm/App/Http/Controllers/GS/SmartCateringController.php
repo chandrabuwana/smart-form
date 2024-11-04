@@ -51,7 +51,7 @@ class SmartCateringController extends Controller {
         'JKT1' => '',
         'CDI' => 'CDI.',
         'PMSS' => 'DPMSS.',
-        'MASS' => 'DMAS.',
+        'MAS' => 'DMAS.',
         'AGM' => 'DAGM.',
         'BSSR' => 'DBSSR.',
         'MBL' => 'DMBL.',
@@ -377,7 +377,7 @@ class SmartCateringController extends Controller {
                     $vendor_id = !$result ? null : $result->VendorID;
                     $_temp_pesanan = [
                         'id_order' => $kode_pemesanan,
-                        'id_mapping_vendor' => !$result ? null : $result->id_mapping,
+                        'id_mapping_vendor' => $result->VendorID, //!$result ? null : $result->id_mapping,
                         'lokasi' => $pesanan['lokasi'],
                         'site' => $pesanan['site'],
                         'jenis_pemesanan' => $pesanan['jenis'],
@@ -614,9 +614,11 @@ class SmartCateringController extends Controller {
 
             $vendor_id = self::MAPPING_COLUMN_VENDOR_DAY[Carbon::parse(explode('/', $idPemesanan)[0])->dayOfWeekIso];
             $sql_master_data = db::connection(SELF::DB_CONN_NAME)->table(SELF::TABLE_SUBMIT_ORDER_DETAIL . ' as a')
+            // ->select('a.id as id_detail', 'a.id_order as kode_pemesanan', 'a.jenis_pemesanan', 'a.jumlah','c.Nama as nama_vendor',  'd.NamaMess as lokasi', 'a.status', 'a.file_evidence')
+            // ->leftJoin(self::TABLE_VENDOR_MAPPING_DAY . ' as b', 'a.id_mapping_vendor', '=', 'b.id')
+            // ->leftJoin(self::TABLE_VENDOR_MASTER . ' as c', 'b.'.$vendor_id , '=', 'c.id')
             ->select('a.id as id_detail', 'a.id_order as kode_pemesanan', 'a.jenis_pemesanan', 'a.jumlah','c.Nama as nama_vendor',  'd.NamaMess as lokasi', 'a.status', 'a.file_evidence')
-            ->leftJoin(self::TABLE_VENDOR_MAPPING_DAY . ' as b', 'a.id_mapping_vendor', '=', 'b.id')
-            ->leftJoin(self::TABLE_VENDOR_MASTER . ' as c', 'b.'.$vendor_id , '=', 'c.id')
+            ->leftJoin(self::TABLE_VENDOR_MASTER . ' as c', 'a.id_mapping_vendor' , '=', 'c.id')
             ->leftJoin(self::TABLE_MASTER_MESS . ' as d', 'a.lokasi', '=', 'd.NoDoc')
             ->where('a.id_order', $idPemesanan);
 
