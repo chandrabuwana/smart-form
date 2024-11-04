@@ -379,17 +379,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <hr class="horizontal dark my-sm-3">
-                                    <div class="row">
-                                        <div class="col-md-4" style="">
-                                            <div class="input-group input-group-static my-4">
-                                                <label for="atasan_ID_{{ $i }}" class="">Atasan
-                                                    (PIC)</label>
-                                                <select class="form-control picIDAtasan" name="atasan_ID_{{ $i }}"
-                                                    id="atasan_ID_{{ $i }}"></select>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
