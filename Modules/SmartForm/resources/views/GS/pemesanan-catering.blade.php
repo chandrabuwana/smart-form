@@ -171,7 +171,7 @@
                     <h5 class="text-black text-capitalize ps-3">Data Adjustment</h5>
                     <h6 class="text-black text-capitalize ps-3">Total Adjustment : </h6>
                     <div class="col-md-4 mx-3">
-                        <label for="uploadExcell"><i class="fa-solid fa-file-excel"></i> <a href="/storage/PLAN_ORDER_PACKMEAL.xls">Download Template Excell</a></label>
+                        <label for="uploadExcell"><i class="fa-solid fa-file-excel"></i> <a href="/storage/FORMAT_ORDER_PACKMEAL.xlsx">Download Template Excell</a></label>
                         <div class="input-group mb-4">
                             <input type="file" class="form-control" id="uploadExcell" name="uploadExcell">
                             {{-- <button class="btn btn-danger" type="button" style="padding: 8px 12px; border-radius: 4px;"><i class="fa-solid fa-file-excel"></i></button> --}}
