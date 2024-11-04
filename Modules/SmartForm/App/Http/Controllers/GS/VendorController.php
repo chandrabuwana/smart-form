@@ -769,7 +769,7 @@ class VendorController extends Controller {
 
         try {
             $sql_master_data = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_MAPPING_MAKAN_VENDOR . ' as a')
-                ->select('a.id', 'b.id as id_vendor', 'a.KodeSite as site', 'a.JenisPemesanan as jenis_pemesanan', 'a.lokasi', 'b.Nama as nama_vendor', 'c.NamaMess as nama_lokasi')
+                ->select('a.id', 'b.id as id_vendor', 'a.KodeSite as site', 'a.lokasi', 'b.Nama as nama_vendor', 'c.NamaMess as nama_lokasi')
                 ->leftJoin(self::TABLE_MASTER. ' as b' ,'a.VendorID', '=', 'b.id')
                 ->leftJoin(self::TABLE_LOKASI. ' as c', 'a.lokasi', '=', 'c.NoDoc');
 
