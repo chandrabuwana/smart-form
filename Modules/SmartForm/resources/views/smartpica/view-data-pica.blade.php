@@ -15,7 +15,7 @@
             -moz-box-shadow: 2px 2px 10px #aaa;
             -moz-border-radius: 0.5em;
             border-radius: 0.5em;
-            width: 30em;
+            width: 45em;
             height: auto;
             padding: 0.5em 0em;
             text-align: center;
