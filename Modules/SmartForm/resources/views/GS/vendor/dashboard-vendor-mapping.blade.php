@@ -63,6 +63,24 @@
             right: 8px;
             z-index: 99;
         }
+        .search-input {
+            border-radius: 0;
+            border-bottom: 1px solid #e91e63;
+            height: 40px;
+            margin-bottom: 15px;
+            outline: none !important;
+            transition: all .15s ease-in-out;
+            margin-right: 12px;
+        }
+        .search-input:valid {
+            border-radius: 0;
+            border-bottom: 1px solid #e91e63;
+            height: 40px;
+            margin-bottom: 15px;
+            outline: none !important;
+            transition: all .15s ease-in-out;
+            margin-right: 12px;
+        }
     </style>
 @endsection
 
@@ -145,19 +163,24 @@
                             <button class="btn btn-primary" id="btnClearFilter" onclick="resetFilter(this)">
                                 Clear Filter
                             </button>
+                            <button class="btn btn-success" id="btnClearFilter" onclick="toggleStatusMapping(event)">
+                                Toggle status
+                            </button>
                         </div>
                     </div>
                     <div class="table-responsive p-0">
                         <table id="table-dashboard-vendor-day" data-toggle="table" data-ajax="getDataMappingVendorDay" data-side-pagination="client"
                             data-page-list="[10, 25, 50, 100, all]" data-sortable="true"
                             data-content-type="application/json" data-data-type="json" data-pagination="true"
-                            data-unique-id="id" data-header-style="headerStyle">
+                            data-unique-id="id" data-header-style="headerStyle" data-search="true">
                             <thead>
                                 <tr>
+                                    <th data-checkbox="true" data-field="selected"></th>
                                     <th data-field="id" data-align="left" data-halign="center">ID Mapping</th>
                                     <th data-field="site" data-align="left" data-halign="center">Site</th>
                                     <th data-field="nama_lokasi" data-formatter="lokasiFormatter" data-align="left">Lokasi</th>
                                     <th data-field="waktu_makan" data-align="left">Waktu Makan</th>
+                                    <th data-field="status" data-align="left" data-formatter="statusFormatter">Status</th>
                                     <th data-field="senin_nama" data-align="left">Senin</th>
                                     <th data-field="selasa_nama" data-align="left">Selasa</th>
                                     <th data-field="rabu_nama" data-align="left">Rabu</th>
@@ -383,6 +406,53 @@
         }
 
         var modalElement = $("#modalAddVendor")
+        
+        function toggleStatusMapping(event) {
+            showLoading()
+            let selectedData = $("#table-dashboard-vendor-day").bootstrapTable('getSelections')
+            let dataUpdate = []
+            selectedData.forEach(function(value) {
+                let toggleStatus = parseInt(value.status) == 0 ? 1 : 0
+                dataUpdate.push({
+                    id: value.id,
+                    status: toggleStatus
+                })
+            })
+
+            axios.post(baseUrl + '/toggle-mapping-day', 
+                {data: dataUpdate},
+                {headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }}
+            )
+            .then(function(resp) {
+                let dataAlert = {
+                    icon: 'error',
+                    title: "Gagal!",
+                };
+                if(resp.data.isSuccess) {
+                    dataAlert.icon = 'success'
+                    dataAlert.title = 'Berhasil'
+                    dataAlert.text = 'Berhasil update data mapping vendor'
+                    $("#table-dashboard-vendor-day").bootstrapTable('refresh')
+                } else {
+                    dataAlert.html = resp.data.error.message.join('<br>')
+                }
+                Swal.fire(dataAlert)
+            })
+            .catch(function(err) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: 'Terjadi kesalaham, coba beberapa saat lagi!'
+                })
+            })
+            .finally(function() {
+                stopLoading()
+            })
+
+            // console.log(dataUpdate)
+        }
 
         $('#filterSite1').on("select2:select", function (e) { 
             console.log(e.params.data.id)
@@ -574,8 +644,8 @@
 
         function statusFormatter(value, row, index) {
             var nilai = ""
-            if(value == "1" || value == null) nilai = "Aktif"
-            if(value == "0") nilai = "Nonaktif"
+            if(value == "1" || value == null) nilai = "Nonaktif"
+            if(value == "0") nilai = "Aktif"
 
             return nilai
         }
@@ -851,6 +921,16 @@
         function resetFilter1(e) {
             filterData.query = null
             $("#table-dashboard-vendor").bootstrapTable('refresh')
+        }
+
+        function showLoading() {
+            $("body").css("overflow-y", "hidden")
+            $("#loading-animation").css("display", "flex")
+        }
+
+        function stopLoading() {
+            $("body").css("overflow-y", "auto")
+            $("#loading-animation").css("display", "none")
         }
     </script>
 @endsection

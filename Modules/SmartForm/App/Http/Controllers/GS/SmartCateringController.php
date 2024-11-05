@@ -354,6 +354,7 @@ class SmartCateringController extends Controller {
                     ->select(['id as id_mapping', $column_hari . ' as VendorID', 'lokasi'])
                     ->whereIn('lokasi', $extractedLokasi)
                     ->where('KodeSite', $site)
+                    ->where('status', 0)
                     ->where('JenisPemesanan', $jenisPemesanan);
 
                 Log::debug("SQL vendor mapping : " . $vendorMapping->toRawSql());

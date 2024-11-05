@@ -180,6 +180,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
                 Route::put('/edit-mapping-vendor-day', [VendorController::class, 'EditMappingVendorDay'])->name('edit-mapping-vendor-day');
                 Route::get('/list-vendor-mapping-day', [VendorController::class, 'ListVendorMappingCateringDay'])->name('list-vendor-mapping-day');
                 Route::delete('/delete-mapping-vendor-day', [VendorController::class, 'DeleteMappingVendorDay'])->name('delete-mapping-vendor-day');
+                Route::post('toggle-mapping-day', [VendorController::class, 'toggleMappingDayStatus'])->name('toggle-mapping-day');
             });
         });
     });

@@ -22,6 +22,24 @@
             max-height: 200px; /* Batasi tinggi maksimum dropdown */
             overflow-y: auto;  /* Aktifkan scroll vertical */
         }
+        .search-input {
+            border-radius: 0;
+            border-bottom: 1px solid #e91e63;
+            height: 40px;
+            margin-bottom: 15px;
+            outline: none !important;
+            transition: all .15s ease-in-out;
+            margin-right: 12px;
+        }
+        .search-input:valid {
+            border-radius: 0;
+            border-bottom: 1px solid #e91e63;
+            height: 40px;
+            margin-bottom: 15px;
+            outline: none !important;
+            transition: all .15s ease-in-out;
+            margin-right: 12px;
+        }
     </style>
 @endsection
 
@@ -42,14 +60,33 @@
                             </button>
                         </a>
                     </div>
+                    <h4 class="mx-3">Filter Data</h4>
+                    <div class="mx-4 row">
+                        <div class="col-6 col-md-3">
+                            <div class="input-group input-group-static mb-4">
+                                <label for="filterSite">Site</label>
+                                <select class="form-control form-select" name="filterSite" id="filterSite">
+                                    <option value="">-- Filter Site --</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="btn btn-primary" id="btnFilter1" onclick="applyFilter(this)">
+                                Filter
+                            </button>
+                            <button class="btn btn-primary" id="btnClearFilter1" onclick="resetFilter(this)">
+                                Clear Filter
+                            </button>
+                        </div>
+                    </div>
                     <div class="table-responsive p-0">
                         <table id="table-dashboard-vendor" data-toggle="table" data-ajax="getDataVendor" data-side-pagination="client"
                             data-page-list="[10, 25, 50, 100, all]" data-sortable="true"
                             data-content-type="application/json" data-data-type="json" data-pagination="true"
-                            data-unique-id="id" data-header-style="headerStyle">
+                            data-unique-id="id" data-header-style="headerStyle" data-search="true">
                             <thead>
                                 <tr>
-                                    {{-- <th data-field="site" data-align="left">Site</th> --}}
+                                    <th data-field="site" data-align="left">Site</th>
                                     <th data-field="id" data-align="left" data-halign="center">ID Vendor</th>
                                     <th data-field="nama" data-align="left">Nama Vendor</th>
                                     <th data-field="status" data-align="left" data-formatter="statusFormatter">Status</th>
@@ -204,11 +241,17 @@
         var addKontakVendor = document.getElementById('addKontakVendor');
         var addKeteranganVendor = document.getElementById('addKeteranganVendor');
         var btnSubmitKamar = document.getElementById('btnSubmitKamar');
-
+        const tableDashboardVendor = $('#table-dashboard-vendor')
         var filterParams = {
-
+            site: null
         }
         var modalElement = $("#modalAddVendor")
+
+        $('#filterSite').select2({
+            theme: 'bootstrap-5', // Menggunakan tema Bootstrap 5
+            dropdownParent: $('#filterSite').closest('.input-group'),
+            placeholder: '--- Cari SITE ---'
+        })
 
         function validateAddVendor() {
             var validationData = {
@@ -471,7 +514,7 @@
         function getDataVendor(params) {
             var listVendor = baseUrl + '/list-vendor'
             // console.log("halojuga")
-            // params.data.site = filter.site
+            if(filterParams.site) params.data.site = filterParams.site
             // params.data.mess = filter.mess
 
             // if(params.data.site != null || params.data.mess != null) {
@@ -484,7 +527,7 @@
         }
 
         function fetchSite(cb=function(site) {}) {
-            axios.post("/helper/department", {
+            axios.post("/bss-form/catering/helper-site", {
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
@@ -516,22 +559,6 @@
             });
         }
 
-        // fetchSite(function(data) {
-        //     // console.log(data)
-        //     $('#addSite').select2({
-        //         theme: 'bootstrap-5', // Menggunakan tema Bootstrap 5
-        //         dropdownParent: $('#addSite').closest('.input-group'),
-        //         placeholder: '--- Cari Site ---'
-        //     });
-            
-        //     data.forEach(function(opt) {
-        //         $('#addSite').append(new Option(opt.text, opt.id))
-        //     })
-        //     // data.forEach(function(opt) {
-        //     //     $('#editSite').append(opt)
-        //     // })
-        // })
-
         function clearModal() {
             // $("#addSite").val("").trigger("change")
             addIDVendor.value = ""
@@ -562,5 +589,25 @@
             addKeteranganVendor.disabled = false
         })
         
+        $('#filterSite').change( function(e) {
+            filterParams.site = e.target.value;
+        });
+
+        function applyFilter(e) {
+            tableDashboardVendor.bootstrapTable('refresh')
+        }
+
+        function resetFilter(e) {
+            tableDashboardVendor.site = null
+            $('#filterSite').val('').trigger('change');
+
+            tableDashboardVendor.bootstrapTable('refresh')
+        }
+
+        fetchSite(function(data) {
+            data.forEach(function(opt) {
+                $('#filterSite').append(new Option(opt.text, opt.id))
+            })
+        })
     </script>
 @endsection
