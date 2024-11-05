@@ -1038,5 +1038,30 @@ class TransactionPicaController extends Controller
         }
 
     }
+
+    function ChangeFlagRevision(Request $r)
+    {
+        DB::beginTransaction();
+        try {
+            DB::table("master_pica")->
+                where("nodocpica", "=", $r->nodocpica)
+                ->update([
+                    "approval" => "pending",
+                    "updated_by" => session("user_id"),
+                    "updated_at" => now()
+                ]);
+            DB::commit();
+            return [
+                'message' => "Data Tersimpan",
+                'code' => 200
+            ];
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return [
+                'message' => 'Failed to insert records',
+                'code' => 500
+            ];
+        }
+    }
 }
 
