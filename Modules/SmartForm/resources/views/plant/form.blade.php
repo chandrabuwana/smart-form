@@ -2474,6 +2474,28 @@
         });
 
         $('#btnSubmitPlant').click( function(e) {
+            const fields = [
+                { id: "#machine_number", name: "Machine Number" },
+                { id: "#machine_model", name: "Machine Model" },
+                { id: "#machine_serial_no", name: "Machine Serial No" },
+                { id: "#machine_smr", name: "Machine SMR / HM" },
+                { id: "#jobsite", name: "JobSite" },
+                { id: "#checkdate", name: "Check Date" }
+            ];
+
+            for (const field of fields) {
+                const value = $(field.id).val();
+                if (!value) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Missing Field',
+                        text: `Please enter ${field.name}.`,
+                        confirmButtonText: 'OK'
+                    });
+                    return false; // Stop the function if a field is missing
+                }
+            }
+
             if( !$('#formPlant')[0].checkValidity() ) {
                 Swal.fire({
                     icon: 'error',
@@ -2486,7 +2508,7 @@
             e.preventDefault();
             const formData = $('#formPlant').serialize();
 
-            axios.post('/bss-form.plant-transmission.form-test/store', formData, {
+            axios.post('/bss-form/plant-transmission/form/store', formData, {
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
             })
             .then(function (response) {
