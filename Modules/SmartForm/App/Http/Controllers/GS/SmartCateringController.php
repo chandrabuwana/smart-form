@@ -1012,6 +1012,7 @@ class SmartCateringController extends Controller {
                         $messMst = DB::table('SCT_GS_MESS_MST')->where('KodeSite', $request->site)->where('NamaMess', $messName)->first('NoDoc');
                         if(is_null($messMst)) {
                             DB::rollBack();
+                            dd($messName);
                         }
 
                         $weeks = [
@@ -1031,13 +1032,11 @@ class SmartCateringController extends Controller {
                             DB::table('SCT_GS_VENDOR_MAPPING')->updateOrInsert(
                                 [
                                     'KodeSite' => $request->site,
-                                    'JenisPemesanan' => $shift,
                                     'lokasi' => $messMst->NoDoc,
                                 ],
                                 [
                                     'KodeSite' => $request->site,
                                     'VendorID' => $vendorDay,
-                                    'JenisPemesanan' => $shift,
                                     'lokasi' => $messMst->NoDoc,
                                 ]
                             );
