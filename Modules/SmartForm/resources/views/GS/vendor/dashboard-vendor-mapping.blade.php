@@ -163,8 +163,11 @@
                             <button class="btn btn-primary" id="btnClearFilter" onclick="resetFilter(this)">
                                 Clear Filter
                             </button>
-                            <button class="btn btn-success" id="btnClearFilter" onclick="toggleStatusMapping(event)">
-                                Toggle status
+                            <button class="btn btn-success" id="btnClearFilter" data-status='0' onclick="toggleStatusMapping(event)">
+                                Aktif
+                            </button>
+                            <button class="btn btn-danger" id="btnClearFilter" data-status='1' onclick="toggleStatusMapping(event)">
+                                Nonaktif
                             </button>
                         </div>
                     </div>
@@ -409,10 +412,11 @@
         
         function toggleStatusMapping(event) {
             showLoading()
+            let dataStatus = parseInt(event.target.getAttribute('data-status'))
             let selectedData = $("#table-dashboard-vendor-day").bootstrapTable('getSelections')
             let dataUpdate = []
             selectedData.forEach(function(value) {
-                let toggleStatus = parseInt(value.status) == 0 ? 1 : 0
+                let toggleStatus = dataStatus
                 dataUpdate.push({
                     id: value.id,
                     status: toggleStatus
