@@ -39,7 +39,7 @@ class VendorController extends Controller {
         $order = $request->query('order', 'asc'); // Default order is ascending
         $offset = $request->query('offset', 0); // Default offset
         $limit = $request->query('limit', null);
-        $site = $request->query('site', null); 
+        $filterSite = $request->query('site', null); 
 
         try {
             $sql_master_data = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_MASTER)
@@ -50,15 +50,18 @@ class VendorController extends Controller {
                     'KodeSite as site'
                 );
 
-            if($site) $sql_master_data = $sql_master_data->where('a.KodeSite', $site);
+                if($filterSite == null || $filterSite == 'null') {
+                } else {
+                    $sql_master_data->where('KodeSite', $filterSite);
+                }
 
             $jml = $sql_master_data->count();
 
-            if($limit == null || $limit == 'null' || $limit == '') {
-                $sql_master_data->skip($offset);
-            } else {
-                $sql_master_data->skip($offset)->limit($limit);
-            }
+            // if($limit == null || $limit == 'null' || $limit == '') {
+            //     $sql_master_data->skip($offset);
+            // } else {
+            //     $sql_master_data->skip($offset)->limit($limit);
+            // }
             $master_data = $sql_master_data->get();
             // foreach($master_data as $data) {
             //     $data->email = $this->maskEmail($data->email);
