@@ -139,7 +139,7 @@ class SmartCateringController extends Controller {
                         ->whereDate('ta.Tanggal', Carbon::createFromFormat('Y-m-d', $reqTanggalPemesanan)->startOfDay()->format('Y-m-d H:i:s.u'))
                         // ->whereBetween('ta.Masuk', [$jam_absensi[$selectedShift]['start'], $jam_absensi[$selectedShift]['end']])
                         ;
-                    
+
                     // table fingerlog
                     // $data_karyawan_absensi = DB::connection(self::DB_CONN_NAME)->table($this->DB_LINK[$reqSite] . self::TABLE_FINGERLOG_HRD . ' as tf')
                     //     ->select('tf.IP', 'tf.NIK', 'tf.Tanggal', 'tf.Jam as Masuk', 'tk.Nama')
@@ -963,7 +963,7 @@ class SmartCateringController extends Controller {
             }
 
             $sheetMess = $spreadsheet->getSheetByName('ROOSTER CATERING MESS');
-            $vendorCounter = DB::table('SCT_GS_VENDOR_MST')->where('KodeSite', $request->site)->count('id') + 1;
+            $vendorCounter = DB::table('SCT_GS_VENDOR_MST')->count('id') + 1;
 
             foreach(['siang', 'malam', 'pagi'] as $shift) {
                 $i = 7;
