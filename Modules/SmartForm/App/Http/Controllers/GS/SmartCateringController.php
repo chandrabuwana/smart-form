@@ -921,7 +921,7 @@ class SmartCateringController extends Controller {
                     'KodeSite' => strtoupper($request->site),
                     'NoDoc' => $noDoc,
                     'NamaMess' => trim($sheetName),
-                    'Status' => '1',
+                    'Status' => '0',
                     'DayaTampung' => $kapasitas,
                     'JumlahKamar' => '1',
                     'Keterangan' => $keterangan,
@@ -951,7 +951,7 @@ class SmartCateringController extends Controller {
                         'NoDoc' => $noDoc,
                         'Nik' => $nik,
                         'Keterangan' => $keterangan,
-                        'status' => '1',
+                        'status' => '0',
                         'NoKamar' => '1',
                         'created_at' => now()
                     ]);
@@ -1012,7 +1012,6 @@ class SmartCateringController extends Controller {
                         $messMst = DB::table('SCT_GS_MESS_MST')->where('KodeSite', $request->site)->where('NamaMess', $messName)->first('NoDoc');
                         if(is_null($messMst)) {
                             DB::rollBack();
-                            dd($messName);
                         }
 
                         $weeks = [
