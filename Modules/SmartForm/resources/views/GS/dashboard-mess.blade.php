@@ -33,8 +33,27 @@
                             <button class="btn btn-primary ms-auto" id="tambah-menu">Tambah Mess</button>
                         </a>
                     </div>
+                    <div>
+                        <div class="mx-4 row">
+                            <div class="col-6 col-md-3">
+                                <div class="input-group input-group-static mb-4">
+                                    <label for="filterSite">Site</label>
+                                    <select class="form-control form-select" name="filterSite" id="filterSite">
+                                        <option value="">-- Filter Site --</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div>
+                                <button class="btn btn-primary" id="btnFilter1" onclick="applyFilter(this)">
+                                    Filter
+                                </button>
+                                <button class="btn btn-primary" id="btnClearFilter1" onclick="resetFilter(this)">
+                                    Clear Filter
+                                </button>
+                            </div>
+                        </div>
                     <div class="table-responsive p-0">
-                        <table id="table-dashboard-menu" data-toggle="table" data-ajax="getAllMess" data-side-pagination="server"
+                        <table id="table-dashboard-mess" data-toggle="table" data-ajax="getAllMess" data-side-pagination="server"
                             data-page-list="[10, 25, 50, 100, all]" data-sortable="true"
                             data-content-type="application/json" data-data-type="json" data-pagination="true"
                             data-unique-id="id" data-header-style="headerStyle">
@@ -179,12 +198,21 @@
         // var btnDetailHuni = document.getElementById("btnDetailHuni")
         var linkDetailHuni = document.getElementById("linkDetailHuni")
         var baseUrlDetailHuni = "/bss-form/catering/mess/detail-huni"
-
+        const tableDashboardMess = $("#table-dashboard-mess")
+        const filterParams = {
+            site: null
+        }
         var data = {
             data: []
         }
 
         var selected = {}
+
+        $('#filterSite').select2({
+            theme: 'bootstrap-5', // Menggunakan tema Bootstrap 5
+            dropdownParent: $('#filterSite').closest('.input-group'),
+            placeholder: '--- Cari SITE ---'
+        })
 
         $("#tambah-menu").click(function(e) {
             btnSubmit.innerText = "Submit";
@@ -247,29 +275,6 @@
             dropdownParent: $('#inputSite').closest('.input-group'),
             placeholder: '--- Cari Site ---'
         });
-
-        function fetchSite() {
-            axios.post("/bss-form/catering/helper-site", {
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            })
-            .then(function(data) {
-                var newOption = new Option("--- Cari Site ---", null, true, true);
-                $('#inputSite').append(newOption)
-                data.data.data.forEach(element => {
-                    var newOption = new Option(element.text, element.id);
-                    $('#inputSite').append(newOption)
-                });
-                
-                $('#inputSite').trigger('change');
-            })
-            .catch(function(err) {
-                
-            })
-            .finally( function(){
-            });
-        }
 
         function actionFormatter(value, row, index) {
             // console.log(JSON.stringify(row))
@@ -387,6 +392,7 @@
 
         function getAllMess(params) {
             var url = '/bss-form/catering/mess/list-mess'
+            if(filterParams.site) params.data.site = filterParams.site
             $.get(url + '?' + $.param(params.data)).then(function(res) {
                 params.success(res.data)
             })
@@ -397,7 +403,39 @@
             selected = $element
         })
         
-        fetchSite()
+        function fetchSite(cb=function(site) {}) {
+            axios.post("/bss-form/catering/helper-site", {
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            })
+            .then(function(data) {
+                var opstionSite = []
+                // opstionSite.push(new Option("--- Cari Site ---", "", true, true))
+                opstionSite.push({
+                    id: "",
+                    text: "--- Cari Site ---"
+                })
+
+                data.data.data.forEach(element => {
+                    opstionSite.push({
+                        id: element.id,
+                        text: element.text
+                    })
+
+                    // opstionSite.push(new Option(element.text, element.id))
+                });
+                
+                cb(opstionSite)
+            })
+            .catch(function(err) {
+                console.log(err)
+            })
+            .finally( function(){
+
+            });
+        }
+        
         function clearModal() {
             $("#inputSite").val("").trigger('change')
             $("#inputNoDoc").val("")
@@ -418,5 +456,26 @@
         $( document ).ready(function() {
             // console.log( "document loaded" );
         });
+
+        $('#filterSite').change( function(e) {
+            filterParams.site = e.target.value;
+        });
+
+        function applyFilter(e) {
+            tableDashboardMess.bootstrapTable('refresh')
+        }
+
+        function resetFilter(e) {
+            filterParams.site = null
+            $('#filterSite').val('').trigger('change');
+
+            tableDashboardMess.bootstrapTable('refresh')
+        }
+
+        fetchSite(function(data) {
+            data.forEach(function(opt) {
+                $('#filterSite').append(new Option(opt.text, opt.id))
+            })
+        })
     </script>
 @endsection
