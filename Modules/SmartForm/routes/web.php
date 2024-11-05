@@ -272,6 +272,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
         Route::post('/add-why-spesific-data', [TransactionPicaController::class, 'AddWhySpesificData']);
         Route::post('/edit-why-spesific-data', [TransactionPicaController::class, 'EditWhySpesificData']);
         Route::post('/check-data-step', [TransactionPicaController::class, 'checkDataStep']);
+        Route::post('/change-flag-revision', [TransactionPicaController::class, 'ChangeFlagRevision']);
 
     });
 

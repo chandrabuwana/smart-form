@@ -106,6 +106,7 @@
                 <input type="hidden" name="id_user_login" id="UserLoginNIK" value="{{ session('user_id') }}">
                 <input type="hidden" name="id_user_creator" id="UserCreatorNIK" value="{{ $dataMaster->nik }}">
                 <input type="hidden" name="status_edit" id="status_edit" value="{{ $dataMaster->approval }}">
+                <input type="hidden" name="hiddenNodocPica" id="hiddenNodocPica" value="{{ $dataMaster->nodocpica }}">
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                     <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
                         <h6 class="text-white text-capitalize ps-3">Form PICA</h6>
@@ -237,12 +238,20 @@
                             </div>
                             <br>
                             @if ($dataMaster->approval == 'rejected')
-                                <div class="row">
+                                <div class="row justify-content-between">
                                     <div class="col-md-6">
                                         <button style="text-align: left !important"
                                             class="form-control-button btn-primary btn" type="button">Revision
                                             {{ $dataMaster->keterangan_reject }}</button>
                                     </div>
+                                    @if (session('user_id') == $dataMaster->nik)
+                                        <div class="col-md-3">
+                                            <button class="btn btn-warning ms-auto uploadBtn" id="buttonSubmitDataPICA"
+                                                onclick="SubmitAllRevision()">
+                                                <i class="fas fa-save"></i>
+                                                Submit Revisi</button>
+                                        </div>
+                                    @endif
                                 </div>
                             @endif
                             <br>
@@ -479,7 +488,55 @@
             });
         });
     </script>
+    <script type="text/javascript">
+        function SubmitAllRevision() {
+            let dataNodocPica = $("#hiddenNodocPica").val();
 
+            let dataKirim = {
+                nodocpica: dataNodocPica
+            }
+            Swal.fire({
+                title: "Apakah semua revisi sudah diperbaiki ?",
+                showCancelButton: true,
+                confirmButtonText: "Ya",
+            }).then((result) => {
+                $.ajax({
+                    type: 'post',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    url: "/smart-pica/change-flag-revision",
+                    data: dataKirim,
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.code == 200) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil!',
+                                text: response.message,
+                            })
+                            window.location.href = '/';
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error While Add Data',
+                                html: message,
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'thrownError',
+                            html: errorMessage,
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                })
+            })
+        }
+    </script>
     <script type="text/javascript">
         $(document).ready(function() {
             var targetString = "smart-pica/view-data-detail-pica";
