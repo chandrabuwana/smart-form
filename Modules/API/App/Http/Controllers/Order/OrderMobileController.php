@@ -199,9 +199,10 @@ class OrderMobileController extends Controller
                             ]);
 
                         $progressItem = DB::connection(self::DB_CONN)->table(self::TABLE_ORDER_DETAIL)
-                            ->join(self::TABLE_MAPPING_VENDOR_DAY, self::TABLE_MAPPING_VENDOR_DAY . '.id', '=', 'id_mapping_vendor')
+                            // ->join(self::TABLE_MAPPING_VENDOR_DAY, self::TABLE_MAPPING_VENDOR_DAY . '.id', '=', 'id_mapping_vendor')
                             ->where('id_order', $order->kode_pemesanan)
-                            ->where($day, $user->id)
+                            ->where('id_vendor', $user->id)
+                            // ->where($day, $user->id)
                             ->where(self::TABLE_ORDER_DETAIL . '.id', '!=', $request->id_detail)
                             ->where('status', 'Dalam Proses')->count(self::TABLE_ORDER_DETAIL . '.id');
 
@@ -225,12 +226,13 @@ class OrderMobileController extends Controller
 
                     if($request->status == 'Dalam Proses') {
                         DB::connection(self::DB_CONN)->table(self::TABLE_ORDER_DETAIL)
-                            ->leftJoin(self::TABLE_MAPPING_VENDOR_DAY, self::TABLE_MAPPING_VENDOR_DAY . '.id', '=', 'id_mapping_vendor')
+                            // ->leftJoin(self::TABLE_MAPPING_VENDOR_DAY, self::TABLE_MAPPING_VENDOR_DAY . '.id', '=', 'id_mapping_vendor')
                             ->where('id_order', $order->kode_pemesanan)
-                            ->where( function($sq) use($day, $user) {
-                                $sq->where($day, $user->id)
-                                    ->orWhere(self::TABLE_ORDER_DETAIL . '.lokasi', 'working');
-                            })
+                            ->where('id_vendor', $user->id)
+                            // ->where( function($sq) use($day, $user) {
+                            //     $sq->where($day, $user->id)
+                            //         ->orWhere(self::TABLE_ORDER_DETAIL . '.lokasi', 'working');
+                            // })
                             ->update(['status' => 'Dalam Proses']);
                     }
 

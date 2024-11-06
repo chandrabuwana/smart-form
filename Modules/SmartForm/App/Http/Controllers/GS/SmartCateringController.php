@@ -877,7 +877,8 @@ class SmartCateringController extends Controller {
     }
 
     private function _upsertVendorMst($site, $vendorName, &$vendorCounter) {
-        $checkVendor = DB::table('SCT_GS_VENDOR_MST')->where('Nama', $vendorName)->first();
+        $checkVendor = DB::table('SCT_GS_VENDOR_MST')->where('KodeSite', $site)
+            ->where('Nama', $vendorName)->first();
         if(!$checkVendor) {
             $vendorId = str_pad($vendorCounter, 5, '0', STR_PAD_LEFT);
 
