@@ -354,6 +354,7 @@ class SmartCateringController extends Controller {
                     ->select(['id as id_mapping', $column_hari . ' as VendorID', 'lokasi'])
                     ->whereIn('lokasi', $extractedLokasi)
                     ->where('KodeSite', $site)
+                    ->where('status', 0)
                     ->where('JenisPemesanan', $jenisPemesanan);
 
                 Log::debug("SQL vendor mapping : " . $vendorMapping->toRawSql());
@@ -376,7 +377,8 @@ class SmartCateringController extends Controller {
                     $vendor_id = !$result ? null : $result->VendorID;
                     $_temp_pesanan = [
                         'id_order' => $kode_pemesanan,
-                        'id_mapping_vendor' => $result->VendorID, //!$result ? null : $result->id_mapping,
+                        // 'id_mapping_vendor' => $result->VendorID, //!$result ? null : $result->id_mapping,
+                        'id_vendor' => $result->VendorID, //!$result ? null : $result->id_mapping,
                         'lokasi' => $pesanan['lokasi'],
                         'site' => $pesanan['site'],
                         'jenis_pemesanan' => $pesanan['jenis'],
@@ -617,7 +619,8 @@ class SmartCateringController extends Controller {
             // ->leftJoin(self::TABLE_VENDOR_MAPPING_DAY . ' as b', 'a.id_mapping_vendor', '=', 'b.id')
             // ->leftJoin(self::TABLE_VENDOR_MASTER . ' as c', 'b.'.$vendor_id , '=', 'c.id')
             ->select('a.id as id_detail', 'a.id_order as kode_pemesanan', 'a.jenis_pemesanan', 'a.jumlah','c.Nama as nama_vendor',  'd.NamaMess as lokasi', 'a.status', 'a.file_evidence')
-            ->leftJoin(self::TABLE_VENDOR_MASTER . ' as c', 'a.id_mapping_vendor' , '=', 'c.id')
+            // ->leftJoin(self::TABLE_VENDOR_MASTER . ' as c', 'a.id_mapping_vendor' , '=', 'c.id')
+            ->leftJoin(self::TABLE_VENDOR_MASTER . ' as c', 'a.id_vendor' , '=', 'c.id')
             ->leftJoin(self::TABLE_MASTER_MESS . ' as d', 'a.lokasi', '=', 'd.NoDoc')
             ->where('a.id_order', $idPemesanan);
 

@@ -35,6 +35,7 @@ class MessController extends Controller {
         $order = $request->query('order', 'asc'); // Default order is ascending
         $offset = $request->query('offset', 0); // Default offset
         $limit = $request->query('limit', null);
+        $filterSite = $request->query('site', null); 
 
         try {
             $sql_data_mess = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_MASTER_MESS)
@@ -42,6 +43,12 @@ class MessController extends Controller {
                 ->where('is_deleted', 0);
             $sql_data_mess->orderBy($sort, $order);
             Log::debug("SQL : ".$sql_data_mess->toRawSql());
+
+            if($filterSite == null || $filterSite == 'null') {
+            } else {
+                $sql_data_mess->where('KodeSite', $filterSite);
+            }
+
             $jml = $sql_data_mess->count();
             if($limit == null || $limit == 'null' || $limit == '') {
                 $sql_data_mess->skip($offset);
