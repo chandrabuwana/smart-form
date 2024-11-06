@@ -132,8 +132,8 @@
             display: none;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            position: absolute;
+            height: 100%;
+            position: fixed;
             z-index: 999;
             /* left: 50%; */
             /* height: 50%; */
