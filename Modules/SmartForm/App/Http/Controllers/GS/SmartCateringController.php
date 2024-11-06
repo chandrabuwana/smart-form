@@ -936,7 +936,7 @@ class SmartCateringController extends Controller {
                     'created_at' => now(),
                 ]);
 
-                $i = 7;
+                $i = 6;
                 while(true) {
                     $nama = $sheetMess->getCell('B' . $i)->getValue();
                     $nik = $sheetMess->getCell('C' . $i)->getValue();
