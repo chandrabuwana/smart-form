@@ -124,20 +124,20 @@
                                         {{-- <h6 class="card-title">Biodata Karyawan</h6> --}}
                                         <hr class="horizontal dark my-sm-1">
                                         <div class="row">
-                                            {{-- <div class="col-lg-4">
+                                            <div class="col-lg-4">
                                                 <div class="input-group input-group-static mb-4">
                                                     <label for="addSite" style="width: 100%;">Site</label>
                                                     <select class="form-control form-select" name="addSite" id="addSite" style="width: 100%;">
                                                     </select>
                                                 </div>
-                                            </div> --}}
-                                            <div class="col-lg-4">
+                                            </div>
+                                            {{-- <div class="col-lg-4">
                                                 <div class="input-group input-group-static mb-4">
                                                     <label for="addIDVendor">ID Vendor</label>
                                                     <input type="text" class="form-control" id="addIDVendor"
                                                         name="addIDVendor" placeholder="ID Vendor">
                                                 </div>
-                                            </div>
+                                            </div> --}}
                                             <div class="col-lg-4">
                                                 <div class="input-group input-group-static mb-4">
                                                     <label for="addNamaVendor">Nama Vendor</label>
@@ -229,8 +229,8 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
         var baseUrl = "/bss-form/catering/vendor"
-        // var addSite = document.getElementById('addSite');
-        var addIDVendor = document.getElementById('addIDVendor');
+        var addSite = document.getElementById('addSite');
+        // var addIDVendor = document.getElementById('addIDVendor');
         var addNamaVendor = document.getElementById('addNamaVendor');
         var addKelurahanVendor = document.getElementById('addKelurahanVendor');
         var addKecVendor = document.getElementById('addKecVendor');
@@ -253,13 +253,19 @@
             placeholder: '--- Cari SITE ---'
         })
 
+        $('#addSite').select2({
+            theme: 'bootstrap-5', // Menggunakan tema Bootstrap 5
+            dropdownParent: $('#addSite').closest('.input-group'),
+            placeholder: '--- Cari SITE ---'
+        })
+
         function validateAddVendor() {
             var validationData = {
                 valid: false,
                 errors : [],
                 data: {
-                    // site: addSite.value,
-                    id: addIDVendor.value.trim(),
+                    site: addSite.value,
+                    // id: addIDVendor.value.trim(),
                     nama: addNamaVendor.value.trim(),
                     kelurahan: addKelurahanVendor.value.trim(),
                     kecamatan: addKecVendor.value.trim(),
@@ -272,8 +278,8 @@
                 }  
             }
 
-            // if(validationData.data.site == "" || validationData.data.site == null) validationData.errors.push("Site tidak boleh kosong")
-            if(validationData.data.id == "" || validationData.data.id == null) validationData.errors.push("ID Vendor tidak boleh kosong")
+            if(validationData.data.site == "" || validationData.data.site == null) validationData.errors.push("Site tidak boleh kosong")
+            // if(validationData.data.id == "" || validationData.data.id == null) validationData.errors.push("ID Vendor tidak boleh kosong")
             if(validationData.data.nama == "" || validationData.data.nama == null) validationData.errors.push("Nama Vendor tidak boleh kosong")
             if(validationData.data.email == "" || validationData.data.email == null) validationData.errors.push("Email Vendor tidak boleh kosong")
             if(!validateEmail(validationData.data.email)) validationData.errors.push("Email Vendor tidak valid")
@@ -383,7 +389,7 @@
             //     "kontak": null,
             //     "keterangan": null
             // }
-            // var _site = ", '"+ row.site + "'"
+            var _site = ", '"+ row.site + "'"
             var _id = ", '"+ row.id + "'"
             var _nama = ", '"+ row.nama + "'"
             var _status = ", '"+ row.status + "'"
@@ -398,7 +404,7 @@
             var _keterangan = ", '"+ row.keterangan + "'"
 
             // var _clickEvent = 'onclick="modalDetail(this)"'
-            var _clickEvent = 'onclick="modalDetail(this'  + _id + _nama + _status + _alamat + _kelurahan + _kecamatan + _kota + _telepon + _website + _email + _kontak + _keterangan +')"'
+            var _clickEvent = 'onclick="modalDetail(this'  + _site + _id + _nama + _status + _alamat + _kelurahan + _kecamatan + _kota + _telepon + _website + _email + _kontak + _keterangan +')"'
             var _clickEventDelete = 'onclick="actionDelete(this'  + _id +')"'
             // var _clickEventDelete = 'onclick="actionDelete(this' + _site + _kode_mess + _no_kamar + _nama_mess + _kapasitas +')"'
 
@@ -409,14 +415,14 @@
             return btnDetail + btnEdit + btnHapus
         }
 
-        function modalDetail(e, _id, _nama, _status, _alamat, _kelurahan, _kecamatan, _kota, _telepon, _website, _email, _kontak, _keterangan) {
+        function modalDetail(e,_site, _id, _nama, _status, _alamat, _kelurahan, _kecamatan, _kota, _telepon, _website, _email, _kontak, _keterangan) {
             btnSubmitKamar.setAttribute('data-action', 'edit')
             btnSubmitKamar.setAttribute('data-id', _id)
             
             if(e.getAttribute("data-action") == "detail") {
                 btnSubmitKamar.style.display = 'none'
-                addIDVendor.disabled = true
-                // addSite.disabled = true
+                // addIDVendor.disabled = true
+                addSite.disabled = true
                 addNamaVendor.disabled = true
                 addKelurahanVendor.disabled = true
                 addKecVendor.disabled = true
@@ -428,12 +434,12 @@
                 addKeteranganVendor.disabled = true
             }
 
-            if(e.getAttribute("data-action") == "edit") {
-                addIDVendor.disabled = true
-            }
+            // if(e.getAttribute("data-action") == "edit") {
+            //     addIDVendor.disabled = true
+            // }
             
-            // $("#addSite").val(_site).trigger("change")
-            addIDVendor.value = _id == "null" ? "" : _id
+            $("#addSite").val(_site).trigger("change")
+            // addIDVendor.value = _id == "null" ? "" : _id
             addNamaVendor.value = _nama == "null" ? "" : _nama
             addKelurahanVendor.value = _kelurahan == "null" ? "" : _kelurahan
             addKecVendor.value = _kecamatan == "null" ? "" : _kecamatan
@@ -560,8 +566,8 @@
         }
 
         function clearModal() {
-            // $("#addSite").val("").trigger("change")
-            addIDVendor.value = ""
+            $("#addSite").val("").trigger("change")
+            // addIDVendor.value = ""
             addNamaVendor = ""
             addKelurahanVendor = ""
             addKecVendor = ""
@@ -576,8 +582,8 @@
         modalElement.on('hide.bs.modal', function (e) {
             btnSubmitKamar.style.display = ''
             btnSubmitKamar.setAttribute('data-action', 'add')
-            addIDVendor.disabled = false
-            // addSite.disabled = false
+            // addIDVendor.disabled = false
+            addSite.disabled = false
             addNamaVendor.disabled = false
             addKelurahanVendor.disabled = false
             addKecVendor.disabled = false
@@ -607,6 +613,7 @@
         fetchSite(function(data) {
             data.forEach(function(opt) {
                 $('#filterSite').append(new Option(opt.text, opt.id))
+                $('#addSite').append(new Option(opt.text, opt.id))
             })
         })
     </script>

@@ -100,16 +100,16 @@ class VendorController extends Controller {
             $request->all(), 
             [
                 'email' => ['required', 'email'], 
-                // 'site' => ['required'], 
+                'site' => ['required'], 
                 'nama' => ['required'], 
-                'id' => ['required']
+                // 'id' => ['required']
             ],
             [
                 'email.email' => 'Email tidak valid',
                 'email.required' => 'Email wajib diisi',
-                // 'site.required' => 'Site wajib diisi',
+                'site.required' => 'Site wajib diisi',
                 'nama.required' => 'Nama wajib diisi',
-                'id.required' => 'ID Vendor Mess wajib diisi.'
+                // 'id.required' => 'ID Vendor Mess wajib diisi.'
             ]
         );
 
@@ -123,8 +123,8 @@ class VendorController extends Controller {
 
         } else {
             $data_input = [
-                // 'KodeSite' => $request->input('site'),
-                'id' => $request->input('id'),
+                'KodeSite' => $request->input('site'),
+                // 'id' => $request->input('id'),
                 'Nama' => $request->input('nama'),
                 'Alamat' => $request->input('alamat'),
                 'Kelurahan' => $request->input('kelurahan'),
