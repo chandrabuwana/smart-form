@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Lcobucci\JWT\Validation\ConstraintViolation;
+use Illuminate\Support\Str;
 
 class VendorController extends Controller {
     private const DB_CONN_NAME = 'sqlsrv';
@@ -38,21 +39,29 @@ class VendorController extends Controller {
         $order = $request->query('order', 'asc'); // Default order is ascending
         $offset = $request->query('offset', 0); // Default offset
         $limit = $request->query('limit', null);
+        $filterSite = $request->query('site', null); 
 
         try {
             $sql_master_data = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_MASTER)
                 ->select(
                     'id', 'Nama as nama', 'Status as status', 'Alamat as alamat', 
                     'Kelurahan as kelurahan', 'Kecamatan as kecamatan', 'Kota as kota', 'Telepon as telepon', 
-                    'Website as website', 'Email as email', 'Kontak as kontak', 'Keterangan as keterangan');
+                    'Website as website', 'Email as email', 'Kontak as kontak', 'Keterangan as keterangan',
+                    'KodeSite as site'
+                );
+
+                if($filterSite == null || $filterSite == 'null') {
+                } else {
+                    $sql_master_data->where('KodeSite', $filterSite);
+                }
 
             $jml = $sql_master_data->count();
 
-            if($limit == null || $limit == 'null' || $limit == '') {
-                $sql_master_data->skip($offset);
-            } else {
-                $sql_master_data->skip($offset)->limit($limit);
-            }
+            // if($limit == null || $limit == 'null' || $limit == '') {
+            //     $sql_master_data->skip($offset);
+            // } else {
+            //     $sql_master_data->skip($offset)->limit($limit);
+            // }
             $master_data = $sql_master_data->get();
             // foreach($master_data as $data) {
             //     $data->email = $this->maskEmail($data->email);
@@ -91,16 +100,16 @@ class VendorController extends Controller {
             $request->all(), 
             [
                 'email' => ['required', 'email'], 
-                // 'site' => ['required'], 
+                'site' => ['required'], 
                 'nama' => ['required'], 
-                'id' => ['required']
+                // 'id' => ['required']
             ],
             [
                 'email.email' => 'Email tidak valid',
                 'email.required' => 'Email wajib diisi',
-                // 'site.required' => 'Site wajib diisi',
+                'site.required' => 'Site wajib diisi',
                 'nama.required' => 'Nama wajib diisi',
-                'id.required' => 'ID Vendor Mess wajib diisi.'
+                // 'id.required' => 'ID Vendor Mess wajib diisi.'
             ]
         );
 
@@ -114,8 +123,8 @@ class VendorController extends Controller {
 
         } else {
             $data_input = [
-                // 'KodeSite' => $request->input('site'),
-                'id' => $request->input('id'),
+                'KodeSite' => $request->input('site'),
+                // 'id' => $request->input('id'),
                 'Nama' => $request->input('nama'),
                 'Alamat' => $request->input('alamat'),
                 'Kelurahan' => $request->input('kelurahan'),
@@ -926,7 +935,7 @@ class VendorController extends Controller {
 
         try {
             $sql_master_data = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_MAPPING_MAKAN_VENDOR_DAY . ' as a')
-                ->select('a.id', 'a.KodeSite as site', 'a.JenisPemesanan as waktu_makan', 
+                ->select('a.id', 'a.KodeSite as site', 'a.JenisPemesanan as waktu_makan', 'a.status',
                         'a.senin', 'b.Nama as senin_nama', 'a.selasa', 'c.Nama as selasa_nama', 
                         'a.rabu', 'd.Nama as rabu_nama', 'a.kamis', 'e.Nama as kamis_nama', 'a.jumat', 'f.Nama as jumat_nama', 
                         'a.sabtu', 'g.Nama as sabtu_nama', 'a.minggu', 'h.Nama as minggu_nama', 'a.lokasi', 'i.NamaMess as nama_lokasi')
@@ -1065,4 +1074,54 @@ class VendorController extends Controller {
 
     }
 
+    public function toggleMappingDayStatus(Request $request) {
+        $isSuccess = false;
+        $message = '';
+        $errorMessage = [];
+        $data = null;
+        $traceID = '';
+        $nik_session = $request->session()->get('user_id', '');
+        $validator = Validator::make(
+            $request->all(), 
+            [
+                'data' => ['required'], 
+            ],
+            [
+                'data.required' => 'Data wajib diisi',
+            ]
+        );
+
+        try {
+            $dataToggled = $request->input('data');
+            DB::connection(self::DB_CONN_NAME)->beginTransaction();
+
+            Log::info(json_encode($dataToggled));
+            foreach ($dataToggled as $value) {
+                DB::connection(self::DB_CONN_NAME)->table(self::TABLE_MAPPING_MAKAN_VENDOR_DAY)
+                    ->where('id', $value['id'])
+                    ->update(['status' => $value['status']]);
+            }
+
+            $isSuccess = true;
+            $message = 'Ok';
+            DB::connection(self::DB_CONN_NAME)->commit();
+        } catch (Exception $ex) {
+            $traceID = Str::uuid();
+            $message = 'Terjadi kesalahan,coba beberapa saat lagi';
+            $errorList[] = $message;
+            DB::connection(self::DB_CONN_NAME)->rollBack();
+            Log::error('Trace ID ' . $traceID . $ex->getMessage());
+            Log::error($ex->getTraceAsString());
+        }
+
+        return response()->json([
+            'isSuccess' => $isSuccess,
+            'message' => $message,
+            'error' => [
+                'traceID' => $traceID,
+                'messages' => $errorMessage
+            ],
+            'data' => $data
+        ]);
+    }
 }

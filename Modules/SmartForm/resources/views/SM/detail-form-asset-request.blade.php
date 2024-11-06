@@ -2,6 +2,52 @@
 
 @section('custom-css')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.css">
+<style>
+    main {
+            max-height: none !important;
+        }
+    @media print {
+        .fixed-plugin-button {
+            display: none;
+        }
+        /* Sembunyikan elemen yang tidak diperlukan */
+        .no-print {
+            display: none !important;
+        }
+        nav {
+            display: none !important;
+        }
+        aside {
+            display: none !important;
+        }
+        
+        /* Atur ukuran font khusus untuk print */
+        body {
+            font-size: 12pt;
+            height: auto;
+            overflow: visible;
+        }
+        main {
+            max-height: none !important;
+        }
+
+        /* Atur margin agar lebih pas untuk print */
+        
+
+        /* Sesuaikan elemen layout untuk print */
+        .print-specific {
+            display: block;
+        }
+        .card {
+            box-shadow: none;
+        }
+        .print-col-6 {
+            flex: 0 0 auto;
+            width: 50%;
+        }
+        
+    }
+</style>
 @endsection
 
 @section('content')
@@ -75,7 +121,7 @@
                                             <td id="tglDoc">{{ $data['tgl_doc'] }}</td>
                                         </tr>
                                         @foreach ($history as $riwayat)
-                                                <tr>
+                                                <tr class="no-print">
                                                     <td></td>
                                                     <td></td>
                                                     <td>{{ $riwayat->updated_at }}</td>
@@ -85,7 +131,7 @@
                                     <!-- <div>No. Doc : <span id="noDoc"></span></div>
                                     <div>Date : <span id="tglDoc"></span></div> -->
                                 </div>
-                                <div class="card col-md-6">
+                                <div class="card col-md-6 print-col-6">
                                     <div class="card-body w-full">
                                         <h5 class="card-title">Requestor</h5>
                                         <div class="mb-1">
@@ -98,7 +144,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card col-md-6">
+                                <div class="card col-md-6 print-col-6">
                                     <div class="card-body w-full">
                                         <h5 class="card-title">Asset Allocation</h5>
                                         <div class="mb-1">
@@ -280,8 +326,8 @@
                                     <tr>
                                         <th>Requested By</th>
                                         <th colspan="3">Acknowledge By</th>
-                                        @if($approval_status->approved_by_1_nik != null && $approval_status->approved_by_2_nik != null)
-                                            <th colspan="{{ $approval_status->approved_by_2_nik == null ? 1 : 2}}">Approved By {{ $approval_status->approved_by_1_nik == null ? "null" : "tidak null"}} {{$approval_status->approved_by_2_nik == null}}</th>
+                                        @if($approval_status->approved_by_1_nik != null || $approval_status->approved_by_2_nik != null)
+                                            <th colspan="{{ $approval_status->approved_by_2_nik == null ? 1 : 2}}">Approved By</th>
                                         @endif
                                     </tr>
                                 </thead>
@@ -445,7 +491,7 @@
 
 @section('custom-js')
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script>
         var tglNow = new Date()
         var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
