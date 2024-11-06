@@ -108,10 +108,10 @@ class OrderMobileController extends Controller
 
             $order->details = DB::connection(self::DB_CONN)->table(self::TABLE_ORDER_DETAIL)
                 ->select(self::TABLE_ORDER_DETAIL . '.id', self::TABLE_MESS_MASTER . '.NamaMess AS lokasi', self::TABLE_ORDER_DETAIL . '.jumlah', self::TABLE_ORDER_DETAIL . '.status', 'file_evidence')
-                ->leftJoin(self::TABLE_MAPPING_VENDOR_DAY, self::TABLE_MAPPING_VENDOR_DAY . '.id', '=', self::TABLE_ORDER_DETAIL . '.id_mapping_vendor')
+                // ->leftJoin(self::TABLE_MAPPING_VENDOR_DAY, self::TABLE_MAPPING_VENDOR_DAY . '.id', '=', self::TABLE_ORDER_DETAIL . '.id_mapping_vendor')
                 ->leftJoin(self::TABLE_MESS_MASTER, self::TABLE_MESS_MASTER . '.NoDoc', '=', self::TABLE_ORDER_DETAIL . '.lokasi')
                 ->where('id_order', $order->kode_pemesanan)
-                ->where($day, $user->id)
+                ->where('id_vendor', $user->id)
                 // ->where( function($sq) use($day, $user) {
                 //     $sq->where($day, $user->id)
                 //         ->orWhere(self::TABLE_ORDER_DETAIL . '.lokasi', 'working');
