@@ -876,21 +876,17 @@ class SmartCateringController extends Controller {
         return view('SmartForm::GS/import-mapping-gs');
     }
 
-    private function _upsertVendorMst($site, $vendorName, &$vendorCounter) {
+    private function _upsertVendorMst($site, $vendorName) {
         $checkVendor = DB::table('SCT_GS_VENDOR_MST')->where('KodeSite', $site)
             ->where('Nama', $vendorName)->first();
         if(!$checkVendor) {
-            $vendorId = str_pad($vendorCounter, 5, '0', STR_PAD_LEFT);
-
-            DB::table('SCT_GS_VENDOR_MST')->insert([
+            $vendorId = DB::table('SCT_GS_VENDOR_MST')->insertGetId([
                 'KodeSite' => $site,
-                'id' => str_pad($vendorCounter, 5, '0', STR_PAD_LEFT),
                 'Nama' => $vendorName,
                 'Email' => Str::slug($vendorName, '_') . '@gmail.com',
                 'pwd' => Hash::make('password')
             ]);
 
-            $vendorCounter++;
         } else {
             $vendorId = $checkVendor->id;
         }
@@ -967,10 +963,9 @@ class SmartCateringController extends Controller {
             }
 
             $sheetMess = $spreadsheet->getSheetByName('ROOSTER CATERING MESS');
-            $vendorCounter = DB::table('SCT_GS_VENDOR_MST')->count('id') + 1;
-
             foreach(['siang', 'malam', 'pagi'] as $shift) {
                 $i = 7;
+
                 while(true) {
                     switch($shift) {
                         case 'pagi':
@@ -1029,7 +1024,7 @@ class SmartCateringController extends Controller {
                         ];
 
                         foreach(array_keys($weeks) as $day) {
-                            $vendorDay = $this->_upsertVendorMst($request->site, $$day, $vendorCounter);
+                            $vendorDay = $this->_upsertVendorMst($request->site, $$day);
                             $weeks[ $day ] = $vendorDay;
 
                             DB::table('SCT_GS_VENDOR_MAPPING')->updateOrInsert(
@@ -1086,7 +1081,7 @@ class SmartCateringController extends Controller {
 
                 foreach(array_keys($weeks) as $day) {
                     $$day = trim($$day);
-                    $vendorDay = $this->_upsertVendorMst($request->site, $$day, $vendorCounter);
+                    $vendorDay = $this->_upsertVendorMst($request->site, $$day);
                     $weeks[ $day ] = $vendorDay;
                 }
 
