@@ -786,7 +786,7 @@ class MessController extends Controller {
         $data_mess = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_MASTER_MESS)
             ->select('NoDoc as id', 'NamaMess as text')
             ->where('KodeSite', $kode_site)
-            ->where('status', 1);
+            ->where('status', 0);
         Log::debug('SQL : '. $data_mess->toRawSql());
 
         return response()->json(['data' => $data_mess->get()->toArray()]);
