@@ -361,11 +361,11 @@ class SmartCateringController extends Controller {
                 // Log::debug("SQL vendor mapping : ");
                 // Log::debug($vendorMapping->get());
                 $vendorMapping = $vendorMapping->get()->toArray();
-                // Log::debug("SQL result vendor mapping : " . json_encode($vendorMapping, JSON_PRETTY_PRINT));
+                Log::debug("SQL result vendor mapping : " . json_encode($vendorMapping, JSON_PRETTY_PRINT));
                 $newSummaryOrder = [];
                 $summaryPerVendor = [];
                 foreach ($summaryOrder as $pesanan) {
-                    // Log::debug("pesanan : ".json_encode($pesanan));
+                    Log::debug("pesanan : ".json_encode($pesanan));
                     $lokasi_to_find = $pesanan['lokasi'];
                     $result = array_filter($vendorMapping, function($item) use ($lokasi_to_find) {
                         return $item->lokasi === $lokasi_to_find;
@@ -378,7 +378,7 @@ class SmartCateringController extends Controller {
                     $_temp_pesanan = [
                         'id_order' => $kode_pemesanan,
                         // 'id_mapping_vendor' => $result->VendorID, //!$result ? null : $result->id_mapping,
-                        'id_vendor' => $result->VendorID, //!$result ? null : $result->id_mapping,
+                        'id_vendor' => $vendor_id, //!$result ? null : $result->id_mapping,
                         'lokasi' => $pesanan['lokasi'],
                         'site' => $pesanan['site'],
                         'jenis_pemesanan' => $pesanan['jenis'],
