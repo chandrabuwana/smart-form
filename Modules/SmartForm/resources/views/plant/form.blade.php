@@ -563,7 +563,7 @@
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
                                                 <input type="text" class="form-control input-number-only" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
-                                                    value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[0]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                    value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[0]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -592,7 +592,7 @@
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_high_iddle_after_adjustment">After Adjustment</label>
                                                 <input type="text" class="form-control input-number-only" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]"
-                                                    value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[0]->after_adjust_high_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                    value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[0]->after_adjust_high_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -639,7 +639,7 @@
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
                                                 <input type="text" class="form-control input-number-only" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
-                                                    value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[1]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                    value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[1]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -668,7 +668,7 @@
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_high_iddle_after_adjustment">After Adjustment</label>
                                                 <input type="text" class="form-control input-number-only" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]"
-                                                    value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[1]->after_adjust_high_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                    value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[1]->after_adjust_high_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -715,7 +715,7 @@
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
                                                 <input type="text" class="form-control input-number-only" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
-                                                    value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[2]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                    value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[2]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -744,7 +744,7 @@
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_high_iddle_after_adjustment">After Adjustment</label>
                                                 <input type="text" class="form-control input-number-only" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]"
-                                                    value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[2]->after_adjust_high_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                    value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[2]->after_adjust_high_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -791,7 +791,7 @@
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
                                                 <input type="text" class="form-control input-number-only" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
-                                                    value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[3]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                    value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[3]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -820,7 +820,7 @@
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_high_iddle_actual">After Adjustment</label>
                                                 <input type="text" class="form-control input-number-only" id="power_train_high_iddle_actual" name="power_train_high_iddle_after_adjustment[]"
-                                                    value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[3]->after_adjust_high_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                    value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[3]->after_adjust_high_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -867,7 +867,7 @@
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
                                                 <input type="text" class="form-control input-number-only" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
-                                                    value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[4]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                    value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[4]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -896,7 +896,7 @@
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_high_iddle_after_adjustment">After Adjustment</label>
                                                 <input type="text" class="form-control input-number-only" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]"
-                                                    value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[4]->after_adjust_high_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                    value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[4]->after_adjust_high_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -943,7 +943,7 @@
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
                                                 <input type="text" class="form-control input-number-only" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
-                                                    value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[5]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                    value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[5]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -972,7 +972,7 @@
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_high_iddle_after_adjustment">After Adjustment</label>
                                                 <input type="text" class="form-control input-number-only" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]"
-                                                    value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[5]->after_adjust_high_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                    value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[5]->after_adjust_high_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -1025,7 +1025,7 @@
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
                                                         <input type="text" class="form-control input-number-only" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
-                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[6]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[6]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1054,7 +1054,7 @@
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_high_iddle_after_adjustment">After Adjustment</label>
                                                         <input type="text" class="form-control input-number-only" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]"
-                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[6]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[6]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1094,7 +1094,7 @@
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
                                                         <input type="text" class="form-control input-number-only" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
-                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[7]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[7]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1123,7 +1123,7 @@
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_high_iddle_after_adjustment">After Adjustment</label>
                                                         <input type="text" class="form-control input-number-only" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]"
-                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[7]->after_adjust_high_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[7]->after_adjust_high_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1163,7 +1163,7 @@
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
                                                         <input type="text" class="form-control input-number-only" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
-                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[8]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[8]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1192,7 +1192,7 @@
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_high_iddle_after_adjustment">After Adjustment</label>
                                                         <input type="text" class="form-control input-number-only" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]"
-                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[8]->after_adjust_high_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[8]->after_adjust_high_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1232,7 +1232,7 @@
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
                                                         <input type="text" class="form-control input-number-only" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
-                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[9]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[9]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1261,7 +1261,7 @@
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_high_iddle_after_adjustment">After Adjustment</label>
                                                         <input type="text" class="form-control input-number-only" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]"
-                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[9]->after_adjust_high_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[9]->after_adjust_high_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1313,7 +1313,7 @@
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
                                                         <input type="text" class="form-control input-number-only" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
-                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[10]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[10]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1342,7 +1342,7 @@
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_high_iddle_after_adjustment">After Adjustment</label>
                                                         <input type="text" class="form-control input-number-only" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]"
-                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[10]->after_adjust_high_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[10]->after_adjust_high_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1382,7 +1382,7 @@
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
                                                         <input type="text" class="form-control input-number-only" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
-                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[11]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[11]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1411,7 +1411,7 @@
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_high_iddle_after_adjustment">After Adjustment</label>
                                                         <input type="text" class="form-control input-number-only" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]"
-                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[11]->after_adjust_high_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[11]->after_adjust_high_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1465,7 +1465,7 @@
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
                                                         <input type="text" class="form-control input-number-only" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
-                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[12]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[12]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1494,7 +1494,7 @@
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_high_iddle_after_adjustment">After Adjustment</label>
                                                         <input type="text" class="form-control input-number-only" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]"
-                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[12]->after_adjust_high_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[12]->after_adjust_high_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1534,7 +1534,7 @@
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
                                                         <input type="text" class="form-control input-number-only" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
-                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[13]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[13]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1563,7 +1563,7 @@
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_high_iddle_after_adjustment">After Adjustment</label>
                                                         <input type="text" class="form-control input-number-only" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]"
-                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[13]->after_adjust_high_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[13]->after_adjust_high_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1603,7 +1603,7 @@
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
                                                         <input type="text" class="form-control input-number-only" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
-                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[14]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[14]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1632,7 +1632,7 @@
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_high_iddle_after_adjustment">After Adjustment</label>
                                                         <input type="text" class="form-control input-number-only" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]"
-                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[14]->after_adjust_high_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[14]->after_adjust_high_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1681,7 +1681,7 @@
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
                                                 <input type="text" class="form-control input-number-only" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
-                                                    value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[15]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                    value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[15]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -1710,7 +1710,7 @@
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_high_iddle_after_adjustment">After Adjustment</label>
                                                 <input type="text" class="form-control input-number-only" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]"
-                                                    value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[15]->after_adjust_high_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                    value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[15]->after_adjust_high_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -1762,7 +1762,7 @@
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
                                                         <input type="text" class="form-control input-number-only" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
-                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[16]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[16]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1791,7 +1791,7 @@
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_high_iddle_after_adjustment">After Adjustment</label>
                                                         <input type="text" class="form-control input-number-only" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]"
-                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[16]->after_adjust_high_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[16]->after_adjust_high_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1831,7 +1831,7 @@
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
                                                         <input type="text" class="form-control input-number-only" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
-                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[17]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[17]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1860,7 +1860,7 @@
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_high_iddle_after_adjustment">After Adjustment</label>
                                                         <input type="text" class="form-control input-number-only" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]"
-                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[17]->after_adjust_high_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[17]->after_adjust_high_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1900,7 +1900,7 @@
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
                                                         <input type="text" class="form-control input-number-only" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
-                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[18]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[18]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1929,7 +1929,7 @@
                                                     <div class="input-group input-group-static">
                                                         <label for="power_train_high_iddle_after_adjustment">After Adjustment</label>
                                                         <input type="text" class="form-control input-number-only" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]"
-                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[18]->after_adjust_high_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                            value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[18]->after_adjust_high_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1978,7 +1978,7 @@
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
                                                 <input type="text" class="form-control input-number-only" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
-                                                    value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[19]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                    value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[19]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -2007,7 +2007,7 @@
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_high_iddle_after_adjustment">After Adjustment</label>
                                                 <input type="text" class="form-control input-number-only" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]"
-                                                    value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[19]->after_adjust_high_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                    value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[19]->after_adjust_high_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -2054,7 +2054,7 @@
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
                                                 <input type="text" class="form-control input-number-only" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
-                                                    value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[20]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                    value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[20]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -2083,7 +2083,7 @@
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_high_iddle_after_adjustment">After Adjustment</label>
                                                 <input type="text" class="form-control input-number-only" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]"
-                                                    value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[20]->after_adjust_high_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                    value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[20]->after_adjust_high_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -2130,7 +2130,7 @@
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
                                                 <input type="text" class="form-control input-number-only" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
-                                                    value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[21]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                    value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[21]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -2159,7 +2159,7 @@
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_high_iddle_after_adjustment">After Adjustment</label>
                                                 <input type="text" class="form-control input-number-only" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]"
-                                                    value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[21]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                    value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[21]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -2206,7 +2206,7 @@
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_low_iddle_after_adjustment">After Adjustment</label>
                                                 <input type="text" class="form-control input-number-only" id="power_train_low_iddle_after_adjustment" name="power_train_low_iddle_after_adjustment[]"
-                                                    value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[22]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                    value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[22]->after_adjust_low_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -2235,7 +2235,7 @@
                                             <div class="input-group input-group-static">
                                                 <label for="power_train_high_iddle_after_adjustment">After Adjustment</label>
                                                 <input type="text" class="form-control input-number-only" id="power_train_high_iddle_after_adjustment" name="power_train_high_iddle_after_adjustment[]"
-                                                    value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[22]->after_adjust_high_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : 'required' ?>>
+                                                    value="<?= isset($detailPowerTrain) ? ($detailPowerTrain[22]->after_adjust_high_iddle ?? '-') : '' ?>" <?= isset($detailPowerTrain) ? 'disabled' : '' ?>>
                                             </div>
                                         </div>
                                     </div>
