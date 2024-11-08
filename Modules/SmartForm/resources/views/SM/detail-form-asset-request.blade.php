@@ -4,9 +4,24 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.css">
 <style>
     main {
-            max-height: none !important;
-        }
+        max-height: none !important;
+    }
+    .only-print {
+        display: none;
+    }
+
+
     @media print {
+        table.table-print thead {
+            background-color: rgb(231, 231, 217);
+        }
+        table.table-print, table.table-print tr, table.table-print td{
+            border-style: solid;
+            border-width: 1px;
+        }
+        .only-print {
+            display: inline;
+        }
         .fixed-plugin-button {
             display: none;
         }
@@ -45,7 +60,35 @@
             flex: 0 0 auto;
             width: 50%;
         }
-        
+        .print-col {
+            flex: 0 0 auto;
+            width: 100%;
+        }
+        .print-nature {
+            width: 100%;
+            display: table;
+        }
+        .print-border {
+            border: 1px solid black;
+        }
+        .print-w-full {
+            width: 100%;
+        }
+        .print-mt-4 {
+            margin-top: 16px;
+        }
+        .print-mt-2 {
+            margin-top: 8px;
+        }
+        .print-flex {
+            display: flex;
+        }
+        .table thead th {
+            padding: 2px 4px;
+        }
+        .print-font-size {
+            font-size: 12px;
+        }
     }
 </style>
 @endsection
@@ -54,15 +97,33 @@
     <div class="row">
         <div class="col-12">
             <div class="card my-4">
-                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 print-card-header no-print">
                     <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
                         <h6 class="text-white text-capitalize ps-3">Form Asset Request</h6>
                     </div>
                 </div>
+                <h3 class="text-capitalize ps-3 only-print">Form Asset Request</h3>
                 <div class="card-body my-1">
 
-                    <div class="row gx-4">
-                        <div class="col-auto my-auto ms-3">
+                    <div class="row gx-4 mb-4">
+                        <table class="small only-print">
+                            <tr>
+                                <td>No. Doc</td>
+                                <td class="px-3">:</td>
+                                <td>{{ $data['no_doc'] }}</td>
+                            </tr>
+                            <tr>
+                                <td>Date</td>
+                                <td class="px-3">:</td>
+                                <td>{{ implode('-', array_reverse(explode('-', $data['tgl_doc']))) }}</td>
+                            </tr>
+                            <tr>
+                                <td>Requested By</td>
+                                <td class="px-3">:</td>
+                                <td>{{ $data['requested_by'] }} - {{ $data['requested_name']  }}</td>
+                            </tr>
+                        </table>
+                        <div class="col-auto my-auto ms-3 no-print">
                             <div class="h-100">
                                 <p class="mb-0 fw-bold text-sm">
                                     Requested By : <span id="requestor">{{ $data['requested_by'] }}</span>
@@ -71,7 +132,7 @@
                         </div>
                     </div>
 
-                    <form action="">
+                    <form action="" class="no-print">
                         <div class="row gx-4 my-3">
                             <div class="col-12 col-md-4">
                                 <h4>Nature</h4>
@@ -108,7 +169,7 @@
 
                         <div class="row gx-4">
                             <div class="row">
-                                <div class="">
+                                <div class="no-print">
                                     <table class="small">
                                         <tr>
                                             <td>No. Doc</td>
@@ -121,7 +182,7 @@
                                             <td id="tglDoc">{{ $data['tgl_doc'] }}</td>
                                         </tr>
                                         @foreach ($history as $riwayat)
-                                                <tr class="no-print">
+                                                <tr>
                                                     <td></td>
                                                     <td></td>
                                                     <td>{{ $riwayat->updated_at }}</td>
@@ -131,7 +192,7 @@
                                     <!-- <div>No. Doc : <span id="noDoc"></span></div>
                                     <div>Date : <span id="tglDoc"></span></div> -->
                                 </div>
-                                <div class="card col-md-6 print-col-6">
+                                <div class="card col-md-6 print-col">
                                     <div class="card-body w-full">
                                         <h5 class="card-title">Requestor</h5>
                                         <div class="mb-1">
@@ -164,7 +225,7 @@
                             <div class="mb-1 row">
                                 <div class="col-md-6">
                                     <div class="mb-1">
-                                        <label class="form-label" for="reasonpurchase">Reason Purchase</label>
+                                        <label class="form-label" for="reasonpurchase">1. Reason Purchase</label>
                                         <input type="text" class="form-control input-text"  placeholder="" id="reasonpurchase" name="reasonpurchase" disabled value="{{ $data['reason_purchase'] }}">
                                     </div>
                                 </div>
@@ -211,7 +272,7 @@
                                         <th data-field="qty">Qty</th>
                                         <th data-field="uom">UOM</th>
                                         <th data-field="currency">Currency</th>
-                                        <th data-field="price">Price</th>
+                                        <th data-field="price" data-formatter="priceFormatter">Price</th>
                                         <th data-formatter="totalHarga">Total Price</th>
                                     </tr>
                                 </thead>
@@ -251,7 +312,7 @@
                                     <td>IDR</td>
                                     <td class="reset-border">
                                         <div class="mb-1">
-                                            <input type="text" class="form-control input-text"  placeholder="" id="estimatedIdr" name="estimatedIdr" value="{{ $data['estimated_idr'] }}" disabled>
+                                            <input type="text" class="form-control input-text"  placeholder="" id="estimatedIdr" name="estimatedIdr" value="{{ number_format( (int) $data['estimated_idr'] , 0, '', '.') }}" disabled>
                                         </div>
                                     </td>
                                 </tr>
@@ -259,7 +320,7 @@
                                     <td>USD</td>
                                     <td>
                                         <div class="mb-1">
-                                            <input type="text" class="form-control input-text"  placeholder="" id="estimatedUsd" name="estimatedUsd" value="{{ $data['estimated_usd'] }}" disabled>
+                                            <input type="text" class="form-control input-text"  placeholder="" id="estimatedUsd" name="estimatedUsd" value="{{ number_format( (int) $data['estimated_usd'] , 0, '', '.') }}" disabled>
                                         </div>
                                     </td>
                                 </tr>
@@ -267,7 +328,7 @@
                                     <td>CNY</td>
                                     <td>
                                         <div class="mb-1">
-                                            <input type="text" class="form-control input-text"  placeholder="" id="estimatedCny" name="estimatedCny" value="{{ $data['estimated_cny'] }}" disabled>
+                                            <input type="text" class="form-control input-text"  placeholder="" id="estimatedCny" name="estimatedCny" value="{{ number_format( (int) $data['estimated_cny'] , 0, '', '.')}}" disabled>
                                         </div>
                                     </td>
                                 </tr>
@@ -318,10 +379,171 @@
                         </div> -->
                         <span style="display: none;" id="requestornik">{{ session('user_id') }}</span>
                     </form>
+                    
+                    <div>
+                        <table class="only-print print-nature print-border">
+                            <tbody>
+                                <tr>
+                                    <td rowspan="3" style="vertical-align: top"><h5>Nature</h5></td>
+                                </tr>
+                                <tr>
+                                    <td><input class="" type="checkbox" disabled {{$data['replacement']}}> Replacement </td>
+                                    <td><input class="" type="checkbox" disabled {{$data['budgeted']}}> Budgeted</td>
+                                </tr>
+                                <tr>
+                                    <td><input class="" type="checkbox" disabled {{$data['additional']}}> Additonal</td>
+                                    <td><input class="" type="checkbox" disabled {{$data['not_budgeted']}}> Not Budgeted</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="only-print print-nature print-border">
+                            <tbody>
+                                <tr>
+                                    <td colspan="1"><h5>Requestor</h5></td>
+                                    <td colspan="1"><h5>Asset Allocation</h5></td>
+                                </tr>
+                                <tr>
+                                    <td>Department : {{$data['department']}}</td>
+                                    <td>Department : {{$data['department_allocation']}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Project / Site : {{$data['project']}}</td>
+                                    <td>Project / Site : {{$data['project_allocation']}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="only-print print-w-full print-nature print-mt-2">
+                            <tbody>
+                                <tr>
+                                    <td><h5>1. Reason Purchase</h5></td>
+                                </tr>
+                                <tr>
+                                    <td style="border-bottom: 1px solid black">{{$data['reason_purchase']}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        @if(count($pendukung_reason) > 0)
+                        <table class="only-print print-w-full print-nature print-mt-2">
+                            <thead>
+                                <tr style="border-bottom: 1px solid black">
+                                    <td><h6>Nama File</h6></td>
+                                    <td><h6>Link</h6></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($pendukung_reason as $dokumen_reason)
+                                    <tr style="border-bottom: 1px solid black;">
+                                        <td>{{ $dokumen_reason->file_name }}</td>
+                                        <td class="dokumen_reason_file" style="color: rgb(31, 104, 187)">/bss-form/sm/asset-request-download/{{ $dokumen_reason->lokasi }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                        @endif
+                        <div class="only-print print-w-full print-nature print-mt-2">
+                            <h5 style="display: inline;">2. Estimated Ready at Site : </h5>
+                            <span id="estimated-print">{{ $data['estimated_ready_at_site'] }}</span>
+                        </div>
+                        <div class="only-print print-w-full print-nature print-mt-2">
+                            <h5>3. Item</h5>
+                            <table class="table-print" style="width:100%;font-size: 10px;">
+                                <thead>
+                                    <tr>
+                                        <th data-formatter="indexFormatter" data-field="no">No</th>
+                                        <th data-field="type">Type</th>
+                                        <th data-field="model">Model</th>
+                                        <th data-field="brand">Brand</th>
+                                        <th data-field="condition">Condition</th>
+                                        <th data-field="qty">Qty</th>
+                                        <th data-field="uom">UOM</th>
+                                        <th data-field="currency">Currency</th>
+                                        <th data-field="price">Price</th>
+                                        <th data-formatter="totalHarga">Total Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($detail as $item)
+                                        <tr>
+                                            <td style="vertical-align: top">{{ $item->nomor }}</td>
+                                            <td>{{ $item->type }}</td>
+                                            <td>{{ $item->model }}</td>
+                                            <td>{{ $item->brand }}</td>
+                                            <td>{{ $item->condition }}</td>
+                                            <td style="text-align: center">{{ $item->qty }}</td>
+                                            <td>{{ $item->uom }}</td>
+                                            <td style="text-align: center">{{ $item->currency }}</td>
+                                            <td style="text-align: right">{{ number_format( $item->price , 0, '', '.') }}</td>
+                                            <td style="text-align: right">{{ number_format( ((float) $item->qty * (float) $item->price) , 0, '', '.') }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                              </table>
+                            {{-- <table class="table table-bordered" style="font-size: 10px;">
+                                <thead>
+                                    <tr>
+                                        <th data-formatter="indexFormatter" data-field="no">No</th>
+                                        <th data-field="type">Type</th>
+                                        <th data-field="model">Model</th>
+                                        <th data-field="brand">Brand</th>
+                                        <th data-field="condition">Condition</th>
+                                        <th data-field="qty">Qty</th>
+                                        <th data-field="uom">UOM</th>
+                                        <th data-field="currency">Currency</th>
+                                        <th data-field="price">Price</th>
+                                        <th data-formatter="totalHarga">Total Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($detail as $item)
+                                        <tr>
+                                            <td>{{ $item->nomor }}</td>
+                                            <td>{{ $item->type }}</td>
+                                            <td>{{ $item->model }}</td>
+                                            <td>{{ $item->brand }}</td>
+                                            <td>{{ $item->condition }}</td>
+                                            <td>{{ $item->qty }}</td>
+                                            <td>{{ $item->uom }}</td>
+                                            <td>{{ $item->currency }}</td>
+                                            <td>{{ $item->price }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table> --}}
+                        </div>
+                        <div class="only-print print-w-full print-nature print-mt-2 print-flex">
+                            <div class="mb-1 col-6">
+                                <label class="form-label"><h5>4. Total Price (IDR) : </h5></label>
+                                <span id="totalPricePrint">-</span>
+                            </div>
+                            <div class="col-4 offset-2">
+                                <table style="font-size: 12px">
+                                    <tr>
+                                        <td>IDR</td>
+                                        <td> : </td>
+                                        <td id="calculatedIdrPrint"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>USD</td>
+                                        <td> : </td>
+                                        <td id="calculatedUsdPrint"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>CNY</td>
+                                        <td> : </td>
+                                        <td id="calculatedCnyPrint"></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="only-print print-w-full print-nature print-mt-2">
+                            <h5>5. Budget</h5>
+                            <span>Ref Doc : {{ $data['ref_doc'] }}</span>
+                        </div>
+                    </div>
 
                     <div class="card-footer">
                         <div class="table-responsive">
-                            <table class="display" style="width: 100%;text-align: center">
+                            <table class="display print-font-size" style="width: 100%;text-align: center">
                                 <thead>
                                     <tr>
                                         <th>Requested By</th>
@@ -551,12 +773,21 @@
             requestedBy: requestornik.text()
         }
 
+        function formatRupiah(angka) {
+            const rupiah = angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            return rupiah;
+        }
+
         function indexFormatter(value, row, index) {
             return index + 1;
         }
+        
+        function priceFormatter(value, row, index) {
+            return formatRupiah(parseInt(value))
+        }
 
         function totalHarga(value, row, index) {
-            return row.qty * row.price;
+            return formatRupiah(row.qty * row.price);
         }
 
         function formatTgl() {
@@ -597,11 +828,15 @@
                 items.push(item)
             })
             dataAssetRequest.item = items
-            calculatedIdr.text(idr)
-            calculatedUsd.text(usd)
-            calculatedCny.text(cny)
+            calculatedIdr.text(formatRupiah(idr))
+            calculatedUsd.text(formatRupiah(usd))
+            calculatedCny.text(formatRupiah(cny))
+            $("#calculatedIdrPrint").text(formatRupiah(idr))
+            $("#calculatedUsdPrint").text(formatRupiah(usd))
+            $("#calculatedCnyPrint").text(formatRupiah(cny))
             // console.log("estimatedIdr : ", estimatedIdr.val())
-            totalPrice.text((parseInt(estimatedIdr.val()) * idr) + (parseInt(estimatedUsd.val()) * usd) + (parseInt(estimatedCny.val()) * cny) || "-")
+            totalPrice.text(formatRupiah((parseInt(estimatedIdr.val()) * idr) + (parseInt(estimatedUsd.val()) * usd) + (parseInt(estimatedCny.val())) * cny) || "-")
+            $("#totalPricePrint").text(formatRupiah((parseInt(estimatedIdr.val()) * idr) + (parseInt(estimatedUsd.val()) * usd) + (parseInt(estimatedCny.val()) * cny))|| "-")
             // console.log("IDR = ", idr)
         })
         var detial = {{ Illuminate\Support\Js::from($detail) }}
@@ -692,6 +927,25 @@
                 });
             }
         })
+
+        function getTodayDate(tgl = new Date()) {
+            const hari = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
+            const bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
+            const year = tgl.getFullYear();
+            const month = String(tgl.getMonth() + 1).padStart(2, '0');
+            const day = String(tgl.getDate()).padStart(2, '0');
+
+            return `${hari[tgl.getDay()]}, ${day} ${bulan[tgl.getMonth()]} ${year}`;
+        }
+
+        let dokumenReasonFile = document.getElementsByClassName("dokumen_reason_file")
+        for (let i = 0; i < dokumenReasonFile.length; i++) {
+            const element = dokumenReasonFile[i];
+            element.innerText = document.location.origin + "/" + element.innerText
+        }
+        
+        $("#estimated-print").text(getTodayDate(new Date($("#estimated-print").text())))
+
 
         // $table.bootstrapTable({
         //     data: [
