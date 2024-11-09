@@ -52,6 +52,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/dashboard/detail/{id}', [PlantTransmissionController::class, 'detail'])->name('bss-form.plant-transmission.detail');
             Route::get('/form', [PlantTransmissionController::class, 'form'])->name('bss-form.plant-transmission.form');
             Route::post('/form/store', [PlantTransmissionController::class, 'store'])->name('bss-form.plant-transmission.store');
+            Route::get('/download-report', [PlantTransmissionController::class, 'downloadReport'])->name('bss-form.plant-transmission.download');
         });
 
         Route::prefix('under-carriage')->group(function () {
