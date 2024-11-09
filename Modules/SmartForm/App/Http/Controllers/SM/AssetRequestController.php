@@ -466,8 +466,9 @@ class AssetRequestController extends Controller {
                 $calculated_idr = 0;
                 $calculated_usd = 0;
                 $calculated_cny = 0;
-
+                $nomor = 1;
                 foreach($data_detail as $detail) {
+                    $detail->nomor = $nomor;
                     if($detail->currency == 'IDR') {
                         $calculated_idr = $calculated_idr + ($detail->qty * $detail->price);
                     }
@@ -477,6 +478,10 @@ class AssetRequestController extends Controller {
                     if($detail->currency == 'CNY') {
                         $calculated_cny = $calculated_cny + ($detail->qty * $detail->price);
                     }
+
+                    (float) $detail->total_price = (float) $detail->qty * (float) $detail->price;
+                    
+                    $nomor++;
                 }
 
 

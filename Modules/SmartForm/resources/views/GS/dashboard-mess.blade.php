@@ -475,6 +475,7 @@
         fetchSite(function(data) {
             data.forEach(function(opt) {
                 $('#filterSite').append(new Option(opt.text, opt.id))
+                $('#inputSite').append(new Option(opt.text, opt.id))
             })
         })
     </script>

@@ -99,6 +99,7 @@
                                 <select class="form-control form-select" name="inputJenisPemesanan" id="inputJenisPemesanan" required>
                                     <option value="pagi" selected>Pagi</option>
                                     <option value="siang">Siang</option>
+                                    <option value="sore">Sore</option>
                                     <option value="malam">Malam</option>
                                 </select>
                             </div>
@@ -902,7 +903,7 @@
                 document.getElementById("totalAdjustment").innerText = new String(jumlahData)
                 console.log({totalPesananBySystem: totalPesananBySystem.innerText})
                 totalPesananBySystem.innerText = filteredWorkingAndCutiNik.length + jumlahData + $tableWorking.bootstrapTable('getData').length
-                totalPesanan.innerText = parseInt(totalPesanan.innerText) + jumlahData +  $tableRequestMakan.bootstrapTable('getData').length
+                totalPesanan.innerText = jumlahData +  $tableRequestMakan.bootstrapTable('getData').length
                 // excelRows.forEach(function(row, index) {
                 //     if (index > 3) {
                 //         var selectedData = {selectedTgl: selectedTgl.getDate(), colIndexStart: colIndexStart}
