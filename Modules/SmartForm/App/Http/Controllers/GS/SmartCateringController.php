@@ -19,6 +19,7 @@ use Illuminate\Support\Str;
 enum Shift: string {
     case Pagi = 'pagi';
     case Siang = 'siang';
+    case Sore = 'sore';
     case Malam = 'malam';
 }
 
@@ -59,7 +60,7 @@ class SmartCateringController extends Controller {
     ];
 
     function AddPemesanan(Request $request) {
-        Helper::getAccessToken();
+        // Helper::getAccessToken();
         return view("SmartForm::GS/pemesanan-catering");
     }
 
@@ -95,7 +96,7 @@ class SmartCateringController extends Controller {
         $validator = Validator::make($request->all(), [
             'tanggalPemesanan' => 'required|regex:/^\d{4}-\d{2}-\d{2}$/',
             'site' => 'required',
-            'jenisPemesanan' => ['required', Rule::in(['pagi', 'siang', 'malam'])],
+            'jenisPemesanan' => ['required', Rule::in(['pagi', 'siang', 'sore', 'malam'])],
         ],[
             'tanggalPemesanan.required' => 'Field tanggal wajib diisi.',
             'tanggalPemesanan.regex' => 'Format tanggal harus sesuai dengan format YYYY-MM-DD.',
@@ -118,16 +119,20 @@ class SmartCateringController extends Controller {
             // $colSelectDate = 'tr.T'. $selectedDate . ' as tanggal';
             // Log::info('selectedTahun: '. $selectedTahun . ', selectedBulan: '. $selectedBulan . ', selectedDate: '. $selectedDate);
             try {
-                $data_karyawan_mess = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_PENGHUNI_MESS . " as dh")
-                    ->select('dh.KodeSite', 'dh.Nik', 'dh.NoDoc', 'dm.NamaMess', 'tk.Nama as nama')
-                    ->leftJoin(self::TABLE_MASTER_MESS.' as dm', 'dh.NoDoc', '=', 'dm.NoDoc')
-                    ->leftJoin(self::TABLE_KARYAWAN_HRD . ' as tk', 'dh.nik', '=', 'tk.nik')
-                    ->where('dh.KodeSite', $reqSite)
-                    ->get();
+                $data_karyawan_mess = [];
+                $pesan_makan = [];
+                if($reqJenisPemesanan !== 'malam') {
+                    $data_karyawan_mess = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_PENGHUNI_MESS . " as dh")
+                        ->select('dh.KodeSite', 'dh.Nik', 'dh.NoDoc', 'dm.NamaMess', 'tk.Nama as nama')
+                        ->leftJoin(self::TABLE_MASTER_MESS.' as dm', 'dh.NoDoc', '=', 'dm.NoDoc')
+                        ->leftJoin(self::TABLE_KARYAWAN_HRD . ' as tk', 'dh.nik', '=', 'tk.nik')
+                        ->where('dh.KodeSite', $reqSite)
+                        ->get();
+                }
 
                 $data_karyawan_absensi = [];
-                $pesan_makan = $this->ListPesanMakanMess($reqJenisPemesanan, $tgl);
-                if($reqJenisPemesanan == 'pagi') {
+                if($reqJenisPemesanan !== 'malam') $pesan_makan = $this->ListPesanMakanMess($reqJenisPemesanan, $tgl);
+                if($reqJenisPemesanan == 'pagi' || $reqJenisPemesanan == 'sore') {
 
                 } else {
                     // tabel absensi
@@ -231,7 +236,7 @@ class SmartCateringController extends Controller {
             'isError' => $isError,
             'message' => $message,
             'errorMessage'=> $errorMessage,
-            'dataMess' => $dataMess,
+            'dataMess' => $reqJenisPemesanan == 'malam' ? [] : $dataMess,
             'dataWorking' => $dataWorking,
             'dataPesanMakanMess' => $pesan_makan,
             'data' => [
@@ -278,7 +283,7 @@ class SmartCateringController extends Controller {
         $tgl = now();
 
         $validator = Validator::make($request->all(), [
-            'jenisPemesanan' => ['required',  Rule::in(['pagi', 'siang', 'malam'])],
+            'jenisPemesanan' => ['required',  Rule::in(['pagi', 'siang', 'sore', 'malam'])],
             'messBySystem' => 'required',
             'messByRequest' => 'required',
             'adjustment' => 'required',
@@ -355,7 +360,7 @@ class SmartCateringController extends Controller {
                     ->whereIn('lokasi', $extractedLokasi)
                     ->where('KodeSite', $site)
                     ->where('status', 0)
-                    ->where('JenisPemesanan', $jenisPemesanan);
+                    ->where('JenisPemesanan', $jenisPemesanan == 'sore' ? 'malam' : $request->input("jenisPemesanan"));
 
                 Log::debug("SQL vendor mapping : " . $vendorMapping->toRawSql());
                 // Log::debug("SQL vendor mapping : ");
