@@ -412,6 +412,7 @@
         
         function toggleStatusMapping(event) {
             showLoading()
+            event.target.disabled = true
             let dataStatus = parseInt(event.target.getAttribute('data-status'))
             let selectedData = $("#table-dashboard-vendor-day").bootstrapTable('getSelections')
             let dataUpdate = []
@@ -453,6 +454,7 @@
             })
             .finally(function() {
                 stopLoading()
+                event.target.disabled = false
             })
 
             // console.log(dataUpdate)
