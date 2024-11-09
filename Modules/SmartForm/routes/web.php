@@ -61,6 +61,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/dashboard/detail/{id}', [UnderCarriageInspectionController::class, 'detail'])->name('bss-form.undercarriage.detail');
             Route::get('/form', [UnderCarriageInspectionController::class, 'form'])->name('bss-form.undercarriage.form');
             Route::post('/form/store', [UnderCarriageInspectionController::class, 'store'])->name('bss-form.undercarriage.store');
+            Route::get('/download-report', [UnderCarriageInspectionController::class, 'downloadReport'])->name('bss-form.undercarriage.download');
         });
 
         Route::prefix('sm')->group(function () {
