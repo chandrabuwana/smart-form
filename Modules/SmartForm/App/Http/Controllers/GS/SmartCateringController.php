@@ -549,7 +549,8 @@ class SmartCateringController extends Controller {
 
         try {
             $sql_master_data = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_SUBMIT_ORDER)
-                ->select('kode_pemesanan', 'site', 'selected', 'jenis_pemesanan', 'tanggal')->orderBy('tanggal', 'desc');
+                ->select('kode_pemesanan', 'site', 'selected', 'jenis_pemesanan', 'tanggal', 'mess_by_system', 'mess_by_system', 'working', 'adjustment')
+                ->orderBy('tanggal', 'desc');
 
             if($filterTanggal == null || $filterTanggal == 'null') {
             } else {
@@ -1117,6 +1118,28 @@ class SmartCateringController extends Controller {
             @unlink( storage_path('app/public/' . $tempFile) );
             dd($e);
         }
+    }
+
+    protected function getAbsensiKaryawan($site, $shift, $tglPemesanan) {
+        $dataAbsensi = [];
+        try {
+            $dataAbsensi = DB::connection(self::DB_CONN_NAME)->table($this->DB_LINK[$site] . self::TABLE_ABSENSI_HRD . ' as ta')
+                ->select('ta.NIK', 'ta.Tanggal', 'ta.Masuk', 'tk.Nama')
+                ->leftJoin(self::TABLE_KARYAWAN_HRD . ' as tk', 'tk.Nik', '=', 'ta.Nik')
+                ->where('ta.lmasuk', $site)
+                ->where('ta.Shift', $shift)
+                ->whereDate('ta.Tanggal', Carbon::createFromFormat('Y-m-d', $tglPemesanan)->startOfDay()->format('Y-m-d H:i:s.u'));
+            
+                Log::debug('SQL absensi karyawan : '. $dataAbsensi->toRawSql());
+                $dataAbsensi = $dataAbsensi->get()->toArray();
+                Log::debug("Data absensi ". $site . " : " .count($dataAbsensi));
+        } catch (Exception $ex) {
+            Log::error('Error getAbsensiKaryawan');
+            Log::error($ex->getMessage());
+            Log::error($ex->getTraceAsString());
+        }
+
+        return $dataAbsensi;
     }
 }
 

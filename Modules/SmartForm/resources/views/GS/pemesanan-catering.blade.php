@@ -903,7 +903,7 @@
                 document.getElementById("totalAdjustment").innerText = new String(jumlahData)
                 console.log({totalPesananBySystem: totalPesananBySystem.innerText})
                 totalPesananBySystem.innerText = filteredWorkingAndCutiNik.length + jumlahData + $tableWorking.bootstrapTable('getData').length
-                totalPesanan.innerText = jumlahData +  $tableRequestMakan.bootstrapTable('getData').length
+                totalPesanan.innerText = jumlahData + $tableRequestMakan.bootstrapTable('getData').length + $tableWorking.bootstrapTable('getData').length
                 // excelRows.forEach(function(row, index) {
                 //     if (index > 3) {
                 //         var selectedData = {selectedTgl: selectedTgl.getDate(), colIndexStart: colIndexStart}
