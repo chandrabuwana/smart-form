@@ -138,6 +138,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::put('/update-status-pemesanan', [SmartCateringController::class, 'UpdateStatusPemesanan'])->name('update-status-pemesanan');
             Route::put('/update-status-pemesanan-vendor', [SmartCateringController::class, 'UpdateStatusPemesananVendor'])->name('update-status-pemesanan-vendor');
             Route::post('/helper-site', [SmartCateringController::class, 'HelperSite']);
+            Route::get('/dashboard/download-report', [SmartCateringController::class, 'generateReport'])->name('dashboard.download-report');
 
             Route::get('/import-mapping-gs', [SmartCateringController::class, 'viewImportMappingGS'])->name('view-import-mapping-gs-catering');
             Route::post('/import-mapping-gs/store', [SmartCateringController::class, 'importMappingGS'])->name('import-mapping-gs-catering');
@@ -307,4 +308,3 @@ Route::get('/bss-form/induksi-karyawan/listing-karyawan/{data}', [ICFM05InduksiK
 Route::post('/bss-form/induksi-karyawan/listing-karyawan-add', [ICFM05InduksiKaryawanController::class, 'formAddKaryawanListing']);
 
 Route::get('/helper-download-pdf/{docno}', [HelperPdfMobilisasiFormController::class, 'DownloadPDFHelperPdf']);
-// Route::get('/dashboard-pemesanan', [SmartCateringController::class, 'DashboardPemesanan'])->name('dashboard-pemesanan-catering');

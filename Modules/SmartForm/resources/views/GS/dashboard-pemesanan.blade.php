@@ -197,6 +197,16 @@
                             </button>
                         </div>
                     </div>
+
+                    <div class="mx-4 row">
+                        <h4 class="mx-3">Generate Report</h4>
+                        <div class="col-md-6">
+                            <div class="input-group" style="border-radius: 0px 10px 10px 0px; border: 2px solid #d4d4d4;" onclick="clickPeriode(event)">
+                                <input type="month" class="form-control" id="inputPeriode" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+                                <button class="btn btn-primary" style="border: 0px; border-left: 1px solid #d4d4d4; margin: 0px;" type="button" onclick="downloadReport(event)"><i class="fa-solid fa-file-export" style="color: rgb(2, 240, 149)"></i> Report</button>
+                              </div>
+                        </div>
+                    </div>
                     <div class="table-responsive p-0">
                         <table id="list-form" data-toggle="table" data-ajax="fetchFormsData"
                             data-side-pagination="server" data-filter-control="true" data-ajax-options="ajaxOptions"
@@ -437,6 +447,24 @@
         function stopLoading() {
             $("body").css("overflow-y", "auto")
             $("#loading-animation").css("display", "none")
+        }
+
+        function clickPeriode(e) {
+
+        }
+
+        function downloadReport(e) {
+            e.preventDefault()
+            let periode = $("#inputPeriode").val()
+            // periode = periode.split('-').reverse().join('-')
+
+            if(periode == null || periode == '') {
+                alert('pilih periode')
+            } else {
+                periode = periode.split('-').reverse().join('-')
+                window.location.href = baseUrl + '/dashboard/download-report?periode=' + periode;
+
+            }
         }
     </script>
 @endsection
