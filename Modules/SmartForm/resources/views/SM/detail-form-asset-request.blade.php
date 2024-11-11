@@ -9,6 +9,11 @@
     .only-print {
         display: none;
     }
+    .c-title {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+    }
 
 
     @media print {
@@ -123,11 +128,14 @@
                                 <td>{{ $data['requested_by'] }} - {{ $data['requested_name']  }}</td>
                             </tr>
                         </table>
-                        <div class="col-auto my-auto ms-3 no-print">
+                        <div class="col-auto my-auto ms-3 no-print c-title">
                             <div class="h-100">
                                 <p class="mb-0 fw-bold text-sm">
                                     Requested By : <span id="requestor">{{ $data['requested_by'] }}</span>
                                 </p>
+                            </div>
+                            <div class="no-print">
+                                <button class="btn btn-primary" onclick="cetak(event)"><i class="fa-solid fa-print"></i> cetak</button>
                             </div>
                         </div>
                     </div>
@@ -715,6 +723,9 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script>
+        function cetak(e) {
+            window.print();
+        }
         var tglNow = new Date()
         var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         var months_romawi = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
