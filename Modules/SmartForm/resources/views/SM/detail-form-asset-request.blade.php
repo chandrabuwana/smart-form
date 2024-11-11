@@ -108,9 +108,6 @@
                     </div>
                 </div>
                 <h3 class="text-capitalize ps-3 only-print">Form Asset Request</h3>
-                <div class="no-print">
-                    <button class="btn btn-primary" onclick="cetak(event)"><i class="fa-solid fa-print"></i> cetak</button>
-                </div>
                 <div class="card-body my-1">
 
                     <div class="row gx-4 mb-4">

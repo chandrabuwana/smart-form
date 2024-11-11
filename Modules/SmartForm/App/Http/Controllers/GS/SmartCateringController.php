@@ -1158,7 +1158,7 @@ class SmartCateringController extends Controller {
         ]);
 
         if(count($validator->errors()) > 0) {
-            $errorMessage[] = $validator->errors()->all();
+            $errorMessage = $validator->errors()->all();
 
             return response()->json(['errors' => $errorMessage]);
         } else {
@@ -1192,6 +1192,9 @@ class SmartCateringController extends Controller {
             $groupedData = [];
             $worksheet->getCell("B2")->getStyle()->getFont()->setBold(true)->setSize(16);
             $worksheet->getCell("B2")->setValue("SITE : {$sqlSite->KodeST} - {$sqlSite->nama_site}");
+            $terisi++;
+            $worksheet->getCell("B3")->getStyle()->getFont()->setBold(true)->setSize(16);
+            $worksheet->getCell("B3")->setValue("Periode : " . $mappingBulan[$filterBulan] . " " .$filterTahun);
             $terisi++;
 
             // Memisahkan data berdasarkan lokasi
