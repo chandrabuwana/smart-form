@@ -139,14 +139,15 @@ class SmartCateringController extends Controller {
 
                 } else {
                     // tabel absensi
-                    $data_karyawan_absensi = DB::connection(self::DB_CONN_NAME)->table($this->DB_LINK[$reqSite] . self::TABLE_ABSENSI_HRD . ' as ta')
-                        ->select('ta.NIK', 'ta.Tanggal', 'ta.Masuk', 'tk.Nama')
-                        ->leftJoin(self::TABLE_KARYAWAN_HRD . ' as tk', 'tk.Nik', '=', 'ta.Nik')
-                        ->where('ta.lmasuk', $reqSite)
-                        ->where('ta.Shift', $selectedShift)
-                        ->whereDate('ta.Tanggal', Carbon::createFromFormat('Y-m-d', $reqTanggalPemesanan)->startOfDay()->format('Y-m-d H:i:s.u'))
-                        // ->whereBetween('ta.Masuk', [$jam_absensi[$selectedShift]['start'], $jam_absensi[$selectedShift]['end']])
-                        ;
+                    $data_karyawan_absensi = $this->getAbsensiKaryawan($reqSite, $selectedShift, $reqTanggalPemesanan);
+                    // $data_karyawan_absensi = DB::connection(self::DB_CONN_NAME)->table($this->DB_LINK[$reqSite] . self::TABLE_ABSENSI_HRD . ' as ta')
+                    //     ->select('ta.NIK', 'ta.Tanggal', 'ta.Masuk', 'tk.Nama')
+                    //     ->leftJoin(self::TABLE_KARYAWAN_HRD . ' as tk', 'tk.Nik', '=', 'ta.Nik')
+                    //     ->where('ta.lmasuk', $reqSite)
+                    //     ->where('ta.Shift', $selectedShift)
+                    //     ->whereDate('ta.Tanggal', Carbon::createFromFormat('Y-m-d', $reqTanggalPemesanan)->startOfDay()->format('Y-m-d H:i:s.u'))
+                    //     // ->whereBetween('ta.Masuk', [$jam_absensi[$selectedShift]['start'], $jam_absensi[$selectedShift]['end']])
+                    //     ;
 
                     // table fingerlog
                     // $data_karyawan_absensi = DB::connection(self::DB_CONN_NAME)->table($this->DB_LINK[$reqSite] . self::TABLE_FINGERLOG_HRD . ' as tf')
@@ -155,13 +156,13 @@ class SmartCateringController extends Controller {
                     //     ->where('tf.Status', 'IN')
                     //     ->whereDate('tf.Tanggal', Carbon::createFromFormat('Y-m-d', $reqTanggalPemesanan)->startOfDay()->format('Y-m-d H:i:s.u'))
                     //     ->whereBetween('tf.Jam', [$jam_absensi[$selectedShift]['start'], $jam_absensi[$selectedShift]['end']]);
-                    Log::debug('SQL absensi karyawan : '. $data_karyawan_absensi->toRawSql());
+                    // Log::debug('SQL absensi karyawan : '. $data_karyawan_absensi->toRawSql());
                     // tabel absensi
-                    $data_karyawan_absensi = $data_karyawan_absensi->get()->toArray();
+                    // $data_karyawan_absensi = $data_karyawan_absensi->get()->toArray();
                     // tabel fingerlog
                     // $data_karyawan_absensi = collect($data_karyawan_absensi->get()->toArray());
                     // $data_karyawan_absensi = $data_karyawan_absensi->unique('NIK')->values()->all();
-                    Log::debug("Data absensi ". $reqSite . " : " .count($data_karyawan_absensi));
+                    // Log::debug("Data absensi ". $reqSite . " : " .count($data_karyawan_absensi));
                 }
 
                 $sql_karyawan_cuti = DB::connection(self::DB_CONN_NAME)->table($this->DB_LINK[$reqSite]. self::TABLE_PENEGASAN_CUTI . ' as pc')
@@ -1126,9 +1127,6 @@ class SmartCateringController extends Controller {
     public function generateReport(Request $request) {
         $filterSite = $request->query('site', null);
         $filterPeriode = $request->query('periode', null);
-        $filterPeriode = explode('-', $filterPeriode);
-        $filterBulan = (int) $filterPeriode[0];
-        $filterTahun = (int) $filterPeriode[1];
         $mappingBulan = [
             1 => 'Januari',
             2 => 'Februari',
@@ -1146,145 +1144,164 @@ class SmartCateringController extends Controller {
 
         $spreadsheet = new Spreadsheet();
         $worksheet = $spreadsheet->getActiveSheet();
-        $worksheet->setTitle($mappingBulan[$filterBulan] . ' ' . $filterTahun);
-        $worksheet->getDefaultRowDimension()->setRowHeight(20);
-        $worksheet->getColumnDimension('A')->setWidth(4);
-        $worksheet->getColumnDimension('B')->setWidth(6);
-        $worksheet->getColumnDimension('C')->setWidth(15);
-        // $worksheet->getColumnDimension('D')->setWidth(45);
-        $offset = 0;
+        
         $spasi = 1;
         $terisi = 0;
-        $mappingJenisPemesanan = [
-            'pagi' => 'E',
-            'siang' => 'F',
-            'sore' => 'G',
-            'malam' => 'G'
-        ];
-
         $indexHeader = 2;
+        $validator = Validator::make($request->all(), [
+            'periode' => 'required|date_format:m-Y',
+            'site' => 'required',
+        ],[
+            'periode.required' => 'Periode tidak valid (MM-yyyy)',
+            'periode.date_format' => 'Periode tidak valid (MM-yyyy)',
+            'site.required' => 'Site wajib diisi',
+        ]);
 
-        $dataPemesenan = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_SUBMIT_ORDER_DETAIL . ' as a')
-                ->select('a.id as id_order_detail', 'a.site', 'a.lokasi', 'c.NamaMess as nama_lokasi', 'a.jenis_pemesanan', 'a.jumlah', 'b.tanggal', 'd.Nama as nama_vendor')
-                ->leftJoin(self::TABLE_SUBMIT_ORDER . ' as b', 'a.id_order', '=', 'b.kode_pemesanan')
-                ->leftJoin(self::TABLE_MASTER_MESS . ' as c', 'a.lokasi', '=', 'c.NoDoc')
-                ->leftJoin(self::TABLE_VENDOR_MASTER . ' as d', 'a.id_vendor', '=', 'd.id')
-                ->orderBy('c.NoDoc', 'asc')
-                ->orderBy('b.tanggal', 'asc')
-                ->whereMonth('b.tanggal', $filterPeriode[0])
-                ->whereYear('b.tanggal', $filterPeriode[1]);
-        Log::info('SQL report data pemesanan : ' . $dataPemesenan->toRawSql());
-        $dataPemesenan = $dataPemesenan->get();
-        Log::info($dataPemesenan);
-        $groupedData = [];
+        if(count($validator->errors()) > 0) {
+            $errorMessage[] = $validator->errors()->all();
 
-        // Memisahkan data berdasarkan lokasi
-        foreach ($dataPemesenan as $item) {
-            $lokasi = $item->lokasi;
-            $item->tanggal = implode('/', array_reverse( explode('-', $item->tanggal)));
-            $tanggal = $item->tanggal;
+            return response()->json(['errors' => $errorMessage]);
+        } else {
+            $filterPeriode = explode('-', $filterPeriode);
+            $filterBulan = (int) $filterPeriode[0];
+            $filterTahun = (int) $filterPeriode[1];
+            $worksheet->setTitle($mappingBulan[$filterBulan] . ' ' . $filterTahun);
+            $worksheet->getDefaultRowDimension()->setRowHeight(20);
+            $worksheet->getColumnDimension('A')->setWidth(4);
+            $worksheet->getColumnDimension('B')->setWidth(6);
+            $worksheet->getColumnDimension('C')->setWidth(15);
+            // $worksheet->getColumnDimension('D')->setWidth(45);
+
+            $sqlSite = DB::connection(self::DB_CONN_NAME)->table('HRD.dbo.tsite')
+                ->select('KodeST', 'Nama as nama_site')    
+                ->where('KodeST', $filterSite)->first();
             
-            // Jika belum ada array untuk lokasi tersebut, inisialisasi dulu
-            if (!isset($groupedData[$lokasi])) {
-                $groupedData[$lokasi] = [
-                    'lokasi' => $lokasi,
-                    'nama_lokasi' => $lokasi == 'working' ? 'Site / Lapangan' : $item->nama_lokasi,
-                    'site' => $item->site,
-                    'data' => []
-                ];
-            }
-            if (!isset($groupedData[$lokasi]['per_tgl'][$tanggal])) {
-                $groupedData[$lokasi]['per_tgl'][$tanggal] = [];
-            }
-            
-            // Menambahkan item ke grup lokasi yang sesuai
-            $groupedData[$lokasi]['per_tgl'][$tanggal][] = $item;
-            // $groupedData[$lokasi]['data'][] = $item;
-        }
-        // dd($groupedData);
-        Log::info($groupedData);
+            $dataPemesenan = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_SUBMIT_ORDER_DETAIL . ' as a')
+                    ->select('a.id as id_order_detail', 'a.site', 'a.lokasi', 'c.NamaMess as nama_lokasi', 'a.jenis_pemesanan', 'a.jumlah', 'b.tanggal', 'd.Nama as nama_vendor')
+                    ->leftJoin(self::TABLE_SUBMIT_ORDER . ' as b', 'a.id_order', '=', 'b.kode_pemesanan')
+                    ->leftJoin(self::TABLE_MASTER_MESS . ' as c', 'a.lokasi', '=', 'c.NoDoc')
+                    ->leftJoin(self::TABLE_VENDOR_MASTER . ' as d', 'a.id_vendor', '=', 'd.id')
+                    ->where('a.site', $filterSite)
+                    ->whereMonth('b.tanggal', $filterPeriode[0])
+                    ->whereYear('b.tanggal', $filterPeriode[1])
+                    ->orderBy('c.NoDoc', 'asc')
+                    ->orderBy('b.tanggal', 'asc');
+            Log::info('SQL report data pemesanan : ' . $dataPemesenan->toRawSql());
+            $dataPemesenan = $dataPemesenan->get();
+            Log::info($dataPemesenan);
+            $groupedData = [];
+            $worksheet->getCell("B2")->getStyle()->getFont()->setBold(true)->setSize(16);
+            $worksheet->getCell("B2")->setValue("SITE : {$sqlSite->KodeST} - {$sqlSite->nama_site}");
+            $terisi++;
 
-        foreach($groupedData as $nilai) {
-            // if($nilai->lokasi == 'working') $nilai->nama_lokasi = 'Site / Lapangan';
-            $barisTambahan = 0;
-            $baris = $indexHeader + $terisi;
-
-            $worksheet->getStyle("B{$baris}:M{$baris}")->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('fec024');
-            $worksheet->getCell("B{$baris}")->getStyle()->getFont()->setBold(true)->setSize(16);
-            $worksheet->getCell("B{$baris}")->setValue("Lokasi : {$nilai['nama_lokasi']}");
-            $baris++;
-
-            $worksheet->getStyle("B{$baris}:M{$baris}")->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FED46A');
-            $worksheet->getCell("B{$baris}")->getStyle()->getFont()->setBold(true)->setSize(12);
-            $worksheet->getCell("B{$baris}")->setValue("Site: {$nilai['site']}");
-            $baris++;
-            
-            // No	Tanggal	Vendor	PAGI	SIANG	MALAM
-            $worksheet->getCell("B{$baris}")->getStyle()->getFont()->setBold(true)->setSize(12);
-            $worksheet->getCell("B{$baris}")->setValue("No");
-            $worksheet->getCell("C{$baris}")->getStyle()->getFont()->setBold(true)->setSize(12);
-            $worksheet->getCell("C{$baris}")->setValue("Tanggal");
-            $worksheet->getCell("D{$baris}")->getStyle()->getFont()->setBold(true)->setSize(12);
-            $worksheet->getCell("D{$baris}")->setValue("Pagi");
-            $worksheet->getCell("E{$baris}")->getStyle()->getFont()->setBold(true)->setSize(12);
-            $worksheet->getCell("E{$baris}")->setValue("Siang");
-            $worksheet->getCell("F{$baris}")->getStyle()->getFont()->setBold(true)->setSize(12);
-            $worksheet->getCell("F{$baris}")->setValue("Sore/Malam");
-            // $worksheet->getCell("G{$baris}")->getStyle()->getFont()->setBold(true)->setSize(12);
-            // $worksheet->getCell("G{$baris}")->setValue("Vendor");
-            $baris++;
-            
-            $noPerHari = 1;
-            foreach ($nilai['per_tgl'] as $key => $value) {
-                $jmlPagi = 0;
-                $jmlSiang = 0;
-                $jmlMalam = 0;
-                $worksheet->getCell("B{$baris}")->setValue($noPerHari);
-                $worksheet->getCell("C{$baris}")->getStyle()->getNumberFormat()->setFormatCode('dd/mm/yyyy');
-                $worksheet->getCell("C{$baris}")->setValue($key);
-
-                foreach ($value as $jenisPesan) {
-                    if($jenisPesan->jenis_pemesanan == 'pagi') $jmlPagi = $jenisPesan->jumlah;
-                    if($jenisPesan->jenis_pemesanan == 'siang') $jmlSiang = $jenisPesan->jumlah;
-                    if($jenisPesan->jenis_pemesanan == 'sore') $jmlMalam = $jenisPesan->jumlah;
-                    if($jenisPesan->jenis_pemesanan == 'malam') $jmlMalam = $jenisPesan->jumlah;
-
-                    Log::info("jenis pesan");
-                    Log::info(json_encode($jenisPesan));
+            // Memisahkan data berdasarkan lokasi
+            foreach ($dataPemesenan as $item) {
+                $lokasi = $item->lokasi;
+                $item->tanggal = implode('/', array_reverse( explode('-', $item->tanggal)));
+                $tanggal = $item->tanggal;
+                
+                // Jika belum ada array untuk lokasi tersebut, inisialisasi dulu
+                if (!isset($groupedData[$lokasi])) {
+                    $groupedData[$lokasi] = [
+                        'lokasi' => $lokasi,
+                        'nama_lokasi' => $lokasi == 'working' ? 'Site / Lapangan' : $item->nama_lokasi,
+                        'site' => $item->site,
+                        'data' => []
+                    ];
                 }
-                $worksheet->getCell("D{$baris}")->setValue($jmlPagi);
-                $worksheet->getCell("E{$baris}")->setValue($jmlSiang);
-                $worksheet->getCell("F{$baris}")->setValue($jmlMalam);
-
-                $baris++;
-                $noPerHari++;
+                if (!isset($groupedData[$lokasi]['per_tgl'][$tanggal])) {
+                    $groupedData[$lokasi]['per_tgl'][$tanggal] = [];
+                }
+                
+                // Menambahkan item ke grup lokasi yang sesuai
+                $groupedData[$lokasi]['per_tgl'][$tanggal][] = $item;
+                // $groupedData[$lokasi]['data'][] = $item;
             }
-            // for ($i=0; $i < count($nilai['data']); $i++) { 
-            //     $kolomPemesanan = $this->kolomWaktuPemesanan($nilai['data'][$i]->jenis_pemesanan, $nilai['data'][$i]->jumlah);
+            // dd($groupedData);
+            Log::info($groupedData);
 
-            //     $worksheet->getCell("B{$baris}")->setValue($i+1);
-            //     $worksheet->getCell("C{$baris}")->getStyle()->getNumberFormat()->setFormatCode('dd-mm-yyyy');
-            //     $worksheet->getCell("C{$baris}")->setValue($nilai['data'][$i]->tanggal);
-            //     $worksheet->getCell("D{$baris}")->setValue($nilai['data'][$i]->nama_vendor);
-            //     foreach ($kolomPemesanan as $kolom) {
-            //         $worksheet->getCell("{$kolom['kolom']}{$baris}")->setValue($kolom['nilai']);
-            //     }
+            foreach($groupedData as $nilai) {
+                // if($nilai->lokasi == 'working') $nilai->nama_lokasi = 'Site / Lapangan';
+                $barisTambahan = 0;
+                $baris = $indexHeader + $terisi;
 
-            //     $baris++;
-            // }
-            // foreach ($nilai as $dataNilai) {
-            //     $worksheet->getCell("B{$baris}")->setValue("Sore/Malam");
-            //     $baris++;
-            // }
+                $worksheet->getStyle("B{$baris}:M{$baris}")->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('fec024');
+                $worksheet->getCell("B{$baris}")->getStyle()->getFont()->setBold(true)->setSize(16);
+                $worksheet->getCell("B{$baris}")->setValue("Lokasi : {$nilai['nama_lokasi']}");
+                $baris++;
 
-            $terisi = $spasi + $baris;
+                $worksheet->getStyle("B{$baris}:M{$baris}")->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FED46A');
+                $worksheet->getCell("B{$baris}")->getStyle()->getFont()->setBold(true)->setSize(12);
+                $worksheet->getCell("B{$baris}")->setValue("Site: {$nilai['site']}");
+                $baris++;
+                
+                // No	Tanggal	Vendor	PAGI	SIANG	MALAM
+                $worksheet->getCell("B{$baris}")->getStyle()->getFont()->setBold(true)->setSize(12);
+                $worksheet->getCell("B{$baris}")->setValue("No");
+                $worksheet->getCell("C{$baris}")->getStyle()->getFont()->setBold(true)->setSize(12);
+                $worksheet->getCell("C{$baris}")->setValue("Tanggal");
+                $worksheet->getCell("D{$baris}")->getStyle()->getFont()->setBold(true)->setSize(12);
+                $worksheet->getCell("D{$baris}")->setValue("Pagi");
+                $worksheet->getCell("E{$baris}")->getStyle()->getFont()->setBold(true)->setSize(12);
+                $worksheet->getCell("E{$baris}")->setValue("Siang");
+                $worksheet->getCell("F{$baris}")->getStyle()->getFont()->setBold(true)->setSize(12);
+                $worksheet->getCell("F{$baris}")->setValue("Sore/Malam");
+                // $worksheet->getCell("G{$baris}")->getStyle()->getFont()->setBold(true)->setSize(12);
+                // $worksheet->getCell("G{$baris}")->setValue("Vendor");
+                $baris++;
+                
+                $noPerHari = 1;
+                foreach ($nilai['per_tgl'] as $key => $value) {
+                    $jmlPagi = 0;
+                    $jmlSiang = 0;
+                    $jmlMalam = 0;
+                    $worksheet->getCell("B{$baris}")->setValue($noPerHari);
+                    $worksheet->getCell("C{$baris}")->getStyle()->getNumberFormat()->setFormatCode('dd/mm/yyyy');
+                    $worksheet->getCell("C{$baris}")->setValue($key);
+
+                    foreach ($value as $jenisPesan) {
+                        if($jenisPesan->jenis_pemesanan == 'pagi') $jmlPagi = $jenisPesan->jumlah;
+                        if($jenisPesan->jenis_pemesanan == 'siang') $jmlSiang = $jenisPesan->jumlah;
+                        if($jenisPesan->jenis_pemesanan == 'sore') $jmlMalam = $jenisPesan->jumlah;
+                        if($jenisPesan->jenis_pemesanan == 'malam') $jmlMalam = $jenisPesan->jumlah;
+
+                        Log::info("jenis pesan");
+                        Log::info(json_encode($jenisPesan));
+                    }
+                    $worksheet->getCell("D{$baris}")->setValue($jmlPagi);
+                    $worksheet->getCell("E{$baris}")->setValue($jmlSiang);
+                    $worksheet->getCell("F{$baris}")->setValue($jmlMalam);
+
+                    $baris++;
+                    $noPerHari++;
+                }
+                // for ($i=0; $i < count($nilai['data']); $i++) { 
+                //     $kolomPemesanan = $this->kolomWaktuPemesanan($nilai['data'][$i]->jenis_pemesanan, $nilai['data'][$i]->jumlah);
+
+                //     $worksheet->getCell("B{$baris}")->setValue($i+1);
+                //     $worksheet->getCell("C{$baris}")->getStyle()->getNumberFormat()->setFormatCode('dd-mm-yyyy');
+                //     $worksheet->getCell("C{$baris}")->setValue($nilai['data'][$i]->tanggal);
+                //     $worksheet->getCell("D{$baris}")->setValue($nilai['data'][$i]->nama_vendor);
+                //     foreach ($kolomPemesanan as $kolom) {
+                //         $worksheet->getCell("{$kolom['kolom']}{$baris}")->setValue($kolom['nilai']);
+                //     }
+
+                //     $baris++;
+                // }
+                // foreach ($nilai as $dataNilai) {
+                //     $worksheet->getCell("B{$baris}")->setValue("Sore/Malam");
+                //     $baris++;
+                // }
+
+                $terisi = $spasi + $baris;
+            }
+
+            $writer = new WriterXlsx($spreadsheet);
+            $fileName = 'report_GS_catering_' . $filterPeriode[0]. '-' . $filterPeriode[1] .'.xlsx';
+            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            header('Content-Disposition: attachment; filename="'. urlencode($fileName).'"');
+            $writer->save('php://output');
         }
-
-        $writer = new WriterXlsx($spreadsheet);
-        $fileName = 'report_GS_catering_' . $filterPeriode[0]. '-' . $filterPeriode[1] .'.xlsx';
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment; filename="'. urlencode($fileName).'"');
-        $writer->save('php://output');
     }
 
     protected function getAbsensiKaryawan($site, $shift, $tglPemesanan) {

@@ -7,6 +7,7 @@ use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -137,7 +138,8 @@ class VendorController extends Controller {
                 'Status' => '1',
                 'Keterangan' => $request->input('keterangan'),
                 'created_at' => now(),
-                'created_by' => $nik_session
+                'created_by' => $nik_session,
+                'pwd' => Hash::make('password')
             ];
 
             try {
@@ -825,18 +827,24 @@ class VendorController extends Controller {
     public function HelperVendor(Request $request) {
         $vendor = $request->query("query", "");
         $specific_id = $request->query("id", "");
+        $filterSite = $request->query("id", "");
 
         $data = [];
 
         if(strlen($vendor) > 0) {
             try {
-                $data_kamar = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_MASTER)
-                    ->select('id', 'nama as text')
+                $data_kamar = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_MASTER . ' as a')
+                    ->select('a.id', 'a.nama as text')
+                    ->leftJoin(self::TABLE_MAPPING_MAKAN_VENDOR . ' as b', 'a.id', '=', 'b.VendorID')
                     ->whereAny([
-                        'id',
-                        'nama'
+                        'a.id',
+                        'a.nama'
                     ], 'like', '%'. $vendor .'%');
     
+                if($filterSite == null || $filterSite == 'null') {
+                } else {
+                    $data_kamar->where('b.KodeSite', $filterSite);
+                }
                 Log::debug('SQL : '. $data_kamar->toRawSql());
                 $data = $data_kamar->get()->toArray(); 
     

@@ -200,7 +200,7 @@
 
                     <div class="mx-4 row">
                         <h4 class="mx-3">Generate Report</h4>
-                        <div class="col-md-6">
+                        <div class="col-md-6 col-lg-4">
                             <div class="input-group" style="border-radius: 0px 10px 10px 0px; border: 2px solid #d4d4d4;" onclick="clickPeriode(event)">
                                 <input type="month" class="form-control" id="inputPeriode" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
                                 <button class="btn btn-primary" style="border: 0px; border-left: 1px solid #d4d4d4; margin: 0px;" type="button" onclick="downloadReport(event)"><i class="fa-solid fa-file-export" style="color: rgb(2, 240, 149)"></i> Report</button>
@@ -456,14 +456,25 @@
         function downloadReport(e) {
             e.preventDefault()
             let periode = $("#inputPeriode").val()
+            let site = filterSite.value
+            let errorList = [];
             // periode = periode.split('-').reverse().join('-')
-
             if(periode == null || periode == '') {
-                alert('pilih periode')
+                errorList.push('Periode belum dipilih')
+            }
+            if(site == null || site == '') {
+                errorList.push('Site belum dipilih')
+            }
+
+            if(errorList.length > 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    html: errorList.join('<br>')
+                })
             } else {
                 periode = periode.split('-').reverse().join('-')
-                window.location.href = baseUrl + '/dashboard/download-report?periode=' + periode;
-
+                window.location.href = baseUrl + '/dashboard/download-report?periode=' + periode +'&site=' + site;
             }
         }
     </script>
