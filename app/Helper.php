@@ -83,39 +83,48 @@ class Helper
     }
 
     public static function sendPushNotification($token, $title, $body) {
-        $client = new Client();
-        $firebase_config = Helper::getFirebaseConfig();
+        $status  = 500;
+        try {
+            $client = new Client();
+            $firebase_config = Helper::getFirebaseConfig();
 
-        // URL API FCM v1
-        $url = 'https://fcm.googleapis.com/v1/projects/' . $firebase_config['project_id'] . '/messages:send';
+            // URL API FCM v1
+            $url = 'https://fcm.googleapis.com/v1/projects/' . $firebase_config['project_id'] . '/messages:send';
 
-        // Dapatkan access token menggunakan Service Account JSON
-        $accessToken = Helper::getAccessToken();
+            // Dapatkan access token menggunakan Service Account JSON
+            $accessToken = Helper::getAccessToken();
 
-        // Payload yang dikirim ke API
-        $payload = [
-            'message' => [
-                'token' => $token,
-                'notification' => [
-                    'title' => $title,
-                    'body' => $body,
+            // Payload yang dikirim ke API
+            $payload = [
+                'message' => [
+                    'token' => $token,
+                    'notification' => [
+                        'title' => $title,
+                        'body' => $body,
+                    ],
+                    'data' => [
+                        'key' => 'value', // Data tambahan
+                    ],
                 ],
-                'data' => [
-                    'key' => 'value', // Data tambahan
+            ];
+
+            // Kirim request ke API FCM
+            $response = $client->post($url, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $accessToken,
+                    'Content-Type'  => 'application/json',
                 ],
-            ],
-        ];
+                'json' => $payload,
+            ]);
 
-        // Kirim request ke API FCM
-        $response = $client->post($url, [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $accessToken,
-                'Content-Type'  => 'application/json',
-            ],
-            'json' => $payload,
-        ]);
+            $status = $response->getStatusCode();
+        } catch (Exception $ex) {
+            Log::error('Error sending notification');
+            Log::error($ex->getMessage());
+            Log::error($ex->getTraceAsString());
+        }
 
-        return $response->getStatusCode();
+        return $status;
     }
 
     public static function numberToRomanRepresentation($number) {

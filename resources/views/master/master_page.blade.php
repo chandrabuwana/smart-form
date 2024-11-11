@@ -134,7 +134,7 @@
             align-items: center;
             height: 100%;
             position: fixed;
-            z-index: 999;
+            z-index: 9999;
             /* left: 50%; */
             /* height: 50%; */
             width: 100%;
