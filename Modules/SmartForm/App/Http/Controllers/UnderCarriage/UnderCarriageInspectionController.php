@@ -8,6 +8,9 @@ use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class UnderCarriageInspectionController extends Controller
 {
@@ -292,5 +295,135 @@ class UnderCarriageInspectionController extends Controller
             'approvalPIC' => $approvalPIC,
             'statusOverallApproval' => $statusOverallApproval
         ]);
+    }
+
+    public function downloadReport(Request $request)
+    {
+        $sn             = $request->query('sn', '');
+        $workOperation  = $request->query('work_operation', '');
+        $inspectionDate = $request->query('inspection_date', '');
+
+        $underCarriageMaster = DB::table('FM_PLANT_UNDERCARRIAGE_INSPECTION_MASTER')
+            ->select('id', 'document_no', 'unit_model', 'unit_sn', 'unit_smr_hm', 'work_operation', 'ground_condition', 'condition_area_frame', 'inspection_date', 'comment');
+
+        if(!empty($sn)) {
+            $underCarriageMaster->where('unit_sn', 'like', '%' . $sn . '%');
+        }
+        if(!empty($workOperation)) {
+            $underCarriageMaster->where('work_operation', 'like', '%' . $workOperation . '%');
+        }
+        if(!empty($inspectionDate)) {
+            $underCarriageMaster->where('inspection_date', $inspectionDate);
+        }
+
+        $spreadsheet = new Spreadsheet();
+        $worksheet = $spreadsheet->getActiveSheet();
+        $worksheet->getDefaultRowDimension()->setRowHeight(20);
+        $offset = 0;
+
+        foreach(range('B', 'M') as $column) {
+            $worksheet->getColumnDimension($column)->setAutoSize(false)->setWidth(30);
+        }
+
+        $underCarriageMaster->orderBy('id', 'desc')->get()->map( function($item) use($spreadsheet, $worksheet, &$offset) {
+            $indexHeader = $offset + 3;
+            $worksheet->getStyle("B{$indexHeader}:M{$indexHeader}")->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('fec024');
+            $worksheet->getCell("B{$indexHeader}")->getStyle()->getFont()->setBold(true)->setSize(16);
+            $worksheet->getCell("B{$indexHeader}")->setValue("Form ID : #{$item->id}");
+
+            $indexHead = $offset + 4;
+            $indexBody = $offset + 5;
+
+            $worksheet->getStyle("B{$indexHead}:I{$indexHead}")->applyFromArray([ 'font' => ['bold' => true] ])
+                ->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('f1f1f1');
+
+            $worksheet->getCell("B{$indexHead}")->setValue('Unit Model');
+            $worksheet->getCell('B' . $indexBody)->setValue($item->unit_model);
+
+            $worksheet->getCell("C{$indexHead}")->setValue('S/N Unit');
+            $worksheet->getCell("C{$indexBody}")->setValue($item->unit_sn);
+
+            $worksheet->getCell("D{$indexHead}")->setValue('SMR / Hm');
+            $worksheet->getCell("D{$indexBody}")->setValue($item->unit_smr_hm);
+
+            $worksheet->getCell("E{$indexHead}")->setValue('Work operation');
+            $worksheet->getCell("E{$indexBody}")->setValue($item->work_operation);
+
+            $worksheet->getCell("F{$indexHead}")->setValue('Ground condition');
+            $worksheet->getCell("F{$indexBody}")->setValue($item->ground_condition);
+
+            $worksheet->getCell("G{$indexHead}")->setValue('Condition Area Frame');
+            $worksheet->getCell("G{$indexBody}")->setValue($item->condition_area_frame);
+
+            $worksheet->getCell("H{$indexHead}")->setValue('Inspection Date');
+            $worksheet->getCell("H{$indexBody}")->setValue($item->inspection_date);
+
+            $worksheet->getCell("I{$indexHead}")->setValue('Comment and Summary');
+            $worksheet->getCell("I{$indexBody}")->setValue($item->comment);
+
+            $indexInspection = $offset + 7;
+            $worksheet->getCell("B{$indexInspection}")->getStyle()->getFont()->setSize(14)->setBold(true);
+            $worksheet->getCell("B{$indexInspection}")->setValue('Detail Form Inspection');
+
+            $detailInspection = DB::table('FM_PLANT_UNDERCARRIAGE_INSPECTION_DETAIL')
+                ->join('FM_REFF_PLANT_UNDERCARRIAGE_INSPECTION_COMPONENT', 'FM_REFF_PLANT_UNDERCARRIAGE_INSPECTION_COMPONENT.id', '=', 'FM_PLANT_UNDERCARRIAGE_INSPECTION_DETAIL.inspection_component_id')
+                ->leftJoin('FM_REFF_PLANT_UNDERCARRIAGE_INSPECTION_SUB_COMPONENT', 'FM_REFF_PLANT_UNDERCARRIAGE_INSPECTION_SUB_COMPONENT.id', '=', 'FM_PLANT_UNDERCARRIAGE_INSPECTION_DETAIL.inspection_sub_component_id')
+                ->where('inspection_id', $item->id)
+                ->orderBy('FM_PLANT_UNDERCARRIAGE_INSPECTION_DETAIL.id', 'asc')->get();
+
+            $indexHeadInspection = $offset + 8;
+            $worksheet->getStyle("B{$indexHeadInspection}:D{$indexHeadInspection}")->applyFromArray([ 'font' => ['bold' => true] ])
+                ->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('f1f1f1');
+
+            $worksheet->getCell("B{$indexHeadInspection}")->setValue('Component');
+            $worksheet->getCell("C{$indexHeadInspection}")->setValue('Left Side');
+            $worksheet->getCell("D{$indexHeadInspection}")->setValue('Right Side');
+
+            $indexBodyInspection = $offset + 9;
+            foreach($detailInspection as $itemInspection) {
+                $worksheet->getCell("B{$indexBodyInspection}")->setValue($itemInspection->component_name . (!empty($itemInspection->sub_name) ? " - {$itemInspection->sub_name} ({$itemInspection->sub_component_name})" : ''));
+                $worksheet->getCell("C{$indexBodyInspection}")->setValue($itemInspection->left_side);
+                $worksheet->getCell("D{$indexBodyInspection}")->setValue($itemInspection->right_side);
+
+                $indexBodyInspection++;
+
+            }
+
+
+            $indexTemuan = $indexBodyInspection + 1;
+            $worksheet->getCell("B{$indexTemuan}")->getStyle()->getFont()->setSize(14)->setBold(true);
+            $worksheet->getCell("B{$indexTemuan}")->setValue('Detail Temuan Component');
+
+            $detailTemuan = DB::table('FM_PLANT_UNDERCARRIAGE_COMPONENT_ISSUE')
+                ->join('FM_REFF_PLANT_UNDERCARRIAGE_INSPECTION_COMPONENT', 'FM_REFF_PLANT_UNDERCARRIAGE_INSPECTION_COMPONENT.id', '=', 'FM_PLANT_UNDERCARRIAGE_COMPONENT_ISSUE.component_id')
+                ->where('inspection_id', $item->id)
+                ->orderBy('FM_PLANT_UNDERCARRIAGE_COMPONENT_ISSUE.id', 'asc')->get();
+
+            $indexHeadTemuan = $indexBodyInspection + 2;
+            $worksheet->getStyle("B{$indexHeadTemuan}:D{$indexHeadTemuan}")->applyFromArray([ 'font' => ['bold' => true] ])
+                ->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('f1f1f1');
+
+            $worksheet->getCell("B{$indexHeadTemuan}")->setValue('Component');
+            $worksheet->getCell("C{$indexHeadTemuan}")->setValue('Left Side');
+            $worksheet->getCell("D{$indexHeadTemuan}")->setValue('Right Side');
+
+            $indexBodyTemuan = $indexBodyInspection + 3;
+            foreach($detailTemuan as $itemTemuan) {
+                $worksheet->getCell("B{$indexBodyTemuan}")->setValue($itemTemuan->component_name);
+                $worksheet->getCell("C{$indexBodyTemuan}")->setValue($itemTemuan->left_side);
+                $worksheet->getCell("D{$indexBodyTemuan}")->setValue($itemTemuan->right_side);
+
+                $indexBodyTemuan++;
+            }
+
+            $offset += $indexBodyTemuan + 2;
+        });
+
+        $writer = new Xlsx($spreadsheet);
+        $fileName = 'report_plant_undercarriage_inspection.xlsx';
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="'. urlencode($fileName).'"');
+        $writer->save('php://output');
     }
 }

@@ -8,6 +8,10 @@ use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
 
 class PlantTransmissionController extends Controller
 {
@@ -237,5 +241,151 @@ class PlantTransmissionController extends Controller
                 'code' => 500
             ]);
         }
+    }
+
+    public function downloadReport(Request $request)
+    {
+        $machine    = $request->query('machine', '');
+        $jobsite    = $request->query('jobsite', '');
+        $checkdate  = $request->query('checkdate', '');
+
+        $plantMaster = DB::table('FM_PLANT_PPM_TRANSMISI_CMT_BSS_MASTER')
+                ->select('id', 'machine_number', 'machine_model', 'machine_serial_no', 'machine_smr', 'jobsite', 'checkdate');
+
+        if(!empty($machine)) {
+            $plantMaster->where('machine_number', 'like', '%' . $machine . '%')
+                ->orWhere('machine_serial_no', 'like', '%' . $machine . '%');
+        }
+        if(!empty($jobsite)) {
+            $plantMaster->where('jobsite', 'like', '%' . $jobsite . '%');
+        }
+        if(!empty($checkdate)) {
+            $plantMaster->where('checkdate', 'like', '%' . $checkdate . '%');
+        }
+
+        $spreadsheet = new Spreadsheet();
+        $worksheet = $spreadsheet->getActiveSheet();
+        $worksheet->getDefaultRowDimension()->setRowHeight(20);
+        $offset = 0;
+
+        foreach(range('B', 'M') as $column) {
+            $worksheet->getColumnDimension($column)->setAutoSize(false)->setWidth(30);
+        }
+
+        $plantMaster->orderBy('id', 'desc')->get()->map( function($item) use($spreadsheet, $worksheet, &$offset) {
+            $indexHeader = $offset + 3;
+            $worksheet->getStyle("B{$indexHeader}:M{$indexHeader}")->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('fec024');
+            $worksheet->getCell("B{$indexHeader}")->getStyle()->getFont()->setBold(true)->setSize(16);
+            $worksheet->getCell("B{$indexHeader}")->setValue("Form ID : #{$item->id}");
+
+            $indexHead = $offset + 4;
+            $indexBody = $offset + 5;
+
+            $worksheet->getStyle("B{$indexHead}:G{$indexHead}")->applyFromArray([ 'font' => ['bold' => true] ])
+                ->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('f1f1f1');
+
+            $worksheet->getCell("B{$indexHead}")->setValue('Machine Number');
+            $worksheet->getCell('B' . $indexBody)->setValue($item->machine_number);
+
+            $worksheet->getCell("C{$indexHead}")->setValue('Machine Model');
+            $worksheet->getCell("C{$indexBody}")->setValue($item->machine_model);
+
+            $worksheet->getCell("D{$indexHead}")->setValue('Machine Serial No');
+            $worksheet->getCell("D{$indexBody}")->setValue($item->machine_serial_no);
+
+            $worksheet->getCell("E{$indexHead}")->setValue('Machine SMR / HM');
+            $worksheet->getCell("E{$indexBody}")->setValue($item->machine_smr);
+
+            $worksheet->getCell("F{$indexHead}")->setValue('JobSite');
+            $worksheet->getCell("F{$indexBody}")->setValue($item->jobsite);
+
+            $worksheet->getCell("G{$indexHead}")->setValue('Check Date');
+            $worksheet->getCell("G{$indexBody}")->setValue($item->checkdate);
+
+            $indexSolenoid = $offset + 7;
+            $worksheet->getCell("B{$indexSolenoid}")->getStyle()->getFont()->setSize(14)->setBold(true);
+            $worksheet->getCell("B{$indexSolenoid}")->setValue('Detail Harness Test');
+
+            $detailHarness = DB::table('FM_PLANT_PPM_TRANSMISI_CMT_BSS_DETAIL_HARNESS')->where('plant_test_id', $item->id)
+                ->orderBy('ID', 'asc')->get();
+
+            $indexHeadSolenoid = $offset + 8;
+            $worksheet->getStyle("B{$indexHeadSolenoid}:C{$indexHeadSolenoid}")->applyFromArray([ 'font' => ['bold' => true] ])
+                ->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('f1f1f1');
+
+            $worksheet->getCell("B{$indexHeadSolenoid}")->setValue('Solenoid Position');
+            $worksheet->getCell("C{$indexHeadSolenoid}")->setValue('Actual');
+
+            $indexBodySolenoid = $offset + 9;
+            foreach($detailHarness as $itemHarness) {
+                $worksheet->getCell("B{$indexBodySolenoid}")->setValue($itemHarness->selonoid_position);
+                $worksheet->getCell("C{$indexBodySolenoid}")->setValue($itemHarness->actual);
+
+                $indexBodySolenoid++;
+            }
+
+            $indexSpeedSensor = $indexBodySolenoid + 1;
+            $worksheet->getCell("B{$indexSpeedSensor}")->getStyle()->getFont()->setSize(14)->setBold(true);
+            $worksheet->getCell("B{$indexSpeedSensor}")->setValue('Detail Speed Sensor Test');
+
+            $detailSpeedSensor = DB::table('FM_PLANT_PPM_TRANSMISI_CMT_BSS_DETAIL_SPEED_SENSOR_TEST')->where('plant_test_id', $item->id)
+                ->orderBy('ID', 'asc')->get();
+
+            $indexHeadSpeedSensor = $indexBodySolenoid + 2;
+            $worksheet->getStyle("B{$indexHeadSpeedSensor}:D{$indexHeadSpeedSensor}")->applyFromArray([ 'font' => ['bold' => true] ])
+                ->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('f1f1f1');
+
+            $worksheet->getCell("B{$indexHeadSpeedSensor}")->setValue('Speed Sensor');
+            $worksheet->getCell("C{$indexHeadSpeedSensor}")->setValue('Low Iddle');
+            $worksheet->getCell("D{$indexHeadSpeedSensor}")->setValue('High Iddle');
+
+            $indexBodySpeedSensor = $indexBodySolenoid + 3;
+            foreach($detailSpeedSensor as $itemSpeedSensor) {
+                $worksheet->getCell("B{$indexBodySpeedSensor}")->setValue($itemSpeedSensor->speed_sensor);
+                $worksheet->getCell("C{$indexBodySpeedSensor}")->setValue($itemSpeedSensor->actual_low_iddle);
+                $worksheet->getCell("D{$indexBodySpeedSensor}")->setValue($itemSpeedSensor->actual_high_iddle);
+
+                $indexBodySpeedSensor++;
+            }
+
+            $indexPowerTrain = $indexBodySpeedSensor + 1;
+            $worksheet->getCell("B{$indexPowerTrain}")->getStyle()->getFont()->setSize(14)->setBold(true);
+            $worksheet->getCell("B{$indexPowerTrain}")->setValue('Detail Power Train Pressure');
+
+            $detailPowerTrain = DB::table('FM_PLANT_PPM_TRANSMISI_CMT_BSS_DETAIL_POWER_TRAIN_PRESSURE')->where('plant_test_id', $item->id)
+                ->orderBy('ID', 'asc')->get();
+
+            $indexHeadPowerTrain = $indexBodySpeedSensor + 2;
+            $worksheet->getStyle("B{$indexHeadPowerTrain}:G{$indexHeadPowerTrain}")->applyFromArray([ 'font' => ['bold' => true] ])
+                ->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('f1f1f1');
+
+            $worksheet->getCell("B{$indexHeadPowerTrain}")->setValue('Description');
+            $worksheet->getCell("C{$indexHeadPowerTrain}")->setValue('Lever Position');
+            $worksheet->getCell("D{$indexHeadPowerTrain}")->setValue('Actual (Low Iddle)');
+            $worksheet->getCell("E{$indexHeadPowerTrain}")->setValue('After Adjustment (Low Iddle)');
+            $worksheet->getCell("F{$indexHeadPowerTrain}")->setValue('Actual (High Iddle)');
+            $worksheet->getCell("G{$indexHeadPowerTrain}")->setValue('After Adjustment (High Iddle)');
+
+            $indexBodyPowerTrain = $indexBodySpeedSensor + 3;
+            foreach($detailPowerTrain as $itemPowerTrain) {
+                $worksheet->getCell("B{$indexBodyPowerTrain}")->setValue($itemPowerTrain->description);
+                $worksheet->getCell("C{$indexBodyPowerTrain}")->setValue($itemPowerTrain->lever_position);
+                $worksheet->getCell("D{$indexBodyPowerTrain}")->setValue($itemPowerTrain->actual_low_iddle);
+                $worksheet->getCell("E{$indexBodyPowerTrain}")->setValue($itemPowerTrain->after_adjust_low_iddle);
+                $worksheet->getCell("F{$indexBodyPowerTrain}")->setValue($itemPowerTrain->actual_high_iddle);
+                $worksheet->getCell("G{$indexBodyPowerTrain}")->setValue($itemPowerTrain->after_adjust_high_iddle);
+
+                $indexBodyPowerTrain++;
+            }
+
+            $offset += $indexBodyPowerTrain + 2;
+        });
+
+        $writer = new Xlsx($spreadsheet);
+        $fileName = 'report_plant_transmission_test.xlsx';
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="'. urlencode($fileName).'"');
+        $writer->save('php://output');
     }
 }

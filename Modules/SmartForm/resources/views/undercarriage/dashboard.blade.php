@@ -52,6 +52,9 @@
                             <button class="btn btn-primary ms-auto filter-btn" id="btnClearFilter" onclick="clearFilter(this)">
                                 Clear Filter
                             </button>
+                            <button class="btn btn-success ms-auto filter-btn" id="btnDownloadReport" onclick="downloadReport(this)">
+                                Download Report
+                            </button>
                         </div>
                     </div>
 
@@ -147,6 +150,10 @@
             $.get(url + '?' + $.param(params.data)).then(function(res) {
                 params.success(res)
             })
+        }
+
+        function downloadReport() {
+            location.href = `{{ route('bss-form.undercarriage.download') }}?` + (new URLSearchParams(filter)).toString();
         }
 
     </script>
