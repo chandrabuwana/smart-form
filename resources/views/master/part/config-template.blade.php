@@ -91,8 +91,19 @@
         <hr class="horizontal dark my-1">
         <div class="card-body pt-sm-3 pt-0">
             <!-- Sidebar Backgrounds -->
-            <a href="{{ route("logout") }}">
-                <button type="button" class="btn btn-danger">Logout</button></a>
+            <div class="row">
+                <div class="col">
+                    <button type="button" class="btn btn-warning" onclick="OpenModalChangePasswordUser()">Change
+                            Password</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <a href="{{ route('logout') }}"><button type="button" class="btn btn-danger">Logout</button></a>
+                </div>
+            </div>
+           
         </div>
+
     </div>
 </div>
