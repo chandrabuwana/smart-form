@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use DB;
 use Carbon\Carbon;
+use Hash;
 
 class HelperController extends Controller
 {
@@ -15,9 +16,9 @@ class HelperController extends Controller
     {
         $data = $d->request->get("query");
         // dd($d->dept);
-       
+
         $dataDepartment = "";
-       
+
         $dataFinal = $this->validateAndSanitizeInput($data);
 
 
@@ -26,9 +27,9 @@ class HelperController extends Controller
         OR kpi LIKE '%$dataFinal%' 
         OR keterangan LIKE '%$dataFinal%') ";
 
-        if($d->dept == "HRD") {
+        if ($d->dept == "HRD") {
             $query .= " AND dept in ('IC','GS','CVL')";
-        }else{
+        } else {
             $query .= " AND dept = '$d->dept' ";
         }
 
@@ -622,6 +623,48 @@ class HelperController extends Controller
         ]);
     }
 
+
+    function ChangepasswordPegawaiPost(Request $d)
+    {
+
+        $dataPasswordnew = Hash::make($d->p2); // Hash password baru
+
+        $user = DB::table("users")
+            ->where("username", session("user_id"))
+            ->first();
+
+        if (!$user || !Hash::check($d->p1, $user->password)) {
+            return response()->json([
+                'message' => 'Password yang lama salah',
+                'code' => 500
+            ]);
+        }
+
+        DB::beginTransaction();
+
+        try {
+            DB::table("users")
+                ->where("username", session("user_id"))
+                ->update([
+                    "password" => $dataPasswordnew,
+                    "updated_at" => now(),
+                    "updated_by" => session("user_id")
+                ]);
+
+            DB::commit();
+            return response()->json([
+                'message' => 'Password Telah selesai diubah',
+                'code' => 200
+            ]);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Failed to Deleted records: ',
+                'code' => 500
+            ]);
+        }
+
+    }
 
 
 }
