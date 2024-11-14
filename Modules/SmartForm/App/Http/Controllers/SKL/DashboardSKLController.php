@@ -258,21 +258,28 @@ class DashboardSKLController extends Controller
                 self::T_KARYAWAN . '.Nama AS NamaKaryawan',
                 self::T_KARYAWAN . '.NIK',
                 self::T_JABATAN . '.Nama AS NamaJabatan',
-                self::T_MST_PEKERJAAN . '.Nama AS NamaPekerjaan',
-                self::T_FORM_PEKERJAAN . '.Detail AS DetailPekerjaan',
+                // self::T_MST_PEKERJAAN . '.Nama AS NamaPekerjaan',
+                // self::T_FORM_PEKERJAAN . '.Detail AS DetailPekerjaan',
                 self::V_JAM_KONVERSI . '.JamMulai',
                 self::V_JAM_KONVERSI . '.fix_absen_out AS JamSelesai',
-                self::V_JAM_KONVERSI . '.total_konversi_jam AS TotalKonversi'
+                self::V_JAM_KONVERSI . '.total_konversi_jam AS TotalKonversi',
+                self::T_KARYAWAN . '.KodeDP'
             )
-            ->join(self::T_FORM_MST, self::T_FORM_MST . '.NoForm', '=', self::T_FORM_KARYAWAN . '.NoForm')
-            ->join(self::V_JAM_KONVERSI, self::V_JAM_KONVERSI . '.NoForm', '=', self::T_FORM_MST . '.NoForm')
-            ->join(self::T_SITE, self::T_SITE . '.KodeST', '=', self::T_FORM_MST . '.KodeST')
-            ->join(self::T_DEPARTEMENT, self::T_DEPARTEMENT . '.KodeDP', '=', self::T_FORM_MST . '.KodeDepartement')
+            // ->distinct(self::V_JAM_KONVERSI . '.NoForm', self::V_JAM_KONVERSI . '.NIK')
+            ->join(self::V_JAM_KONVERSI, function($q) {
+                $q->on(self::V_JAM_KONVERSI . '.NIK', '=', self::T_FORM_KARYAWAN . '.NIK')
+                    ->on(self::V_JAM_KONVERSI . '.NoForm', '=', self::T_FORM_KARYAWAN . '.NoForm');
+            })
             ->join(self::T_KARYAWAN, self::T_KARYAWAN . '.NIK', '=', self::T_FORM_KARYAWAN . '.NIK')
-            ->join(self::T_JABATAN, self::T_JABATAN . '.KodeJB', '=', self::T_KARYAWAN . '.KodeJB')
-            ->join(self::T_FORM_PEKERJAAN, self::T_FORM_PEKERJAAN . '.NoForm', '=', self::T_FORM_MST . '.NoForm')
-            ->join(self::T_MST_PEKERJAAN, self::T_MST_PEKERJAAN . '.ID', '=', self::T_FORM_PEKERJAAN . '.IDPekerjaan')
-            ->where('created_by', $userid);
+            ->join(self::T_FORM_MST, self::T_FORM_MST . '.NoForm', '=', self::T_FORM_KARYAWAN . '.NoForm')
+            ->join(self::T_SITE, self::T_SITE . '.KodeST', '=', self::T_KARYAWAN . '.KodeST')
+            ->join(self::T_DEPARTEMENT, self::T_DEPARTEMENT . '.KodeDP', '=', self::T_KARYAWAN . '.KodeDP')
+            ->join(self::T_JABATAN, self::T_JABATAN . '.KodeJB', '=', self::T_KARYAWAN . '.KodeJB');
+            // ->join(self::T_MST_PEKERJAAN, self::T_MST_PEKERJAAN . '.KodeDepartement', '=', self::T_KARYAWAN . '.KodeDP')
+            // ->join(self::T_FORM_PEKERJAAN, function($q) {
+            //     $q->on(self::T_FORM_PEKERJAAN . '.NoForm', '=', self::T_FORM_MST . '.NoForm')
+            //         ->on(self::T_FORM_PEKERJAAN . '.IDPekerjaan', '=', self::T_MST_PEKERJAAN . '.ID');
+            // });
 
         if(!empty($departement)) {
             $qExport->where(self::T_FORM_MST . '.KodeDepartement', $departement);
@@ -294,18 +301,22 @@ class DashboardSKLController extends Controller
         $i = 2;
 
         foreach($dataExport as $item) {
+            $pekerjaan = DB::table(self::T_FORM_PEKERJAAN)->select(self::T_MST_PEKERJAAN . '.Nama', self::T_FORM_PEKERJAAN . '.Detail')
+                ->join(self::T_MST_PEKERJAAN, self::T_MST_PEKERJAAN . '.ID', '=', self::T_FORM_PEKERJAAN . '.IDPekerjaan')
+                ->where('NoForm', $item->NoForm)->where('KodeDepartement', $item->KodeDP)->get();
+
             $worksheet->getCell('A' . $i)->setValue($item->NoForm);
             $worksheet->getCell('B' . $i)->setValue($item->NamaDP);
             $worksheet->getCell('C' . $i)->setValue($item->NamaSite);
             $worksheet->getCell('D' . $i)->setValue($item->Shift);
             $worksheet->getCell('E' . $i)->setValue($item->NamaKaryawan);
             $worksheet->getCell('F' . $i)->setValue($item->NIK);
-            $worksheet->getCell('F' . $i)->setValue($item->NamaJabatan);
-            $worksheet->getCell('G' . $i)->setValue($item->NamaPekerjaan);
-            $worksheet->getCell('H' . $i)->setValue($item->DetailPekerjaan);
-            $worksheet->getCell('I' . $i)->setValue($item->JamMulai);
-            $worksheet->getCell('J' . $i)->setValue($item->JamSelesai);
-            $worksheet->getCell('K' . $i)->setValue($item->TotalKonversi);
+            $worksheet->getCell('G' . $i)->setValue($item->NamaJabatan);
+            $worksheet->getCell('H' . $i)->setValue( implode("\n", $pekerjaan->pluck('Nama')->all()) );
+            $worksheet->getCell('I' . $i)->setValue( implode("\n", $pekerjaan->pluck('Detail')->all()) );
+            $worksheet->getCell('J' . $i)->setValue($item->JamMulai);
+            $worksheet->getCell('K' . $i)->setValue($item->JamSelesai);
+            $worksheet->getCell('L' . $i)->setValue($item->TotalKonversi);
 
             $i++;
         }
