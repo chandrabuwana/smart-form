@@ -20,9 +20,19 @@ class EnsureTokenIsValid
         // dd(Auth::check());
         if (!Auth::check()) {
             // kembali ke login
-            return redirect('/login'); 
+            $currentRoute = $request->route();
+            if($currentRoute) {
+                $middlewares = $currentRoute->getAction('middleware');
+                $authMiddleware = 'check.auth';
+
+                if(in_array($authMiddleware, $middlewares)) {
+                    setcookie('prev_auth_route', $currentRoute->getName(), time() + ( 365 * 24 * 60 * 60), '/');
+                }
+            }
+
+            return redirect('/login');
         }
- 
+
         return $next($request);
     }
 }

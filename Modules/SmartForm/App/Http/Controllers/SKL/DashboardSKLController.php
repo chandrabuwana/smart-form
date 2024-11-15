@@ -301,6 +301,12 @@ class DashboardSKLController extends Controller
         $i = 2;
 
         foreach($dataExport as $item) {
+            $isApprovedForm = DB::table(self::T_FORM_APPROVER)->where('NoForm', $item->NoForm)
+                ->where('status', 'Approved')->count('ID');
+            if($isApprovedForm < 4) {
+                continue;
+            }
+
             $pekerjaan = DB::table(self::T_FORM_PEKERJAAN)->select(self::T_MST_PEKERJAAN . '.Nama', self::T_FORM_PEKERJAAN . '.Detail')
                 ->join(self::T_MST_PEKERJAAN, self::T_MST_PEKERJAAN . '.ID', '=', self::T_FORM_PEKERJAAN . '.IDPekerjaan')
                 ->where('NoForm', $item->NoForm)->where('KodeDepartement', $item->KodeDP)->get();
