@@ -122,8 +122,8 @@
                                         <option value="">-- Pilih Site --</option>
                                         <option value="AGM">AGM</option>
                                         <option value="TAJ">TAJ</option>
-                                        <option value="MBL MINING">MBL MINING</option>
-                                        <option value="MBL HAULING">MBL HAULING</option>
+                                        <option value="MBL">MBL MINING</option>
+                                        <option value="MBL-HAULING">MBL HAULING</option>
                                         <option value="BSSR">BSSR</option>
                                         <option value="MSJ">MSJ</option>
                                         <option value="TDM">TDM</option>
@@ -556,7 +556,20 @@
                         $('#inputKaryawan').html(options);
                         $('#inputKaryawan').select2({
                             width: '100%',
-                            dropdownParent: $('#modalTambahKaryawan')
+                            dropdownParent: $('#modalTambahKaryawan'),
+                            matcher: function(params, data) {
+                                const keyword = (params.term ?? '').toLowerCase()
+                                const name = data.text.toLowerCase()
+
+                                if( name.indexOf(keyword) > -1 || data.id.indexOf(keyword) > -1 ) {
+                                    return data;
+                                }
+
+                                // console.log('PARAMS', params);
+                                // console.log('TEST', data);
+                                return false;
+                                // return false;
+                            }
                         });
                     }
                 });
