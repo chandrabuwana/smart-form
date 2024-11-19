@@ -73,7 +73,7 @@ class LoginKaryawanController extends Controller
             if(!empty($prevAuthRoute)) {
                 setcookie('prev_auth_route', '', -1, '/');
                 unset($_COOKIE['prev_auth_route']);
-                return redirect()->intended(route($prevAuthRoute));
+                return redirect()->intended($prevAuthRoute);
             }
 
             return redirect()->intended(route('dashboard-smart-pica'));
