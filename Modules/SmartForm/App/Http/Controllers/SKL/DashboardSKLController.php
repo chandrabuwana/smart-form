@@ -238,9 +238,10 @@ class DashboardSKLController extends Controller
             'Jam Mulai',
             'Jam Selesai',
             'Total Konversi',
+            'Tanggal',
         ];
 
-        foreach(range('A', 'K') as $key => $column) {
+        foreach(range('A', 'M') as $key => $column) {
             $worksheet->getColumnDimension($column)->setAutoSize(true);
 
             $cellStyle = $worksheet->getStyle($column . '1');
@@ -252,6 +253,7 @@ class DashboardSKLController extends Controller
 
         $qExport = DB::table(self::T_FORM_KARYAWAN)->select(
                 self::T_FORM_MST . '.NoForm',
+                DB::raw('CONVERT(DATE, ' . self::T_FORM_MST . '.created_at) AS created_date'),
                 self::T_DEPARTEMENT . '.Nama AS NamaDP',
                 self::T_SITE . '.Nama AS NamaSite',
                 self::T_FORM_MST . '.Shift',
@@ -298,6 +300,7 @@ class DashboardSKLController extends Controller
         }
 
         $dataExport = $qExport->orderBy(self::T_FORM_MST . '.created_at', 'DESC')->get();
+        // dd($dataExport);
         $i = 2;
 
         foreach($dataExport as $item) {
@@ -323,6 +326,7 @@ class DashboardSKLController extends Controller
             $worksheet->getCell('J' . $i)->setValue($item->JamMulai);
             $worksheet->getCell('K' . $i)->setValue($item->JamSelesai);
             $worksheet->getCell('L' . $i)->setValue($item->TotalKonversi);
+            $worksheet->getCell('M' . $i)->setValue($item->created_date);
 
             $i++;
         }

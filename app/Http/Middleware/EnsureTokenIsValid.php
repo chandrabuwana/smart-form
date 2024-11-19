@@ -26,7 +26,8 @@ class EnsureTokenIsValid
                 $authMiddleware = 'check.auth';
 
                 if(in_array($authMiddleware, $middlewares)) {
-                    setcookie('prev_auth_route', $currentRoute->getName(), time() + ( 365 * 24 * 60 * 60), '/');
+                    $url = $request->url() . (count($request->query()) > 0 ? '?' . http_build_query($request->query()) : '');
+                    setcookie('prev_auth_route', $url, time() + ( 365 * 24 * 60 * 60), '/');
                 }
             }
 
