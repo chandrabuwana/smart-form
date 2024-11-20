@@ -68,8 +68,10 @@ class CompareAbsensiController extends Controller {
                 $tgl = Carbon::createFromFormat('Y-m-d', $tanggalAbsensi)->startOfDay()->format('Y-m-d H:i:s.u');
                 $data_absensi = DB::connection('sqlsrv2')
                         ->table("TAbsensi as ta")
-                        ->select('ta.nik', 'ta.tanggal', 'ta.masuk')
-                        ->whereDate("ta.Tanggal", $tgl);
+                        ->select('ta.nik', 'ta.tanggal', 'ta.masuk', 'ta.lmasuk')
+                        ->whereDate("ta.Tanggal", $tgl)
+                        ->where('ta.lmasuk', 'JKT1')
+                        ;
                         // ->whereIn('ta.KodeST', ['JKT', 'ISI', 'FAT']);
                 $data_finger_log = DB::connection('sqlsrv2')
                         ->table("TFingerlog as tf")
@@ -83,32 +85,31 @@ class CompareAbsensiController extends Controller {
                         ->orderBy('tf.nik')
                         ->orderBy('Jam');
 
-                Log::info($data_absensi->toRawSql());
+                Log::info("SQL data_absensi : " . $data_absensi->toRawSql());
                 Log::info($data_finger_log->toRawSql());
                 $data_absensi = $data_absensi->get();
                 $data_finger_log = $data_finger_log->get();
                 Log::info("data_absensi : ". count($data_absensi));
                 Log::info("data_finger_log: ". count($data_finger_log));
-                if(count($data_finger_log) < 1) {
+                if(count($data_finger_log) < 1 || count($data_absensi) < 1) {
                     $isSuccess = false;
-                    $message = "Tidak ada absensi di Tanggal ".$tgl;
+                    $message = "Belum ada absensi di Tanggal ".$tgl;
                 } else {
     
                     foreach($data_absensi as $finger) {
-                        // if($finger->nik == '1002691') {
-                            // Log::debug('finger->nik : ' . $finger->nik);
-                        // }
                         $data_absensi_merged[$finger->nik] =  array('tanggal' => $finger->tanggal, 'Jam' => str_replace('.', ':', $finger->masuk));
                     }
                     // Log::info(json_encode($data_absensi_merged, JSON_PRETTY_PRINT));
                     foreach($data_finger_log as $finger_log) {
-                        array_push($merged, array(
-                                'nik' => $finger_log->nik,
-                                'nama' => $finger_log->nama, 
-                                'absensi' => $data_absensi_merged["$finger_log->nik"], 
-                                'finger' => $finger_log
-                            )
-                        );
+                        if(key_exists($finger_log->nik, $data_absensi_merged)) {
+                            array_push($merged, array(
+                                    'nik' => $finger_log->nik,
+                                    'nama' => $finger_log->nama, 
+                                    'absensi' => key_exists($finger_log->nik, $data_absensi_merged) ? $data_absensi_merged["$finger_log->nik"] : ['tanggal' => null, 'Jam' => null], 
+                                    'finger' => $finger_log
+                                )
+                            );
+                        }
                     }
                     $isSuccess = true;
                     $message = "Berhasil get data!";
