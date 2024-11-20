@@ -176,7 +176,10 @@
                 }
                 var data_tabel = []
                 for (const absensi in response.data.data.rows) {
-                    response.data.data.rows[absensi].absensi.Jam = response.data.data.rows[absensi].absensi.Jam.replace(".", ":")
+                    let jam = "";
+                    if(response.data.data.rows[absensi].absensi.Jam) {
+                        jam = response.data.data.rows[absensi].absensi.Jam.replace(".", ":")
+                    }
                     
                     // console.log(response.data.data.rows[absensi])
                     var leftSide = ""
@@ -185,7 +188,7 @@
                             nik: response.data.data.rows[absensi].nik,
                             nama: response.data.data.rows[absensi].nama,
                             tanggal: response.data.data.rows[absensi].absensi.tanggal,
-                            jam: response.data.data.rows[absensi].absensi.Jam.replace(".", ":"),
+                            jam: jam,
                             // kodedp: response.data.data.rows[absensi].finger.kodedp
                         })
                     } else {
@@ -194,7 +197,7 @@
                                 nik: response.data.data.rows[absensi].nik,
                                 nama: response.data.data.rows[absensi].nama,
                                 tanggal: response.data.data.rows[absensi].absensi.tanggal,
-                                jam: response.data.data.rows[absensi].absensi.Jam.replace(".", ":"),
+                                jam: jam,
                                 // kodedp: response.data.data.rows[absensi].finger.kodedp
                             })
                         }
