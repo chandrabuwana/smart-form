@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Modules\SmartForm\Service\AlarmAPIService;
 
 class SKLFormController extends Controller
 {
@@ -208,8 +209,12 @@ class SKLFormController extends Controller
 
                 $atasan = DB::table(self::T_KARYAWAN)->select('Panggilan')->where('NIK', $nikAtasan)->first();
                 $url = url('skl/detail') . '?NoForm=' . $NoForm;
-                $message = "'Kepada YTH Bapak/Ibu {$atasan->Panggilan}, terdapat pengajuan lembur baru dengan nomor : {$NoForm}. Silakan klik link dibawah ini untuk menyetujui pengajuan berikut :' + CHAR(13) + CHAR(10) + '{$url}'";
-                DB::statement("INSERT INTO " . self::T_ALARM . " (NIK, Message) VALUES ('{$nikAtasan}', {$message})");
+                // $message = "'Kepada YTH Bapak/Ibu {$atasan->Panggilan}, terdapat pengajuan lembur baru dengan nomor : {$NoForm}. Silakan klik link dibawah ini untuk menyetujui pengajuan berikut :' + CHAR(13) + CHAR(10) + '{$url}'";
+                // DB::statement("INSERT INTO " . self::T_ALARM . " (NIK, Message) VALUES ('{$nikAtasan}', {$message})");
+
+                $message = "Kepada YTH Bapak/Ibu {$atasan->Panggilan}, terdapat pengajuan lembur baru dengan nomor : {$NoForm}. Silakan klik link dibawah ini untuk menyetujui pengajuan berikut :\n\n{$url}";
+                $alarmAPIService = new AlarmAPIService();
+                $alarmAPIService->sendMessage($atasan->Telp, $message);
             }
 
             DB::commit();
