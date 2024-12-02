@@ -471,15 +471,15 @@
             let actual = parseFloat($('#pc_aktual').val());
             let target = parseFloat($('#pc_target').val());
 
-            if (actual > target) {
-                Swal.fire({
-                    icon: "error",
-                    title: "Validation Error",
-                    html: "Actual tidak boleh lebih dari Target",
-                    confirmButtonText: 'OK'
-                });
-                return false;
-            }
+            // if (actual > target) {
+            //     Swal.fire({
+            //         icon: "error",
+            //         title: "Validation Error",
+            //         html: "Actual tidak boleh lebih dari Target",
+            //         confirmButtonText: 'OK'
+            //     });
+            //     return false;
+            // }
 
             let getAllDataWhy1 = [];
             let isValid = true;
