@@ -165,16 +165,16 @@
                                                     <div class="input-group input-group-static mb-4">
                                                         <label for="FILTERNAMAVENDOR">Vendor</label>
                                                         <input type="text" class="form-control" id="FILTERNAMAVENDOR"
-                                                            name="FILTERNAMAVENDOR" maxlength="7"
+                                                            name="FILTERNAMAVENDOR" onkeypress="refreshTable()"
                                                             placeholder=" -- Masukkan Nama Vendor -- ">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="input-group input-group-static mb-4">
                                                         <label for="FILTERNPWPVENDOR">NPWP / NIK</label>
-                                                        <input type="text" class="form-control" id="FILTERNIK"
-                                                            name="FILTERNIK" maxlength="7"
-                                                            placeholder=" -- Masukkan NIK -- ">
+                                                        <input type="text" class="form-control" id="FILTERNPWPVENDOR"
+                                                            onkeypress="refreshTable()" name="FILTERNPWPVENDOR"
+                                                            placeholder=" -- Masukkan NPWP -- ">
                                                     </div>
                                                 </div>
                                             </div>
@@ -350,6 +350,11 @@
                 }
             })
         }
+
+        function refreshTable() {
+            $('#tableListOfDocumentUploaded').bootstrapTable('refresh');
+            $("#tableListOfDocumentUploaded").bootstrapTable("uncheckAll");
+        }
     </script>
     <script type="text/javascript">
         $(document).ready(function() {
@@ -377,7 +382,8 @@
 
             params.search = {
                 'FILTERNPWPVENDOR': $('#FILTERNPWPVENDOR').val(),
-                'FILTERNAMAVENDOR': $('#FILTERNAMAVENDOR').val()
+                'FILTERNAMAVENDOR': $('#FILTERNAMAVENDOR').val(),
+                'FILTERNODOC': $('#nodocpph').val()
             };
 
             if (params.sort == undefined) {
@@ -399,7 +405,7 @@
 
         function FormaterActionDocumentUploaded(value, row, index) {
             return `
-                    <a class="like" href="javascript:void(0)" onclick="DeletedDataDocumentUploaded(this)" title="Like">
+                    <a class="like" href="javascript:void(0)" onclick="ccccc(this)" title="Like">
                         <i class="fa fa-eye"></i> View
                     </a> 
                     <a class="like" href="javascript:void(0)" onclick="openModalUpdateDocument(this)" title="Like">

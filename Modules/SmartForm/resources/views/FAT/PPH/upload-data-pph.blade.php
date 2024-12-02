@@ -179,6 +179,24 @@
                                             <span>Daftar dokument yang sudah terupload</span>
                                         </legend>
                                         <div class="form-horizontal">
+                                            <div class="row">
+                                                <div class="col-md-2">
+                                                    <div class="input-group input-group-static mb-4">
+                                                        <label for="FILTERNAMAVENDOR">Vendor</label>
+                                                        <input type="text" class="form-control" id="FILTERNAMAVENDOR"
+                                                            name="FILTERNAMAVENDOR" onkeypress="refreshTable()"
+                                                            placeholder=" -- Masukkan Nama Vendor -- ">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="input-group input-group-static mb-4">
+                                                        <label for="FILTERNPWPVENDOR">NPWP / NIK</label>
+                                                        <input type="text" class="form-control" id="FILTERNPWPVENDOR"
+                                                            onkeypress="refreshTable()" name="FILTERNPWPVENDOR"
+                                                            placeholder=" -- Masukkan NPWP -- ">
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <table id="tableListOfDocumentUploaded" data-toggle="table"
                                                 data-ajax="tableListOfDocumentUploadedGenerateData"
                                                 data-query-params="tableListOfDocumentUploadedParamsGenerate"
@@ -187,10 +205,10 @@
                                                 data-data-type="json" data-pagination="true" data-unique-id="id">
                                                 <thead>
                                                     <tr>
-                                                            <th data-field="nama_file" data-halign="center" data-sortable="true">
-                                                            Nama Document</th>
-                                                        <th data-field="npwp" data-halign="center"
+                                                        <th data-field="nama_file" data-halign="center"
                                                             data-sortable="true">
+                                                            Nama Document</th>
+                                                        <th data-field="npwp" data-halign="center" data-sortable="true">
                                                             NPWP</th>
                                                     </tr>
                                                 </thead>
@@ -226,7 +244,23 @@
     <script type="text/javascript">
         var MateriTambahanInputData_Obj_datas = [];
 
+        function showLoading() {
+            $("body").css("overflow-y", "hidden")
+            $("#loading-animation").css("display", "flex")
+        }
+
+        function stopLoading() {
+            $("body").css("overflow-y", "auto")
+            $("#loading-animation").css("display", "none")
+        }
+
+        function refreshTable() {
+            $('#tableListOfDocumentUploaded').bootstrapTable('refresh');
+            $("#tableListOfDocumentUploaded").bootstrapTable("uncheckAll");
+        }
+
         function ExtractZip() {
+            showLoading()
             let isValid = true;
 
             if ($('#pc_thn').val() === '') {
@@ -270,6 +304,7 @@
             }
 
             if (!isValid) {
+                stopLoading()
                 return false;
             }
             let dataKirim = new FormData();
@@ -302,7 +337,7 @@
                         $('#pc_site').val('');
                         $('#nodocpph').val(response.codepph);
                         $('#tableListOfDocumentUploaded').bootstrapTable('refresh');
-
+                        stopLoading()
                     } else {
                         Swal.fire({
                             icon: "error",
@@ -386,6 +421,8 @@
         function tableListOfDocumentUploadedParamsGenerate(params) {
 
             params.search = {
+                'FILTERNPWPVENDOR': $('#FILTERNPWPVENDOR').val(),
+                'FILTERNAMAVENDOR': $('#FILTERNAMAVENDOR').val(),
                 'FILTERNODOC': $('#nodocpph').val()
             };
 
