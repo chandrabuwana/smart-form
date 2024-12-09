@@ -3,6 +3,7 @@
 use App\Http\Middleware\FetchMenu;
 use Illuminate\Support\Facades\Route;
 use Modules\DokumenMutu\App\Http\Controllers\DokumenMutuController;
+use Modules\DokumenMutu\App\Http\Controllers\FormDocoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,6 +16,21 @@ use Modules\DokumenMutu\App\Http\Controllers\DokumenMutuController;
 |
 */
 
-Route::middleware([ FetchMenu::class ])->group( function() {
-    Route::get('/dokumen-mutu', [DokumenMutuController::class, 'index']);
+Route::middleware([ FetchMenu::class, 'check.auth' ])->prefix('doco')->group( function() {
+    Route::prefix('form-pengajuan')->group( function() {
+        Route::get('/', [FormDocoController::class, 'formPengajuan'])->name('form-pengajuan.index');
+        Route::post('/store', [FormDocoController::class, 'storeFormPengajuan'])->name('form-pengajuan.store');
+    });
+
+    Route::get('/detail', [FormDocoController::class, 'detailDoco'])->name('dokumen-mutu.detail');
+
+    Route::prefix('form-revisi')->group( function() {
+        Route::get('/', [FormDocoController::class, 'formRevisi'])->name('form-revisi.index');
+        Route::post('/store', [FormDocoController::class, 'storeFormRevisi'])->name('form-revisi.store');
+    });
+
+    Route::prefix('form-penghapusan')->group( function() {
+        Route::get('/', [FormDocoController::class, 'formPenghapusan'])->name('form-penghapusan.index');
+        Route::post('/store', [FormDocoController::class, 'storeFormPenghapusan'])->name('form-penghapusan.store');
+    });
 });
