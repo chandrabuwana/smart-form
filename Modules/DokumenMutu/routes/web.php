@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\FetchMenu;
 use Illuminate\Support\Facades\Route;
+use Modules\DokumenMutu\App\Http\Controllers\DocoController;
 use Modules\DokumenMutu\App\Http\Controllers\DokumenMutuController;
 use Modules\DokumenMutu\App\Http\Controllers\FormDocoController;
 
@@ -23,6 +24,11 @@ Route::middleware([ FetchMenu::class, 'check.auth' ])->prefix('doco')->group( fu
     });
 
     Route::get('/detail', [FormDocoController::class, 'detailDoco'])->name('dokumen-mutu.detail');
+
+    Route::prefix('riwayat-pengajuan')->group( function() {
+        Route::get('/', [DocoController::class, 'riwayat'])->name('dokumen-mutu.riwayat-pengajuan');
+        Route::get('/fetch-data', [DocoController::class, 'fetchRiwayat'])->name('dokumen-mutu.riwayat-pengajuan.fetch');
+    });
 
     Route::prefix('form-revisi')->group( function() {
         Route::get('/', [FormDocoController::class, 'formRevisi'])->name('form-revisi.index');
