@@ -30,6 +30,11 @@ Route::middleware([ FetchMenu::class, 'check.auth' ])->prefix('doco')->group( fu
         Route::get('/fetch-data', [DocoController::class, 'fetchRiwayat'])->name('dokumen-mutu.riwayat-pengajuan.fetch');
     });
 
+    Route::prefix('nomor-induk')->group( function() {
+        Route::get('/', [DocoController::class, 'indexNomorInduk'])->name('dokumen-mutu.nomor-induk-dokumen');
+        Route::get('/fetch-data', [DocoController::class, 'fetchNomorInduk'])->name('dokumen-mutu.nomor-induk-dokumen.fetch');
+    });
+
     Route::prefix('form-revisi')->group( function() {
         Route::get('/', [FormDocoController::class, 'formRevisi'])->name('form-revisi.index');
         Route::post('/store', [FormDocoController::class, 'storeFormRevisi'])->name('form-revisi.store');

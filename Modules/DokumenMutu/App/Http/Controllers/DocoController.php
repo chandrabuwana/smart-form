@@ -34,7 +34,6 @@ class DocoController extends Controller
     public function fetchRiwayat(Request $request)
     {
         $departement    = $request->query('departement', '');
-        $departement    = $request->query('departement', '');
         $site           = $request->query('site', '');
         $status         = $request->query('status', '');
         $jenisDokumen   = $request->query('jenis_dokumen', '');
@@ -83,6 +82,88 @@ class DocoController extends Controller
             }
 
             $rows = $doco->orderBy(self::T_PENGAJUAN_DOCO . '.created_at', 'desc')->offset($offset)
+                ->limit($limit)->get();
+
+            return response()->json([
+                'total' => $rows->count(),
+                'totalNotFiltered' => $docoNotFiltered->count(),
+                'rows' => $rows
+            ]);
+
+        } catch (Exception $ex) {
+            return response()->json([
+                'total' => 0,
+                'totalNotFiltered' => 0,
+                'data' => []
+            ]);
+        }
+    }
+
+    public function indexNomorInduk(Request $request)
+    {
+        $departements = DB::table(self::T_DEPARTEMENT)->select('KodeDP', 'Nama')
+            ->whereNotNull('Nama')->orderBy('KodeDP', 'ASC')->get();
+
+        return view('DokumenMutu::nomor-induk', [
+            'departements' => $departements
+        ]);
+    }
+
+    public function fetchNomorInduk(Request $request)
+    {
+        $departement    = $request->query('departement', '');
+        $site           = $request->query('site', '');
+        $status         = $request->query('status', 'Aktif');
+        $jenisDokumen   = $request->query('jenis_dokumen', '');
+        $keyword        = $request->query('keyword', '');
+        $tanggal        = $request->query('tanggal', '');
+        $offset         = $request->query('offset', 0);
+        $limit          = $request->query('limit', 10);
+
+        try {
+            $docoNotFiltered = DB::table(self::T_DOCO)->select('id');
+
+            $doco = DB::table(self::T_DOCO)
+                ->select(
+                    self::T_DOCO . '.no_dokumen',
+                    DB::raw('convert(date, ' . self::T_DOCO . '.created_at) AS tgl_terbit'),
+                    self::T_DEPARTEMENT . '.Nama AS NamaDepartement',
+                    self::T_KARYAWAN . '.Nama AS NamaPembuat',
+                    self::T_DOCO . '.kode_site',
+                    self::T_DOCO . '.jenis_dokumen',
+                    self::T_DOCO . '.status'
+                )
+                ->join(self::T_KARYAWAN, self::T_KARYAWAN . '.NIK', self::T_DOCO . '.nik_pembuat')
+                ->join(self::T_DEPARTEMENT, self::T_DEPARTEMENT . '.KodeDP', self::T_KARYAWAN . '.KodeDP');
+
+            if(!empty($departement)) {
+                $doco->where('KodeDP', $departement);
+            }
+
+            if(!empty($site)) {
+                $doco->where('kode_site', $site);
+            }
+
+            if(!empty($status)) {
+                $doco->where('Status', $status);
+            }
+
+            if(!empty($jenisDokumen)) {
+                $doco->where('jenis_dokumen', $jenisDokumen);
+            }
+
+            if(!empty($keyword)) {
+                $doco->where( function($q) use($keyword) {
+                    return $q->where(self::T_KARYAWAN . '.Nama', 'ilike', '%' . $keyword . '%')
+                        ->where(self::T_KARYAWAN . '.NIK', 'ilike', '%' . $keyword . '%');
+                });
+            }
+
+            if(!empty($tanggal)) {
+                $doco->whereDate(self::T_DOCO . '.created_at', $tanggal);
+            }
+
+            $rows = $doco->orderBy(self::T_DOCO . '.created_at', 'desc')->offset($offset)
                 ->limit($limit)->get();
 
             return response()->json([

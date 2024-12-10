@@ -57,7 +57,7 @@
             <div class="card my-4">
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                     <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                        <h6 class="text-white text-capitalize ps-3">Riwayat Pengajuan</h6>
+                        <h6 class="text-white text-capitalize ps-3">Nomor Induk Dokumen</h6>
                     </div>
                 </div>
                 <div class="card-body px-0 pb-2">
@@ -66,8 +66,7 @@
                         <div class="col-6 col-md-3">
                             <div class="input-group input-group-static mb-4">
                                 <label for="filterTanggal">Tanggal</label>
-                                <input type="date" class="form-control" name="filterTanggal" id="filterTanggal">
-                                </input>
+                                <input type="date" class="form-control" name="filterTanggal" id="filterTanggal" />
                             </div>
                         </div>
                         <div class="col-6 col-md-3">
@@ -94,11 +93,9 @@
                             <div class="input-group input-group-static mb-4">
                                 <label for="filterStatus">Status</label>
                                 <select class="form-control form-select" name="filterStatus" id="filterStatus" required>
-                                    <option value="" selected>-- Filter Status --</option>
-                                    <option value="Belum Validasi">Belum Validasi</option>
-                                    <option value="Sedang Validasi">Sedang Validasi</option>
-                                    <option value="Disetujui">Disetujui</option>
-                                    <option value="Ditolak">Ditolak</option>
+                                    <option value="Aktif" selected>Aktif</option>
+                                    <option value="Kadaluarsa">Kadaluarsa</option>
+                                    <option value="Sudah Revisi">Sudah Revisi</option>
                                 </select>
                             </div>
                         </div>
@@ -116,15 +113,10 @@
                             </div>
                         </div>
 
-                        <div class="col-6 col-md-3">
+                        <div class="col-6 col-md-4">
                             <div class="input-group input-group-static mb-4">
-                                <label for="filterJenisPengajuan">Jenis Pengajuan</label>
-                                <select class="form-control form-select" name="filterJenisPengajuan" id="filterJenisPengajuan" required>
-                                    <option value="" selected>-- Filter Jenis Pengajuan --</option>
-                                    <option value="Pembuatan">Pembuatan</option>
-                                    <option value="Revisi">Revisi</option>
-                                    <option value="Penghapusan">Penghapusan</option>
-                                </select>
+                                <label for="filterKeyword">Cari No Dokumen / Pemohon</label>
+                                <input type="text" class="form-control" name="filterKeyword" id="filterKeyword" placeholder="-- No Dokumen / Pemohon --" />
                             </div>
                         </div>
 
@@ -158,14 +150,17 @@
                                     <th data-field="NamaDepartement" data-align="center" data-halign="center" >
                                         Departement
                                     </th>
+                                    <th data-field="NamaPembuat" data-align="center" data-halign="center" >
+                                        Pembuat
+                                    </th>
                                     <th data-field="kode_site" data-align="center" data-halign="center" >
                                         Site
                                     </th>
-                                    <th data-field="tgl_pengajuan" data-align="left" data-halign="center">
+                                    <th data-field="tgl_terbit" data-align="left" data-halign="center">
                                         Tanggal
                                     </th>
-                                    <th data-field="jenis_pengajuan" data-align="left" data-halign="center">
-                                        Jenis Pengajuan
+                                    <th data-field="jenis_dokumen" data-align="left" data-halign="center">
+                                        Jenis Dokumen
                                     </th>
                                     <th data-field="status" data-align="center"
                                         data-halign="center" data-sortable="true" data-formatter="statusFormatter">
@@ -201,14 +196,15 @@
         var filterDepartement = document.getElementById("filterDepartement")
         var filterStatus = document.getElementById("filterStatus")
         var filterJenisDokumen = document.getElementById("filterJenisDokumen")
-        var filterJenisPengajuan = document.getElementById("filterJenisPengajuan")
+        var filterKeyword = document.getElementById("filterKeyword")
+
         var additonalQuery = {
             tanggal: null,
             site: null,
             departement: null,
             status: null,
             jenis_dokumen: null,
-            jenis_pengajuan: null,
+            keyword: null
         }
 
         btnClearFilter.addEventListener("click", function(e) {
@@ -217,14 +213,14 @@
             additonalQuery.status = null;
             additonalQuery.tanggal = null;
             additonalQuery.jenis_dokumen = null;
-            additonalQuery.jenis_pengajuan = null;
+            additonalQuery.keyword = null;
 
             filterDepartement.value = '';
             filterSite.value = '';
             filterStatus.value = '';
             filterTanggal.value = '';
             filterJenisDokumen.value = '';
-            filterJenisPengajuan.value = '';
+            filterKeyword.value = '';
 
             $table.bootstrapTable('refresh')
         })
@@ -235,7 +231,7 @@
                 departement: filterDepartement.value == '' ? null : filterDepartement.value,
                 status: filterStatus.value == '' ? null : filterStatus.value,
                 jenis_dokumen: filterJenisDokumen.value == '' ? null : filterJenisDokumen.value,
-                jenis_pengajuan: filterJenisPengajuan.value == '' ? null : filterJenisPengajuan.value,
+                keyword: filterKeyword.value == '' ? null : filterKeyword.value,
             }
             additonalQuery = searchQuery;
             $table.bootstrapTable('refresh')
@@ -249,14 +245,10 @@
 
         function statusFormatter(value, row, index) {
             var formatData = ''
-            if(value == 'Belum Validasi') {
-                formatData = `<span class="text-dark fw-bold">Belum Validasi</span>`
-            } else if(value == 'Sedang Validasi') {
-                formatData = '<span class="text-warning fw-bold">Sedang Validasi</span>'
-            } else if(value == 'Disetujui') {
-                formatData = '<span class="text-success fw-bold">Disetujui</span>'
-            } else if(value == 'Ditolak') {
-                formatData = '<span class="text-danger fw-bold">Ditolak</span>'
+            if(value == 'Aktif' || value == 'Sudah Revisi') {
+                formatData = `<span class="text-success fw-bold">${value}</span>`
+            } else if(value == 'Kadaluarsa') {
+                formatData = '<span class="text-danger fw-bold">Sedang Validasi</span>'
             }
 
             return formatData;
@@ -265,8 +257,9 @@
 
         function fetchFormsData(params) {
             params.data = {...params.data, ...additonalQuery}
-            var url = `{{ route('dokumen-mutu.riwayat-pengajuan.fetch') }}`
+            var url = `{{ route('dokumen-mutu.nomor-induk-dokumen.fetch') }}`
             $.get(url + '?' + $.param(params.data)).then(function(res) {
+                console.log('TEST', res)
                 params.success(res)
             })
         }
