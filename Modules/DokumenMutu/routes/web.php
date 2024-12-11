@@ -33,6 +33,7 @@ Route::middleware([ FetchMenu::class, 'check.auth' ])->prefix('doco')->group( fu
     Route::prefix('nomor-induk')->group( function() {
         Route::get('/', [DocoController::class, 'indexNomorInduk'])->name('dokumen-mutu.nomor-induk-dokumen');
         Route::get('/fetch-data', [DocoController::class, 'fetchNomorInduk'])->name('dokumen-mutu.nomor-induk-dokumen.fetch');
+        Route::get('/detail', [DocoController::class, 'detailNomorInduk'])->name('dokumen-mutu.nomor-induk-dokumen.detail');
     });
 
     Route::prefix('form-revisi')->group( function() {

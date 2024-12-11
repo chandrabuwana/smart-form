@@ -125,6 +125,7 @@ class DocoController extends Controller
 
             $doco = DB::table(self::T_DOCO)
                 ->select(
+                    self::T_DOCO . '.id',
                     self::T_DOCO . '.no_dokumen',
                     DB::raw('convert(date, ' . self::T_DOCO . '.created_at) AS tgl_terbit'),
                     self::T_DEPARTEMENT . '.Nama AS NamaDepartement',
@@ -179,5 +180,21 @@ class DocoController extends Controller
                 'data' => []
             ]);
         }
+    }
+
+    public function detailNomorInduk(Request $request)
+    {
+        $id = $request->get('id');
+        $doco = DB::table(self::T_DOCO)->select(self::T_DOCO . '.*', self::T_SITE . '.Nama AS NamaST', self::T_KARYAWAN . '.Nama AS NamaKaryawan')
+            ->join(self::T_SITE, self::T_SITE . '.KodeST', self::T_DOCO . '.kode_site')
+            ->join(self::T_KARYAWAN, self::T_KARYAWAN . '.NIK', self::T_DOCO . '.nik_pembuat')
+            ->where('id', $id)->first();
+
+        if(!$doco) {
+            return response()->json([]);
+        }
+
+        $doco->file_path = url('storage/' . $doco->file_path);
+        return response()->json($doco);
     }
 }

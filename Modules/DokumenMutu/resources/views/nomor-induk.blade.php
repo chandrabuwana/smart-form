@@ -179,6 +179,83 @@
     </div>
 @endsection
 
+@section('modal')
+    <div class="modal fade" id="modalDetail" aria-hidden="true" aria-labelledby="modalDetailLabel"
+        tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="row">
+                        <div class="col">
+                            <h5 class="modal-title center" id="modalDetailLabel">Detail Nomor Induk</h5>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
+                </div>
+
+                <div class="row" style="margin: 10px">
+                    <div class="col">
+                        <div class="card border" style="">
+                            <div class="card-body">
+                                <div class="row mb-4">
+                                    <div class="col">
+                                        <hr class="horizontal dark my-sm-1">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="input-group input-group-static mb-4">
+                                                    <label for="noDokumen">No. Dokumen</label>
+                                                    <input type="text" class="form-control" id="noDokumen" placeholder="No. Dokumen" disabled>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="input-group input-group-static mb-4">
+                                                    <label for="site">Site</label>
+                                                    <input type="text" class="form-control" id="site" placeholder="Site" disabled>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="input-group input-group-static mb-4">
+                                                    <label for="jenisDokumen">Jenis Dokumen</label>
+                                                    <input type="text" class="form-control" id="jenisDokumen" placeholder="Jenis Dokumen" disabled>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="input-group input-group-static mb-4">
+                                                    <label for="pembuat">Pembuat</label>
+                                                    <input type="text" class="form-control" id="pembuat" placeholder="Pembuat" disabled>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="input-group input-group-static mb-4">
+                                                    <label for="judulDokumen">Judul Dokumen</label>
+                                                    <input type="text" class="form-control" id="judulDokumen" placeholder="Judul Dokumen" disabled>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="input-group input-group-static mb-4">
+                                                    <label for="status">Status</label>
+                                                    <input type="text" class="form-control" id="status" placeholder="Status" disabled>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="input-group input-group-static mb-4">
+                                                    <label for="revisi">No Revisi</label>
+                                                    <input type="text" class="form-control" id="revisi" placeholder="No Revisi" disabled>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <iframe id="iframepdf" src="" width="100%" height="700px"></iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
 
 @section('custom-js')
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
@@ -240,7 +317,63 @@
         function actionFormatter(value, row, index) {
             const url = `{{ route('bss-skl.detail') }}`;
             // return '<a href="' + url + '?NoForm=' + row.NoForm + '"><button class="btn btn-primary btn-action text-white">detail</button></a>';
-            return '<a href="#"><button class="btn btn-primary btn-action text-white">detail</button></a>';
+            return `<a href="javascript:detailNomorInduk('${ row.id }');"><button class="btn btn-primary btn-action text-white">detail</button></a>`;
+        }
+
+        function detailNomorInduk(id) {
+            Swal.fire({
+                title: 'Loading...',
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading()
+            });
+
+            $.ajax({
+                url: `{{ route('dokumen-mutu.nomor-induk-dokumen.detail') }}?id=${id}`,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type: "GET",
+                dataType: 'json',
+                success: function(response) {
+                    Swal.close();
+
+                    if( Object.keys(response).length == 0 ) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: `Terjadi kesalahan, data tidak ditemukan`,
+                        });
+
+                    } else {
+                        $('#noDokumen').val(response.no_dokumen);
+                        $('#site').val(response.NamaST);
+                        $('#jenisDokumen').val(response.jenis_dokumen);
+                        $('#pembuat').val(response.NamaKaryawan);
+                        $('#judulDokumen').val(response.judul_dokumen);
+                        $('#status').val(response.status);
+                        $('#iframepdf').attr('src', response.file_path);
+
+                        if(response.no_revisi) {
+                            $('#revisi').parent().removeClass('d-none');
+                            $('#revisi').val(response.no_revisi);
+                        } else {
+                            $('#revisi').parent().addClass('d-none');
+                        }
+
+                        $('#modalDetail').modal("show");
+                    }
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    console.error(thrownError);
+                    Swal.close();
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: `Terjadi kesalahan tidak terduga`,
+                    });
+                }
+            });
         }
 
         function statusFormatter(value, row, index) {
