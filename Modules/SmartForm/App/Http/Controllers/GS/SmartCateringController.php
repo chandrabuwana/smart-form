@@ -42,6 +42,7 @@ class SmartCateringController extends Controller {
     private const TABLE_VENDOR_ORDER = "SCT_GS_CT_ORDER_VNDR";
     private const TABLE_VENDOR_MASTER = "SCT_GS_VENDOR_MST";
     private const TABLE_ABSENSI_HRD = self::DB_HRD . ".dbo.TAbsensi";
+    private const TABLE_NEW_ABSENSI_HRD = self::DB_HRD . ".dbo.TAbsensi";
     private const TABLE_FINGERLOG_HRD = self::DB_HRD . ".dbo.TFingerlog";
     private const TABLE_KARYAWAN_HRD = self::DB_HRD . ".dbo.TKaryawan";
     private const TABLE_PENEGASAN_CUTI = self::DB_HRD . ".dbo.TPenegasanCuti";
@@ -1144,7 +1145,7 @@ class SmartCateringController extends Controller {
 
         $spreadsheet = new Spreadsheet();
         $worksheet = $spreadsheet->getActiveSheet();
-        
+
         $spasi = 1;
         $terisi = 0;
         $indexHeader = 2;
@@ -1173,9 +1174,9 @@ class SmartCateringController extends Controller {
             // $worksheet->getColumnDimension('D')->setWidth(45);
 
             $sqlSite = DB::connection(self::DB_CONN_NAME)->table('HRD.dbo.tsite')
-                ->select('KodeST', 'Nama as nama_site')    
+                ->select('KodeST', 'Nama as nama_site')
                 ->where('KodeST', $filterSite)->first();
-            
+
             $dataPemesenan = DB::connection(self::DB_CONN_NAME)->table(self::TABLE_SUBMIT_ORDER_DETAIL . ' as a')
                     ->select('a.id as id_order_detail', 'a.site', 'a.lokasi', 'c.NamaMess as nama_lokasi', 'a.jenis_pemesanan', 'a.jumlah', 'b.tanggal', 'd.Nama as nama_vendor')
                     ->leftJoin(self::TABLE_SUBMIT_ORDER . ' as b', 'a.id_order', '=', 'b.kode_pemesanan')
@@ -1202,7 +1203,7 @@ class SmartCateringController extends Controller {
                 $lokasi = $item->lokasi;
                 $item->tanggal = implode('/', array_reverse( explode('-', $item->tanggal)));
                 $tanggal = $item->tanggal;
-                
+
                 // Jika belum ada array untuk lokasi tersebut, inisialisasi dulu
                 if (!isset($groupedData[$lokasi])) {
                     $groupedData[$lokasi] = [
@@ -1215,7 +1216,7 @@ class SmartCateringController extends Controller {
                 if (!isset($groupedData[$lokasi]['per_tgl'][$tanggal])) {
                     $groupedData[$lokasi]['per_tgl'][$tanggal] = [];
                 }
-                
+
                 // Menambahkan item ke grup lokasi yang sesuai
                 $groupedData[$lokasi]['per_tgl'][$tanggal][] = $item;
                 // $groupedData[$lokasi]['data'][] = $item;
@@ -1237,7 +1238,7 @@ class SmartCateringController extends Controller {
                 $worksheet->getCell("B{$baris}")->getStyle()->getFont()->setBold(true)->setSize(12);
                 $worksheet->getCell("B{$baris}")->setValue("Site: {$nilai['site']}");
                 $baris++;
-                
+
                 // No	Tanggal	Vendor	PAGI	SIANG	MALAM
                 $worksheet->getCell("B{$baris}")->getStyle()->getFont()->setBold(true)->setSize(12);
                 $worksheet->getCell("B{$baris}")->setValue("No");
@@ -1252,7 +1253,7 @@ class SmartCateringController extends Controller {
                 // $worksheet->getCell("G{$baris}")->getStyle()->getFont()->setBold(true)->setSize(12);
                 // $worksheet->getCell("G{$baris}")->setValue("Vendor");
                 $baris++;
-                
+
                 $noPerHari = 1;
                 foreach ($nilai['per_tgl'] as $key => $value) {
                     $jmlPagi = 0;
@@ -1278,7 +1279,7 @@ class SmartCateringController extends Controller {
                     $baris++;
                     $noPerHari++;
                 }
-                // for ($i=0; $i < count($nilai['data']); $i++) { 
+                // for ($i=0; $i < count($nilai['data']); $i++) {
                 //     $kolomPemesanan = $this->kolomWaktuPemesanan($nilai['data'][$i]->jenis_pemesanan, $nilai['data'][$i]->jumlah);
 
                 //     $worksheet->getCell("B{$baris}")->setValue($i+1);
@@ -1307,16 +1308,51 @@ class SmartCateringController extends Controller {
         }
     }
 
+    // protected function getAbsensiKaryawan($site, $shift, $tglPemesanan) {
+    //     $dataAbsensi = [];
+    //     try {
+    //         $dataAbsensi = DB::connection(self::DB_CONN_NAME)->table($this->DB_LINK[$site] . self::TABLE_ABSENSI_HRD . ' as ta')
+    //             ->select('ta.NIK', 'ta.Tanggal', 'ta.Masuk', 'tk.Nama')
+    //             ->leftJoin(self::TABLE_KARYAWAN_HRD . ' as tk', 'tk.Nik', '=', 'ta.Nik')
+    //             ->where('ta.lmasuk', $site)
+    //             ->where('ta.Shift', $shift)
+    //             ->whereDate('ta.Tanggal', Carbon::createFromFormat('Y-m-d', $tglPemesanan)->startOfDay()->format('Y-m-d H:i:s.u'));
+
+    //             Log::debug('SQL absensi karyawan : '. $dataAbsensi->toRawSql());
+    //             $dataAbsensi = $dataAbsensi->get()->toArray();
+    //             Log::debug("Data absensi ". $site . " : " .count($dataAbsensi));
+    //     } catch (Exception $ex) {
+    //         Log::error('Error getAbsensiKaryawan');
+    //         Log::error($ex->getMessage());
+    //         Log::error($ex->getTraceAsString());
+    //     }
+
+    //     return $dataAbsensi;
+    // }
+
     protected function getAbsensiKaryawan($site, $shift, $tglPemesanan) {
+        $jam_absensi = [
+            'DS' => [
+                'start' => '05:00',
+                'end' => '07:30'
+            ],
+            'NS' => [
+                'start' => '17:00',
+                'end' => '19:30'
+            ]
+        ];
+
         $dataAbsensi = [];
         try {
-            $dataAbsensi = DB::connection(self::DB_CONN_NAME)->table($this->DB_LINK[$site] . self::TABLE_ABSENSI_HRD . ' as ta')
-                ->select('ta.NIK', 'ta.Tanggal', 'ta.Masuk', 'tk.Nama')
+            $dataAbsensi = DB::connection(self::DB_CONN_NAME)->table($this->DB_LINK[$site] . self::TABLE_NEW_ABSENSI_HRD . ' as ta')
+                ->select('ta.NIK', 'ta.Tanggal', 'ta.Jam AS Masuk', 'tk.Nama')
                 ->leftJoin(self::TABLE_KARYAWAN_HRD . ' as tk', 'tk.Nik', '=', 'ta.Nik')
-                ->where('ta.lmasuk', $site)
-                ->where('ta.Shift', $shift)
+                ->where('ta.KodeST', $site)
+                // ->where('ta.Shift', $shift)
+                ->whereBetween('ta.Jam', [$jam_absensi[$shift]['start'], $jam_absensi[$shift]['end']])
+                ->where('Status', 'IN')
                 ->whereDate('ta.Tanggal', Carbon::createFromFormat('Y-m-d', $tglPemesanan)->startOfDay()->format('Y-m-d H:i:s.u'));
-            
+
                 Log::debug('SQL absensi karyawan : '. $dataAbsensi->toRawSql());
                 $dataAbsensi = $dataAbsensi->get()->toArray();
                 Log::debug("Data absensi ". $site . " : " .count($dataAbsensi));
