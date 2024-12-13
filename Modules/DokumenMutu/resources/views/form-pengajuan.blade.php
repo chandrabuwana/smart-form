@@ -45,15 +45,6 @@
 
                     <div class="row mb-4">
                         <div class="col-md-4">
-                            <label class="ms-0 fs-6">NIK Pemohon</label>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="number" class="form-control input-text" id="nikPemohon" name="nikPemohon" placeholder="--- Masukkan NIK Pemohon ---" required>
-                        </div>
-                    </div>
-
-                    <div class="row mb-4">
-                        <div class="col-md-4">
                             <label class="ms-0 fs-6">Judul Dokumen</label>
                         </div>
                         <div class="col-md-8">

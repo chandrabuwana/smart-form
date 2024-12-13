@@ -192,6 +192,25 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.23.2/dist/extensions/export/bootstrap-table-export.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
+    @if(session('error'))
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: `{{ session('error') }}`,
+            });
+        </script>
+
+    @elseif(session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Yeay!',
+                text: `{{ session('success') }}`,
+            });
+        </script>
+    @endif
+
     <script type="text/javascript">
         var $table = $("#list-form");
         var btnFilterSubmit = document.getElementById("btnFilterSubmit")
@@ -242,9 +261,18 @@
         })
 
         function actionFormatter(value, row, index) {
-            const url = `{{ route('bss-skl.detail') }}`;
+            const url = `/doco/riwayat-pengajuan/detail/${row.id}`;
             // return '<a href="' + url + '?NoForm=' + row.NoForm + '"><button class="btn btn-primary btn-action text-white">detail</button></a>';
-            return '<a href="#"><button class="btn btn-primary btn-action text-white">detail</button></a>';
+            let action = `<a href="${url}"><button class="btn btn-primary btn-action text-white">detail</button></a>`;
+
+            if(row.is_validate) {
+                const urlValidasi = `/doco/riwayat-pengajuan/validasi/${row.id}`;
+                action += `
+                    <a href="${urlValidasi}"><button class="btn btn-success btn-action text-white ms-2">Validasi</button></a>
+                `;
+            }
+
+            return action;
         }
 
         function statusFormatter(value, row, index) {

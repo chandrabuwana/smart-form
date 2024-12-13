@@ -264,6 +264,25 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.23.2/dist/extensions/export/bootstrap-table-export.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
+    @if(session('error'))
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: `{{ session('error') }}`,
+            });
+        </script>
+
+    @elseif(session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Yeay!',
+                text: `{{ session('success') }}`,
+            });
+        </script>
+    @endif
+
     <script type="text/javascript">
         var $table = $("#list-form");
         var btnFilterSubmit = document.getElementById("btnFilterSubmit")

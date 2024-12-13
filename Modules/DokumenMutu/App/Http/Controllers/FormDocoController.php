@@ -29,7 +29,7 @@ class FormDocoController extends Controller
     public function storeFormPengajuan(Request $request)
     {
         $site = $request->input('site');
-        $nikPemohon = $request->input('nikPemohon');
+        $nikPemohon = session('user_id');
         $jenisDokumen = $request->input('jenisDokumen');
         $judulDokumen = $request->input('judulDokumen');
         $alasanPengajuan = $request->input('alasanPengajuan');
@@ -43,35 +43,35 @@ class FormDocoController extends Controller
             return redirect()->back()->with('error', 'NIK pemohon tidak terdaftar');
         }
 
-        if($site == 'JKT') {
-            if($jenisDokumen == 'SOP') {
-                $isValidPemohon = preg_match('/kepala seksi/i', $pemohon->NamaJB) || preg_match('/kepala bagian/i', $pemohon->NamaJB) || preg_match('/kepala dept/i', $pemohon->NamaJB);
-            } else if($jenisDokumen == 'STD' || $jenisDokumen == 'WI') {
-                $isValidPemohon = preg_match('/kepala seksi/i', $pemohon->NamaJB) || preg_match('/kepala bagian/i', $pemohon->NamaJB);
-            } else {
-                $isValidPemohon = true;
-            }
+        // if($site == 'JKT') {
+        //     if($jenisDokumen == 'SOP') {
+        //         $isValidPemohon = preg_match('/kepala seksi/i', $pemohon->NamaJB) || preg_match('/kepala bagian/i', $pemohon->NamaJB) || preg_match('/kepala dept/i', $pemohon->NamaJB);
+        //     } else if($jenisDokumen == 'STD' || $jenisDokumen == 'WI') {
+        //         $isValidPemohon = preg_match('/kepala seksi/i', $pemohon->NamaJB) || preg_match('/kepala bagian/i', $pemohon->NamaJB);
+        //     } else {
+        //         $isValidPemohon = true;
+        //     }
 
-        } else {
-            if($jenisDokumen == 'SOP') {
-                $isValidPemohon = preg_match('/kepala bagian/i', $pemohon->NamaJB);
-            } else if($jenisDokumen == 'STD' || $jenisDokumen == 'WI') {
-                $isValidPemohon = preg_match('/kepala seksi/i', $pemohon->NamaJB) || preg_match('/kepala bagian/i', $pemohon->NamaJB);
-            } else {
-                $isValidPemohon = true;
-            }
-        }
+        // } else {
+        //     if($jenisDokumen == 'SOP') {
+        //         $isValidPemohon = preg_match('/kepala bagian/i', $pemohon->NamaJB);
+        //     } else if($jenisDokumen == 'STD' || $jenisDokumen == 'WI') {
+        //         $isValidPemohon = preg_match('/kepala seksi/i', $pemohon->NamaJB) || preg_match('/kepala bagian/i', $pemohon->NamaJB);
+        //     } else {
+        //         $isValidPemohon = true;
+        //     }
+        // }
 
-        if(!$isValidPemohon) {
-            return redirect()->back()->with('error', 'Mohon maaf anda tidak dapat untuk membuat pengajuan dokumen mutu');
-        }
+        // if(!$isValidPemohon) {
+        //     return redirect()->back()->with('error', 'Mohon maaf anda tidak dapat untuk membuat pengajuan dokumen mutu');
+        // }
 
         $getCounting = DB::table(self::T_PENGAJUAN_DOCO)->select('no_dokumen')
-            ->join(self::T_KARYAWAN, self::T_KARYAWAN . '.NIK', self::T_DOCO . '.nik_pembuat')
+            ->join(self::T_KARYAWAN, self::T_KARYAWAN . '.NIK', '=', self::T_PENGAJUAN_DOCO . '.nik_pemohon')
             ->where('kode_site', $site)
             ->where('KodeDP', $pemohon->KodeDP)
             ->where('status', '!=', 'Ditolak')
-            ->orderBy(self::T_DOCO . '.created_at', 'desc')->get();
+            ->orderBy(self::T_PENGAJUAN_DOCO . '.created_at', 'desc')->get();
 
         $lastCounting = 0;
         if($lastCounting > $getCounting->count()) {
@@ -85,17 +85,16 @@ class FormDocoController extends Controller
             }
         }
 
+        DB::beginTransaction();
         try {
-            $site = $site == 'JKT' ? 'BSS' : $site;
-            $noDokumen = $site . '-' . $jenisDokumen . '-' . $pemohon->KodeDP . '-' . str_pad($lastCounting + 1, 5, '0', STR_PAD_LEFT);
+            $noDokumen = ($site == 'JKT' ? 'BSS' : $site) . '-' . $jenisDokumen . '-' . $pemohon->KodeDP . '-' . str_pad($lastCounting + 1, 5, '0', STR_PAD_LEFT);
 
             if(!$request->file('dokumen')) {
                 return redirect()->back()->with('error', 'File dokumen wajib di upload');
             }
 
-            $dokumenFileName = $request->file('dokumen')->getClientOriginalName();
-            $path = 'dokumen_mutu/pengajuan/' . $pemohon->KodeDP . '/' . $dokumenFileName;
-            Storage::disk('public')->put($path, $request->file('dokumen'));
+            $path = 'dokumen_mutu/pengajuan/' . $pemohon->KodeDP;
+            $filePath = Storage::disk('public')->put($path, $request->file('dokumen'));
 
             $pengajuan = DB::table(self::T_PENGAJUAN_DOCO)->insertGetId([
                 'nik_pemohon' => $nikPemohon,
@@ -109,14 +108,16 @@ class FormDocoController extends Controller
             ]);
 
             DB::table(self::T_VERSI_DOCO)->insert([
-                'id_pengajuan' => $pengajuan,
+                'id_pengajuan_dokumen' => $pengajuan,
                 'no_versi' => 1,
-                'file_path' => $path,
+                'file_path' => $filePath,
             ]);
 
-            return redirect()->back()->with('success', 'Berhasil submit pengajuan dokumen mutu!');
+            DB::commit();
+            return redirect(route('dokumen-mutu.riwayat-pengajuan'))->with('success', 'Berhasil submit pengajuan dokumen mutu!');
 
         } catch(\Throwable $e) {
+            DB::rollBack();
             Log::error($e);
             return redirect()->back()->with('error', 'Terjadi kesalahan, mohon coba beberapa saat lagi');
         }
@@ -166,9 +167,8 @@ class FormDocoController extends Controller
                 return redirect()->back()->with('error', 'Mohon maaf anda tidak dapat untuk membuat pengajuan dokumen mutu');
             }
 
-            $dokumenFileName = $dokumen->getClientOriginalName();
-            $path = 'dokumen_mutu/revisi/' . $doco->KodeDP . '/' . $dokumenFileName;
-            Storage::disk('public')->put($path, $dokumen);
+            $path = 'dokumen_mutu/revisi/' . $doco->KodeDP;
+            $filePath = Storage::disk('public')->put($path, $dokumen);
 
             $pengajuan = DB::table(self::T_PENGAJUAN_DOCO)->insertGetId([
                 'nik_pemohon' => $doco->nik_pembuat,
@@ -182,9 +182,9 @@ class FormDocoController extends Controller
             ]);
 
             DB::table(self::T_VERSI_DOCO)->insert([
-                'id_pengajuan' => $pengajuan,
+                'id_pengajuan_dokumen' => $pengajuan,
                 'no_versi' => 1,
-                'file_path' => $path,
+                'file_path' => $filePath,
             ]);
 
             DB::commit();

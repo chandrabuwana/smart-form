@@ -14,6 +14,7 @@ class DocoController extends Controller
     protected const T_KARYAWAN = 'HRD.dbo.TKaryawan';
     protected const T_JABATAN = 'HRD.dbo.tjabatan';
     protected const T_DEPARTEMENT = 'HRD.dbo.tdepartement';
+    protected const T_MASTER_VALIDATOR = 'DB_Dokumen_Mutu.dbo.T_Master_Validator';
     protected const T_DOCO = 'DB_Dokumen_Mutu.dbo.T_Dokumen_Mutu';
     protected const T_PENGAJUAN_DOCO = 'DB_Dokumen_Mutu.dbo.T_Pengajuan_Dokumen_Mutu';
     protected const T_VALIDASI_DOCO = 'DB_Dokumen_Mutu.dbo.T_Validasi_Pengajuan';
@@ -21,12 +22,20 @@ class DocoController extends Controller
     protected const T_FEEDBACK_VALIDASI = 'DB_Dokumen_Mutu.dbo.T_Feedback_Validasi';
     protected const T_SITE = 'HRD.dbo.tsite';
 
+    protected const THINTANK = [
+        '1001384',
+        '1003170',
+        '1014583',
+        '1001114',
+        '1001117',
+    ];
+
     public function riwayat(Request $request)
     {
         $departements = DB::table(self::T_DEPARTEMENT)->select('KodeDP', 'Nama')
             ->whereNotNull('Nama')->orderBy('KodeDP', 'ASC')->get();
 
-        return view('DokumenMutu::riwayat-pengajuan', [
+        return view('DokumenMutu::riwayat-pengajuan.index', [
             'departements' => $departements
         ]);
     }
@@ -43,18 +52,28 @@ class DocoController extends Controller
         $limit          = $request->query('limit', 10);
 
         try {
+            $nikLoggedIn = session('user_id');
+            $user = DB::table(self::T_KARYAWAN)->select('KodeDP')
+                ->where('NIK', $nikLoggedIn)->first();
+
             $docoNotFiltered = DB::table(self::T_PENGAJUAN_DOCO)->select('id');
 
             $doco = DB::table(self::T_PENGAJUAN_DOCO)
                 ->select(
+                    self::T_PENGAJUAN_DOCO . '.id',
                     self::T_PENGAJUAN_DOCO . '.no_dokumen',
                     DB::raw('convert(date, ' . self::T_PENGAJUAN_DOCO . '.created_at) AS tgl_pengajuan'),
                     self::T_DEPARTEMENT . '.Nama AS NamaDepartement',
                     self::T_PENGAJUAN_DOCO . '.kode_site',
                     self::T_PENGAJUAN_DOCO . '.jenis_pengajuan',
-                    self::T_PENGAJUAN_DOCO . '.status'
+                    self::T_PENGAJUAN_DOCO . '.status',
+                    self::T_PENGAJUAN_DOCO . '.jenis_dokumen',
+                    self::T_KARYAWAN . '.KodeDP',
+                    self::T_KARYAWAN . '.KodeST',
+                    self::T_JABATAN . '.Nama AS NamaJB'
                 )
                 ->join(self::T_KARYAWAN, self::T_KARYAWAN . '.NIK', self::T_PENGAJUAN_DOCO . '.nik_pemohon')
+                ->join(self::T_JABATAN, self::T_JABATAN . '.KodeJB', self::T_KARYAWAN . '.KodeJB')
                 ->join(self::T_DEPARTEMENT, self::T_DEPARTEMENT . '.KodeDP', self::T_KARYAWAN . '.KodeDP');
 
             if(!empty($departement)) {
@@ -82,7 +101,34 @@ class DocoController extends Controller
             }
 
             $rows = $doco->orderBy(self::T_PENGAJUAN_DOCO . '.created_at', 'desc')->offset($offset)
-                ->limit($limit)->get();
+                ->limit($limit)->get()
+                ->map( function($item) use($nikLoggedIn, $user) {
+                    $item->is_validate = false;
+
+                    if($item->status == 'Belum Validasi' || $item->status == 'Sedang Validasi') {
+                        $site = $item->kode_site == 'JKT' ? 'HO' : 'SITE';
+                        $listValidator = DB::table(self::T_MASTER_VALIDATOR)->where('site', $site)
+                            ->where('jenis_dokumen', $item->jenis_dokumen)
+                            ->orderBy('id', 'ASC')->get();
+                        foreach($listValidator as $itemVal) {
+                            $validator = strtolower($itemVal->validator);
+
+                            if($validator == 'thinktank' && in_array($nikLoggedIn, self::THINTANK)) {
+                                $item->is_validate = true;
+                            } else if(
+                                $validator == 'kadept' &&
+                                $item->KodeDP == $user->KodeDP &&
+                                (preg_match('/kepala department/i', $item->NamaJB) == 1 || preg_match('/kepala departemen/i', $item->NamaJB) == 1)
+                            ) {
+                                $item->is_validate = true;
+                            } else if($validator == 'od' && $user->KodeDP == 'OD') {
+                                $item->is_validate = true;
+                            }
+                        }
+                    }
+
+                    return $item;
+                });
 
             return response()->json([
                 'total' => $rows->count(),
@@ -196,5 +242,29 @@ class DocoController extends Controller
 
         $doco->file_path = url('storage/' . $doco->file_path);
         return response()->json($doco);
+    }
+
+    public function detailRiwayat($id)
+    {
+        $doco = DB::table(self::T_PENGAJUAN_DOCO)->where('id', $id)->first();
+        $lastVersion = DB::table(self::T_VERSI_DOCO)->where('id_pengajuan_dokumen', $doco->id)
+            ->orderBy('no_versi', 'desc')->first();
+
+        $doco->file_path = url('storage/' . $lastVersion->file_path);
+
+        $validateIndex = DB::table(self::T_VALIDASI_DOCO)
+            ->where('id_pengajuan_dokumen', $doco->id)->count('id');
+
+        $feedbacks = DB::table(self::T_FEEDBACK_VALIDASI)->select(self::T_FEEDBACK_VALIDASI . '.*', self::T_KARYAWAN . '.Nama AS NamaKaryawan')
+            ->join(self::T_KARYAWAN, self::T_KARYAWAN . '.NIK', self::T_FEEDBACK_VALIDASI . '.nik_validator')
+            ->where('id_versi', $lastVersion->id)
+            ->orderBy('id', 'desc')->get();
+
+        return view('DokumenMutu::riwayat-pengajuan.detail', [
+            'doco' => $doco,
+            'validateIndex' => $validateIndex,
+            'feedbacks' => $feedbacks,
+            'lastVersion' => $lastVersion
+        ]);
     }
 }
