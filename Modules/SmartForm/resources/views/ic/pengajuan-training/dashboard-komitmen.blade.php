@@ -15,7 +15,7 @@
             padding: 4px 10px 8px 10px;
             margin: 0;
             width: auto;
-            /* border: 1px solid #cccccc; */
+            border: 1px solid #cccccc;
         }
         .select2.select2-container .select2-selection {
             border-bottom: 1px solid #ccc;
@@ -99,19 +99,20 @@
                 <div class="card-body px-0 pb-2">
                     {{-- <h4 class="mx-3">Filter Data</h4> --}}
                     <div class="mx-4 row mb-3">
-                        <div class="col-md-6">
-                            <div class="input-group input-group-static">
-                                <label for="filterPelatihan" style="width: 100%;"><strong>Pelatihan</strong></label>
-                                <select class="form-control form-select" name="filterPelatihan" id="filterPelatihan">
-                                    <option value="">-- Cari Pelatihan --</option>
-                                </select>
-                            </div>
-                        </div>
-                        {{-- <div class="">
+                            <fieldset class="mb-3">
+                                <legend>Filter Data</legend>
+                                <div class="form-check">
+                                    <input class="" type="checkbox" value="" id="checkAdditional" name="checkAdditional">
+                                    <label class="form-check-label" for="flexCheckDefault">
+                                        Hanya saya
+                                    </label>
+                                </div>
+                            </fieldset>
+                        <div class="">
                             <button class="btn btn-primary" id="btnPilih">
-                                Pilih
+                                Filter
                             </button>
-                        </div> --}}
+                        </div>
                     </div>
                     
                     <div class="table-responsive p-0">

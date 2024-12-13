@@ -178,9 +178,13 @@
                                 </tr>
                         </table>
                     </div>
-                    <div class="mx-4 mb-2">
-                        <span>Demikian surat ini saya buat dengan sebenar-benarnya. Terima kasih</span><br>
-                        <span id="tglDibuat"></span>
+                    <div class="mx-4 mb-3 row">
+                        <div class="col-md-6">
+                            <div class="input-group input-group-static">
+                                <label for="inputPeriode"><strong>Demikian surat ini saya buat dengan sebenar-benarnya. Terima kasih</strong></label>
+                                <input type="text" class="form-control" id="inputPeriode" name="inputPeriode" placeholder="Bulan Tahun" disabled>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -319,6 +323,11 @@
                             </div>
                         @endif
                     @endif
+                    @if ($data->status == '-2')
+                        <div style="display: flex; justify-content: start;gap: 12px;" class="mt-4">
+                            <label class="bg-danger text-white">Alasan : {{ $data->keterangan }}</label>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -331,11 +340,34 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/dist/js/datepicker-full.min.js"></script>
     <script>
+        (function () {
+                Datepicker.locales.en = {
+                days: ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"],
+                daysShort: ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"],
+                daysMin: ["Mg", "Sn", "Sl", "Rb", "Km", "Jm", "Sa"],
+                months: ["Januari", "Februari", "Maret", "Apri", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"],
+                monthsShort: ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Ags", "Sep", "Okt", "Nov", "Des"],
+                today: "Hari",
+                monthsTitle: "Bulan",
+                clear: "Clear",
+                weekStart: 0,
+                format: "dd/mm/yyyy"
+            }
+        })()
+
         const dataApproval = {{ Illuminate\Support\Js::from($dataApproval) }}
         const approveActURL = {{ Illuminate\Support\Js::from(route('ic.training.komitment-approve')) }}
         // $(".form-approval").select2({})
         const persetujuan = document.getElementById("persetujuan")
         const fieldMenolak = document.getElementById("fieldMenolak")
+
+        const elem = document.getElementById("inputPeriode")
+        const datepicker = new Datepicker(elem, {
+            format: "dd MM yyyy",
+            pickLevel: 1
+        })
+
+        datepicker.setDate({{ $data->NIK == session('user_id') ? Illuminate\Support\Js::from($tglDibuat) : ''}})
         
         function submitKomitmen(e) {
             e.target.disabled = true
@@ -441,21 +473,41 @@
             let bodyReq = {
                 komitmenId: {{ Illuminate\Support\Js::from($komitmenId) }},
                 approvalId: {{ Illuminate\Support\Js::from($currentApproval['id']) }},
-                status: nilai
+                status: nilai,
+                keterangan: ""
             }
             let actMapping = {
                 '1': 'Approve',
                 '-1': 'Reject'
             }
-
-            Swal.fire({
-                showCancelButton: true,
-                confirmButtonText: actMapping[nilai],
-                text: "Konfirmasi " + actMapping[nilai] + " ? ",
-                icon: "warning"
-            })
+            let swalConfig = {
+                '1' : {
+                    showCancelButton: true,
+                    confirmButtonText: actMapping[nilai],
+                    text: "Konfirmasi " + actMapping[nilai] + " ? ",
+                    icon: "warning"
+                },
+                '-1' : {
+                    showCancelButton: true,
+                    confirmButtonText: actMapping[nilai],
+                    text: "Konfirmasi " + actMapping[nilai] + " ? ",
+                    icon: "warning",
+                    input: "text",
+                    inputLabel: "Alasan reject",
+                    inputValidator: (value) => {
+                        value = value.trim()
+                        if (!value) {
+                            return "Alasan tidak boleh kosong";
+                        }
+                    }
+                }
+            }
+            Swal.fire(swalConfig[nilai])
             .then((result) => {
+                console.log(result)
                 if (result.isConfirmed) {
+                    if(nilai == -1) bodyReq.keterangan = result.value || ""
+                    console.log(bodyReq)
                     showLoading()
                     axios.post(approveActURL, bodyReq, {
                         headers: {
@@ -498,6 +550,7 @@
                         stopLoading()
                         e.target.disabled = false
                     })
+                    e.target.disabled = false
                 } else {
                     e.target.disabled = false
                 }

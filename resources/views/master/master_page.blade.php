@@ -53,6 +53,7 @@
             border: 1px solid #dee2e6;
             border-radius: 4px;
             padding: 8px;
+            top: 100%;
         }
 
         .item-notif {
