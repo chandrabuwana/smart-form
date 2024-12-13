@@ -309,6 +309,14 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
         Route::get('data-cross-check', [PengajuanTrainingController::class, 'DataCrossCheck'])->name('ic.training.data-crosscheck');
         Route::get('cross-check-dtl/{id}', [PengajuanTrainingController::class, 'CrossCheckDtl'])->name('ic.training.crosscheck-dtl');
         Route::get('data-cross-check-dtl', [PengajuanTrainingController::class, 'DataCrossCheckDtl'])->name('ic.training.crosscheck-dtl-data');
+        Route::post('cross-check-approve', [PengajuanTrainingController::class, 'CrossCheckApprove'])->name('ic.training.crosscheck-approve');
+
+        Route::get('form-komitmen/{id}', [PengajuanTrainingController::class, 'FormKomitmen'])->name('ic.training.form-komitmen');
+        Route::post('form-komitmen-act', [PengajuanTrainingController::class, 'SubmitFormKomitmen'])->name('ic.training.form-komitmen-act');
+        Route::post('komitmen-approve', [PengajuanTrainingController::class, 'KomitmenApprove'])->name('ic.training.komitment-approve');
+
+        Route::get('dashboard-komitmen', [PengajuanTrainingController::class, 'DashboardKomitmen'])->name('ic.training.dashboard-komitmen');
+        Route::get('dashboard-komitmen-data', [PengajuanTrainingController::class, 'DataDashboardKomitmen'])->name('ic.training.dashboard-komitmen-data');
 
         Route::prefix('helper')->group(function() {
             Route::get('mtraining', [HelperTraininingController::class, 'GetMTraining'])->name('ic.training.helper.master');
@@ -317,6 +325,8 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('training-syarat-std', [HelperTraininingController::class, 'SelectSyaratAndStd'])->name('ic.training.helper.training-syarat-std');
             Route::get('check-pelatihan-mp', [HelperTraininingController::class, 'CheckNIkAndPelatihan'])->name('ic.training.helper.check-pelatihan-mp');
         });
+
+        // Route::get('jimmy', [PengajuanTrainingController::class, '']);
     });
 
     Route::prefix('approval')->group(function () {

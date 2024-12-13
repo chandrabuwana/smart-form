@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class HelperTraininingController extends Controller {
     private const DB_CONN_NAME = 'sqlsrv_training';
@@ -103,7 +104,8 @@ class HelperTraininingController extends Controller {
 
     public function SelectKaryawan(Request $request) {
         $search = $request->get('query', '');
-        $trainingID = $request->get('tariningID', '');
+        $KodeDP = $request->get('KodeDP', null); 
+        $KodeST = $request->get('KodeST', null); 
         $karyawan = [];
         $isError = true;
         
@@ -119,6 +121,7 @@ class HelperTraininingController extends Controller {
             //     left join m_training as mt on pt.m_training_id=mt.id
             //     where ptd.NIK='1020340' and pt.m_training_id=7
             try {
+                Log::info(Str::of($KodeST)->trim()->isNotEmpty() ? "benar" : 'salah');
                 $query_search = DB::connection('sqlsrv2')
                     ->table('tkaryawan as tk')
                     ->leftJoin('tdepartement as td', 'tk.KodeDP', '=', 'td.KodeDP')
@@ -127,9 +130,15 @@ class HelperTraininingController extends Controller {
                     ->whereAny(
                         ['tk.nama', 'tk.nik'], 'LIKE', "%$search%"
                     )
+                    ->when(Str::of($KodeDP)->trim()->isNotEmpty(), function ($query) use ($KodeDP) {
+                        $query->where('tk.KodeDP', $KodeDP);
+                    })
+                    ->when(Str::of($KodeST)->trim()->isNotEmpty(), function ($query) use ($KodeST) {
+                        $query->where('tk.KodeST', $KodeST);
+                    })
                     ->where('tk.Aktif', 0);
                 
-                Log::info("SQL :" . $query_search->toRawSql());
+                Log::info("SQL SelectKaryawan :" . $query_search->toRawSql());
                 $response['data'] = $query_search->get()->toArray();
             } catch (Exception $ex) {
                 Log::error($ex->getMessage());

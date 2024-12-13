@@ -15,7 +15,7 @@
             padding: 4px 10px 8px 10px;
             margin: 0;
             width: auto;
-            border: 1px solid #cccccc;
+            /* border: 1px solid #cccccc; */
         }
         .select2.select2-container .select2-selection {
             border-bottom: 1px solid #ccc;
@@ -29,7 +29,7 @@
             padding: 8px 0px;
         }
         .select2.select2-container{
-            width: 100%;
+            /* width: 100%; */
         }
         .select2-results {
             max-height: 200px; /* Batasi tinggi maksimum dropdown */
@@ -65,9 +65,23 @@
             margin: 0;
             padding: 10px 16px;
         }
-        .btn-no-action:hover {
-            cursor: default;
+
+        .table-poin tr td {
+            vertical-align: top;
         }
+        .table-approval tr td {
+            text-align: center;
+        }
+        .form-check:not(.form-switch) .form-check-input[type="radio"]:checked {
+            border-color: #e91e63;
+            border-width: 5px;
+            padding: 0;
+        }
+        .form-check:not(.form-switch) .form-check-input[type="radio"]:after {
+            background-image: url("data:image/svg xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'><circle r='2' fill='#fff'/></svg>");
+
+        } 
+
     </style>
 @endsection
 
@@ -79,7 +93,7 @@
             <div class="card my-4 pb-5">
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 my-2">
                     <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                        <h6 class="text-white text-capitalize ps-3">Pengajuan Training</h6>
+                        <h6 class="text-white text-capitalize ps-3">Dashboard Komitmen Training</h6>
                     </div>
                 </div>
                 <div class="card-body px-0 pb-2">
@@ -93,25 +107,29 @@
                                 </select>
                             </div>
                         </div>
+                        {{-- <div class="">
+                            <button class="btn btn-primary" id="btnPilih">
+                                Pilih
+                            </button>
+                        </div> --}}
                     </div>
                     
                     <div class="table-responsive p-0">
-                        <table id="table-data" data-toggle="table" data-side-pagination="server"
-                            data-page-list="[10, 25, 50, 100, all]" data-sortable="true" data-ajax="getData"
+                        <table id="table-data" data-toggle="table" data-side-pagination="server" 
+                            data-page-list="[10, 25, 50, 100, all]" data-sortable="true"  data-ajax="getData"
                             data-content-type="application/json" data-data-type="json" data-pagination="true"
-                            data-unique-id="NIK" data-header-style="headerStyle">
+                            data-unique-id="id" data-header-style="headerStyle">
                             <thead>
                                 <tr>
-                                    {{-- <th data-field="pengajuan_training_id" data-align="left">ID Pengajuan</th> --}}
-                                    <th data-field="nama_pelatihan" data-align="left">Pelatihan</th>
-                                    {{-- <th data-field="id_training" data-align="l`eft" data-halign="center">ID Pelatihan</th> --}}
-                                    {{-- <th data-field="KodeDP" data-align="left">Departement</th> --}}
-                                    <th data-field="dept" data-align="left">Departement</th>
-                                    <th data-field="KodeST" data-align="left">Site</th>
-                                    <th data-field="bulan" data-align="left" data-sortable="true">Bulan</th>
-                                    <th data-field="tahun" data-align="left" data-sortable="true">Tahun</th>
+                                    <th data-field="id" data-align="left" data-visible="false">ID</th>
+                                    <th data-field="NIK" data-align="left">NIK</th>
+                                    <th data-field="nama" data-align="left">Nama</th>
+                                    <th data-field="jabatan" data-align="left" data-halign="center">Jabatan</th>
+                                    <th data-field="department" data-align="left">Departmen</th>
+                                    <th data-field="site" data-align="left">Site</th>
+                                    <th data-field="training" data-align="left">Training</th>
                                     <th data-field="status" data-align="center" data-formatter="statusFormatter">Status</th>
-                                    <th data-field="action" data-formatter="actionFormatter" data-align="center">Actions</th>
+                                    <th data-field="action" data-align="left" data-formatter="actionFormatter">Action</th>
                                 </tr>
                             </thead>
                         </table>
@@ -133,7 +151,8 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/dist/js/datepicker-full.min.js"></script>
     <script>
-        var getDataURL = "{{route('ic.training.data-crosscheck')}}"
+        const baseURL = "/ic/training"
+        const getDataURL = {{ Illuminate\Support\Js::from(route('ic.training.dashboard-komitmen-data')) }}
         function getData(params) {
             $.get(getDataURL + '?' + $.param(params.data)).then(function(res) {
                 params.success(res.data)
@@ -141,13 +160,16 @@
         }
 
         function actionFormatter(value, row, index) {
-            return `<a href="/ic/training/cross-check-dtl/${row.trj_id}"> <button class="btn btn-primary btn-action-format"><i class="bi bi-info-circle-fill"></i></button> </a>`
+            return `<a href="${baseURL}/form-komitmen/${row.id}"><button class="btn btn-secondary btn-action-format"><i class="bi bi-info-circle-fill"></i></button></a>`
         }
-
+        
         function statusFormatter(value, row, index) {
-            if(value == 1) return '<button class="btn btn-success btn-no-action btn-action-format">Done</button>'
-            if(value == 0) return '<button class="btn btn-warning btn-no-action btn-action-format">Crosscheck</button>'
-            
+            if(value == "0") return '<button class="btn btn-warning btn-action-format">On progres</button>'
+            if(value == "1") return '<button class="btn btn-success btn-action-format">Progres approval</button>'
+            if(value == "2") return '<button class="btn btn-success btn-action-format">Done approval</button>'
+            if(value == "-1") return '<button class="btn btn-danger btn-action-format">Menolak</button>'
+            if(value == "-2") return '<button class="btn btn-danger btn-action-format">Ditolak aproval</button>'
+
             return value
         }
     </script>
