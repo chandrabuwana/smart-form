@@ -163,16 +163,28 @@ class ValidasiDocoController extends Controller
             ]);
 
             if($validateIndex >= $validatorCountAll) {
-                DB::table(self::T_DOCO)->insert([
-                    'kode_site' => $doco->kode_site,
-                    'nik_pembuat' => $doco->nik_pemohon,
-                    'no_dokumen' => $doco->no_dokumen,
-                    'judul_dokumen' => $doco->judul_dokumen,
-                    'jenis_dokumen' => $doco->jenis_dokumen,
-                    'file_path' => $filePath,
-                    'status' => 'Aktif',
-                    'created_at' => now(),
-                ]);
+                if($doco->jenis_pengajuan == 'Revisi') {
+                    $docoInduk = DB::table(self::T_DOCO)
+                        ->where('no_dokumen', $doco->no_dokumen)
+                        ->first();
+
+                    DB::table(self::T_DOCO)->where('no_dokumen', $doco->no_dokumen)->update([
+                        'file_path' => $filePath,
+                        'no_revisi' => empty($docoInduk->no_revisi) ? 1 : ($docoInduk->no_revisi + 1)
+                    ]);
+
+                } else {
+                    DB::table(self::T_DOCO)->insert([
+                        'kode_site' => $doco->kode_site,
+                        'nik_pembuat' => $doco->nik_pemohon,
+                        'no_dokumen' => $doco->no_dokumen,
+                        'judul_dokumen' => $doco->judul_dokumen,
+                        'jenis_dokumen' => $doco->jenis_dokumen,
+                        'file_path' => $filePath,
+                        'status' => 'Aktif',
+                        'created_at' => now(),
+                    ]);
+                }
 
                 DB::table(self::T_PENGAJUAN_DOCO)->where('id', $doco->id)->update([
                     'status' => 'Disetujui'
@@ -192,7 +204,6 @@ class ValidasiDocoController extends Controller
 
         } catch(\Throwable $e) {
             DB::rollBack();
-            dd($e);
             Log::error($e);
             return redirect()->back()->with('error', 'Terjadi kesalahan, mohon coba beberapa saat lagi');
         }

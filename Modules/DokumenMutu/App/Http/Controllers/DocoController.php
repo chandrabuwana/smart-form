@@ -252,17 +252,21 @@ class DocoController extends Controller
 
         $doco->file_path = url('storage/' . $lastVersion->file_path);
 
-        $validateIndex = DB::table(self::T_VALIDASI_DOCO)
-            ->where('id_pengajuan_dokumen', $doco->id)->count('id');
+        $validates = DB::table(self::T_VALIDASI_DOCO)
+            ->where('id_pengajuan_dokumen', $doco->id)
+            ->get('catatan')->pluck('catatan')->all();
 
         $feedbacks = DB::table(self::T_FEEDBACK_VALIDASI)->select(self::T_FEEDBACK_VALIDASI . '.*', self::T_KARYAWAN . '.Nama AS NamaKaryawan')
             ->join(self::T_KARYAWAN, self::T_KARYAWAN . '.NIK', self::T_FEEDBACK_VALIDASI . '.nik_validator')
             ->where('id_versi', $lastVersion->id)
             ->orderBy('id', 'desc')->get();
 
+        $validateIndex = count($validates);
+
         return view('DokumenMutu::riwayat-pengajuan.detail', [
             'doco' => $doco,
             'validateIndex' => $validateIndex,
+            'catatanValidates' => $validates,
             'feedbacks' => $feedbacks,
             'lastVersion' => $lastVersion
         ]);

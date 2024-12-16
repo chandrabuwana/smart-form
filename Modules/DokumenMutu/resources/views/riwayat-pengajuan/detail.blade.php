@@ -51,6 +51,7 @@
             background-color: black;
             position: absolute;
             z-index: -1;
+            left: 40px;
             top: 20px;
         }
 
@@ -67,6 +68,13 @@
             height: 820px;
             overflow: auto;
         }
+
+        .input-text {
+            border: 1px solid #d2d6da !important;
+            border-color: rgb(188, 188, 188);
+            padding-left: 0.4rem !important;
+            padding-right: 0.4rem !important;
+        }
     </style>
 @endsection
 
@@ -81,26 +89,57 @@
                 </div>
                 <div class="card-body pb-2">
                     <div class="row justify-content-between mb-5 px-3 line-progress" style="z-index: 10; position: relative;">
-                        <div class="bg-success rounded px-5 py-3 text-white" style="width: fit-content;">
-                            <i class="fas fa-check-circle fa-xl me-1"></i>
-                            <h5 class="text-white mb-0 d-inline">Pembuatan</h5>
+                        <div class="d-flex flex-column align-items-center" style="width: fit-content;">
+                            <div class="bg-success rounded px-5 py-3 text-white" style="width: fit-content;">
+                                <i class="fas fa-check-circle fa-xl me-1"></i>
+                                <h5 class="text-white mb-0 d-inline">Pembuatan</h5>
+                            </div>
                         </div>
 
-                        <div class="{{ $validateIndex >= 1 ? 'bg-success' : 'bg-warning' }}  rounded px-5 py-3 text-white" style="width: fit-content;">
-                            <i class="fas {{ $validateIndex >= 1 ? 'fa-check-circle' : 'fa-spinner' }} fa-xl me-1"></i>
-                            <h5 class="text-white mb-0 d-inline">Pemeriksaan</h5>
+                        <div class="d-flex flex-column align-items-center" style="width: fit-content;">
+                            <div class="{{ $validateIndex >= 1 ? 'bg-success' : 'bg-warning' }}  rounded px-5 py-3 text-white" style="width: fit-content;">
+                                <i class="fas {{ $validateIndex >= 1 ? 'fa-check-circle' : 'fa-spinner' }} fa-xl me-1"></i>
+                                <h5 class="text-white mb-0 d-inline">Pemeriksaan</h5>
+                            </div>
+
+                            @if(isset($catatanValidates[0]))
+                                <span class="badge bg-warning mt-2" style="cursor: pointer; width: fit-content;"
+                                    data-bs-toggle="tooltip" title="{{ $catatanValidates[0] }}">
+                                    <i class="fas fa-exclamation-circle me-1"></i>
+                                    <small class="text-white">Catatan</small>
+                                </span>
+                            @endif
                         </div>
 
-                        <div class="{{ $validateIndex >= 2 ? 'bg-success' : 'bg-warning' }}  rounded px-5 py-3 text-white" style="width: fit-content;">
-                            <i class="fas {{ $validateIndex >= 2 ? 'fa-check-circle' : 'fa-spinner' }} fa-xl me-1"></i>
-                            <h5 class="text-white mb-0 d-inline">Validasi</h5>
+                        <div class="d-flex flex-column align-items-center" style="width: fit-content;">
+                            <div class="{{ $validateIndex >= 2 ? 'bg-success' : 'bg-warning' }}  rounded px-5 py-3 text-white" style="width: fit-content;">
+                                <i class="fas {{ $validateIndex >= 2 ? 'fa-check-circle' : 'fa-spinner' }} fa-xl me-1"></i>
+                                <h5 class="text-white mb-0 d-inline">Validasi</h5>
+                            </div>
+
+                            @if(isset($catatanValidates[1]))
+                                <span class="badge bg-warning mt-2" style="cursor: pointer;"
+                                    data-bs-toggle="tooltip" title="{{ $catatanValidates[1] }}">
+                                    <i class="fas fa-exclamation-circle me-1"></i>
+                                    <small class="text-white">Catatan</small>
+                                </span>
+                            @endif
                         </div>
                     </div>
 
-                    <h5 class="mb-3">
-                        No Versi :
-                        <span class="badge bg-gradient-dark ms-1">{{ $lastVersion->no_versi }}</span>
-                    </h5>
+                    <div class="d-flex align-items-center justify-content-between mb-4 col-md-8">
+                        <h5 class="mb-0">
+                            No Versi :
+                            <span class="badge bg-gradient-dark ms-1">{{ $lastVersion->no_versi }}</span>
+                        </h5>
+
+                        @if($feedbacks->count() > 0)
+                            <button type="button" class="btn bg-gradient-primary mb-0"
+                                onclick="showRevisiModal()">
+                                Buat Revisi
+                            </button>
+                        @endif
+                    </div>
 
                     <div class="row">
                         <div class="col-md-8">
@@ -142,14 +181,77 @@
     </div>
 @endsection
 
+@section('modal')
+    <div class="modal fade" id="modalRevisi" aria-hidden="true" aria-labelledby="modalRevisiLabel"
+        tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="row">
+                        <div class="col">
+                            <h5 class="modal-title" id="modalRevisiLabel">Buat Revisi Pengajuan</h5>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
+                </div>
+
+                <div class="modal-body">
+                    <form method="POST" action="{{ route('dokumen-mutu.revisi.store') }}" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" name="id_pengajuan" value="{{ $doco->id }}">
+                        <input type="hidden" name="id_versi" value="{{ $lastVersion->id }}">
+
+                        <div class="row mb-4">
+                            <div class="col-md-4">
+                                <label class="ms-0 fs-6">Dokumen Terbaru</label>
+                            </div>
+                            <div class="col-md-8">
+                                <input type="file" class="form-control input-text" id="dokumenTerbaru" name="dokumenTerbaru" accept="application/pdf" required>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center">
+                            <button type="submit" class="btn btn-primary ms-auto uploadBtn">
+                                <i class="fas fa-save"></i>
+                                Submit Form
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+
 
 @section('custom-js')
+    <script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.29.0/tableExport.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.29.0/libs/jsPDF/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.23.2/dist/extensions/export/bootstrap-table-export.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.min.js"></script>
+
+    @if(session('error'))
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: `{{ session('error') }}`,
+            });
+        </script>
+
+    @elseif(session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Yeay!',
+                text: `{{ session('success') }}`,
+            });
+        </script>
+    @endif
 
     <script>
         let pdfjsLib = window['pdfjs-dist/build/pdf'];
@@ -218,7 +320,11 @@
 
         }
 
-        secureConfidential();
+        function showRevisiModal() {
+            $('#modalRevisi').modal('show');
+        }
+
+        // secureConfidential();
         LoadPdfFromUrl('{{ $doco->file_path }}');
     </script>
 @endsection
