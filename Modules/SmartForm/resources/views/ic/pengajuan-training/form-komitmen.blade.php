@@ -217,54 +217,6 @@
                                             </div>
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <td>Disetujui oleh</td>
-                                        <td>Kabag / Kasi Dept</td>
-                                        <td>
-                                            <div class="input-group input-group-static" style="display: inline; width: fit-content;">
-                                                {{-- TODO : enable ini ketika mau deploy --}}
-                                                {{-- <select class="form-control form-select form-approval" name="disetujui1" id="disetujui1"> --}}
-                                                <select class="form-control form-select form-approval" name="disetujui1" id="disetujui1" {{$data->NIK == session('user_id') && $data->status == '0' ? "" : "disabled"}}>
-                                                    <option value="">-- Pilih PIC --</option>
-                                                    @foreach ($dataApproval['disetujui']['1'] as $item)
-                                                    <option value="{{ $item->id }}">{{ $item->NIK }} - {{ $item->nama }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Diketahui oleh</td>
-                                        <td>Kabag / Kasi ICGS</td>
-                                        <td>
-                                            <div class="input-group input-group-static" style="display: inline; width: fit-content;">
-                                                {{-- TODO : enable ini ketika mau deploy --}}
-                                                {{-- <select class="form-control form-select form-approval" name="diketahui1" id="diketahui1"> --}}
-                                                <select class="form-control form-select form-approval" name="diketahui1" id="diketahui1" {{$data->NIK == session('user_id') && $data->status == '0' ? "" : "disabled"}}>
-                                                    <option value="">-- Pilih PIC --</option>
-                                                    @foreach ($dataApproval['diketahui']['1'] as $item)
-                                                    <option value="{{ $item->id }}">{{ $item->NIK }} - {{ $item->nama }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Diketahui oleh</td>
-                                        <td>Project Manager/Kadept Dept</td>
-                                        <td>
-                                            <div class="input-group input-group-static" style="display: inline; width: fit-content;">
-                                                {{-- TODO : enable ini ketika mau deploy --}}
-                                                {{-- <select class="form-control form-select form-approval" name="diketahui2" id="diketahui2"> --}}
-                                                <select class="form-control form-select form-approval" name="diketahui2" id="diketahui2" {{$data->NIK == session('user_id') && $data->status == '0' ? "" : "disabled"}}>
-                                                    <option value="">-- Pilih PIC --</option>
-                                                    @foreach ($dataApproval['diketahui']['2'] as $item)
-                                                    <option value="{{ $item->id }}">{{ $item->NIK }} - {{ $item->nama }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </td>
-                                    </tr>
                                 </tbody>
                             </table>
                             <div class="input-group input-group-static mt-3" id="fieldMenolak" style="display: none;">
@@ -316,14 +268,14 @@
                             <button class="btn btn-primary mb-0" onclick="submitKomitmen(event)">Submit Pelatihan</button>
                         </div>
                     @endif
-                    @if ($data->status == '1')
+                    {{-- @if ($data->status == '1')
                         @if ($currentApproval['NIK'] == session('user_id'))
                             <div style="display: flex; justify-content: end;gap: 12px;" class="mt-4">
                                 <button class="btn btn-primary mb-0" onclick="approveAct(event, '1')">Approve</button>
                                 <button class="btn btn-danger mb-0" onclick="approveAct(event, '-1')">Reject</button>
                             </div>
                         @endif
-                    @endif
+                    @endif --}}
                     @if ($data->status == '-2')
                         <div style="display: flex; justify-content: start;gap: 12px;" class="mt-4">
                             <label class="bg-danger text-white">Alasan : {{ $data->keterangan }}</label>
@@ -374,11 +326,11 @@
             e.target.disabled = true
             let url = {{ Illuminate\Support\Js::from(route('ic.training.form-komitmen-act')) }}
             let dataBody = {
-                approval: [
-                    { jenisApproval: "disetujui", approvalOrder: 1, approvalId: $("#disetujui1").val()},
-                    { jenisApproval: "diketahui", approvalOrder: 1, approvalId: $("#diketahui1").val()},
-                    { jenisApproval: "diketahui", approvalOrder: 2, approvalId: $("#diketahui2").val()}
-                ],
+                // approval: [
+                //     { jenisApproval: "disetujui", approvalOrder: 1, approvalId: $("#disetujui1").val()},
+                //     { jenisApproval: "diketahui", approvalOrder: 1, approvalId: $("#diketahui1").val()},
+                //     { jenisApproval: "diketahui", approvalOrder: 2, approvalId: $("#diketahui2").val()}
+                // ],
                 isSetuju: $("#persetujuan").val(),
                 alasanMenolak: $("input[type='radio'][name='alasanMenolak']:checked").val() || null,
                 textAlasan: $("#alasanLain").val(),
@@ -448,11 +400,12 @@
             
             if($("#persetujuan").val() == "-1") {
                 if(!$("input[type='radio'][name='alasanMenolak']:checked").val()) errList.push("Alasan Menolak training kosong")
-            } else if($("#persetujuan").val() == "1"){
-                if($("#disetujui1").val() == "") errList.push("Kabag / Kasi Dept kosong")
-                if($("#diketahui1").val() == "") errList.push("Kabag / Kasi ICGS kosong")
-                if($("#diketahui2").val() == "") errList.push("Project Manager/Kadept Dept")
-            }
+            } 
+            // else if($("#persetujuan").val() == "1"){
+            //     if($("#disetujui1").val() == "") errList.push("Kabag / Kasi Dept kosong")
+            //     if($("#diketahui1").val() == "") errList.push("Kabag / Kasi ICGS kosong")
+            //     if($("#diketahui2").val() == "") errList.push("Project Manager/Kadept Dept")
+            // }
 
             return errList
         }

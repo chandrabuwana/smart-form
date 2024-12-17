@@ -172,7 +172,105 @@
                     </div>
                 </div>
 
+                {{-- TODO : tampilkan approval yang sudah di sumbit --}}
                 <div class="card-footer">
+                    @if($pelatihan->trj_status == 0)
+                    <div class="table-responsive p-0">
+                        <table id="table-syarat" data-toggle="table" data-side-pagination="client"
+                            data-content-type="application/json" data-data-type="json" data-pagination="false"
+                            data-unique-id="id">
+                            <thead>
+                                <tr>
+                                    <th data-field="approval_role" data-align="left"></th>
+                                    <th data-field="jabatan" data-align="left">Jabatan</th>
+                                    <th data-field="pic" data-align="left">PIC</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Dibuat oleh</td>
+                                    <td>Kabag / Kasi Dept</td>
+                                    <td>
+                                        <div class="input-group input-group-static" style="display: inline; width: fit-content;">
+                                            {{-- TODO : enable ini ketika mau deploy --}}
+                                            {{-- <select class="form-control form-select form-approval" name="persetujuan" id="persetujuan"> --}}
+                                            <select class="form-control form-select form-approval" name="level1" id="level1">
+                                                <option value="">-- Pilih PIC --</option>
+                                                @foreach ($listApproval['1'] as $item)
+                                                <option value="{{ $item->id }}">{{ $item->NIK }} - {{ $item->nama }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Disetujui oleh</td>
+                                    <td>Kabag / Kasi ICGS</td>
+                                    <td>
+                                        <div class="input-group input-group-static" style="display: inline; width: fit-content;">
+                                            {{-- TODO : enable ini ketika mau deploy --}}
+                                            {{-- <select class="form-control form-select form-approval" name="disetujui1" id="disetujui1"> --}}
+                                            <select class="form-control form-select form-approval" name="level2" id="level2">
+                                                <option value="">-- Pilih PIC --</option>
+                                                @foreach ($listApproval['2'] as $item)
+                                                <option value="{{ $item->id }}">{{ $item->NIK }} - {{ $item->nama }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Diketahui oleh</td>
+                                    <td>PM / People Partner</td>
+                                    <td>
+                                        <div class="input-group input-group-static" style="display: inline; width: fit-content;">
+                                            {{-- TODO : enable ini ketika mau deploy --}}
+                                            {{-- <select class="form-control form-select form-approval" name="diketahui1" id="diketahui1"> --}}
+                                            <select class="form-control form-select form-approval" name="level3" id="level3">
+                                                <option value="">-- Pilih PIC --</option>
+                                                @foreach ($listApproval['3'] as $item)
+                                                <option value="{{ $item->id }}">{{ $item->NIK }} - {{ $item->nama }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Diketahui oleh</td>
+                                    <td>Kadept HO</td>
+                                    <td>
+                                        <div class="input-group input-group-static" style="display: inline; width: fit-content;">
+                                            {{-- TODO : enable ini ketika mau deploy --}}
+                                            {{-- <select class="form-control form-select form-approval" name="diketahui2" id="diketahui2"> --}}
+                                            <select class="form-control form-select form-approval" name="level4" id="level4">
+                                                <option value="">-- Pilih PIC --</option>
+                                                @foreach ($listApproval['4'] as $item)
+                                                <option value="{{ $item->id }}">{{ $item->NIK }} - {{ $item->nama }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><sup class="text-danger">*</sup>Diketahui oleh</td>
+                                    <td>Think Tank</td>
+                                    <td>
+                                        <div class="input-group input-group-static" style="display: inline; width: fit-content;">
+                                            {{-- TODO : enable ini ketika mau deploy --}}
+                                            {{-- <select class="form-control form-select form-approval" name="diketahui2" id="diketahui2"> --}}
+                                            <select class="form-control form-select form-approval" name="level5" id="level5">
+                                                <option value="">-- Pilih PIC --</option>
+                                                @foreach ($listApproval['5'] as $item)
+                                                <option value="{{ $item->id }}">{{ $item->NIK }} - {{ $item->nama }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    @endif
+
                     <div style="display: flex; justify-content: end;">
                         @if ($crossCheckPIC->contains('NIK', session('user_id')) && $pelatihan->trj_status == 0)
                             <button class="btn btn-primary mb-0" onclick="submitCrossCheck(event)">Submit</button>
@@ -191,17 +289,17 @@
     <script>
         var getDataURL = "/ic/training/data-cross-check-dtl"
         const baseUrl = '/ic/training'
-        const trjId = '{{ $trjID }}'
-        const KodeDP_trj = '{{ $pelatihan->KodeDP_trj }}'
-        const KodeST_trj = '{{ $pelatihan->KodeST_trj }}'
-        const pengajuanId = '{{ $pelatihan->pengajuan_id }}'
-        const pengajuanBulan = "{{ $pelatihan->bulan }}"
-        const pengajuanTahun = "{{ $pelatihan->tahun }}"
+        const trjId = {{ Illuminate\Support\Js::from($trjID) }}
+        const KodeDP_trj = {{ Illuminate\Support\Js::from($pelatihan->KodeDP_trj) }}
+        const KodeST_trj = {{ Illuminate\Support\Js::from($pelatihan->KodeST_trj) }}
+        const pengajuanId = {{ Illuminate\Support\Js::from($pelatihan->pengajuan_id) }}
+        const pengajuanBulan = {{ Illuminate\Support\Js::from($pelatihan->bulan) }}
+        const pengajuanTahun = {{ Illuminate\Support\Js::from($pelatihan->tahun) }}
         
         function getData(params) {
             params.data.trj_id = '{{ $trjID }}'
             $.get(getDataURL + '?' + $.param(params.data)).then(function(res) {
-                console.log(res.rows)
+                // console.log(res.rows)
                 res.rows.forEach(element => {
                     // let stdJab = $("#table-std-jab").bootstrapTable('getData')
                     // element.matrix_kompetensi = stdJab.length > 0 ? (stdJab.filter((nilai) => nilai.KodeJB == element.KodeJB).length > 0 ? 1 : 0) : 1
@@ -225,7 +323,7 @@
 
             const daysDiff = Math.round(differenceBtwDates / aDayInMs)
 
-            console.log({daysDiff: daysDiff})
+            // console.log({daysDiff: daysDiff})
             let masaKerja = daysDiff/365
 
             return masaKerja.toFixed(2)
@@ -300,6 +398,20 @@
         function sertifikasiStyle(value, row, index) {
             // return $("#table-std-jab").bootstrapTable('getData').filter((nilai) => nilai.KodeJB == row.KodeJB).length > 0 ? "1" : "0"
             if(value == 0) {
+                return {
+                    css: {
+                        background: '#fd5c70',
+                        color: 'white'
+                    }
+                }
+            }
+
+            return value
+        }
+
+        function mkStyle(value, row, index) {
+            // return $("#table-std-jab").bootstrapTable('getData').filter((nilai) => nilai.KodeJB == row.KodeJB).length > 0 ? "1" : "0"
+            if(value < 1) {
                 return {
                     css: {
                         background: '#fd5c70',
@@ -481,26 +593,38 @@
         }
 
         function submitCrossCheck(e) {
-            let baseURL = "{{ route('ic.training.crosscheck-approve') }}"
+            let baseURL = {{ Illuminate\Support\Js::from(route('ic.training.crosscheck-approve')) }}
             let dataBody = {
                 trjId: trjId,
                 pengajuanId: pengajuanId,
-                detail: $("#table-data").bootstrapTable('getData')
+                detail: $("#table-data").bootstrapTable('getData'),
+                approval: {
+                    '1': $("#level1").val(),
+                    '2': $("#level2").val(),
+                    '3': $("#level3").val(),
+                    '4': $("#level4").val(),
+                }
             }
             let belumValidasi = []
             $('#table-data').bootstrapTable('getData').filter((data)=> {
                 if(data.status_id == 0) belumValidasi.push(data.NIK)
                 return data.status_id == 0
             })
+            if(l=belumValidasi.length > 0) dataBody['5'] = $("#level5").val()
+        
+            console.log(dataBody)
+            // return
+            let validasiForm = validasi()
 
-            if(belumValidasi.length > 0) {
+            if(validasiForm.length > 0) {
                 Swal.fire({
                     backdrop: false,
                     icon: "error",
                     title: "Oops...",
-                    html: `NIK Belum di validasi : ${belumValidasi.join(', ')}`,
+                    html: validasiForm.join('<br>'),
                 })
             } else {
+                showLoading()
                 axios.post(baseURL, dataBody, {
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -545,5 +669,29 @@
             }
         }
 
+        function validasi() {
+            let errList = [];
+            let isCreateBAjustifikasi = $("#table-data").bootstrapTable("getData").filter((data) => {
+                return data.matrix_mk < 1
+            })
+            let belumValidasi = []
+
+            if(!$("#level1").val()) errList.push("Belum pilih approval kabag / kasi dept")
+            if(!$("#level2").val()) errList.push("Belum pilih approval kabag / kasi IC")
+            if(!$("#level3").val()) errList.push("Belum pilih approval PM / People partner")
+            if(!$("#level4").val()) errList.push("Belum pilih approval Kadep HO")
+            if(isCreateBAjustifikasi.length > 0) {
+                if(!$("#level1").val()) errList.push("Terdapat matrix masa kerja < 1 th, silahkan pilih approval Think tank")
+            }
+
+            $('#table-data').bootstrapTable('getData').filter((data)=> {
+                if(data.status_id == 0) belumValidasi.push(data.NIK)
+                return data.status_id == 0
+            })
+            if(belumValidasi.length > 0) errList.push(`NIK Belum di validasi : ${belumValidasi.join(', ')}`)
+
+            return errList
+            
+        }
     </script>
 @endsection

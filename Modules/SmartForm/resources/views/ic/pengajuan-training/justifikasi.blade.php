@@ -165,8 +165,8 @@
                                 <tr>
                                     <th data-field="id" data-align="left" data-visible="false">ID</th>
                                     <th data-field="jenis" data-align="left" data-formatter="jenisFormatter">BA / Form</th>
-                                    <th data-field="status" data-align="left" data-formatter="statusJustFormatter">Status</th>
-                                    <th data-field="action" data-align="left" data-formatter="actionJustFormatter">Action</th>
+                                    <th data-field="status" data-align="left" data-formatter="statusJustFormatter" data-visible="false">Status</th>
+                                    <th data-field="action" data-align="left" data-formatter="actionJustFormatter" data-visible="false">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -200,8 +200,14 @@
                                 </td> --}}
                                 <td>
                                     <div class="input-group input-group-static">
-                                        <input type="date" class="form-control" id="inputTanggalPelaksanaan" name="inputTanggalPelaksanaan" placeholder="Bulan Tahun" {{ $data->trj_status == 2 ? 'disabled' : ''}}
-                                            value="{{$data->trj_status == 2 ? $data->tanggal : ''}}">
+                                        <!--<input type="date" class="form-control" id="inputTanggalPelaksanaan" name="inputTanggalPelaksanaan" placeholder="Bulan Tahun" {{ $data->trj_status == 2 || $data->trj_status == -2 || $data->trj_status == 3 ? 'disabled' : ''}}
+                                            value="{{$data->trj_status == 2 || $data->trj_status == -2 || $data->trj_status == 3 ? $data->tanggal : ''}}" {{ $isDibuatOleh ? '' : 'disabled'}}> -->
+                                        {{-- <input type="date" class="form-control" id="inputTanggalPelaksanaan" name="inputTanggalPelaksanaan" placeholder="Bulan Tahun" > --}}
+                                        @if($data->trj_status == 1 && $isDibuatOleh)
+                                            <input type="date" class="form-control" id="inputTanggalPelaksanaan" name="inputTanggalPelaksanaan" placeholder="Bulan Tahun" >
+                                        @else
+                                            {{ $data->tanggal }}
+                                        @endif
                                     </div>
                                 </td>
                             </tr>
@@ -210,19 +216,22 @@
                                 <td style="vertical-align: top;"> : </td>
                                 <td>
                                     <div class="input-group input-group-static">
-                                        <input type="text" class="form-control" id="inputTempatPelaksanaan" name="inputTempatPelaksanaan" {{ $data->trj_status == 2 ? 'disabled' : ''}}
-                                            value="{{$data->trj_status == 2 ? $data->tempat : ''}}">
+                                        @if($data->trj_status == 1 && $isDibuatOleh)
+                                            <input type="text" class="form-control" id="inputTempatPelaksanaan" name="inputTempatPelaksanaan">
+                                        @else
+                                            {{ $data->tempat }}
+                                        @endif
                                     </div>
                                 </td>
                             </tr>
                         </table>
 
                         <p class="m-0 mt-3"><strong>Tujuan Training untuk menunjang  Logic Tree (KPI) yang mana, Kondisi sekarang seperti apa?</strong></p>
-                        @if ($data->trj_status != 2)
-                        <div style="display: flex; gap: 12px; margin-bottom: 12px;" class="col-md-6">
-                            <input type="text" class="form-control input-text w-fit" placeholder="Cth “Menunjang KPI Fullfillment Manpower Ach : 80%”" id="inputTujuan">
-                            <button class="btn btn-secondary m-0" type="button" id="btnAddTujuan" onclick="addTujuan(event)"><i class="bi fa-plus"></i> </button>
-                        </div>
+                        @if ($data->trj_status == 1 && $isDibuatOleh)
+                            <div style="display: flex; gap: 12px; margin-bottom: 12px;" class="col-md-6">
+                                <input type="text" class="form-control input-text w-fit" placeholder="Cth “Menunjang KPI Fullfillment Manpower Ach : 80%”" id="inputTujuan">
+                                <button class="btn btn-secondary m-0" type="button" id="btnAddTujuan" onclick="addTujuan(event)"><i class="bi fa-plus"></i> </button>
+                            </div>
                         @endif
                         <table id="table-tujuan" data-toggle="table" data-side-pagination="client"
                             data-content-type="application/json" data-data-type="json" data-pagination="false"
@@ -231,12 +240,12 @@
                                 <tr>
                                     <th data-field="no" data-align="right" data-width="200" data-formatter="noTujuanFormatter"></th>
                                     <th data-field="tujuan" data-align="left">Tujuan</th>
-                                    @if ($data->trj_status == 2)
+                                    @if ($data->trj_status == 1)
                                     <th data-field="action" data-align="center" data-formatter="htujuanFormatter"></th>
                                     @endif
                                 </tr>
                             </thead>
-                            @if($data->trj_status == 2)
+                            @if(!($data->trj_status == 1 && $isDibuatOleh) || $data->trj_status == 2 || $data->trj_status == -2 || $data->trj_status == 3)
                                 <tbody>
                                     @foreach ($dataSubmitted['tujuan'] as $item)
                                     <tr>
@@ -249,11 +258,12 @@
                         </table>
 
                         <p class="m-0 mt-3"><strong>Pengganti Tugas selama Training</strong></p>
-                        @if ($data->trj_status != 2)
-                        <div style="display: flex; gap: 12px; margin-bottom: 12px;" class="col-md-6">
-                            <input type="text" class="form-control input-text w-fit" placeholder="PIC 1, PIC 2, PIC 3" id="inputPengganti">
-                            <button class="btn btn-secondary m-0" type="button" id="btnAddPengganti" onclick="addPengganti(event)"><i class="bi fa-plus"></i> </button>
-                        </div>
+                        
+                        @if ($data->trj_status == 1 && $isDibuatOleh)
+                            <div style="display: flex; gap: 12px; margin-bottom: 12px;" class="col-md-6">
+                                <input type="text" class="form-control input-text w-fit" placeholder="PIC 1, PIC 2, PIC 3" id="inputPengganti">
+                                <button class="btn btn-secondary m-0" type="button" id="btnAddPengganti" onclick="addPengganti(event)"><i class="bi fa-plus"></i> </button>
+                            </div>
                         @endif
                         <table id="table-pengganti" data-toggle="table" data-side-pagination="client"
                             data-content-type="application/json" data-data-type="json" data-pagination="false"
@@ -262,11 +272,11 @@
                                 <tr>
                                     <th data-field="no" data-align="right" data-width="200" data-formatter="penggantiFormatter"></th>
                                     <th data-field="pengganti" data-align="left">Pengganti</th>
-                                    @if ($data->trj_status == 2)
+                                    @if ($data->trj_status == 1 && $isDibuatOleh)
                                     <th data-field="action" data-align="center" data-formatter="hapusPenggantFormatter"></th>
                                     @endif
                             </thead>
-                            @if ($data->trj_status == 2)
+                            @if (!($data->trj_status == 1 && $isDibuatOleh) || $data->trj_status == 2 || $data->trj_status == -2 || $data->trj_status == 3)
                                 <tbody>
                                     @foreach ($dataSubmitted['pengganti'] as $item)
                                     <tr>
@@ -279,7 +289,7 @@
                         </table>
 
                         <p class="m-0 mt-3"><strong>Detail urgensi (Kepentingan mendesak) training/sertifikasi ini harus dijalankan segera?</strong></p>
-                        @if ($data->trj_status != 2)
+                        @if ($data->trj_status == 1 && $isDibuatOleh)
                             <div style="display: flex; gap: 12px; margin-bottom: 12px;" class="col-md-6">
                                 <input type="text" class="form-control input-text w-fit" placeholder="Detail urgensi" id="inputUrgensi">
                                 <button class="btn btn-secondary m-0" type="button" id="btnAddUrgensi" onclick="addUrgensi(event)"><i class="bi fa-plus"></i> </button>
@@ -292,11 +302,11 @@
                                 <tr>
                                     <th data-field="no" data-align="right" data-width="200" data-formatter="urgensiFormatter"></th>
                                     <th data-field="urgensi" data-align="left">Urgensi</th>
-                                    @if ($data->trj_status == 2  || $data->trj_status == -2)
+                                    @if ($data->trj_status == 1 && $isDibuatOleh)
                                     <th data-field="action" data-align="center" data-formatter="actionUrgensiFormatter"></th>
                                     @endif
                             </thead>
-                            @if ($data->trj_status == 2 || $data->trj_status == -2)
+                            @if (!($data->trj_status == 1 && $isDibuatOleh) || $data->trj_status == 2 || $data->trj_status == -2 || $data->trj_status == 3)
                                 <tbody>
                                     @foreach ($dataSubmitted['urgensi'] as $item)
                                     <tr>
@@ -325,148 +335,29 @@
                         </table>
                     </div>
                 </div>
-
+                
                 <div class="card-footer">
-                    @if ($data->trj_status == 1)
-                        <div class="table-responsive p-0">
-                            <table id="table-syarat" data-toggle="table" data-side-pagination="client"
-                                data-content-type="application/json" data-data-type="json" data-pagination="false"
-                                data-unique-id="id">
-                                <thead>
-                                    <tr>
-                                        <th data-field="approval_role" data-align="left"></th>
-                                        <th data-field="jabatan" data-align="left">Jabatan</th>
-                                        <th data-field="pic" data-align="left">PIC</th>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Dibuat oleh</td>
-                                        <td>Kabag / Kasi Dept</td>
-                                        <td>
-                                            <div class="input-group input-group-static" style="display: inline; width: fit-content;">
-                                                {{-- TODO : enable ini ketika mau deploy --}}
-                                                {{-- <select class="form-control form-select form-approval" name="persetujuan" id="persetujuan"> --}}
-                                                <select class="form-control form-select form-approval" name="dibuat" id="dibuat" disabled>
-                                                    <option value="{{ session('user_id') }}">{{ session('user_id') }} - {{ session('username') }}</option>
-                                                </select>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Disetujui oleh</td>
-                                        <td>Kabag / Kasi ICGS</td>
-                                        <td>
-                                            <div class="input-group input-group-static" style="display: inline; width: fit-content;">
-                                                {{-- TODO : enable ini ketika mau deploy --}}
-                                                {{-- <select class="form-control form-select form-approval" name="disetujui1" id="disetujui1"> --}}
-                                                <select class="form-control form-select form-approval" name="disetujui1" id="disetujui1" {{ $listApproval['authorized']->search(session('user_id')) }}>
-                                                    <option value="">-- Pilih PIC --</option>
-                                                    @foreach ($listApproval['disetujui']['1'] as $item)
-                                                    <option value="{{ $item->id }}">{{ $item->NIK }} - {{ $item->nama }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Diketahui oleh</td>
-                                        <td>Project Manager/People Partner</td>
-                                        <td>
-                                            <div class="input-group input-group-static" style="display: inline; width: fit-content;">
-                                                {{-- TODO : enable ini ketika mau deploy --}}
-                                                {{-- <select class="form-control form-select form-approval" name="diketahui1" id="diketahui1"> --}}
-                                                <select class="form-control form-select form-approval" name="diketahui1" id="diketahui1">
-                                                    <option value="">-- Pilih PIC --</option>
-                                                    @foreach ($listApproval['diketahui']['1'] as $item)
-                                                    <option value="{{ $item->id }}">{{ $item->NIK }} - {{ $item->nama }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Diketahui oleh</td>
-                                        <td>Kadept HO</td>
-                                        <td>
-                                            <div class="input-group input-group-static" style="display: inline; width: fit-content;">
-                                                {{-- TODO : enable ini ketika mau deploy --}}
-                                                {{-- <select class="form-control form-select form-approval" name="diketahui2" id="diketahui2"> --}}
-                                                <select class="form-control form-select form-approval" name="diketahui2" id="diketahui2">
-                                                    <option value="">-- Pilih PIC --</option>
-                                                    @foreach ($listApproval['diketahui']['2'] as $item)
-                                                    <option value="{{ $item->id }}">{{ $item->NIK }} - {{ $item->nama }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    @if (count($listJustifikasi->where('status', 1)) > 0)
-                                    <tr>
-                                        <td>Diketahui oleh</td>
-                                        <td>Think Tank</td>
-                                        <td>
-                                            <div class="input-group input-group-static" style="display: inline; width: fit-content;">
-                                                {{-- TODO : enable ini ketika mau deploy --}}
-                                                {{-- <select class="form-control form-select form-approval" name="diketahui2" id="diketahui2"> --}}
-                                                <select class="form-control form-select form-approval" name="diketahui3" id="diketahui3">
-                                                    <option value="">-- Pilih PIC --</option>
-                                                    @foreach ($listApproval['diketahui']['3'] as $item)
-                                                    <option value="{{ $item->id }}">{{ $item->NIK }} - {{ $item->nama }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    @endif
-                                </tbody>
-                            </table>
-                            <div class="input-group input-group-static mt-3" id="fieldMenolak" style="display: none;">
-                                <label style="width: 100%;"><strong>Alasan Menolak Training</strong></label>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="alasanMenolak" id="flexRadioDefault1" value="0">
-                                    <label class="form-check-label" for="flexRadioDefault1">
-                                    Training Mandiri
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="alasanMenolak" id="flexRadioDefault2" value="1">
-                                    <label class="form-check-label" for="flexRadioDefault2">
-                                    Menolak / Alasan lain
-                                    </label>
-                                </div>
-                                <div class="input-group input-group-static my-1">
-                                    <input class="form-control" type="text" name="alasanLain"
-                                        placeholder="Tuliskan alasan anda" value="" required id="alasanLain">
-                                </div>
-                            </div>
-                        </div>
+                    <div class="table-responsive p-0">
+                        <table class="table-approval" style="width: 100%;">
+                            <tr>
+                                <td>Hormat saya,</td>
+                                <td>Disetujui Oleh,</td>
+                                <td colspan="2">Diketahui Oleh,</td>
+                            </tr>
+                            <tr>
+                                @foreach ($selectedApproval as $item)
+                                    <td>{{ $item['status'] }}</td>
+                                @endforeach
+                            </tr>
+                            <tr>
+                                @foreach ($selectedApproval as $item)
+                                    <td>{{ $item['nama'] }}</td>
+                                @endforeach
+                            </tr>
+                        </table>
+                    </div>
                     
-                        <div style="display: flex; justify-content: end;">
-                            <button class="btn btn-primary mb-0" onclick="submitJustifikasi(event)">Submit</button>
-                        </div>
-                    @else
-                        <div class="table-responsive p-0">
-                            <table class="table-approval" style="width: 100%;">
-                                <tr>
-                                    <td>Hormat saya,</td>
-                                    <td>Disetujui Oleh,</td>
-                                    <td colspan="2">Diketahui Oleh,</td>
-                                </tr>
-                                <tr>
-                                    @foreach ($selectedApproval as $item)
-                                        <td>{{ $item['status'] }}</td>
-                                    @endforeach
-                                </tr>
-                                <tr>
-                                    @foreach ($selectedApproval as $item)
-                                        <td>{{ $item['nama'] }}</td>
-                                    @endforeach
-                                </tr>
-                            </table>
-                        </div>
-                    @endif
-                    
-                    @if ($data->trj_status == '2')
+                    @if ($data->trj_status == '1')
                         @if ($currentApproval != null )
                             @if($currentApproval['NIK'] == session('user_id'))
                             <div style="display: flex; justify-content: end;gap: 12px;" class="mt-4">
@@ -489,26 +380,10 @@
     <script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/dist/js/datepicker-full.min.js"></script>
     <script>
         const trjID = {{ Illuminate\Support\Js::from($data->trj_id) }}
-        // (function () {
-        //     Datepicker.locales.en = {
-        //         days: ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"],
-        //         daysShort: ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"],
-        //         daysMin: ["Mg", "Sn", "Sl", "Rb", "Km", "Jm", "Sa"],
-        //         months: ["Januari", "Februari", "Maret", "Apri", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"],
-        //         monthsShort: ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Ags", "Sep", "Okt", "Nov", "Des"],
-        //         today: "Hari",
-        //         monthsTitle: "Bulan",
-        //         clear: "Clear",
-        //         weekStart: 0,
-        //         format: "dd/mm/yyyy"
-        //     }
-        // })()
+        const jenisCurrApproval = {{ Illuminate\Support\Js::from($currentApproval==null ? null : $currentApproval['jenis']) }}
         document.querySelector("#table-tujuan thead").style.display = "none";
         const elem = document.getElementById("inputTanggalPelaksanaan");
         
-        // const datepicker = new Datepicker(elem, {
-        //     format: "dd MM yyyy"
-        // }); 
         const baseURL = "/ic/training"
         const getDataURL = {{ Illuminate\Support\Js::from(route('ic.training.dashboard-komitmen-data')) }}
         function getData(params) {
@@ -527,7 +402,7 @@
         
         function statusFormatter(value, row, index) {
             if(value == "0") return '<button class="btn btn-warning btn-action-format">On progres</button>'
-            if(value == "1") return '<button class="btn btn-success btn-action-format">Progres approval</button>'
+            if(value == "1") return '<button class="btn btn-success btn-action-format">Setuju</button>'
             if(value == "2") return '<button class="btn btn-success btn-action-format">Done approval</button>'
             if(value == "-1") return '<button class="btn btn-danger btn-action-format">Menolak</button>'
             if(value == "-2") return '<button class="btn btn-danger btn-action-format">Ditolak aproval</button>'
@@ -577,10 +452,6 @@
             return listErr
         }
 
-        function tujuanFormatter(value, row, index) {
-            return `<div class="input-group input-group-static"><input type="text" class="form-control" placeholder="Cth “Menunjang KPI Fullfillment Manpower Ach : 80%”"></div>`
-        }
-
         function htujuanFormatter(value, row, index) {
             return `<button class="btn btn-danger btn-action-format" onclick="hapusItem(${index})"><i class="bi bi-trash-fill"></i></button>`
         }
@@ -595,11 +466,8 @@
         function penggantiFormatter(value, row, index) {
             return `PIC ${index+1} : `
         }
-        function nikPenggantiFormatter(value, row, index) {
-            return `<div class="input-group input-group-static"><input type="text" class="form-control"></div>`
-        }
         function hapusPenggantFormatter(value, row, index) {
-            return `<button class="btn btn-danger btn-action-format" onclick="hapusUrgensi(${index})"><i class="bi bi-trash-fill"></i></button>`
+            return `<button class="btn btn-danger btn-action-format" onclick="hapusPengganti(${index})"><i class="bi bi-trash-fill"></i></button>`
         }
         function hapusUrgensi(index) {
             $("#table-urgensi").bootstrapTable('remove', {
@@ -611,66 +479,13 @@
         function urgensiFormatter(value, row, index) {
             return `Kepentingan Mendesak ${index+1} : `
         }
-        function detailUrgensiFormatter(value, row, index) {
-            return `<div class="input-group input-group-static"><input type="text" class="form-control"></div>`
-        }
         function actionUrgensiFormatter(value, row, index) {
-            return `<button class="btn btn-danger btn-action-format" onclick="hapusPengganti(${index})"><i class="bi bi-trash-fill"></i></button>`
+            return `<button class="btn btn-danger btn-action-format" onclick="hapusUrgensi(${index})"><i class="bi bi-trash-fill"></i></button>`
         }
         function hapusPengganti(index) {
             $("#table-pengganti").bootstrapTable('remove', {
                 field: '$index',
                 values: [index]
-            })
-        }
-
-        function submitJustifikasi(e) {
-            const urlSubmit = {{ Illuminate\Support\Js::from(route('ic.training.submit-justifikasi')) }}
-            let bodyReq = {
-                trjId: trjID,
-                tempat: $("#inputTempatPelaksanaan").val(),
-                tanggal: $("#inputTanggalPelaksanaan").val(),
-                justifikasi: [],
-                tujuan: [],
-                pengganti: [],
-                urgensi: [],
-                approval: [
-                    { jenisApproval: "disetujui", approvalOrder: 1, approvalId: $("#disetujui1").val()},
-                    { jenisApproval: "diketahui", approvalOrder: 1, approvalId: $("#diketahui1").val()},
-                    { jenisApproval: "diketahui", approvalOrder: 2, approvalId: $("#diketahui2").val()},
-                    { jenisApproval: "diketahui", approvalOrder: 3, approvalId: $("#diketahui3").val()}
-                ],
-            }
-
-            $("#table-tujuan").bootstrapTable("getData").forEach(element => {
-                bodyReq.tujuan.push(element.tujuan)
-            })
-
-            $("#table-pengganti").bootstrapTable("getData").forEach(element => {
-                bodyReq.pengganti.push(element.pengganti)
-            })
-
-            $("#table-urgensi").bootstrapTable("getData").forEach(element => {
-                bodyReq.urgensi.push(element.urgensi)
-            })
-
-            $("#table-justifikasi").bootstrapTable("getData").forEach(element => {
-                bodyReq.justifikasi.push(element.id)
-            })
-
-            axios.post(urlSubmit, bodyReq, {
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            })
-            .then(function(resp) {
-
-            })
-            .catch(function(err) {
-
-            })
-            .finally(function() {
-
             })
         }
 
@@ -704,12 +519,55 @@
         function approveAct(e, nilai) {
             console.log(nilai)
             e.target.disabled = true
+            let validateForm = []
+            if(jenisCurrApproval == "dibuat") {
+                if($("#table-justifikasi").bootstrapTable('getData').filter((data) => data.status == 0).length > 0) {
+                    validateForm.push("Terdapat form komitmen yang belum dilakukan persetujuan")
+                }
+                if(!$("#inputTempatPelaksanaan").val().trim()) validateForm.push("Tempat pelaksaan belum diisi") 
+                if(!$("#inputTanggalPelaksanaan").val()) validateForm.push("Tanggal pelaksaan belum diisi")
+            } 
+
+            if(validateForm.length > 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    html: validateForm.join("<br>")
+                })
+                e.target.disabled = false
+                return
+            }
+            
             let bodyReq = {
                 trjId: {{ Illuminate\Support\Js::from($data->trj_id) }},
-                approvalId: {{ Illuminate\Support\Js::from($currentApproval == null ? null : $currentApproval['id']) }},
+                approvalId: {{ Illuminate\Support\Js::from($currentApproval == null ? null : $currentApproval['approvalId']) }},
                 status: nilai,
-                keterangan: ""
+                keterangan: "",
+                tempat: jenisCurrApproval == "dibuat" ? $("#inputTempatPelaksanaan").val() : "",
+                tanggal: jenisCurrApproval == "dibuat" ? $("#inputTanggalPelaksanaan").val() : "",
+                listKomitmen: [],
+                tujuan: [],
+                pengganti: [],
+                urgensi: [],
             }
+
+            $("#table-tujuan").bootstrapTable("getData").forEach(element => {
+                bodyReq.tujuan.push(element.tujuan)
+            })
+
+            $("#table-pengganti").bootstrapTable("getData").forEach(element => {
+                bodyReq.pengganti.push(element.pengganti)
+            })
+
+            $("#table-urgensi").bootstrapTable("getData").forEach(element => {
+                bodyReq.urgensi.push(element.urgensi)
+            })
+            
+            $("#table-komitmen").bootstrapTable('getData').forEach((data) => {
+                if(data.status) bodyReq.listKomitmen.push(data.komitmen_id)
+            })
+            // console.log(bodyReq)
+            // return
             let actMapping = {
                 '1': 'Approve',
                 '-1': 'Reject'
@@ -761,7 +619,6 @@
                             }
                         } else {
                             dataSwal = {
-                                backdrop: false,
                                 icon: 'error',
                                 title: 'Gagal!',
                                 text: resp.data.message || 'Error, coba beberapa saat lagi'

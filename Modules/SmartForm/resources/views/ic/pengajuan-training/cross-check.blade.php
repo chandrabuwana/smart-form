@@ -147,11 +147,11 @@
         }
 
         function statusFormatter(value, row, index) {
-            if(value == 1) return '<button class="btn btn-success btn-no-action btn-action-format">On Progres Justifikasi</button>'
-            if(value == 2) return '<button class="btn btn-success btn-no-action btn-action-format">Appoval Justifikasi</button>'
-            if(value == 3) return '<button class="btn btn-success btn-no-action btn-action-format">Done Justifikasi</button>'
+            if(value == 1) return '<button class="btn btn-success btn-no-action btn-action-format">Komitmen & justifikasi</button>'
+            if(value == 2) return '<button class="btn btn-success btn-no-action btn-action-format">Done Justifikasi</button>'
+            // if(value == 3) return '<button class="btn btn-success btn-no-action btn-action-format">Done Justifikasi</button>'
             if(value == -2) return '<button class="btn btn-success btn-no-action btn-action-format">Rejected Justifikasi</button>'
-            if(value == 0) return '<button class="btn btn-warning btn-no-action btn-action-format">On Progres Komitmen</button>'
+            if(value == 0) return '<button class="btn btn-warning btn-no-action btn-action-format">Cross check Kabag</button>'
             
             return value
         }
