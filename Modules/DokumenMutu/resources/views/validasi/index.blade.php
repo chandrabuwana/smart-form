@@ -297,7 +297,6 @@
         LoadPdfFromUrl(`{!! $doco->file_path !!}`);
 
         function showApproveModal() {
-            console.log('TEST');
             $('#modalApprove').modal('show');
         }
     </script>

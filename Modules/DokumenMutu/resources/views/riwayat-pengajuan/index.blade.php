@@ -184,6 +184,69 @@
     </div>
 @endsection
 
+@section('modal')
+    <div class="modal fade" id="modalDetailPenghapusan" aria-hidden="true" aria-labelledby="modalDetailPenghapusanLabel"
+        tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="row">
+                        <div class="col">
+                            <h5 class="modal-title" id="modalDetailPenghapusanLabel">Detail Penghapusan</h5>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row mb-2 align-items-center">
+                        <div class="col-md-3">
+                            <label class="ms-0 fs-6 font-weight-bold">
+                                No Dokumen
+                            </label>
+                        </div>
+                        <div class="col-md-1">
+                            <span class="font-weight-bold">:</span>
+                        </div>
+                        <div class="col-md-8">
+                            <span class="fs-6" id="no_dokumen">BSS-1111-1111-2222</span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2 align-items-center">
+                        <div class="col-md-3">
+                            <label class="ms-0 fs-6 font-weight-bold">
+                                Status
+                            </label>
+                        </div>
+                        <div class="col-md-1">
+                            <span class="font-weight-bold">:</span>
+                        </div>
+                        <div class="col-md-8" id="status">
+                        </div>
+                    </div>
+
+                    <div class="row mb-4 align-items-center">
+                        <div class="col-md-3">
+                            <label class="ms-0 fs-6 font-weight-bold">
+                                Alasan Penghapusan
+                            </label>
+                        </div>
+                        <div class="col-md-1">
+                            <span class="font-weight-bold">:</span>
+                        </div>
+                        <div class="col-md-8">
+                            <span id="alasan_pengajuan">Hello World!</span>
+                        </div>
+                    </div>
+
+                    <iframe id="iframepdf" src="" width="100%" height="700px"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+
 
 @section('custom-js')
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
@@ -261,15 +324,28 @@
         })
 
         function actionFormatter(value, row, index) {
-            const url = `/doco/riwayat-pengajuan/detail/${row.id}`;
-            // return '<a href="' + url + '?NoForm=' + row.NoForm + '"><button class="btn btn-primary btn-action text-white">detail</button></a>';
-            let action = `<a href="${url}"><button class="btn btn-primary btn-action text-white">detail</button></a>`;
+            let action;
 
-            if(row.is_validate) {
-                const urlValidasi = `/doco/riwayat-pengajuan/validasi/${row.id}`;
-                action += `
-                    <a href="${urlValidasi}"><button class="btn btn-success btn-action text-white ms-2">Validasi</button></a>
-                `;
+            if(row.jenis_pengajuan == 'Penghapusan') {
+                action = `<a href="javascript:detailPenghapusan('${ row.no_dokumen }', '${ row.status }', '${ row.alasan_pengajuan }');"><button class="btn btn-primary btn-action text-white">detail</button></a>`;
+
+                if(row.status == 'Belum Validasi') {
+                    action += `
+                        <a href="javascript:showModalApprovePenghapusan('${ row.id }');"><button class="btn btn-success btn-action text-white ms-2">Validasi</button></a>
+                    `;
+                }
+
+            } else {
+                const url = `/doco/riwayat-pengajuan/detail/${row.id}`;
+                // return '<a href="' + url + '?NoForm=' + row.NoForm + '"><button class="btn btn-primary btn-action text-white">detail</button></a>';
+                action = `<a href="${url}"><button class="btn btn-primary btn-action text-white">detail</button></a>`;
+
+                if(row.is_validate) {
+                    const urlValidasi = `/doco/riwayat-pengajuan/validasi/${row.id}`;
+                    action += `
+                        <a href="${urlValidasi}"><button class="btn btn-success btn-action text-white ms-2">Validasi</button></a>
+                    `;
+                }
             }
 
             return action;
@@ -290,6 +366,33 @@
             return formatData;
         }
 
+        function detailPenghapusan(noDokumen, status, keterangan, urlDoc) {
+            $('#modalDetailPenghapusan #no_dokumen').html(noDokumen);
+            $('#modalDetailPenghapusan #alasan_pengajuan').html(keterangan);
+            let classStatus = '';
+
+            switch(status) {
+                case 'Disetujui':
+                    classStatus = 'success';
+                    break;
+
+                case 'Sedang Validasi':
+                    classStatus = 'warning';
+                    break;
+
+                case 'Ditolak':
+                    classStatus = 'danger';
+                    break;
+
+                default:
+                    classStatus = 'dark';
+            }
+
+            $('#modalDetailPenghapusan #status').html(`<span class="text-${classStatus} font-weight-bold fs-6" id="status">${status}</span>`);
+            $('#modalDetailPenghapusan #iframepdf').attr('src', urlDoc);
+            $('#modalDetailPenghapusan').modal('show');
+        }
+
 
         function fetchFormsData(params) {
             params.data = {...params.data, ...additonalQuery}
@@ -298,6 +401,39 @@
                 params.success(res)
             })
         }
+
+        function secureConfidential() {
+            // // prevent right click
+            // document.addEventListener('contextmenu', (e) => e.preventDefault());
+
+            // // prevent inspect shortcut
+            // document.addEventListener('keydown', (e) => {
+            //     if (
+            //         e.key === 'F12' ||
+            //         (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J')) ||
+            //         (e.ctrlKey && e.key === 'U')
+            //     ) {
+            //         e.preventDefault();
+            //     }
+            // });
+
+            // // prevent issue inspect element
+            // let start = Date.now();
+            // debugger;
+            // if (Date.now() - start > 100) {
+            //     window.location.href = '/doco/riwayat-pengajuan';
+            // }
+
+            document.addEventListener("keyup", function (e) {
+                var keyCode = e.keyCode ? e.keyCode : e.which ;
+                if (keyCode == 44) {
+                    alert('DETECTED!');
+                    return false;
+                }
+            });
+        }
+
+        secureConfidential();
 
         $('#filterSite').select2({
             theme: 'bootstrap-5', // Menggunakan tema Bootstrap 5

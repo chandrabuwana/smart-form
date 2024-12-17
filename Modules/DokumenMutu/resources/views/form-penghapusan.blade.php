@@ -80,7 +80,7 @@
 
                 <div class="card-footer pt-0">
                     <div class="d-flex align-items-center">
-                        <button class="btn btn-primary ms-auto uploadBtn" id="btnSubmitForm">
+                        <button class="btn btn-primary ms-auto uploadBtn" id="btnSubmitForm" disabled>
                             <i class="fas fa-save"></i>
                             Submit Form
                         </button>
@@ -103,6 +103,10 @@
                     didOpen: () => Swal.showLoading()
                 });
 
+                $('#site').val('');
+                $('#judulDokumen').val('');
+                $('#jenisDokumen').val('');
+
                 $.ajax({
                     url: `{{ route('dokumen-mutu.detail') }}?no_dokumen=${ $('#noDokumen').val().trim() }`,
                     headers: {
@@ -112,9 +116,20 @@
                     dataType: 'json',
                     success: function(response) {
                         Swal.close();
-                        $('#site').val(response.NamaSite);
-                        $('#judulDokumen').val(response.judul_dokumen);
-                        $('#jenisDokumen').val(response.jenis_dokumen);
+                        if( Object.keys(response).length == 0 ) {
+                            $('#btnSubmitForm').attr('disabled', true);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: `Nomor dokumen yang anda masukkan tidak terdaftar`,
+                            });
+
+                        } else {
+                            $('#btnSubmitForm').removeAttr('disabled');
+                            $('#site').val(response.NamaSite);
+                            $('#judulDokumen').val(response.judul_dokumen);
+                            $('#jenisDokumen').val(response.jenis_dokumen);
+                        }
                     },
                     error: function(xhr, ajaxOptions, thrownError) {
                         console.error(thrownError);

@@ -112,6 +112,10 @@
                     didOpen: () => Swal.showLoading()
                 });
 
+                $('#site').val('');
+                $('#judulDokumen').val('');
+                $('#jenisDokumen').val('');
+
                 $.ajax({
                     url: `{{ route('dokumen-mutu.detail') }}?no_dokumen=${ $('#noDokumen').val().trim() }`,
                     headers: {
@@ -121,9 +125,19 @@
                     dataType: 'json',
                     success: function(response) {
                         Swal.close();
-                        $('#site').val(response.NamaSite);
-                        $('#judulDokumen').val(response.judul_dokumen);
-                        $('#jenisDokumen').val(response.jenis_dokumen);
+
+                        if( Object.keys(response).length == 0 ) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: `Nomor dokumen yang anda masukkan tidak terdaftar`,
+                            });
+
+                        } else {
+                            $('#site').val(response.NamaSite);
+                            $('#judulDokumen').val(response.judul_dokumen);
+                            $('#jenisDokumen').val(response.jenis_dokumen);
+                        }
                     },
                     error: function(xhr, ajaxOptions, thrownError) {
                         console.error(thrownError);
