@@ -141,12 +141,17 @@
         }
 
         function actionFormatter(value, row, index) {
-            return `<a href="/ic/training/cross-check-dtl/${row.trj_id}"> <button class="btn btn-primary btn-action-format"><i class="bi bi-info-circle-fill"></i></button> </a>`
+            let btnCrossCheck = `<a href="/ic/training/cross-check-dtl/${row.trj_id}"> <button class="btn btn-primary btn-action-format"><i class="bi bi-info-circle-fill"></i></button></a>`
+            let btnJustifikasi= row.status != 0 ? `<a href="/ic/training/justifikasi/${row.trj_id}"> <button class="btn btn-action-format" style="background: #1A2365;"><i class="bi bi-arrow-right-circle text-white"></i></button> </a>` : ''
+            return '<div style="display: flex; gap:6px; justify-content: center;">'+ btnCrossCheck + btnJustifikasi + '</div>'
         }
 
         function statusFormatter(value, row, index) {
-            if(value == 1) return '<button class="btn btn-success btn-no-action btn-action-format">Done</button>'
-            if(value == 0) return '<button class="btn btn-warning btn-no-action btn-action-format">Crosscheck</button>'
+            if(value == 1) return '<button class="btn btn-success btn-no-action btn-action-format">On Progres Justifikasi</button>'
+            if(value == 2) return '<button class="btn btn-success btn-no-action btn-action-format">Appoval Justifikasi</button>'
+            if(value == 3) return '<button class="btn btn-success btn-no-action btn-action-format">Done Justifikasi</button>'
+            if(value == -2) return '<button class="btn btn-success btn-no-action btn-action-format">Rejected Justifikasi</button>'
+            if(value == 0) return '<button class="btn btn-warning btn-no-action btn-action-format">On Progres Komitmen</button>'
             
             return value
         }

@@ -10,6 +10,7 @@
             display: block;
             width: auto;
             float: none;
+            margin-left: 8px;
         }
         fieldset {
             padding: 4px 10px 8px 10px;

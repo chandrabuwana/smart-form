@@ -317,6 +317,9 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
 
         Route::get('dashboard-komitmen', [PengajuanTrainingController::class, 'DashboardKomitmen'])->name('ic.training.dashboard-komitmen');
         Route::get('dashboard-komitmen-data', [PengajuanTrainingController::class, 'DataDashboardKomitmen'])->name('ic.training.dashboard-komitmen-data');
+        Route::get('justifikasi/{id}', [PengajuanTrainingController::class, 'Justifikasi'])->name('ic.training.dashboard-justifikasi');
+        Route::post('submit-justifikasi', [PengajuanTrainingController::class, 'SubmitJustifikasi'])->name('ic.training.submit-justifikasi');
+        Route::post('justifikasi-approve', [PengajuanTrainingController::class, 'JustifikasiApprove'])->name('ic.training.justifikasi-approve');
 
         Route::prefix('helper')->group(function() {
             Route::get('mtraining', [HelperTraininingController::class, 'GetMTraining'])->name('ic.training.helper.master');
