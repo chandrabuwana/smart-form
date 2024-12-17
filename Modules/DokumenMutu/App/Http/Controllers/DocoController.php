@@ -128,6 +128,19 @@ class DocoController extends Controller
                         }
                     }
 
+                    if($item->jenis_pengajuan == 'Pembuatan') {
+                        $filePath = DB::table(self::T_VERSI_DOCO)->select(self::T_VERSI_DOCO . '.file_path')
+                            ->where('id_pengajuan_dokumen', $item->id)
+                            ->orderBy('no_versi', 'desc')->first()
+                                ->file_path ?? '';
+
+                    } else {
+                        $filePath = DB::table(self::T_DOCO)->select('file_path')
+                            ->where('no_dokumen', $item->no_dokumen)->where('status', 'Aktif')
+                            ->first()->file_path ?? '';
+                    }
+
+                    $item->file_path = url('storage/' . $filePath);
                     return $item;
                 });
 

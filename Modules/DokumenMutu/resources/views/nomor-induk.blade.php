@@ -95,7 +95,6 @@
                                 <select class="form-control form-select" name="filterStatus" id="filterStatus" required>
                                     <option value="Aktif" selected>Aktif</option>
                                     <option value="Kadaluarsa">Kadaluarsa</option>
-                                    <option value="Sudah Revisi">Sudah Revisi</option>
                                 </select>
                             </div>
                         </div>
@@ -397,10 +396,10 @@
 
         function statusFormatter(value, row, index) {
             var formatData = ''
-            if(value == 'Aktif' || value == 'Sudah Revisi') {
-                formatData = `<span class="text-success fw-bold">${value}</span>`
+            if(value == 'Aktif') {
+                formatData = `<span class="text-success fw-bold">Aktif</span>`
             } else if(value == 'Kadaluarsa') {
-                formatData = '<span class="text-danger fw-bold">Sedang Validasi</span>'
+                formatData = '<span class="text-danger fw-bold">Kadaluarsa</span>'
             }
 
             return formatData;

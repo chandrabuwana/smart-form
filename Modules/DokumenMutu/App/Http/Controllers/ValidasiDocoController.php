@@ -208,4 +208,34 @@ class ValidasiDocoController extends Controller
             return redirect()->back()->with('error', 'Terjadi kesalahan, mohon coba beberapa saat lagi');
         }
     }
+
+    public function validPenghapusan(Request $request)
+    {
+        $id = $request->input('id_pengajuan_dokumen');
+        $status = $request->input('statusValidasiPenghapusan');
+        $keterangan = $request->input('keterangan');
+
+        DB::beginTransaction();
+        try {
+            $pengajuanDoco = DB::table(self::T_PENGAJUAN_DOCO)->find($id, ['no_dokumen']);
+
+            DB::table(self::T_PENGAJUAN_DOCO)->where('id', $id)->update([
+                'status' => $status == '1' ? 'Disetujui' : 'Ditolak',
+                'keterangan_status' => $keterangan
+            ]);
+
+            if($status == '1') {
+                DB::table(self::T_DOCO)->where('no_dokumen', $pengajuanDoco->no_dokumen)->update([
+                    'status' => 'Kadaluarsa'
+                ]);
+            }
+
+            DB::commit();
+            return redirect()->back()->with('success', 'Berhasil submit validasi penghapusan dokumen!');
+
+        } catch(\Throwable $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Terjadi kesalahan, mohon coba beberapa saat lagi');
+        }
+    }
 }

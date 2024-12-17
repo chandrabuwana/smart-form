@@ -48,6 +48,13 @@
             border-bottom: 1px solid rgba(85, 83, 83, 0.534) !important;
             padding-top: 8.5px !important;
         }
+
+        .input-text {
+            border: 1px solid #d2d6da !important;
+            border-color: rgb(188, 188, 188);
+            padding-left: 0.4rem !important;
+            padding-right: 0.4rem !important;
+        }
     </style>
 @endsection
 
@@ -236,11 +243,67 @@
                             <span class="font-weight-bold">:</span>
                         </div>
                         <div class="col-md-8">
-                            <span id="alasan_pengajuan">Hello World!</span>
+                            <span id="alasan_pengajuan" class="fs-6">Hello World!</span>
                         </div>
                     </div>
 
                     <iframe id="iframepdf" src="" width="100%" height="700px"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalValidasiPenghapusan" aria-hidden="true" aria-labelledby="modalValidasiPenghapusanLabel"
+        tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="row">
+                        <div class="col">
+                            <h5 class="modal-title" id="modalValidasiPenghapusanLabel">Validasi Penghapusan</h5>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
+                </div>
+
+                <div class="modal-body">
+                    <form action="{{ route('dokumen-mutu.validasi.penghapusan') }}" method="post">
+                        <input type="hidden" name="id_pengajuan_dokumen">
+                        @csrf
+
+                        <div class="row mb-3 align-items-start">
+                            <div class="col-md-4">
+                                <label class="ms-0 fs-6">Status</label>
+                            </div>
+                            <div class="col-md-8 d-flex flex-column">
+                                <div class="form-check ps-0">
+                                    <input class="form-check-input" type="radio" name="statusValidasiPenghapusan" id="statusValidasiPenghapusanReject" value="0">
+                                    <label class="custom-control-label" for="statusValidasiPenghapusanReject">Tidak Setuju</label>
+                                </div>
+
+                                <div class="form-check ps-0">
+                                    <input class="form-check-input" type="radio" name="statusValidasiPenghapusan" id="statusValidasiPenghapusanAcc" value="1">
+                                    <label class="custom-control-label" for="statusValidasiPenghapusanAcc">Setuju</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label class="ms-0 fs-6">Keterangan</label>
+                            </div>
+                            <div class="col-md-8">
+                                <textarea rows="3" class="form-control input-text" name="keterangan" id="keterangan" placeholder="--- Masukkan Keterangan ---" required></textarea>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center">
+                            <button type="submit" class="btn btn-primary ms-auto uploadBtn">
+                                <i class="fas fa-save"></i>
+                                Submit Form
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -327,7 +390,7 @@
             let action;
 
             if(row.jenis_pengajuan == 'Penghapusan') {
-                action = `<a href="javascript:detailPenghapusan('${ row.no_dokumen }', '${ row.status }', '${ row.alasan_pengajuan }');"><button class="btn btn-primary btn-action text-white">detail</button></a>`;
+                action = `<a href="javascript:detailPenghapusan('${ row.no_dokumen }', '${ row.status }', '${ row.alasan_pengajuan }', '${ row.file_path }');"><button class="btn btn-primary btn-action text-white">detail</button></a>`;
 
                 if(row.status == 'Belum Validasi') {
                     action += `
@@ -343,7 +406,7 @@
                 if(row.is_validate) {
                     const urlValidasi = `/doco/riwayat-pengajuan/validasi/${row.id}`;
                     action += `
-                        <a href="${urlValidasi}"><button class="btn btn-success btn-action text-white ms-2">Validasi</button></a>
+                        <a href="javascript:showModalValidasi;"><button class="btn btn-success btn-action text-white ms-2">Validasi</button></a>
                     `;
                 }
             }
@@ -393,6 +456,15 @@
             $('#modalDetailPenghapusan').modal('show');
         }
 
+        function showModalApprovePenghapusan(id) {
+            $('#modalValidasiPenghapusan [name=id_pengajuan_dokumen]').val(id);
+            $('#modalValidasiPenghapusan').modal('show');
+        }
+
+        $('#modalValidasiPenghapusan').on('hide.bs.modal', function() {
+            $('#modalValidasiPenghapusan [name=statusValidasiPenghapusan]:checked').prop('checked', false);
+            $('#modalValidasiPenghapusan [name=keterangan]').val('');
+        });
 
         function fetchFormsData(params) {
             params.data = {...params.data, ...additonalQuery}
