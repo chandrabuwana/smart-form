@@ -564,7 +564,7 @@
             })
             
             $("#table-komitmen").bootstrapTable('getData').forEach((data) => {
-                if(data.status) bodyReq.listKomitmen.push(data.komitmen_id)
+                if(data.komitmen_status == -1 || data.komitmen_status == 1) bodyReq.listKomitmen.push(data.komitmen_id)
             })
             // console.log(bodyReq)
             // return
