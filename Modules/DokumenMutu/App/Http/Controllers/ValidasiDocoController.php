@@ -187,7 +187,8 @@ class ValidasiDocoController extends Controller
                 }
 
                 DB::table(self::T_PENGAJUAN_DOCO)->where('id', $doco->id)->update([
-                    'status' => 'Disetujui'
+                    'status' => 'Disetujui',
+                    'updated_at' => now()
                 ]);
 
                 DB::commit();
@@ -221,7 +222,8 @@ class ValidasiDocoController extends Controller
 
             DB::table(self::T_PENGAJUAN_DOCO)->where('id', $id)->update([
                 'status' => $status == '1' ? 'Disetujui' : 'Ditolak',
-                'keterangan_status' => $keterangan
+                'keterangan_status' => $keterangan,
+                'updated_at' => now()
             ]);
 
             if($status == '1') {
@@ -269,6 +271,10 @@ class ValidasiDocoController extends Controller
         try {
             $nik = session('user_id');
 
+            DB::table(self::T_PENGAJUAN_DOCO)->where('id', $id)->update([
+                'updated_at' => now()
+            ]);
+
             $feedbackId = DB::table(self::T_FEEDBACK_VALIDASI)->insertGetId([
                 'id_versi' => $idVersi,
                 'keterangan' => $keterangan,
@@ -294,7 +300,6 @@ class ValidasiDocoController extends Controller
 
         } catch(\Throwable $e) {
             DB::rollBack();
-            dd($e);
             return response()->json([
                 'code' => 500,
                 'message' => 'Terjadi kesalahan, mohon coba beberapa saat lagi'

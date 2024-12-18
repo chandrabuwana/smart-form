@@ -65,8 +65,8 @@
             text-align: center;
             display: none;
             padding: 5px;
-            height: 820px;
-            overflow: auto;
+            /*height: 820px;
+            overflow: auto;*/
         }
 
         .input-text {
@@ -74,6 +74,12 @@
             border-color: rgb(188, 188, 188);
             padding-left: 0.4rem !important;
             padding-right: 0.4rem !important;
+        }
+
+        .col-feedback {
+            position: sticky !important;
+            top: 10px !important;
+            z-index: 1000 !important;
         }
     </style>
 @endsection
@@ -104,7 +110,8 @@
 
                             @if(isset($catatanValidates[0]))
                                 <span class="badge bg-warning mt-2" style="cursor: pointer; width: fit-content;"
-                                    data-bs-toggle="tooltip" title="{{ $catatanValidates[0] }}">
+                                    data-bs-toggle="popover" title="Catatan"
+                                    data-bs-placement="bottom" data-bs-content="{{ $catatanValidates[0] }}">
                                     <i class="fas fa-exclamation-circle me-1"></i>
                                     <small class="text-white">Catatan</small>
                                 </span>
@@ -119,7 +126,8 @@
 
                             @if(isset($catatanValidates[1]))
                                 <span class="badge bg-warning mt-2" style="cursor: pointer;"
-                                    data-bs-toggle="tooltip" title="{{ $catatanValidates[1] }}">
+                                    data-bs-toggle="popover" title="Catatan"
+                                    data-bs-placement="bottom" data-bs-content="{{ $catatanValidates[1] }}">
                                     <i class="fas fa-exclamation-circle me-1"></i>
                                     <small class="text-white">Catatan</small>
                                 </span>
@@ -147,32 +155,34 @@
                         </div>
 
                         <div class="col-md-4">
-                            @if($feedbacks->count() == 0)
-                                <div class="d-flex flex-column justify-content-center align-items-center pt-5">
-                                    <i class="fas fa-exclamation-triangle text-warning" style="font-size: 3em;"></i>
-                                    <p class="mb-0 mt-3">Belum Ada Feedback</p>
-                                </div>
+                            <div class="col-feedback">
+                                @if($feedbacks->count() == 0)
+                                    <div class="d-flex flex-column justify-content-center align-items-center pt-5">
+                                        <i class="fas fa-exclamation-triangle text-warning" style="font-size: 3em;"></i>
+                                        <p class="mb-0 mt-3">Belum Ada Feedback</p>
+                                    </div>
 
-                            @else
-                                <div class="feedback-parent">
-                                    @foreach($feedbacks as $feedback)
-                                        <div class="px-4 pt-2 pb-3 rounded bg-dark text-white shadow">
-                                            <div class="text-end mb-2">
-                                                <small>{{ date('Y/m/d H:i', strtotime($feedback->created_at)) }}</small>
+                                @else
+                                    <div class="feedback-parent">
+                                        @foreach($feedbacks as $feedback)
+                                            <div class="px-4 pt-2 pb-3 rounded bg-dark text-white shadow">
+                                                <div class="text-end mb-2">
+                                                    <small>{{ date('Y/m/d H:i', strtotime($feedback->created_at)) }}</small>
+                                                </div>
+
+                                                <div class="d-flex align-items-center text-lg" style="line-height: 1.2;">
+                                                    <i class="fas fa-user me-3 fa-lg"></i>
+                                                    <span class="font-weight-bold">{{ $feedback->NamaKaryawan }}</span>
+                                                </div>
+
+                                                <p class="mb-0 mt-3" style="line-height: 1.4; text-align: justify;">
+                                                    {!! nl2br($feedback->keterangan) !!}
+                                                </p>
                                             </div>
-
-                                            <div class="d-flex align-items-center text-lg" style="line-height: 1.2;">
-                                                <i class="fas fa-user me-3 fa-lg"></i>
-                                                <span class="font-weight-bold">{{ $feedback->NamaKaryawan }}</span>
-                                            </div>
-
-                                            <p class="mb-0 mt-3" style="line-height: 1.4; text-align: justify;">
-                                                {!! nl2br($feedback->keterangan) !!}
-                                            </p>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            @endif
+                                        @endforeach
+                                    </div>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -254,6 +264,12 @@
     @endif
 
     <script>
+        $( function() {
+            $('body').popover({
+                selector: '[data-bs-toggle="popover"]'
+            });
+        });
+
         let pdfjsLib = window['pdfjs-dist/build/pdf'];
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.worker.min.js';
         let pdfDoc = null;

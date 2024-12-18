@@ -59,8 +59,6 @@
             text-align: center;
             display: none;
             padding: 5px;
-            /* height: 820px; */
-            /* overflow: auto; */
         }
 
         .input-text {
@@ -102,24 +100,6 @@
             position: relative;
             z-index: 999 !important;
         }
-
-        /* .col-feedback {
-            position: sticky !important;
-            top: 10px !important;
-        }
-
-        body.editor-enabled .col-feedback {
-            position: relative !important;
-            top: 0 !important;
-        }
-
-        body.editor-enabled .topbar-editor {
-            position: sticky !important;
-            top: 10px;
-            z-index: 1000 !important;
-            background-color: white !important;
-            width: fit-content !important;
-        } */
 
         .col-feedback {
             position: sticky !important;
@@ -235,33 +215,6 @@
 
                                 <div class="feedback-parent mt-3">
                                 </div>
-
-                                {{-- @if($feedbacks->count() == 0)
-                                    <div class="d-flex flex-column justify-content-center align-items-center pt-5 mt-3 empty-feedback">
-                                        <i class="fas fa-exclamation-triangle text-warning" style="font-size: 3em;"></i>
-                                        <p class="mb-0 mt-3">Belum Ada Feedback</p>
-                                    </div>
-
-                                @else
-                                    <div class="feedback-parent mt-3">
-                                        @foreach($feedbacks as $feedback)
-                                            <div class="px-4 pt-2 pb-3 rounded bg-dark text-white shadow">
-                                                <div class="text-end mb-2">
-                                                    <small>{{ date('Y/m/d H:i', strtotime($feedback->created_at)) }}</small>
-                                                </div>
-
-                                                <div class="d-flex align-items-center text-lg" style="line-height: 1.2;">
-                                                    <i class="fas fa-user me-3 fa-lg"></i>
-                                                    <span class="font-weight-bold">{{ $feedback->NamaKaryawan }}</span>
-                                                </div>
-
-                                                <p class="mb-0 mt-3" style="line-height: 1.4; text-align: justify;">
-                                                    {!! nl2br($feedback->keterangan) !!}
-                                                </p>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                @endif --}}
                             </div>
                         </div>
                     </div>

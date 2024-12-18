@@ -9,6 +9,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Modules\SmartForm\Service\AlarmAPIService;
 
 class FormDocoController extends Controller
 {
@@ -34,7 +35,7 @@ class FormDocoController extends Controller
         $judulDokumen = $request->input('judulDokumen');
         $alasanPengajuan = $request->input('alasanPengajuan');
 
-        $pemohon = DB::table(self::T_KARYAWAN)->select('KodeDP', self::T_JABATAN . '.Nama AS NamaJB')
+        $pemohon = DB::table(self::T_KARYAWAN)->select('KodeDP', self::T_JABATAN . '.Nama AS NamaJB', self::T_KARYAWAN . '.Telp', self::T_KARYAWAN . '.Nama AS NamaKaryawan')
             ->join(self::T_JABATAN, self::T_JABATAN . '.KodeJB', self::T_KARYAWAN . '.KodeJB')
             ->where('KodeST', $site)
             ->where('NIK', $nikPemohon)
@@ -104,7 +105,10 @@ class FormDocoController extends Controller
                 'jenis_pengajuan' => 'Pembuatan',
                 'alasan_pengajuan' => $alasanPengajuan,
                 'status' => 'Belum Validasi',
-                'kode_site' => $site
+                'kode_site' => $site,
+                'created_at' => now(),
+                'updated_at' => now(),
+                'due_date' => date('Y-m-d', strtotime('+3 days'))
             ]);
 
             DB::table(self::T_VERSI_DOCO)->insert([
@@ -112,6 +116,22 @@ class FormDocoController extends Controller
                 'no_versi' => 1,
                 'file_path' => $filePath,
             ]);
+
+            $today = date('Y/m/d');
+            $url = route('dokumen-mutu.validasi.index', ['id' => $pengajuan]);
+            $message = "📢 Notifikasi Dokumen Mutu\n
+Halo Bapak/Ibu,\n
+Dokumen mutu baru telah dibuat dengan rincian:\n
+Jenis Dokumen:  {$jenisDokumen}
+Nama Dokumen: {$judulDokumen}
+Nomor Dokumen: {$noDokumen}
+Tanggal: {$today}
+Dibuat oleh: {$pemohon->NamaKaryawan}
+Silakan cek dokumen di sini: {$url}\n
+Terima kasih.";
+
+            $alarmService = new AlarmAPIService();
+            $alarmService->sendMessage(env('DOCO_ALARM_OD'), $message);
 
             DB::commit();
             return redirect(route('dokumen-mutu.riwayat-pengajuan'))->with('success', 'Berhasil submit pengajuan dokumen mutu!');
@@ -135,7 +155,7 @@ class FormDocoController extends Controller
         $dokumen = $request->file('dokumen');
 
         try {
-            $doco = DB::table(self::T_DOCO)->select(self::T_KARYAWAN . '.KodeDP', 'nik_pembuat', 'judul_dokumen', 'jenis_dokumen', 'kode_site', self::T_JABATAN . '.Nama AS NamaJB')
+            $doco = DB::table(self::T_DOCO)->select(self::T_KARYAWAN . '.KodeDP', 'nik_pembuat', 'judul_dokumen', 'jenis_dokumen', 'kode_site', self::T_JABATAN . '.Nama AS NamaJB', self::T_KARYAWAN . '.Nama AS NamaKaryawan')
                 ->join(self::T_KARYAWAN, self::T_KARYAWAN . '.NIK', self::T_DOCO . '.nik_pembuat')
                 ->join(self::T_JABATAN, self::T_JABATAN . '.KodeJB', self::T_KARYAWAN . '.KodeJB')
                 ->where('no_dokumen', $noDokumen)->first();
@@ -178,7 +198,10 @@ class FormDocoController extends Controller
                 'jenis_pengajuan' => 'Revisi',
                 'alasan_pengajuan' => $alasanPengajuan,
                 'status' => 'Belum Validasi',
-                'kode_site' => $doco->kode_site
+                'kode_site' => $doco->kode_site,
+                'created_at' => now(),
+                'updated_at' => now(),
+                'due_date' => date('Y-m-d', strtotime('+3 days'))
             ]);
 
             DB::table(self::T_VERSI_DOCO)->insert([
@@ -186,6 +209,22 @@ class FormDocoController extends Controller
                 'no_versi' => 1,
                 'file_path' => $filePath,
             ]);
+
+            $today = date('Y/m/d');
+            $url = route('dokumen-mutu.validasi.index', ['id' => $pengajuan]);
+            $message = "📢 Notifikasi Dokumen Mutu\n
+Halo Bapak/Ibu,\n
+Pengajuan revisi Dokumen Mutu telah dibuat dengan rincian:\n
+Jenis Dokumen:  {$doco->jenis_dokumen}
+Nama Dokumen: {$doco->judul_dokumen}
+Nomor Dokumen: {$doco->no_dokumen}
+Tanggal: {$today}
+Dibuat oleh: {$doco->NamaKaryawan}
+Silakan cek dokumen di sini: {$url}\n
+Terima kasih.";
+
+            $alarmService = new AlarmAPIService();
+            $alarmService->sendMessage(env('DOCO_ALARM_OD'), $message);
 
             DB::commit();
             return redirect()->back()->with('success', 'Berhasil submit revisi dokumen mutu!');
@@ -249,7 +288,7 @@ class FormDocoController extends Controller
             //     return redirect()->back()->with('error', 'Mohon maaf anda tidak dapat untuk membuat pengajuan dokumen mutu');
             // }
 
-            DB::table(self::T_PENGAJUAN_DOCO)->insertGetId([
+            $pengajuan = DB::table(self::T_PENGAJUAN_DOCO)->insertGetId([
                 'nik_pemohon' => $doco->nik_pembuat,
                 'no_dokumen' => $noDokumen,
                 'judul_dokumen' => $doco->judul_dokumen,
@@ -257,8 +296,27 @@ class FormDocoController extends Controller
                 'jenis_pengajuan' => 'Penghapusan',
                 'alasan_pengajuan' => $alasanPengajuan,
                 'status' => 'Belum Validasi',
-                'kode_site' => $doco->kode_site
+                'kode_site' => $doco->kode_site,
+                'created_at' => now(),
+                'updated_at' => now(),
+                'due_date' => date('Y-m-d', strtotime('+3 days'))
             ]);
+
+            $today = date('Y/m/d');
+            $url = route('dokumen-mutu.validasi.index', ['id' => $pengajuan]);
+            $message = "📢 Notifikasi Dokumen Mutu\n
+Halo Bapak/Ibu,\n
+Pengajuan penghapusan Dokumen Mutu telah dibuat dengan rincian:\n
+Jenis Dokumen:  {$doco->jenis_dokumen}
+Nama Dokumen: {$doco->judul_dokumen}
+Nomor Dokumen: {$doco->no_dokumen}
+Tanggal: {$today}
+Dibuat oleh: {$doco->NamaKaryawan}
+Silakan cek dokumen di sini: {$url}\n
+Terima kasih.";
+
+            $alarmService = new AlarmAPIService();
+            $alarmService->sendMessage(env('DOCO_ALARM_OD'), $message);
 
             DB::commit();
             return redirect()->back()->with('success', 'Berhasil submit penghapusan dokumen mutu!');
