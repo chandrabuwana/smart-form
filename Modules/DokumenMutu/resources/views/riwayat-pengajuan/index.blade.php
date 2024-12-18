@@ -406,7 +406,7 @@
                 if(row.is_validate) {
                     const urlValidasi = `/doco/riwayat-pengajuan/validasi/${row.id}`;
                     action += `
-                        <a href="javascript:showModalValidasi;"><button class="btn btn-success btn-action text-white ms-2">Validasi</button></a>
+                        <a href="${urlValidasi}"><button class="btn btn-success btn-action text-white ms-2">Validasi</button></a>
                     `;
                 }
             }

@@ -43,28 +43,28 @@ class FormDocoController extends Controller
             return redirect()->back()->with('error', 'NIK pemohon tidak terdaftar');
         }
 
-        if($site == 'JKT') {
-            if($jenisDokumen == 'SOP') {
-                $isValidPemohon = preg_match('/kepala seksi/i', $pemohon->NamaJB) || preg_match('/kepala bagian/i', $pemohon->NamaJB) || preg_match('/kepala dept/i', $pemohon->NamaJB);
-            } else if($jenisDokumen == 'STD' || $jenisDokumen == 'WI') {
-                $isValidPemohon = preg_match('/kepala seksi/i', $pemohon->NamaJB) || preg_match('/kepala bagian/i', $pemohon->NamaJB);
-            } else {
-                $isValidPemohon = true;
-            }
+        // if($site == 'JKT') {
+        //     if($jenisDokumen == 'SOP') {
+        //         $isValidPemohon = preg_match('/kepala seksi/i', $pemohon->NamaJB) || preg_match('/kepala bagian/i', $pemohon->NamaJB) || preg_match('/kepala dept/i', $pemohon->NamaJB);
+        //     } else if($jenisDokumen == 'STD' || $jenisDokumen == 'WI') {
+        //         $isValidPemohon = preg_match('/kepala seksi/i', $pemohon->NamaJB) || preg_match('/kepala bagian/i', $pemohon->NamaJB);
+        //     } else {
+        //         $isValidPemohon = true;
+        //     }
 
-        } else {
-            if($jenisDokumen == 'SOP') {
-                $isValidPemohon = preg_match('/kepala bagian/i', $pemohon->NamaJB);
-            } else if($jenisDokumen == 'STD' || $jenisDokumen == 'WI') {
-                $isValidPemohon = preg_match('/kepala seksi/i', $pemohon->NamaJB) || preg_match('/kepala bagian/i', $pemohon->NamaJB);
-            } else {
-                $isValidPemohon = true;
-            }
-        }
+        // } else {
+        //     if($jenisDokumen == 'SOP') {
+        //         $isValidPemohon = preg_match('/kepala bagian/i', $pemohon->NamaJB);
+        //     } else if($jenisDokumen == 'STD' || $jenisDokumen == 'WI') {
+        //         $isValidPemohon = preg_match('/kepala seksi/i', $pemohon->NamaJB) || preg_match('/kepala bagian/i', $pemohon->NamaJB);
+        //     } else {
+        //         $isValidPemohon = true;
+        //     }
+        // }
 
-        if(!$isValidPemohon) {
-            return redirect()->back()->with('error', 'Mohon maaf anda tidak dapat untuk membuat pengajuan dokumen mutu');
-        }
+        // if(!$isValidPemohon) {
+        //     return redirect()->back()->with('error', 'Mohon maaf anda tidak dapat untuk membuat pengajuan dokumen mutu');
+        // }
 
         $getCounting = DB::table(self::T_PENGAJUAN_DOCO)->select('no_dokumen')
             ->join(self::T_KARYAWAN, self::T_KARYAWAN . '.NIK', '=', self::T_PENGAJUAN_DOCO . '.nik_pemohon')

@@ -238,4 +238,84 @@ class ValidasiDocoController extends Controller
             return redirect()->back()->with('error', 'Terjadi kesalahan, mohon coba beberapa saat lagi');
         }
     }
+
+    public function reject($id, Request $request)
+    {
+        DB::beginTransaction();
+
+        try {
+            DB::table(self::T_PENGAJUAN_DOCO)->where('id', $id)->update([
+                'status' => 'Ditolak',
+            ]);
+
+            DB::commit();
+            return redirect(route('dokumen-mutu.riwayat-pengajuan'))->with('success', 'Berhasil menolak pengajuan dokumen');
+
+        } catch(\Throwable $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Terjadi kesalahan, mohon coba beberapa saat lagi');
+        }
+    }
+
+    public function storeKomentar($id, Request $request)
+    {
+        $id = $request->input('id');
+        $idVersi = $request->input('id_versi');
+        $keterangan = $request->input('keterangan');
+        $vertical = intval($request->input('vertical'));
+        $horizontal = intval($request->input('horizontal'));
+
+        DB::beginTransaction();
+        try {
+            $nik = session('user_id');
+
+            $feedbackId = DB::table(self::T_FEEDBACK_VALIDASI)->insertGetId([
+                'id_versi' => $idVersi,
+                'keterangan' => $keterangan,
+                'nik_validator' => $nik,
+                'vertical' => $vertical,
+                'horizontal' => $horizontal,
+                'created_at' => now()
+            ]);
+
+            $user = DB::table(self::T_KARYAWAN)->where('NIK', $nik)->first(['Nama']);
+            DB::commit();
+
+            return response()->json([
+                'code' => 200,
+                'message' => 'Berhasil menyimpan komentar baru!',
+                'data' => [
+                    'id' => $feedbackId,
+                    'nama_validator' => $user->Nama,
+                    'keterangan' => nl2br($keterangan),
+                    'created_at' => date('Y/m/d H:i', strtotime(now()))
+                ]
+            ]);
+
+        } catch(\Throwable $e) {
+            DB::rollBack();
+            dd($e);
+            return response()->json([
+                'code' => 500,
+                'message' => 'Terjadi kesalahan, mohon coba beberapa saat lagi'
+            ]);
+        }
+    }
+
+    public function getFeedback($id, Request $request)
+    {
+        $feedbacks = DB::table(self::T_FEEDBACK_VALIDASI)->select(self::T_FEEDBACK_VALIDASI . '.*', self::T_KARYAWAN . '.Nama AS NamaKaryawan')
+            ->join(self::T_KARYAWAN, self::T_KARYAWAN . '.NIK', self::T_FEEDBACK_VALIDASI . '.nik_validator')
+            ->join(self::T_VERSI_DOCO, self::T_VERSI_DOCO . '.id', self::T_FEEDBACK_VALIDASI . '.id_versi')
+            ->where('id_pengajuan_dokumen', $id)
+            ->orderBy('id', 'desc')->get()
+            ->map( function($item) {
+                $item->created_at = date('Y/m/d H:i', strtotime($item->created_at));
+                $item->keterangan = nl2br($item->keterangan);
+
+                return $item;
+            });
+
+        return response()->json($feedbacks);
+    }
 }

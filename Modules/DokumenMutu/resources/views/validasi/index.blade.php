@@ -59,8 +59,8 @@
             text-align: center;
             display: none;
             padding: 5px;
-            height: 820px;
-            overflow: auto;
+            /* height: 820px; */
+            /* overflow: auto; */
         }
 
         .input-text {
@@ -73,10 +73,79 @@
         #modalApprove .modal-dialog {
             --bs-modal-width: 700px !important;
         }
+
+        #backdrop-keterangan {
+            display: none;
+            position: fixed;
+            z-index: 997 !important;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.2);
+            cursor: not-allowed !important;
+        }
+
+        #backdrop-keterangan.is-show {
+            display: block !important;
+        }
+
+        body.editor-enabled #pdf_container {
+            position: relative;
+            cursor: pointer !important;
+            z-index: 999 !important;
+        }
+
+        body.editor-enabled #action-editor {
+            position: relative;
+            z-index: 999 !important;
+        }
+
+        /* .col-feedback {
+            position: sticky !important;
+            top: 10px !important;
+        }
+
+        body.editor-enabled .col-feedback {
+            position: relative !important;
+            top: 0 !important;
+        }
+
+        body.editor-enabled .topbar-editor {
+            position: sticky !important;
+            top: 10px;
+            z-index: 1000 !important;
+            background-color: white !important;
+            width: fit-content !important;
+        } */
+
+        .col-feedback {
+            position: sticky !important;
+            top: 10px !important;
+            z-index: 1000 !important;
+        }
+
+        #btn-action-editor {
+            position: sticky !important;
+            top: 10px;
+            z-index: 1000 !important;
+        }
+
+        #modalAddKomentar {
+            z-index: 1090 !important;
+        }
+
+        body.editor-enabled .swal2-container {
+            z-index: 1100 !important;
+        }
     </style>
 @endsection
 
 @section('content')
+    <div id="backdrop-keterangan"></div>
+
     <div class="row">
         <div class="col-12">
             <div class="card my-4">
@@ -103,7 +172,7 @@
                         </div>
                     </div>
 
-                    <div class="d-flex align-items-center mb-3">
+                    <div class="d-flex align-items-center mb-3 topbar-editor">
                         <h5 class="me-3 mb-0">
                             No Versi :
                             <span class="badge bg-gradient-dark ms-1">{{ $lastVersion->no_versi }}</span>
@@ -115,54 +184,85 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-8">
+                        <div class="col-md-8 position-relative">
                             <div id="pdf_container"></div>
                         </div>
 
-                        <div class="col-md-4">
-                            @if($isValidate)
-                                <div class="row justify-content-end">
-                                    <div class="col-md-6">
-                                        <button type="button" class="btn btn-primary btn-action text-white w-100">
-                                            <i class="fas fa-plus-square fa-lg me-1"></i> Catatan
-                                        </button>
-                                    </div>
+                        <div class="col-md-4" style="z-index: 1000;">
+                            <div class="col-feedback">
+                                <div id="btn-action-editor" class="d-none">
+                                    <div class="d-flex align-items-center">
+                                        <a href="javascript:;" class="btn bg-gradient-danger btn-action text-white mb-0" onclick="disableKeteranganMode()">
+                                            <i class="fas fa-times-circle fa-lg me-2"></i> Tutup
+                                        </a>
 
-                                    <div class="col-md-6">
-                                        <button type="button" class="btn btn-success btn-action text-white w-100"
-                                            onclick="showApproveModal()">
-                                            <i class="fas fa-check-circle fa-lg me-1"></i> Setujui
-                                        </button>
+                                        {{-- <a href="javascript:;" class="btn bg-gradient-success btn-action text-white mb-0 ms-3" onclick="saveKeterangan()">
+                                            <i class="fas fa-check-circle fa-lg"></i>
+                                        </a> --}}
                                     </div>
                                 </div>
-                            @endif
 
-                            @if($feedbacks->count() == 0)
-                                <div class="d-flex flex-column justify-content-center align-items-center pt-5 mt-3">
-                                    <i class="fas fa-exclamation-triangle text-warning" style="font-size: 3em;"></i>
-                                    <p class="mb-0 mt-3">Belum Ada Feedback</p>
-                                </div>
-
-                            @else
-                                <div class="feedback-parent mt-3">
-                                    @foreach($feedbacks as $feedback)
-                                        <div class="px-4 pt-2 pb-3 rounded bg-dark text-white shadow">
-                                            <div class="text-end mb-2">
-                                                <small>{{ date('Y/m/d H:i', strtotime($feedback->created_at)) }}</small>
-                                            </div>
-
-                                            <div class="d-flex align-items-center text-lg" style="line-height: 1.2;">
-                                                <i class="fas fa-user me-3 fa-lg"></i>
-                                                <span class="font-weight-bold">{{ $feedback->NamaKaryawan }}</span>
-                                            </div>
-
-                                            <p class="mb-0 mt-3" style="line-height: 1.4; text-align: justify;">
-                                                {!! nl2br($feedback->keterangan) !!}
-                                            </p>
+                                @if($isValidate)
+                                    <div class="row justify-content-end" id="btn-action-validate">
+                                        <div class="col-md-4">
+                                            <button type="button" class="btn btn-danger btn-action text-white w-100"
+                                                onclick="rejectPengajuan('{{ $doco->id }}')">
+                                                Tolak
+                                            </button>
                                         </div>
-                                    @endforeach
+
+                                        <div class="col-md-4">
+                                            <button type="button" class="btn btn-primary btn-action text-white w-100"
+                                                onclick="enableKeteranganMode()">
+                                                Catatan
+                                            </button>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <button type="button" class="btn btn-success btn-action text-white w-100"
+                                                onclick="showApproveModal()">
+                                                Setujui
+                                            </button>
+                                        </div>
+                                    </div>
+                                @endif
+
+                                <div id="loader-feedback" class="d-none justify-content-center mt-3">
+                                    <div class="spinner-border" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
                                 </div>
-                            @endif
+
+                                <div class="feedback-parent mt-3">
+                                </div>
+
+                                {{-- @if($feedbacks->count() == 0)
+                                    <div class="d-flex flex-column justify-content-center align-items-center pt-5 mt-3 empty-feedback">
+                                        <i class="fas fa-exclamation-triangle text-warning" style="font-size: 3em;"></i>
+                                        <p class="mb-0 mt-3">Belum Ada Feedback</p>
+                                    </div>
+
+                                @else
+                                    <div class="feedback-parent mt-3">
+                                        @foreach($feedbacks as $feedback)
+                                            <div class="px-4 pt-2 pb-3 rounded bg-dark text-white shadow">
+                                                <div class="text-end mb-2">
+                                                    <small>{{ date('Y/m/d H:i', strtotime($feedback->created_at)) }}</small>
+                                                </div>
+
+                                                <div class="d-flex align-items-center text-lg" style="line-height: 1.2;">
+                                                    <i class="fas fa-user me-3 fa-lg"></i>
+                                                    <span class="font-weight-bold">{{ $feedback->NamaKaryawan }}</span>
+                                                </div>
+
+                                                <p class="mb-0 mt-3" style="line-height: 1.4; text-align: justify;">
+                                                    {!! nl2br($feedback->keterangan) !!}
+                                                </p>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @endif --}}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -221,6 +321,44 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="modalAddKomentar" data-bs-backdrop="static" aria-hidden="true" aria-labelledby="modalAddKomentarLabel"
+        tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="row">
+                        <div class="col">
+                            <h5 class="modal-title" id="modalAddKomentarLabel">Tambah Komentar Validasi</h5>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
+                </div>
+
+                <div class="modal-body">
+                    <form id="form-add-komentar" method="POST">
+                        @csrf
+                        <input type="hidden" name="id" value="{{ $doco->id }}">
+                        <input type="hidden" name="id_versi" value="{{ $lastVersion->id }}">
+                        <input type="hidden" name="vertical">
+                        <input type="hidden" name="horizontal">
+
+                        <div class="mb-4 px-2">
+                            <label class="d-block mb-2 ms-0 fs-6">Keterangan</label>
+                            <textarea rows="4" class="form-control input-text" id="keterangan" name="keterangan" placeholder="--- Masukkan Keterangan ---"></textarea>
+                        </div>
+
+                        <div class="d-flex align-items-center">
+                            <button type="submit" class="btn btn-primary ms-auto uploadBtn">
+                                <i class="fas fa-save"></i>
+                                Submit Form
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 
@@ -252,6 +390,20 @@
     @endif
 
     <script>
+        const ID = `{{ $doco->id }}`;
+
+        $( function() {
+            $('body').popover({
+                selector: '[data-bs-toggle="popover"]'
+            });
+
+            $('#modalAddKomentar').on('hide.bs.modal', function() {
+                $('#modalAddKomentar [name=vertical]').val('');
+                $('#modalAddKomentar [name=horizontal]').val('');
+                $('#modalAddKomentar [name=keterangan]').val('');
+            });
+        });
+
         let pdfjsLib = window['pdfjs-dist/build/pdf'];
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.worker.min.js';
         let pdfDoc = null;
@@ -296,8 +448,209 @@
 
         LoadPdfFromUrl(`{!! $doco->file_path !!}`);
 
+        function loadFeedback() {
+            $('#loader-feedback').removeClass('d-none').addClass('d-flex');
+
+            $.ajax({
+                url: `/doco/riwayat-pengajuan/validasi/${ID}/feedbacks`,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                },
+                type: "GET",
+                dataType: 'json',
+                success: function(response) {
+                    $('#loader-feedback').addClass('d-none').removeClass('d-flex');
+
+                    if(response.length == 0) {
+                        $('.feedback-parent').html(`
+                            <div class="d-flex flex-column justify-content-center align-items-center pt-5 mt-3">
+                                <i class="fas fa-exclamation-triangle text-warning" style="font-size: 3em;"></i>
+                                <p class="mb-0 mt-3">Belum Ada Feedback</p>
+                            </div>
+                        `);
+
+                    } else {
+                        $('.feedback-parent').html('');
+                        let feedbackEls = '';
+
+                        response.forEach( (item) => {
+                            addMarker(item);
+
+                            feedbackEls += `
+                                <div class="px-4 pt-2 pb-3 rounded bg-dark text-white shadow mb-3">
+                                    <div class="text-end mb-2">
+                                        <small>${item.created_at}</small>
+                                    </div>
+
+                                    <div class="d-flex align-items-center text-lg" style="line-height: 1.2;">
+                                        <i class="fas fa-user me-3 fa-lg"></i>
+                                        <span class="font-weight-bold">${item.NamaKaryawan}</span>
+                                    </div>
+
+                                    <p class="mb-0 mt-3" style="line-height: 1.4; text-align: justify;">
+                                        ${item.keterangan}
+                                    </p>
+                                </div>
+                            `;
+                        });
+
+                        $('.feedback-parent').html(feedbackEls);
+                    }
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    console.error(thrownError);
+                    $('#loader-feedback').addClass('d-none').removeClass('d-flex');
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: `Terjadi kesalahan tidak terduga`,
+                    });
+                }
+            });
+        }
+
+        loadFeedback();
+
         function showApproveModal() {
             $('#modalApprove').modal('show');
         }
+
+        function rejectPengajuan(id) {
+            Swal.fire({
+                icon: "warning",
+                title: "Apakah yakin ingin menolak pengajuan?",
+                showCancelButton: true,
+                confirmButtonText: "Hapus",
+                cancelButtonText: "Batal",
+                cancelButtonColor: "#3085d6",
+                confirmButtonColor: "#d33"
+
+            }).then(function(result) {
+                if(result.isConfirmed) {
+                    location.href = `/doco/riwayat-pengajuan/validasi/${id}/reject`;
+                }
+            });
+        }
+
+        function enableKeteranganMode() {
+            $('body').addClass('editor-enabled');
+            $('#btn-action-validate').addClass('d-none');
+            $('#btn-action-editor').removeClass('d-none');
+            $('#backdrop-keterangan').addClass('is-show');
+        }
+
+        function disableKeteranganMode() {
+            $('body').removeClass('editor-enabled');
+            $('#btn-action-validate').removeClass('d-none');
+            $('#btn-action-editor').addClass('d-none');
+            $('#backdrop-keterangan').removeClass('is-show');
+        }
+
+        function addMarker(feedback) {
+            const marker = `
+                <div id="marker" data-bs-toggle="popover"
+                    data-bs-trigger="hover"
+                    title="${feedback.NamaKaryawan}" data-bs-content="${feedback.keterangan}">
+                    <i class="fas fa-comment-dots fa-xl"></i>
+                </div>
+            `;
+
+            const vertical = (screen.height / 100) * feedback.vertical;
+            const horizontal = (screen.width / 100) * feedback.horizontal;
+
+            $('body').append(
+                $(marker).css({
+                    color: 'white',
+                    display: 'flex',
+                    cursor: 'pointer',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius: '100%',
+                    position: 'absolute',
+                    zIndex: '1000',
+                    top: vertical + 'px',
+                    left: horizontal + 'px',
+                    height: '40px',
+                    width: '40px',
+                    background: '#000000'
+                })
+            );
+        }
+
+        $('#pdf_container').click( function(e) {
+            const isEnabled = $('body').hasClass('editor-enabled');
+            const isCanvas = $(e.target).prop('tagName') == 'CANVAS';
+
+            if(isEnabled && isCanvas) {
+                $('#marker').remove();
+
+                $('#form-add-komentar [name=vertical]').val( (e.pageY / screen.height) * 100 );
+                $('#form-add-komentar [name=horizontal]').val( (e.pageX / screen.width) * 100 );
+                $('#modalAddKomentar').modal('show');
+            }
+        });
+
+        $('#form-add-komentar button[type=submit]').click( function(e) {
+            e.preventDefault();
+            const id = $('#form-add-komentar [name=id]').val();
+            const keterangan = $('#form-add-komentar [name=keterangan]').val().trim();
+
+            if(keterangan) {
+                Swal.fire({
+                    title: 'Loading...',
+                    allowOutsideClick: false,
+                    didOpen: () => Swal.showLoading()
+                });
+
+                $.ajax({
+                    url: `/doco/riwayat-pengajuan/validasi/${id}/add-komentar`,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                        'Content-Type': 'application/json'
+                    },
+                    data: JSON.stringify({
+                        id: $('#form-add-komentar [name=id]').val(),
+                        id_versi: $('#form-add-komentar [name=id_versi]').val(),
+                        vertical: $('#form-add-komentar [name=vertical]').val(),
+                        horizontal: $('#form-add-komentar [name=horizontal]').val(),
+                        keterangan
+                    }),
+                    type: "POST",
+                    dataType: 'json',
+                    success: function(response) {
+                        Swal.close();
+
+                        if(response.code == 200) {
+                            loadFeedback();
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Yeay!',
+                                text: response.message,
+                            });
+
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: response.message,
+                            });
+                        }
+
+                        $('#modalAddKomentar').modal('hide');
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        console.error(thrownError);
+                        Swal.close();
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: `Terjadi kesalahan tidak terduga`,
+                        });
+                    }
+                });
+            }
+        });
     </script>
 @endsection

@@ -37,7 +37,10 @@ Route::middleware([ FetchMenu::class, 'check.auth', PermissionMenu::class ])->pr
 
         Route::prefix('validasi/{id}')->group( function() {
             Route::get('/', [ValidasiDocoController::class, 'index'])->name('dokumen-mutu.validasi.index');
+            Route::get('/reject', [ValidasiDocoController::class, 'reject'])->name('dokumen-mutu.validasi.reject');
+            Route::get('/feedbacks', [ValidasiDocoController::class, 'getFeedback'])->name('dokumen-mutu.validasi.get-feedbacks');
             Route::post('/approved', [ValidasiDocoController::class, 'approved'])->name('dokumen-mutu.validasi.approved');
+            Route::post('/add-komentar', [ValidasiDocoController::class, 'storeKomentar'])->name('dokumen-mutu.validasi.store-komentar');
         });
     });
 
