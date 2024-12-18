@@ -4,6 +4,7 @@ namespace Modules\SmartForm\App\Http\Controllers\IC\PengajuanTraining;
 
 use App\Helper;
 use App\Http\Controllers\Controller;
+use Carbon\Exceptions\InvalidFormatException;
 use DateTime;
 use Exception;
 use Illuminate\Http\Request;
@@ -1404,6 +1405,14 @@ class PengajuanTrainingController extends Controller {
             ->leftJoin(self::T_HRD_DEPT . ' as td', 'trj.KodeDP', '=', 'td.KodeDP')
             ->leftJoin(self::T_HRD_KARYAWAN . ' as tk', 'trj.created_by', '=', 'tk.NIK')
             ->where('trj.id', $id)->first();
+        if($sqlTRJ != null) {
+            try {
+                $parsedTgl = Carbon::parse($sqlTRJ->tanggal)->locale('id');
+                $sqlTRJ->tanggal = $parsedTgl->day . ' ' . $parsedTgl->monthName . ' ' .$parsedTgl->year;
+            } catch (InvalidFormatException $err) {
+                Log::error('error parsing tanggal');
+            }
+        }
         $sqlKomitmen = DB::connection(self::DB_CONN_NAME)->table(self::T_TRJ . ' as trj')
             ->select('tkom.id as komitmen_id', 'mt.nama as training_nama', 'tkom.NIK', 'tkom.nama', 'tkom.KodeDP', 'td.nama as departement', 'tkom.KodeST', 'tkom.KodeJB', 'tj.nama as jabatan', 'tkom.status as komitmen_status')
             ->leftJoin(self::T_PENGAJUAN_TRAINING . ' as pt', 'trj.pengajuan_training_id', '=', 'pt.id')
