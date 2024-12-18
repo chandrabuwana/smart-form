@@ -82,6 +82,9 @@
             background-image: url("data:image/svg xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'><circle r='2' fill='#fff'/></svg>");
 
         } 
+        .form-check {
+            padding: 0;
+        }
 
     </style>
 @endsection
@@ -219,21 +222,20 @@
                                     </tr>
                                 </tbody>
                             </table>
-                            <div class="input-group input-group-static mt-3" id="fieldMenolak" style="display: none;">
-                                <label style="width: 100%;"><strong>Alasan Menolak Training</strong></label>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="alasanMenolak" id="flexRadioDefault1" value="0">
-                                    <label class="form-check-label" for="flexRadioDefault1">
-                                    Training Mandiri
+                            <div id="fieldMenolak" style="display: none;">
+                                <div class="form-check mt-3">
+                                    <input class="form-check-input" type="radio" name="alasanMenolak" id="flexRadioDefault1" style="margin: 0;">
+                                    <label class="form-check-label" for="flexRadioDefault1" style="margin-left: 8px; margin-bottom: 0;">
+                                        Training Mandiri
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="alasanMenolak" id="flexRadioDefault2" value="1">
-                                    <label class="form-check-label" for="flexRadioDefault2">
-                                    Menolak / Alasan lain
+                                    <input class="form-check-input" type="radio" name="alasanMenolak" id="flexRadioDefault2" style="margin: 0;">
+                                    <label class="form-check-label" for="flexRadioDefault2" style="margin-left: 8px; margin-bottom: 0;">
+                                        Menolak / Alasan lain <em>(akan dikelola oleh IC sesuai PKB)</em>
                                     </label>
                                 </div>
-                                <div class="input-group input-group-static my-1">
+                                <div class="input-group input-group-static mb-3">
                                     <input class="form-control" type="text" name="alasanLain"
                                         placeholder="Tuliskan alasan anda" value="" required id="alasanLain">
                                 </div>
