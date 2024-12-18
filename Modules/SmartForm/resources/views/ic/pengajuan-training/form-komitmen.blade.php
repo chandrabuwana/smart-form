@@ -265,7 +265,7 @@
                     {{-- TODO : enable ini ketika mau deploy --}}
                     @if ($data->NIK == session('user_id') && $data->status == '0')
                         <div style="display: flex; justify-content: end;">
-                            <button class="btn btn-primary mb-0" onclick="submitKomitmen(event)">Submit Pelatihan</button>
+                            <button class="btn btn-primary mb-0" onclick="submitKomitmen(event)">Submit Komitmen</button>
                         </div>
                     @endif
                     {{-- @if ($data->status == '1')
