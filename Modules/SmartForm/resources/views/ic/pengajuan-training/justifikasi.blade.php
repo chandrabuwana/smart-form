@@ -260,9 +260,14 @@
                         <p class="m-0 mt-3"><strong>Pengganti Tugas selama Training</strong></p>
                         
                         @if ($data->trj_status == 1 && $isDibuatOleh)
-                            <div style="display: flex; gap: 12px; margin-bottom: 12px;" class="col-md-6">
-                                <input type="text" class="form-control input-text w-fit" placeholder="PIC 1, PIC 2, PIC 3" id="inputPengganti">
-                                <button class="btn btn-secondary m-0" type="button" id="btnAddPengganti" onclick="addPengganti(event)"><i class="bi fa-plus"></i> </button>
+                            <div class="col-md-6 mb-3" style="display: flex; gap: 8px;">
+                                <div class="input-group input-group-static">
+                                    <label for="cariKaryawan" style="width: 100%"><strong>Tambah Data MP</strong></label>
+                                    <select class="form-control form-select" name="cariKaryawan" id="cariKaryawan" style="width: 100%">
+                                        <option value="">-- Cari NIK / Nama MP --</option>
+                                    </select>
+                                </div>
+                                <button class="btn btn-danger mb-0" style="align-self: flex-end; padding: 10px 16px;" onclick="resetNIK(event)">X</button>
                             </div>
                         @endif
                         <table id="table-pengganti" data-toggle="table" data-side-pagination="client"
@@ -271,7 +276,8 @@
                             <thead style="display: none;">
                                 <tr>
                                     <th data-field="no" data-align="right" data-width="200" data-formatter="penggantiFormatter"></th>
-                                    <th data-field="pengganti" data-align="left">Pengganti</th>
+                                    <th data-field="pengganti" data-align="left">NIK</th>
+                                    <th data-field="nama" data-align="left">nama</th>
                                     @if ($data->trj_status == 1 && $isDibuatOleh)
                                     <th data-field="action" data-align="center" data-formatter="hapusPenggantFormatter"></th>
                                     @endif
@@ -524,6 +530,14 @@
                 if($("#table-komitmen").bootstrapTable('getData').filter((data) => data.status == 0).length > 0) {
                     validateForm.push("Terdapat form komitmen yang belum dilakukan persetujuan")
                 }
+                if($("#table-tujuan").bootstrapTable('getData').length < 1) validateForm.push("KPI logic tree minimal 1")
+                if($("#table-pengganti").bootstrapTable('getData').length < 1) validateForm.push("PIC Pengganti minimal 1")
+                $("#table-justifikasi").bootstrapTable('getData').filter((data) => {
+                    if(data.jenis == 1) {
+                        if($("#table-urgensi").bootstrapTable('getData').length < 1) validateForm.push("Detail urgensi minimal 1")
+                    }
+                })
+                
                 if(!$("#inputTempatPelaksanaan").val().trim()) validateForm.push("Tempat pelaksaan belum diisi") 
                 if(!$("#inputTanggalPelaksanaan").val()) validateForm.push("Tanggal pelaksaan belum diisi")
             } 
@@ -649,5 +663,50 @@
                 }
             })
         }
+
+        $('#cariKaryawan').select2({
+            minimumInputLength: 3,
+            theme: 'bootstrap-5', // Menggunakan tema Bootstrap 5
+            dropdownParent: $('#cariKaryawan').closest('.input-group'),
+            placeholder: '-- Cari NIK / Nama MP --',
+            ajax: {
+                url: '/ic/training/helper/cari-mp',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type: "post",
+                delay: 250,
+                dataType: 'json',
+                data: function(params) {
+                    return {
+                        _token: "{{ csrf_token() }}",
+                        query: params.term, // search term
+                    };
+                },
+                processResults: function(response) {
+                    return {
+                        results: response.data
+                    };
+                },
+                cache: true,
+            },
+            templateResult: function (data) {
+                    // console.log(data)
+                    if (!data.id) {
+                        return data.text; // Tampilan default jika tidak ada data
+                    }
+
+                    var $result = $('<span>' + data.id + ' - ' + data.text + '</span>');
+                    return $result;
+                }
+        })
+        $('#cariKaryawan').on("select2:select", function(e){
+            console.log("cariKaryawan : ", e.params.data)
+            $('#cariKaryawan').val(null).trigger('change')
+            $("#table-pengganti").bootstrapTable('append', {
+                pengganti: e.params.data.id,
+                nama: e.params.data.nama
+            })
+        })
     </script>
 @endsection
