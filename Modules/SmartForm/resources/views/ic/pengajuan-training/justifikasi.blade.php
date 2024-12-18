@@ -521,7 +521,7 @@
             e.target.disabled = true
             let validateForm = []
             if(jenisCurrApproval == "dibuat") {
-                if($("#table-justifikasi").bootstrapTable('getData').filter((data) => data.status == 0).length > 0) {
+                if($("#table-komitmen").bootstrapTable('getData').filter((data) => data.status == 0).length > 0) {
                     validateForm.push("Terdapat form komitmen yang belum dilakukan persetujuan")
                 }
                 if(!$("#inputTempatPelaksanaan").val().trim()) validateForm.push("Tempat pelaksaan belum diisi") 
