@@ -68,6 +68,65 @@ class PengajuanTrainingController extends Controller {
         
         return view('smartform::ic/pengajuan-training/index');
     }
+    
+    public function ImportApproval() {
+        return view('smartform::ic/pengajuan-training/import-approval');
+    }
+    public function ImportApprovalSubmit(Request $request) {
+        $isSuccess = false;
+        $msg = '';
+        $errMsg = [];
+        $mappingDept = [];
+        $listMasterAproval = $request->input('approval', []);
+
+        try {
+            DB::connection(self::DB_CONN_NAME)->beginTransaction();
+
+            $dataDept = DB::connection(self::DB_CONN_NAME)->table(self::T_HRD_DEPT)->get();
+            Log::info($dataDept);
+            foreach ($dataDept as $value) {
+                $mappingDept[strtoupper($value->Nama)] = $value->KodeDP;
+            }
+            $mappingDept['FINANCE'] = 'FAT';
+            // dd($mappingDept);
+            foreach ($listMasterAproval as $value) {
+                // Log::info($value);
+                if(isset($value['nik']) && isset($value['nama']) && isset($value['dept']) 
+                    && isset($value['levelValidasi']) && isset($value['site'])
+                ) {
+                    if(isset($mappingDept[strtoupper($value['dept'])])) {
+                        $value['KodeDP'] = $mappingDept[strtoupper($value['dept'])];
+                        DB::connection(self::DB_CONN_NAME)->table(self::T_TRAINING_APPROVAL)
+                            ->insert([
+                                'NIK' => $value['nik'], 'nama' => $value['nama'],
+                                'approval_role' => $value['levelValidasi'], 'KodeST' => $value['site'],
+                                'KodeDP' => $value['KodeDP']
+                            ]);
+                    } else {
+                        Log::error('Dept ' . $value['dept'] . ' tidak ada di maapping');
+                    }
+
+                }
+            }
+            // dd($listMasterAproval);
+            DB::connection(self::DB_CONN_NAME)->commit();
+            $isSuccess = true;
+            $msg = 'Berhasil import master approval!';
+        } catch (Exception $ex) {
+            $errID = Str::uuid();
+            $errMsg[] = 'Error ' . $errID;
+            $msg = 'Terjadi kesalahaan, coba beberapa saat lagi';
+            DB::connection(self::DB_CONN_NAME)->rollBack();
+            Log::error('Error ' . $errID . ' : ' . $ex->getMessage());
+            Log::error($ex->getTraceAsString());
+        }
+
+        return response()->json([
+            'isSuccess' => $isSuccess,
+            'message' => $msg,
+            'errorMessage' => $errMsg
+        ]);
+    }
 
     public function AddPengajuan(Request $request) {
         return view('smartform::ic/pengajuan-training/add-pengajuan');
