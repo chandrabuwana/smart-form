@@ -21,6 +21,15 @@ class FormDocoController extends Controller
     protected const T_VERSI_DOCO = 'DB_Dokumen_Mutu.dbo.T_Versi_Dokumen';
     protected const T_FEEDBACK_VALIDASI = 'DB_Dokumen_Mutu.dbo.T_Feedback_Validasi';
     protected const T_SITE = 'HRD.dbo.tsite';
+    protected const T_MASTER_VALIDATOR = 'DB_Dokumen_Mutu.dbo.T_Master_Validator';
+
+    protected const THINTANK = [
+        '1001384',
+        '1003170',
+        '1014583',
+        '1001114',
+        '1001117',
+    ];
 
     public function formPengajuan()
     {
@@ -340,7 +349,7 @@ Terima kasih.";
 
         DB::beginTransaction();
         try {
-            $doco = DB::table(self::T_PENGAJUAN_DOCO)->select(self::T_PENGAJUAN_DOCO . '.*', self::T_KARYAWAN . '.KodeDP')
+            $doco = DB::table(self::T_PENGAJUAN_DOCO)->select(self::T_PENGAJUAN_DOCO . '.*', self::T_KARYAWAN . '.KodeDP', self::T_KARYAWAN . '.Nama AS NamaKaryawan')
                 ->join(self::T_KARYAWAN, self::T_KARYAWAN . '.NIK', self::T_PENGAJUAN_DOCO . '.nik_pemohon')
                 ->where('id', $idPengajuan)->first();
 
@@ -366,11 +375,76 @@ Terima kasih.";
                 ]);
             }
 
+            $alarmService = new AlarmAPIService();
+            $validationCount = DB::table(self::T_VALIDASI_DOCO)
+                ->where('id_pengajuan_dokumen', $idPengajuan)->count('id');
+
+            if($validationCount > 1) {
+                $validators = DB::table(self::T_MASTER_VALIDATOR)
+                    ->where('jenis_validator', 'validasi')
+                    ->where('jenis_dokumen', $doco->jenis_dokumen)
+                    ->where('site', $doco->kode_site)
+                    ->orderBy('id', 'ASC')->get();
+
+                $thinktanks = DB::table(self::T_KARYAWAN)->whereIn('NIK', self::THINTANK)
+                    ->get()->pluck('Telp');
+
+                $phones = [];
+                foreach($validators as $validator) {
+                    switch($validator->validator) {
+                        case 'thinktank':
+                            $phones = array_merge($phones, $thinktanks);
+                            break;
+
+                        case 'kadept':
+                            $kadepts = DB::table(self::T_KARYAWAN)->select('Telp')
+                                ->join(self::T_JABATAN, self::T_JABATAN . '.KodeJB', self::T_KARYAWAN . '.KodeJB')
+                                ->where('KodeDP', $doco->KodeDP)
+                                ->get()->pluck('Telp');
+
+                            $phones = array_merge($phones, $kadepts->all());
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+
+            } else {
+                $phones = [ env('DOCO_ALARM_OD') ];
+            }
+
+            $date = date('Y/m/d');
+            $dueDate = date('Y/m/d', strtotime($doco->due_date));
+            $url = route('dokumen-mutu.validasi.index', ['id' => $doco->id]);
+
+            $message = "📢 Notifikasi Dokumen Mutu\n
+Halo Bapak/Ibu,\n
+Kami menginformasikan bahwa dokumen berikut sudah mengirimkan revisi lanjutan dengan detail berikut:\n
+Jenis Dokumen:  {$doco->jenis_dokumen}
+Nama Dokumen: {$doco->judul_dokumen}
+Nomor Dokumen: {$doco->no_dokumen}
+Tanggal Dibuat: {$date}
+Dibuat oleh: {$doco->NamaKaryawan}
+Batas Waktu Pengecekan: {$dueDate}
+Silakan cek dokumen di sini: {$url}\n
+Mohon untuk segera melakukan pengecekan dan tindak lanjut sesuai prosedur yang berlaku.
+Terima kasih atas perhatian dan kerjasamanya.";
+
+            foreach($phones as $phone) {
+                $phone = trim(trim($phone, "'"));
+
+                if(!empty($phone)) {
+                    $alarmService->sendMessage($phone, $message);
+                }
+            }
+
             DB::commit();
             return redirect()->back()->with('success', 'Berhasil submit revisi pengajuan dokumen!');
 
         } catch(\Throwable $e) {
             DB::rollBack();
+            dd($e);
             return redirect()->back()->with('error', 'Terjadi kesalahan, mohon coba beberapa saat lagi');
         }
     }

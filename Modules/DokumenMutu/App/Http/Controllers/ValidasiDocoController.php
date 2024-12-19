@@ -9,6 +9,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Modules\SmartForm\Service\AlarmAPIService;
 
 class ValidasiDocoController extends Controller
 {
@@ -289,6 +290,24 @@ class ValidasiDocoController extends Controller
                     'horizontal' => round($item['horizontal'], 2),
                     'created_at' => now()
                 ]);
+            }
+
+            $pemohon = DB::table(self::T_KARYAWAN)->select('Telp', 'Nama', self::T_PENGAJUAN_DOCO . '.no_dokumen')
+                ->join(self::T_PENGAJUAN_DOCO, self::T_PENGAJUAN_DOCO . '.nik_pemohon', self::T_KARYAWAN . '.NIK')
+                ->where(self::T_PENGAJUAN_DOCO . '.id', $id)
+                ->first();
+
+            $phoneNumber = trim(trim($pemohon->Telp, "'"));
+            if(!empty($phoneNumber)) {
+                $url = route('dokumen-mutu.detail-riwayat', ['id' => $id]);
+                $message = "📢 Notifikasi Dokumen Mutu\n
+Halo Bapak/Ibu {$pemohon->Nama},\n
+Pengajuan Dokumen Mutu anda dengan No. Dokumen {$pemohon->no_dokumen} telah di berikan feedback.
+Silakan cek dokumen di sini: {$url}\n
+Terima kasih.";
+
+                $alarmService = new AlarmAPIService();
+                $alarmService->sendMessage($phoneNumber, $message);
             }
 
             DB::commit();

@@ -83,7 +83,6 @@ class ScheduleAlarm extends Command
                     $phones = [ env('DOCO_ALARM_OD') ];
                 }
 
-                $phones = ['6281932807111', '6281119999426'];
                 $date = date('Y/m/d', strtotime($pengajuan->created_at));
                 $dueDate = date('Y/m/d', strtotime($pengajuan->due_date));
                 $url = route('dokumen-mutu.validasi.index', ['id' => $pengajuan->id]);
@@ -104,7 +103,7 @@ class ScheduleAlarm extends Command
                 }
 
                 $message = "⏰ Peringatan: Dokumen Belum Diperiksa\n
-    Halo Bapak/Ibu Document Control,\n
+    Halo Bapak/Ibu,\n
     Kami mengingatkan bahwa dokumen berikut belum diperiksa dalam waktu yang telah ditentukan:\n
     {$overdueMsg}
     Jenis Dokumen:  {$pengajuan->jenis_dokumen}
@@ -118,6 +117,8 @@ class ScheduleAlarm extends Command
     Terima kasih atas perhatian dan kerjasamanya.";
 
                 foreach($phones as $phone) {
+                    $phone = trim(trim($phone, "'"));
+
                     if(!empty($phone)) {
                         $alarmService->sendMessage($phone, $message);
                         echo "++== Alarm Sent to {$phone} ==++ \n<br>";
