@@ -105,6 +105,9 @@ class ValidasiDocoController extends Controller
             ->where('id_versi', $lastVersion->id)
             ->orderBy('id', 'desc')->get();
 
+        $tKaryawan = DB::table(self::T_KARYAWAN)->select('Nama')
+            ->where('NIK', session('user_id'))->first();
+
         $isValidate = ($grant['index'] - 1) == $validateIndex;
         return view('DokumenMutu::validasi.index', [
             'doco' => $doco,
@@ -112,6 +115,7 @@ class ValidasiDocoController extends Controller
             'isValidate' => $isValidate,
             'feedbacks' => $feedbacks,
             'lastVersion' => $lastVersion,
+            'tKaryawan' => $tKaryawan,
             'validator_type' => $grant['validator_type']
         ]);
     }
@@ -263,9 +267,10 @@ class ValidasiDocoController extends Controller
     {
         $id = $request->input('id');
         $idVersi = $request->input('id_versi');
-        $keterangan = $request->input('keterangan');
-        $vertical = intval($request->input('vertical'));
-        $horizontal = intval($request->input('horizontal'));
+        // $keterangan = $request->input('keterangan');
+        // $vertical = intval($request->input('vertical'));
+        // $horizontal = intval($request->input('horizontal'));
+        $komentars = $request->input('komentars');
 
         DB::beginTransaction();
         try {
@@ -275,31 +280,26 @@ class ValidasiDocoController extends Controller
                 'updated_at' => now()
             ]);
 
-            $feedbackId = DB::table(self::T_FEEDBACK_VALIDASI)->insertGetId([
-                'id_versi' => $idVersi,
-                'keterangan' => $keterangan,
-                'nik_validator' => $nik,
-                'vertical' => $vertical,
-                'horizontal' => $horizontal,
-                'created_at' => now()
-            ]);
+            foreach($komentars as $item) {
+                DB::table(self::T_FEEDBACK_VALIDASI)->insertGetId([
+                    'id_versi' => $idVersi,
+                    'keterangan' => $item['keterangan'],
+                    'nik_validator' => $nik,
+                    'vertical' => round($item['vertical'], 2),
+                    'horizontal' => round($item['horizontal'], 2),
+                    'created_at' => now()
+                ]);
+            }
 
-            $user = DB::table(self::T_KARYAWAN)->where('NIK', $nik)->first(['Nama']);
             DB::commit();
-
             return response()->json([
                 'code' => 200,
                 'message' => 'Berhasil menyimpan komentar baru!',
-                'data' => [
-                    'id' => $feedbackId,
-                    'nama_validator' => $user->Nama,
-                    'keterangan' => nl2br($keterangan),
-                    'created_at' => date('Y/m/d H:i', strtotime(now()))
-                ]
             ]);
 
         } catch(\Throwable $e) {
             DB::rollBack();
+            dd($e);
             return response()->json([
                 'code' => 500,
                 'message' => 'Terjadi kesalahan, mohon coba beberapa saat lagi'
@@ -309,10 +309,13 @@ class ValidasiDocoController extends Controller
 
     public function getFeedback($id, Request $request)
     {
+        $lastVersion = DB::table(self::T_VERSI_DOCO)->select('id')
+            ->where('id_pengajuan_dokumen', $id)
+            ->orderBy('no_versi', 'desc')->first();
+
         $feedbacks = DB::table(self::T_FEEDBACK_VALIDASI)->select(self::T_FEEDBACK_VALIDASI . '.*', self::T_KARYAWAN . '.Nama AS NamaKaryawan')
             ->join(self::T_KARYAWAN, self::T_KARYAWAN . '.NIK', self::T_FEEDBACK_VALIDASI . '.nik_validator')
-            ->join(self::T_VERSI_DOCO, self::T_VERSI_DOCO . '.id', self::T_FEEDBACK_VALIDASI . '.id_versi')
-            ->where('id_pengajuan_dokumen', $id)
+            ->where('id_versi', $lastVersion->id)
             ->orderBy('id', 'desc')->get()
             ->map( function($item) {
                 $item->created_at = date('Y/m/d H:i', strtotime($item->created_at));

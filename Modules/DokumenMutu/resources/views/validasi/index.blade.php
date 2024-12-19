@@ -172,13 +172,14 @@
                             <div class="col-feedback">
                                 <div id="btn-action-editor" class="d-none">
                                     <div class="d-flex align-items-center">
-                                        <a href="javascript:;" class="btn bg-gradient-danger btn-action text-white mb-0" onclick="disableKeteranganMode()">
+                                        <button type="button" class="btn bg-gradient-danger btn-action text-white mb-0" onclick="disableKeteranganMode()">
                                             <i class="fas fa-times-circle fa-lg me-2"></i> Tutup
-                                        </a>
+                                        </button>
 
-                                        {{-- <a href="javascript:;" class="btn bg-gradient-success btn-action text-white mb-0 ms-3" onclick="saveKeterangan()">
-                                            <i class="fas fa-check-circle fa-lg"></i>
-                                        </a> --}}
+                                        <button type="button" class="btn bg-gradient-success btn-action text-white mb-0 ms-3" onclick="saveKeterangan()"
+                                            id="btn-action-save" disabled>
+                                            <i class="fas fa-check-circle fa-lg me-2"></i> Simpan
+                                        </button>
                                     </div>
                                 </div>
 
@@ -291,8 +292,6 @@
                 <div class="modal-body">
                     <form id="form-add-komentar" method="POST">
                         @csrf
-                        <input type="hidden" name="id" value="{{ $doco->id }}">
-                        <input type="hidden" name="id_versi" value="{{ $lastVersion->id }}">
                         <input type="hidden" name="vertical">
                         <input type="hidden" name="horizontal">
 
@@ -344,6 +343,8 @@
 
     <script>
         const ID = `{{ $doco->id }}`;
+        const ID_VERSI = `{{ $lastVersion->id }}`;
+        const namaKaryawan = `{{ $tKaryawan->Nama }}`;
 
         $( function() {
             $('body').popover({
@@ -362,6 +363,7 @@
         let pdfDoc = null;
         let scale = 1;
         let resolution = 1;
+        let komentars = [];
 
         function LoadPdfFromUrl(url) {
             pdfjsLib.getDocument(url).promise.then(function (pdfDoc_) {
@@ -413,6 +415,7 @@
                 dataType: 'json',
                 success: function(response) {
                     $('#loader-feedback').addClass('d-none').removeClass('d-flex');
+                    $('.marker').remove();
 
                     if(response.length == 0) {
                         $('.feedback-parent').html(`
@@ -494,15 +497,38 @@
         }
 
         function disableKeteranganMode() {
-            $('body').removeClass('editor-enabled');
-            $('#btn-action-validate').removeClass('d-none');
-            $('#btn-action-editor').addClass('d-none');
-            $('#backdrop-keterangan').removeClass('is-show');
+            if(komentars.length > 0) {
+                Swal.fire({
+                    icon: "warning",
+                    title: "Apakah yakin ingin menolak pengajuan?",
+                    showCancelButton: true,
+                    confirmButtonText: "Hapus",
+                    cancelButtonText: "Batal",
+                    cancelButtonColor: "#3085d6",
+                    confirmButtonColor: "#d33"
+
+                }).then(function(result) {
+                    if(result.isConfirmed) {
+                        $('.marker.draft').remove();
+
+                        $('body').removeClass('editor-enabled');
+                        $('#btn-action-validate').removeClass('d-none');
+                        $('#btn-action-editor').addClass('d-none');
+                        $('#backdrop-keterangan').removeClass('is-show');
+                    }
+                });
+
+            } else {
+                $('body').removeClass('editor-enabled');
+                $('#btn-action-validate').removeClass('d-none');
+                $('#btn-action-editor').addClass('d-none');
+                $('#backdrop-keterangan').removeClass('is-show');
+            }
         }
 
-        function addMarker(feedback) {
+        function addMarker(feedback, isDraft = false) {
             const marker = `
-                <div id="marker" data-bs-toggle="popover"
+                <div class="marker ${ isDraft ? 'draft' : '' }" data-bs-toggle="popover"
                     data-bs-trigger="hover"
                     title="${feedback.NamaKaryawan}" data-bs-content="${feedback.keterangan}">
                     <i class="fas fa-comment-dots fa-xl"></i>
@@ -524,8 +550,8 @@
                     zIndex: '1000',
                     top: vertical + 'px',
                     left: horizontal + 'px',
-                    height: '40px',
-                    width: '40px',
+                    height: '35px',
+                    width: '35px',
                     background: '#000000'
                 })
             );
@@ -536,8 +562,6 @@
             const isCanvas = $(e.target).prop('tagName') == 'CANVAS';
 
             if(isEnabled && isCanvas) {
-                $('#marker').remove();
-
                 $('#form-add-komentar [name=vertical]').val( (e.pageY / screen.height) * 100 );
                 $('#form-add-komentar [name=horizontal]').val( (e.pageX / screen.width) * 100 );
                 $('#modalAddKomentar').modal('show');
@@ -546,10 +570,26 @@
 
         $('#form-add-komentar button[type=submit]').click( function(e) {
             e.preventDefault();
-            const id = $('#form-add-komentar [name=id]').val();
-            const keterangan = $('#form-add-komentar [name=keterangan]').val().trim();
+            keterangan = $('#form-add-komentar [name=keterangan]').val();
 
             if(keterangan) {
+                const komentar = {
+                    NamaKaryawan: namaKaryawan,
+                    vertical: $('#form-add-komentar [name=vertical]').val(),
+                    horizontal: $('#form-add-komentar [name=horizontal]').val(),
+                    keterangan
+                }
+
+                komentars.push(komentar);
+                addMarker(komentar, true);
+
+                $('#modalAddKomentar').modal('hide');
+                $('#btn-action-save').prop('disabled', false);
+            }
+        });
+
+        function saveKeterangan() {
+            if(komentars.length > 0) {
                 Swal.fire({
                     title: 'Loading...',
                     allowOutsideClick: false,
@@ -557,17 +597,15 @@
                 });
 
                 $.ajax({
-                    url: `/doco/riwayat-pengajuan/validasi/${id}/add-komentar`,
+                    url: `/doco/riwayat-pengajuan/validasi/${ID}/add-komentar`,
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
                         'Content-Type': 'application/json'
                     },
                     data: JSON.stringify({
-                        id: $('#form-add-komentar [name=id]').val(),
-                        id_versi: $('#form-add-komentar [name=id_versi]').val(),
-                        vertical: $('#form-add-komentar [name=vertical]').val(),
-                        horizontal: $('#form-add-komentar [name=horizontal]').val(),
-                        keterangan
+                        id: ID,
+                        id_versi: ID_VERSI,
+                        komentars
                     }),
                     type: "POST",
                     dataType: 'json',
@@ -575,7 +613,10 @@
                         Swal.close();
 
                         if(response.code == 200) {
+                            komentars = [];
                             loadFeedback();
+                            disableKeteranganMode();
+
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Yeay!',
@@ -589,8 +630,6 @@
                                 text: response.message,
                             });
                         }
-
-                        $('#modalAddKomentar').modal('hide');
                     },
                     error: function(xhr, ajaxOptions, thrownError) {
                         console.error(thrownError);
@@ -601,9 +640,12 @@
                             title: 'Oops...',
                             text: `Terjadi kesalahan tidak terduga`,
                         });
+                    },
+                    finally: function() {
+                        $('#btn-action-save').prop('disabled', true);
                     }
                 });
             }
-        });
+        }
     </script>
 @endsection

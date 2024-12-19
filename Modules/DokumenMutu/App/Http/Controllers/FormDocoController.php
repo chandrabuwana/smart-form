@@ -67,18 +67,23 @@ class FormDocoController extends Controller
         //     return redirect()->back()->with('error', 'Mohon maaf anda tidak dapat untuk membuat pengajuan dokumen mutu');
         // }
 
-        $getCounting = DB::table(self::T_PENGAJUAN_DOCO)->select('no_dokumen')
+        $getCounting = DB::table(self::T_PENGAJUAN_DOCO)->select(self::T_PENGAJUAN_DOCO . '.no_dokumen', self::T_DOCO . '.status AS status_doco')
             ->join(self::T_KARYAWAN, self::T_KARYAWAN . '.NIK', '=', self::T_PENGAJUAN_DOCO . '.nik_pemohon')
-            ->where('kode_site', $site)
+            ->leftJoin(self::T_DOCO, self::T_DOCO . '.no_dokumen', self::T_PENGAJUAN_DOCO . '.no_dokumen')
+            ->where(self::T_PENGAJUAN_DOCO . '.kode_site', $site)
             ->where('KodeDP', $pemohon->KodeDP)
-            ->where('status', '!=', 'Ditolak')
-            ->orderBy(self::T_PENGAJUAN_DOCO . '.created_at', 'desc')->get();
+            ->where(self::T_PENGAJUAN_DOCO . '.status', '!=', 'Ditolak')
+            ->orderBy(self::T_PENGAJUAN_DOCO . '.created_at', 'desc')
+            ->get()->filter( function($item) {
+                return $item->status_doco !== 'Kadaluarsa';
+            });
 
-        $lastCounting = 0;
+        $lastRowCounting = $getCounting->last();
+        $lastCounting = $lastRowCounting ? collect(explode('-', $lastRowCounting->no_dokumen))->last() : 0;
+
         if($lastCounting > $getCounting->count()) {
             for($i=0; $i < $getCounting->count(); $i++) {
                 $no = $i + 1;
-
                 $counting = collect(explode('-', $getCounting[ $i ]->no_dokumen))->last();
                 if($counting != $no) {
                     $lastCounting = $no;

@@ -156,7 +156,7 @@
 
                         <div class="col-md-4">
                             <div class="col-feedback">
-                                @if($feedbacks->count() == 0)
+                                {{-- @if($feedbacks->count() == 0)
                                     <div class="d-flex flex-column justify-content-center align-items-center pt-5">
                                         <i class="fas fa-exclamation-triangle text-warning" style="font-size: 3em;"></i>
                                         <p class="mb-0 mt-3">Belum Ada Feedback</p>
@@ -181,7 +181,16 @@
                                             </div>
                                         @endforeach
                                     </div>
-                                @endif
+                                @endif --}}
+
+                                <div id="loader-feedback" class="d-none justify-content-center mt-3">
+                                    <div class="spinner-border" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                </div>
+
+                                <div class="feedback-parent mt-3">
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -270,6 +279,7 @@
             });
         });
 
+        const ID = `{{ $doco->id }}`;
         let pdfjsLib = window['pdfjs-dist/build/pdf'];
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.worker.min.js';
         let pdfDoc = null;
@@ -311,6 +321,101 @@
                 page.render(renderContext);
             });
         }
+
+        function addMarker(feedback) {
+            const marker = `
+                <div id="marker" data-bs-toggle="popover"
+                    data-bs-trigger="hover"
+                    title="${feedback.NamaKaryawan}" data-bs-content="${feedback.keterangan}">
+                    <i class="fas fa-comment-dots fa-xl"></i>
+                </div>
+            `;
+
+            const vertical = (screen.height / 100) * feedback.vertical;
+            const horizontal = (screen.width / 100) * feedback.horizontal;
+
+            $('body').append(
+                $(marker).css({
+                    color: 'white',
+                    display: 'flex',
+                    cursor: 'pointer',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius: '100%',
+                    position: 'absolute',
+                    zIndex: '1000',
+                    top: vertical + 'px',
+                    left: horizontal + 'px',
+                    height: '35px',
+                    width: '35px',
+                    background: '#000000'
+                })
+            );
+        }
+
+        function loadFeedback() {
+            $('#loader-feedback').removeClass('d-none').addClass('d-flex');
+
+            $.ajax({
+                url: `/doco/riwayat-pengajuan/validasi/${ID}/feedbacks`,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                },
+                type: "GET",
+                dataType: 'json',
+                success: function(response) {
+                    $('#loader-feedback').addClass('d-none').removeClass('d-flex');
+
+                    if(response.length == 0) {
+                        $('.feedback-parent').html(`
+                            <div class="d-flex flex-column justify-content-center align-items-center pt-5 mt-3">
+                                <i class="fas fa-exclamation-triangle text-warning" style="font-size: 3em;"></i>
+                                <p class="mb-0 mt-3">Belum Ada Feedback</p>
+                            </div>
+                        `);
+
+                    } else {
+                        $('.feedback-parent').html('');
+                        let feedbackEls = '';
+
+                        response.forEach( (item) => {
+                            addMarker(item);
+
+                            feedbackEls += `
+                                <div class="px-4 pt-2 pb-3 rounded bg-dark text-white shadow mb-3">
+                                    <div class="text-end mb-2">
+                                        <small>${item.created_at}</small>
+                                    </div>
+
+                                    <div class="d-flex align-items-center text-lg" style="line-height: 1.2;">
+                                        <i class="fas fa-user me-3 fa-lg"></i>
+                                        <span class="font-weight-bold">${item.NamaKaryawan}</span>
+                                    </div>
+
+                                    <p class="mb-0 mt-3" style="line-height: 1.4; text-align: justify;">
+                                        ${item.keterangan}
+                                    </p>
+                                </div>
+                            `;
+                        });
+
+                        $('.feedback-parent').html(feedbackEls);
+                    }
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    console.error(thrownError);
+                    $('#loader-feedback').addClass('d-none').removeClass('d-flex');
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: `Terjadi kesalahan tidak terduga`,
+                    });
+                }
+            });
+        }
+
+        loadFeedback();
 
         function secureConfidential() {
             // prevent right click

@@ -422,6 +422,8 @@
                 formatData = '<span class="text-warning fw-bold">Sedang Validasi</span>'
             } else if(value == 'Disetujui') {
                 formatData = '<span class="text-success fw-bold">Disetujui</span>'
+            } else if(value == 'Dibatalkan Oleh Sistem') {
+                formatData = '<span class="text-danger fw-bold">Dibatalkan Oleh Sistem</span>'
             } else if(value == 'Ditolak') {
                 formatData = '<span class="text-danger fw-bold">Ditolak</span>'
             }
@@ -444,6 +446,7 @@
                     break;
 
                 case 'Ditolak':
+                case 'Dibatalkan Oleh Sistem':
                     classStatus = 'danger';
                     break;
 
