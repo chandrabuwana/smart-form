@@ -216,7 +216,7 @@
                             <span class="font-weight-bold">:</span>
                         </div>
                         <div class="col-md-8">
-                            <span class="fs-6" id="no_dokumen">BSS-1111-1111-2222</span>
+                            <span class="fs-6" id="no_dokumen"></span>
                         </div>
                     </div>
 
@@ -246,8 +246,6 @@
                             <span id="alasan_pengajuan" class="fs-6">Hello World!</span>
                         </div>
                     </div>
-
-                    <iframe id="iframepdf" src="" width="100%" height="700px"></iframe>
                 </div>
             </div>
         </div>
@@ -390,9 +388,9 @@
             let action;
 
             if(row.jenis_pengajuan == 'Penghapusan') {
-                action = `<a href="javascript:detailPenghapusan('${ row.no_dokumen }', '${ row.status }', '${ row.alasan_pengajuan }', '${ row.file_path }');"><button class="btn btn-primary btn-action text-white">detail</button></a>`;
+                action = `<a href="javascript:detailPenghapusan('${ row.no_dokumen }', '${ row.status }', '${ row.alasan_pengajuan }');"><button class="btn btn-primary btn-action text-white">detail</button></a>`;
 
-                if(row.status == 'Belum Validasi') {
+                if(row.is_validate) {
                     action += `
                         <a href="javascript:showModalApprovePenghapusan('${ row.id }');"><button class="btn btn-success btn-action text-white ms-2">Validasi</button></a>
                     `;
@@ -431,7 +429,7 @@
             return formatData;
         }
 
-        function detailPenghapusan(noDokumen, status, keterangan, urlDoc) {
+        function detailPenghapusan(noDokumen, status, keterangan) {
             $('#modalDetailPenghapusan #no_dokumen').html(noDokumen);
             $('#modalDetailPenghapusan #alasan_pengajuan').html(keterangan);
             let classStatus = '';
@@ -455,7 +453,6 @@
             }
 
             $('#modalDetailPenghapusan #status').html(`<span class="text-${classStatus} font-weight-bold fs-6" id="status">${status}</span>`);
-            $('#modalDetailPenghapusan #iframepdf').attr('src', urlDoc);
             $('#modalDetailPenghapusan').modal('show');
         }
 

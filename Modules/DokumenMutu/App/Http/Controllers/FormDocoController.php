@@ -108,7 +108,7 @@ class FormDocoController extends Controller
                 return redirect()->back()->with('error', 'File dokumen wajib di upload');
             }
 
-            $path = 'dokumen_mutu/pengajuan/' . $pemohon->KodeDP;
+            $path = 'dokumen_mutu/pembuatan/' . $pemohon->KodeDP;
             $filePath = Storage::disk('public')->put($path, $request->file('dokumen'));
 
             $pengajuan = DB::table(self::T_PENGAJUAN_DOCO)->insertGetId([
@@ -245,6 +245,7 @@ Terima kasih.";
 
         } catch(\Throwable $e) {
             Log::error($e);
+            DB::rollBack();
             return redirect()->back()->with('error', 'Terjadi kesalahan, mohon coba beberapa saat lagi');
         }
     }
@@ -270,7 +271,7 @@ Terima kasih.";
         $alasanPengajuan = $request->input('alasanPengajuan');
 
         try {
-            $doco = DB::table(self::T_DOCO)->select(self::T_KARYAWAN . '.KodeDP', 'nik_pembuat', 'judul_dokumen', 'jenis_dokumen', 'kode_site', self::T_JABATAN . '.Nama AS NamaJB')
+            $doco = DB::table(self::T_DOCO)->select(self::T_DOCO . '.*', self::T_KARYAWAN . '.KodeDP', self::T_JABATAN . '.Nama AS NamaJB', self::T_KARYAWAN . '.Nama AS NamaKaryawan')
                 ->join(self::T_KARYAWAN, self::T_KARYAWAN . '.NIK', self::T_DOCO . '.nik_pembuat')
                 ->join(self::T_JABATAN, self::T_JABATAN . '.KodeJB', self::T_KARYAWAN . '.KodeJB')
                 ->where('no_dokumen', $noDokumen)->first();
@@ -337,6 +338,7 @@ Terima kasih.";
 
         } catch(\Throwable $e) {
             Log::error($e);
+            DB::rollBack();
             return redirect()->back()->with('error', 'Terjadi kesalahan, mohon coba beberapa saat lagi');
         }
     }

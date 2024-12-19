@@ -107,23 +107,28 @@ class DocoController extends Controller
                     $item->is_validate = false;
 
                     if($item->status == 'Belum Validasi' || $item->status == 'Sedang Validasi') {
-                        $site = $item->kode_site == 'JKT' ? 'HO' : 'SITE';
-                        $listValidator = DB::table(self::T_MASTER_VALIDATOR)->where('site', $site)
-                            ->where('jenis_dokumen', $item->jenis_dokumen)
-                            ->orderBy('id', 'ASC')->get();
-                        foreach($listValidator as $itemVal) {
-                            $validator = strtolower($itemVal->validator);
+                        if($item->jenis_pengajuan == 'Penghapusan') {
+                            $item->is_validate = $user->KodeDP == 'OD';
 
-                            if($validator == 'thinktank' && in_array($nikLoggedIn, self::THINTANK)) {
-                                $item->is_validate = true;
-                            } else if(
-                                $validator == 'kadept' &&
-                                $item->KodeDP == $user->KodeDP &&
-                                (preg_match('/kepala department/i', $item->NamaJB) == 1 || preg_match('/kepala departemen/i', $item->NamaJB) == 1)
-                            ) {
-                                $item->is_validate = true;
-                            } else if($validator == 'od' && $user->KodeDP == 'OD') {
-                                $item->is_validate = true;
+                        } else {
+                            $site = $item->kode_site == 'JKT' ? 'HO' : 'SITE';
+                            $listValidator = DB::table(self::T_MASTER_VALIDATOR)->where('site', $site)
+                                ->where('jenis_dokumen', $item->jenis_dokumen)
+                                ->orderBy('id', 'ASC')->get();
+                            foreach($listValidator as $itemVal) {
+                                $validator = strtolower($itemVal->validator);
+
+                                if($validator == 'thinktank' && in_array($nikLoggedIn, self::THINTANK)) {
+                                    $item->is_validate = true;
+                                } else if(
+                                    $validator == 'kadept' &&
+                                    $item->KodeDP == $user->KodeDP &&
+                                    (preg_match('/kepala department/i', $item->NamaJB) == 1 || preg_match('/kepala departemen/i', $item->NamaJB) == 1)
+                                ) {
+                                    $item->is_validate = true;
+                                } else if($validator == 'od' && $user->KodeDP == 'OD') {
+                                    $item->is_validate = true;
+                                }
                             }
                         }
                     }
@@ -133,14 +138,9 @@ class DocoController extends Controller
                             ->where('id_pengajuan_dokumen', $item->id)
                             ->orderBy('no_versi', 'desc')->first()
                                 ->file_path ?? '';
-
-                    } else {
-                        $filePath = DB::table(self::T_DOCO)->select('file_path')
-                            ->where('no_dokumen', $item->no_dokumen)->where('status', 'Aktif')
-                            ->first()->file_path ?? '';
                     }
 
-                    $item->file_path = url('storage/' . $filePath);
+                    $item->file_path = isset($filePath) ? url('storage/' . $filePath) : '';
                     return $item;
                 });
 
