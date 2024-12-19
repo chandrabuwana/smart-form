@@ -635,6 +635,16 @@ class PengajuanTrainingController extends Controller {
         $order = $request->query('order', 'asc'); // Default order is ascending
         $offset = $request->query('offset', 0); // Default offset
         $limit = $request->query('limit', 10); 
+        $pelatihanId = $request->query('pelatihan'); 
+        $site = $request->query('site'); 
+        $department = $request->query('department');
+        $waktuPelatihan = $request->query('waktu');
+        $validator = Validator::make(
+            $request->only('waktu'), 
+            [
+                'waktu' => ['date_format:"m-Y"'], 
+            ]
+        );
 
         try {
             $sqlData = DB::connection(self::DB_CONN_NAME)->table(self::T_TRJ . ' as trj')
@@ -649,12 +659,29 @@ class PengajuanTrainingController extends Controller {
                 // ->where('mt.id', 334)
             ;
 
+            if($pelatihanId) {
+                $sqlData->where('pj.m_training_id', $pelatihanId);
+            }
+            if($site) {
+                $sqlData->where('trj.KodeST', $site);
+            }
+            if($department) {
+                $sqlData->where('trj.KodeDP', $department);
+            }
+            if($waktuPelatihan) {
+                if(count($validator->errors()->all()) < 1) {
+                    $splitWaktu = explode('-', $waktuPelatihan);
+                    $sqlData->where('pj.bulan', $splitWaktu[0])->where('pj.tahun', $splitWaktu[1]);
+                }
+            }
+
             $jml = $sqlData->count();
             if($limit == null || $limit == 'null' || $limit == '') {
                 $sqlData->skip($offset);
             } else {
                 $sqlData->skip($offset)->limit($limit);
             }
+            Log::debug('SQL Cross check : ' . $sqlData->toRawSql());
             $sqlDataGet = $sqlData->get();
 
             $data = [

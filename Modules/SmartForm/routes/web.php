@@ -328,6 +328,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('mtraining', [HelperTraininingController::class, 'GetMTraining'])->name('ic.training.helper.master');
             Route::post('select-mtraining', [HelperTraininingController::class, 'SelectMTraining'])->name('ic.training.helper.select-master');
             Route::post('cari-mp', [HelperTraininingController::class, 'SelectKaryawan'])->name('ic.training.helper.mp');
+            Route::get('cari-dept', [HelperTraininingController::class, 'SelectDept'])->name('ic.training.helper.cari-dept');
             Route::get('training-syarat-std', [HelperTraininingController::class, 'SelectSyaratAndStd'])->name('ic.training.helper.training-syarat-std');
             Route::get('check-pelatihan-mp', [HelperTraininingController::class, 'CheckNIkAndPelatihan'])->name('ic.training.helper.check-pelatihan-mp');
         });

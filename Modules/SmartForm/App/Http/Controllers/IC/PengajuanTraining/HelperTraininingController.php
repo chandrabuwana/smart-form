@@ -19,6 +19,7 @@ class HelperTraininingController extends Controller {
     const T_PENGAJUAN_TRAINING = 'pengajuan_training';
     const T_PIVOT_SYARAT_TRAINING = 'syarat_m_training';
     const T_HRD_JABATAN = 'HRD.dbo.tjabatan';
+    const T_HRD_DEPT = 'HRD.dbo.tdepartement';
     const T_OFF_ONLINE = 'm_offline_online';
     const T_MANDATORY = 'mandatory_type';
     const T_PENGAJUAN_TRAINING_DTL = 'pengajuan_training_detail';
@@ -220,5 +221,27 @@ class HelperTraininingController extends Controller {
             'alreadyTraining' => $alreadyTraining
         ]);
 
+    }
+
+    public function SelectDept(Request $request) {
+        $data = [];
+        $query = $request->get("query");
+
+        try {
+            $data = DB::connection(self::DB_CONN_NAME)->table(self::T_HRD_DEPT)->select('KodeDP as id', 'nama');
+
+            if($query) $data->where('nama', 'like', "%$query%");
+            $data = $data->get();
+
+            foreach ($data as $value) {
+                $value->text = $value->id . ' - ' . $value->nama;
+            }
+
+        } catch (Exception $ex) {
+            Log::error($ex->getMessage());
+            Log::error($ex->getTraceAsString());
+        }
+
+        return response()->json(['data' => $data]);
     }
 }
