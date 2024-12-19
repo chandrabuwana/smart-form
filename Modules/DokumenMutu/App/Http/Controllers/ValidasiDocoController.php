@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Modules\SmartForm\Service\AlarmAPIService;
+use Mpdf\Mpdf;
 
 class ValidasiDocoController extends Controller
 {
@@ -232,9 +233,46 @@ class ValidasiDocoController extends Controller
             ]);
 
             if($status == '1') {
+                DB::table(self::T_DOCO)->where('no_dokumen', $pengajuanDoco->no_dokumen)
+                    ->where('status', 'Aktif')->first();
+
                 DB::table(self::T_DOCO)->where('no_dokumen', $pengajuanDoco->no_dokumen)->update([
                     'status' => 'Kadaluarsa'
                 ]);
+
+                $lastVersion = DB::table(self::T_VERSI_DOCO)->select('file_path')
+                    ->join(self::T_PENGAJUAN_DOCO, self::T_PENGAJUAN_DOCO . '.id', self::T_VERSI_DOCO . '.id_pengajuan_dokumen')
+                    ->where(self::T_PENGAJUAN_DOCO . '.no_dokumen', $pengajuanDoco->no_dokumen)
+                    ->where(self::T_PENGAJUAN_DOCO . '.status', 'Disetujui')
+                    ->orderBy(self::T_PENGAJUAN_DOCO . '.id', 'desc')
+                    ->orderBy('no_versi', 'desc')
+                    ->first();
+
+                $expFilename = explode('/', $lastVersion->file_path);
+                $originalName = $expFilename[ count($expFilename) - 1 ];
+                $pathName = str_replace($originalName, '', $lastVersion->file_path);
+
+                $convertedName = storage_path('app/public/' . $pathName . '/converted_' . $originalName);
+                $originalName = storage_path('app/public/' . $pathName . '/' . $originalName);
+
+                shell_exec('ghostscript -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile=' . $convertedName . ' ' . $originalName . '');
+                @unlink($originalName);
+                rename($convertedName, $originalName);
+
+                $mpdf = new Mpdf();
+                $pageCount = $mpdf->setSourceFile($originalName);
+
+                for($i=1; $i <= $pageCount; $i++) {
+                    $tplIdx = $mpdf->ImportPage($i);
+
+                    $mpdf->SetWatermarkImage( storage_path('app/public/cap-kadaluarsa.png') );
+                    $mpdf->showWatermarkImage = true;
+
+                    $mpdf->AddPage();
+                    $mpdf->useTemplate($tplIdx, 10, 10, 200);
+                }
+
+                $mpdf->OutputFile($originalName);
             }
 
             DB::commit();
