@@ -129,7 +129,7 @@
         }
 
         /* Pusatkan loader di tengah layar */
-        .center {
+        .loader-center {
             display: none;
             justify-content: center;
             align-items: center;
@@ -146,7 +146,7 @@
 </head>
 
 <body class="g-sidenav-show  bg-gray-200">
-    <div class="center" id="loading-animation">
+    <div class="loader-center" id="loading-animation">
         <div class="loader"></div>
     </div>
     

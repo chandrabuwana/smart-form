@@ -387,7 +387,10 @@ class PengajuanTrainingController extends Controller {
                             'matrix_sertifikasi' => $value['matrix_sertifikasi'],
                             'matrix_masa_kerja' => $value['matrix_mk'],
                             'pengajuan_training_id' => $pengajuanId,
-                            'trj_id' => $trjId
+                            'trj_id' => $trjId,
+                            'replacing' => $value['replacing'],
+                            'created_by' => $nik_session,
+                            'created_at' => $tgl
                         ]);
                 } else {
                     $pengajuanDetailId = $value['id'];
@@ -591,7 +594,7 @@ class PengajuanTrainingController extends Controller {
         try {
             $dataSql = DB::connection(self::DB_CONN_NAME)->table(self::T_TRJ . ' as trj')
                 // ->select('ptd.id', 'trj.KodeDP', 'td.nama as departement', 'trj.KodeST', 'ptd.NIK', 
-                ->select('ptd.id', 'tk.KodeDP', 'td.nama as departement', 'tk.KodeST', 'ptd.NIK', 
+                ->select('ptd.id', 'tk.KodeDP', 'td.nama as departement', 'tk.KodeST', 'ptd.NIK', 'ptd.replacing',
                     'tk.nama as NIK_nama', 'ptd.status_id', 'tk.KodeJB', 'tj.nama as jabatan', 'tk.Tgl_Masuk as tmk'
                 )
                 ->leftJoin(self::T_PENGAJUAN_TRAINING . ' as pt','trj.pengajuan_training_id', '=', 'pt.id')   
@@ -1224,7 +1227,7 @@ class PengajuanTrainingController extends Controller {
         try {
             $sqlListApprovalLv1 = DB::connection(self::DB_CONN_NAME)->table(self::T_TRAINING_APPROVAL . ' as tta')
                 ->select('tta.NIK', 'tta.nama', 'tta.approval_role', 'tta.nama as text', 'tta.id')
-                ->where('tta.approval_role', 1)->where('tta.KodeDP', $KodeDP)->where('tta.KodeST', $KodeST)->get();
+                ->where('tta.approval_role', 1)->where('tta.KodeDP', $KodeDP)->get();
             $sqlListApprovalLv1Up = DB::connection(self::DB_CONN_NAME)->table(self::T_TRAINING_APPROVAL . ' as tta')
                 ->select('tta.NIK', 'tta.nama', 'tta.approval_role', 'tta.nama as text', 'tta.id')
                 ->whereIn('tta.approval_role', [2, 3])->where('tta.KodeST', $KodeST);

@@ -140,7 +140,6 @@
                                     <option value="">-- Cari NIK / Nama MP --</option>
                                 </select>
                             </div>
-                            <button class="btn btn-danger mb-0" style="align-self: flex-end; padding: 10px 16px;" onclick="resetNIK(event)">X</button>
                         </div>
                     </div>
 
@@ -151,6 +150,7 @@
                             data-unique-id="NIK" data-header-style="headerStyle" data-row-style="rowStyle">
                             <thead>
                                 <tr>
+                                    <th data-field="id" data-align="left" data-visible="false">id</th>
                                     <th data-field="NIK" data-align="left">NIK</th>
                                     <th data-field="NIK_nama" data-align="left">Nama</th>
                                     <th data-field="KodeST" data-align="left">Site</th>
@@ -163,6 +163,7 @@
                                     <th data-field="matrix_sertifikasi" data-align="left" data-formatter="sertifikasiFormatter" data-cell-style="sertifikasiStyle">Rekap Sertifikasi</th>
                                     <th data-field="matrix_mk" data-align="left" data-formatter="mkFormatter" data-cell-style="mkStyle">Masa Kerja</th>
                                     <th data-field="status_id" data-align="left" data-formatter="statusFormatter">Status</th>
+                                    <th data-field="mengganti" data-align="left" data-visible="false">Mengganti</th>
                                     @if ($crossCheckPIC->contains('NIK', session('user_id')) && $pelatihan->trj_status == 0)
                                         <th data-field="action" data-formatter="actionFormatter" data-align="center">Actions</th>   
                                     @endif
@@ -282,6 +283,46 @@
     </div>
 @endsection
 
+@section('modal')
+    <div class="modal fade" id="ModalUpdate" aria-hidden="true" aria-labelledby="exampleModalToggleLabel"
+        tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalCenterTitle">Cari pengganti - <span id="textPengganti"></span></h1>
+                    <button type="button" class="btn btn-danger px-3 py-2 m-0" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+                </div>
+                <div class="row" style="margin: 10px">
+                    <div class="col">
+                        <div class="card border" style="">
+                            <div class="card-body">
+                                <input type="hidden" name="nik_diganti" id="nik_diganti">
+                                <input type="hidden" name="id_diganti" id="id_diganti">
+                                <div class="row">
+                                    <div class="input-group input-group-static">
+                                        <select class="form-control form-select" name="cariPengganti" id="cariPengganti" style="width: 100%">
+                                            <option value="">-- Cari NIK / Nama MP --</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="d-flex align-items-center">
+                                <button class="btn btn-primary ms-auto uploadBtn" id="buttonSubmitDataPICA"
+                                    style="margin : 20px" onclick="gantiMP(event)">
+                                    <i class="fas fa-save"></i>
+                                    Ganti
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+
 @section('custom-js')
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -335,7 +376,7 @@
             // let btnGanti = `<button class="btn btn-secondary btn-action-format"><i class="bi bi-info-circle-fill"></i></button>`
             let btnReject = `<button type="button" class="btn btn-danger btn-action-format" onclick="aksiReject(${row.NIK}, event, ${row.id})"><i class="bi bi-x-circle-fill"></i></button>`
             let btnApprove = row.status_id == 0 || row.status_id == 1 ? `<button type="button" class="btn btn-success btn-action-format" onclick="aksiApprove(${row.NIK}, event)"><i class="bi bi-check-circle-fill"></i></button>` : ""
-            let btnGanti = row.status_id == 0 || row.status_id == 1 ? `<button type="button" class="btn btn-primary btn-action-format"><i class="bi bi-pencil-square"></i></button>` : ""
+            let btnGanti = row.status_id == 0 || row.status_id == 1 ? `<button type="button" class="btn btn-primary btn-action-format" onclick="aksiGanti(${row.NIK}, ${row.id}, event)"><i class="bi bi-pencil-square"></i></button>` : ""
 
             let action = '<div style="display: flex; gap:6px; justify-content: center;">' + btnApprove + btnGanti + btnReject + '</div>'
             
@@ -348,6 +389,14 @@
             let data = $("#table-data").bootstrapTable('getRowByUniqueId', NIK)
             if(id==0) {
                 $("#table-data").bootstrapTable('removeByUniqueId', NIK)
+                if(data.mengganti) {
+                    $("#table-data").bootstrapTable('updateByUniqueId', {
+                        id: data.mengganti,
+                        row: {
+                           status_id: 0
+                        }
+                    })
+                }
             } else {
                 $("#table-data").bootstrapTable('updateByUniqueId', {
                     id: NIK,
@@ -371,6 +420,13 @@
             })
 
             event.target.disabled = false
+        }
+
+        function aksiGanti(NIK, idDiganti, event) {
+            $("#textPengganti").text(NIK)
+            $("#nik_diganti").val(NIK)
+            $("#id_diganti").val(idDiganti)
+            $('#ModalUpdate').modal("show")
         }
 
         function kompetensiFormatter(value, row, index) {
@@ -563,7 +619,8 @@
                 matrix_kompetensi: "",
                 matrix_sertifikasi: "",
                 matrix_mk: "",
-                tmk: ""
+                tmk: "",
+                mengganti: null
             }
             data.KodeDP = e.params.data.KodeDP
             data.departement = e.params.data.department
@@ -580,6 +637,103 @@
             data.matrix_mk = calculateMasaKerja(e.params.data.tmk, new Date(`${pengajuanTahun}/${pengajuanBulan}/1`))
 
             $("#table-data").bootstrapTable('append', data)
+        })
+
+        $('#cariPengganti').select2({
+            minimumInputLength: 3,
+            theme: 'bootstrap-5', // Menggunakan tema Bootstrap 5
+            dropdownParent: $('#cariPengganti').closest('.input-group'),
+            placeholder: '-- Cari NIK / Nama MP --',
+            ajax: {
+                url: baseUrl + '/helper/cari-mp',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type: "post",
+                delay: 250,
+                dataType: 'json',
+                data: function(params) {
+                    
+                    return {
+                        _token: "{{ csrf_token() }}",
+                        query: params.term, // search term
+                        KodeDP: KodeDP_trj,
+                        KodeST: KodeST_trj
+                    };
+                },
+                processResults: function(response) {
+                    return {
+                        results: response.data
+                    };
+                },
+                cache: true,
+            },
+            templateResult: function (data) {
+                    // console.log(data)
+                    if (!data.id) {
+                        return data.text; // Tampilan default jika tidak ada data
+                    }
+
+                    var $result = $('<span>' + data.id + ' - ' + data.text + '</span>');
+                    return $result;
+                }
+        })
+
+        $('#cariPengganti').on("select2:select", function(e){
+            // console.log(e.params.data)
+            console.log($("#table-data").bootstrapTable('getRowByUniqueId', e.params.data.NIK) ? 'sudah ada' : 'belum ada')
+            if($("#table-data").bootstrapTable('getRowByUniqueId', e.params.data.NIK)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Duplikat',
+                    text: 'Data sudah ada!'
+                })
+
+                return
+            }
+            $("#table-data").bootstrapTable('updateByUniqueId', {
+                    id: $("#nik_diganti").val(),
+                    row: {
+                       status_id: -1 
+                    }
+                })
+
+            $('#cariPengganti').val(null).trigger('change')
+            let data = {
+                id: 0,
+                KodeDP: "",
+                departement: "",
+                KodeST: "",
+                NIK: "",
+                NIK_nama: "",
+                status_id: 2,
+                KodeJB: "",
+                jabatan: "",
+                matrix_kompetensi: "",
+                matrix_sertifikasi: "",
+                matrix_mk: "",
+                tmk: "",
+                mengganti: null
+            }
+            data.KodeDP = e.params.data.KodeDP
+            data.departement = e.params.data.department
+            data.KodeST = e.params.data.site
+            data.NIK = e.params.data.NIK
+            data.NIK_nama = e.params.data.nama
+            data.KodeJB = e.params.data.KodeJB
+            data.jabatan = e.params.data.jabatan
+            data.tmk = e.params.data.tmk
+            data.mengganti = $("#nik_diganti").val()
+            data.replacing = $("#id_diganti").val()
+            // console.log(data)
+            // let stdJab = $("#table-std-jab").bootstrapTable('getData')
+            // data.matrix_kompetensi = stdJab.length > 0 ? (stdJab.filter((nilai) => nilai.KodeJB == data.KodeJB).length > 0 ? 1 : 0) : 1
+            data.matrix_kompetensi = $("#table-std-jab").bootstrapTable('getData').filter((nilai) => nilai.KodeJB == data.KodeJB).length > 0 ? 1 : 0
+            data.matrix_sertifikasi = $("#table-sudah-training").bootstrapTable('getData').filter((nilai) => nilai.NIK == data.NIK).length > 0 ? 0 : 1
+            data.matrix_mk = calculateMasaKerja(e.params.data.tmk, new Date(`${pengajuanTahun}/${pengajuanBulan}/1`))
+
+            $("#table-data").bootstrapTable('append', data)
+            $('#ModalUpdate').modal("hide")
         })
 
         function showLoading() {
