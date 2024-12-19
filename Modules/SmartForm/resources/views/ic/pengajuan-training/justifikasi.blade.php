@@ -228,9 +228,14 @@
 
                         <p class="m-0 mt-3"><strong>Tujuan Training untuk menunjang  Logic Tree (KPI) yang mana, Kondisi sekarang seperti apa?</strong></p>
                         @if ($data->trj_status == 1 && $isDibuatOleh)
-                            <div style="display: flex; gap: 12px; margin-bottom: 12px;" class="col-md-6">
-                                <input type="text" class="form-control input-text w-fit" placeholder="Cth “Menunjang KPI Fullfillment Manpower Ach : 80%”" id="inputTujuan">
-                                <button class="btn btn-secondary m-0" type="button" id="btnAddTujuan" onclick="addTujuan(event)"><i class="bi fa-plus"></i> </button>
+                            <div class="col-md-6 mb-3" style="display: flex; gap: 8px;">
+                                <div class="input-group input-group-static">
+                                    <label for="cariKPI" style="width: 100%">Tambah Data MP</label>
+                                    <select class="form-control form-select" name="cariKPI" id="cariKPI" style="width: 100%">
+                                        <option value="">-- Cari NIK / Nama MP --</option>
+                                    </select>
+                                </div>
+                                {{-- <button class="btn btn-danger mb-0" style="align-self: flex-end; padding: 10px 16px;" onclick="resetNIK(event)">X</button> --}}
                             </div>
                         @endif
                         <table id="table-tujuan" data-toggle="table" data-side-pagination="client"
@@ -240,6 +245,7 @@
                                 <tr>
                                     <th data-field="no" data-align="right" data-width="200" data-formatter="noTujuanFormatter"></th>
                                     <th data-field="tujuan" data-align="left">Tujuan</th>
+                                    <th data-field="nama" data-align="left">Nama</th>
                                     @if ($data->trj_status == 1)
                                     <th data-field="action" data-align="center" data-formatter="htujuanFormatter"></th>
                                     @endif
@@ -251,6 +257,7 @@
                                     <tr>
                                         <td></td>
                                         <td>{{ $item->keterangan }}</td>
+                                        <td>{{ $item->nama }}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -262,12 +269,12 @@
                         @if ($data->trj_status == 1 && $isDibuatOleh)
                             <div class="col-md-6 mb-3" style="display: flex; gap: 8px;">
                                 <div class="input-group input-group-static">
-                                    <label for="cariKaryawan" style="width: 100%"><strong>Tambah Data MP</strong></label>
+                                    <label for="cariKaryawan" style="width: 100%">Tambah KPI Pendukung</label>
                                     <select class="form-control form-select" name="cariKaryawan" id="cariKaryawan" style="width: 100%">
                                         <option value="">-- Cari NIK / Nama MP --</option>
                                     </select>
                                 </div>
-                                <button class="btn btn-danger mb-0" style="align-self: flex-end; padding: 10px 16px;" onclick="resetNIK(event)">X</button>
+                                {{-- <button class="btn btn-danger mb-0" style="align-self: flex-end; padding: 10px 16px;" onclick="resetNIK(event)">X</button> --}}
                             </div>
                         @endif
                         <table id="table-pengganti" data-toggle="table" data-side-pagination="client"
@@ -288,6 +295,7 @@
                                     <tr>
                                         <td></td>
                                         <td>{{ $item->keterangan }}</td>
+                                        <td>{{ $item->nama }}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -297,7 +305,7 @@
                         <p class="m-0 mt-3"><strong>Detail urgensi (Kepentingan mendesak) training/sertifikasi ini harus dijalankan segera?</strong></p>
                         @if ($data->trj_status == 1 && $isDibuatOleh)
                             <div style="display: flex; gap: 12px; margin-bottom: 12px;" class="col-md-6">
-                                <input type="text" class="form-control input-text w-fit" placeholder="Detail urgensi" id="inputUrgensi">
+                                <input type="text" class="form-control input-text w-fit" placeholder="Tambah Detail urgensi" id="inputUrgensi">
                                 <button class="btn btn-secondary m-0" type="button" id="btnAddUrgensi" onclick="addUrgensi(event)"><i class="bi fa-plus"></i> </button>
                             </div>
                         @endif
@@ -706,6 +714,42 @@
             $("#table-pengganti").bootstrapTable('append', {
                 pengganti: e.params.data.id,
                 nama: e.params.data.nama
+            })
+        })
+
+        $('#cariKPI').select2({
+            theme: 'bootstrap-5', // Menggunakan tema Bootstrap 5
+            dropdownParent: $('#cariKPI').closest('.input-group'),
+            placeholder: '--- Cari/Pilih KPI Leading ---',
+            ajax: {
+                url: "/helper/kpi-lead-datalist",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type: "post",
+                delay: 250,
+                dataType: 'json',
+                data: function(params) {
+                    return {
+                        query: params.term, // search term
+                        dept: {{ Illuminate\Support\Js::from($data->KodeDP) }}
+                    };
+                },
+                processResults: function(response) {
+                    return {
+                        results: response.data
+                    };
+                },
+                cache: true
+            }
+        })
+
+        $('#cariKPI').on("select2:select", function(e){
+            console.log("cari KPI : ", e.params.data)
+            $('#cariKPI').val(null).trigger('change')
+            $("#table-tujuan").bootstrapTable('append', {
+                tujuan: e.params.data.id,
+                nama: e.params.data.text
             })
         })
     </script>

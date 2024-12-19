@@ -46,6 +46,7 @@ class PengajuanTrainingController extends Controller {
     const T_TRAINING_APPROVAL = 'm_training_approval';
     const T_KOMITMEN_APPROVAL = 'training_komitmen_approval';
     const T_JENIS_APPROVAL = 'jenis_approval';
+    const T_PICA_KPI = 'SMF_KPI_MASTER';
     const mappingDP = [
         'SM' => 'SM',
         'ATA' => 'FAT',
@@ -1483,11 +1484,13 @@ class PengajuanTrainingController extends Controller {
                 ->orderBy('tka.approval_order')
                 ->where('tka.trj_id', $id)->get();
 
-            $sqlTujuan = DB::connection(self::DB_CONN_NAME)->table(self::T_TRJ_TUJUAN)
-                ->select('keterangan')
+            $sqlTujuan = DB::connection(self::DB_CONN_NAME)->table(self::T_TRJ_TUJUAN . ' as a')
+                ->leftJoin(DB::getDatabaseName() . '.dbo.'. self::T_PICA_KPI . ' as b', 'a.keterangan', '=', 'b.kpi_code')
+                ->select('a.keterangan', 'b.kpi as nama')
                 ->where('trj_id', $id)->get();
-            $sqlPengganti = DB::connection(self::DB_CONN_NAME)->table(self::T_TRJ_PENGGANTI)
-                ->select('keterangan')
+            $sqlPengganti = DB::connection(self::DB_CONN_NAME)->table(self::T_TRJ_PENGGANTI. ' as a')
+                ->leftJoin(self::T_HRD_KARYAWAN . ' as b', 'a.keterangan', '=', 'b.NIK')
+                ->select('a.keterangan', 'b.nama')
                 ->where('trj_id', $id)->get();
             $sqlUrgensi = DB::connection(self::DB_CONN_NAME)->table(self::T_TRJ_URGENSI)
                 ->select('keterangan')

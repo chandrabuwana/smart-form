@@ -181,7 +181,7 @@
                             data-unique-id="id">
                             <thead>
                                 <tr>
-                                    <th data-field="approval_role" data-align="left"></th>
+                                    <th data-field="approval_role" data-align="left" data-visible="false"></th>
                                     <th data-field="jabatan" data-align="left">Jabatan</th>
                                     <th data-field="pic" data-align="left">PIC</th>
                             </thead>
