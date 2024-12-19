@@ -27,5 +27,6 @@ class AppServiceProvider extends ServiceProvider
         date_default_timezone_set('Asia/Jakarta');
 
         View::addNamespace('SmartForm', module_path('SmartForm', 'resources/views'));
+        View::addNamespace('DokumenMutu', module_path('DokumenMutu', 'resources/views'));
     }
 }
