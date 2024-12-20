@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Mpdf\Mpdf;
 
 class DocoController extends Controller
 {
@@ -254,7 +255,34 @@ class DocoController extends Controller
             return response()->json([]);
         }
 
+        $expFilePath = explode('/', $doco->file_path);
+        $filename = $expFilePath[ count($expFilePath) - 1 ];
+
+        $doco->file_converted_path = str_replace($filename, 'converted_' . $filename, $doco->file_path);
+        $convertedPath = storage_path('app/public/' . $doco->file_converted_path);
+        $originalPath = storage_path('app/public/' . $doco->file_path);
+
+        if(!file_exists($doco->file_converted_path)) {
+            shell_exec('ghostscript -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile=' . $convertedPath . ' ' . $originalPath . '');
+
+            $mpdf = new Mpdf();
+            $pageCount = $mpdf->setSourceFile($convertedPath);
+
+            for($i=1; $i <= $pageCount; $i++) {
+                $tplIdx = $mpdf->ImportPage($i);
+
+                $mpdf->SetWatermarkText('Preview Only');
+                $mpdf->showWatermarkText = true;
+
+                $mpdf->AddPage();
+                $mpdf->useTemplate($tplIdx, 10, 10, 200);
+            }
+
+            $mpdf->OutputFile($convertedPath);
+        }
+
         $doco->file_path = url('storage/' . $doco->file_path);
+        $doco->file_converted_path = url('storage/' . $doco->file_converted_path);
         return response()->json($doco);
     }
 
@@ -264,7 +292,35 @@ class DocoController extends Controller
         $lastVersion = DB::table(self::T_VERSI_DOCO)->where('id_pengajuan_dokumen', $doco->id)
             ->orderBy('no_versi', 'desc')->first();
 
+        $expFilePath = explode('/', $lastVersion->file_path);
+        $filename = $expFilePath[ count($expFilePath) - 1 ];
+
         $doco->file_path = url('storage/' . $lastVersion->file_path);
+        $doco->file_converted_path = str_replace($filename, 'converted_' . $filename, $lastVersion->file_path);
+
+        $convertedPath = storage_path('app/public/' . $doco->file_converted_path);
+        $originalPath = storage_path('app/public/' . $lastVersion->file_path);
+
+        if(!file_exists($doco->file_converted_path)) {
+            shell_exec('ghostscript -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile=' . $convertedPath . ' ' . $originalPath . '');
+
+            $mpdf = new Mpdf();
+            $pageCount = $mpdf->setSourceFile($convertedPath);
+
+            for($i=1; $i <= $pageCount; $i++) {
+                $tplIdx = $mpdf->ImportPage($i);
+
+                $mpdf->SetWatermarkText('Preview Only');
+                $mpdf->showWatermarkText = true;
+
+                $mpdf->AddPage();
+                $mpdf->useTemplate($tplIdx, 10, 10, 200);
+            }
+
+            $mpdf->OutputFile($convertedPath);
+        }
+
+        $doco->file_converted_path = url('storage/' . $doco->file_converted_path);
 
         $validates = DB::table(self::T_VALIDASI_DOCO)
             ->where('id_pengajuan_dokumen', $doco->id)
