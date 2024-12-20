@@ -369,7 +369,7 @@
                         $('#pembuat').val(response.NamaKaryawan);
                         $('#judulDokumen').val(response.judul_dokumen);
                         $('#status').val(response.status);
-                        $('#iframepdf').attr('src', response.file_path);
+                        $('#iframepdf').attr('src', response.file_converted_path);
 
                         if(response.no_revisi) {
                             $('#revisi').parent().removeClass('d-none');

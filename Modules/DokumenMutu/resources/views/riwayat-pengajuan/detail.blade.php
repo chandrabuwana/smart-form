@@ -156,33 +156,6 @@
 
                         <div class="col-md-4">
                             <div class="col-feedback">
-                                {{-- @if($feedbacks->count() == 0)
-                                    <div class="d-flex flex-column justify-content-center align-items-center pt-5">
-                                        <i class="fas fa-exclamation-triangle text-warning" style="font-size: 3em;"></i>
-                                        <p class="mb-0 mt-3">Belum Ada Feedback</p>
-                                    </div>
-
-                                @else
-                                    <div class="feedback-parent">
-                                        @foreach($feedbacks as $feedback)
-                                            <div class="px-4 pt-2 pb-3 rounded bg-dark text-white shadow">
-                                                <div class="text-end mb-2">
-                                                    <small>{{ date('Y/m/d H:i', strtotime($feedback->created_at)) }}</small>
-                                                </div>
-
-                                                <div class="d-flex align-items-center text-lg" style="line-height: 1.2;">
-                                                    <i class="fas fa-user me-3 fa-lg"></i>
-                                                    <span class="font-weight-bold">{{ $feedback->NamaKaryawan }}</span>
-                                                </div>
-
-                                                <p class="mb-0 mt-3" style="line-height: 1.4; text-align: justify;">
-                                                    {!! nl2br($feedback->keterangan) !!}
-                                                </p>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                @endif --}}
-
                                 <div id="loader-feedback" class="d-none justify-content-center mt-3">
                                     <div class="spinner-border" role="status">
                                         <span class="visually-hidden">Loading...</span>
@@ -445,7 +418,7 @@
             $('#modalRevisi').modal('show');
         }
 
-        // secureConfidential();
-        LoadPdfFromUrl('{{ $doco->file_path }}');
+        secureConfidential();
+        LoadPdfFromUrl('{{ $doco->file_converted_path }}');
     </script>
 @endsection
