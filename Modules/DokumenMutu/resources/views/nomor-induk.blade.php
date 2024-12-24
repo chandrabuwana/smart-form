@@ -48,6 +48,13 @@
             border-bottom: 1px solid rgba(85, 83, 83, 0.534) !important;
             padding-top: 8.5px !important;
         }
+
+        #pdf_container {
+            background: #ccc;
+            text-align: center;
+            display: none;
+            padding: 5px;
+        }
     </style>
 @endsection
 
