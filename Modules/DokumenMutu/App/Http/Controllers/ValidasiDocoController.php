@@ -241,7 +241,7 @@ class ValidasiDocoController extends Controller
                             break;
 
                         case 'od':
-                            $phones = env('DOCO_ALARM_OD');
+                            $phones = [ env('DOCO_ALARM_OD') ];
                             break;
 
                         default:
