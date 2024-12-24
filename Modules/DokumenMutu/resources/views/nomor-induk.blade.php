@@ -262,6 +262,7 @@
     <script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.29.0/libs/jsPDF/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.23.2/dist/extensions/export/bootstrap-table-export.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.min.js"></script>
 
     @if(session('error'))
         <script>
@@ -283,6 +284,12 @@
     @endif
 
     <script type="text/javascript">
+        let pdfjsLib = window['pdfjs-dist/build/pdf'];
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.worker.min.js';
+        let pdfDoc = null;
+        let scale = 1;
+        let resolution = 1;
+
         var $table = $("#list-form");
         var btnFilterSubmit = document.getElementById("btnFilterSubmit")
         var btnClearFilter = document.getElementById("btnClearFilter")
