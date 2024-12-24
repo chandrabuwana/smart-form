@@ -535,8 +535,8 @@
                 </div>
             `;
 
-            const vertical = (screen.height / 100) * feedback.vertical;
-            const horizontal = (screen.width / 100) * feedback.horizontal;
+            const vertical = ((screen.height / 100) * feedback.vertical) - 20;
+            const horizontal = ((screen.width / 100) * feedback.horizontal) - 20;
 
             $('body').append(
                 $(marker).css({

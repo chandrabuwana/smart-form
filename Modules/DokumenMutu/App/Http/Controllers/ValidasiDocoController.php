@@ -140,7 +140,7 @@ class ValidasiDocoController extends Controller
                 ->orderBy('no_versi', 'desc')->first();
 
             $prevFilePath = $lastVersion->file_path;
-            $path = 'dokumen_mutu/pengajuan/' . $doco->KodeDP;
+            $path = 'dokumen_mutu/pembuatan/' . $doco->KodeDP;
             $filePath = Storage::disk('public')->put($path, $documentValidated);
 
             if(file_exists( storage_path('app/public/' . $prevFilePath) )) {
