@@ -132,7 +132,7 @@ class ValidasiDocoController extends Controller
         $validatorType = $request->input('validator_type');
 
         try {
-            $doco = DB::table(self::T_PENGAJUAN_DOCO)->select(self::T_PENGAJUAN_DOCO . '.*', self::T_KARYAWAN . '.KodeDP')
+            $doco = DB::table(self::T_PENGAJUAN_DOCO)->select(self::T_PENGAJUAN_DOCO . '.*', self::T_KARYAWAN . '.Nama AS NamaKaryawan', self::T_KARYAWAN . '.KodeDP')
                 ->join(self::T_KARYAWAN, self::T_KARYAWAN . '.NIK', self::T_PENGAJUAN_DOCO . '.nik_pemohon')
                 ->where(self::T_PENGAJUAN_DOCO . '.id', $id)->first();
 
@@ -147,10 +147,13 @@ class ValidasiDocoController extends Controller
                 @unlink(storage_path('app/public/' . $prevFilePath));
             }
 
-            $validateIndex = DB::table(self::T_VALIDASI_DOCO)
-                ->where('id_pengajuan_dokumen', $doco->id)->count('id') + 1;
+            $validate = DB::table(self::T_VALIDASI_DOCO)
+                ->distinct('jenis_validasi')
+                ->where('id_pengajuan_dokumen', $doco->id)->get();
 
+            $validateIndex = $validate->count() + 1;
             $site = $doco->kode_site == 'JKT' ? 'HO' : 'SITE';
+
             $validatorCountAll = DB::table(self::T_MASTER_VALIDATOR)->distinct('jenis_validator')
                 ->where('site', $site)
                 ->where('jenis_dokumen', $doco->jenis_dokumen)->count('id');
@@ -200,10 +203,80 @@ class ValidasiDocoController extends Controller
                 DB::commit();
                 return redirect(route('dokumen-mutu.nomor-induk-dokumen'))->with('success', 'Pengajuan dokumen mutu berhasil terbit!');
 
-            } else if($doco->status == 'Belum Validasi') {
-                DB::table(self::T_PENGAJUAN_DOCO)->where('id', $doco->id)->update([
-                    'status' => 'Sedang Validasi'
-                ]);
+            } else {
+                if($doco->status == 'Belum Validasi') {
+                    DB::table(self::T_PENGAJUAN_DOCO)->where('id', $doco->id)->update([
+                        'status' => 'Sedang Validasi'
+                    ]);
+                }
+
+                $nextValidator = DB::table(self::T_MASTER_VALIDATOR)
+                    ->where('site', $site)->where('jenis_dokumen', $doco->jenis_dokumen)
+                    ->whereNotIn('jenis_validator', $validate->pluck('jenis_validasi')->all() )
+                    ->orderBy('id', 'asc')->first();
+
+                if($nextValidator) {
+                    switch(strtolower($nextValidator->validator)) {
+                        case 'thinktank':
+                            $phones = DB::table(self::T_KARYAWAN)->select('Telp')
+                                ->whereIn('NIK', self::THINTANK)->get()
+                                ->pluck('Telp')->filter( fn($phone) => !empty($phone))->all();
+                            break;
+
+                        case 'kadept':
+                            $phones = DB::table(self::T_KARYAWAN)->select('Telp')
+                                ->join(self::T_JABATAN, self::T_JABATAN . '.KodeJB', self::T_KARYAWAN . '.KodeJB')
+                                ->where( function($q) use($nextValidator) {
+                                    if($nextValidator->responsibilitas == 'HO') {
+                                        $q->where('KodeST', 'JKT');
+                                    }
+                                })
+                                ->where('KodeDP', $doco->KodeDP)
+                                ->where( function($q) {
+                                    return $q->where(self::T_JABATAN . '.Nama', 'like', '%kepala department%')
+                                        ->orWhere(self::T_JABATAN . '.Nama', 'like', '%kepala departemen%');
+                                })
+                                ->get()->pluck('Telp')
+                                ->filter( fn($phone) => !empty($phone))->all();
+                            break;
+
+                        case 'od':
+                            $phones = DB::table(self::T_KARYAWAN)->select('Telp')
+                                ->join(self::T_JABATAN, self::T_JABATAN . '.KodeJB', self::T_KARYAWAN . '.KodeJB')
+                                ->where('KodeDP', 'OD')
+                                ->where( function($q) use($nextValidator) {
+                                    if($nextValidator->responsibilitas == 'HO') {
+                                        $q->where('KodeST', 'JKT');
+                                    }
+                                })
+                                ->get()->pluck('Telp')
+                                ->filter( fn($phone) => !empty($phone))->all();
+                            break;
+
+                        default:
+                            $phones = [];
+                    }
+
+                    if(count($phones) > 0) {
+                        $date = date('Y-m-d', strtotime($doco->created_at));
+                        $url = route('dokumen-mutu.validasi.index', ['id' => $doco->id]);
+                        $phones = array_map( fn($phone) => preg_replace('/[^0-9+]/i', '', trim($phone)), $phones);
+
+                        $message = "📢 Notifikasi Dokumen Mutu\n
+    Halo Bapak/Ibu,\n
+    Dokumen mutu baru telah dibuat dengan rincian:\n
+    Jenis Dokumen:  {$doco->jenis_dokumen}
+    Nama Dokumen: {$doco->judul_dokumen}
+    Nomor Dokumen: {$doco->no_dokumen}
+    Tanggal: {$date}
+    Dibuat oleh: {$doco->NamaKaryawan}
+    Silakan cek dokumen di sini: {$url}\n
+    Terima kasih.";
+
+                        $alarmService = new AlarmAPIService();
+                        $alarmService->sendMessage($phones, $message);
+                    }
+                }
             }
 
             DB::commit();
