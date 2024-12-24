@@ -241,16 +241,7 @@ class ValidasiDocoController extends Controller
                             break;
 
                         case 'od':
-                            $phones = DB::table(self::T_KARYAWAN)->select('Telp')
-                                ->join(self::T_JABATAN, self::T_JABATAN . '.KodeJB', self::T_KARYAWAN . '.KodeJB')
-                                ->where('KodeDP', 'OD')
-                                ->where( function($q) use($nextValidator) {
-                                    if($nextValidator->responsibilitas == 'HO') {
-                                        $q->where('KodeST', 'JKT');
-                                    }
-                                })
-                                ->get()->pluck('Telp')
-                                ->filter( fn($phone) => !empty($phone))->all();
+                            $phones = env('DOCO_ALARM_OD');
                             break;
 
                         default:
