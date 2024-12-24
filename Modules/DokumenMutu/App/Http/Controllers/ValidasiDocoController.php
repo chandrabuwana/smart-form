@@ -252,8 +252,8 @@ class ValidasiDocoController extends Controller
                 $originalName = $expFilename[ count($expFilename) - 1 ];
                 $pathName = str_replace($originalName, '', $lastVersion->file_path);
 
-                $convertedName = storage_path('app/public/' . $pathName . '/converted_' . $originalName);
-                $originalName = storage_path('app/public/' . $pathName . '/' . $originalName);
+                $convertedName = str_replace('\\', '/', storage_path('app/public/' . $pathName . '/converted_' . $originalName));
+                $originalName = str_replace('\\', '/', storage_path('app/public/' . $pathName . '/' . $originalName));
 
                 shell_exec('gswin64 -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile=' . $convertedName . ' ' . $originalName . '');
                 @unlink($originalName);
