@@ -42,7 +42,7 @@ class SmartCateringController extends Controller {
     private const TABLE_VENDOR_ORDER = "SCT_GS_CT_ORDER_VNDR";
     private const TABLE_VENDOR_MASTER = "SCT_GS_VENDOR_MST";
     private const TABLE_ABSENSI_HRD = self::DB_HRD . ".dbo.TAbsensi";
-    private const TABLE_NEW_ABSENSI_HRD = self::DB_HRD . ".dbo.TAbsensi";
+    private const TABLE_NEW_ABSENSI_HRD = self::DB_HRD . ".dbo.TAttendance";
     private const TABLE_FINGERLOG_HRD = self::DB_HRD . ".dbo.TFingerlog";
     private const TABLE_KARYAWAN_HRD = self::DB_HRD . ".dbo.TKaryawan";
     private const TABLE_PENEGASAN_CUTI = self::DB_HRD . ".dbo.TPenegasanCuti";
