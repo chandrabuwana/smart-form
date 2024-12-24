@@ -53,28 +53,28 @@ class FormDocoController extends Controller
             return redirect()->back()->with('error', 'NIK pemohon tidak terdaftar');
         }
 
-        // if($site == 'JKT') {
-        //     if($jenisDokumen == 'SOP') {
-        //         $isValidPemohon = preg_match('/kepala seksi/i', $pemohon->NamaJB) || preg_match('/kepala bagian/i', $pemohon->NamaJB) || preg_match('/kepala dept/i', $pemohon->NamaJB);
-        //     } else if($jenisDokumen == 'STD' || $jenisDokumen == 'WI') {
-        //         $isValidPemohon = preg_match('/kepala seksi/i', $pemohon->NamaJB) || preg_match('/kepala bagian/i', $pemohon->NamaJB);
-        //     } else {
-        //         $isValidPemohon = true;
-        //     }
+        if($site == 'JKT') {
+            if($jenisDokumen == 'SOP') {
+                $isValidPemohon = preg_match('/kepala seksi/i', $pemohon->NamaJB) || preg_match('/kepala bagian/i', $pemohon->NamaJB) || preg_match('/kepala dept/i', $pemohon->NamaJB);
+            } else if($jenisDokumen == 'STD' || $jenisDokumen == 'WI') {
+                $isValidPemohon = preg_match('/kepala seksi/i', $pemohon->NamaJB) || preg_match('/kepala bagian/i', $pemohon->NamaJB);
+            } else {
+                $isValidPemohon = true;
+            }
 
-        // } else {
-        //     if($jenisDokumen == 'SOP') {
-        //         $isValidPemohon = preg_match('/kepala bagian/i', $pemohon->NamaJB);
-        //     } else if($jenisDokumen == 'STD' || $jenisDokumen == 'WI') {
-        //         $isValidPemohon = preg_match('/kepala seksi/i', $pemohon->NamaJB) || preg_match('/kepala bagian/i', $pemohon->NamaJB);
-        //     } else {
-        //         $isValidPemohon = true;
-        //     }
-        // }
+        } else {
+            if($jenisDokumen == 'SOP') {
+                $isValidPemohon = preg_match('/kepala bagian/i', $pemohon->NamaJB);
+            } else if($jenisDokumen == 'STD' || $jenisDokumen == 'WI') {
+                $isValidPemohon = preg_match('/kepala seksi/i', $pemohon->NamaJB) || preg_match('/kepala bagian/i', $pemohon->NamaJB);
+            } else {
+                $isValidPemohon = true;
+            }
+        }
 
-        // if(!$isValidPemohon) {
-        //     return redirect()->back()->with('error', 'Mohon maaf anda tidak dapat untuk membuat pengajuan dokumen mutu');
-        // }
+        if(!$isValidPemohon) {
+            return redirect()->back()->with('error', 'Mohon maaf anda tidak dapat untuk membuat pengajuan dokumen mutu');
+        }
 
         $getCounting = DB::table(self::T_PENGAJUAN_DOCO)->select(self::T_PENGAJUAN_DOCO . '.no_dokumen', self::T_DOCO . '.status AS status_doco')
             ->join(self::T_KARYAWAN, self::T_KARYAWAN . '.NIK', '=', self::T_PENGAJUAN_DOCO . '.nik_pemohon')
@@ -169,7 +169,8 @@ Terima kasih.";
         $dokumen = $request->file('dokumen');
 
         try {
-            $doco = DB::table(self::T_DOCO)->select(self::T_KARYAWAN . '.KodeDP', 'nik_pembuat', 'judul_dokumen', 'jenis_dokumen', 'kode_site', self::T_JABATAN . '.Nama AS NamaJB', self::T_KARYAWAN . '.Nama AS NamaKaryawan')
+            $doco = DB::table(self::T_DOCO)
+                ->select(self::T_DOCO . '.no_dokumen', self::T_DOCO . '.judul_dokumen', self::T_DOCO . '.jenis_dokumen', self::T_KARYAWAN . '.KodeDP', 'nik_pembuat', 'judul_dokumen', 'jenis_dokumen', 'kode_site', self::T_JABATAN . '.Nama AS NamaJB', self::T_KARYAWAN . '.Nama AS NamaKaryawan')
                 ->join(self::T_KARYAWAN, self::T_KARYAWAN . '.NIK', self::T_DOCO . '.nik_pembuat')
                 ->join(self::T_JABATAN, self::T_JABATAN . '.KodeJB', self::T_KARYAWAN . '.KodeJB')
                 ->where('no_dokumen', $noDokumen)->first();
@@ -178,28 +179,28 @@ Terima kasih.";
                 return redirect()->back()->with('error', 'Nomor dokumen yang ada masukkan tidak ditemukan');
             }
 
-            // if($doco->kode_site == 'JKT') {
-            //     if($doco->jenis_dokumen == 'SOP') {
-            //         $isValidPemohon = preg_match('/kepala seksi/i', $doco->NamaJB) || preg_match('/kepala bagian/i', $doco->NamaJB) || preg_match('/kepala dept/i', $doco->NamaJB);
-            //     } else if($doco->jenis_dokumen == 'STD' || $doco->jenis_dokumen == 'WI') {
-            //         $isValidPemohon = preg_match('/kepala seksi/i', $doco->NamaJB) || preg_match('/kepala bagian/i', $doco->NamaJB);
-            //     } else {
-            //         $isValidPemohon = true;
-            //     }
+            if($doco->kode_site == 'JKT') {
+                if($doco->jenis_dokumen == 'SOP') {
+                    $isValidPemohon = preg_match('/kepala seksi/i', $doco->NamaJB) || preg_match('/kepala bagian/i', $doco->NamaJB) || preg_match('/kepala dept/i', $doco->NamaJB);
+                } else if($doco->jenis_dokumen == 'STD' || $doco->jenis_dokumen == 'WI') {
+                    $isValidPemohon = preg_match('/kepala seksi/i', $doco->NamaJB) || preg_match('/kepala bagian/i', $doco->NamaJB);
+                } else {
+                    $isValidPemohon = true;
+                }
 
-            // } else {
-            //     if($doco->jenis_dokumen == 'SOP') {
-            //         $isValidPemohon = preg_match('/kepala bagian/i', $doco->NamaJB);
-            //     } else if($doco->jenis_dokumen == 'STD' || $doco->jenis_dokumen == 'WI') {
-            //         $isValidPemohon = preg_match('/kepala seksi/i', $doco->NamaJB) || preg_match('/kepala bagian/i', $doco->NamaJB);
-            //     } else {
-            //         $isValidPemohon = true;
-            //     }
-            // }
+            } else {
+                if($doco->jenis_dokumen == 'SOP') {
+                    $isValidPemohon = preg_match('/kepala bagian/i', $doco->NamaJB);
+                } else if($doco->jenis_dokumen == 'STD' || $doco->jenis_dokumen == 'WI') {
+                    $isValidPemohon = preg_match('/kepala seksi/i', $doco->NamaJB) || preg_match('/kepala bagian/i', $doco->NamaJB);
+                } else {
+                    $isValidPemohon = true;
+                }
+            }
 
-            // if(!$isValidPemohon) {
-            //     return redirect()->back()->with('error', 'Mohon maaf anda tidak dapat untuk membuat pengajuan dokumen mutu');
-            // }
+            if(!$isValidPemohon) {
+                return redirect()->back()->with('error', 'Mohon maaf anda tidak dapat untuk membuat pengajuan dokumen mutu');
+            }
 
             $path = 'dokumen_mutu/revisi/' . $doco->KodeDP;
             $filePath = Storage::disk('public')->put($path, $dokumen);
@@ -280,28 +281,28 @@ Terima kasih.";
                 return redirect()->back()->with('error', 'Nomor dokumen yang ada masukkan tidak ditemukan');
             }
 
-            // if($doco->kode_site == 'JKT') {
-            //     if($doco->jenis_dokumen == 'SOP') {
-            //         $isValidPemohon = preg_match('/kepala seksi/i', $doco->NamaJB) || preg_match('/kepala bagian/i', $doco->NamaJB) || preg_match('/kepala dept/i', $doco->NamaJB);
-            //     } else if($doco->jenis_dokumen == 'STD' || $doco->jenis_dokumen == 'WI') {
-            //         $isValidPemohon = preg_match('/kepala seksi/i', $doco->NamaJB) || preg_match('/kepala bagian/i', $doco->NamaJB);
-            //     } else {
-            //         $isValidPemohon = true;
-            //     }
+            if($doco->kode_site == 'JKT') {
+                if($doco->jenis_dokumen == 'SOP') {
+                    $isValidPemohon = preg_match('/kepala seksi/i', $doco->NamaJB) || preg_match('/kepala bagian/i', $doco->NamaJB) || preg_match('/kepala dept/i', $doco->NamaJB);
+                } else if($doco->jenis_dokumen == 'STD' || $doco->jenis_dokumen == 'WI') {
+                    $isValidPemohon = preg_match('/kepala seksi/i', $doco->NamaJB) || preg_match('/kepala bagian/i', $doco->NamaJB);
+                } else {
+                    $isValidPemohon = true;
+                }
 
-            // } else {
-            //     if($doco->jenis_dokumen == 'SOP') {
-            //         $isValidPemohon = preg_match('/kepala bagian/i', $doco->NamaJB);
-            //     } else if($doco->jenis_dokumen == 'STD' || $doco->jenis_dokumen == 'WI') {
-            //         $isValidPemohon = preg_match('/kepala seksi/i', $doco->NamaJB) || preg_match('/kepala bagian/i', $doco->NamaJB);
-            //     } else {
-            //         $isValidPemohon = true;
-            //     }
-            // }
+            } else {
+                if($doco->jenis_dokumen == 'SOP') {
+                    $isValidPemohon = preg_match('/kepala bagian/i', $doco->NamaJB);
+                } else if($doco->jenis_dokumen == 'STD' || $doco->jenis_dokumen == 'WI') {
+                    $isValidPemohon = preg_match('/kepala seksi/i', $doco->NamaJB) || preg_match('/kepala bagian/i', $doco->NamaJB);
+                } else {
+                    $isValidPemohon = true;
+                }
+            }
 
-            // if(!$isValidPemohon) {
-            //     return redirect()->back()->with('error', 'Mohon maaf anda tidak dapat untuk membuat pengajuan dokumen mutu');
-            // }
+            if(!$isValidPemohon) {
+                return redirect()->back()->with('error', 'Mohon maaf anda tidak dapat untuk membuat pengajuan dokumen mutu');
+            }
 
             $pengajuan = DB::table(self::T_PENGAJUAN_DOCO)->insertGetId([
                 'nik_pemohon' => $doco->nik_pembuat,
@@ -334,7 +335,7 @@ Terima kasih.";
             $alarmService->sendMessage(env('DOCO_ALARM_OD'), $message);
 
             DB::commit();
-            return redirect()->back()->with('success', 'Berhasil submit penghapusan dokumen mutu!');
+            return redirect(route('dokumen-mutu.riwayat-pengajuan'))->with('success', 'Berhasil submit penghapusan dokumen mutu!');
 
         } catch(\Throwable $e) {
             Log::error($e);
