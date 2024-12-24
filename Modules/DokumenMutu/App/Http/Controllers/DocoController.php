@@ -263,7 +263,7 @@ class DocoController extends Controller
         $originalPath = storage_path('app/public/' . $doco->file_path);
 
         if(!file_exists($doco->file_converted_path)) {
-            shell_exec('ghostscript -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile=' . $convertedPath . ' ' . $originalPath . '');
+            shell_exec('gswin64 -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile=' . $convertedPath . ' ' . $originalPath . '');
 
             $mpdf = new Mpdf();
             $pageCount = $mpdf->setSourceFile($convertedPath);
@@ -289,6 +289,10 @@ class DocoController extends Controller
     public function detailRiwayat($id)
     {
         $doco = DB::table(self::T_PENGAJUAN_DOCO)->where('id', $id)->first();
+        if(!$doco) {
+            abort(404);
+        }
+
         $lastVersion = DB::table(self::T_VERSI_DOCO)->where('id_pengajuan_dokumen', $doco->id)
             ->orderBy('no_versi', 'desc')->first();
 
@@ -302,7 +306,7 @@ class DocoController extends Controller
         $originalPath = storage_path('app/public/' . $lastVersion->file_path);
 
         if(!file_exists($doco->file_converted_path)) {
-            shell_exec('ghostscript -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile=' . $convertedPath . ' ' . $originalPath . '');
+            shell_exec('gswin64 -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile=' . $convertedPath . ' ' . $originalPath . '');
 
             $mpdf = new Mpdf();
             $pageCount = $mpdf->setSourceFile($convertedPath);

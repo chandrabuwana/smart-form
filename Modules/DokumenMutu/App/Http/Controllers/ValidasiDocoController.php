@@ -255,7 +255,7 @@ class ValidasiDocoController extends Controller
                 $convertedName = storage_path('app/public/' . $pathName . '/converted_' . $originalName);
                 $originalName = storage_path('app/public/' . $pathName . '/' . $originalName);
 
-                shell_exec('ghostscript -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile=' . $convertedName . ' ' . $originalName . '');
+                shell_exec('gswin64 -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile=' . $convertedName . ' ' . $originalName . '');
                 @unlink($originalName);
                 rename($convertedName, $originalName);
 
