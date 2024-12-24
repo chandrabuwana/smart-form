@@ -263,6 +263,7 @@ class DocoController extends Controller
         $originalPath = str_replace('\\', '/', storage_path('app/public/' . $doco->file_path));
 
         if(!file_exists($doco->file_converted_path)) {
+            putenv('PATH=' . env('DOCO_GS_PATH'));
             shell_exec('gswin64 -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile=' . $convertedPath . ' ' . $originalPath . '');
 
             $mpdf = new Mpdf();
@@ -306,6 +307,7 @@ class DocoController extends Controller
         $originalPath = str_replace('\\', '/', storage_path('app/public/' . $lastVersion->file_path));
 
         if(!file_exists($doco->file_converted_path)) {
+            putenv('PATH=' . env('DOCO_GS_PATH'));
             shell_exec('gswin64 -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile=' . $convertedPath . ' ' . $originalPath . '');
 
             $mpdf = new Mpdf();

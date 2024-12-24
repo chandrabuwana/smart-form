@@ -255,6 +255,7 @@ class ValidasiDocoController extends Controller
                 $convertedName = str_replace('\\', '/', storage_path('app/public/' . $pathName . '/converted_' . $originalName));
                 $originalName = str_replace('\\', '/', storage_path('app/public/' . $pathName . '/' . $originalName));
 
+                putenv('PATH=' . env('DOCO_GS_PATH'));
                 shell_exec('gswin64 -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile=' . $convertedName . ' ' . $originalName . '');
                 @unlink($originalName);
                 rename($convertedName, $originalName);
