@@ -246,7 +246,7 @@
                                     </div>
                                 </div>
 
-                                <iframe id="iframepdf" src="" width="100%" height="700px"></iframe>
+                                <div id="pdf_container"></div>
                             </div>
                         </div>
                     </div>
@@ -300,6 +300,42 @@
             status: null,
             jenis_dokumen: null,
             keyword: null
+        }
+
+        function LoadPdfFromUrl(url) {
+            pdfjsLib.getDocument(url).promise.then(function (pdfDoc_) {
+                pdfDoc = pdfDoc_;
+                let pdf_container = document.getElementById("pdf_container");
+                pdf_container.style.display = "block";
+
+                for (let i = 1; i <= pdfDoc.numPages; i++) {
+                    RenderPage(pdf_container, i);
+                }
+            });
+        }
+
+        function RenderPage(pdf_container, num) {
+            pdfDoc.getPage(num).then(function (page) {
+                let canvas = document.createElement('canvas');
+                canvas.id = 'pdf-' + num;
+                ctx = canvas.getContext('2d');
+                pdf_container.appendChild(canvas);
+
+                let spacer = document.createElement("div");
+                spacer.style.height = "20px";
+                pdf_container.appendChild(spacer);
+
+                let viewport = page.getViewport({ scale: scale });
+                canvas.height = resolution * viewport.height;
+                canvas.width = resolution * viewport.width;
+
+                let renderContext = {
+                    canvasContext: ctx,
+                    viewport: viewport,
+                    transform: [resolution, 0, 0, resolution, 0, 0]
+                };
+                page.render(renderContext);
+            });
         }
 
         btnClearFilter.addEventListener("click", function(e) {
@@ -369,7 +405,7 @@
                         $('#pembuat').val(response.NamaKaryawan);
                         $('#judulDokumen').val(response.judul_dokumen);
                         $('#status').val(response.status);
-                        $('#iframepdf').attr('src', response.file_converted_path);
+                        // $('#iframepdf').attr('src', response.file_converted_path);
 
                         if(response.no_revisi) {
                             $('#revisi').parent().removeClass('d-none');
@@ -378,6 +414,7 @@
                             $('#revisi').parent().addClass('d-none');
                         }
 
+                        LoadPdfFromUrl(response.file_converted_path);
                         $('#modalDetail').modal("show");
                     }
                 },
