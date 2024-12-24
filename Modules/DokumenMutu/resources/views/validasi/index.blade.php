@@ -472,6 +472,10 @@
             $('#modalApprove').modal('show');
         }
 
+        $('#modalApprove button[type=submit]').on('submit', function() {
+            $(this).attr('disabled', true);
+        });
+
         function rejectPengajuan(id) {
             Swal.fire({
                 icon: "warning",
