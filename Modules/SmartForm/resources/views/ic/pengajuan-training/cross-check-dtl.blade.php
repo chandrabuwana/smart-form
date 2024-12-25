@@ -143,6 +143,10 @@
                         </div>
                     </div>
 
+                    <div class="mx-4">
+                        <h5>Dengan ini , Saya selaku atasan dari : </h5>
+                    </div>
+
                     <div class="table-responsive p-0">
                         <table id="table-data" data-toggle="table" data-side-pagination="server"
                             data-page-list="[10, 25, 50, 100, all]" data-sortable="true" data-ajax="getData"
@@ -170,6 +174,173 @@
                                     @endif
                                 </tr>
                             </thead>
+                        </table>
+                    </div>
+
+                    <div class="mx-3">
+                        <p class="m-0">Merekomendasikan karyawan tersebut untuk mengikuti :</p>
+                        <table style="width: 100%;">
+                            <tr>
+                                <td style="vertical-align: top;">Nama Training</td>
+                                <td style="vertical-align: top;"> : </td>
+                                <td>{{ $data->training_nama }}</td>
+                            </tr>
+                            <tr>
+                                <td style="vertical-align: top;">Tanggal Pelaksanaan</td>
+                                <td style="vertical-align: top;"> : </td>
+                                <td>
+                                    <div class="input-group input-group-static">
+                                        @if($data->trj_status == 0)
+                                            <input type="date" class="form-control" id="inputTanggalPelaksanaan" name="inputTanggalPelaksanaan" placeholder="Bulan Tahun">
+                                        @else
+                                            {{ $data->tanggal }}
+                                        @endif
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="vertical-align: top;">Tempat Pelaksanaan</td>
+                                <td style="vertical-align: top;"> : </td>
+                                <td>
+                                    <div class="input-group input-group-static">
+                                        @if($data->trj_status == 0)
+                                            <input type="text" class="form-control" id="inputTempatPelaksanaan" name="inputTempatPelaksanaan">
+                                        @else
+                                            {{ $data->tempat }}
+                                        @endif
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <p class="m-0 mt-3"><strong>Tujuan Training untuk menunjang  Logic Tree (KPI) yang mana, Kondisi sekarang seperti apa?</strong></p>
+                        {{-- @if ($data->trj_status == 1) --}}
+                        @if ($crossCheckPIC->contains('NIK', session('user_id')) && $pelatihan->trj_status == 0)
+                            <div class="col-md-6 mb-3" style="display: flex; gap: 8px;">
+                                <div class="input-group input-group-static">
+                                    {{-- <label for="cariKPI" style="width: 100%">Tambah KPI</label> --}}
+                                    <select class="form-control form-select" name="cariKPI" id="cariKPI" style="width: 100%">
+                                        <option value="">-- Cari KPI --</option>
+                                    </select>
+                                </div>
+                                {{-- <button class="btn btn-danger mb-0" style="align-self: flex-end; padding: 10px 16px;" onclick="resetNIK(event)">X</button> --}}
+                            </div>
+                        @endif
+                        <table id="table-tujuan" data-toggle="table" data-side-pagination="client"
+                            data-content-type="application/json" data-data-type="json" data-pagination="false"
+                            data-unique-id="id" data-show-header="false">
+                            <thead>
+                                <tr>
+                                    <th data-field="no" data-align="right" data-width="200" data-formatter="noTujuanFormatter"></th>
+                                    <th data-field="tujuan" data-align="left">Tujuan</th>
+                                    <th data-field="nama" data-align="left">Nama</th>
+                                    
+                                    <th data-field="action" data-align="center" data-formatter="htujuanFormatter"></th>
+                                
+                                </tr>
+                            </thead>
+                            @if ($data->trj_status != 0)
+                                <tbody>
+                                    @if(is_array($dataSubmitted))
+                                        @foreach ($dataSubmitted['tujuan'] as $item)
+                                            <tr>
+                                                <td></td>
+                                                <td>{{ $item->keterangan }}</td>
+                                                <td>{{ $item->nama }}</td>
+                                            </tr>
+                                        @endforeach
+                                    @endif 
+                                </tbody>
+                            @endif
+                        </table>
+
+                        <p class="m-0 mt-3"><strong>Pengganti Tugas selama Training</strong></p>
+                        
+                        {{-- @if ($data->trj_status == 1) --}}
+                        @if ($crossCheckPIC->contains('NIK', session('user_id')) && $pelatihan->trj_status == 0)
+                            <div class="col-md-6 mb-3" style="display: flex; gap: 8px;">
+                                <div class="input-group input-group-static">
+                                    {{-- <label for="cariPetugasGanti" style="width: 100%">Tambah KPI Pendukung</label> --}}
+                                    <select class="form-control form-select" name="cariPetugasGanti" id="cariPetugasGanti" style="width: 100%">
+                                        <option value="">-- Cari NIK / Nama MP --</option>
+                                    </select>
+                                </div>
+                                {{-- <button class="btn btn-danger mb-0" style="align-self: flex-end; padding: 10px 16px;" onclick="resetNIK(event)">X</button> --}}
+                            </div>
+                        @endif
+                        <table id="table-pengganti" data-toggle="table" data-side-pagination="client"
+                            data-content-type="application/json" data-data-type="json" data-pagination="false"
+                            data-unique-id="id" data-show-header="false">
+                            <thead style="display: none;">
+                                <tr>
+                                    <th data-field="no" data-align="right" data-width="200" data-formatter="penggantiFormatter"></th>
+                                    <th data-field="pengganti" data-align="left">NIK</th>
+                                    <th data-field="nama" data-align="left">nama</th>
+                                    <th data-field="action" data-align="center" data-formatter="hapusPenggantFormatter"></th>
+                                </tr>
+                            </thead>
+                            @if ($data->trj_status != 0)
+                                <tbody>
+                                    @if(is_array($dataSubmitted))
+                                        @foreach ($dataSubmitted['pengganti'] as $item)
+                                            <tr>
+                                                <td></td>
+                                                <td>{{ $item->keterangan }}</td>
+                                                <td>{{ $item->nama }}</td>
+                                            </tr>
+                                        @endforeach
+                                    @endif 
+                                </tbody>
+                            @endif
+                        </table>
+
+                        <p class="m-0 mt-3"><strong>Detail urgensi (Kepentingan mendesak) training/sertifikasi ini harus dijalankan segera?</strong></p>
+                        {{-- @if ($data->trj_status == 1) --}}
+                        @if ($crossCheckPIC->contains('NIK', session('user_id')) && $pelatihan->trj_status == 0)
+                            <div style="display: flex; gap: 12px; margin-bottom: 12px;" class="col-md-6">
+                                <input type="text" class="form-control input-text w-fit" placeholder="Tambah Detail urgensi" id="inputUrgensi">
+                                <button class="btn btn-secondary m-0" type="button" id="btnAddUrgensi" onclick="addUrgensi(event)"><i class="bi fa-plus"></i> </button>
+                            </div>
+                        @endif
+                        <table id="table-urgensi" data-toggle="table" data-side-pagination="client"
+                            data-content-type="application/json" data-data-type="json" data-pagination="false"
+                            data-unique-id="id" data-show-header="false">
+                            <thead style="display: none;">
+                                <tr>
+                                    <th data-field="no" data-align="right" data-width="200" data-formatter="urgensiFormatter"></th>
+                                    <th data-field="urgensi" data-align="left">Urgensi</th>
+                                    <th data-field="action" data-align="center" data-formatter="actionUrgensiFormatter"></th>
+                                
+                            </thead>
+                            @if ($data->trj_status != 0)
+                                <tbody>
+                                    @if(is_array($dataSubmitted))
+                                        @foreach ($dataSubmitted['urgensi'] as $item)
+                                        <tr>
+                                            <td></td>
+                                            <td>{{ $item->keterangan }}</td>
+                                        </tr>
+                                        @endforeach
+                                    @endif 
+                                </tbody>
+                            @endif
+                            
+                        </table>
+
+                        <p class="m-0 mt-3"><strong>Bentuk Pertanggung jawaban ?</strong></p>
+                        <table>
+                            <tr>
+                                <td>1. </td>
+                                <td>menerapkan hasil training dalam lingkup pekerjaan personal, Department dan perusahaan sehingga lebih efektif dan sesuai dengan prosedur yang ada</td>
+                            </tr>
+                            <tr>
+                                <td>2. </td>
+                                <td>Memberikan kontribusi terhadap perusahaan dalam peningkatan KPI Department</td>
+                            </tr>
+                            <tr>
+                                <td>3. </td>
+                                <td>Mampu mentransfer ke tim yang lain</td>
+                            </tr>
                         </table>
                     </div>
                 </div>
@@ -347,7 +518,7 @@
                     // element.matrix_kompetensi = stdJab.length > 0 ? (stdJab.filter((nilai) => nilai.KodeJB == element.KodeJB).length > 0 ? 1 : 0) : 1
                     element.matrix_kompetensi = $("#table-std-jab").bootstrapTable('getData').filter((nilai) => nilai.KodeJB == element.KodeJB).length > 0 ? 1 : 0
                     element.matrix_sertifikasi = $("#table-sudah-training").bootstrapTable('getData').filter((nilai) => nilai.NIK == element.NIK).length > 0 ? 0 : 1
-                    element.matrix_mk = calculateMasaKerja(element.tmk, new Date(`${pengajuanTahun}/${pengajuanBulan}/1`))
+                    element.matrix_mk = calculateMasaKerja(element.tmk, new Date(pengajuanTahun, pengajuanBulan, 0))
                 });
                 params.success(res)
             })
@@ -566,8 +737,9 @@
 
         function komitmenFormatter(value, row, index) {
             if(value == 0) return '<button type="button" class="btn btn-warning btn-action-format">On Progress</button>'
-            if(value == 1) return '<button type="button" class="btn btn-succes btn-action-format">Setuju</button>'
+            if(value == 1) return '<button type="button" class="btn btn-success btn-action-format">Setuju</button>'
             if(value == -1) return '<button type="button" class="btn btn-danger btn-action-format">Menolak</button>'
+            if(value == -2) return '<button type="button" class="btn btn-danger btn-action-format">Dihapus</button>'
         }
 
         $('#cariKaryawan').select2({
@@ -737,7 +909,7 @@
             // data.matrix_kompetensi = stdJab.length > 0 ? (stdJab.filter((nilai) => nilai.KodeJB == data.KodeJB).length > 0 ? 1 : 0) : 1
             data.matrix_kompetensi = $("#table-std-jab").bootstrapTable('getData').filter((nilai) => nilai.KodeJB == data.KodeJB).length > 0 ? 1 : 0
             data.matrix_sertifikasi = $("#table-sudah-training").bootstrapTable('getData').filter((nilai) => nilai.NIK == data.NIK).length > 0 ? 0 : 1
-            data.matrix_mk = calculateMasaKerja(e.params.data.tmk, new Date(`${pengajuanTahun}/${pengajuanBulan}/1`))
+            data.matrix_mk = calculateMasaKerja(e.params.data.tmk, new Date(pengajuanTahun, pengajuanBulan, 0))
 
             $("#table-data").bootstrapTable('append', data)
             $('#ModalUpdate').modal("hide")
@@ -764,8 +936,25 @@
                     '2': $("#level2").val(),
                     '3': $("#level3").val(),
                     '4': $("#level4").val(),
-                }
+                },
+                tujuan: [],
+                pengganti: [],
+                urgensi: [],
+                tanggal: $("#inputTanggalPelaksanaan").val(),
+                tempat: $("#inputTempatPelaksanaan").val()
             }
+            $("#table-tujuan").bootstrapTable("getData").forEach(element => {
+                dataBody.tujuan.push(element.tujuan)
+            })
+
+            $("#table-pengganti").bootstrapTable("getData").forEach(element => {
+                dataBody.pengganti.push(element.pengganti)
+            })
+
+            $("#table-urgensi").bootstrapTable("getData").forEach(element => {
+                dataBody.urgensi.push(element.urgensi)
+            })
+            
             let belumValidasi = []
             $('#table-data').bootstrapTable('getData').filter((data)=> {
                 if(data.status_id == 0 || data.matrix_mk < 1) belumValidasi.push(data.NIK)
@@ -844,7 +1033,9 @@
             if(isCreateBAjustifikasi.length > 0) {
                 if(!$("#level5").val()) errList.push("Terdapat matrix masa kerja < 1 th, silahkan pilih approval Think tank")
             }
-
+            if($("#table-tujuan").bootstrapTable('getData').length < 1) errList.push("KPI logic tree minimal 1")
+            if($("#table-pengganti").bootstrapTable('getData').length < 1) errList.push("PIC Pengganti minimal 1")
+            if(!$("#inputTanggalPelaksanaan").val()) errList.push("Tanggal pelaksaan belum diisi")
             $('#table-data').bootstrapTable('getData').filter((data)=> {
                 if(data.status_id == 0) belumValidasi.push(data.NIK)
                 return data.status_id == 0
@@ -853,6 +1044,134 @@
 
             return errList
             
+        }
+        $('#cariPetugasGanti').select2({
+            minimumInputLength: 3,
+            theme: 'bootstrap-5', // Menggunakan tema Bootstrap 5
+            dropdownParent: $('#cariPetugasGanti').closest('.input-group'),
+            placeholder: '-- Cari NIK / Nama MP --',
+            ajax: {
+                url: '/ic/training/helper/cari-mp',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type: "post",
+                delay: 250,
+                dataType: 'json',
+                data: function(params) {
+                    return {
+                        _token: "{{ csrf_token() }}",
+                        query: params.term, // search term
+                    };
+                },
+                processResults: function(response) {
+                    return {
+                        results: response.data
+                    };
+                },
+                cache: true,
+            },
+            templateResult: function (data) {
+                    // console.log(data)
+                    if (!data.id) {
+                        return data.text; // Tampilan default jika tidak ada data
+                    }
+
+                    var $result = $('<span>' + data.id + ' - ' + data.text + '</span>');
+                    return $result;
+                }
+        })
+        $('#cariPetugasGanti').on("select2:select", function(e){
+            console.log("cariPetugasGanti : ", e.params.data)
+            $('#cariPetugasGanti').val(null).trigger('change')
+            $("#table-pengganti").bootstrapTable('append', {
+                pengganti: e.params.data.id,
+                nama: e.params.data.nama
+            })
+        })
+
+        $('#cariKPI').select2({
+            theme: 'bootstrap-5', // Menggunakan tema Bootstrap 5
+            dropdownParent: $('#cariKPI').closest('.input-group'),
+            placeholder: '--- Cari/Pilih KPI Leading ---',
+            ajax: {
+                url: "/helper/kpi-lead-datalist",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type: "post",
+                delay: 250,
+                dataType: 'json',
+                data: function(params) {
+                    return {
+                        query: params.term, // search term
+                        dept: {{ Illuminate\Support\Js::from($data->KodeDP) }}
+                    };
+                },
+                processResults: function(response) {
+                    return {
+                        results: response.data
+                    };
+                },
+                cache: true
+            }
+        })
+
+        $('#cariKPI').on("select2:select", function(e){
+            console.log("cari KPI : ", e.params.data)
+            $('#cariKPI').val(null).trigger('change')
+            $("#table-tujuan").bootstrapTable('append', {
+                tujuan: e.params.data.id,
+                nama: e.params.data.text
+            })
+        })
+
+        function noTujuanFormatter(value, row, index) {
+            return `Tujuan ${index+1} `
+        }
+
+        function htujuanFormatter(value, row, index) {
+            return `<button class="btn btn-danger btn-action-format" onclick="hapusItem(${index})"><i class="bi bi-trash-fill"></i></button>`
+        }
+        function hapusItem(index) {
+            $("#table-tujuan").bootstrapTable('remove', {
+                field: '$index',
+                values: [index]
+            })
+        }
+
+        function penggantiFormatter(value, row, index) {
+            return `PIC ${index+1} : `
+        }
+        function hapusPenggantFormatter(value, row, index) {
+            return `<button class="btn btn-danger btn-action-format" onclick="hapusPengganti(${index})"><i class="bi bi-trash-fill"></i></button>`
+        }
+        function hapusUrgensi(index) {
+            $("#table-urgensi").bootstrapTable('remove', {
+                field: '$index',
+                values: [index]
+            })
+        }
+
+        function addUrgensi(e) {
+            console.log($("#inputUrgensi").val())
+            $("#table-urgensi").bootstrapTable("append", {
+                no: null,
+                urgensi: $("#inputUrgensi").val(),
+                action: null
+            })
+        }
+        function urgensiFormatter(value, row, index) {
+            return `Kepentingan Mendesak ${index+1} : `
+        }
+        function actionUrgensiFormatter(value, row, index) {
+            return `<button class="btn btn-danger btn-action-format" onclick="hapusUrgensi(${index})"><i class="bi bi-trash-fill"></i></button>`
+        }
+        function hapusPengganti(index) {
+            $("#table-pengganti").bootstrapTable('remove', {
+                field: '$index',
+                values: [index]
+            })
         }
     </script>
 @endsection
