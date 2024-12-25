@@ -101,6 +101,14 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="col-6 col-md-4 px-2 mb-2">
+                                <div class="input-group input-group-static">
+                                    {{-- <label for="filterDept" style="width: 100%;"><strong>Department</strong></label> --}}
+                                    <select class="form-control form-select" name="filterNIK" id="filterNIK">
+                                        <option value="">-- Karyawan --</option>
+                                    </select>
+                                </div>
+                            </div>
                             <div class="col-6 col-md-4 px-2" mb-2>
                                 <div class="input-group input-group-static">
                                     {{-- <label for="filterSite" style="width: 100%;"><strong>Site</strong></label> --}}
@@ -208,7 +216,8 @@
             pelatihan: null,
             site: null,
             department: null,
-            waktu: null
+            waktu: null,
+            nik: null
         }
 
         $('#filterPelatihan').select2({
@@ -246,6 +255,42 @@
             //     var $result = $('<span>' + data.id + ' - ' + data.text + '</span>');
             //     return $result;
             // }
+        })
+        $('#filterNIK').select2({
+            minimumInputLength: 3,
+            theme: 'bootstrap-5', // Menggunakan tema Bootstrap 5
+            dropdownParent: $('#filterNIK').closest('.input-group'),
+            placeholder: '--- Cari MP ---',
+            ajax: {
+                url: {{ Illuminate\Support\Js::from(route('ic.training.helper.mp')) }},
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type: "post",
+                delay: 250,
+                dataType: 'json',
+                data: function(params) {
+                    return {
+                        _token: "{{ csrf_token() }}",
+                        query: params.term, // search term
+                    };
+                },
+                processResults: function(response) {
+                    return {
+                        results: response.data
+                    };
+                },
+                cache: true,
+            },
+            templateResult: function (data) {
+                console.log(data)
+                if (!data.id) {
+                    return data.text; // Tampilan default jika tidak ada data
+                }
+
+                var $result = $('<span>' + data.id + ' - ' + data.text + '</span>');
+                return $result;
+            }
         })
 
         $('#filterSite').select2({
@@ -331,6 +376,7 @@
             if(filterData.site) params.data.site = filterData.site
             if(filterData.department) params.data.department = filterData.department
             if(filterData.waktu) params.data.waktu = filterData.waktu
+            if(filterData.nik) params.data.nik = filterData.nik
 
             $.get(getDataURL + '?' + $.param(params.data)).then(function(res) {
                 params.success(res.data)
@@ -344,8 +390,8 @@
         }
 
         function statusFormatter(value, row, index) {
-            if(value == 1) return '<button class="btn btn-success btn-no-action btn-action-format">Komitmen & justifikasi</button>'
-            if(value == 2) return '<button class="btn btn-success btn-no-action btn-action-format">Done Justifikasi</button>'
+            if(value == 1) return '<button class="btn btn-success btn-no-action btn-action-format">Validasi Komitmen</button>'
+            if(value == 2) return '<button class="btn btn-success btn-no-action btn-action-format">Close</button>'
             // if(value == 3) return '<button class="btn btn-success btn-no-action btn-action-format">Done Justifikasi</button>'
             if(value == -2) return '<button class="btn btn-success btn-no-action btn-action-format">Rejected Justifikasi</button>'
             if(value == 0) return '<button class="btn btn-warning btn-no-action btn-action-format">Cross check Kabag</button>'
@@ -376,6 +422,7 @@
             filterData.pelatihan = $('#filterPelatihan').val()
             filterData.site = $('#filterSite').val()
             filterData.department = $('#filterDept').val()
+            filterData.nik = $('#filterNIK').val()
             filterData.waktu = datepicker.getDate('mm-yyyy')
 
             $("#table-data").bootstrapTable('refresh', {pageNumber: 1})
@@ -385,12 +432,14 @@
             $('#filterPelatihan').val(null).trigger('change')
             $('#filterSite').val(null).trigger('change')
             $('#filterDept').val(null).trigger('change')
+            $('#filterNIK').val(null).trigger('change')
             datepicker.setDate({clear: true})
             
             filterData.pelatihan = null
             filterData.site = null
             filterData.department = null
             filterData.waktu = null
+            filterData.nik = null
             
             $("#table-data").bootstrapTable('refresh', {pageNumber: 1})
         }

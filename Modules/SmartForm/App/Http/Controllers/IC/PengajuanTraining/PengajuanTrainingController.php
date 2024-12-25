@@ -20,6 +20,7 @@ use Illuminate\Validation\Rule;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 
 use function Laravel\Prompts\error;
+use function Laravel\Prompts\select;
 
 class PengajuanTrainingController extends Controller {
 
@@ -302,6 +303,7 @@ class PengajuanTrainingController extends Controller {
         $errMsg = '';
         $tgl = now();
         $nik_session = $request->session()->get('user_id', '');
+        // return response()->json(['isSuccess' => false, 'message' =>  $approval]);
 
         try {
             // select top 1 pt.id as pengajuan_id, mt.id as training_id, mt.nama as training_nama
@@ -370,12 +372,17 @@ class PengajuanTrainingController extends Controller {
                     $_tempAppr['dibuat']++;
                 }
             } 
+
             // dd($approval);
 
+            $listIdDetail = [];
+            $listIdKomitmen = [];
             // TODO : insert atau update pengajuan training detail
             foreach ($detail as $value) {
                 // Log::info('insert : '. json_encode($value));
                 $pengajuanDetailId = 0;
+                $trainingKomitmenId = 0;
+                // detail bukan merupakan dari list ATMP
                 if($value['id'] == 0) {
                     $pengajuanDetailId = DB::connection(self::DB_CONN_NAME)->table(self::T_PENGAJUAN_TRAINING_DTL)
                         ->insertGetId([
@@ -392,6 +399,65 @@ class PengajuanTrainingController extends Controller {
                             'created_by' => $nik_session,
                             'created_at' => $tgl
                         ]);
+                    // TODO : 
+                    $trainingKomitmenId = DB::connection(self::DB_CONN_NAME)->table(self::T_TRAINING_KOMITMEN)
+                        ->insertGetId([
+                            'NIK' => $value['NIK'],
+                            'nama' => $value['NIK_nama'],
+                            'status' => 0,
+                            'm_training_id' => $namaTraining->training_id,
+                            'pengajuan_training_detail_id' => $pengajuanDetailId,
+                            'pengajuan_training_id' => $pengajuanId,
+                            'trj_id' => $trjId,
+                            'KodeDP' => $value['KodeDP'],
+                            'KodeST' => $value['KodeST'],
+                            'KodeJB' => $value['KodeJB'],
+                            'created_at' => $tgl,
+                            'created_by' => $nik_session,
+                        ]);
+                    $listIdKomitmen[] = $trainingKomitmenId;
+
+                    foreach($approval as $key => $value) {
+                        if($key > 2) {
+                            DB::connection(self::DB_CONN_NAME)->table(self::T_TRJ_APPROVAL)->insert([
+                            // Log::info([
+                                'trj_id' => $trjId,
+                                'm_training_approval_id' => $value,
+                                'jenis' => 'diketahui',
+                                'approval_order' => $_tempAppr['diketahui'],
+                                'status' => 0,
+                                'created_at' => $tgl,
+                                'created_by' => $nik_session
+                            ]);
+                            $_tempAppr['diketahui']++;
+                        } else if($key > 1) {
+                            DB::connection(self::DB_CONN_NAME)->table(self::T_TRJ_APPROVAL)->insert([
+                            // Log::info([
+                                'trj_id' => $trjId,
+                                'm_training_approval_id' => $value,
+                                'jenis' => 'disetujui',
+                                'approval_order' => $_tempAppr['disetujui'],
+                                'status' => 0,
+                                'created_at' => $tgl,
+                                'created_by' => $nik_session
+                            ]);
+                            $_tempAppr['disetujui']++;
+                        } else if($key > 0) {
+                            DB::connection(self::DB_CONN_NAME)->table(self::T_TRJ_APPROVAL)->insert([
+                            // Log::info([
+                                'trj_id' => $trjId,
+                                'm_training_approval_id' => $value,
+                                'jenis' => 'dibuat',
+                                'approval_order' => $_tempAppr['dibuat'],
+                                'status' => 0,
+                                'created_at' => $tgl,
+                                'created_by' => $nik_session
+                            ]);
+                            $_tempAppr['dibuat']++;
+                        }
+                    } 
+                    
+                        // Helper::SFNotification($value['NIK'], 'Anda diajukan untuk mengikuti ' . $namaTraining->training_nama, 'info', '/ic/training/form-komitmen/'.$trainingKomitmenId);
                 } else {
                     $pengajuanDetailId = $value['id'];
                     DB::connection(self::DB_CONN_NAME)->table(self::T_PENGAJUAN_TRAINING_DTL)
@@ -405,26 +471,76 @@ class PengajuanTrainingController extends Controller {
                             'KodeST' => $value['KodeST'],
                             'trj_id' => $trjId
                         ]);
+                    if($value['status_id'] == -1) {
+                        DB::connection(self::DB_CONN_NAME)->table(self::T_TRAINING_KOMITMEN)
+                            ->where('pengajuan_training_detail_id', $value['id'])
+                            ->update([
+                                'status' => -2
+                            ]);
+                    }
                 }
 
+                $listIdDetail[] = $pengajuanDetailId;
                 // TODO : insert ke training_komitmen
-                $trainingKomitmenId = DB::connection(self::DB_CONN_NAME)->table(self::T_TRAINING_KOMITMEN)
-                    ->insertGetId([
-                        'NIK' => $value['NIK'],
-                        'nama' => $value['NIK_nama'],
-                        'status' => 0,
-                        'm_training_id' => $namaTraining->training_id,
-                        'pengajuan_training_detail_id' => $pengajuanDetailId,
-                        'pengajuan_training_id' => $pengajuanId,
-                        'trj_id' => $trjId,
-                        'KodeDP' => $value['KodeDP'],
-                        'KodeST' => $value['KodeST'],
-                        'KodeJB' => $value['KodeJB'],
-                        'created_at' => $tgl,
-                        'created_by' => $nik_session,
-                    ]);
+                // TODO : ubah hanya insert ke tabel komitmen ketika penambahan atau penggantian
+                // $trainingKomitmenId = DB::connection(self::DB_CONN_NAME)->table(self::T_TRAINING_KOMITMEN)
+                //     ->insertGetId([
+                //         'NIK' => $value['NIK'],
+                //         'nama' => $value['NIK_nama'],
+                //         'status' => 0,
+                //         'm_training_id' => $namaTraining->training_id,
+                //         'pengajuan_training_detail_id' => $pengajuanDetailId,
+                //         'pengajuan_training_id' => $pengajuanId,
+                //         'trj_id' => $trjId,
+                //         'KodeDP' => $value['KodeDP'],
+                //         'KodeST' => $value['KodeST'],
+                //         'KodeJB' => $value['KodeJB'],
+                //         'created_at' => $tgl,
+                //         'created_by' => $nik_session,
+                //     ]);
                 // Helper::SFNotification($value['NIK'], 'Anda diajukan untuk mengikuti ' . $namaTraining->training_nama, 'info', '/ic/training/form-komitmen/'.$trainingKomitmenId);
                 // TODO : terapkan approval yang dipilih ke semua komitmen
+                // $_tempApprKom = [
+                //     'disetujui' => 1,
+                //     'diketahui' => 1
+                // ];
+
+                // foreach($approval as $key => $value) {
+                //     if($key < 2) {
+                //         DB::connection(self::DB_CONN_NAME)->table(self::T_KOMITMEN_APPROVAL)->insert([
+                //             'training_komitmen_id' => $trainingKomitmenId,
+                //             'm_training_approval_id' => $value,
+                //             'approval_order' => $_tempApprKom['disetujui'],
+                //             'status' => 0,
+                //             'jenis' => 'disetujui',
+                //             'created_at' => $tgl,
+                //             'created_by' => $nik_session
+                //         ]);
+                //         $_tempApprKom['disetujui']++;
+                //     } else if($key > 1 && $key < 4) {
+                //         DB::connection(self::DB_CONN_NAME)->table(self::T_KOMITMEN_APPROVAL)->insert([
+                //             'training_komitmen_id' => $trainingKomitmenId,
+                //             'm_training_approval_id' => $value,
+                //             'approval_order' => $_tempApprKom['diketahui'],
+                //             'status' => 0,
+                //             'jenis' => 'diketahui',
+                //             'created_at' => $tgl,
+                //             'created_by' => $nik_session
+                //         ]);
+                //         $_tempApprKom['diketahui']++;
+                //     }
+                // }
+                
+            }
+
+            $idKomitmenFromDetail = DB::connection(self::DB_CONN_NAME)->table(self::T_TRAINING_KOMITMEN)
+                ->select('id')
+                ->whereIn('pengajuan_training_detail_id', $listIdDetail)->get();
+            foreach($idKomitmenFromDetail as $_tempIdKomitmen) {
+                $listIdKomitmen[] = $_tempIdKomitmen->id;
+            }
+
+            foreach ($listIdKomitmen as $_tempIdKomitmen) {
                 $_tempApprKom = [
                     'disetujui' => 1,
                     'diketahui' => 1
@@ -433,7 +549,7 @@ class PengajuanTrainingController extends Controller {
                 foreach($approval as $key => $value) {
                     if($key < 2) {
                         DB::connection(self::DB_CONN_NAME)->table(self::T_KOMITMEN_APPROVAL)->insert([
-                            'training_komitmen_id' => $trainingKomitmenId,
+                            'training_komitmen_id' => $_tempIdKomitmen,
                             'm_training_approval_id' => $value,
                             'approval_order' => $_tempApprKom['disetujui'],
                             'status' => 0,
@@ -444,7 +560,7 @@ class PengajuanTrainingController extends Controller {
                         $_tempApprKom['disetujui']++;
                     } else if($key > 1 && $key < 4) {
                         DB::connection(self::DB_CONN_NAME)->table(self::T_KOMITMEN_APPROVAL)->insert([
-                            'training_komitmen_id' => $trainingKomitmenId,
+                            'training_komitmen_id' => $_tempIdKomitmen,
                             'm_training_approval_id' => $value,
                             'approval_order' => $_tempApprKom['diketahui'],
                             'status' => 0,
@@ -455,7 +571,6 @@ class PengajuanTrainingController extends Controller {
                         $_tempApprKom['diketahui']++;
                     }
                 }
-                
             }
 
             $this->generateJustifikasi($detail, $trjId);
@@ -595,13 +710,14 @@ class PengajuanTrainingController extends Controller {
             $dataSql = DB::connection(self::DB_CONN_NAME)->table(self::T_TRJ . ' as trj')
                 // ->select('ptd.id', 'trj.KodeDP', 'td.nama as departement', 'trj.KodeST', 'ptd.NIK', 
                 ->select('ptd.id', 'tk.KodeDP', 'td.nama as departement', 'tk.KodeST', 'ptd.NIK', 'ptd.replacing',
-                    'tk.nama as NIK_nama', 'ptd.status_id', 'tk.KodeJB', 'tj.nama as jabatan', 'tk.Tgl_Masuk as tmk'
+                    'tk.nama as NIK_nama', 'ptd.status_id', 'tk.KodeJB', 'tj.nama as jabatan', 'tk.Tgl_Masuk as tmk', 'tkom.status as komitmen_status'
                 )
                 ->leftJoin(self::T_PENGAJUAN_TRAINING . ' as pt','trj.pengajuan_training_id', '=', 'pt.id')   
                 ->rightJoin(self::T_PENGAJUAN_TRAINING_DTL .  ' as ptd', 'pt.id', '=', 'ptd.pengajuan_training_id')
                 ->leftJoin(self::T_HRD_KARYAWAN . ' as tk', 'ptd.NIK', '=', 'tk.NIK')
                 ->leftJoin(self::T_HRD_DEPT . ' as td', 'tk.KodeDP', '=', 'td.KodeDP')
                 ->leftJoin(self::T_HRD_JABATAN . ' as tj', 'tk.KodeJB', '=', 'tj.KodeJB')
+                ->leftJoin(self::T_TRAINING_KOMITMEN . ' as tkom', 'tkom.pengajuan_training_detail_id', '=', 'ptd.id')
                 ->where('trj.id', $idTRJ)
                 // ->where('ptd.KodeDP', DB::raw('trj.KodeDP'))
                 // ->where('ptd.KodeST', DB::raw('trj.KodeST'))
@@ -648,6 +764,7 @@ class PengajuanTrainingController extends Controller {
                 'waktu' => ['date_format:"m-Y"'], 
             ]
         );
+        $filterNIK =  $request->query('nik');
 
         try {
             $sqlData = DB::connection(self::DB_CONN_NAME)->table(self::T_TRJ . ' as trj')
@@ -661,7 +778,9 @@ class PengajuanTrainingController extends Controller {
                 ->orderByDesc('trj.status')
                 // ->where('mt.id', 334)
             ;
-
+            if($filterNIK) {
+                $sqlData->join(self::T_TRAINING_KOMITMEN . ' as tkom', 'tkom.trj_id', '=', 'trj.id')->where('tkom.nik', $filterNIK);
+            }
             if($pelatihanId) {
                 $sqlData->where('pj.m_training_id', $pelatihanId);
             }
@@ -764,6 +883,8 @@ class PengajuanTrainingController extends Controller {
         $groupedTraining = [];
         $groupedSudahTraining = [];
         $lowercaseArray = [];
+        $isSuccess = false;
+        $message = '';
         try {
             // Log::info("training kategori");
             // foreach ($training_kategori as $value) {
@@ -808,7 +929,7 @@ class PengajuanTrainingController extends Controller {
             // }
             Log::info('sudah training');
             // $lowercaseArray = array_change_key_case($groupedSudahTraining, CASE_LOWER);
-            Log::info('grouped training : '. json_encode($lowercaseArray, JSON_PRETTY_PRINT));
+            // Log::info('grouped training : '. json_encode($lowercaseArray, JSON_PRETTY_PRINT));
 
             foreach ($sudah_training as $value) {
                 // Log::info($value);
@@ -900,22 +1021,28 @@ class PengajuanTrainingController extends Controller {
                         ]);
                 }
             }
-            Log::info('grouped training : '. json_encode($lowercaseArray, JSON_PRETTY_PRINT));
-            Log::info('grouped sudah training : '. json_encode($groupedSudahTraining, JSON_PRETTY_PRINT));
+            // Log::info('grouped training : '. json_encode($lowercaseArray, JSON_PRETTY_PRINT));
+            // Log::info('grouped sudah training : '. json_encode($groupedSudahTraining, JSON_PRETTY_PRINT));
 
             DB::connection(self::DB_CONN_NAME)->commit();
+            $isSuccess = true;
+            $message = "Berhasil import master training";
         } catch (Exception $ex) {
+            $traceId = Str::uuid();
+            $message = 'Terjadi kesalahan, trace id : ' . $traceId;
             DB::connection(self::DB_CONN_NAME)->rollBack();
-            Log::error($ex->getMessage());
+            Log::error($traceId. ' : ' .$ex->getMessage());
             Log::error($ex->getTraceAsString());
         }
 
         return response()->json([
-            'isSuccess' => true
+            'isSuccess' => $isSuccess,
+            'message' => $message
         ]);
     }
 
     public function ImportATMP(Request $request) {
+        Log::info('start');
         $createdAt = now();
         $nik_session = $request->session()->get('user_id', '');
         $atmp = $request->input('atmp', []);
@@ -923,7 +1050,9 @@ class PengajuanTrainingController extends Controller {
         $typo = [];
         $perBulanperGrup = [];
         $nikERP = [];
-        $listNik = [];
+        $listNik = $request->input('listNIK', []);
+        $isSuccess = false;
+
 
         $dbTraining = DB::connection(self::DB_CONN_NAME)->table(self::T_M_TRAINING)->select('id', DB::raw('UPPER(nama) as nama'))->get();
         $dbTrainingKey = [];
@@ -939,10 +1068,47 @@ class PengajuanTrainingController extends Controller {
                 $perBulanperGrup[$key]['bulan'] = (int) $jadwal[0];
                 $perBulanperGrup[$key]['tahun'] = (int) $jadwal[1];
             }
-            Log::debug("debug");
+
+            $listKaryawan = [];
+            $mappingNIK = [];
+            $chunkNIK = collect($listNik)->chunk(1000);
+            try {
+                foreach ($chunkNIK as $chunkNIK) {
+                    // Log::info($chunkNIK);
+                    $listKaryawan[] = DB::connection(self::DB_CONN_NAME)->table(self::T_HRD_KARYAWAN)
+                        ->select('NIK', 'Nama', 'KodeJB', 'KodeDP', 'KodeST')
+                        // ->whereIn('NIK', $chunkNIK)
+                        ->get();
+                }
+                foreach ($listKaryawan as $chunkNIK) {
+                    foreach ($chunkNIK as $dataListKaryawan) {
+                        // Log::info(json_encode($dataListKaryawan));
+                        $mappingNIK[$dataListKaryawan->NIK] = [
+                            'NIK' => $dataListKaryawan->NIK,
+                            'Nama' => $dataListKaryawan->Nama,
+                            'KodeJB' => $dataListKaryawan->KodeJB,
+                            'KodeDP' => $dataListKaryawan->KodeDP,
+                            'KodeST' => $dataListKaryawan->KodeST
+                        ];
+                    }
+                }
+            } catch (Exception $ex) {
+
+            }
+            
+            // Log::debug("debug");
             foreach ($value as $value1) {
                 // Log::info($value1);
                 if(isset($value1['DEPARTMENT'])) $value1['DEPARTMENT'] = self::mappingDP[$value1['DEPARTMENT']];
+                if(isset($value1['NIK'])) {
+                    if(isset($mappingNIK[$value1['NIK']])) {
+                        $value1['DEPARTMENT'] = $mappingNIK[$value1['NIK']]['KodeDP'];
+                        $value1['SITE'] = $mappingNIK[$value1['NIK']]['KodeST'];
+                        $value1['KodeJB'] = $mappingNIK[$value1['NIK']]['KodeJB'];
+                    }
+                    // if(isset($mappingNIK[$value1['SITE']])) {
+                    // }
+                }
                 // if(!isset($nikERP[$value1['NIK']]) ) {
                 //     $nikERP[$value1['NIK']] = [
                 //         'KodeDp' => '',
@@ -991,9 +1157,13 @@ class PengajuanTrainingController extends Controller {
         // Log::info('perBulanPerGroup : '. json_encode($perBulanperGrup, JSON_PRETTY_PRINT));
         $perBulanPerGrup = collect($perBulanperGrup)->sortBy([['tahun', 'asc'], ['bulan', 'asc']]);
         // Log::info("grouped training " . count($groupedTraining). " : " . json_encode($groupedTraining, JSON_PRETTY_PRINT));
-
+        Log::info('end');
+        // return response()->json(['isSuccess' => $isSuccess]);
         try {
             DB::connection(self::DB_CONN_NAME)->beginTransaction();
+            // dd($listNik);
+
+            // DB::connection(self::DB_CONN_NAME)->beginTransaction();
             foreach ($perBulanPerGrup as $key => $value) {
                 $bulan = $value['bulan'];
                 $tahun = $value['tahun'];
@@ -1027,6 +1197,10 @@ class PengajuanTrainingController extends Controller {
                                     $groupPelatihanByDeptAndSite[$value2['SITE']. '_'. $value2['DEPARTMENT']]['status'] = 0;
                                     $groupPelatihanByDeptAndSite[$value2['SITE']. '_'. $value2['DEPARTMENT']]['KodeST'] = $value2['SITE'];
                                     $groupPelatihanByDeptAndSite[$value2['SITE']. '_'. $value2['DEPARTMENT']]['KodeDP'] = $value2['DEPARTMENT'];
+
+                                    $groupPelatihanByDeptAndSite[$value2['SITE']. '_'. $value2['DEPARTMENT']]['trj_id'] = DB::connection(self::DB_CONN_NAME)->table(self::T_TRJ)->insertGetId([
+                                        'pengajuan_training_id' => $idInsertPengajuan, 'jenis' => 0, 'status' => 0, 'KodeST' => $value2['SITE'], 'KodeDP' => $value2['DEPARTMENT']
+                                    ]);
                                 }
                             }
                             // TODO : insert pengajuan_training_detail
@@ -1040,8 +1214,8 @@ class PengajuanTrainingController extends Controller {
                             //     'created_at' => $createdAt,
                             //     'created_by' => $nik_session
                             // ]);
-                            DB::connection(self::DB_CONN_NAME)->table(self::T_PENGAJUAN_TRAINING_DTL)
-                                ->insert([
+                            $pengajuanDetailId = DB::connection(self::DB_CONN_NAME)->table(self::T_PENGAJUAN_TRAINING_DTL)
+                                ->insertGetId([
                                     'pengajuan_training_id' => $idInsertPengajuan,
                                     'NIK' => $value2['NIK'],
                                     // 'KodeST' => isset($value2['SITE']) ? $value2['SITE'] : '',
@@ -1049,23 +1223,46 @@ class PengajuanTrainingController extends Controller {
                                     'status_id' => 0,
                                     'matrix' => isset($value2['ALARM BY MATRIX KOMPETENSI']) ? $value2['ALARM BY MATRIX KOMPETENSI'] : '',
                                     'created_at' => $createdAt,
-                                    'created_by' => $nik_session
+                                    'created_by' => $nik_session,
+                                    'trj_id' => $groupPelatihanByDeptAndSite[$value2['SITE']. '_'. $value2['DEPARTMENT']]['trj_id']
                                 ]);
+
+                            // Log::info($value2);
+                            $trainingKomitmenId = DB::connection(self::DB_CONN_NAME)->table(self::T_TRAINING_KOMITMEN)
+                                ->insertGetId([
+                                    'NIK' => $value2['NIK'],
+                                    'nama' => isset($value2['NAMA']) ? $value2['NAMA'] : $mappingNIK[$value2['NIK']]['Nama'],
+                                    'status' => 0,
+                                    'm_training_id' => $idTraining,
+                                    'pengajuan_training_detail_id' => $pengajuanDetailId,
+                                    'pengajuan_training_id' => $idInsertPengajuan,
+                                    'trj_id' => $groupPelatihanByDeptAndSite[$value2['SITE']. '_'. $value2['DEPARTMENT']]['trj_id'],
+                                    'KodeDP' => $value2['DEPARTMENT'],
+                                    'KodeST' => $value2['SITE'],
+                                    'KodeJB' => $value2['KodeJB'],
+                                    'created_at' => $createdAt,
+                                    'created_by' => $nik_session,
+                                ]);
+                            
+                            // Helper::SFNotification($value2['NIK'], 'Anda diajukan untuk mengikuti ' . $value2['JENIS TRAINING'], 'info', '/ic/training/form-komitmen/'.$trainingKomitmenId);
+                            
                         }
                         // Log::debug('groupPelatihanByDeptAndSite : '. json_encode($groupPelatihanByDeptAndSite, JSON_PRETTY_PRINT));
-                        foreach ($groupPelatihanByDeptAndSite as $key => $value) {   
-                            DB::connection(self::DB_CONN_NAME)->table(self::T_TRJ)->insert($value);
-                        }
+                        // foreach ($groupPelatihanByDeptAndSite as $key => $value) {   
+                        //     DB::connection(self::DB_CONN_NAME)->table(self::T_TRJ)->insert($value);
+                        // }
                     }
                 }
             }
             DB::connection(self::DB_CONN_NAME)->commit();
+            $isSuccess = true;
         } catch (Exception $ex) {
-            DB::connection(self::DB_CONN_NAME)->rollBack();
+
+            // DB::connection(self::DB_CONN_NAME)->rollBack();
             Log::error('error insert pengajuan detail ' . $ex->getMessage(). ' : '. $ex->getTraceAsString());
         }
 
-        return response()->json(['isSuccess' => 'Ok']);
+        return response()->json(['isSuccess' => $isSuccess]);
     }
 
     public function FormKomitmen($id) {
@@ -1227,10 +1424,10 @@ class PengajuanTrainingController extends Controller {
         try {
             $sqlListApprovalLv1 = DB::connection(self::DB_CONN_NAME)->table(self::T_TRAINING_APPROVAL . ' as tta')
                 ->select('tta.NIK', 'tta.nama', 'tta.approval_role', 'tta.nama as text', 'tta.id')
-                ->where('tta.approval_role', 1)->where('tta.KodeDP', $KodeDP)->get();
+                ->whereIn('tta.approval_role', [1, 3])->where('tta.KodeDP', $KodeDP)->get();
             $sqlListApprovalLv1Up = DB::connection(self::DB_CONN_NAME)->table(self::T_TRAINING_APPROVAL . ' as tta')
                 ->select('tta.NIK', 'tta.nama', 'tta.approval_role', 'tta.nama as text', 'tta.id')
-                ->whereIn('tta.approval_role', [2, 3])->where('tta.KodeST', $KodeST);
+                ->where('tta.approval_role', 2);
             $sqlApprvDept = DB::connection(self::DB_CONN_NAME)->table(self::T_TRAINING_APPROVAL . ' as tta')
                 ->select('tta.NIK', 'tta.nama', 'tta.approval_role', 'tta.nama as text', 'tta.id')
                 ->where('tta.approval_role', 4)->where('tta.KodeDP', $KodeDP)->get();

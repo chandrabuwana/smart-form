@@ -67,11 +67,8 @@
                             data-unique-id="id" data-header-style="headerStyle" data-search="true">
                             <thead>
                                 <tr>
-                                    <th data-field="NO" data-align="left">no</th>
-                                    <th data-field="JABATAN" data-align="left" data-sortable="true">Jabatan</th>
-                                    <th data-field="KodeJB" data-align="left">KodeJB</th>
-                                    <th data-field="LIST TRAINING" data-align="center">Training</th>
-                                    <th data-field="TABEL BANTU" data-align="center">Tabel Bantu</th>
+                                    <th data-field="nama" data-align="left">Nama</th>
+                                    <th data-field="training_kategori_code" data-align="left" data-sortable="true">Kategori</th>
                                 </tr>
                             </thead>
                         </table>
@@ -89,6 +86,7 @@
 @endsection
 
 @section('custom-js')
+    <script src="{{ asset('master/js/loading.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script lang="javascript" src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/shim.min.js"></script>
     <script lang="javascript" src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -103,6 +101,7 @@
             var file = e.target.files[0];
             var reader = new FileReader();
 
+            showLoading()
             reader.onload = function(e) {
                 const data = new Uint8Array(event.target.result);
                 const workbook = XLSX.read(data, { type: 'array' });
@@ -133,6 +132,7 @@
 
                 loadedMasterTraining = filterDuplicateTraining(jsonData)
                 trainingKategori = distinctKategoriTraining(loadedMasterTraining)
+                $("#table-data").bootstrapTable('load', loadedMasterTraining)
 
                 sheetName = "master_jabatan"
                 worksheet = workbook.Sheets[sheetName]
@@ -155,6 +155,7 @@
                 console.log("Data Jabatan : ", masterjabatan)
                 console.log("Data STD JAB_TRAINING : ", jsonDataStdJab)
                 console.log("Data Sudah training : ", jsonDataSudahTraining)
+                stopLoading()
             };
 
             reader.readAsArrayBuffer(file);
@@ -199,7 +200,9 @@
         }
 
         function importData(event) {
-            console.log("importData")
+            // console.log("importData")
+            event.target.disabled = true
+            showLoading()
             axios.post("/ic/training/import-master-training",{
                 training_kategori: trainingKategori,
                 training: loadedMasterTraining,
@@ -213,12 +216,31 @@
             })
             .then(function(resp) {
                 console.log(resp)
+                let alertData = {
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: resp.data.message
+                }
+                if(resp.data.isSuccess) {
+                    alertData.icon = 'success'
+                    alertData.title = 'Berhasil!'
+                } else {
+                    alertData.icon = 'error'
+                    alertData.title = 'Gagal!'
+                }
+                Swal.fire(alertData)
             })
             .catch(function(err) {
-                console.log(err)
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: "Terjadi kesalahan, coba beberapa saat lagi"
+                })
+                event.target.disabled = false
             })
             .finally(function() {
-
+                event.target.disabled = false
+                stopLoading()
             })
         }
     </script>

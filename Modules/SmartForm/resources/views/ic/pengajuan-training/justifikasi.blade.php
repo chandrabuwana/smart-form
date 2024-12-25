@@ -203,7 +203,7 @@
                                         <!--<input type="date" class="form-control" id="inputTanggalPelaksanaan" name="inputTanggalPelaksanaan" placeholder="Bulan Tahun" {{ $data->trj_status == 2 || $data->trj_status == -2 || $data->trj_status == 3 ? 'disabled' : ''}}
                                             value="{{$data->trj_status == 2 || $data->trj_status == -2 || $data->trj_status == 3 ? $data->tanggal : ''}}" {{ $isDibuatOleh ? '' : 'disabled'}}> -->
                                         {{-- <input type="date" class="form-control" id="inputTanggalPelaksanaan" name="inputTanggalPelaksanaan" placeholder="Bulan Tahun" > --}}
-                                        @if($data->trj_status == 1 && $isDibuatOleh)
+                                        @if($data->trj_status == 1)
                                             <input type="date" class="form-control" id="inputTanggalPelaksanaan" name="inputTanggalPelaksanaan" placeholder="Bulan Tahun" >
                                         @else
                                             {{ $data->tanggal }}
@@ -216,7 +216,7 @@
                                 <td style="vertical-align: top;"> : </td>
                                 <td>
                                     <div class="input-group input-group-static">
-                                        @if($data->trj_status == 1 && $isDibuatOleh)
+                                        @if($data->trj_status == 1)
                                             <input type="text" class="form-control" id="inputTempatPelaksanaan" name="inputTempatPelaksanaan">
                                         @else
                                             {{ $data->tempat }}
@@ -227,7 +227,7 @@
                         </table>
 
                         <p class="m-0 mt-3"><strong>Tujuan Training untuk menunjang  Logic Tree (KPI) yang mana, Kondisi sekarang seperti apa?</strong></p>
-                        @if ($data->trj_status == 1 && $isDibuatOleh)
+                        @if ($data->trj_status == 1)
                             <div class="col-md-6 mb-3" style="display: flex; gap: 8px;">
                                 <div class="input-group input-group-static">
                                     <label for="cariKPI" style="width: 100%">Tambah Data MP</label>
@@ -251,7 +251,7 @@
                                     @endif
                                 </tr>
                             </thead>
-                            @if(!($data->trj_status == 1 && $isDibuatOleh) || $data->trj_status == 2 || $data->trj_status == -2 || $data->trj_status == 3)
+                            @if(!($data->trj_status == 1 && !$isDibuatOleh) || $data->trj_status == 2 || $data->trj_status == -2 || $data->trj_status == 3)
                                 <tbody>
                                     @foreach ($dataSubmitted['tujuan'] as $item)
                                     <tr>
@@ -266,7 +266,7 @@
 
                         <p class="m-0 mt-3"><strong>Pengganti Tugas selama Training</strong></p>
                         
-                        @if ($data->trj_status == 1 && $isDibuatOleh)
+                        @if ($data->trj_status == 1)
                             <div class="col-md-6 mb-3" style="display: flex; gap: 8px;">
                                 <div class="input-group input-group-static">
                                     <label for="cariKaryawan" style="width: 100%">Tambah KPI Pendukung</label>
@@ -289,7 +289,7 @@
                                     <th data-field="action" data-align="center" data-formatter="hapusPenggantFormatter"></th>
                                     @endif
                             </thead>
-                            @if (!($data->trj_status == 1 && $isDibuatOleh) || $data->trj_status == 2 || $data->trj_status == -2 || $data->trj_status == 3)
+                            @if (!($data->trj_status == 1 && !$isDibuatOleh) || $data->trj_status == 2 || $data->trj_status == -2 || $data->trj_status == 3)
                                 <tbody>
                                     @foreach ($dataSubmitted['pengganti'] as $item)
                                     <tr>
@@ -303,7 +303,7 @@
                         </table>
 
                         <p class="m-0 mt-3"><strong>Detail urgensi (Kepentingan mendesak) training/sertifikasi ini harus dijalankan segera?</strong></p>
-                        @if ($data->trj_status == 1 && $isDibuatOleh)
+                        @if ($data->trj_status == 1)
                             <div style="display: flex; gap: 12px; margin-bottom: 12px;" class="col-md-6">
                                 <input type="text" class="form-control input-text w-fit" placeholder="Tambah Detail urgensi" id="inputUrgensi">
                                 <button class="btn btn-secondary m-0" type="button" id="btnAddUrgensi" onclick="addUrgensi(event)"><i class="bi fa-plus"></i> </button>
@@ -320,7 +320,7 @@
                                     <th data-field="action" data-align="center" data-formatter="actionUrgensiFormatter"></th>
                                     @endif
                             </thead>
-                            @if (!($data->trj_status == 1 && $isDibuatOleh) || $data->trj_status == 2 || $data->trj_status == -2 || $data->trj_status == 3)
+                            @if (!($data->trj_status == 1 && !$isDibuatOleh) || $data->trj_status == 2 || $data->trj_status == -2 || $data->trj_status == 3)
                                 <tbody>
                                     @foreach ($dataSubmitted['urgensi'] as $item)
                                     <tr>
@@ -419,7 +419,7 @@
             if(value == "1") return '<button class="btn btn-success btn-action-format">Setuju</button>'
             if(value == "2") return '<button class="btn btn-success btn-action-format">Done approval</button>'
             if(value == "-1") return '<button class="btn btn-danger btn-action-format">Menolak</button>'
-            if(value == "-2") return '<button class="btn btn-danger btn-action-format">Ditolak aproval</button>'
+            if(value == "-2") return '<button class="btn btn-danger btn-action-format">Rejected</button>'
 
             return value
         }
@@ -535,7 +535,9 @@
             e.target.disabled = true
             let validateForm = []
             if(jenisCurrApproval == "dibuat") {
-                if($("#table-komitmen").bootstrapTable('getData').filter((data) => data.status == 0).length > 0) {
+                console.log($("#table-komitmen").bootstrapTable('getData').filter((data) => data.komitment_status == 0).length);
+                
+                if($("#table-komitmen").bootstrapTable('getData').filter((data) => data.komitmen_status == 0).length > 0) {
                     validateForm.push("Terdapat form komitmen yang belum dilakukan persetujuan")
                 }
                 if($("#table-tujuan").bootstrapTable('getData').length < 1) validateForm.push("KPI logic tree minimal 1")
@@ -546,7 +548,7 @@
                     }
                 })
                 
-                if(!$("#inputTempatPelaksanaan").val().trim()) validateForm.push("Tempat pelaksaan belum diisi") 
+                // if(!$("#inputTempatPelaksanaan").val().trim()) validateForm.push("Tempat pelaksaan belum diisi") 
                 if(!$("#inputTanggalPelaksanaan").val()) validateForm.push("Tanggal pelaksaan belum diisi")
             } 
 

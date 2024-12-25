@@ -89,6 +89,7 @@
                                     <th data-field="no" data-align="left">No</th>
                                     <th data-field="nik" data-align="left">NIK</th>
                                     <th data-field="nama" data-align="left">Nama</th>
+                                    <th data-field="training" data-align="left">Training</th>
                                     <th data-field="jabatan" data-align="left">Jabatan</th>
                                     <th data-field="department" data-align="left">Department</th>
                                     <th data-field="site" data-align="left">Site</th>
@@ -120,6 +121,7 @@
         let loadedMasterTraining = []
         let trainingKategori = []
         let groupByMonthYear = {}
+        let listNIK = []
 
         document.getElementById('uploadExcell').addEventListener('change', function(e) {
             var file = e.target.files[0];
@@ -173,10 +175,13 @@
                     let tahun = nilaiSPlit[1]
 
                     groupByMonthYear[nilai].forEach((data) => {
+                        if(!listNIK.find((nilai) => nilai == data['NIK'])) listNIK.push(data['NIK'].toString())
+
                         viewDataATMP.push({
                             no: data['NO'],
                             nik: data['NIK'],
                             nama: data['NAMA'],
+                            training: data['JENIS TRAINING'],
                             jabatan: data['JABATAN'],
                             department: data['DEPARTMENT'],
                             site: data['SITE'],
@@ -190,7 +195,11 @@
                 stopLoading()
             };
 
-            reader.readAsArrayBuffer(file);
+            try {
+                reader.readAsArrayBuffer(file);
+            } catch(err) {
+                stopLoading()
+            }
         })
 
         function distinctJabatan(arr) {
@@ -213,7 +222,8 @@
             event.target.disabled = true
             showLoading()
             axios.post( "{{ route('ic.training.submit-atmp') }}",{
-                atmp: groupByMonthYear
+                atmp: groupByMonthYear,
+                listNIK: listNIK
             }, {
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

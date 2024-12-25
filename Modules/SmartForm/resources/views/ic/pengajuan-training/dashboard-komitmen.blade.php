@@ -98,7 +98,7 @@
                 </div>
                 <div class="card-body px-0 pb-2">
                     {{-- <h4 class="mx-3">Filter Data</h4> --}}
-                    <div class="mx-4 row mb-3">
+                    {{-- <div class="mx-4 row mb-3">
                             <fieldset class="mb-3">
                                 <legend>Filter Data</legend>
                                 <div class="form-check">
@@ -113,7 +113,7 @@
                                 Filter
                             </button>
                         </div>
-                    </div>
+                    </div> --}}
                     
                     <div class="table-responsive p-0">
                         <table id="table-data" data-toggle="table" data-side-pagination="server" 

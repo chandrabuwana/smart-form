@@ -162,6 +162,7 @@
                                     <th data-field="matrix_kompetensi" data-align="left" data-formatter="kompetensiFormatter" data-cell-style="kompetensiStyle">Kompetensi</th>
                                     <th data-field="matrix_sertifikasi" data-align="left" data-formatter="sertifikasiFormatter" data-cell-style="sertifikasiStyle">Rekap Sertifikasi</th>
                                     <th data-field="matrix_mk" data-align="left" data-formatter="mkFormatter" data-cell-style="mkStyle">Masa Kerja</th>
+                                    <th data-field="komitmen_status" data-align="left" data-formatter="komitmenFormatter">Komitmen</th>
                                     <th data-field="status_id" data-align="left" data-formatter="statusFormatter">Status</th>
                                     <th data-field="mengganti" data-align="left" data-visible="false">Mengganti</th>
                                     @if ($crossCheckPIC->contains('NIK', session('user_id')) && $pelatihan->trj_status == 0)
@@ -237,7 +238,7 @@
                                 </tr>
                                 <tr>
                                     <td>Diketahui oleh</td>
-                                    <td>Kadept HO</td>
+                                    <td>Kadep HO / Direktorat</td>
                                     <td>
                                         <div class="input-group input-group-static" style="display: inline; width: fit-content;">
                                             {{-- TODO : enable ini ketika mau deploy --}}
@@ -563,6 +564,12 @@
             return {}
         }
 
+        function komitmenFormatter(value, row, index) {
+            if(value == 0) return '<button type="button" class="btn btn-warning btn-action-format">On Progress</button>'
+            if(value == 1) return '<button type="button" class="btn btn-succes btn-action-format">Setuju</button>'
+            if(value == -1) return '<button type="button" class="btn btn-danger btn-action-format">Menolak</button>'
+        }
+
         $('#cariKaryawan').select2({
             minimumInputLength: 3,
             theme: 'bootstrap-5', // Menggunakan tema Bootstrap 5
@@ -761,10 +768,10 @@
             }
             let belumValidasi = []
             $('#table-data').bootstrapTable('getData').filter((data)=> {
-                if(data.status_id == 0) belumValidasi.push(data.NIK)
+                if(data.status_id == 0 || data.matrix_mk < 1) belumValidasi.push(data.NIK)
                 return data.status_id == 0
             })
-            if(l=belumValidasi.length > 0) dataBody['5'] = $("#level5").val()
+            if(belumValidasi.length > 0) dataBody.approval['5'] = $("#level5").val()
         
             console.log(dataBody)
             // return
@@ -835,7 +842,7 @@
             if(!$("#level3").val()) errList.push("Belum pilih approval PM / People partner")
             if(!$("#level4").val()) errList.push("Belum pilih approval Kadep HO")
             if(isCreateBAjustifikasi.length > 0) {
-                if(!$("#level1").val()) errList.push("Terdapat matrix masa kerja < 1 th, silahkan pilih approval Think tank")
+                if(!$("#level5").val()) errList.push("Terdapat matrix masa kerja < 1 th, silahkan pilih approval Think tank")
             }
 
             $('#table-data').bootstrapTable('getData').filter((data)=> {
