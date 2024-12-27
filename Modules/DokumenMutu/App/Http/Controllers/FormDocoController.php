@@ -164,9 +164,10 @@ Terima kasih.";
 
     public function storeFormRevisi(Request $request)
     {
-        $noDokumen = $request->input('noDokumen');
-        $alasanPengajuan = $request->input('alasanPengajuan');
-        $dokumen = $request->file('dokumen');
+        $idRefDoco          = $request->input('id_ref_doco');
+        $noDokumen          = $request->input('noDokumen');
+        $alasanPengajuan    = $request->input('alasanPengajuan');
+        $dokumen            = $request->file('dokumen');
 
         try {
             $doco = DB::table(self::T_DOCO)
@@ -206,6 +207,7 @@ Terima kasih.";
             $filePath = Storage::disk('public')->put($path, $dokumen);
 
             $pengajuan = DB::table(self::T_PENGAJUAN_DOCO)->insertGetId([
+                'id_ref_doco' => $idRefDoco,
                 'nik_pemohon' => $doco->nik_pembuat,
                 'no_dokumen' => $noDokumen,
                 'judul_dokumen' => $doco->judul_dokumen,
@@ -256,7 +258,8 @@ Terima kasih.";
         $noDokumen = $request->get('no_dokumen');
         $doco = DB::table(self::T_DOCO)->select(self::T_DOCO . '.*', self::T_SITE . '.Nama AS NamaSite')
             ->join(self::T_SITE, self::T_SITE . '.KodeST', self::T_DOCO . '.kode_site')
-            ->where('no_dokumen', $noDokumen)->first();
+            ->where('no_dokumen', $noDokumen)
+            ->where('status', 'Aktif')->first();
 
         return response()->json($doco);
     }
@@ -268,6 +271,7 @@ Terima kasih.";
 
     public function storeFormPenghapusan(Request $request)
     {
+        $idRefDoco = $request->input('id_ref_doco');
         $noDokumen = $request->input('noDokumen');
         $alasanPengajuan = $request->input('alasanPengajuan');
 
@@ -305,6 +309,7 @@ Terima kasih.";
             }
 
             $pengajuan = DB::table(self::T_PENGAJUAN_DOCO)->insertGetId([
+                'id_ref_doco' => $idRefDoco,
                 'nik_pemohon' => $doco->nik_pembuat,
                 'no_dokumen' => $noDokumen,
                 'judul_dokumen' => $doco->judul_dokumen,

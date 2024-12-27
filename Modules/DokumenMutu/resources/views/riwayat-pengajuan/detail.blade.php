@@ -250,6 +250,22 @@
             $('body').popover({
                 selector: '[data-bs-toggle="popover"]'
             });
+
+            $('#modalRevisi button[type="submit"]').on('click', function(e) {
+                const $form = $(this).closest('form')
+                const isFormValid = $form.length > 0 && $form[0].checkValidity()
+
+                if(isFormValid) {
+                    $(this).attr('disabled', true);
+                    Swal.fire({
+                        title: 'Loading...',
+                        allowOutsideClick: false,
+                        didOpen: () => Swal.showLoading()
+                    });
+
+                    $form.submit();
+                }
+            })
         });
 
         const ID = `{{ $doco->id }}`;

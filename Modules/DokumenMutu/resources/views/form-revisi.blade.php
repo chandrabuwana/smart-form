@@ -22,6 +22,7 @@
         <div class="col-md-10 col-xl-8">
             <form class="card my-4" method="POST" action="{{ route('form-revisi.store') }}" enctype="multipart/form-data">
                 @csrf
+                <input type="hidden" name="id_ref_doco">
 
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                     <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
@@ -137,6 +138,7 @@
                             $('#site').val(response.NamaSite);
                             $('#judulDokumen').val(response.judul_dokumen);
                             $('#jenisDokumen').val(response.jenis_dokumen);
+                            $('[name=id_ref_doco]').val(response.id);
                         }
                     },
                     error: function(xhr, ajaxOptions, thrownError) {
@@ -150,6 +152,22 @@
                         });
                     }
                 });
+            });
+
+            $('#btnSubmitForm').on('click', function(e) {
+                const $form = $(this).closest('form')
+                const isFormValid = $form.length > 0 && $form[0].checkValidity()
+
+                if(isFormValid) {
+                    $(this).attr('disabled', true);
+                    Swal.fire({
+                        title: 'Loading...',
+                        allowOutsideClick: false,
+                        didOpen: () => Swal.showLoading()
+                    });
+
+                    $form.submit();
+                }
             });
         });
     </script>

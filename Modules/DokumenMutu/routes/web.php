@@ -31,6 +31,7 @@ Route::middleware([ FetchMenu::class, 'check.auth', PermissionMenu::class ])->pr
         Route::get('/', [DocoController::class, 'riwayat'])->name('dokumen-mutu.riwayat-pengajuan');
         Route::get('/fetch-data', [DocoController::class, 'fetchRiwayat'])->name('dokumen-mutu.riwayat-pengajuan.fetch');
         Route::get('/detail/{id}', [DocoController::class, 'detailRiwayat'])->name('dokumen-mutu.detail-riwayat');
+        Route::get('/fetch-detail', [DocoController::class, 'fetchDetailRiwayat'])->name('dokumen-mutu.fetch-detail-riwayat');
         Route::post('/revisi', [FormDocoController::class, 'submitRevisiPengajuan'])->name('dokumen-mutu.revisi.store');
 
         Route::post('/validasi-penghapusan', [ValidasiDocoController::class, 'validPenghapusan'])->name('dokumen-mutu.validasi.penghapusan');

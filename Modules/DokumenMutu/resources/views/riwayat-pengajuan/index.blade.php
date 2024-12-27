@@ -55,6 +55,13 @@
             padding-left: 0.4rem !important;
             padding-right: 0.4rem !important;
         }
+
+        #pdf_container {
+            background: #ccc;
+            text-align: center;
+            display: none;
+            padding: 5px;
+        }
     </style>
 @endsection
 
@@ -243,9 +250,11 @@
                             <span class="font-weight-bold">:</span>
                         </div>
                         <div class="col-md-8">
-                            <span id="alasan_pengajuan" class="fs-6">Hello World!</span>
+                            <span id="alasan_pengajuan" class="fs-6"></span>
                         </div>
                     </div>
+
+                    <div id="pdf_container"></div>
                 </div>
             </div>
         </div>
@@ -336,6 +345,30 @@
     @endif
 
     <script type="text/javascript">
+        let pdfjsLib = window['pdfjs-dist/build/pdf'];
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.worker.min.js';
+        let pdfDoc = null;
+        let scale = 1;
+        let resolution = 1;
+
+        $( function() {
+            $('#modalValidasiPenghapusan button[type="submit"]').on('click', function(e) {
+                const $form = $(this).closest('form')
+                const isFormValid = $form.length > 0 && $form[0].checkValidity()
+
+                if(isFormValid) {
+                    $(this).attr('disabled', true);
+                    Swal.fire({
+                        title: 'Loading...',
+                        allowOutsideClick: false,
+                        didOpen: () => Swal.showLoading()
+                    });
+
+                    $form.submit();
+                }
+            })
+        })
+
         var $table = $("#list-form");
         var btnFilterSubmit = document.getElementById("btnFilterSubmit")
         var btnClearFilter = document.getElementById("btnClearFilter")
@@ -352,6 +385,42 @@
             status: null,
             jenis_dokumen: null,
             jenis_pengajuan: null,
+        }
+
+        function LoadPdfFromUrl(url) {
+            pdfjsLib.getDocument(url).promise.then(function (pdfDoc_) {
+                pdfDoc = pdfDoc_;
+                let pdf_container = document.getElementById("pdf_container");
+                pdf_container.style.display = "block";
+
+                for (let i = 1; i <= pdfDoc.numPages; i++) {
+                    RenderPage(pdf_container, i);
+                }
+            });
+        }
+
+        function RenderPage(pdf_container, num) {
+            pdfDoc.getPage(num).then(function (page) {
+                let canvas = document.createElement('canvas');
+                canvas.id = 'pdf-' + num;
+                ctx = canvas.getContext('2d');
+                pdf_container.appendChild(canvas);
+
+                let spacer = document.createElement("div");
+                spacer.style.height = "20px";
+                pdf_container.appendChild(spacer);
+
+                let viewport = page.getViewport({ scale: scale });
+                canvas.height = resolution * viewport.height;
+                canvas.width = resolution * viewport.width;
+
+                let renderContext = {
+                    canvasContext: ctx,
+                    viewport: viewport,
+                    transform: [resolution, 0, 0, resolution, 0, 0]
+                };
+                page.render(renderContext);
+            });
         }
 
         btnClearFilter.addEventListener("click", function(e) {
@@ -388,7 +457,7 @@
             let action;
 
             if(row.jenis_pengajuan == 'Penghapusan') {
-                action = `<a href="javascript:detailPenghapusan('${ row.no_dokumen }', '${ row.status }', '${ row.alasan_pengajuan }');"><button class="btn btn-primary btn-action text-white">detail</button></a>`;
+                action = `<a href="javascript:detailPenghapusan('${ row.id }');"><button class="btn btn-primary btn-action text-white">detail</button></a>`;
 
                 if(row.is_validate) {
                     action += `
@@ -429,31 +498,70 @@
             return formatData;
         }
 
-        function detailPenghapusan(noDokumen, status, keterangan) {
-            $('#modalDetailPenghapusan #no_dokumen').html(noDokumen);
-            $('#modalDetailPenghapusan #alasan_pengajuan').html(keterangan);
-            let classStatus = '';
+        function detailPenghapusan(id) {
+            Swal.fire({
+                title: 'Loading...',
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading()
+            });
 
-            switch(status) {
-                case 'Disetujui':
-                    classStatus = 'success';
-                    break;
+            $.ajax({
+                url: `{{ route('dokumen-mutu.fetch-detail-riwayat') }}?id=${id}`,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type: "GET",
+                dataType: 'json',
+                success: function(response) {
+                    Swal.close();
 
-                case 'Sedang Validasi':
-                    classStatus = 'warning';
-                    break;
+                    if( Object.keys(response).length == 0 ) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: `Terjadi kesalahan, data tidak ditemukan`,
+                        });
 
-                case 'Ditolak':
-                case 'Dibatalkan Oleh Sistem':
-                    classStatus = 'danger';
-                    break;
+                    } else {
+                        $('#modalDetailPenghapusan #no_dokumen').html(response.no_dokumen);
+                        $('#modalDetailPenghapusan #alasan_pengajuan').html(response.alasan_pengajuan);
 
-                default:
-                    classStatus = 'dark';
-            }
+                        let classStatus = '';
 
-            $('#modalDetailPenghapusan #status').html(`<span class="text-${classStatus} font-weight-bold fs-6" id="status">${status}</span>`);
-            $('#modalDetailPenghapusan').modal('show');
+                        switch(response.status) {
+                            case 'Disetujui':
+                                classStatus = 'success';
+                                break;
+
+                            case 'Sedang Validasi':
+                                classStatus = 'warning';
+                                break;
+
+                            case 'Ditolak':
+                            case 'Dibatalkan Oleh Sistem':
+                                classStatus = 'danger';
+                                break;
+
+                            default:
+                                classStatus = 'dark';
+                        }
+
+                        LoadPdfFromUrl(response.file_converted_path);
+                        $('#modalDetailPenghapusan #status').html(`<span class="text-${classStatus} font-weight-bold fs-6" id="status">${status}</span>`);
+                        $('#modalDetailPenghapusan').modal("show");
+                    }
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    console.error(thrownError);
+                    Swal.close();
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: `Terjadi kesalahan tidak terduga`,
+                    });
+                }
+            });
         }
 
         function showModalApprovePenghapusan(id) {
@@ -475,26 +583,26 @@
         }
 
         function secureConfidential() {
-            // // prevent right click
-            // document.addEventListener('contextmenu', (e) => e.preventDefault());
+            // prevent right click
+            document.addEventListener('contextmenu', (e) => e.preventDefault());
 
-            // // prevent inspect shortcut
-            // document.addEventListener('keydown', (e) => {
-            //     if (
-            //         e.key === 'F12' ||
-            //         (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J')) ||
-            //         (e.ctrlKey && e.key === 'U')
-            //     ) {
-            //         e.preventDefault();
-            //     }
-            // });
+            // prevent inspect shortcut
+            document.addEventListener('keydown', (e) => {
+                if (
+                    e.key === 'F12' ||
+                    (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J')) ||
+                    (e.ctrlKey && e.key === 'U')
+                ) {
+                    e.preventDefault();
+                }
+            });
 
-            // // prevent issue inspect element
-            // let start = Date.now();
-            // debugger;
-            // if (Date.now() - start > 100) {
-            //     window.location.href = '/doco/riwayat-pengajuan';
-            // }
+            // prevent issue inspect element
+            let start = Date.now();
+            debugger;
+            if (Date.now() - start > 100) {
+                window.location.href = '/doco/riwayat-pengajuan';
+            }
 
             document.addEventListener("keyup", function (e) {
                 var keyCode = e.keyCode ? e.keyCode : e.which ;

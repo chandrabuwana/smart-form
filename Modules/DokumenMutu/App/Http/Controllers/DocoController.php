@@ -347,4 +347,54 @@ class DocoController extends Controller
             'lastVersion' => $lastVersion
         ]);
     }
+
+    public function fetchDetailRiwayat(Request $request)
+    {
+        $id = $request->get('id');
+        $doco = DB::table(self::T_PENGAJUAN_DOCO)->where('id', $id)->first();
+        if(!$doco) {
+            return response()->json([]);
+        }
+
+        if($doco->jenis_pengajuan == 'Pembuatan') {
+            $lastVersion = DB::table(self::T_VERSI_DOCO)->where('id_pengajuan_dokumen', $doco->id)
+                ->orderBy('no_versi', 'desc')->first();
+            $filePath = $lastVersion->file_path;
+
+        } else {
+            $noInduk = DB::table(self::T_DOCO)->find($doco->id_ref_doco);
+            $filePath = $noInduk->file_path;
+        }
+
+        $expFilePath = explode('/', $filePath);
+        $filename = $expFilePath[ count($expFilePath) - 1 ];
+
+        $doco->file_converted_path = str_replace($filename, 'converted_' . $filename, $filePath);
+        $convertedPath = str_replace('\\', '/', storage_path('app/public/' . $doco->file_converted_path));
+        $originalPath = str_replace('\\', '/', storage_path('app/public/' . $filePath));
+
+        if(!file_exists($doco->file_converted_path)) {
+            putenv('PATH=' . env('DOCO_GS_PATH'));
+            shell_exec('gswin64 -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile=' . $convertedPath . ' ' . $originalPath . '');
+
+            $mpdf = new Mpdf();
+            $pageCount = $mpdf->setSourceFile($convertedPath);
+
+            for($i=1; $i <= $pageCount; $i++) {
+                $tplIdx = $mpdf->ImportPage($i);
+
+                $mpdf->SetWatermarkText('Preview Only');
+                $mpdf->showWatermarkText = true;
+
+                $mpdf->AddPage();
+                $mpdf->useTemplate($tplIdx, 10, 10, 200);
+            }
+
+            $mpdf->OutputFile($convertedPath);
+        }
+
+        $doco->file_path = url('storage/' . $filePath);
+        $doco->file_converted_path = url('storage/' . $doco->file_converted_path);
+        return response()->json($doco);
+    }
 }
