@@ -165,8 +165,14 @@ class DocoController extends Controller
         $departements = DB::table(self::T_DEPARTEMENT)->select('KodeDP', 'Nama')
             ->whereNotNull('Nama')->orderBy('KodeDP', 'ASC')->get();
 
+        $user = DB::table(self::T_KARYAWAN)->select(self::T_KARYAWAN . '.*', self::T_JABATAN . '.Nama AS NamaJB')
+            ->join(self::T_JABATAN, self::T_JABATAN . '.KodeJB', self::T_KARYAWAN . '.KodeJB')
+            ->where('NIK', session('user_id'))->first();
+
+        $isDownloadDoco = $user->KodeDP == 'OD' || preg_match('/kepala seksi/i', $user->NamaJB) || preg_match('/kepala department/i', $user->NamaJB) || preg_match('/kepala departemen/i', $user->NamaJB);
         return view('DokumenMutu::nomor-induk', [
-            'departements' => $departements
+            'departements' => $departements,
+            'isDownloadDoco' => $isDownloadDoco
         ]);
     }
 

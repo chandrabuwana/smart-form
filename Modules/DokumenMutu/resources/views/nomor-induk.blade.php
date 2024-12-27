@@ -253,6 +253,12 @@
                                     </div>
                                 </div>
 
+                                <div class="d-flex justify-content-end" @if($isDownloadDoco)>
+                                    <a href="#" class="btn bg-gradient-dark btn-action text-white mb-0" download id="btn-download-doc">
+                                        <i class="fas fa-cloud-download-alt fa-lg me-1"></i> Download Dokumen
+                                    </a>
+                                </div>
+
                                 <div id="pdf_container"></div>
                             </div>
                         </div>
@@ -420,6 +426,7 @@
                         $('#judulDokumen').val(response.judul_dokumen);
                         $('#status').val(response.status);
                         // $('#iframepdf').attr('src', response.file_converted_path);
+                        $('#btn-download-doc').attr('href', response.file_converted_path);
 
                         if(response.no_revisi) {
                             $('#revisi').parent().removeClass('d-none');
