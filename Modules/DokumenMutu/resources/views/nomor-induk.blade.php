@@ -253,11 +253,13 @@
                                     </div>
                                 </div>
 
-                                <div class="d-flex justify-content-end" @if($isDownloadDoco)>
-                                    <a href="#" class="btn bg-gradient-dark btn-action text-white mb-0" download id="btn-download-doc">
-                                        <i class="fas fa-cloud-download-alt fa-lg me-1"></i> Download Dokumen
-                                    </a>
-                                </div>
+                                @if($isDownloadDoco)
+                                    <div class="d-flex justify-content-end mb-3">
+                                        <a href="#" class="btn bg-gradient-dark btn-action text-white mb-0" download id="btn-download-doc">
+                                            <i class="fas fa-cloud-download-alt fa-lg me-1"></i> Download Dokumen
+                                        </a>
+                                    </div>
+                                @endif
 
                                 <div id="pdf_container"></div>
                             </div>
