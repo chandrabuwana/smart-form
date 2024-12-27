@@ -548,7 +548,7 @@
                         }
 
                         LoadPdfFromUrl(response.file_converted_path);
-                        $('#modalDetailPenghapusan #status').html(`<span class="text-${classStatus} font-weight-bold fs-6" id="status">${status}</span>`);
+                        $('#modalDetailPenghapusan #status').html(`<span class="text-${classStatus} font-weight-bold fs-6">${response.status}</span>`);
                         $('#modalDetailPenghapusan').modal("show");
                     }
                 },
