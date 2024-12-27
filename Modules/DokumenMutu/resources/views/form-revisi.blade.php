@@ -74,7 +74,7 @@
                             <label class="ms-0 fs-6">Alasan Pengajuan</label>
                         </div>
                         <div class="col-md-8">
-                            <input class="form-control input-text" id="alasanPengajuan" name="alasanPengajuan" placeholder="--- Masukkan Alasan Pengajuan ---">
+                            <input class="form-control input-text" id="alasanPengajuan" name="alasanPengajuan" placeholder="--- Masukkan Alasan Pengajuan ---" required>
                         </div>
                     </div>
 

@@ -38,7 +38,7 @@
                             <label class="ms-0 fs-6">Nomor Dokumen</label>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" class="form-control input-text" id="noDokumen" name="noDokumen" placeholder="--- Masukkan Nomor Dokumen ---">
+                            <input type="text" class="form-control input-text" id="noDokumen" name="noDokumen" placeholder="--- Masukkan Nomor Dokumen ---" required>
                         </div>
                     </div>
 
@@ -74,7 +74,7 @@
                             <label class="ms-0 fs-6">Alasan Penghapusan</label>
                         </div>
                         <div class="col-md-8">
-                            <input class="form-control input-text" id="alasanPengajuan" name="alasanPengajuan" placeholder="--- Masukkan Alasan Pengajuan ---">
+                            <input class="form-control input-text" id="alasanPengajuan" name="alasanPengajuan" placeholder="--- Masukkan Alasan Pengajuan ---" required>
                         </div>
                     </div>
                 </div>
