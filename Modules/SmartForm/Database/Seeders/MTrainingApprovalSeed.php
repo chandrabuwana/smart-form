@@ -1,10 +1,10 @@
 <?php
 
-namespace Database\Seeders;
+namespace Modules\SmartForm\Database\Seeders;
 
-use App\Models\MTrainingApproval;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Modules\SmartForm\App\Models\MTrainingApproval;
 
 class MTrainingApprovalSeed extends Seeder
 {
@@ -23,7 +23,7 @@ class MTrainingApprovalSeed extends Seeder
         // ];
 
         // foreach ($data as $value) {
-        //     MTrainingApproval::create($value);
+            // MTrainingApproval::create($value);
         // }
     }
 }

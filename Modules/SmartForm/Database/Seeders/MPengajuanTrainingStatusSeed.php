@@ -1,10 +1,10 @@
 <?php
 
-namespace Database\Seeders;
+namespace Modules\SmartForm\Database\Seeders;
 
-use App\Models\MPengajuanTrainingStatus;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Modules\SmartForm\App\Models\MPengajuanTrainingStatus;
 
 class MPengajuanTrainingStatusSeed extends Seeder
 {

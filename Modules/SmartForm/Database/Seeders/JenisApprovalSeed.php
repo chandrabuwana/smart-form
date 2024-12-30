@@ -1,10 +1,10 @@
 <?php
 
-namespace Database\Seeders;
+namespace Modules\SmartForm\Database\Seeders;
 
-use App\Models\JenisApproval;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Modules\SmartForm\App\Models\JenisApproval;
 
 class JenisApprovalSeed extends Seeder
 {

@@ -2,10 +2,6 @@
 
 namespace Modules\SmartForm\Database\Seeders;
 
-use Database\Seeders\JenisApprovalSeed;
-use Database\Seeders\MApprovalRoleSeed;
-use Database\Seeders\MPengajuanTrainingStatusSeed;
-use Database\Seeders\MTrainingApprovalSeed;
 use Illuminate\Database\Seeder;
 
 class SmartFormDatabaseSeeder extends Seeder
