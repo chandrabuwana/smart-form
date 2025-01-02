@@ -434,7 +434,7 @@
                         $('#judulDokumen').val(response.judul_dokumen);
                         $('#status').val(response.status);
                         // $('#iframepdf').attr('src', response.file_converted_path);
-                        $('#btn-download-doc').attr('href', response.file_converted_path);
+                        $('#btn-download-doc').attr('href', response.file_path);
 
                         if(response.no_revisi) {
                             $('#revisi').parent().removeClass('d-none');

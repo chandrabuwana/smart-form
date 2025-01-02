@@ -102,7 +102,7 @@ class FormDocoController extends Controller
 
         DB::beginTransaction();
         try {
-            $noDokumen = ($site == 'JKT' ? 'BSS' : $site) . '-' . $jenisDokumen . '-' . $pemohon->KodeDP . '-' . str_pad($lastCounting + 1, 5, '0', STR_PAD_LEFT);
+            $noDokumen = ($site == 'JKT' ? 'BSS' : $site) . '-' . $jenisDokumen . '-' . $pemohon->KodeDP . '-' . str_pad($lastCounting + 1, 3, '0', STR_PAD_LEFT);
 
             if(!$request->file('dokumen')) {
                 return redirect()->back()->with('error', 'File dokumen wajib di upload');
@@ -154,6 +154,7 @@ Terima kasih.";
         } catch(\Throwable $e) {
             DB::rollBack();
             Log::error($e);
+            dd($e);
             return redirect()->back()->with('error', 'Terjadi kesalahan, mohon coba beberapa saat lagi');
         }
     }

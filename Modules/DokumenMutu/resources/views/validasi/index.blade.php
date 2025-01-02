@@ -260,7 +260,8 @@
                                 <label class="ms-0 fs-6">Catatan</label>
                             </div>
                             <div class="col-md-8">
-                                <textarea rows="3" class="form-control input-text" id="catatan" name="catatan" placeholder="--- Tambahkan Catatan (jika ada) ---"></textarea>
+                                <textarea rows="3" class="form-control input-text" id="catatan" name="catatan"
+                                    placeholder="--- Tambahkan Catatan (jika ada) ---" maxlength="250"></textarea>
                             </div>
                         </div>
 
@@ -297,7 +298,8 @@
 
                         <div class="mb-4 px-2">
                             <label class="d-block mb-2 ms-0 fs-6">Keterangan</label>
-                            <textarea rows="4" class="form-control input-text" id="keterangan" name="keterangan" placeholder="--- Masukkan Keterangan ---"></textarea>
+                            <textarea rows="4" class="form-control input-text" id="keterangan" name="keterangan"
+                                placeholder="--- Masukkan Keterangan ---" maxlength="250"></textarea>
                         </div>
 
                         <div class="d-flex align-items-center">
