@@ -62,7 +62,7 @@ class ValidasiDocoController extends Controller
 
                 } else if(
                     $validator == 'kadept' &&
-                    $itemVal->KodeDP == $user->KodeDP &&
+                    $doco->KodeDP == $user->KodeDP &&
                     (preg_match('/kepala department/i', $itemVal->NamaJB) == 1 || preg_match('/kepala departemen/i', $itemVal->NamaJB) == 1)
                 ) {
                     $result['validate'] = true;
@@ -84,7 +84,9 @@ class ValidasiDocoController extends Controller
 
     public function index($id)
     {
-        $doco = DB::table(self::T_PENGAJUAN_DOCO)->find($id);
+        $doco = DB::table(self::T_PENGAJUAN_DOCO)->select(self::T_PENGAJUAN_DOCO . '.*', self::T_KARYAWAN . '.KodeDP')
+            ->join(self::T_KARYAWAN, self::T_KARYAWAN . '.NIK', self::T_PENGAJUAN_DOCO . '.nik_pemohon')
+            ->where('id', $id)->first();
         if(!$doco) {
             return redirect(route('dokumen-mutu.riwayat-pengajuan'));
         }
@@ -140,8 +142,9 @@ class ValidasiDocoController extends Controller
                 ->orderBy('no_versi', 'desc')->first();
 
             $prevFilePath = $lastVersion->file_path;
+            $originalName = $documentValidated->getClientOriginalName();
             $path = 'dokumen_mutu/pembuatan/' . $doco->KodeDP;
-            $filePath = Storage::disk('public')->put($path, $documentValidated);
+            $filePath = $documentValidated->storeAs($path, $originalName);
 
             if(file_exists( storage_path('app/public/' . $prevFilePath) )) {
                 @unlink(storage_path('app/public/' . $prevFilePath));
@@ -297,11 +300,9 @@ class ValidasiDocoController extends Controller
             ]);
 
             if($status == '1') {
-                DB::table(self::T_DOCO)->where('no_dokumen', $pengajuanDoco->no_dokumen)
-                    ->where('status', 'Aktif')->first();
-
                 DB::table(self::T_DOCO)->where('no_dokumen', $pengajuanDoco->no_dokumen)->update([
-                    'status' => 'Kadaluarsa'
+                    'status' => 'Kadaluarsa',
+                    'keterangan_kadaluarsa' => $keterangan
                 ]);
 
                 $lastVersion = DB::table(self::T_VERSI_DOCO)->select('file_path')

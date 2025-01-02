@@ -249,6 +249,12 @@
                                                     <input type="text" class="form-control" id="revisi" placeholder="No Revisi" disabled>
                                                 </div>
                                             </div>
+                                            <div class="col-md-4">
+                                                <div class="input-group input-group-static mb-4">
+                                                    <label for="keterangan-kadaluarsa">Keterangan Kadaluarsa</label>
+                                                    <input type="text" class="form-control" id="keterangan-kadaluarsa" placeholder="Keterangan Kadaluarsa" disabled>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -435,6 +441,13 @@
                             $('#revisi').val(response.no_revisi);
                         } else {
                             $('#revisi').parent().addClass('d-none');
+                        }
+
+                        if(response.keterangan_kadaluarsa) {
+                            $('#keterangan-kadaluarsa').parent().removeClass('d-none');
+                            $('#keterangan-kadaluarsa').val(response.keterangan_kadaluarsa);
+                        } else {
+                            $('#keterangan-kadaluarsa').parent().addClass('d-none');
                         }
 
                         LoadPdfFromUrl(response.file_converted_path);

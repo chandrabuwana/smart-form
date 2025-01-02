@@ -108,8 +108,9 @@ class FormDocoController extends Controller
                 return redirect()->back()->with('error', 'File dokumen wajib di upload');
             }
 
+            $originalName = $request->file('dokumen')->getClientOriginalName();
             $path = 'dokumen_mutu/pembuatan/' . $pemohon->KodeDP;
-            $filePath = Storage::disk('public')->put($path, $request->file('dokumen'));
+            $filePath = $request->file('dokumen')->storeAs($path, $originalName);
 
             $pengajuan = DB::table(self::T_PENGAJUAN_DOCO)->insertGetId([
                 'nik_pemohon' => $nikPemohon,
@@ -203,8 +204,9 @@ Terima kasih.";
                 return redirect()->back()->with('error', 'Mohon maaf anda tidak dapat untuk membuat pengajuan dokumen mutu');
             }
 
+            $originalName = $dokumen->getClientOriginalName();
             $path = 'dokumen_mutu/revisi/' . $doco->KodeDP;
-            $filePath = Storage::disk('public')->put($path, $dokumen);
+            $filePath = $dokumen->storeAs($path, $originalName);
 
             $pengajuan = DB::table(self::T_PENGAJUAN_DOCO)->insertGetId([
                 'id_ref_doco' => $idRefDoco,
@@ -361,8 +363,9 @@ Terima kasih.";
                 ->join(self::T_KARYAWAN, self::T_KARYAWAN . '.NIK', self::T_PENGAJUAN_DOCO . '.nik_pemohon')
                 ->where('id', $idPengajuan)->first();
 
+            $originalName = $dokumen->getClientOriginalName();
             $path = 'dokumen_mutu/' . strtolower($doco->jenis_pengajuan) . '/' . $doco->KodeDP;
-            $filePath = Storage::disk('public')->put($path, $dokumen);
+            $filePath = $dokumen->storeAs($path, $originalName);
 
             $lastVersion = DB::table(self::T_VERSI_DOCO)->find($idVersi);
             if($lastVersion->no_versi > 1) {

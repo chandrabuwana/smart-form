@@ -546,7 +546,7 @@
             const marker = `
                 <div class="marker ${ isDraft ? 'draft' : '' }" data-bs-toggle="popover"
                     data-bs-trigger="hover"
-                    title="${feedback.NamaKaryawan}" data-bs-content="${feedback.keterangan}">
+                    title="${feedback.NamaKaryawan}" data-bs-html="${feedback.keterangan}">
                     <i class="fas fa-comment-dots fa-xl"></i>
                 </div>
             `;

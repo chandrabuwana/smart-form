@@ -268,7 +268,7 @@ class DocoController extends Controller
         $convertedPath = str_replace('\\', '/', storage_path('app/public/' . $doco->file_converted_path));
         $originalPath = str_replace('\\', '/', storage_path('app/public/' . $doco->file_path));
 
-        if(!file_exists($doco->file_converted_path)) {
+        if(!file_exists($convertedPath)) {
             putenv('PATH=' . env('DOCO_GS_PATH'));
             shell_exec('gswin64 -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile=' . $convertedPath . ' ' . $originalPath . '');
 
@@ -312,7 +312,7 @@ class DocoController extends Controller
         $convertedPath = str_replace('\\', '/', storage_path('app/public/' . $doco->file_converted_path));
         $originalPath = str_replace('\\', '/', storage_path('app/public/' . $lastVersion->file_path));
 
-        if(!file_exists($doco->file_converted_path)) {
+        if(!file_exists($convertedPath)) {
             putenv('PATH=' . env('DOCO_GS_PATH'));
             shell_exec('gswin64 -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile=' . $convertedPath . ' ' . $originalPath . '');
 
@@ -379,7 +379,7 @@ class DocoController extends Controller
         $convertedPath = str_replace('\\', '/', storage_path('app/public/' . $doco->file_converted_path));
         $originalPath = str_replace('\\', '/', storage_path('app/public/' . $filePath));
 
-        if(!file_exists($doco->file_converted_path)) {
+        if(!file_exists($convertedPath)) {
             putenv('PATH=' . env('DOCO_GS_PATH'));
             shell_exec('gswin64 -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile=' . $convertedPath . ' ' . $originalPath . '');
 

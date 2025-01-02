@@ -111,7 +111,7 @@
                             @if(isset($catatanValidates[0]))
                                 <span class="badge bg-warning mt-2" style="cursor: pointer; width: fit-content;"
                                     data-bs-toggle="popover" title="Catatan"
-                                    data-bs-placement="bottom" data-bs-content="{{ $catatanValidates[0] }}">
+                                    data-bs-placement="bottom" data-bs-html="{{ $catatanValidates[0] }}">
                                     <i class="fas fa-exclamation-circle me-1"></i>
                                     <small class="text-white">Catatan</small>
                                 </span>
@@ -127,7 +127,7 @@
                             @if(isset($catatanValidates[1]))
                                 <span class="badge bg-warning mt-2" style="cursor: pointer;"
                                     data-bs-toggle="popover" title="Catatan"
-                                    data-bs-placement="bottom" data-bs-content="{{ $catatanValidates[1] }}">
+                                    data-bs-placement="bottom" data-bs-html="{{ $catatanValidates[1] }}">
                                     <i class="fas fa-exclamation-circle me-1"></i>
                                     <small class="text-white">Catatan</small>
                                 </span>
@@ -315,7 +315,7 @@
             const marker = `
                 <div id="marker" data-bs-toggle="popover"
                     data-bs-trigger="hover"
-                    title="${feedback.NamaKaryawan}" data-bs-content="${feedback.keterangan}">
+                    title="${feedback.NamaKaryawan}" data-bs-html="${feedback.keterangan}">
                     <i class="fas fa-comment-dots fa-xl"></i>
                 </div>
             `;
