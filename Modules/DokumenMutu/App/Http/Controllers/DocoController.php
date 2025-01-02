@@ -270,7 +270,7 @@ class DocoController extends Controller
 
         if(!file_exists($convertedPath)) {
             putenv('PATH=' . env('DOCO_GS_PATH'));
-            shell_exec("gswin64 -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile='" . $convertedPath . "' '" . $originalPath . "'");
+            shell_exec('gswin64 -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile="' . $convertedPath . '" "' . $originalPath . '"');
 
             $mpdf = new Mpdf();
             $pageCount = $mpdf->setSourceFile($convertedPath);
@@ -314,7 +314,7 @@ class DocoController extends Controller
 
         if(!file_exists($convertedPath)) {
             putenv('PATH=' . env('DOCO_GS_PATH'));
-            shell_exec("gswin64 -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile='" . $convertedPath . "' '" . $originalPath . "'");
+            shell_exec('gswin64 -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile="' . $convertedPath . '" "' . $originalPath . '"');
 
             $mpdf = new Mpdf();
             $pageCount = $mpdf->setSourceFile($convertedPath);
@@ -381,7 +381,7 @@ class DocoController extends Controller
 
         if(!file_exists($convertedPath)) {
             putenv('PATH=' . env('DOCO_GS_PATH'));
-            shell_exec("gswin64 -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile='" . $convertedPath . "' '" . $originalPath . "'");
+            shell_exec('gswin64 -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile="' . $convertedPath . '" "' . $originalPath . '"');
 
             $mpdf = new Mpdf();
             $pageCount = $mpdf->setSourceFile($convertedPath);
