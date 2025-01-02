@@ -20,7 +20,7 @@ class FetchMenu {
     public function handle(Request $request, Closure $next): Response
     {
         $data_notification = DB::table('pica_notification')
-            ->select('id as nomor', 'nik', 'message', 'created_at', 'category')
+            ->select('id as nomor', 'nik', 'message', 'created_at', 'category', 'link')
             ->orderBy('id', 'desc')
             ->where('nik', $request->session()->get('user_id'))
             ->get();

@@ -12,6 +12,15 @@ use Illuminate\Support\Facades\Log;
 
 class Helper
 {
+    public static $NOTIFICATION_CATEGORY = [
+        'info' => 'info',
+        'warning' => 'warning',
+        'success' => 'success',
+        'error' => 'error',
+        'question' => 'question',
+    ];
+    
+
     public static function isGrantPermission(string $username, string $moduleName)
     {
         // spesific action
@@ -145,5 +154,19 @@ class Helper
     public static function validateDateFormat($format, $date) {
         $dt = DateTime::createFromFormat($format, $date);
         return $dt !== false && !array_sum($dt::getLastErrors());
+    }
+
+    public static function SFNotification($nik, $message, $category, $link) {
+        try {
+            DB::table('pica_notification')->insert([
+                'nik' => $nik,
+                'message' => $message,
+                'category' => $category,
+                'link' => $link
+            ]);
+        } catch (Exception $ex) {
+            Log::error($ex->getMessage());
+            Log::error($ex->getTraceAsString());
+        }
     }
 }
