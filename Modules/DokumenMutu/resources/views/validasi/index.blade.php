@@ -120,6 +120,11 @@
         body.editor-enabled .swal2-container {
             z-index: 1100 !important;
         }
+
+        .feedback-popover .popover-body {
+            max-height: 300px;
+            overflow-y: auto;
+        }
     </style>
 @endsection
 
@@ -141,21 +146,57 @@
                             <h5 class="text-white mb-0 d-inline">Pembuatan</h5>
                         </div>
 
-                        <div class="{{ $validateIndex >= 1 ? 'bg-success' : 'bg-warning' }} rounded px-5 py-3 text-white" style="width: fit-content;">
-                            <i class="fas {{ $validateIndex >= 1 ? 'fa-check-circle' : 'fa-spinner' }} fa-xl me-1"></i>
-                            <h5 class="text-white mb-0 d-inline">Pemeriksaan</h5>
-                        </div>
+                        @if($validateIndex >= 1)
+                            <div class="bg-success rounded px-5 py-3 text-white" style="width: fit-content;">
+                                <i class="fas fa-check-circle fa-xl me-1"></i>
+                                <h5 class="text-white mb-0 d-inline">Pemeriksaan</h5>
+                            </div>
 
-                        <div class="{{ $validateIndex >= 2 ? 'bg-success' : 'bg-warning' }} rounded px-5 py-3 text-white" style="width: fit-content;">
-                            <i class="fas {{ $validateIndex >= 2 ? 'fa-check-circle' : 'fa-spinner' }} fa-xl me-1"></i>
-                            <h5 class="text-white mb-0 d-inline">Validasi</h5>
-                        </div>
+                        @else
+                            <div class="{{ $doco->status == 'Ditolak' ? 'bg-danger' : 'bg-warning' }} rounded px-5 py-3 text-white" style="width: fit-content;">
+                                <i class="fas {{ $doco->status == 'Ditolak' ? 'fa-exclamation' : 'fa-spinner' }} fa-xl me-1"></i>
+                                <h5 class="text-white mb-0 d-inline">Pemeriksaan</h5>
+                            </div>
+                        @endif
+
+                        @if($validateIndex >= 2)
+                            <div class="bg-success rounded px-5 py-3 text-white" style="width: fit-content;">
+                                <i class="fas fa-check-circle fa-xl me-1"></i>
+                                <h5 class="text-white mb-0 d-inline">Validasi</h5>
+                            </div>
+
+                        @else
+                            <div class="{{ $doco->status == 'Ditolak' ? 'bg-danger' : 'bg-warning' }} rounded px-5 py-3 text-white" style="width: fit-content;">
+                                <i class="fas {{ $doco->status == 'Ditolak' ? 'fa-exclamation' : 'fa-spinner' }} fa-xl me-1"></i>
+                                <h5 class="text-white mb-0 d-inline">Validasi</h5>
+                            </div>
+                        @endif
                     </div>
 
                     <div class="d-flex align-items-center mb-3 topbar-editor">
                         <h5 class="me-3 mb-0">
-                            No Versi :
-                            <span class="badge bg-gradient-dark ms-1">{{ $lastVersion->no_versi }}</span>
+                            <span class="me-1">No Versi :</span>
+
+                            <div class="btn-group">
+                                <button type="button" class="btn bg-gradient-dark btn-sm {{ count($versions) > 1 ? 'dropdown-toggle' : '' }} mb-0"
+                                    {!! count($versions) > 1 ? 'data-bs-toggle="dropdown" aria-expanded="false"' : '' !!}>
+                                    {{ $lastVersion->no_versi }}
+                                </button>
+
+                                @if(count($versions) > 1)
+                                    <ul class="dropdown-menu shadow">
+                                        @foreach($versions as $v)
+                                            <li>
+                                                <a class="dropdown-item" href="{{ route('dokumen-mutu.validasi.index', ['id' => $doco->id]) . '?v=' . $v->no_versi }}">
+                                                    Versi {{ $v->no_versi }}
+                                                </a>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                @endif
+                            </div>
+
+                            {{-- <span class="badge bg-gradient-dark ms-1">{{ $lastVersion->no_versi }}</span> --}}
                         </h5>
 
                         <a href="{{ $doco->file_path }}" class="btn bg-gradient-dark btn-action text-white mb-0" download>
@@ -185,21 +226,21 @@
 
                                 @if($isValidate)
                                     <div class="row justify-content-end" id="btn-action-validate">
-                                        <div class="col-md-4">
+                                        <div class="col-lg-4 col-md-5">
                                             <button type="button" class="btn btn-danger btn-action text-white w-100"
                                                 onclick="rejectPengajuan('{{ $doco->id }}')">
                                                 Tolak
                                             </button>
                                         </div>
 
-                                        <div class="col-md-4">
+                                        <div class="col-lg-4 col-md-5">
                                             <button type="button" class="btn btn-primary btn-action text-white w-100"
                                                 onclick="enableKeteranganMode()">
                                                 Catatan
                                             </button>
                                         </div>
 
-                                        <div class="col-md-4">
+                                        <div class="col-lg-4 col-md-5">
                                             <button type="button" class="btn btn-success btn-action text-white w-100"
                                                 onclick="showApproveModal()">
                                                 Setujui
@@ -214,7 +255,7 @@
                                     </div>
                                 </div>
 
-                                <div class="feedback-parent mt-3">
+                                <div class="feedback-parent mt-3" style="overflow-y: auto; max-height: 100vh;">
                                 </div>
                             </div>
                         </div>
@@ -345,7 +386,6 @@
 
     <script>
         const ID = `{{ $doco->id }}`;
-        const ID_VERSI = `{{ $lastVersion->id }}`;
         const namaKaryawan = `{{ $tKaryawan->Nama }}`;
 
         $( function() {
@@ -382,6 +422,7 @@
         let scale = 1;
         let resolution = 1;
         let komentars = [];
+        const ID_VERSI = `{!! $lastVersion->id !!}`;
 
         function LoadPdfFromUrl(url) {
             pdfjsLib.getDocument(url).promise.then(function (pdfDoc_) {
@@ -425,7 +466,7 @@
             $('#loader-feedback').removeClass('d-none').addClass('d-flex');
 
             $.ajax({
-                url: `/doco/riwayat-pengajuan/validasi/${ID}/feedbacks`,
+                url: `/doco/riwayat-pengajuan/validasi/${ID}/feedbacks?id_versi=${ID_VERSI}`,
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
                 },
@@ -451,19 +492,23 @@
                             addMarker(item);
 
                             feedbackEls += `
-                                <div class="px-4 pt-2 pb-3 rounded bg-dark text-white shadow mb-3">
-                                    <div class="text-end mb-2">
-                                        <small>${item.created_at}</small>
+                                <div class="pb-3 rounded bg-dark text-white shadow mb-3">
+                                    <div class="px-4 pt-2">
+                                        <div class="text-end mb-2">
+                                            <small>${item.created_at}</small>
+                                        </div>
+
+                                        <div class="d-flex align-items-center text-lg" style="line-height: 1.2;">
+                                            <i class="fas fa-user me-3 fa-lg"></i>
+                                            <span class="font-weight-bold">${item.NamaKaryawan}</span>
+                                        </div>
                                     </div>
 
-                                    <div class="d-flex align-items-center text-lg" style="line-height: 1.2;">
-                                        <i class="fas fa-user me-3 fa-lg"></i>
-                                        <span class="font-weight-bold">${item.NamaKaryawan}</span>
+                                    <div style="max-height: 300px; overflow-y: auto; font-size: 0.9rem !important;" class="px-4 pt-2 mt-3">
+                                        <p class="mb-0" style="line-height: 1.4; text-align: justify;">
+                                            ${item.keterangan}
+                                        </p>
                                     </div>
-
-                                    <p class="mb-0 mt-3" style="line-height: 1.4; text-align: justify;">
-                                        ${item.keterangan}
-                                    </p>
                                 </div>
                             `;
                         });
@@ -548,7 +593,8 @@
             const marker = `
                 <div class="marker ${ isDraft ? 'draft' : '' }" data-bs-toggle="popover"
                     data-bs-trigger="hover"
-                    title="${feedback.NamaKaryawan}" data-bs-html="${feedback.keterangan}">
+                    title="${feedback.NamaKaryawan}" data-bs-content="${feedback.keterangan}"
+                    data-bs-html="true" data-bs-custom-class="feedback-popover">
                     <i class="fas fa-comment-dots fa-xl"></i>
                 </div>
             `;

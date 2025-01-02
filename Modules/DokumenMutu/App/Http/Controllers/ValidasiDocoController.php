@@ -82,7 +82,7 @@ class ValidasiDocoController extends Controller
         return $result;
     }
 
-    public function index($id)
+    public function index($id, Request $request)
     {
         $doco = DB::table(self::T_PENGAJUAN_DOCO)->select(self::T_PENGAJUAN_DOCO . '.*', self::T_KARYAWAN . '.KodeDP')
             ->join(self::T_KARYAWAN, self::T_KARYAWAN . '.NIK', self::T_PENGAJUAN_DOCO . '.nik_pemohon')
@@ -91,23 +91,30 @@ class ValidasiDocoController extends Controller
             return redirect(route('dokumen-mutu.riwayat-pengajuan'));
         }
 
+        $versionNo = $request->get('v');
         $grant = $this->_isGrantValidate($doco);
+
         if( !$grant['validate'] ) {
             return redirect(route('dokumen-mutu.riwayat-pengajuan'))->with('error', 'Mohon maaf anda tidak memiliki akses untuk melakukan validasi');
         }
 
-        $lastVersion = DB::table(self::T_VERSI_DOCO)->where('id_pengajuan_dokumen', $doco->id)
-            ->orderBy('no_versi', 'desc')->first();
+        $versions = DB::table(self::T_VERSI_DOCO)->where('id_pengajuan_dokumen', $doco->id)
+            ->orderBy('no_versi', 'asc')->get();
+
+        if(!empty($versionNo)) {
+            $lastVersion = $versions->filter( fn($item) => $item->no_versi == $versionNo );
+            if($lastVersion->count() == 0) {
+                abort(404);
+            }
+
+            $lastVersion = $lastVersion->first();
+        } else {
+            $lastVersion = $versions->last();
+        }
 
         $doco->file_path = url('storage/' . $lastVersion->file_path);
-
         $validateIndex = DB::table(self::T_VALIDASI_DOCO)
             ->where('id_pengajuan_dokumen', $doco->id)->count('id');
-
-        $feedbacks = DB::table(self::T_FEEDBACK_VALIDASI)->select(self::T_FEEDBACK_VALIDASI . '.*', self::T_KARYAWAN . '.Nama AS NamaKaryawan')
-            ->join(self::T_KARYAWAN, self::T_KARYAWAN . '.NIK', self::T_FEEDBACK_VALIDASI . '.nik_validator')
-            ->where('id_versi', $lastVersion->id)
-            ->orderBy('id', 'desc')->get();
 
         $tKaryawan = DB::table(self::T_KARYAWAN)->select('Nama')
             ->where('NIK', session('user_id'))->first();
@@ -117,10 +124,10 @@ class ValidasiDocoController extends Controller
             'doco' => $doco,
             'validateIndex' => $validateIndex,
             'isValidate' => $isValidate,
-            'feedbacks' => $feedbacks,
             'lastVersion' => $lastVersion,
             'tKaryawan' => $tKaryawan,
-            'validator_type' => $grant['validator_type']
+            'validator_type' => $grant['validator_type'],
+            'versions' => $versions
         ]);
     }
 
@@ -399,6 +406,7 @@ class ValidasiDocoController extends Controller
             $nik = session('user_id');
 
             DB::table(self::T_PENGAJUAN_DOCO)->where('id', $id)->update([
+                'status' => 'Sedang Validasi',
                 'updated_at' => now()
             ]);
 
@@ -449,13 +457,11 @@ Terima kasih.";
 
     public function getFeedback($id, Request $request)
     {
-        $lastVersion = DB::table(self::T_VERSI_DOCO)->select('id')
-            ->where('id_pengajuan_dokumen', $id)
-            ->orderBy('no_versi', 'desc')->first();
+        $idVersi = $request->get('id_versi');
 
         $feedbacks = DB::table(self::T_FEEDBACK_VALIDASI)->select(self::T_FEEDBACK_VALIDASI . '.*', self::T_KARYAWAN . '.Nama AS NamaKaryawan')
             ->join(self::T_KARYAWAN, self::T_KARYAWAN . '.NIK', self::T_FEEDBACK_VALIDASI . '.nik_validator')
-            ->where('id_versi', $lastVersion->id)
+            ->where('id_versi', $idVersi)
             ->orderBy('id', 'desc')->get()
             ->map( function($item) {
                 $item->created_at = date('Y/m/d H:i', strtotime($item->created_at));

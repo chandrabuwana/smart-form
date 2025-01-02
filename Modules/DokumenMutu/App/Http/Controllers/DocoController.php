@@ -293,15 +293,27 @@ class DocoController extends Controller
         return response()->json($doco);
     }
 
-    public function detailRiwayat($id)
+    public function detailRiwayat($id, Request $request)
     {
         $doco = DB::table(self::T_PENGAJUAN_DOCO)->where('id', $id)->first();
         if(!$doco) {
             abort(404);
         }
 
-        $lastVersion = DB::table(self::T_VERSI_DOCO)->where('id_pengajuan_dokumen', $doco->id)
-            ->orderBy('no_versi', 'desc')->first();
+        $versionNo = $request->get('v');
+        $versions = DB::table(self::T_VERSI_DOCO)->where('id_pengajuan_dokumen', $doco->id)
+            ->orderBy('no_versi', 'asc')->get();
+
+        if(!empty($versionNo)) {
+            $lastVersion = $versions->filter( fn($item) => $item->no_versi == $versionNo );
+            if($lastVersion->count() == 0) {
+                abort(404);
+            }
+
+            $lastVersion = $lastVersion->first();
+        } else {
+            $lastVersion = $versions->last();
+        }
 
         $expFilePath = explode('/', $lastVersion->file_path);
         $filename = $expFilePath[ count($expFilePath) - 1 ];
@@ -344,13 +356,16 @@ class DocoController extends Controller
             ->orderBy('id', 'desc')->get();
 
         $validateIndex = count($validates);
+        $userId = session('user_id');
 
         return view('DokumenMutu::riwayat-pengajuan.detail', [
             'doco' => $doco,
             'validateIndex' => $validateIndex,
             'catatanValidates' => $validates,
             'feedbacks' => $feedbacks,
-            'lastVersion' => $lastVersion
+            'lastVersion' => $lastVersion,
+            'userId' => $userId,
+            'versions' => $versions
         ]);
     }
 

@@ -81,6 +81,11 @@
             top: 10px !important;
             z-index: 1000 !important;
         }
+
+        .feedback-popover .popover-body {
+            max-height: 300px;
+            overflow-y: auto;
+        }
     </style>
 @endsection
 
@@ -103,15 +108,23 @@
                         </div>
 
                         <div class="d-flex flex-column align-items-center" style="width: fit-content;">
-                            <div class="{{ $validateIndex >= 1 ? 'bg-success' : 'bg-warning' }}  rounded px-5 py-3 text-white" style="width: fit-content;">
-                                <i class="fas {{ $validateIndex >= 1 ? 'fa-check-circle' : 'fa-spinner' }} fa-xl me-1"></i>
-                                <h5 class="text-white mb-0 d-inline">Pemeriksaan</h5>
-                            </div>
+                            @if($validateIndex >= 1)
+                                <div class="bg-success  rounded px-5 py-3 text-white" style="width: fit-content;">
+                                    <i class="fas fa-check-circle fa-xl me-1"></i>
+                                    <h5 class="text-white mb-0 d-inline">Pemeriksaan</h5>
+                                </div>
+                            @else
+                                <div class="{{ $doco->status == 'Ditolak' ? 'bg-danger' : 'bg-warning' }}  rounded px-5 py-3 text-white" style="width: fit-content;">
+                                    <i class="fas {{ $doco->status == 'Ditolak' ? 'fa-exclamation' : 'fa-spinner' }} fa-xl me-1"></i>
+                                    <h5 class="text-white mb-0 d-inline">Pemeriksaan</h5>
+                                </div>
+                            @endif
 
                             @if(isset($catatanValidates[0]))
                                 <span class="badge bg-warning mt-2" style="cursor: pointer; width: fit-content;"
                                     data-bs-toggle="popover" title="Catatan"
-                                    data-bs-placement="bottom" data-bs-html="{{ $catatanValidates[0] }}">
+                                    data-bs-placement="bottom" data-bs-content="{{ $catatanValidates[0] }}"
+                                    data-bs-html="true">
                                     <i class="fas fa-exclamation-circle me-1"></i>
                                     <small class="text-white">Catatan</small>
                                 </span>
@@ -119,15 +132,23 @@
                         </div>
 
                         <div class="d-flex flex-column align-items-center" style="width: fit-content;">
-                            <div class="{{ $validateIndex >= 2 ? 'bg-success' : 'bg-warning' }}  rounded px-5 py-3 text-white" style="width: fit-content;">
-                                <i class="fas {{ $validateIndex >= 2 ? 'fa-check-circle' : 'fa-spinner' }} fa-xl me-1"></i>
-                                <h5 class="text-white mb-0 d-inline">Validasi</h5>
-                            </div>
+                            @if($validateIndex >= 2)
+                                <div class="bg-success  rounded px-5 py-3 text-white" style="width: fit-content;">
+                                    <i class="fas fa-check-circle fa-xl me-1"></i>
+                                    <h5 class="text-white mb-0 d-inline">Validasi</h5>
+                                </div>
+                            @else
+                                <div class="{{ $doco->status == 'Ditolak' && $validateIndex >= 1 ? 'bg-danger' : 'bg-warning' }}  rounded px-5 py-3 text-white" style="width: fit-content;">
+                                    <i class="fas {{ $doco->status == 'Ditolak' && $validateIndex >= 1 ? 'fa-exclamation' : 'fa-spinner' }} fa-xl me-1"></i>
+                                    <h5 class="text-white mb-0 d-inline">Validasi</h5>
+                                </div>
+                            @endif
 
                             @if(isset($catatanValidates[1]))
                                 <span class="badge bg-warning mt-2" style="cursor: pointer;"
                                     data-bs-toggle="popover" title="Catatan"
-                                    data-bs-placement="bottom" data-bs-html="{{ $catatanValidates[1] }}">
+                                    data-bs-placement="bottom" data-bs-content="{{ $catatanValidates[1] }}"
+                                    data-bs-html="true">
                                     <i class="fas fa-exclamation-circle me-1"></i>
                                     <small class="text-white">Catatan</small>
                                 </span>
@@ -137,11 +158,31 @@
 
                     <div class="d-flex align-items-center justify-content-between mb-4 col-md-8">
                         <h5 class="mb-0">
-                            No Versi :
-                            <span class="badge bg-gradient-dark ms-1">{{ $lastVersion->no_versi }}</span>
+                            <span class="me-1">No Versi :</span>
+
+                            <div class="btn-group">
+                                <button type="button" class="btn bg-gradient-dark btn-sm {{ count($versions) > 1 ? 'dropdown-toggle' : '' }} mb-0"
+                                    {!! count($versions) > 1 ? 'data-bs-toggle="dropdown" aria-expanded="false"' : '' !!}>
+                                    {{ $lastVersion->no_versi }}
+                                </button>
+
+                                @if(count($versions) > 1)
+                                    <ul class="dropdown-menu shadow">
+                                        @foreach($versions as $v)
+                                            <li>
+                                                <a class="dropdown-item" href="{{ route('dokumen-mutu.validasi.index', ['id' => $doco->id]) . '?v=' . $v->no_versi }}">
+                                                    Versi {{ $v->no_versi }}
+                                                </a>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                @endif
+                            </div>
+
+                            {{-- <span class="badge bg-gradient-dark ms-1">{{ $lastVersion->no_versi }}</span> --}}
                         </h5>
 
-                        @if($feedbacks->count() > 0)
+                        @if($feedbacks->count() > 0 && $doco->nik_pemohon == $userId)
                             <button type="button" class="btn bg-gradient-primary mb-0"
                                 onclick="showRevisiModal()">
                                 Buat Revisi
@@ -274,6 +315,7 @@
         let pdfDoc = null;
         let scale = 1;
         let resolution = 1;
+        const ID_VERSI = `{{ $lastVersion->id }}`;
 
         function LoadPdfFromUrl(url) {
             pdfjsLib.getDocument(url).promise.then(function (pdfDoc_) {
@@ -315,7 +357,8 @@
             const marker = `
                 <div id="marker" data-bs-toggle="popover"
                     data-bs-trigger="hover"
-                    title="${feedback.NamaKaryawan}" data-bs-html="${feedback.keterangan}">
+                    title="${feedback.NamaKaryawan}" data-bs-content="${feedback.keterangan}"
+                    data-bs-html="true" data-bs-custom-class="feedback-popover">
                     <i class="fas fa-comment-dots fa-xl"></i>
                 </div>
             `;
@@ -346,7 +389,7 @@
             $('#loader-feedback').removeClass('d-none').addClass('d-flex');
 
             $.ajax({
-                url: `/doco/riwayat-pengajuan/validasi/${ID}/feedbacks`,
+                url: `/doco/riwayat-pengajuan/validasi/${ID}/feedbacks?id_versi=${ID_VERSI}`,
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
                 },
@@ -371,19 +414,23 @@
                             addMarker(item);
 
                             feedbackEls += `
-                                <div class="px-4 pt-2 pb-3 rounded bg-dark text-white shadow mb-3">
-                                    <div class="text-end mb-2">
-                                        <small>${item.created_at}</small>
+                                <div class="pb-3 rounded bg-dark text-white shadow mb-3">
+                                    <div class="px-4 pt-2">
+                                        <div class="text-end mb-2">
+                                            <small>${item.created_at}</small>
+                                        </div>
+
+                                        <div class="d-flex align-items-center text-lg" style="line-height: 1.2;">
+                                            <i class="fas fa-user me-3 fa-lg"></i>
+                                            <span class="font-weight-bold">${item.NamaKaryawan}</span>
+                                        </div>
                                     </div>
 
-                                    <div class="d-flex align-items-center text-lg" style="line-height: 1.2;">
-                                        <i class="fas fa-user me-3 fa-lg"></i>
-                                        <span class="font-weight-bold">${item.NamaKaryawan}</span>
+                                    <div style="max-height: 300px; overflow-y: auto; font-size: 0.9rem !important;" class="px-4 pt-2 mt-3">
+                                        <p class="mb-0" style="line-height: 1.4; text-align: justify;">
+                                            ${item.keterangan}
+                                        </p>
                                     </div>
-
-                                    <p class="mb-0 mt-3" style="line-height: 1.4; text-align: justify;">
-                                        ${item.keterangan}
-                                    </p>
                                 </div>
                             `;
                         });
@@ -434,7 +481,7 @@
             $('#modalRevisi').modal('show');
         }
 
-        secureConfidential();
+        // secureConfidential();
         LoadPdfFromUrl('{{ $doco->file_converted_path }}');
     </script>
 @endsection
