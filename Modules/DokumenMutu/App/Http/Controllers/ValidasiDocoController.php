@@ -178,11 +178,27 @@ class ValidasiDocoController extends Controller
                 if($doco->jenis_pengajuan == 'Revisi') {
                     $docoInduk = DB::table(self::T_DOCO)
                         ->where('no_dokumen', $doco->no_dokumen)
+                        ->where('status', 'Aktif')
                         ->first();
 
-                    DB::table(self::T_DOCO)->where('no_dokumen', $doco->no_dokumen)->update([
+                    $noRevisi = empty($docoInduk->no_revisi) ? 1 : ($docoInduk->no_revisi + 1);
+
+                    DB::table(self::T_DOCO)->where('id', $docoInduk->id)->update([
+                        'status' => 'Kadaluarsa',
+                        'keterangan_kadaluarsa' => 'Dokumen berikut telah di revisi ke nomor ' . $noRevisi,
+                        'updated_at' => now()
+                    ]);
+
+                    DB::table(self::T_DOCO)->insert([
+                        'kode_site' => $doco->kode_site,
+                        'nik_pembuat' => $doco->nik_pemohon,
+                        'no_dokumen' => $doco->no_dokumen,
+                        'judul_dokumen' => $doco->judul_dokumen,
+                        'jenis_dokumen' => $doco->jenis_dokumen,
                         'file_path' => $filePath,
-                        'no_revisi' => empty($docoInduk->no_revisi) ? 1 : ($docoInduk->no_revisi + 1)
+                        'status' => 'Aktif',
+                        'no_revisi' => $noRevisi,
+                        'created_at' => now(),
                     ]);
 
                 } else {
