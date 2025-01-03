@@ -440,7 +440,7 @@
                             $('#revisi').parent().removeClass('d-none');
                             $('#revisi').val(response.no_revisi);
                         } else {
-                            $('#revisi').parent().addClass('d-none');
+                            $('#revisi').closest('.col-md-4').addClass('d-none');
                         }
 
                         if(response.keterangan_kadaluarsa) {
@@ -515,5 +515,30 @@
             }
         });
 
+        function secureConfidential() {
+            // prevent right click
+            document.addEventListener('contextmenu', (e) => e.preventDefault());
+
+            // prevent inspect shortcut
+            document.addEventListener('keydown', (e) => {
+                if (
+                    e.key === 'F12' ||
+                    (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J')) ||
+                    (e.ctrlKey && e.key === 'U')
+                ) {
+                    e.preventDefault();
+                }
+            });
+
+            // prevent issue inspect element
+            let start = Date.now();
+            debugger;
+            if (Date.now() - start > 100) {
+                window.location.href = '/doco/riwayat-pengajuan';
+            }
+
+        }
+
+        secureConfidential();
     </script>
 @endsection

@@ -481,7 +481,7 @@
             $('#modalRevisi').modal('show');
         }
 
-        // secureConfidential();
+        secureConfidential();
         LoadPdfFromUrl('{{ $doco->file_converted_path }}');
     </script>
 @endsection
