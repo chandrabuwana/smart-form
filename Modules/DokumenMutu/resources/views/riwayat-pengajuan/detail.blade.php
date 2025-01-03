@@ -355,7 +355,7 @@
 
         function addMarker(feedback) {
             const marker = `
-                <div id="marker" data-bs-toggle="popover"
+                <div data-bs-toggle="popover"
                     data-bs-trigger="hover" id="marker-feedback-${feedback.id}"
                     title="${feedback.NamaKaryawan}" data-bs-content="${feedback.keterangan}"
                     data-bs-html="true" data-bs-custom-class="feedback-popover">
@@ -495,7 +495,7 @@
             $('#modalRevisi').modal('show');
         }
 
-        secureConfidential();
+        // secureConfidential();
         LoadPdfFromUrl('{{ $doco->file_converted_path }}');
     </script>
 @endsection
