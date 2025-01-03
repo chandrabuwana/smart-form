@@ -356,7 +356,7 @@
         function addMarker(feedback) {
             const marker = `
                 <div id="marker" data-bs-toggle="popover"
-                    data-bs-trigger="hover"
+                    data-bs-trigger="hover" id="marker-feedback-${feedback.id}"
                     title="${feedback.NamaKaryawan}" data-bs-content="${feedback.keterangan}"
                     data-bs-html="true" data-bs-custom-class="feedback-popover">
                     <i class="fas fa-comment-dots fa-xl"></i>
@@ -415,8 +415,12 @@
 
                             feedbackEls += `
                                 <div class="pb-3 rounded bg-dark text-white shadow mb-3">
-                                    <div class="px-4 pt-2">
-                                        <div class="text-end mb-2">
+                                    <div class="px-4 pt-3">
+                                        <div class="d-flex justify-content-between mb-3">
+                                            <a href="javascript:scrollToNote('${ item.id }');" class="text-white">
+                                                <i class="fas fa-external-link-alt"></i>
+                                            </a>
+
                                             <small>${item.created_at}</small>
                                         </div>
 
@@ -452,6 +456,16 @@
         }
 
         loadFeedback();
+
+        function scrollToNote(id) {
+            $('html, body').animate({
+                scrollTop: $(`#marker-feedback-${id}`).offset().top
+            });
+
+            setTimeout( () => {
+                $(`#marker-feedback-${id}`).popover('show');
+            }, 1_200);
+        }
 
         function secureConfidential() {
             // prevent right click
