@@ -46,7 +46,6 @@ class FormDocoController extends Controller
 
         $pemohon = DB::table(self::T_KARYAWAN)->select('KodeDP', self::T_JABATAN . '.Nama AS NamaJB', self::T_KARYAWAN . '.Telp', self::T_KARYAWAN . '.Nama AS NamaKaryawan')
             ->join(self::T_JABATAN, self::T_JABATAN . '.KodeJB', self::T_KARYAWAN . '.KodeJB')
-            ->where('KodeST', $site)
             ->where('NIK', $nikPemohon)
             ->where('AKTIF', '0')->first();
         if(!$pemohon) {
