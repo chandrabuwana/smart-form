@@ -107,7 +107,7 @@ class DocoController extends Controller
                 ->map( function($item) use($nikLoggedIn, $user) {
                     $item->is_validate = false;
 
-                    if($item->status == 'Belum Validasi' || $item->status == 'Sedang Validasi') {
+                    if(in_array($item->status, ['Belum Validasi', 'Sedang Validasi', 'Terdapat Feedback'])) {
                         if($item->jenis_pengajuan == 'Penghapusan') {
                             $item->is_validate = $user->KodeDP == 'OD';
 
@@ -358,6 +358,11 @@ class DocoController extends Controller
         $validateIndex = count($validates);
         $userId = session('user_id');
 
+        $jenisValidators = DB::table(self::T_MASTER_VALIDATOR)->select('jenis_validator')
+            ->where('jenis_dokumen', $doco->jenis_dokumen)
+            ->orderBy('id', 'asc')->get()
+            ->pluck('jenis_validator')->unique()->all();
+
         return view('DokumenMutu::riwayat-pengajuan.detail', [
             'doco' => $doco,
             'validateIndex' => $validateIndex,
@@ -365,7 +370,8 @@ class DocoController extends Controller
             'feedbacks' => $feedbacks,
             'lastVersion' => $lastVersion,
             'userId' => $userId,
-            'versions' => $versions
+            'versions' => $versions,
+            'jenisValidators' => $jenisValidators
         ]);
     }
 

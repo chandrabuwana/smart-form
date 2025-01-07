@@ -38,7 +38,8 @@
                             <label class="ms-0 fs-6">Nomor Dokumen</label>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" class="form-control input-text" id="noDokumen" name="noDokumen" placeholder="--- Masukkan Nomor Dokumen ---" required>
+                            <input type="text" class="form-control input-text" id="noDokumen" name="noDokumen" placeholder="--- Masukkan Nomor Dokumen ---"
+                                value="{{ old('noDokumen') }}" required>
                         </div>
                     </div>
 
@@ -74,7 +75,8 @@
                             <label class="ms-0 fs-6">Alasan Penghapusan</label>
                         </div>
                         <div class="col-md-8">
-                            <input class="form-control input-text" id="alasanPengajuan" name="alasanPengajuan" placeholder="--- Masukkan Alasan Pengajuan ---" required>
+                            <input class="form-control input-text" id="alasanPengajuan" name="alasanPengajuan" placeholder="--- Masukkan Alasan Pengajuan ---"
+                                value="{{ old('alasanPengajuan') }}" required>
                         </div>
                     </div>
                 </div>
@@ -96,7 +98,15 @@
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
 
     <script type="text/javascript">
+        const inputNoDokumen = `{{ old('noDokumen') }}`;
+
         $( function() {
+            if(inputNoDokumen) {
+                setTimeout( function() {
+                    $('#noDokumen').trigger('change');
+                }, 500);
+            }
+
             $('#noDokumen').change( function(e) {
                 Swal.fire({
                     title: 'Loading...',

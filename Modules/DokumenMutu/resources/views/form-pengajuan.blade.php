@@ -39,6 +39,9 @@
                         </div>
                         <div class="col-md-8">
                             <select class="form-control form-select" name="site" id="site" required>
+                                @if(old('site'))
+                                    <option value="{{ old('site') }}" selected>{{ old('site') }}</option>
+                                @endif
                             </select>
                         </div>
                     </div>
@@ -48,7 +51,8 @@
                             <label class="ms-0 fs-6">Judul Dokumen</label>
                         </div>
                         <div class="col-md-8">
-                            <input class="form-control input-text" id="judulDokumen" name="judulDokumen" placeholder="--- Masukkan Judul Dokumen ---" required>
+                            <input class="form-control input-text" id="judulDokumen" name="judulDokumen" placeholder="--- Masukkan Judul Dokumen ---"
+                                value="{{ old('judulDokumen') }}" required>
                         </div>
                     </div>
 
@@ -68,7 +72,8 @@
                             <label class="ms-0 fs-6">Alasan Pengajuan</label>
                         </div>
                         <div class="col-md-8">
-                            <input class="form-control input-text" id="alasanPengajuan" name="alasanPengajuan" placeholder="--- Masukkan Alasan Pengajuan ---" required>
+                            <input class="form-control input-text" id="alasanPengajuan" name="alasanPengajuan" placeholder="--- Masukkan Alasan Pengajuan ---"
+                                value="{{ old('alasanPengajuan') }}" required>
                         </div>
                     </div>
 
@@ -77,7 +82,8 @@
                             <label class="ms-0 fs-6">Upload Dokumen</label>
                         </div>
                         <div class="col-md-8">
-                            <input type="file" class="form-control input-text" id="dokumen" name="dokumen" accept="application/pdf" required>
+                            <input type="file" class="form-control input-text" id="dokumen" name="dokumen" accept="application/pdf"
+                                value="{{ old('dokumen') }}" required>
                         </div>
                     </div>
                 </div>
@@ -99,6 +105,9 @@
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
 
     <script type="text/javascript">
+        const inputSite = `{{ old('site') }}`;
+        const inputJenisDokumen = `{{ old('jenisDokumen') }}`;
+
         $( function() {
             $('#site').select2({
                 theme: 'bootstrap-5', // Menggunakan tema Bootstrap 5
@@ -115,6 +124,7 @@
                     data: function(params) {
                         return {
                             _token: "{{ csrf_token() }}",
+                            // query: inputSite.length > 0 ? inputSite : params.term, // search term
                             query: params.term, // search term
                         };
                     },
@@ -123,7 +133,10 @@
                             results: response.data
                         };
                     },
-                    cache: true
+                    cache: true,
+                    success: function(res) {
+                        console.log('OKE!', res);
+                    }
                 }
             });
 
@@ -143,6 +156,13 @@
                     `);
                 }
             });
+
+            if(inputSite) {
+                $('#site').val(inputSite).trigger('change');
+                setTimeout( function() {
+                    $('#jenisDokumen').val(inputJenisDokumen);
+                }, 500);
+            }
 
             $('#btnSubmitForm').on('click', function(e) {
                 const $form = $(this).closest('form')

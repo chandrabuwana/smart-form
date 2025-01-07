@@ -43,39 +43,42 @@ class ValidasiDocoController extends Controller
             'validator_type' => ''
         ];
 
-        if($doco->status == 'Belum Validasi' || $doco->status == 'Sedang Validasi') {
-            $user = DB::table(self::T_KARYAWAN)->select('KodeDP')
+        if(in_array($doco->status, ['Belum Validasi', 'Sedang Validasi', 'Terdapat Feedback'])) {
+            $user = DB::table(self::T_KARYAWAN)->select('KodeDP', self::T_JABATAN . '.Nama AS NamaJB')
+                ->join(self::T_JABATAN, self::T_JABATAN . '.KodeJB', self::T_KARYAWAN . '.KodeJB')
                 ->where('NIK', $nikLoggedIn)->first();
 
             $listValidator = DB::table(self::T_MASTER_VALIDATOR)->where('site', $site)
                 ->where('jenis_dokumen', $doco->jenis_dokumen)
                 ->orderBy('id', 'ASC')->get();
 
-            $index = 1;
+            $indexValidator = [];
             foreach($listValidator as $itemVal) {
                 $validator = strtolower($itemVal->validator);
 
+                if(!in_array($itemVal->validator, $indexValidator)) {
+                    $indexValidator[] = $itemVal->validator;
+                }
+
                 if($validator == 'thinktank' && in_array($nikLoggedIn, self::THINTANK)) {
                     $result['validate'] = true;
-                    $result['index'] = $index;
+                    $result['index'] = count($indexValidator);
                     $result['validator_type'] = $itemVal->jenis_validator;
 
                 } else if(
                     $validator == 'kadept' &&
                     $doco->KodeDP == $user->KodeDP &&
-                    (preg_match('/kepala department/i', $itemVal->NamaJB) == 1 || preg_match('/kepala departemen/i', $itemVal->NamaJB) == 1)
+                    (preg_match('/kepala department/i', $user->NamaJB) == 1 || preg_match('/kepala departemen/i', $user->NamaJB) == 1)
                 ) {
                     $result['validate'] = true;
-                    $result['index'] = $index;
+                    $result['index'] = count($indexValidator);
                     $result['validator_type'] = $itemVal->jenis_validator;
 
                 } else if($validator == 'od' && $user->KodeDP == 'OD') {
                     $result['validate'] = true;
-                    $result['index'] = $index;
+                    $result['index'] = count($indexValidator);
                     $result['validator_type'] = $itemVal->jenis_validator;
                 }
-
-                $index++;
             }
         }
 
@@ -324,11 +327,6 @@ class ValidasiDocoController extends Controller
             ]);
 
             if($status == '1') {
-                DB::table(self::T_DOCO)->where('no_dokumen', $pengajuanDoco->no_dokumen)->update([
-                    'status' => 'Kadaluarsa',
-                    'keterangan_kadaluarsa' => $pengajuanDoco->alasan_pengajuan
-                ]);
-
                 $lastVersion = DB::table(self::T_VERSI_DOCO)->select('file_path')
                     ->join(self::T_PENGAJUAN_DOCO, self::T_PENGAJUAN_DOCO . '.id', self::T_VERSI_DOCO . '.id_pengajuan_dokumen')
                     ->where(self::T_PENGAJUAN_DOCO . '.no_dokumen', $pengajuanDoco->no_dokumen)
@@ -341,8 +339,15 @@ class ValidasiDocoController extends Controller
                 $originalName = $expFilename[ count($expFilename) - 1 ];
                 $pathName = str_replace($originalName, '', $lastVersion->file_path);
 
-                $convertedName = str_replace('\\', '/', storage_path('app/public/' . $pathName . '/converted_' . $originalName));
-                $originalName = str_replace('\\', '/', storage_path('app/public/' . $pathName . '/' . $originalName));
+                DB::table(self::T_DOCO)->where('no_dokumen', $pengajuanDoco->no_dokumen)->update([
+                    'file_path' => $pathName . 'expired_' . $originalName,
+                    'status' => 'Kadaluarsa',
+                    'keterangan_kadaluarsa' => $pengajuanDoco->alasan_pengajuan
+                ]);
+
+                $convertedName = str_replace('\\', '/', storage_path('app/public/' . $pathName . 'converted_' . $originalName));
+                $expiredName = str_replace('\\', '/', storage_path('app/public/' . $pathName . 'expired_' . $originalName));
+                $originalName = str_replace('\\', '/', storage_path('app/public/' . $pathName . $originalName));
 
                 // putenv('PATH=' . env('DOCO_GS_PATH'));
                 // shell_exec('gswin64 -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile=' . $convertedName . ' ' . $originalName . '');
@@ -362,7 +367,7 @@ class ValidasiDocoController extends Controller
                     $mpdf->useTemplate($tplIdx, 10, 10, 200);
                 }
 
-                $mpdf->OutputFile($originalName);
+                $mpdf->OutputFile($expiredName);
             }
 
             DB::commit();
@@ -397,9 +402,6 @@ class ValidasiDocoController extends Controller
     {
         $id = $request->input('id');
         $idVersi = $request->input('id_versi');
-        // $keterangan = $request->input('keterangan');
-        // $vertical = intval($request->input('vertical'));
-        // $horizontal = intval($request->input('horizontal'));
         $komentars = $request->input('komentars');
 
         DB::beginTransaction();
@@ -407,7 +409,7 @@ class ValidasiDocoController extends Controller
             $nik = session('user_id');
 
             DB::table(self::T_PENGAJUAN_DOCO)->where('id', $id)->update([
-                'status' => 'Sedang Validasi',
+                'status' => 'Terdapat Feedback',
                 'updated_at' => now()
             ]);
 

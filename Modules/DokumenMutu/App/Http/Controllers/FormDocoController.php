@@ -153,8 +153,7 @@ Terima kasih.";
         } catch(\Throwable $e) {
             DB::rollBack();
             Log::error($e);
-            dd($e);
-            return redirect()->back()->with('error', 'Terjadi kesalahan, mohon coba beberapa saat lagi');
+            return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan, mohon coba beberapa saat lagi');
         }
     }
 
@@ -251,7 +250,7 @@ Terima kasih.";
         } catch(\Throwable $e) {
             Log::error($e);
             DB::rollBack();
-            return redirect()->back()->with('error', 'Terjadi kesalahan, mohon coba beberapa saat lagi');
+            return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan, mohon coba beberapa saat lagi');
         }
     }
 
@@ -347,7 +346,7 @@ Terima kasih.";
         } catch(\Throwable $e) {
             Log::error($e);
             DB::rollBack();
-            return redirect()->back()->with('error', 'Terjadi kesalahan, mohon coba beberapa saat lagi');
+            return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan, mohon coba beberapa saat lagi');
         }
     }
 
