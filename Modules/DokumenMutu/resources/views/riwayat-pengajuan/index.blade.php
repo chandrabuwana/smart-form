@@ -488,6 +488,8 @@
                 formatData = `<span class="text-dark fw-bold">Belum Validasi</span>`
             } else if(value == 'Sedang Validasi') {
                 formatData = '<span class="text-warning fw-bold">Sedang Validasi</span>'
+            } else if(value == 'Terdapat Feedback') {
+                formatData = '<span class="text-warning fw-bold">Terdapat Feedback</span>'
             } else if(value == 'Disetujui') {
                 formatData = '<span class="text-success fw-bold">Disetujui</span>'
             } else if(value == 'Dibatalkan Oleh Sistem') {
@@ -614,7 +616,7 @@
             });
         }
 
-        secureConfidential();
+        // secureConfidential();
 
         $('#filterSite').select2({
             theme: 'bootstrap-5', // Menggunakan tema Bootstrap 5

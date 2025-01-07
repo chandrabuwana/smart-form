@@ -390,7 +390,8 @@
 
         $( function() {
             $('body').popover({
-                selector: '[data-bs-toggle="popover"]'
+                selector: '[data-bs-toggle="popover"]',
+                trigger: 'focus'
             });
 
             $('#modalAddKomentar').on('hide.bs.modal', function() {
@@ -606,7 +607,7 @@
         function addMarker(feedback, isDraft = false) {
             const marker = `
                 <div class="marker ${ isDraft ? 'draft' : '' }" id="marker-feedback-${feedback.id}" data-bs-toggle="popover"
-                    data-bs-trigger="hover" data-bs-trigger="focus"
+                    tabindex="0" data-bs-trigger="focus" data-bs-trigger="focus"
                     title="${feedback.NamaKaryawan}" data-bs-content="${feedback.keterangan}"
                     data-bs-html="true" data-bs-custom-class="feedback-popover">
                     <i class="fas fa-comment-dots fa-xl"></i>

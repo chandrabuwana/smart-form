@@ -107,53 +107,57 @@
                             </div>
                         </div>
 
-                        <div class="d-flex flex-column align-items-center" style="width: fit-content;">
-                            @if($validateIndex >= 1)
-                                <div class="bg-success  rounded px-5 py-3 text-white" style="width: fit-content;">
-                                    <i class="fas fa-check-circle fa-xl me-1"></i>
-                                    <h5 class="text-white mb-0 d-inline">Pemeriksaan</h5>
-                                </div>
-                            @else
-                                <div class="{{ $doco->status == 'Ditolak' ? 'bg-danger' : 'bg-warning' }}  rounded px-5 py-3 text-white" style="width: fit-content;">
-                                    <i class="fas {{ $doco->status == 'Ditolak' ? 'fa-exclamation' : 'fa-spinner' }} fa-xl me-1"></i>
-                                    <h5 class="text-white mb-0 d-inline">Pemeriksaan</h5>
-                                </div>
-                            @endif
+                        @if(in_array('verifikasi', $jenisValidators))
+                            <div class="d-flex flex-column align-items-center" style="width: fit-content;">
+                                @if($validateIndex >= 1)
+                                    <div class="bg-success  rounded px-5 py-3 text-white" style="width: fit-content;">
+                                        <i class="fas fa-check-circle fa-xl me-1"></i>
+                                        <h5 class="text-white mb-0 d-inline">Pemeriksaan</h5>
+                                    </div>
+                                @else
+                                    <div class="{{ $doco->status == 'Ditolak' ? 'bg-danger' : 'bg-warning' }}  rounded px-5 py-3 text-white" style="width: fit-content;">
+                                        <i class="fas {{ $doco->status == 'Ditolak' ? 'fa-exclamation' : 'fa-spinner' }} fa-xl me-1"></i>
+                                        <h5 class="text-white mb-0 d-inline">Pemeriksaan</h5>
+                                    </div>
+                                @endif
 
-                            @if(isset($catatanValidates[0]))
-                                <span class="badge bg-warning mt-2" style="cursor: pointer; width: fit-content;"
-                                    data-bs-toggle="popover" title="Catatan"
-                                    data-bs-placement="bottom" data-bs-content="{{ $catatanValidates[0] }}"
-                                    data-bs-html="true">
-                                    <i class="fas fa-exclamation-circle me-1"></i>
-                                    <small class="text-white">Catatan</small>
-                                </span>
-                            @endif
-                        </div>
+                                @if(isset($catatanValidates[0]))
+                                    <span class="badge bg-warning mt-2" style="cursor: pointer; width: fit-content;"
+                                        data-bs-toggle="popover" title="Catatan"
+                                        data-bs-placement="bottom" data-bs-content="{{ $catatanValidates[0] }}"
+                                        data-bs-html="true">
+                                        <i class="fas fa-exclamation-circle me-1"></i>
+                                        <small class="text-white">Catatan</small>
+                                    </span>
+                                @endif
+                            </div>
+                        @endif
 
-                        <div class="d-flex flex-column align-items-center" style="width: fit-content;">
-                            @if($validateIndex >= 2)
-                                <div class="bg-success  rounded px-5 py-3 text-white" style="width: fit-content;">
-                                    <i class="fas fa-check-circle fa-xl me-1"></i>
-                                    <h5 class="text-white mb-0 d-inline">Validasi</h5>
-                                </div>
-                            @else
-                                <div class="{{ $doco->status == 'Ditolak' && $validateIndex >= 1 ? 'bg-danger' : 'bg-warning' }}  rounded px-5 py-3 text-white" style="width: fit-content;">
-                                    <i class="fas {{ $doco->status == 'Ditolak' && $validateIndex >= 1 ? 'fa-exclamation' : 'fa-spinner' }} fa-xl me-1"></i>
-                                    <h5 class="text-white mb-0 d-inline">Validasi</h5>
-                                </div>
-                            @endif
+                        @if(in_array('validasi', $jenisValidators))
+                            <div class="d-flex flex-column align-items-center" style="width: fit-content;">
+                                @if($validateIndex >= 2)
+                                    <div class="bg-success  rounded px-5 py-3 text-white" style="width: fit-content;">
+                                        <i class="fas fa-check-circle fa-xl me-1"></i>
+                                        <h5 class="text-white mb-0 d-inline">Validasi</h5>
+                                    </div>
+                                @else
+                                    <div class="{{ $doco->status == 'Ditolak' && $validateIndex >= 1 ? 'bg-danger' : 'bg-warning' }}  rounded px-5 py-3 text-white" style="width: fit-content;">
+                                        <i class="fas {{ $doco->status == 'Ditolak' && $validateIndex >= 1 ? 'fa-exclamation' : 'fa-spinner' }} fa-xl me-1"></i>
+                                        <h5 class="text-white mb-0 d-inline">Validasi</h5>
+                                    </div>
+                                @endif
 
-                            @if(isset($catatanValidates[1]))
-                                <span class="badge bg-warning mt-2" style="cursor: pointer;"
-                                    data-bs-toggle="popover" title="Catatan"
-                                    data-bs-placement="bottom" data-bs-content="{{ $catatanValidates[1] }}"
-                                    data-bs-html="true">
-                                    <i class="fas fa-exclamation-circle me-1"></i>
-                                    <small class="text-white">Catatan</small>
-                                </span>
-                            @endif
-                        </div>
+                                @if(isset($catatanValidates[1]))
+                                    <span class="badge bg-warning mt-2" style="cursor: pointer;"
+                                        data-bs-toggle="popover" title="Catatan"
+                                        data-bs-placement="bottom" data-bs-content="{{ $catatanValidates[1] }}"
+                                        data-bs-html="true">
+                                        <i class="fas fa-exclamation-circle me-1"></i>
+                                        <small class="text-white">Catatan</small>
+                                    </span>
+                                @endif
+                            </div>
+                        @endif
                     </div>
 
                     <div class="d-flex align-items-center justify-content-between mb-4 col-md-8">
