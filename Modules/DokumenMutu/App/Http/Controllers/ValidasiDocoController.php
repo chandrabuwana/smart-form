@@ -340,14 +340,17 @@ class ValidasiDocoController extends Controller
                 $pathName = str_replace($originalName, '', $lastVersion->file_path);
 
                 DB::table(self::T_DOCO)->where('no_dokumen', $pengajuanDoco->no_dokumen)->update([
-                    'file_path' => $pathName . 'expired_' . $originalName,
+                    // 'file_path' => $pathName . 'expired_' . $originalName,
                     'status' => 'Kadaluarsa',
                     'keterangan_kadaluarsa' => $pengajuanDoco->alasan_pengajuan
                 ]);
 
                 $convertedName = str_replace('\\', '/', storage_path('app/public/' . $pathName . 'converted_' . $originalName));
-                $expiredName = str_replace('\\', '/', storage_path('app/public/' . $pathName . 'expired_' . $originalName));
                 $originalName = str_replace('\\', '/', storage_path('app/public/' . $pathName . $originalName));
+
+                if(file_exists($convertedName)) {
+                    @unlink($convertedName);
+                }
 
                 // putenv('PATH=' . env('DOCO_GS_PATH'));
                 // shell_exec('gswin64 -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile=' . $convertedName . ' ' . $originalName . '');
@@ -367,7 +370,7 @@ class ValidasiDocoController extends Controller
                     $mpdf->useTemplate($tplIdx, 10, 10, 200);
                 }
 
-                $mpdf->OutputFile($expiredName);
+                $mpdf->OutputFile($originalName);
             }
 
             DB::commit();
