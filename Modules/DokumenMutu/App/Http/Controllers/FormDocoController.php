@@ -186,7 +186,7 @@ Terima kasih.";
 
             if($doco->kode_site == 'JKT') {
                 if($doco->jenis_dokumen == 'SOP') {
-                    $isValidPemohon = preg_match('/kepala seksi/i', $doco->NamaJB) || preg_match('/kepala bagian/i', $doco->NamaJB) || preg_match('/kepala dept/i', $doco->NamaJB);
+                    $isValidPemohon = preg_match('/kepala seksi/i', $doco->NamaJB) || preg_match('/kepala bagian/i', $doco->NamaJB)|| preg_match('/kepala department/i', $doco->NamaJB) || preg_match('/kepala departemen/i', $doco->NamaJB);
                 } else if($doco->jenis_dokumen == 'STD' || $doco->jenis_dokumen == 'WI') {
                     $isValidPemohon = preg_match('/kepala seksi/i', $doco->NamaJB) || preg_match('/kepala bagian/i', $doco->NamaJB);
                 } else {
@@ -292,7 +292,7 @@ Terima kasih.";
 
             if($doco->kode_site == 'JKT') {
                 if($doco->jenis_dokumen == 'SOP') {
-                    $isValidPemohon = preg_match('/kepala seksi/i', $doco->NamaJB) || preg_match('/kepala bagian/i', $doco->NamaJB) || preg_match('/kepala dept/i', $doco->NamaJB);
+                    $isValidPemohon = preg_match('/kepala seksi/i', $doco->NamaJB) || preg_match('/kepala bagian/i', $doco->NamaJB) || preg_match('/kepala department/i', $doco->NamaJB) || preg_match('/kepala departemen/i', $doco->NamaJB);
                 } else if($doco->jenis_dokumen == 'STD' || $doco->jenis_dokumen == 'WI') {
                     $isValidPemohon = preg_match('/kepala seksi/i', $doco->NamaJB) || preg_match('/kepala bagian/i', $doco->NamaJB);
                 } else {
