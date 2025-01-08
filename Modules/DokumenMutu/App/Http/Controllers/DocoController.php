@@ -301,6 +301,7 @@ class DocoController extends Controller
         }
 
         $versionNo = $request->get('v');
+        $isLastVersion = empty($versionNo);
         $versions = DB::table(self::T_VERSI_DOCO)->where('id_pengajuan_dokumen', $doco->id)
             ->orderBy('no_versi', 'asc')->get();
 
@@ -371,7 +372,8 @@ class DocoController extends Controller
             'lastVersion' => $lastVersion,
             'userId' => $userId,
             'versions' => $versions,
-            'jenisValidators' => $jenisValidators
+            'jenisValidators' => $jenisValidators,
+            'isLastVersion' => $isLastVersion
         ]);
     }
 

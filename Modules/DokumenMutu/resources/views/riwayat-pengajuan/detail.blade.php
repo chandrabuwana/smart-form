@@ -186,7 +186,7 @@
                             {{-- <span class="badge bg-gradient-dark ms-1">{{ $lastVersion->no_versi }}</span> --}}
                         </h5>
 
-                        @if($feedbacks->count() > 0 && $doco->nik_pemohon == $userId && in_array($doco->status, ['Belum Validasi', 'Sedang Validasi']))
+                        @if($feedbacks->count() > 0 && $doco->nik_pemohon == $userId && in_array($doco->status, ['Belum Validasi', 'Sedang Validasi', 'Terdapat Feedback']) && $isLastVersion)
                             <button type="button" class="btn bg-gradient-primary mb-0"
                                 onclick="showRevisiModal()">
                                 Buat Revisi

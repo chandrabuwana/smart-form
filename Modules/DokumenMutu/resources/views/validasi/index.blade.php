@@ -538,11 +538,11 @@
 
         function scrollToNote(id) {
             $('html, body').animate({
-                scrollTop: $(`#marker-feedback-${id}`).offset().top
+                scrollTop: $(`#marker-feedback-${id}`).offset().top - 100
             });
 
             setTimeout( () => {
-                $(`#marker-feedback-${id}`).popover('show');
+                $(`#marker-feedback-${id}`).trigger('focus');
             }, 1_200);
         }
 
@@ -616,6 +616,8 @@
 
             const vertical = ((screen.height / 100) * feedback.vertical) - 20;
             const horizontal = ((screen.width / 100) * feedback.horizontal) - 20;
+            // const vertical = Number(feedback.vertical) + 1;
+            // const horizontal = Number(feedback.horizontal) + 1;
 
             $('body').append(
                 $(marker).css({
