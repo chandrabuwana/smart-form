@@ -453,7 +453,7 @@ Terima kasih.";
 
         } catch(\Throwable $e) {
             DB::rollBack();
-            dd($e);
+            Log::error($e);
             return response()->json([
                 'code' => 500,
                 'message' => 'Terjadi kesalahan, mohon coba beberapa saat lagi'

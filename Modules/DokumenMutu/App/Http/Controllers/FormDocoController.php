@@ -109,6 +109,10 @@ class FormDocoController extends Controller
 
             $originalName = $request->file('dokumen')->getClientOriginalName();
             $path = 'dokumen_mutu/pembuatan/' . $pemohon->KodeDP;
+            if(file_exists( storage_path('app/public/' . $path .'/'. $originalName) )) {
+                $originalName = time() . '_' . $originalName;
+            }
+
             $filePath = $request->file('dokumen')->storeAs($path, $originalName);
 
             $pengajuan = DB::table(self::T_PENGAJUAN_DOCO)->insertGetId([
@@ -364,12 +368,20 @@ Terima kasih.";
 
             $originalName = $dokumen->getClientOriginalName();
             $path = 'dokumen_mutu/' . strtolower($doco->jenis_pengajuan) . '/' . $doco->KodeDP;
+            if(file_exists( storage_path('app/public/' . $path .'/'. $originalName) )) {
+                $originalName = time() . '_' . $originalName;
+            }
+
             $filePath = $dokumen->storeAs($path, $originalName);
-
             $lastVersion = DB::table(self::T_VERSI_DOCO)->find($idVersi);
-            if($lastVersion->no_versi > 1) {
-                DB::table(self::T_FEEDBACK_VALIDASI)->where('id_versi', $idVersi)->delete();
 
+            if($lastVersion->no_versi > 1) {
+                $lastFilePath = storage_path('app/public/' . $lastVersion->file_path);
+                if(file_exists($lastFilePath)) {
+                    @unlink($lastFilePath);
+                }
+
+                DB::table(self::T_FEEDBACK_VALIDASI)->where('id_versi', $idVersi)->delete();
                 DB::table(self::T_VERSI_DOCO)->where('id', $idVersi)
                     ->update([
                         'no_versi' => $lastVersion->no_versi + 1,
