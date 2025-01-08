@@ -54,7 +54,7 @@ class FormDocoController extends Controller
 
         if($site == 'JKT') {
             if($jenisDokumen == 'SOP') {
-                $isValidPemohon = preg_match('/kepala seksi/i', $pemohon->NamaJB) || preg_match('/kepala bagian/i', $pemohon->NamaJB) || preg_match('/kepala dept/i', $pemohon->NamaJB);
+                $isValidPemohon = preg_match('/kepala seksi/i', $pemohon->NamaJB) || preg_match('/kepala bagian/i', $pemohon->NamaJB) || preg_match('/kepala department/i', $pemohon->NamaJB) || preg_match('/kepala departemen/i', $pemohon->NamaJB);
             } else if($jenisDokumen == 'STD' || $jenisDokumen == 'WI') {
                 $isValidPemohon = preg_match('/kepala seksi/i', $pemohon->NamaJB) || preg_match('/kepala bagian/i', $pemohon->NamaJB);
             } else {
