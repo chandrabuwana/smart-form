@@ -141,8 +141,8 @@
                                         <h5 class="text-white mb-0 d-inline">Validasi</h5>
                                     </div>
                                 @else
-                                    <div class="{{ $doco->status == 'Ditolak' && $validateIndex >= 1 ? 'bg-danger' : 'bg-warning' }}  rounded px-5 py-3 text-white" style="width: fit-content;">
-                                        <i class="fas {{ $doco->status == 'Ditolak' && $validateIndex >= 1 ? 'fa-exclamation' : 'fa-spinner' }} fa-xl me-1"></i>
+                                    <div class="{{ $doco->status == 'Ditolak' ? 'bg-danger' : 'bg-warning' }}  rounded px-5 py-3 text-white" style="width: fit-content;">
+                                        <i class="fas {{ $doco->status == 'Ditolak' ? 'fa-exclamation' : 'fa-spinner' }} fa-xl me-1"></i>
                                         <h5 class="text-white mb-0 d-inline">Validasi</h5>
                                     </div>
                                 @endif
@@ -499,7 +499,7 @@
             $('#modalRevisi').modal('show');
         }
 
-        // secureConfidential();
+        secureConfidential();
         LoadPdfFromUrl('{{ $doco->file_converted_path }}');
     </script>
 @endsection
