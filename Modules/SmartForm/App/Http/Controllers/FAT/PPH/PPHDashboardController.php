@@ -11,7 +11,9 @@ use Illuminate\Support\Facades\Storage;
 
 class PPHDashboardController extends Controller
 {
-    //
+    protected const T_PPH_MASTER = 'PICA_BETA.dbo.FM_FAT_PPH_MASTER';
+    protected const V_NODOC_PPH = 'PICA_BETA.dbo.vw_master_nodocpph_FM_FAT_PPH';
+    protected const T_PPH_DETAIL_DOC = 'PICA_BETA.dbo.FM_FAT_PPH_DETAIL_DOCUMENT';
 
     function DashboardIndex()
     {
@@ -28,13 +30,13 @@ class PPHDashboardController extends Controller
             'zip' => 'required|file|mimes:zip',  // max size 10MB
         ]);
 
-        $nodocPPH = DB::select("SELECT * FROM vw_master_nodocpph_FM_FAT_PPH where status = 0");
+        $nodocPPH = DB::select("SELECT * FROM " . self::V_NODOC_PPH . " where status = 0");
         $nodocPPH = collect($nodocPPH)->first();
 
         DB::beginTransaction();
 
         try {
-            DB::table("FM_FAT_PPH_MASTER")->insert([
+            DB::table(self::T_PPH_MASTER)->insert([
                 "nodocpph" => $nodocPPH->nodocpph,
                 "tsite" => $r->site,
                 "tahun" => $r->tahun,
@@ -75,7 +77,7 @@ class PPHDashboardController extends Controller
                 }
                 $zip->close();
 
-                db::table("FM_FAT_PPH_DETAIL_DOCUMENT")->
+                db::table(self::T_PPH_DETAIL_DOC)->
                     insert($pdfFiles);
                 DB::commit();
 
@@ -100,10 +102,10 @@ class PPHDashboardController extends Controller
 
     function indexViewDataDetailMasterPPh(string $nodocpph)
     {
-        $dataMaster = DB::table("FM_FAT_PPH_MASTER")->where("nodocpph", "=", $nodocpph)
+        $dataMaster = DB::table(self::T_PPH_MASTER)->where("nodocpph", "=", $nodocpph)
         ->select("*")
         ->selectRaw("DATENAME(MONTH, DATEFROMPARTS(2024, bulan, 1)) AS nama_bulan")->get()->first();
-        $dataDetail = DB::table("FM_FAT_PPH_DETAIL_DOCUMENT")->where("nodocpph", "=", $nodocpph)->get();
+        $dataDetail = DB::table(self::T_PPH_DETAIL_DOC)->where("nodocpph", "=", $nodocpph)->get();
 
         // dd($dataMaster);
         $dataKirim = [
