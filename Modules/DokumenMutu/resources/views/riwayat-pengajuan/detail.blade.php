@@ -174,7 +174,7 @@
                                     <ul class="dropdown-menu shadow">
                                         @foreach($versions as $v)
                                             <li>
-                                                <a class="dropdown-item" href="{{ route('dokumen-mutu.validasi.index', ['id' => $doco->id]) . '?v=' . $v->no_versi }}">
+                                                <a class="dropdown-item" href="{{ route('dokumen-mutu.detail-riwayat', ['id' => $doco->id]) . '?v=' . $v->no_versi }}">
                                                     Versi {{ $v->no_versi }}
                                                 </a>
                                             </li>
