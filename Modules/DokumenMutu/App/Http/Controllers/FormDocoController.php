@@ -9,6 +9,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Modules\SmartForm\Service\AlarmAPIService;
 
 class FormDocoController extends Controller
@@ -38,6 +39,13 @@ class FormDocoController extends Controller
 
     public function storeFormPengajuan(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'dokumen' => 'required|file|mime:pdf|max:5120',
+        ]);
+        if($validator->fails()) {
+            return redirect()->back()->with('error', 'File dokumen wajib berupa PDF dengan ukuran maksimal 5MB');
+        }
+
         $site = $request->input('site');
         $nikPemohon = session('user_id');
         $jenisDokumen = $request->input('jenisDokumen');
@@ -168,6 +176,13 @@ Terima kasih.";
 
     public function storeFormRevisi(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'dokumen' => 'required|file|mime:pdf|max:5120',
+        ]);
+        if($validator->fails()) {
+            return redirect()->back()->with('error', 'File dokumen wajib berupa PDF dengan ukuran maksimal 5MB');
+        }
+
         $idRefDoco          = $request->input('id_ref_doco');
         $noDokumen          = $request->input('noDokumen');
         $alasanPengajuan    = $request->input('alasanPengajuan');
@@ -249,7 +264,7 @@ Terima kasih.";
             $alarmService->sendMessage(env('DOCO_ALARM_OD'), $message);
 
             DB::commit();
-            return redirect()->back()->with('success', 'Berhasil submit revisi dokumen mutu!');
+            return redirect(route('dokumen-mutu.riwayat-pengajuan'))->with('success', 'Berhasil submit revisi dokumen mutu!');
 
         } catch(\Throwable $e) {
             Log::error($e);
@@ -356,6 +371,13 @@ Terima kasih.";
 
     public function submitRevisiPengajuan(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'dokumen' => 'required|file|mime:pdf|max:5120',
+        ]);
+        if($validator->fails()) {
+            return redirect()->back()->with('error', 'File dokumen wajib berupa PDF dengan ukuran maksimal 5MB');
+        }
+
         $idPengajuan = $request->input('id_pengajuan');
         $idVersi = $request->input('id_versi');
         $dokumen = $request->file('dokumenTerbaru');

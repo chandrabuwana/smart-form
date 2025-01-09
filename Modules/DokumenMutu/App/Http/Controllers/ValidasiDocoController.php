@@ -234,11 +234,9 @@ class ValidasiDocoController extends Controller
                 return redirect(route('dokumen-mutu.nomor-induk-dokumen'))->with('success', 'Pengajuan dokumen mutu berhasil terbit!');
 
             } else {
-                if($doco->status == 'Belum Validasi') {
-                    DB::table(self::T_PENGAJUAN_DOCO)->where('id', $doco->id)->update([
-                        'status' => 'Sedang Validasi'
-                    ]);
-                }
+                DB::table(self::T_PENGAJUAN_DOCO)->where('id', $doco->id)->update([
+                    'status' => 'Sedang Validasi'
+                ]);
 
                 $nextValidator = DB::table(self::T_MASTER_VALIDATOR)
                     ->where('site', $site)->where('jenis_dokumen', $doco->jenis_dokumen)
