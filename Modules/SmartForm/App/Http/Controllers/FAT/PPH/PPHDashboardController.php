@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use ZipArchive;
 use DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class PPHDashboardController extends Controller
 {
@@ -55,11 +57,16 @@ class PPHDashboardController extends Controller
                         $parts = explode('_', $fileName);
                         // Check if the second part (NPWP) exists
                         if (isset($parts[1])) {
+                            $filecontent = $zip->getStreamIndex($i);
+                            $filename = $nodocPPH->nodocpph . "_" . $parts[0] . "_" . $parts[1] .'.'. $parts[ count($parts) - 1 ];
+                            $bucketPath = 'pph/' . $nodocPPH->nodocpph . '/' . $filename;
+                            Storage::disk('s3')->put($bucketPath, $filecontent);
+
                             $pdfFiles[] = [
                                 "nodocpph" => $nodocPPH->nodocpph,
                                 "npwp" => $parts[1],
                                 "potongan" => $parts[0],
-                                "nama_file" => $nodocPPH->nodocpph . "_" . $parts[0] . "_" . $parts[1],
+                                "nama_file" => $filename,
                                 "created_at" => now(),
                                 "created_by" => session("user_id")
                             ];
@@ -83,6 +90,7 @@ class PPHDashboardController extends Controller
             }
         } catch (\Throwable $th) {
             DB::rollBack();
+            Log::error($th);
             return response()->json([
                 'message' => 'Failed to insert records: ' . $th->getMessage(),
                 'code' => 500
