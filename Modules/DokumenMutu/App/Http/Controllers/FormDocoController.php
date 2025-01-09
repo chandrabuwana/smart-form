@@ -40,7 +40,7 @@ class FormDocoController extends Controller
     public function storeFormPengajuan(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'dokumen' => 'required|file|mime:pdf|max:5120',
+            'dokumen' => 'required|file|mimes:pdf|max:5120',
         ]);
         if($validator->fails()) {
             return redirect()->back()->with('error', 'File dokumen wajib berupa PDF dengan ukuran maksimal 5MB');
@@ -177,7 +177,7 @@ Terima kasih.";
     public function storeFormRevisi(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'dokumen' => 'required|file|mime:pdf|max:5120',
+            'dokumen' => 'required|file|mimes:pdf|max:5120',
         ]);
         if($validator->fails()) {
             return redirect()->back()->with('error', 'File dokumen wajib berupa PDF dengan ukuran maksimal 5MB');
@@ -372,7 +372,7 @@ Terima kasih.";
     public function submitRevisiPengajuan(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'dokumen' => 'required|file|mime:pdf|max:5120',
+            'dokumen' => 'required|file|mimes:pdf|max:5120',
         ]);
         if($validator->fails()) {
             return redirect()->back()->with('error', 'File dokumen wajib berupa PDF dengan ukuran maksimal 5MB');
