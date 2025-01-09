@@ -178,7 +178,7 @@
                             <span class="me-1">No Versi :</span>
 
                             <div class="btn-group">
-                                <button type="button" class="btn bg-gradient-dark btn-sm {{ count($versions) > 1 ? 'dropdown-toggle' : '' }} mb-0"
+                                <button type="button" class="btn bg-gradient-dark btn-sm {!! count($versions) > 1 ? 'dropdown-toggle' : '' !!} mb-0"
                                     {!! count($versions) > 1 ? 'data-bs-toggle="dropdown" aria-expanded="false"' : '' !!}>
                                     {{ $lastVersion->no_versi }}
                                 </button>

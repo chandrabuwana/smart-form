@@ -165,7 +165,7 @@
                             <span class="me-1">No Versi :</span>
 
                             <div class="btn-group">
-                                <button type="button" class="btn bg-gradient-dark btn-sm {{ count($versions) > 1 ? 'dropdown-toggle' : '' }} mb-0"
+                                <button type="button" class="btn bg-gradient-dark btn-sm {!! count($versions) > 1 ? 'dropdown-toggle' : '' !!} mb-0"
                                     {!! count($versions) > 1 ? 'data-bs-toggle="dropdown" aria-expanded="false"' : '' !!}>
                                     {{ $lastVersion->no_versi }}
                                 </button>
@@ -263,7 +263,7 @@
 
 @section('custom-js')
     <script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    {{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script> --}}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.29.0/tableExport.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.29.0/libs/jsPDF/jspdf.umd.min.js"></script>
@@ -499,7 +499,7 @@
             $('#modalRevisi').modal('show');
         }
 
-        secureConfidential();
+        // secureConfidential();
         LoadPdfFromUrl('{{ $doco->file_converted_path }}');
     </script>
 @endsection
