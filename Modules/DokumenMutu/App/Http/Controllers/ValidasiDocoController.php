@@ -74,7 +74,7 @@ class ValidasiDocoController extends Controller
                     $result['index'] = count($indexValidator);
                     $result['validator_type'] = $itemVal->jenis_validator;
 
-                } else if($validator == 'od' && $user->KodeDP == 'OD') {
+                } else if($validator == 'od' && $user->KodeDP == 'OD' && preg_match('/^staff/i', $user->NamaJB)) {
                     $result['validate'] = true;
                     $result['index'] = count($indexValidator);
                     $result['validator_type'] = $itemVal->jenis_validator;

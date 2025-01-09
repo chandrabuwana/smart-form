@@ -54,7 +54,8 @@ class DocoController extends Controller
 
         try {
             $nikLoggedIn = session('user_id');
-            $user = DB::table(self::T_KARYAWAN)->select('KodeDP')
+            $user = DB::table(self::T_KARYAWAN)->select('KodeDP', self::T_JABATAN . '.Nama AS NamaJB')
+                ->join(self::T_JABATAN, self::T_JABATAN . '.KodeJB', self::T_KARYAWAN . '.KodeJB')
                 ->where('NIK', $nikLoggedIn)->first();
 
             $docoNotFiltered = DB::table(self::T_PENGAJUAN_DOCO)->select('id');
@@ -71,11 +72,9 @@ class DocoController extends Controller
                     self::T_PENGAJUAN_DOCO . '.jenis_dokumen',
                     self::T_PENGAJUAN_DOCO . '.alasan_pengajuan',
                     self::T_KARYAWAN . '.KodeDP',
-                    self::T_KARYAWAN . '.KodeST',
-                    self::T_JABATAN . '.Nama AS NamaJB'
+                    self::T_KARYAWAN . '.KodeST'
                 )
                 ->join(self::T_KARYAWAN, self::T_KARYAWAN . '.NIK', self::T_PENGAJUAN_DOCO . '.nik_pemohon')
-                ->join(self::T_JABATAN, self::T_JABATAN . '.KodeJB', self::T_KARYAWAN . '.KodeJB')
                 ->join(self::T_DEPARTEMENT, self::T_DEPARTEMENT . '.KodeDP', self::T_KARYAWAN . '.KodeDP');
 
             if(!empty($departement)) {
@@ -116,20 +115,25 @@ class DocoController extends Controller
                             $listValidator = DB::table(self::T_MASTER_VALIDATOR)->where('site', $site)
                                 ->where('jenis_dokumen', $item->jenis_dokumen)
                                 ->orderBy('id', 'ASC')->get();
-                            foreach($listValidator as $itemVal) {
-                                $validator = strtolower($itemVal->validator);
 
-                                if($validator == 'thinktank' && in_array($nikLoggedIn, self::THINTANK)) {
-                                    $item->is_validate = true;
-                                } else if(
-                                    $validator == 'kadept' &&
-                                    $item->KodeDP == $user->KodeDP &&
-                                    (preg_match('/kepala department/i', $item->NamaJB) == 1 || preg_match('/kepala departemen/i', $item->NamaJB) == 1)
-                                ) {
-                                    $item->is_validate = true;
-                                } else if($validator == 'od' && $user->KodeDP == 'OD') {
-                                    $item->is_validate = true;
-                                }
+                            $historyValidasi = DB::table(self::T_VALIDASI_DOCO)->selectRaw('DISTINCT(jenis_validasi)')
+                                ->where('id_pengajuan_dokumen', $item->id)
+                                ->pluck('jenis_validasi')->all();
+
+                            $listValidator = $listValidator->filter( fn($item) => !in_array($item->jenis_validator, $historyValidasi));
+                            $currentValidator = $listValidator->first();
+
+                            $validator = strtolower($currentValidator->validator);
+                            if($validator == 'thinktank' && in_array($nikLoggedIn, self::THINTANK)) {
+                                $item->is_validate = true;
+                            } else if(
+                                $validator == 'kadept' &&
+                                $item->KodeDP == $user->KodeDP &&
+                                (preg_match('/kepala department/i', $user->NamaJB) == 1 || preg_match('/kepala departemen/i', $user->NamaJB) == 1)
+                            ) {
+                                $item->is_validate = true;
+                            } else if($validator == 'od' && $user->KodeDP == 'OD' && preg_match('/^staff/i', $user->NamaJB)) {
+                                $item->is_validate = true;
                             }
                         }
                     }
@@ -152,6 +156,7 @@ class DocoController extends Controller
             ]);
 
         } catch (Exception $ex) {
+            dd($ex);
             return response()->json([
                 'total' => 0,
                 'totalNotFiltered' => 0,
