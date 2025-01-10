@@ -261,9 +261,21 @@
 
                                 @if($isDownloadDoco)
                                     <div class="d-flex justify-content-end mb-3">
-                                        <a href="#" class="btn bg-gradient-dark btn-action text-white mb-0" download id="btn-download-doc">
-                                            <i class="fas fa-cloud-download-alt fa-lg me-1"></i> Download Dokumen
-                                        </a>
+                                        <div class="dropdown">
+                                            <a href="#" class="btn bg-gradient-dark btn-action text-white mb-0"
+                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="fas fa-cloud-download-alt fa-lg me-1"></i> Download Dokumen
+                                            </a>
+
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#" id="btn-download-doc-internal" target="_blank">
+                                                    Internal
+                                                </a></li>
+                                                <li><a class="dropdown-item" href="#" id="btn-download-doc-external" target="_blank">
+                                                    External
+                                                </a></li>
+                                            </ul>
+                                        </div>
                                     </div>
                                 @endif
 
@@ -427,6 +439,9 @@
                         });
 
                     } else {
+                        const urlDownloadExternal = `/doco/nomor-induk/download/${id}?scope=external`;
+                        const urlDownloadInternal = `/doco/nomor-induk/download/${id}?scope=internal`;
+
                         $('#noDokumen').val(response.no_dokumen);
                         $('#site').val(response.NamaST);
                         $('#jenisDokumen').val(response.jenis_dokumen);
@@ -434,7 +449,8 @@
                         $('#judulDokumen').val(response.judul_dokumen);
                         $('#status').val(response.status);
                         // $('#iframepdf').attr('src', response.file_converted_path);
-                        $('#btn-download-doc').attr('href', response.file_path);
+                        $('#btn-download-doc-internal').attr('href', urlDownloadInternal);
+                        $('#btn-download-doc-external').attr('href', urlDownloadExternal);
 
                         if(response.no_revisi) {
                             $('#revisi').parent().removeClass('d-none');
@@ -539,6 +555,6 @@
 
         }
 
-        secureConfidential();
+        // secureConfidential();
     </script>
 @endsection

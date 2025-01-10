@@ -431,4 +431,36 @@ class DocoController extends Controller
         $doco->file_converted_path = url('storage/' . $doco->file_converted_path);
         return response()->json($doco);
     }
+
+    public function downloadNomorInduk($id, Request $request)
+    {
+        $scope = $request->get('scope');
+        $doco = DB::table(self::T_DOCO)->find($id);
+        if(!$doco) {
+            abort(404);
+        }
+
+        $expFilename = explode('/', $doco->file_path);
+        $originalFileName = $expFilename[ count($expFilename) - 1 ];
+        $pathName = str_replace($originalFileName, '', $doco->file_path);
+
+        $convertedName = str_replace('\\', '/', storage_path('app/public/' . $pathName . 'converted_' . $originalFileName));
+        $originalName = str_replace('\\', '/', storage_path('app/public/' . $pathName . $originalFileName));
+
+        $mpdf = new Mpdf();
+        $pageCount = $mpdf->setSourceFile($originalName);
+
+        for($i=1; $i <= $pageCount; $i++) {
+            $tplIdx = $mpdf->ImportPage($i);
+            $stamp = $scope == 'internal' ? 'cap-terkendali.png' : 'cap-tidak-terkendali.png';
+
+            $mpdf->SetWatermarkImage( storage_path('app/public/' . $stamp) );
+            $mpdf->showWatermarkImage = true;
+
+            $mpdf->AddPage();
+            $mpdf->useTemplate($tplIdx, 10, 10, 200);
+        }
+
+        return $mpdf->OutputHttpDownload($originalFileName);
+    }
 }
