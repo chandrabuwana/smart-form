@@ -49,6 +49,7 @@ Route::middleware([ FetchMenu::class, 'check.auth', PermissionMenu::class ])->pr
         Route::get('/', [DocoController::class, 'indexNomorInduk'])->name('dokumen-mutu.nomor-induk-dokumen');
         Route::get('/fetch-data', [DocoController::class, 'fetchNomorInduk'])->name('dokumen-mutu.nomor-induk-dokumen.fetch');
         Route::get('/detail', [DocoController::class, 'detailNomorInduk'])->name('dokumen-mutu.nomor-induk-dokumen.detail');
+        Route::get('/download/{id}', [DocoController::class, 'downloadNomorInduk'])->name('dokumen-mutu.nomor-induk-dokumen.download');
     });
 
     Route::prefix('form-revisi')->group( function() {
