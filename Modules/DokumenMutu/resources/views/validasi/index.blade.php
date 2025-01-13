@@ -306,6 +306,18 @@
                             </div>
                         </div>
 
+                        @if($isValidate)
+                            <div class="row mb-4">
+                                <div class="col-md-4">
+                                    <label class="d-block mb-2 ms-0 fs-6">Keterangan Overdue</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <textarea rows="4" class="form-control input-text" id="catatan_overdue" name="catatan_overdue"
+                                        placeholder="--- Masukkan Keterangan Overdue ---" maxlength="250" required></textarea>
+                                </div>
+                            </div>
+                        @endif
+
                         <div class="d-flex align-items-center">
                             <button type="submit" class="btn btn-primary ms-auto uploadBtn">
                                 <i class="fas fa-save"></i>
@@ -342,6 +354,14 @@
                             <textarea rows="4" class="form-control input-text" id="keterangan" name="keterangan"
                                 placeholder="--- Masukkan Keterangan ---" maxlength="250"></textarea>
                         </div>
+
+                        @if($isValidate)
+                            <div class="mb-4 px-2">
+                                <label class="d-block mb-2 ms-0 fs-6">Keterangan Overdue</label>
+                                <textarea rows="4" class="form-control input-text" id="catatan_overdue" name="catatan_overdue"
+                                    placeholder="--- Masukkan Keterangan Overdue ---" maxlength="250" required></textarea>
+                            </div>
+                        @endif
 
                         <div class="d-flex align-items-center">
                             <button type="submit" class="btn btn-primary ms-auto uploadBtn">
@@ -686,6 +706,7 @@
                     data: JSON.stringify({
                         id: ID,
                         id_versi: ID_VERSI,
+                        jenis_validasi: `{!! $validateIndex == 1 ? 'validasi' : 'verifikasi' !!}`,
                         komentars
                     }),
                     type: "POST",
