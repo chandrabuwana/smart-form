@@ -24,6 +24,7 @@ class ValidasiDocoController extends Controller
     protected const T_VERSI_DOCO = 'DB_Dokumen_Mutu.dbo.T_Versi_Dokumen';
     protected const T_FEEDBACK_VALIDASI = 'DB_Dokumen_Mutu.dbo.T_Feedback_Validasi';
     protected const T_SITE = 'HRD.dbo.tsite';
+    protected const T_OVERDUE_VALIDASI = 'DB_Dokumen_Mutu.dbo.T_Overdue_Validasi';
 
     protected const THINTANK = [
         '1001384',
@@ -123,10 +124,13 @@ class ValidasiDocoController extends Controller
             ->where('NIK', session('user_id'))->first();
 
         $isValidate = ($grant['index'] - 1) == $validateIndex;
+        $isOverdue = strtotime('now') > strtotime($doco->due_date);
+
         return view('DokumenMutu::validasi.index', [
             'doco' => $doco,
             'validateIndex' => $validateIndex,
             'isValidate' => $isValidate,
+            'isOverdue' => $isOverdue,
             'lastVersion' => $lastVersion,
             'tKaryawan' => $tKaryawan,
             'validator_type' => $grant['validator_type'],
@@ -141,6 +145,7 @@ class ValidasiDocoController extends Controller
         $documentValidated = $request->file('dokumenTervalidasi');
         $id = $request->input('id');
         $catatan = $request->input('catatan');
+        $keteranganOverdue = $request->input('catatan_overdue');
         $validatorType = $request->input('validator_type');
 
         try {
@@ -179,6 +184,16 @@ class ValidasiDocoController extends Controller
                 'catatan' => $catatan,
                 'created_at' => now()
             ]);
+
+            if(!empty($keteranganOverdue)) {
+                DB::table(self::T_OVERDUE_VALIDASI)->insert([
+                    'id_pengajuan_dokumen' => $id,
+                    'jenis_validasi' => $validatorType,
+                    'nik_validator' => session('user_id'),
+                    'keterangan' => $keteranganOverdue,
+                    'created_at' => now(),
+                ]);
+            }
 
             DB::table(self::T_VERSI_DOCO)->where('id', $lastVersion->id)->update([
                 'file_path' => $filePath,
@@ -403,6 +418,8 @@ class ValidasiDocoController extends Controller
     {
         $id = $request->input('id');
         $idVersi = $request->input('id_versi');
+        $keteranganOverdue = $request->input('catatan_overdue');
+        $jenisValidasi = $request->input('jenis_validasi');
         $komentars = $request->input('komentars');
 
         DB::beginTransaction();
@@ -422,6 +439,16 @@ class ValidasiDocoController extends Controller
                     'vertical' => round($item['vertical'], 2),
                     'horizontal' => round($item['horizontal'], 2),
                     'created_at' => now()
+                ]);
+            }
+
+            if(!empty($keteranganOverdue)) {
+                DB::table(self::T_OVERDUE_VALIDASI)->insert([
+                    'id_pengajuan_dokumen' => $id,
+                    'jenis_validasi' => $jenisValidasi,
+                    'nik_validator' => session('user_id'),
+                    'keterangan' => $keteranganOverdue,
+                    'created_at' => now(),
                 ]);
             }
 

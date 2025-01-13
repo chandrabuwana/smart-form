@@ -121,15 +121,27 @@
                                     </div>
                                 @endif
 
-                                @if(isset($catatanValidates[0]))
-                                    <span class="badge bg-warning mt-2" style="cursor: pointer; width: fit-content;"
-                                        data-bs-toggle="popover" title="Catatan"
-                                        data-bs-placement="bottom" data-bs-content="{{ $catatanValidates[0] }}"
-                                        data-bs-html="true">
-                                        <i class="fas fa-exclamation-circle me-1"></i>
-                                        <small class="text-white">Catatan</small>
-                                    </span>
-                                @endif
+                                <div class="d-flex align-items-center mt-2">
+                                    @if(isset($catatanValidates[0]))
+                                        <span class="badge bg-warning" style="cursor: pointer; width: fit-content;"
+                                            data-bs-toggle="popover" title="Catatan"
+                                            data-bs-placement="bottom" data-bs-content="{{ $catatanValidates[0] }}"
+                                            data-bs-html="true">
+                                            <i class="fas fa-exclamation-circle me-1"></i>
+                                            <small class="text-white">Catatan</small>
+                                        </span>
+                                    @endif
+
+                                    <div class="mx-1"></div>
+
+                                    @if(isset($overdues['verifikasi']))
+                                        <span class="badge bg-danger" style="cursor: pointer; width: fit-content;"
+                                            onclick="showModalOverdue('Verifikasi')">
+                                            <i class="fas fa-exclamation-circle me-1"></i>
+                                            <small class="text-white">Overdue</small>
+                                        </span>
+                                    @endif
+                                </div>
                             </div>
                         @endif
 
@@ -154,6 +166,16 @@
                                         data-bs-html="true">
                                         <i class="fas fa-exclamation-circle me-1"></i>
                                         <small class="text-white">Catatan</small>
+                                    </span>
+                                @endif
+
+                                <div class="mx-1"></div>
+
+                                @if(isset($overdues['validasi']))
+                                    <span class="badge bg-danger" style="cursor: pointer; width: fit-content;"
+                                        onclick="showModalOverdue('Validasi')">
+                                        <i class="fas fa-exclamation-circle me-1"></i>
+                                        <small class="text-white">Overdue</small>
                                     </span>
                                 @endif
                             </div>
@@ -258,6 +280,46 @@
             </div>
         </div>
     </div>
+
+    @foreach($overdues as $type => $values)
+        <div class="modal fade" id="modalOverdue{{ ucfirst($type) }}" aria-hidden="true" aria-labelledby="modalOverdue{{ ucfirst($type) }}"
+            tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="row">
+                            <div class="col">
+                                <h5 class="modal-title" id="modalOverdue{{ ucfirst($type) }}">Detail Overdue</h5>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped align-items-center mb-0">
+                                <thead>
+                                    <tr>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Validator</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Keterangan</th>
+                                        {{-- <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Deviasi</th> --}}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($values as $item)
+                                        <tr>
+                                            <td width="30%">{{ $item->NamaKaryawan }}</td>
+                                            <td>{{ $item->keterangan }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endforeach
 @endsection
 
 
@@ -331,6 +393,10 @@
                     RenderPage(pdf_container, i);
                 }
             });
+        }
+
+        function showModalOverdue(type) {
+            $(`#modalOverdue${type}`).modal('show');
         }
 
         function RenderPage(pdf_container, num) {
@@ -499,7 +565,7 @@
             $('#modalRevisi').modal('show');
         }
 
-        secureConfidential();
+        // secureConfidential();
         LoadPdfFromUrl('{{ $doco->file_converted_path }}');
     </script>
 @endsection

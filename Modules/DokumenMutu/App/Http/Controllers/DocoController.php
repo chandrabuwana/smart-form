@@ -22,6 +22,7 @@ class DocoController extends Controller
     protected const T_VERSI_DOCO = 'DB_Dokumen_Mutu.dbo.T_Versi_Dokumen';
     protected const T_FEEDBACK_VALIDASI = 'DB_Dokumen_Mutu.dbo.T_Feedback_Validasi';
     protected const T_SITE = 'HRD.dbo.tsite';
+    protected const T_OVERDUE_VALIDASI = 'DB_Dokumen_Mutu.dbo.T_Overdue_Validasi';
 
     protected const THINTANK = [
         '1001384',
@@ -369,6 +370,11 @@ class DocoController extends Controller
             ->orderBy('id', 'asc')->get()
             ->pluck('jenis_validator')->unique()->all();
 
+        $overdues = DB::table(self::T_OVERDUE_VALIDASI)->select(self::T_KARYAWAN . '.Nama AS NamaKaryawan', 'keterangan', 'jenis_validasi')
+            ->join(self::T_KARYAWAN, self::T_KARYAWAN . '.NIK', self::T_OVERDUE_VALIDASI . '.nik_validator')
+            ->where('id_pengajuan_dokumen', $id)
+            ->orderBy('id', 'desc')->get()->groupBy('jenis_validasi');
+
         return view('DokumenMutu::riwayat-pengajuan.detail', [
             'doco' => $doco,
             'validateIndex' => $validateIndex,
@@ -378,7 +384,8 @@ class DocoController extends Controller
             'userId' => $userId,
             'versions' => $versions,
             'jenisValidators' => $jenisValidators,
-            'isLastVersion' => $isLastVersion
+            'isLastVersion' => $isLastVersion,
+            'overdues' => $overdues
         ]);
     }
 
