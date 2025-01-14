@@ -820,7 +820,8 @@ class PengajuanTrainingController extends Controller {
             $dataSql = DB::connection(self::DB_CONN_NAME)->table(self::T_TRJ . ' as trj')
                 // ->select('ptd.id', 'trj.KodeDP', 'td.nama as departement', 'trj.KodeST', 'ptd.NIK', 
                 ->select('ptd.id', 'tk.KodeDP', 'td.nama as departement', 'tk.KodeST', 'ptd.NIK', 'ptd.replacing',
-                    'tk.nama as NIK_nama', 'ptd.status_id', 'tk.KodeJB', 'tj.nama as jabatan', 'tk.Tgl_Masuk as tmk', 'tkom.status as komitmen_status'
+                    'tk.nama as NIK_nama', 'ptd.status_id', 'tk.KodeJB', 'tj.nama as jabatan', 'tk.Tgl_Masuk as tmk', 'tkom.status as komitmen_status',
+                    'tkom.id as komitmen_id'
                 )
                 ->leftJoin(self::T_PENGAJUAN_TRAINING . ' as pt','trj.pengajuan_training_id', '=', 'pt.id')   
                 ->rightJoin(self::T_PENGAJUAN_TRAINING_DTL .  ' as ptd', 'pt.id', '=', 'ptd.pengajuan_training_id')

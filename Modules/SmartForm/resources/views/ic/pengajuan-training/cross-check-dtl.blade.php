@@ -736,10 +736,11 @@
         }
 
         function komitmenFormatter(value, row, index) {
-            if(value == 0) return '<button type="button" class="btn btn-warning btn-action-format">On Progress</button>'
-            if(value == 1) return '<button type="button" class="btn btn-success btn-action-format">Setuju</button>'
-            if(value == -1) return '<button type="button" class="btn btn-danger btn-action-format">Menolak</button>'
-            if(value == -2) return '<button type="button" class="btn btn-danger btn-action-format">Dihapus</button>'
+            let formKomitmenLink = baseUrl + "/form-komitmen/" + row.komitmen_id
+            if(value == 0) return '<a target="_blank" href="' + formKomitmenLink + '"><button type="button" class="btn btn-warning btn-action-format">On Progress</button></a>'
+            if(value == 1) return '<a target="_blank" href="' + formKomitmenLink + '"><button type="button" class="btn btn-success btn-action-format">Setuju</button></a>'
+            if(value == -1) return '<a target="_blank" href="' + formKomitmenLink + '"><button type="button" class="btn btn-danger btn-action-format">Menolak</button></a>'
+            if(value == -2) return '<a target="_blank" href="' + formKomitmenLink + '"><button type="button" class="btn btn-danger btn-action-format">Dihapus</button></a>'
         }
 
         $('#cariKaryawan').select2({

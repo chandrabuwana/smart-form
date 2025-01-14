@@ -21,5 +21,6 @@ class SmartFormDatabaseSeeder extends Seeder
         $this->call(MPengajuanTrainingStatusSeed::class);
         $this->call(MTrainingApprovalSeed::class);
         $this->call(JenisApprovalSeed::class);
+        $this->call(AuthorizedUserSeed::class);
     }
 }
