@@ -453,7 +453,7 @@ class PengajuanTrainingController extends Controller {
                             'matrix_masa_kerja' => $value['matrix_mk'],
                             'pengajuan_training_id' => $pengajuanId,
                             'trj_id' => $trjId,
-                            'replacing' => $value['replacing'],
+                            'replacing' => isset($value['replacing']) ? $value['replacing'] : null,
                             'created_by' => $nik_session,
                             'created_at' => $tgl
                         ]);
@@ -661,6 +661,8 @@ class PengajuanTrainingController extends Controller {
             // $value['a'] = 'pp';
             if($value['matrix_mk'] < 1) $groupedData['ba'] = true;
             if($value['matrix_mk'] >= 1) $groupedData['form'][] = true;
+            if($value['id'] == 0) $groupedData['ba'] = true;
+            if($value['id'] != 0) $groupedData['form'] = true;
         }
         
         if($groupedData['form']) {
@@ -966,7 +968,7 @@ class PengajuanTrainingController extends Controller {
             $sqlDataApproval = DB::connection(self::DB_CONN_NAME)->table(self::T_TRAINING_APPROVAL)
                 ->select('NIK', 'nama', 'KodeDP', 'KodeST')
                 ->where('KodeDP', $KodeDP)
-                ->where('KodeST', $KodeST)
+                // ->where('KodeST', $KodeST)
                 ->where('approval_role', 1);
             $data = $sqlDataApproval->get();
         } catch (Exception $ex) {

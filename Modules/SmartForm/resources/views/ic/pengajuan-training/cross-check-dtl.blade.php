@@ -1022,8 +1022,10 @@
 
         function validasi() {
             let errList = [];
+            let isPenambahanMP = false
             let isCreateBAjustifikasi = $("#table-data").bootstrapTable("getData").filter((data) => {
-                return data.matrix_mk < 1
+                if(data.id == 0) isPenambahanMP = true
+                return data.matrix_mk < 1 
             })
             let belumValidasi = []
 
@@ -1031,8 +1033,9 @@
             if(!$("#level2").val()) errList.push("Belum pilih approval kabag / kasi IC")
             if(!$("#level3").val()) errList.push("Belum pilih approval PM / People partner")
             if(!$("#level4").val()) errList.push("Belum pilih approval Kadep HO")
-            if(isCreateBAjustifikasi.length > 0) {
-                if(!$("#level5").val()) errList.push("Terdapat matrix masa kerja < 1 th, silahkan pilih approval Think tank")
+            if(!$("#level5").val()) {
+                if(isCreateBAjustifikasi.length > 0) errList.push("Terdapat matrix masa kerja < 1 th, silahkan pilih approval Think tank")
+                if(isPenambahanMP) errList.push("Menambahkan MP selain dari ATMP, silahkan pilih approval Think tank")
             }
             if($("#table-tujuan").bootstrapTable('getData').length < 1) errList.push("KPI logic tree minimal 1")
             if($("#table-pengganti").bootstrapTable('getData').length < 1) errList.push("PIC Pengganti minimal 1")
