@@ -121,19 +121,12 @@ class DocoController extends Controller
                             //     ->where('id_pengajuan_dokumen', $item->id)
                             //     ->pluck('jenis_validasi')->all();
 
-                            $historyValidasi = DB::table('DB_Dokumen_Mutu.dbo.T_Validasi_Pengajuan')->select('jenis_validasi', 'id_versi')
-                                ->join('DB_Dokumen_Mutu.dbo.T_Versi_Dokumen', 'T_Versi_Dokumen.id', 'T_Validasi_Pengajuan.id_versi')
-                                ->where('id_pengajuan_dokumen', $item->id)
-                                ->orderBy('id_versi', 'desc')
-                                ->get();
+                            $lastVersion = DB::table(self::T_VERSI_DOCO)->where('id_pengajuan_dokumen', $item->id)
+                                ->orderBy('id', 'desc')->first(['id']);
 
-                            if($historyValidasi->count()) {
-                                $historyValidasi = $historyValidasi->groupBy('id_versi')
-                                    ->first()->pluck('jenis_validasi')
-                                    ->unique()->all();
-                            } else {
-                                $historyValidasi = [];
-                            }
+                            $historyValidasi = DB::table(self::T_VALIDASI_DOCO)->selectRaw('DISTINCT(jenis_validasi)')
+                                ->where('id_versi', $lastVersion->id)
+                                ->pluck('jenis_validasi')->all();
 
                             $listValidator = $listValidator->filter( fn($item) => !in_array($item->jenis_validator, $historyValidasi));
                             $currentValidator = $listValidator->first();
