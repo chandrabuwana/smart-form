@@ -660,7 +660,7 @@ class PengajuanTrainingController extends Controller {
         foreach ($pengajuanDetail as $value) {
             // $value['a'] = 'pp';
             if($value['matrix_mk'] < 1) $groupedData['ba'] = true;
-            if($value['matrix_mk'] >= 1) $groupedData['form'][] = true;
+            if($value['matrix_mk'] >= 1) $groupedData['form'] = true;
             if($value['id'] == 0) $groupedData['ba'] = true;
             if($value['id'] != 0) $groupedData['form'] = true;
         }
