@@ -372,7 +372,7 @@ Terima kasih.";
     public function submitRevisiPengajuan(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'dokumen' => 'required|file|mimes:pdf|max:5120',
+            'dokumenTerbaru' => 'required|file|mimes:pdf|max:5120',
         ]);
         if($validator->fails()) {
             return redirect()->back()->with('error', 'File dokumen wajib berupa PDF dengan ukuran maksimal 5MB');
@@ -421,7 +421,7 @@ Terima kasih.";
 
             $alarmService = new AlarmAPIService();
             $validationCount = DB::table(self::T_VALIDASI_DOCO)
-                ->where('id_pengajuan_dokumen', $idPengajuan)->count('id');
+                ->where('id_versi', $lastVersion->id)->count('id');
 
             if($validationCount > 1) {
                 $validators = DB::table(self::T_MASTER_VALIDATOR)

@@ -118,13 +118,13 @@ class ValidasiDocoController extends Controller
 
         $doco->file_path = url('storage/' . $lastVersion->file_path);
         $validateIndex = DB::table(self::T_VALIDASI_DOCO)
-            ->where('id_pengajuan_dokumen', $doco->id)->count('id');
+            ->where('id_versi', $lastVersion->id)->count('id');
 
         $tKaryawan = DB::table(self::T_KARYAWAN)->select('Nama')
             ->where('NIK', session('user_id'))->first();
 
         $isValidate = ($grant['index'] - 1) == $validateIndex;
-        $isOverdue = strtotime('now') > strtotime($doco->due_date);
+        $isOverdue = strtotime(date('Y-m-d')) > strtotime($doco->due_date);
 
         return view('DokumenMutu::validasi.index', [
             'doco' => $doco,
@@ -168,7 +168,7 @@ class ValidasiDocoController extends Controller
 
             $validate = DB::table(self::T_VALIDASI_DOCO)
                 ->distinct('jenis_validasi')
-                ->where('id_pengajuan_dokumen', $doco->id)->get();
+                ->where('id_versi', $lastVersion->id)->get();
 
             $validateIndex = $validate->count() + 1;
             $site = $doco->kode_site == 'JKT' ? 'HO' : 'SITE';
@@ -178,7 +178,7 @@ class ValidasiDocoController extends Controller
                 ->where('jenis_dokumen', $doco->jenis_dokumen)->count('id');
 
             DB::table(self::T_VALIDASI_DOCO)->insert([
-                'id_pengajuan_dokumen' => $doco->id,
+                'id_versi' => $lastVersion->id,
                 'nik_validator' => session('user_id'),
                 'jenis_validasi' => $validatorType,
                 'catatan' => $catatan,
@@ -187,10 +187,11 @@ class ValidasiDocoController extends Controller
 
             if(!empty($keteranganOverdue)) {
                 DB::table(self::T_OVERDUE_VALIDASI)->insert([
-                    'id_pengajuan_dokumen' => $id,
+                    'id_versi' => $lastVersion->id,
                     'jenis_validasi' => $validatorType,
                     'nik_validator' => session('user_id'),
                     'keterangan' => $keteranganOverdue,
+                    'deviasi_sec' => strtotime(date('Y-m-d')) - strtotime($doco->due_date),
                     'created_at' => now(),
                 ]);
             }
@@ -242,6 +243,7 @@ class ValidasiDocoController extends Controller
 
                 DB::table(self::T_PENGAJUAN_DOCO)->where('id', $doco->id)->update([
                     'status' => 'Disetujui',
+                    'due_date' => date('Y-m-d', strtotime('+3 days')),
                     'updated_at' => now()
                 ]);
 
@@ -250,7 +252,8 @@ class ValidasiDocoController extends Controller
 
             } else {
                 DB::table(self::T_PENGAJUAN_DOCO)->where('id', $doco->id)->update([
-                    'status' => 'Sedang Validasi'
+                    'status' => 'Sedang Validasi',
+                    'due_date' => date('Y-m-d', strtotime('+3 days')),
                 ]);
 
                 $nextValidator = DB::table(self::T_MASTER_VALIDATOR)
@@ -443,11 +446,14 @@ class ValidasiDocoController extends Controller
             }
 
             if(!empty($keteranganOverdue)) {
+                $doco = DB::table(self::T_PENGAJUAN_DOCO)->find($id, ['due_date']);
+
                 DB::table(self::T_OVERDUE_VALIDASI)->insert([
-                    'id_pengajuan_dokumen' => $id,
+                    'id_versi' => $idVersi,
                     'jenis_validasi' => $jenisValidasi,
                     'nik_validator' => session('user_id'),
                     'keterangan' => $keteranganOverdue,
+                    'deviasi_sec' => strtotime(date('Y-m-d')) - strtotime($doco->due_date),
                     'created_at' => now(),
                 ]);
             }

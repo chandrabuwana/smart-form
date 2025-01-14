@@ -306,7 +306,7 @@
                             </div>
                         </div>
 
-                        @if($isValidate)
+                        @if($isOverdue)
                             <div class="row mb-4">
                                 <div class="col-md-4">
                                     <label class="d-block mb-2 ms-0 fs-6">Keterangan Overdue</label>
@@ -355,7 +355,7 @@
                                 placeholder="--- Masukkan Keterangan ---" maxlength="250"></textarea>
                         </div>
 
-                        @if($isValidate)
+                        @if($isOverdue)
                             <div class="mb-4 px-2">
                                 <label class="d-block mb-2 ms-0 fs-6">Keterangan Overdue</label>
                                 <textarea rows="4" class="form-control input-text" id="catatan_overdue" name="catatan_overdue"
