@@ -126,7 +126,7 @@
                                         <span class="badge bg-warning" style="cursor: pointer; width: fit-content;"
                                             data-bs-toggle="popover" title="Catatan"
                                             data-bs-placement="bottom" data-bs-content="{{ $catatanValidates[0] }}"
-                                            data-bs-html="true">
+                                            data-bs-html="true" data-bs-trigger="focus">
                                             <i class="fas fa-exclamation-circle me-1"></i>
                                             <small class="text-white">Catatan</small>
                                         </span>
@@ -163,7 +163,7 @@
                                     <span class="badge bg-warning mt-2" style="cursor: pointer;"
                                         data-bs-toggle="popover" title="Catatan"
                                         data-bs-placement="bottom" data-bs-content="{{ $catatanValidates[1] }}"
-                                        data-bs-html="true">
+                                        data-bs-html="true" data-bs-trigger="focus">
                                         <i class="fas fa-exclamation-circle me-1"></i>
                                         <small class="text-white">Catatan</small>
                                     </span>
@@ -302,14 +302,15 @@
                                     <tr>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Validator</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Keterangan</th>
-                                        {{-- <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Deviasi</th> --}}
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Deviasi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($values as $item)
                                         <tr>
-                                            <td width="30%">{{ $item->NamaKaryawan }}</td>
+                                            <td width="25%">{{ $item->NamaKaryawan }}</td>
                                             <td>{{ $item->keterangan }}</td>
+                                            <td width="10%">{{ \App\Helper::formatDurationAgoFS($item->deviasi_sec) }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -355,7 +356,8 @@
     <script>
         $( function() {
             $('body').popover({
-                selector: '[data-bs-toggle="popover"]'
+                selector: '[data-bs-toggle="popover"]',
+                trigger: 'focus'
             });
 
             $('#modalRevisi button[type="submit"]').on('click', function(e) {
@@ -425,10 +427,10 @@
 
         function addMarker(feedback) {
             const marker = `
-                <div data-bs-toggle="popover"
-                    data-bs-trigger="hover" id="marker-feedback-${feedback.id}"
+                <div data-bs-toggle="popover" id="marker-feedback-${feedback.id}"
                     title="${feedback.NamaKaryawan}" data-bs-content="${feedback.keterangan}"
-                    data-bs-html="true" data-bs-custom-class="feedback-popover">
+                    data-bs-html="true" data-bs-custom-class="feedback-popover"
+                    data-bs-trigger="focus" tabindex="0">
                     <i class="fas fa-comment-dots fa-xl"></i>
                 </div>
             `;
@@ -533,7 +535,7 @@
             });
 
             setTimeout( () => {
-                $(`#marker-feedback-${id}`).popover('show');
+                $(`#marker-feedback-${id}`).trigger('focus');
             }, 1_200);
         }
 

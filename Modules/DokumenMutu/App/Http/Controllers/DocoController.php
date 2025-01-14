@@ -117,9 +117,23 @@ class DocoController extends Controller
                                 ->where('jenis_dokumen', $item->jenis_dokumen)
                                 ->orderBy('id', 'ASC')->get();
 
-                            $historyValidasi = DB::table(self::T_VALIDASI_DOCO)->selectRaw('DISTINCT(jenis_validasi)')
+                            // $historyValidasi = DB::table(self::T_VALIDASI_DOCO)->selectRaw('DISTINCT(jenis_validasi)')
+                            //     ->where('id_pengajuan_dokumen', $item->id)
+                            //     ->pluck('jenis_validasi')->all();
+
+                            $historyValidasi = DB::table('DB_Dokumen_Mutu.dbo.T_Validasi_Pengajuan')->select('jenis_validasi', 'id_versi')
+                                ->join('DB_Dokumen_Mutu.dbo.T_Versi_Dokumen', 'T_Versi_Dokumen.id', 'T_Validasi_Pengajuan.id_versi')
                                 ->where('id_pengajuan_dokumen', $item->id)
-                                ->pluck('jenis_validasi')->all();
+                                ->orderBy('id_versi', 'desc')
+                                ->get();
+
+                            if($historyValidasi->count()) {
+                                $historyValidasi = $historyValidasi->groupBy('id_versi')
+                                    ->first()->pluck('jenis_validasi')
+                                    ->unique()->all();
+                            } else {
+                                $historyValidasi = [];
+                            }
 
                             $listValidator = $listValidator->filter( fn($item) => !in_array($item->jenis_validator, $historyValidasi));
                             $currentValidator = $listValidator->first();
@@ -354,7 +368,7 @@ class DocoController extends Controller
         $doco->file_converted_path = url('storage/' . $doco->file_converted_path);
 
         $validates = DB::table(self::T_VALIDASI_DOCO)
-            ->where('id_pengajuan_dokumen', $doco->id)
+            ->where('id_versi', $lastVersion->id)
             ->get('catatan')->pluck('catatan')->all();
 
         $feedbacks = DB::table(self::T_FEEDBACK_VALIDASI)->select(self::T_FEEDBACK_VALIDASI . '.*', self::T_KARYAWAN . '.Nama AS NamaKaryawan')
@@ -370,9 +384,9 @@ class DocoController extends Controller
             ->orderBy('id', 'asc')->get()
             ->pluck('jenis_validator')->unique()->all();
 
-        $overdues = DB::table(self::T_OVERDUE_VALIDASI)->select(self::T_KARYAWAN . '.Nama AS NamaKaryawan', 'keterangan', 'jenis_validasi')
+        $overdues = DB::table(self::T_OVERDUE_VALIDASI)->select(self::T_KARYAWAN . '.Nama AS NamaKaryawan', 'keterangan', 'jenis_validasi', 'deviasi_sec')
             ->join(self::T_KARYAWAN, self::T_KARYAWAN . '.NIK', self::T_OVERDUE_VALIDASI . '.nik_validator')
-            ->where('id_pengajuan_dokumen', $id)
+            ->where('id_versi', $lastVersion->id)
             ->orderBy('id', 'desc')->get()->groupBy('jenis_validasi');
 
         return view('DokumenMutu::riwayat-pengajuan.detail', [
