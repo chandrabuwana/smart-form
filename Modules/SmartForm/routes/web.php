@@ -35,6 +35,7 @@ use Modules\SmartForm\App\Http\Controllers\FAT\PPH\PPHDashboardController;
 use Modules\SmartForm\App\Http\Controllers\FAT\PPH\HelperPPHController;
 use Modules\SmartForm\App\Http\Controllers\IC\PengajuanTraining\HelperTraininingController;
 use Modules\SmartForm\App\Http\Controllers\IC\PengajuanTraining\PengajuanTrainingController;
+use Modules\SmartForm\App\Http\Middleware\PengajuanTrainingIC;
 
 /*
 |--------------------------------------------------------------------------
@@ -298,15 +299,26 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
         Route::get('/', [PengajuanTrainingController::class, 'index'])->name('ic.training.index');
         Route::get('add', [PengajuanTrainingController::class, 'AddPengajuan'])->name('ic.training.add');
         Route::post('submit-pengajuan', [PengajuanTrainingController::class, 'SubmitPengajuan'])->name('ic.training.submit-pengajuan');
-        
-        Route::get('import-master-training', [PengajuanTrainingController::class, 'training'])->name('ic.training.master-training');
-        Route::post('import-master-training', [PengajuanTrainingController::class, 'ImportMasterTraining'])->name('ic.training.submit-master-training');
-        Route::get('import-std-jab', [PengajuanTrainingController::class, 'ImportStdJab'])->name('ic.training.import-std-jab');
-        Route::get('import-atmp', [PengajuanTrainingController::class, 'atmp'])->name('ic.training.import-atmp');
-        Route::post('import-atmp', [PengajuanTrainingController::class, 'ImportATMP'])->name('ic.training.submit-atmp');
 
-        Route::get('import-approval', [PengajuanTrainingController::class, 'ImportApproval'])->name('ic.training.import-approval');
-        Route::post('import-approval/submit', [PengajuanTrainingController::class, 'ImportApprovalSubmit'])->name('ic.training.import-approval-submit');
+        Route::group(['middleware' => [PengajuanTrainingIC::class]], function () {
+            Route::get('import-approval', [PengajuanTrainingController::class, 'ImportApproval'])->name('ic.training.import-approval');
+            Route::post('import-approval/submit', [PengajuanTrainingController::class, 'ImportApprovalSubmit'])->name('ic.training.import-approval-submit');
+            
+            Route::get('import-master-training', [PengajuanTrainingController::class, 'training'])->name('ic.training.master-training');
+            Route::post('import-master-training', [PengajuanTrainingController::class, 'ImportMasterTraining'])->name('ic.training.submit-master-training');
+            Route::get('import-std-jab', [PengajuanTrainingController::class, 'ImportStdJab'])->name('ic.training.import-std-jab');
+            Route::get('import-atmp', [PengajuanTrainingController::class, 'atmp'])->name('ic.training.import-atmp');
+            Route::post('import-atmp', [PengajuanTrainingController::class, 'ImportATMP'])->name('ic.training.submit-atmp');
+        });
+        
+        // Route::get('import-master-training', [PengajuanTrainingController::class, 'training'])->name('ic.training.master-training');
+        // Route::post('import-master-training', [PengajuanTrainingController::class, 'ImportMasterTraining'])->name('ic.training.submit-master-training');
+        // Route::get('import-std-jab', [PengajuanTrainingController::class, 'ImportStdJab'])->name('ic.training.import-std-jab');
+        // Route::get('import-atmp', [PengajuanTrainingController::class, 'atmp'])->name('ic.training.import-atmp');
+        // Route::post('import-atmp', [PengajuanTrainingController::class, 'ImportATMP'])->name('ic.training.submit-atmp');
+
+        // Route::get('import-approval', [PengajuanTrainingController::class, 'ImportApproval'])->name('ic.training.import-approval');
+        // Route::post('import-approval/submit', [PengajuanTrainingController::class, 'ImportApprovalSubmit'])->name('ic.training.import-approval-submit');
         
         Route::get('cross-check', [PengajuanTrainingController::class, 'CrossCheck'])->name('ic.training.crosscheck');
         Route::get('data-cross-check', [PengajuanTrainingController::class, 'DataCrossCheck'])->name('ic.training.data-crosscheck');
