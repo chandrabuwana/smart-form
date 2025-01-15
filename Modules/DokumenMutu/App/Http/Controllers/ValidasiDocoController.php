@@ -44,7 +44,7 @@ class ValidasiDocoController extends Controller
             'validator_type' => ''
         ];
 
-        if(in_array($doco->status, ['Belum Validasi', 'Sedang Validasi', 'Terdapat Feedback'])) {
+        if(in_array($doco->status, ['Belum Validasi', 'Sedang Validasi', 'Terdapat Feedback', 'Sudah Revisi'])) {
             $user = DB::table(self::T_KARYAWAN)->select('KodeDP', self::T_JABATAN . '.Nama AS NamaJB')
                 ->join(self::T_JABATAN, self::T_JABATAN . '.KodeJB', self::T_KARYAWAN . '.KodeJB')
                 ->where('NIK', $nikLoggedIn)->first();

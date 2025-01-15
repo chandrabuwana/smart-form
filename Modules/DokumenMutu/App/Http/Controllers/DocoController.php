@@ -107,7 +107,7 @@ class DocoController extends Controller
                 ->map( function($item) use($nikLoggedIn, $user) {
                     $item->is_validate = false;
 
-                    if(in_array($item->status, ['Belum Validasi', 'Sedang Validasi', 'Terdapat Feedback'])) {
+                    if(in_array($item->status, ['Belum Validasi', 'Sedang Validasi', 'Terdapat Feedback', 'Sudah Revisi'])) {
                         if($item->jenis_pengajuan == 'Penghapusan') {
                             $item->is_validate = $user->KodeDP == 'OD';
 
