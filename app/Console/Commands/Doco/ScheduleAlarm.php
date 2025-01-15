@@ -34,7 +34,7 @@ class ScheduleAlarm extends Command
         $thinktanks = DB::table(self::T_KARYAWAN)->whereIn('NIK', self::THINTANK)
             ->get()->pluck('Telp');
 
-        $yesterday = date('Y-m-d', strtotime('-1 days'));
+        $tomorrow = date('Y-m-d', strtotime('+1 days'));
         $today = date('Y-m-d');
 
         $pengajuans = DB::table(self::T_PENGAJUAN_DOCO)->select(self::T_PENGAJUAN_DOCO . '.*', self::T_VALIDASI_DOCO . '.jenis_validasi', self::T_KARYAWAN . '.KodeDP', self::T_KARYAWAN . '.Nama AS NamaKaryawan')
@@ -42,12 +42,12 @@ class ScheduleAlarm extends Command
             ->leftJoin(self::T_VERSI, self::T_VERSI . '.id_pengajuan_dokumen', self::T_PENGAJUAN_DOCO . '.id')
             ->leftJoin(self::T_VALIDASI_DOCO, self::T_VALIDASI_DOCO . '.id_versi', self::T_VERSI . '.id')
             ->where( function($q) {
-                $q->where('status', 'Belum Validasi')
-                    ->orWhere('status', 'Sedang Validasi');
+                $q->whereIn('status', ['Belum Validasi', 'Sedang Validasi', 'Terdapat Feedback', 'Sudah Revisi']);
 
-            })->whereDate('due_date', '<=', $yesterday)
+            })->whereDate('due_date', '<=', $tomorrow)
             // })
-            ->orderBy('due_date', 'ASC')->get();
+            ->orderBy('due_date', 'ASC')
+			->get()->unique('no_dokumen');
 
         DB::beginTransaction();
         try {
@@ -123,7 +123,7 @@ class ScheduleAlarm extends Command
 
                     if(!empty($phone)) {
                         $alarmService->sendMessage($phone, $message);
-                        echo "++== Alarm Sent to {$phone} ==++ \n<br>";
+                        echo "++== Alarm Sent to {$phone} ==++ \n";
                     }
                 }
             }
