@@ -98,7 +98,7 @@
             <div class="card my-4">
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                     <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                        <h6 class="text-white text-capitalize ps-3">Form Induksi Karyawan</h6>
+                        <h6 class="text-white text-capitalize ps-3">Form Upload Data Potongan</h6>
                     </div>
                 </div>
                 <div class="card-body my-1">
@@ -155,7 +155,7 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static my-4">
                                         <label for="pc_zip" class="ms-0">Upload Data ZIP </label>
-                                        <input type="file" class="form-control" name="pc_zip" id="pc_zip" />
+                                        <input type="file" class="form-control" name="pc_zip" id="pc_zip" accept="application/zip" />
                                         <small id="fileError" style="color:red; display:none;">Please upload a valid ZIP
                                             file.</small>
                                     </div>
@@ -223,9 +223,10 @@
                     <div class="card-footer">
                         <div class="row justify-content-between">
                             <div class="col-md-3">
-                                <button class="btn btn-primary ms-auto back-button-by-history">
+                                <a class="btn btn-primary ms-auto back-button-by-history" href="{{ route('bss-dahboard-fat-pph-dashboard') }}">
                                     <i class="fas fa-back"></i>
-                                    Back Page</button>
+                                    Back Page
+                                </a>
                             </div>
                         </div>
                     </div>

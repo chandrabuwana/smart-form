@@ -7,6 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use DB;
+use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpSpreadsheet\Calculation\Logical\Boolean;
 
 class HelperPPHController extends Controller
@@ -77,7 +78,7 @@ class HelperPPHController extends Controller
 
     function helperDataListMasterUploadDocumentPPH(Request $table)
     {
-        $query = "SELECT 
+        $query = "SELECT
         nodocpph,
         tsite,
         tahun,
@@ -146,6 +147,14 @@ class HelperPPHController extends Controller
         DB::beginTransaction();
         try {
             //code...
+            $data = DB::table('FM_FAT_PPH_DETAIL_DOCUMENT')->find($r->iden);
+            $fileContent = $r->file('pdf');
+            $parts = explode('_', $fileName);
+
+            $filename = $data->nodocpph . "_" . $parts[0] . "_" . $parts[1] .'.'. $parts[ count($parts) - 1 ];
+            $bucketPath = 'pph/' . $data->nodocpph . '/' . $filename;
+            Storage::disk('s3')->put($bucketPath, $fileContent);
+
             DB::table("FM_FAT_PPH_DETAIL_DOCUMENT")
                 ->where("id", "=", $r->iden)
                 ->where("nodocpph", "=", $r->code)

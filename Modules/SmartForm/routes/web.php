@@ -109,6 +109,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
                 Route::post('/hapus-document-potongan', [HelperPPHController::class, 'HapusDocumentPotonganPPH']);
                 Route::post('/update-document-potongan', [HelperPPHController::class, 'UpdateDocumentPotonganPPH']);
                 Route::get('/view-detail-master-potongan-pph/{id}', [PPHDashboardController::class, 'indexViewDataDetailMasterPPh']);
+                Route::get('/view-document/{id}', [PPHDashboardController::class, 'indexViewDetailDocument']);
             });
         });
 
@@ -306,14 +307,14 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
         Route::group(['middleware' => [PengajuanTrainingIC::class]], function () {
             Route::get('import-approval', [PengajuanTrainingController::class, 'ImportApproval'])->name('ic.training.import-approval');
             Route::post('import-approval/submit', [PengajuanTrainingController::class, 'ImportApprovalSubmit'])->name('ic.training.import-approval-submit');
-            
+
             Route::get('import-master-training', [PengajuanTrainingController::class, 'training'])->name('ic.training.master-training');
             Route::post('import-master-training', [PengajuanTrainingController::class, 'ImportMasterTraining'])->name('ic.training.submit-master-training');
             Route::get('import-std-jab', [PengajuanTrainingController::class, 'ImportStdJab'])->name('ic.training.import-std-jab');
             Route::get('import-atmp', [PengajuanTrainingController::class, 'atmp'])->name('ic.training.import-atmp');
             Route::post('import-atmp', [PengajuanTrainingController::class, 'ImportATMP'])->name('ic.training.submit-atmp');
         });
-        
+
         // Route::get('import-master-training', [PengajuanTrainingController::class, 'training'])->name('ic.training.master-training');
         // Route::post('import-master-training', [PengajuanTrainingController::class, 'ImportMasterTraining'])->name('ic.training.submit-master-training');
         // Route::get('import-std-jab', [PengajuanTrainingController::class, 'ImportStdJab'])->name('ic.training.import-std-jab');
@@ -322,7 +323,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
 
         // Route::get('import-approval', [PengajuanTrainingController::class, 'ImportApproval'])->name('ic.training.import-approval');
         // Route::post('import-approval/submit', [PengajuanTrainingController::class, 'ImportApprovalSubmit'])->name('ic.training.import-approval-submit');
-        
+
         Route::get('cross-check', [PengajuanTrainingController::class, 'CrossCheck'])->name('ic.training.crosscheck');
         Route::get('data-cross-check', [PengajuanTrainingController::class, 'DataCrossCheck'])->name('ic.training.data-crosscheck');
         Route::get('cross-check-dtl/{id}', [PengajuanTrainingController::class, 'CrossCheckDtl'])->name('ic.training.crosscheck-dtl');
