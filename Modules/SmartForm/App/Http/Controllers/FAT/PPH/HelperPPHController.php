@@ -12,9 +12,9 @@ use PhpOffice\PhpSpreadsheet\Calculation\Logical\Boolean;
 
 class HelperPPHController extends Controller
 {
-    protected const T_PPH_MASTER = 'PICA_BETA.dbo.FM_FAT_PPH_MASTER';
-    protected const V_NODOC_PPH = 'PICA_BETA.dbo.vw_master_nodocpph_FM_FAT_PPH';
-    protected const T_PPH_DETAIL_DOC = 'PICA_BETA.dbo.FM_FAT_PPH_DETAIL_DOCUMENT';
+    protected const T_PPH_MASTER = 'PICA.dbo.FM_FAT_PPH_MASTER';
+    protected const V_NODOC_PPH = 'PICA.dbo.vw_master_nodocpph_FM_FAT_PPH';
+    protected const T_PPH_DETAIL_DOC = 'PICA.dbo.FM_FAT_PPH_DETAIL_DOCUMENT';
 
     public function GetQueryListHasilUploadDocument(string $query, Request $req, bool $status)
     {
