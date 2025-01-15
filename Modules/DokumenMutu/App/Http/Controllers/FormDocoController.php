@@ -397,6 +397,14 @@ Terima kasih.";
             $filePath = $dokumen->storeAs($path, $originalName);
             $lastVersion = DB::table(self::T_VERSI_DOCO)->find($idVersi);
 
+            $dueDay = 3 - $lastVersion->no_versi;
+            $dueDate = date('Y-m-d', strtotime('+' . ($dueDay < 1 ? 1 : $dueDay) . ' days'));
+
+            DB::table(self::T_PENGAJUAN_DOCO)->where('id', $idPengajuan)->update([
+                'due_date' => $dueDate,
+                'status' => 'Sudah Revisi',
+            ]);
+
             if($lastVersion->no_versi > 1) {
                 $lastFilePath = storage_path('app/public/' . $lastVersion->file_path);
                 if(file_exists($lastFilePath)) {
