@@ -12,6 +12,10 @@ use PhpOffice\PhpSpreadsheet\Calculation\Logical\Boolean;
 
 class HelperPPHController extends Controller
 {
+    protected const T_PPH_MASTER = 'PICA_BETA.dbo.FM_FAT_PPH_MASTER';
+    protected const V_NODOC_PPH = 'PICA_BETA.dbo.vw_master_nodocpph_FM_FAT_PPH';
+    protected const T_PPH_DETAIL_DOC = 'PICA_BETA.dbo.FM_FAT_PPH_DETAIL_DOCUMENT';
+
     public function GetQueryListHasilUploadDocument(string $query, Request $req, bool $status)
     {
 
@@ -39,8 +43,8 @@ class HelperPPHController extends Controller
     function helperDataListHasilUploadDocument(Request $table)
     {
 
-        $query = "SELECT * FROM FM_FAT_PPH_DETAIL_DOCUMENT ms where ms.nodocpph = '" . $table->search['FILTERNODOC'] . "'  and ms.status = 1  ";
-        $queryCountDataUser = "select count(*) jumlah FROM FM_FAT_PPH_DETAIL_DOCUMENT ms where ms.nodocpph = '" . $table->search['FILTERNODOC'] . "' and ms.status = 1 ";
+        $query = "SELECT * FROM " .self::T_PPH_DETAIL_DOC." ms where ms.nodocpph = '" . $table->search['FILTERNODOC'] . "'  and ms.status = 1  ";
+        $queryCountDataUser = "select count(*) jumlah FROM " .self::T_PPH_DETAIL_DOC. " ms where ms.nodocpph = '" . $table->search['FILTERNODOC'] . "' and ms.status = 1 ";
         $newQuery = $this->GetQueryListHasilUploadDocument($query, $table, true);
         $newQueryCount = $this->GetQueryListHasilUploadDocument($queryCountDataUser, $table, false);
 
@@ -85,10 +89,10 @@ class HelperPPHController extends Controller
         bulan,
         created_at,
         status,
-        (select count(1) from FM_FAT_PPH_DETAIL_DOCUMENT d where d.nodocpph = ms.nodocpph) jumlah,
-        FORMAT(DATEFROMPARTS(tahun, bulan, 1), 'MMMM yyyy') as concat_bulan FROM FM_FAT_PPH_MASTER ms where 1 = 1  ";
+        (select count(1) from " .self::T_PPH_DETAIL_DOC. " d where d.nodocpph = ms.nodocpph) jumlah,
+        FORMAT(DATEFROMPARTS(tahun, bulan, 1), 'MMMM yyyy') as concat_bulan FROM " .self::T_PPH_MASTER. " ms where 1 = 1  ";
 
-        $countDataUser = DB::select("select count(*) jumlah FROM FM_FAT_PPH_MASTER ms where 1 = 1 ");
+        $countDataUser = DB::select("select count(*) jumlah FROM " .self::T_PPH_MASTER. " ms where 1 = 1 ");
         $newQuery = $this->GetQueryListMasterUploadDocumentPPH($query, $table);
 
         $dataUser = DB::select($newQuery);
@@ -105,7 +109,7 @@ class HelperPPHController extends Controller
         DB::beginTransaction();
         try {
             //code...
-            DB::table("FM_FAT_PPH_DETAIL_DOCUMENT")
+            DB::table(self::T_PPH_DETAIL_DOC)
                 ->where("id", "=", $r->iden)
                 ->where("nodocpph", "=", $r->code)
                 ->update([
@@ -147,7 +151,7 @@ class HelperPPHController extends Controller
         DB::beginTransaction();
         try {
             //code...
-            $data = DB::table('FM_FAT_PPH_DETAIL_DOCUMENT')->find($r->iden);
+            $data = DB::table(self::T_PPH_DETAIL_DOC)->find($r->iden);
             $fileContent = $r->file('pdf');
             $parts = explode('_', $fileName);
 
@@ -155,7 +159,7 @@ class HelperPPHController extends Controller
             $bucketPath = 'pph/' . $data->nodocpph . '/' . $filename;
             Storage::disk('s3')->put($bucketPath, $fileContent);
 
-            DB::table("FM_FAT_PPH_DETAIL_DOCUMENT")
+            DB::table(self::T_PPH_DETAIL_DOC)
                 ->where("id", "=", $r->iden)
                 ->where("nodocpph", "=", $r->code)
                 ->update([
