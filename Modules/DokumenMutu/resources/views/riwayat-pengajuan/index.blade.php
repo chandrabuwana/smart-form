@@ -496,6 +496,8 @@
                 formatData = '<span class="text-danger fw-bold">Dibatalkan Oleh Sistem</span>'
             } else if(value == 'Ditolak') {
                 formatData = '<span class="text-danger fw-bold">Ditolak</span>'
+            } else if(value == 'Sudah Revisi') {
+                formatData = '<span class="text-dark fw-bold">Sudah Revisi</span>'
             }
 
             return formatData;
@@ -616,7 +618,7 @@
             });
         }
 
-        // secureConfidential();
+        secureConfidential();
 
         $('#filterSite').select2({
             theme: 'bootstrap-5', // Menggunakan tema Bootstrap 5
