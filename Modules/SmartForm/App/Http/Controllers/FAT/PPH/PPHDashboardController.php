@@ -3,6 +3,7 @@
 namespace Modules\SmartForm\App\Http\Controllers\FAT\PPH;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use ZipArchive;
 use DB;
@@ -113,6 +114,22 @@ class PPHDashboardController extends Controller
             "dataDetail" => $dataDetail
         ];
         return view("SmartForm::FAT/PPH/detail-master-pph-vendor", $dataKirim);
+    }
+
+    function indexViewDetailDocument($id, Request $r)
+    {
+        $dataMaster = DB::table(self::T_PPH_DETAIL_DOC)->select(self::T_PPH_MASTER . '.*', self::T_PPH_DETAIL_DOC . '.nama_file')
+            ->selectRaw("DATENAME(MONTH, DATEFROMPARTS(2024, bulan, 1)) AS nama_bulan")
+            ->join(self::T_PPH_MASTER, self::T_PPH_MASTER . '.nodocpph', self::T_PPH_DETAIL_DOC . '.nodocpph')
+            ->where(self::T_PPH_DETAIL_DOC . '.id', $id)->first();
+
+        $docBucketPath = 'pph/' . $dataMaster->nodocpph . '/' . $dataMaster->nama_file;
+        $docUrl = Storage::disk('s3')->temporaryUrl($docBucketPath, Carbon::now()->addMinutes(5));
+
+        return view("SmartForm::FAT/PPH/detail-document", [
+            'dataMaster' => $dataMaster,
+            'docUrl' => $docUrl
+        ]);
     }
 
 }
