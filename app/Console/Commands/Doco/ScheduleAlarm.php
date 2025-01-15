@@ -105,18 +105,18 @@ class ScheduleAlarm extends Command
                 }
 
                 $message = "⏰ Peringatan: Dokumen Belum Diperiksa\n
-    Halo Bapak/Ibu,\n
-    Kami mengingatkan bahwa dokumen berikut belum diperiksa dalam waktu yang telah ditentukan:\n
-    {$overdueMsg}
-    Jenis Dokumen:  {$pengajuan->jenis_dokumen}
-    Nama Dokumen: {$pengajuan->judul_dokumen}
-    Nomor Dokumen: {$pengajuan->no_dokumen}
-    Tanggal Dibuat: {$date}
-    Dibuat oleh: {$pengajuan->NamaKaryawan}
-    Batas Waktu Pengecekan: {$dueDate}
-    Silakan cek dokumen di sini: {$url}\n
-    Mohon untuk segera melakukan pengecekan dan tindak lanjut sesuai prosedur yang berlaku.
-    Terima kasih atas perhatian dan kerjasamanya.";
+Halo Bapak/Ibu,\n
+Kami mengingatkan bahwa dokumen berikut belum diperiksa dalam waktu yang telah ditentukan:\n
+{$overdueMsg}
+Jenis Dokumen:  {$pengajuan->jenis_dokumen}
+Nama Dokumen: {$pengajuan->judul_dokumen}
+Nomor Dokumen: {$pengajuan->no_dokumen}
+Tanggal Dibuat: {$date}
+Dibuat oleh: {$pengajuan->NamaKaryawan}
+Batas Waktu Pengecekan: {$dueDate}
+Silakan cek dokumen di sini: {$url}\n
+Mohon untuk segera melakukan pengecekan dan tindak lanjut sesuai prosedur yang berlaku.
+Terima kasih atas perhatian dan kerjasamanya.";
 
                 foreach($phones as $phone) {
                     $phone = trim(trim($phone, "'"));
