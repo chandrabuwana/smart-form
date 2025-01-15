@@ -43,8 +43,8 @@ class ScheduleAlarm extends Command
                 $q->where('status', 'Belum Validasi')
                     ->orWhere('status', 'Sedang Validasi');
 
-            // })->whereDate('due_date', '<=', $yesterday)
-            })
+            })->whereDate('due_date', '<=', $yesterday)
+            // })
             ->orderBy('due_date', 'ASC')->get();
 
         DB::beginTransaction();
