@@ -13,6 +13,7 @@ class ScheduleAlarm extends Command
     protected const T_MASTER_VALIDATOR = 'DB_Dokumen_Mutu.dbo.T_Master_Validator';
     protected const T_KARYAWAN = 'HRD.dbo.TKaryawan';
     protected const T_JABATAN = 'HRD.dbo.tjabatan';
+    protected const T_VERSI = 'DB_Dokumen_Mutu.dbo.T_Versi_Dokumen';
 
     protected const THINTANK = [
         '1001384',
@@ -38,7 +39,8 @@ class ScheduleAlarm extends Command
 
         $pengajuans = DB::table(self::T_PENGAJUAN_DOCO)->select(self::T_PENGAJUAN_DOCO . '.*', self::T_VALIDASI_DOCO . '.jenis_validasi', self::T_KARYAWAN . '.KodeDP', self::T_KARYAWAN . '.Nama AS NamaKaryawan')
             ->join(self::T_KARYAWAN, self::T_KARYAWAN . '.NIK', self::T_PENGAJUAN_DOCO . '.nik_pemohon')
-            ->leftJoin(self::T_VALIDASI_DOCO, self::T_VALIDASI_DOCO . '.id_pengajuan_dokumen', self::T_PENGAJUAN_DOCO . '.id')
+            ->leftJoin(self::T_VERSI, self::T_VERSI . '.id_pengajuan_dokumen', self::T_PENGAJUAN_DOCO . '.id')
+            ->leftJoin(self::T_VALIDASI_DOCO, self::T_VALIDASI_DOCO . '.id_versi', self::T_VERSI . '.id')
             ->where( function($q) {
                 $q->where('status', 'Belum Validasi')
                     ->orWhere('status', 'Sedang Validasi');
