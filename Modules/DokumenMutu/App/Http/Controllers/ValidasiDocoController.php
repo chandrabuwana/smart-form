@@ -126,6 +126,11 @@ class ValidasiDocoController extends Controller
         $isValidate = ($grant['index'] - 1) == $validateIndex;
         $isOverdue = strtotime(date('Y-m-d')) > strtotime($doco->due_date);
 
+        $jenisValidators = DB::table(self::T_MASTER_VALIDATOR)->select('jenis_validator')
+            ->where('jenis_dokumen', $doco->jenis_dokumen)
+            ->orderBy('id', 'asc')->get()
+            ->pluck('jenis_validator')->unique()->all();
+
         return view('DokumenMutu::validasi.index', [
             'doco' => $doco,
             'validateIndex' => $validateIndex,
@@ -134,7 +139,8 @@ class ValidasiDocoController extends Controller
             'lastVersion' => $lastVersion,
             'tKaryawan' => $tKaryawan,
             'validator_type' => $grant['validator_type'],
-            'versions' => $versions
+            'versions' => $versions,
+            'jenisValidators' => $jenisValidators,
         ]);
     }
 
