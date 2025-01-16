@@ -146,30 +146,34 @@
                             <h5 class="text-white mb-0 d-inline">Pembuatan</h5>
                         </div>
 
-                        @if($validateIndex >= 1)
-                            <div class="bg-success rounded px-5 py-3 text-white" style="width: fit-content;">
-                                <i class="fas fa-check-circle fa-xl me-1"></i>
-                                <h5 class="text-white mb-0 d-inline">Pemeriksaan</h5>
-                            </div>
+                        @if(in_array('verifikasi', $jenisValidators))
+                            @if($validateIndex >= 1)
+                                <div class="bg-success rounded px-5 py-3 text-white" style="width: fit-content;">
+                                    <i class="fas fa-check-circle fa-xl me-1"></i>
+                                    <h5 class="text-white mb-0 d-inline">Pemeriksaan</h5>
+                                </div>
 
-                        @else
-                            <div class="{{ $doco->status == 'Ditolak' ? 'bg-danger' : 'bg-warning' }} rounded px-5 py-3 text-white" style="width: fit-content;">
-                                <i class="fas {{ $doco->status == 'Ditolak' ? 'fa-exclamation' : 'fa-spinner' }} fa-xl me-1"></i>
-                                <h5 class="text-white mb-0 d-inline">Pemeriksaan</h5>
-                            </div>
+                            @else
+                                <div class="{{ $doco->status == 'Ditolak' ? 'bg-danger' : 'bg-warning' }} rounded px-5 py-3 text-white" style="width: fit-content;">
+                                    <i class="fas {{ $doco->status == 'Ditolak' ? 'fa-exclamation' : 'fa-spinner' }} fa-xl me-1"></i>
+                                    <h5 class="text-white mb-0 d-inline">Pemeriksaan</h5>
+                                </div>
+                            @endif
                         @endif
 
-                        @if($validateIndex >= 2)
-                            <div class="bg-success rounded px-5 py-3 text-white" style="width: fit-content;">
-                                <i class="fas fa-check-circle fa-xl me-1"></i>
-                                <h5 class="text-white mb-0 d-inline">Validasi</h5>
-                            </div>
+                        @if(in_array('validasi', $jenisValidators))
+                            @if($validateIndex >= 2)
+                                <div class="bg-success rounded px-5 py-3 text-white" style="width: fit-content;">
+                                    <i class="fas fa-check-circle fa-xl me-1"></i>
+                                    <h5 class="text-white mb-0 d-inline">Validasi</h5>
+                                </div>
 
-                        @else
-                            <div class="{{ $doco->status == 'Ditolak' ? 'bg-danger' : 'bg-warning' }} rounded px-5 py-3 text-white" style="width: fit-content;">
-                                <i class="fas {{ $doco->status == 'Ditolak' ? 'fa-exclamation' : 'fa-spinner' }} fa-xl me-1"></i>
-                                <h5 class="text-white mb-0 d-inline">Validasi</h5>
-                            </div>
+                            @else
+                                <div class="{{ $doco->status == 'Ditolak' ? 'bg-danger' : 'bg-warning' }} rounded px-5 py-3 text-white" style="width: fit-content;">
+                                    <i class="fas {{ $doco->status == 'Ditolak' ? 'fa-exclamation' : 'fa-spinner' }} fa-xl me-1"></i>
+                                    <h5 class="text-white mb-0 d-inline">Validasi</h5>
+                                </div>
+                            @endif
                         @endif
                     </div>
 
