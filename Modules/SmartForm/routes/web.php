@@ -21,6 +21,7 @@ use Modules\SmartForm\App\Http\Controllers\SHE\TransactionSHEFRM19BController;
 use Modules\SmartForm\App\Http\Controllers\SKL\DashboardSKLController;
 use Modules\SmartForm\App\Http\Controllers\SKL\SKLFormController;
 use Modules\SmartForm\App\Http\Controllers\SM\AssetRequestController;
+use Modules\SmartForm\App\Http\Controllers\LOG\LogController;
 use Modules\SmartForm\App\Http\Controllers\SmartFormController;
 use Modules\SmartForm\App\Http\Controllers\SmartPica\DashboarController;
 use Modules\SmartForm\App\Http\Controllers\SmartPica\HelperController;
@@ -53,6 +54,23 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/form', [PlantTransmissionController::class, 'form'])->name('bss-form.plant-transmission.form');
             Route::post('/form/store', [PlantTransmissionController::class, 'store'])->name('bss-form.plant-transmission.store');
             Route::get('/download-report', [PlantTransmissionController::class, 'downloadReport'])->name('bss-form.plant-transmission.download');
+        });
+
+        // LOG BNP
+        Route::prefix('log')->group(function () {
+            // REQUEST MASTER MENU
+            Route::get('/request-master', [LogController::class, 'RequestMasterDashboard'])->name('bss-form.log.request-master.dashboard');
+            Route::get('/list', [LogController::class, 'GetFormsRequestMaster'])->name("get-forms-Request-Master");
+            Route::get('/form', [LogController::class, 'form'])->name('bss-form.log.form');
+            // PERMINTAAN PENGISIAN FUEL
+            Route::get('/request-fuel', [LogController::class, 'FuelDashboard'])->name('bss-form.log.fuel.dashboard');
+            Route::get('/list-fuel', [LogController::class, 'GetListRequestFuel'])->name("bss-form.log.list-fuel");
+            Route::get('/form-fuel', [LogController::class, 'FormFuel'])->name('bss-form.log.form-fuel');
+            Route::post('/create-fuel', [LogController::class, 'CreateReqFuel'])->name('bss-form.log.create-req-fuel');
+            Route::get('/edit-fuel/{id}', [LogController::class, 'editReqFuel'])->name('bss-form.log.edit-req-fuel');
+            Route::post('/update-fuel/{id}', [LogController::class, 'updateReqFuel'])->name('bss-form.log.update-req-fuel');
+            Route::get('/delete-fuel/{id}', [LogController::class, 'DeleteReqFuel'])->name('bss-form.log.delete-fuel');
+            Route::get('/pdf-fuel/{id}', [LogController::class, 'PdfReqFuel'])->name('bss-form.log.pdf-fuel');
         });
 
         Route::prefix('under-carriage')->group(function () {
@@ -235,7 +253,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
         Route::get('/edit/{id}', [RoleManagementController::class, 'edit'])->name('role-management.edit');
         Route::post('/edit/update/{id}', [RoleManagementController::class, 'update'])->name('role-management.store-edit');
         Route::get('/destroy/{id}', [RoleManagementController::class, 'destroy'])->name('role-management.destroy');
-    });
+    }); 
 
     Route::prefix('user-management')->group(function () {
         Route::get('/dashboard', [UserManagementController::class, 'dashboard'])->name('user-management.dashboard');
