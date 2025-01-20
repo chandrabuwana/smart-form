@@ -2,7 +2,9 @@
 
 namespace Modules\DokumenMutu\App\Http\Controllers;
 
+use App\Helper;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -116,7 +118,10 @@ class ValidasiDocoController extends Controller
             $lastVersion = $versions->last();
         }
 
-        $doco->file_path = url('storage/' . $lastVersion->file_path);
+        // $doco->file_path = url('storage/' . $lastVersion->file_path);
+        $doco->file_path = Storage::disk('s3')->temporaryUrl($lastVersion->file_path, Carbon::now()->addMinutes(5));
+        $doco->file_path = base64_encode(file_get_contents($doco->file_path));
+
         $validateIndex = DB::table(self::T_VALIDASI_DOCO)
             ->where('id_versi', $lastVersion->id)->count('id');
 
@@ -163,14 +168,54 @@ class ValidasiDocoController extends Controller
                 ->orderBy('no_versi', 'desc')->first();
 
             $prevFilePath = $lastVersion->file_path;
-            $originalName = $documentValidated->getClientOriginalName();
+            $originalName = time() . '_' . $documentValidated->getClientOriginalName();
             $path = 'dokumen_mutu/pembuatan/' . $doco->KodeDP;
 
-            if(file_exists( storage_path('app/public/' . $prevFilePath) )) {
-                @unlink(storage_path('app/public/' . $prevFilePath));
+            // if(file_exists( storage_path('app/public/' . $prevFilePath) )) {
+            //     @unlink(storage_path('app/public/' . $prevFilePath));
+            // }
+
+            if( Storage::disk('s3')->exists($prevFilePath) ) {
+                Storage::disk('s3')->delete($prevFilePath);
+
+                $prevFileName = Helper::getFileNameFromPath($prevFilePath);
+                $previewPrevFilePath = str_replace($prevFileName, 'preview_' . $prevFileName, $prevFilePath);
+
+                if( Storage::disk('s3')->exists($previewPrevFilePath) ) {
+                    Storage::disk('s3')->delete($previewPrevFilePath);
+                }
             }
 
-            $filePath = $documentValidated->storeAs($path, $originalName);
+            $tempFilePath = $request->file('dokumenTervalidasi')->storeAs($path, $originalName);
+            $tempFilePath = storage_path('app/public/' . $tempFilePath);
+
+            putenv('PATH=' . env('DOCO_GS_PATH'));
+            shell_exec('gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile="' . $tempFilePath . '" "' . $tempFilePath . '"');
+
+            $mpdf = new Mpdf();
+            $pageCount = $mpdf->setSourceFile($tempFilePath);
+
+            for($i=1; $i <= $pageCount; $i++) {
+                $tplIdx = $mpdf->ImportPage($i);
+
+                $mpdf->SetWatermarkText('Preview Only');
+                $mpdf->showWatermarkText = true;
+
+                $mpdf->AddPage();
+                $mpdf->useTemplate($tplIdx, 10, 10, 200);
+            }
+
+            $previewTempFilePath = str_replace($originalName, 'preview_' . $originalName, $tempFilePath);
+            $mpdf->OutputFile($previewTempFilePath);
+
+            $fileContent = file_get_contents($tempFilePath);
+            Storage::disk('s3')->put($path .'/'. $originalName, $fileContent);
+
+            $previewFileContent = file_get_contents($previewTempFilePath);
+            Storage::disk('s3')->put($path .'/preview_'. $originalName, $previewFileContent);
+
+            @unlink($previewTempFilePath);
+            @unlink($tempFilePath);
 
             $validate = DB::table(self::T_VALIDASI_DOCO)
                 ->distinct('jenis_validasi')
@@ -203,7 +248,7 @@ class ValidasiDocoController extends Controller
             }
 
             DB::table(self::T_VERSI_DOCO)->where('id', $lastVersion->id)->update([
-                'file_path' => $filePath,
+                'file_path' => $path .'/'. $originalName,
                 'updated_at' => now()
             ]);
 
@@ -228,7 +273,7 @@ class ValidasiDocoController extends Controller
                         'no_dokumen' => $doco->no_dokumen,
                         'judul_dokumen' => $doco->judul_dokumen,
                         'jenis_dokumen' => $doco->jenis_dokumen,
-                        'file_path' => $filePath,
+                        'file_path' => $path .'/'. $originalName,
                         'status' => 'Aktif',
                         'no_revisi' => $noRevisi,
                         'created_at' => now(),
@@ -241,7 +286,7 @@ class ValidasiDocoController extends Controller
                         'no_dokumen' => $doco->no_dokumen,
                         'judul_dokumen' => $doco->judul_dokumen,
                         'jenis_dokumen' => $doco->jenis_dokumen,
-                        'file_path' => $filePath,
+                        'file_path' => $path .'/'. $originalName,
                         'status' => 'Aktif',
                         'created_at' => now(),
                     ]);
@@ -328,6 +373,7 @@ class ValidasiDocoController extends Controller
         } catch(\Throwable $e) {
             DB::rollBack();
             Log::error($e);
+            dd($e);
             return redirect()->back()->with('error', 'Terjadi kesalahan, mohon coba beberapa saat lagi');
         }
     }

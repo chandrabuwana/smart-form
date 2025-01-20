@@ -186,4 +186,10 @@ class Helper
             return "$seconds detik";
         }
     }
+
+    public static function getFileNameFromPath($path) {
+        $exploded = explode('/', $path);
+        $count = count($exploded);
+        return $exploded[ $count - 1 ];
+    }
 }
