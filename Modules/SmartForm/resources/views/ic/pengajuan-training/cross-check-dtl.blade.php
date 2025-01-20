@@ -960,13 +960,16 @@
             $("#table-urgensi").bootstrapTable("getData").forEach(element => {
                 dataBody.urgensi.push(element.urgensi)
             })
+
+            let appovalThinkTank = false
             
             let belumValidasi = []
             $('#table-data').bootstrapTable('getData').filter((data)=> {
-                if(data.status_id == 0 || data.matrix_mk < 1) belumValidasi.push(data.NIK)
-                return data.status_id == 0
+                if(data.id == 0 || data.matrix_mk < 1) appovalThinkTank = true
+                return data.id == 0
             })
-            if(belumValidasi.length > 0) dataBody.approval['5'] = $("#level5").val()
+            // if(belumValidasi.length > 0) dataBody.approval['5'] = $("#level5").val()
+            if(appovalThinkTank) dataBody.approval['5'] = $("#level5").val()
         
             console.log(dataBody)
             // return
