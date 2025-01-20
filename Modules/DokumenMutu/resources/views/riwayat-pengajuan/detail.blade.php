@@ -218,6 +218,7 @@
 
                     <div class="row">
                         <div class="col-md-8">
+                            {{-- <iframe src="{{ $doco->file_converted_path }}" width="100%" frameborder="0"></iframe> --}}
                             <div id="pdf_container"></div>
                         </div>
 
@@ -386,7 +387,7 @@
         const ID_VERSI = `{{ $lastVersion->id }}`;
 
         function LoadPdfFromUrl(url) {
-            pdfjsLib.getDocument(url).promise.then(function (pdfDoc_) {
+            pdfjsLib.getDocument({ data: atob(url) }).promise.then(function (pdfDoc_) {
                 pdfDoc = pdfDoc_;
                 let pdf_container = document.getElementById("pdf_container");
                 pdf_container.style.display = "block";

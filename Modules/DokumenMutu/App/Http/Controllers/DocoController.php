@@ -3,12 +3,14 @@
 namespace Modules\DokumenMutu\App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Mpdf\Mpdf;
+use Illuminate\Support\Facades\Storage;
 
 class DocoController extends Controller
 {
@@ -332,33 +334,35 @@ class DocoController extends Controller
         $expFilePath = explode('/', $lastVersion->file_path);
         $filename = $expFilePath[ count($expFilePath) - 1 ];
 
-        $doco->file_path = url('storage/' . $lastVersion->file_path);
-        $doco->file_converted_path = str_replace($filename, 'converted_' . $filename, $lastVersion->file_path);
+        // $doco->file_path = url('storage/' . $lastVersion->file_path);
+        // $doco->file_converted_path = str_replace($filename, 'converted_' . $filename, $lastVersion->file_path);
 
-        $convertedPath = str_replace('\\', '/', storage_path('app/public/' . $doco->file_converted_path));
-        $originalPath = str_replace('\\', '/', storage_path('app/public/' . $lastVersion->file_path));
+        // $convertedPath = str_replace('\\', '/', storage_path('app/public/' . $doco->file_converted_path));
+        // $originalPath = str_replace('\\', '/', storage_path('app/public/' . $lastVersion->file_path));
 
-        if(!file_exists($convertedPath)) {
-            putenv('PATH=' . env('DOCO_GS_PATH'));
-            shell_exec('gswin64 -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile="' . $convertedPath . '" "' . $originalPath . '"');
+        // if(!file_exists($convertedPath)) {
+        //     putenv('PATH=' . env('DOCO_GS_PATH'));
+        //     shell_exec('gswin64 -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile="' . $convertedPath . '" "' . $originalPath . '"');
 
-            $mpdf = new Mpdf();
-            $pageCount = $mpdf->setSourceFile($convertedPath);
+        //     $mpdf = new Mpdf();
+        //     $pageCount = $mpdf->setSourceFile($convertedPath);
 
-            for($i=1; $i <= $pageCount; $i++) {
-                $tplIdx = $mpdf->ImportPage($i);
+        //     for($i=1; $i <= $pageCount; $i++) {
+        //         $tplIdx = $mpdf->ImportPage($i);
 
-                $mpdf->SetWatermarkText('Preview Only');
-                $mpdf->showWatermarkText = true;
+        //         $mpdf->SetWatermarkText('Preview Only');
+        //         $mpdf->showWatermarkText = true;
 
-                $mpdf->AddPage();
-                $mpdf->useTemplate($tplIdx, 10, 10, 200);
-            }
+        //         $mpdf->AddPage();
+        //         $mpdf->useTemplate($tplIdx, 10, 10, 200);
+        //     }
 
-            $mpdf->OutputFile($convertedPath);
-        }
+        //     $mpdf->OutputFile($convertedPath);
+        // }
 
-        $doco->file_converted_path = url('storage/' . $doco->file_converted_path);
+        $previewPath = str_replace($filename, 'preview_' . $filename, $lastVersion->file_path);
+        $doco->file_converted_path = Storage::disk('s3')->temporaryUrl($previewPath, Carbon::now()->addMinutes(5));
+        $doco->file_converted_path = base64_encode(file_get_contents($doco->file_converted_path));
 
         $validates = DB::table(self::T_VALIDASI_DOCO)
             ->where('id_versi', $lastVersion->id)
