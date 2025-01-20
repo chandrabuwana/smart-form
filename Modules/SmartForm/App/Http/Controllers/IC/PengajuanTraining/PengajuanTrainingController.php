@@ -325,6 +325,7 @@ class PengajuanTrainingController extends Controller {
         // return response()->json(['isSuccess' => false, 'message' =>  $approval]);
 
         try {
+            DB::connection(self::DB_CONN_NAME)->beginTransaction();
             // select top 1 pt.id as pengajuan_id, mt.id as training_id, mt.nama as training_nama
             //     from pengajuan_training as pt
             //     left join m_training as mt on pt.m_training_id = mt.id
@@ -393,7 +394,7 @@ class PengajuanTrainingController extends Controller {
                 ->leftJoin(self::T_M_TRAINING . ' as mt', 'pt.m_training_id', '=', 'mt.id')
                 ->where('pt.id', $pengajuanId)->first();
 
-            DB::connection(self::DB_CONN_NAME)->beginTransaction();
+            
             // TODO : update status trj menjadi 1
             DB::connection(self::DB_CONN_NAME)->table(self::T_TRJ)->where('id', $trjId)
                 ->update($dataUpdateTRJ);
@@ -489,45 +490,45 @@ class PengajuanTrainingController extends Controller {
                         ]);
                     // $listIdKomitmen[] = $trainingKomitmenId;
 
-                    foreach($approval as $key => $value) {
-                        if($key > 2) {
-                            DB::connection(self::DB_CONN_NAME)->table(self::T_TRJ_APPROVAL)->insert([
-                            // Log::info([
-                                'trj_id' => $trjId,
-                                'm_training_approval_id' => $value,
-                                'jenis' => 'diketahui',
-                                'approval_order' => $_tempAppr['diketahui'],
-                                'status' => 0,
-                                'created_at' => $tgl,
-                                'created_by' => $nik_session
-                            ]);
-                            $_tempAppr['diketahui']++;
-                        } else if($key > 1) {
-                            DB::connection(self::DB_CONN_NAME)->table(self::T_TRJ_APPROVAL)->insert([
-                            // Log::info([
-                                'trj_id' => $trjId,
-                                'm_training_approval_id' => $value,
-                                'jenis' => 'disetujui',
-                                'approval_order' => $_tempAppr['disetujui'],
-                                'status' => 0,
-                                'created_at' => $tgl,
-                                'created_by' => $nik_session
-                            ]);
-                            $_tempAppr['disetujui']++;
-                        } else if($key > 0) {
-                            DB::connection(self::DB_CONN_NAME)->table(self::T_TRJ_APPROVAL)->insert([
-                            // Log::info([
-                                'trj_id' => $trjId,
-                                'm_training_approval_id' => $value,
-                                'jenis' => 'dibuat',
-                                'approval_order' => $_tempAppr['dibuat'],
-                                'status' => 0,
-                                'created_at' => $tgl,
-                                'created_by' => $nik_session
-                            ]);
-                            $_tempAppr['dibuat']++;
-                        }
-                    } 
+                    // foreach($approval as $key => $value) {
+                    //     if($key > 2) {
+                    //         DB::connection(self::DB_CONN_NAME)->table(self::T_TRJ_APPROVAL)->insert([
+                    //         // Log::info([
+                    //             'trj_id' => $trjId,
+                    //             'm_training_approval_id' => $value,
+                    //             'jenis' => 'diketahui',
+                    //             'approval_order' => $_tempAppr['diketahui'],
+                    //             'status' => 0,
+                    //             'created_at' => $tgl,
+                    //             'created_by' => $nik_session
+                    //         ]);
+                    //         $_tempAppr['diketahui']++;
+                    //     } else if($key > 1) {
+                    //         DB::connection(self::DB_CONN_NAME)->table(self::T_TRJ_APPROVAL)->insert([
+                    //         // Log::info([
+                    //             'trj_id' => $trjId,
+                    //             'm_training_approval_id' => $value,
+                    //             'jenis' => 'disetujui',
+                    //             'approval_order' => $_tempAppr['disetujui'],
+                    //             'status' => 0,
+                    //             'created_at' => $tgl,
+                    //             'created_by' => $nik_session
+                    //         ]);
+                    //         $_tempAppr['disetujui']++;
+                    //     } else if($key > 0) {
+                    //         DB::connection(self::DB_CONN_NAME)->table(self::T_TRJ_APPROVAL)->insert([
+                    //         // Log::info([
+                    //             'trj_id' => $trjId,
+                    //             'm_training_approval_id' => $value,
+                    //             'jenis' => 'dibuat',
+                    //             'approval_order' => $_tempAppr['dibuat'],
+                    //             'status' => 0,
+                    //             'created_at' => $tgl,
+                    //             'created_by' => $nik_session
+                    //         ]);
+                    //         $_tempAppr['dibuat']++;
+                    //     }
+                    // } 
                     
                         // Helper::SFNotification($value['NIK'], 'Anda diajukan untuk mengikuti ' . $namaTraining->training_nama, 'info', '/ic/training/form-komitmen/'.$trainingKomitmenId);
                 } else {
