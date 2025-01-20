@@ -78,7 +78,7 @@
             <div class="card my-4 pb-5">
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 my-2">
                     <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                        <h6 class="text-white text-capitalize ps-3">{{ $pelatihan->pelatihan }} - {{ $pelatihan->id_training }} - {{ $pelatihan->pengajuan_id }} - {{ $pelatihan->bulan }}/{{ $pelatihan->tahun }}</h6>
+                        <h6 class="text-white text-capitalize ps-3">{{ $pelatihan->pelatihan }}</h6>
                     </div>
                 </div>
                 <div class="card-body px-0 pb-2">
@@ -184,6 +184,11 @@
                                 <td style="vertical-align: top;">Nama Training</td>
                                 <td style="vertical-align: top;"> : </td>
                                 <td>{{ $data->training_nama }}</td>
+                            </tr>
+                            <tr>
+                                <td style="vertical-align: top;">Plan Pelaksanaan</td>
+                                <td style="vertical-align: top;"> : </td>
+                                <td>{{ $pelatihan->planPelatihan }}</td>
                             </tr>
                             <tr>
                                 <td style="vertical-align: top;">Tanggal Pelaksanaan</td>

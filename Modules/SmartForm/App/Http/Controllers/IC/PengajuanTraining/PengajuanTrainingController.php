@@ -65,6 +65,20 @@ class PengajuanTrainingController extends Controller {
         'BUSDEV' => 'BDV',
         'INTERNAL AUDIT' => 'OD',
     ];
+    private  $bulanMapping = [
+        '1' => 'Janurari',
+        '2' => 'Februari',
+        '3' => 'Maret', 
+        '4' => 'April',
+        '5' => 'Mei',
+        '6' => 'Juni',
+        '7' => 'Juli',
+        '8' => 'Agustus',
+        '9' => 'September',
+        '10' => 'Oktober',
+        '11' => 'November',
+        '12' => 'Desember'
+    ];
 
     public function index() {
         // $data = DB::connection("sqlsrv_training")->table('m_training')->get();
@@ -473,7 +487,7 @@ class PengajuanTrainingController extends Controller {
                             'created_at' => $tgl,
                             'created_by' => $nik_session,
                         ]);
-                    $listIdKomitmen[] = $trainingKomitmenId;
+                    // $listIdKomitmen[] = $trainingKomitmenId;
 
                     foreach($approval as $key => $value) {
                         if($key > 2) {
@@ -730,6 +744,7 @@ class PengajuanTrainingController extends Controller {
             ->leftJoin(self::T_HRD_DEPT . ' as td', 'trj.KodeDP', '=', 'td.KodeDP')
             ->leftJoin(self::T_HRD_KARYAWAN . ' as tk', 'trj.created_by', '=', 'tk.NIK')
             ->where('trj.id', $id)->first();
+        if(!$sqlTRJ) return abort(404, 'Data pelatihan tidak ditemukan');
         if($sqlTRJ) {
             try {
                 $parsedTgl = Carbon::parse($sqlTRJ->tanggal)->locale('id');
@@ -746,7 +761,7 @@ class PengajuanTrainingController extends Controller {
             ->leftJoin(self::T_M_TRAINING . ' as mt', 'pt.m_training_id', '=', 'mt.id')
             ->where('trj.id', $id);
         $pelatihan = $sqlDataPelatihan->first();
-        // dd($pelatihan);
+        $pelatihan->planPelatihan = $this->bulanMapping[$pelatihan->bulan] . ' ' . $pelatihan->tahun;
         $crossCheckPIC = $this->getChecker($pelatihan->KodeDP_trj, $pelatihan->KodeST_trj);
         
         $sqlDataStdJab = DB::connection(self::DB_CONN_NAME)->table(self::T_TRJ . ' as trj')
@@ -1446,8 +1461,10 @@ class PengajuanTrainingController extends Controller {
             }
         }
 
-        $tgldibuat = $dataKomitmen->status != 0 ? Carbon::parse($dataKomitmen->tanggal_dibuat)->format('d-m-Y') : now()->format('d-m-Y');
+        $tgldibuat = $dataKomitmen->status != 0 ? Carbon::parse($dataKomitmen->tanggal_dibuat) : now();
 
+        // dd(Carbon::parse($dataKomitmen->tanggal_dibuat)->locale('id')->month);
+        $tgldibuat = $tgldibuat->day . " " . $this->bulanMapping[$tgldibuat->month] . " " . $tgldibuat->year;
         // dd($selectedApproval);
         return view('smartform::ic/pengajuan-training/form-komitmen', [
             'data' => $dataKomitmen, 'dataApproval' => $dataApproval, 'komitmenId' => $id,
