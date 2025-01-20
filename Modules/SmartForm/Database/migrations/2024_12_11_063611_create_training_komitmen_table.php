@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('KodeST', 20)->nullable();
             $table->string('nama')->nullable();
             $table->string('status')->nullable();
-            $table->integer('alasan_id')->nullable();
+            $table->integer('alasan_id')->nullable()->comment("0 = training mandiri, 1 = Menolak / Alasan lain (akan dikelola oleh IC sesuai PKB)");
             $table->bigInteger('m_training_id')->nullable();
             $table->bigInteger('pengajuan_training_id')->nullable();
             $table->bigInteger('pengajuan_training_detail_id')->nullable();
