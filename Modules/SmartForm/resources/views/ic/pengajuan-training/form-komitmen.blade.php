@@ -224,13 +224,13 @@
                             </table>
                             <div id="fieldMenolak" style="display: none;">
                                 <div class="form-check mt-3">
-                                    <input class="form-check-input" type="radio" name="alasanMenolak" id="flexRadioDefault1" style="margin: 0;">
+                                    <input class="form-check-input" type="radio" name="alasanMenolak" id="flexRadioDefault1" style="margin: 0;" value="0">
                                     <label class="form-check-label" for="flexRadioDefault1" style="margin-left: 8px; margin-bottom: 0;">
                                         Training Mandiri
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="alasanMenolak" id="flexRadioDefault2" style="margin: 0;">
+                                    <input class="form-check-input" type="radio" name="alasanMenolak" id="flexRadioDefault2" style="margin: 0;" value="1">
                                     <label class="form-check-label" for="flexRadioDefault2" style="margin-left: 8px; margin-bottom: 0;">
                                         Menolak / Alasan lain <em>(akan dikelola oleh IC sesuai PKB)</em>
                                     </label>
@@ -242,6 +242,7 @@
                             </div>
                         </div>
                     @else
+                    {{-- {{ dd($selectedApproval) }} --}}
                         <div class="table-responsive p-0">
                             <table class="table-approval" style="width: 100%;">
                                 <tr>
@@ -317,12 +318,14 @@
         const fieldMenolak = document.getElementById("fieldMenolak")
 
         const elem = document.getElementById("inputPeriode")
-        const datepicker = new Datepicker(elem, {
-            format: "dd MM yyyy",
-            pickLevel: 1
-        })
+        // const datepicker = new Datepicker(elem, {
+        //     format: "dd-MM-yyyy",
+        //     pickLevel: 1
+        // })
+        // console.log({{ Illuminate\Support\Js::from($tglDibuat) }});
+        $("#inputPeriode").val({{ Illuminate\Support\Js::from($tglDibuat) }})
 
-        datepicker.setDate({{ $data->NIK == session('user_id') ? Illuminate\Support\Js::from($tglDibuat) : ''}})
+        // datepicker.setDate({{ $data->NIK == session('user_id') ? Illuminate\Support\Js::from($tglDibuat) : ''}})
         
         function submitKomitmen(e) {
             e.target.disabled = true
@@ -338,6 +341,9 @@
                 textAlasan: $("#alasanLain").val(),
                 komitmenId: {{ Illuminate\Support\Js::from($komitmenId) }}
             }
+            let textKonfirmasi = ""
+            if($("#persetujuan").val() == 1) textKonfirmasi = "Menyetujui"
+            if($("#persetujuan").val() == -1) textKonfirmasi = "Tidak menyetujui"
 
             console.log(dataBody)
 
@@ -351,48 +357,106 @@
                 })
                 e.target.disabled = false
             } else {
-                showLoading()
-                axios.post(url, dataBody, {
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    }
-                })
-                .then(function(resp) { 
-                    let dataSwal = {}
-                    if(resp.data.isSuccess) {
-                        dataSwal = {
-                            backdrop: false,
-                            icon: 'success',
-                            title: 'Berhasil!',
-                            text: resp.data.message || 'Berhasil'
-                        }
-                    } else {
-                        dataSwal = {
-                            backdrop: false,
-                            icon: 'error',
-                            title: 'Gagal!',
-                            text: resp.data.message || 'Error, coba beberapa saat lagi'
-                        }
-                    }
-                    Swal.fire(dataSwal)
-                        .then((result) => {
-                            if (result.isConfirmed && resp.data.isSuccess) {
-                                location.reload()
+                Swal.fire({
+                    title: "Anda " + textKonfirmasi + " mengikuti pelatihan ?",
+                    showCancelButton: true,
+                    cancelButtonText: "batal",
+                    cancelButtonColor: "#fd5c70",
+                    confirmButtonText: "Submit",
+                    confirmButtonColor: "#4CAF50",
+                    icon: "question"
+                }).then((result) => {
+                    console.log(result)
+                    if (result.isConfirmed) {
+                        showLoading()
+                        axios.post(url, dataBody, {
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                             }
                         })
-                    
-                })
-                .catch(function(err) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Gagal!',
-                        text: 'Terjadi kesalahan, coba beberapa saat lagi'
-                    })
-                })
-                .finally(function() {
-                    stopLoading()
+                        .then(function(resp) { 
+                            let dataSwal = {}
+                            if(resp.data.isSuccess) {
+                                dataSwal = {
+                                    backdrop: false,
+                                    icon: 'success',
+                                    title: 'Berhasil!',
+                                    text: resp.data.message || 'Berhasil'
+                                }
+                            } else {
+                                dataSwal = {
+                                    backdrop: false,
+                                    icon: 'error',
+                                    title: 'Gagal!',
+                                    text: resp.data.message || 'Error, coba beberapa saat lagi'
+                                }
+                            }
+                            Swal.fire(dataSwal)
+                                .then((result) => {
+                                    if (result.isConfirmed && resp.data.isSuccess) {
+                                        location.reload()
+                                    }
+                                })
+                            
+                        })
+                        .catch(function(err) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal!',
+                                text: 'Terjadi kesalahan, coba beberapa saat lagi'
+                            })
+                        })
+                        .finally(function() {
+                            stopLoading()
+                            e.target.disabled = false
+                        })
+                        Swal.fire("Saved!", "", "success");
+                    }
                     e.target.disabled = false
                 })
+
+                // showLoading()
+                // axios.post(url, dataBody, {
+                //     headers: {
+                //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                //     }
+                // })
+                // .then(function(resp) { 
+                //     let dataSwal = {}
+                //     if(resp.data.isSuccess) {
+                //         dataSwal = {
+                //             backdrop: false,
+                //             icon: 'success',
+                //             title: 'Berhasil!',
+                //             text: resp.data.message || 'Berhasil'
+                //         }
+                //     } else {
+                //         dataSwal = {
+                //             backdrop: false,
+                //             icon: 'error',
+                //             title: 'Gagal!',
+                //             text: resp.data.message || 'Error, coba beberapa saat lagi'
+                //         }
+                //     }
+                //     Swal.fire(dataSwal)
+                //         .then((result) => {
+                //             if (result.isConfirmed && resp.data.isSuccess) {
+                //                 location.reload()
+                //             }
+                //         })
+                    
+                // })
+                // .catch(function(err) {
+                //     Swal.fire({
+                //         icon: 'error',
+                //         title: 'Gagal!',
+                //         text: 'Terjadi kesalahan, coba beberapa saat lagi'
+                //     })
+                // })
+                // .finally(function() {
+                //     stopLoading()
+                //     e.target.disabled = false
+                // })
             }
         }
 
