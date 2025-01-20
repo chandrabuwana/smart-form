@@ -33,6 +33,7 @@ use Modules\SmartForm\App\Http\Controllers\TeamManagement\UserManagementControll
 use Modules\SmartForm\App\Http\Controllers\UnderCarriage\UnderCarriageInspectionController;
 use Modules\SmartForm\App\Http\Controllers\FAT\PPH\PPHDashboardController;
 use Modules\SmartForm\App\Http\Controllers\FAT\PPH\HelperPPHController;
+use Modules\SmartForm\App\Http\Controllers\FAT\PPH\UserVendorController;
 use Modules\SmartForm\App\Http\Controllers\IC\PengajuanTraining\HelperTraininingController;
 use Modules\SmartForm\App\Http\Controllers\IC\PengajuanTraining\PengajuanTrainingController;
 use Modules\SmartForm\App\Http\Middleware\PengajuanTrainingIC;
@@ -110,6 +111,16 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
                 Route::post('/update-document-potongan', [HelperPPHController::class, 'UpdateDocumentPotonganPPH']);
                 Route::get('/view-detail-master-potongan-pph/{id}', [PPHDashboardController::class, 'indexViewDataDetailMasterPPh']);
                 Route::get('/view-document/{id}', [PPHDashboardController::class, 'indexViewDetailDocument']);
+
+                Route::prefix('vendor')->group( function() {
+                    Route::get('/dashboard', [UserVendorController::class, 'index'])->name('bss-pph-vendor.dashboard');
+                    Route::get('/dashboard/fetch-data', [UserVendorController::class, 'fetchData'])->name('bss-pph-vendor.fetch-dashboard-data');
+                    Route::get('/create', [UserVendorController::class, 'create'])->name('bss-pph-vendor.add');
+                    Route::get('/store', [UserVendorController::class, 'store'])->name('bss-pph-vendor.store');
+                    Route::get('/edit/{id}', [UserVendorController::class, 'edit'])->name('bss-pph-vendor.edit');
+                    Route::post('/update/{id}', [UserVendorController::class, 'update'])->name('bss-pph-vendor.update');
+                    Route::get('/delete/{id}', [UserVendorController::class, 'delete'])->name('bss-pph-vendor.delete');
+                });
             });
         });
 
