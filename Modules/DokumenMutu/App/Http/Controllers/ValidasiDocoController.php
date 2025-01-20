@@ -169,7 +169,7 @@ class ValidasiDocoController extends Controller
 
             $prevFilePath = $lastVersion->file_path;
             $originalName = time() . '_' . $documentValidated->getClientOriginalName();
-            $path = 'dokumen_mutu/pembuatan/' . $doco->KodeDP;
+            $path = 'dokumen_mutu/' . strtolower($doco->jenis_pengajuan) . '/' . $doco->KodeDP;
 
             // if(file_exists( storage_path('app/public/' . $prevFilePath) )) {
             //     @unlink(storage_path('app/public/' . $prevFilePath));
@@ -378,6 +378,39 @@ class ValidasiDocoController extends Controller
         }
     }
 
+    private function _addKadaluarsaStamp($filepath)
+    {
+        $expFilename = explode('/', $filepath);
+        $originalName = $expFilename[ count($expFilename) - 1 ];
+        $pathName = str_replace($originalName, '', $filepath);
+
+        $fileContent = file_get_contents(
+            Storage::disk('s3')->temporaryUrl($filepath, Carbon::now()->addMinutes(5))
+        );
+
+        $filePath = storage_path('app/public/' . $filepath);
+        file_put_contents($filePath, $fileContent);
+
+        $mpdf = new Mpdf();
+        $pageCount = $mpdf->setSourceFile($filePath);
+
+        for($i=1; $i <= $pageCount; $i++) {
+            $tplIdx = $mpdf->ImportPage($i);
+
+            $mpdf->SetWatermarkImage( storage_path('app/public/cap-kadaluarsa.png') );
+            $mpdf->showWatermarkImage = true;
+
+            $mpdf->AddPage();
+            $mpdf->useTemplate($tplIdx, 10, 10, 200);
+        }
+
+        $mpdf->OutputFile($filePath);
+
+        $fileContent = file_get_contents($filePath);
+        $bucketPath = str_replace( storage_path('app/public') . '/', '', $filePath );
+        Storage::disk('s3')->put($bucketPath, $fileContent);
+    }
+
     public function validPenghapusan(Request $request)
     {
         $id = $request->input('id_pengajuan_dokumen');
@@ -413,32 +446,38 @@ class ValidasiDocoController extends Controller
                     'keterangan_kadaluarsa' => $pengajuanDoco->alasan_pengajuan
                 ]);
 
-                $convertedName = str_replace('\\', '/', storage_path('app/public/' . $pathName . 'converted_' . $originalName));
-                $originalName = str_replace('\\', '/', storage_path('app/public/' . $pathName . $originalName));
+                // $convertedName = str_replace('\\', '/', storage_path('app/public/' . $pathName . 'converted_' . $originalName));
+                // $originalName = str_replace('\\', '/', storage_path('app/public/' . $pathName . $originalName));
 
-                if(file_exists($convertedName)) {
-                    @unlink($convertedName);
-                }
+                $originalPath = $lastVersion->file_path;
+                $previewPath = str_replace($originalName, 'preview_' . $originalName, $lastVersion->file_path);
+
+                // if(file_exists($convertedName)) {
+                //     @unlink($convertedName);
+                // }
 
                 // putenv('PATH=' . env('DOCO_GS_PATH'));
                 // shell_exec('gswin64 -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile=' . $convertedName . ' ' . $originalName . '');
                 // @unlink($originalName);
                 // rename($convertedName, $originalName);
 
-                $mpdf = new Mpdf();
-                $pageCount = $mpdf->setSourceFile($originalName);
+                // $mpdf = new Mpdf();
+                // $pageCount = $mpdf->setSourceFile($originalName);
 
-                for($i=1; $i <= $pageCount; $i++) {
-                    $tplIdx = $mpdf->ImportPage($i);
+                // for($i=1; $i <= $pageCount; $i++) {
+                //     $tplIdx = $mpdf->ImportPage($i);
 
-                    $mpdf->SetWatermarkImage( storage_path('app/public/cap-kadaluarsa.png') );
-                    $mpdf->showWatermarkImage = true;
+                //     $mpdf->SetWatermarkImage( storage_path('app/public/cap-kadaluarsa.png') );
+                //     $mpdf->showWatermarkImage = true;
 
-                    $mpdf->AddPage();
-                    $mpdf->useTemplate($tplIdx, 10, 10, 200);
-                }
+                //     $mpdf->AddPage();
+                //     $mpdf->useTemplate($tplIdx, 10, 10, 200);
+                // }
 
-                $mpdf->OutputFile($originalName);
+                // $mpdf->OutputFile($originalName);
+
+                $this->_addKadaluarsaStamp($previewPath);
+                $this->_addKadaluarsaStamp($originalPath);
             }
 
             DB::commit();

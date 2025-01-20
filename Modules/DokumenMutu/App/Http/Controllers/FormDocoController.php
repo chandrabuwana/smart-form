@@ -198,7 +198,6 @@ Terima kasih.";
         } catch(\Throwable $e) {
             DB::rollBack();
             Log::error($e);
-            dd($e);
             return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan, mohon coba beberapa saat lagi');
         }
     }
@@ -256,9 +255,40 @@ Terima kasih.";
                 return redirect()->back()->with('error', 'Mohon maaf anda tidak dapat untuk membuat pengajuan dokumen mutu');
             }
 
-            $originalName = $dokumen->getClientOriginalName();
+            $originalName = time() . '_' . $dokumen->getClientOriginalName();
             $path = 'dokumen_mutu/revisi/' . $doco->KodeDP;
-            $filePath = $dokumen->storeAs($path, $originalName);
+            // $filePath = $dokumen->storeAs($path, $originalName);
+
+            $tempFilePath = $dokumen->storeAs($path, $originalName);
+            $tempFilePath = storage_path('app/public/' . $tempFilePath);
+
+            putenv('PATH=' . env('DOCO_GS_PATH'));
+            shell_exec('gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile="' . $tempFilePath . '" "' . $tempFilePath . '"');
+
+            $mpdf = new Mpdf();
+            $pageCount = $mpdf->setSourceFile($tempFilePath);
+
+            for($i=1; $i <= $pageCount; $i++) {
+                $tplIdx = $mpdf->ImportPage($i);
+
+                $mpdf->SetWatermarkText('Preview Only');
+                $mpdf->showWatermarkText = true;
+
+                $mpdf->AddPage();
+                $mpdf->useTemplate($tplIdx, 10, 10, 200);
+            }
+
+            $previewTempFilePath = str_replace($originalName, 'preview_' . $originalName, $tempFilePath);
+            $mpdf->OutputFile($previewTempFilePath);
+
+            $fileContent = file_get_contents($tempFilePath);
+            Storage::disk('s3')->put($path .'/'. $originalName, $fileContent);
+
+            $previewFileContent = file_get_contents($previewTempFilePath);
+            Storage::disk('s3')->put($path .'/preview_'. $originalName, $previewFileContent);
+
+            @unlink($previewTempFilePath);
+            @unlink($tempFilePath);
 
             $pengajuan = DB::table(self::T_PENGAJUAN_DOCO)->insertGetId([
                 'id_ref_doco' => $idRefDoco,
@@ -278,7 +308,7 @@ Terima kasih.";
             DB::table(self::T_VERSI_DOCO)->insert([
                 'id_pengajuan_dokumen' => $pengajuan,
                 'no_versi' => 1,
-                'file_path' => $filePath,
+                'file_path' => $path .'/'. $originalName,
             ]);
 
             $today = date('Y/m/d');
