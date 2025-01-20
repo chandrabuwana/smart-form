@@ -21,6 +21,10 @@ h4 {
 .w-full {
     width: 100%;
 }
+.w-fullborder {
+    width: 100%;
+    border: 1px solid;
+}
 .w-half {
     width: 50%;
     font-size: 0.875rem;
@@ -63,6 +67,11 @@ table tr.items td {
     text-align: center;
     border: 1px solid;
 }
+table tr.itemsHead td {
+    font-size: 0.875rem;
+    font-weight: bold;
+    text-align: center;
+}
 table tr.approval td {
     padding: 0.5rem;
     text-align: center;
@@ -84,6 +93,7 @@ div.nodok {
 }
 </style>
 <body>
+    <table class="w-fullborder">
     <table class="w-full">
         <tr>
             <td class="w-seperempat">
@@ -144,13 +154,16 @@ div.nodok {
     <div class="margin-top">
         <table class="products">
             <tr>
-                <th>Jam</th>
-                <th>Shift</th>
-                <th>HM</th>
-                <th>KM</th>
-                <th>Awal</th>
-                <th>Akhir</th>
-                <th>Total Liter</th>
+                <th rowspan="2">Jam</th>
+                <th rowspan="2">Shift</th>
+                <th rowspan="2">HM</th>
+                <th rowspan="2">KM</th>
+                <th colspan="2">Flowmeter</th>
+                <th rowspan="2">Total Liter</th>
+            </tr>
+            <tr class="itemsHead">
+                <th>AWAL</th>
+                <th>AKHIR</th>
             </tr>
             <tr class="items">
                 <td>{{$data->jam}}</td>
@@ -198,5 +211,6 @@ div.nodok {
         <div>Note: Form Mohon diprint menggunakan kertas carbonize 3 (tiga) rangkap</div>
         <div>Peruntukkan rangkap putih (logistik), rangkap merah (pengawas produksi) & rangkap kuning (admin data center)</div>
     </div>
+    </table>
 </body>
 </html>

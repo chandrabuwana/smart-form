@@ -88,16 +88,6 @@
             }
             additonalQuery = searchQuery;
             $table.bootstrapTable('refresh')
-            // var queryParams = new URLSearchParams(searchQuery).toString();
-            // axios.get('/get-forms-timesheet?'+ queryParams, {
-            //         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
-            //     })
-            //     .then(function(response) {
-            //         console.log(response)
-            //     })
-            //     .catch(function(err) {
-            //         console.log(err)
-            //     })
         })
         suggestNik.addEventListener("click", function(e) {
             e.target.style.display="none";
@@ -196,7 +186,6 @@
             return formatData;
         }
         
-
         function fetchFormsData(params) {
             params.data = {...params.data, ...additonalQuery}
             var url = '/bss-form/log/list'

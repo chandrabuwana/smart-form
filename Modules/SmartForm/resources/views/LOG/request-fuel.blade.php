@@ -69,36 +69,14 @@
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script type="text/javascript">
         var $table = $("#list-req-fuel");
-        var filterNama = document.getElementById("filterNama")
-        var suggestNik = document.getElementById("suggest-nik")
         var btnFilterSubmit = document.getElementById("btnFilterSubmit")
-        var btnClearFilter = document.getElementById("btnClearFilter")
-        var filterTanggal = document.getElementById("filterTanggal")
-        var filterSite = document.getElementById("filterSite")
-        var filterNama = document.getElementById("filterNama")
-        var filterStatus = document.getElementById("filterStatus")
         var additonalQuery = {
             tanggal: null,
-            site: null,
-            nama: null,
-            status: null
+            nama: null
         }
 
         btnClearFilter.addEventListener("click", function(e) {
 
-        })
-        btnFilterSubmit.addEventListener("click", function(e) {
-            var searchQuery = {
-                tanggal: filterTanggal.value == '' ? null : filterTanggal.value,
-                site: filterSite.value == '' ? null : filterSite.value,
-                nama: filterNama.value == '' ? null : filterNama.value,
-                status: filterStatus.value == '' ? null : filterStatus.value,
-            }
-            additonalQuery = searchQuery;
-            $table.bootstrapTable('refresh')
-        })
-        suggestNik.addEventListener("click", function(e) {
-            e.target.style.display="none";
         })
         
         function debounce (func, wait){
@@ -124,10 +102,16 @@
             })
         }
 
+        
+        function myFunction() {
+            if(!confirm("Yakin ingin menghapus data ini?"))
+            event.preventDefault();
+        }
+
         function actionFormatter(value, row, index) {
             return `
                 <a class="btn btn-info btn-action btn-sm me-1" href="/bss-form/log/edit-req-fuel/${row.id}">Edit</a>
-                <a class="btn btn-danger btn-action btn-sm" href="/bss-form/log/delete-fuel/${row.id}">Delete</a>
+                <a class="btn btn-danger btn-action btn-sm" onclick="return myFunction();" href="/bss-form/log/delete-fuel/${row.id}">Delete</a>
                 <a class="btn btn-primary btn-action btn-sm" href="/bss-form/log/pdf-fuel/${row.id}">Pdf</a>
             `;
         }
