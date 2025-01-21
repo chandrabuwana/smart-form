@@ -426,32 +426,39 @@ class DocoController extends Controller
         $expFilePath = explode('/', $filePath);
         $filename = $expFilePath[ count($expFilePath) - 1 ];
 
-        $doco->file_converted_path = str_replace($filename, 'converted_' . $filename, $filePath);
-        $convertedPath = str_replace('\\', '/', storage_path('app/public/' . $doco->file_converted_path));
-        $originalPath = str_replace('\\', '/', storage_path('app/public/' . $filePath));
+        // $doco->file_converted_path = str_replace($filename, 'converted_' . $filename, $filePath);
+        // $convertedPath = str_replace('\\', '/', storage_path('app/public/' . $doco->file_converted_path));
+        // $originalPath = str_replace('\\', '/', storage_path('app/public/' . $filePath));
 
-        if(!file_exists($convertedPath)) {
-            putenv('PATH=' . env('DOCO_GS_PATH'));
-            shell_exec('gswin64 -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile="' . $convertedPath . '" "' . $originalPath . '"');
+        // if(!file_exists($convertedPath)) {
+        //     putenv('PATH=' . env('DOCO_GS_PATH'));
+        //     shell_exec('gswin64 -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile="' . $convertedPath . '" "' . $originalPath . '"');
 
-            $mpdf = new Mpdf();
-            $pageCount = $mpdf->setSourceFile($convertedPath);
+        //     $mpdf = new Mpdf();
+        //     $pageCount = $mpdf->setSourceFile($convertedPath);
 
-            for($i=1; $i <= $pageCount; $i++) {
-                $tplIdx = $mpdf->ImportPage($i);
+        //     for($i=1; $i <= $pageCount; $i++) {
+        //         $tplIdx = $mpdf->ImportPage($i);
 
-                $mpdf->SetWatermarkText('Preview Only');
-                $mpdf->showWatermarkText = true;
+        //         $mpdf->SetWatermarkText('Preview Only');
+        //         $mpdf->showWatermarkText = true;
 
-                $mpdf->AddPage();
-                $mpdf->useTemplate($tplIdx, 10, 10, 200);
-            }
+        //         $mpdf->AddPage();
+        //         $mpdf->useTemplate($tplIdx, 10, 10, 200);
+        //     }
 
-            $mpdf->OutputFile($convertedPath);
-        }
+        //     $mpdf->OutputFile($convertedPath);
+        // }
 
-        $doco->file_path = url('storage/' . $filePath);
-        $doco->file_converted_path = url('storage/' . $doco->file_converted_path);
+        // $doco->file_path = url('storage/' . $filePath);
+        // $doco->file_converted_path = url('storage/' . $doco->file_converted_path);
+
+        $doco->file_path = Storage::disk('s3')->temporaryUrl($filePath, Carbon::now()->addMinutes(5));
+        $previewBucketPath = str_replace($filename, 'preview_' . $filename, $filePath);
+        $doco->file_converted_path = base64_encode(file_get_contents(
+            Storage::disk('s3')->temporaryUrl($previewBucketPath, Carbon::now()->addMinutes(5))
+        ));
+
         return response()->json($doco);
     }
 
@@ -465,13 +472,19 @@ class DocoController extends Controller
 
         $expFilename = explode('/', $doco->file_path);
         $originalFileName = $expFilename[ count($expFilename) - 1 ];
-        $pathName = str_replace($originalFileName, '', $doco->file_path);
 
-        $convertedName = str_replace('\\', '/', storage_path('app/public/' . $pathName . 'converted_' . $originalFileName));
-        $originalName = str_replace('\\', '/', storage_path('app/public/' . $pathName . $originalFileName));
+        // $convertedName = str_replace('\\', '/', storage_path('app/public/' . $pathName . 'converted_' . $originalFileName));
+        // $originalName = str_replace('\\', '/', storage_path('app/public/' . $pathName . $originalFileName));
+
+        $fileContent = file_get_contents(
+            Storage::disk('s3')->temporaryUrl($doco->file_path, Carbon::now()->addMinutes(5))
+        );
+
+        $filePath = storage_path('app/public/' . $doco->file_path);
+        file_put_contents($filePath, $fileContent);
 
         $mpdf = new Mpdf();
-        $pageCount = $mpdf->setSourceFile($originalName);
+        $pageCount = $mpdf->setSourceFile($filePath);
 
         for($i=1; $i <= $pageCount; $i++) {
             $tplIdx = $mpdf->ImportPage($i);
@@ -484,6 +497,7 @@ class DocoController extends Controller
             $mpdf->useTemplate($tplIdx, 10, 10, 200);
         }
 
+        @unlink($filePath);
         return $mpdf->OutputHttpDownload($originalFileName);
     }
 }

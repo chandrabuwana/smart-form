@@ -466,6 +466,7 @@
                             $('#keterangan-kadaluarsa').parent().addClass('d-none');
                         }
 
+                        $('#pdf_container').html('');
                         LoadPdfFromUrl(response.file_converted_path);
                         $('#modalDetail').modal("show");
                     }

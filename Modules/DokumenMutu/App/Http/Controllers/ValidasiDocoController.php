@@ -259,6 +259,13 @@ class ValidasiDocoController extends Controller
                         ->where('status', 'Aktif')
                         ->first();
 
+                    $expFilename = explode('/', $docoInduk->file_path);
+                    $originalName = $expFilename[ count($expFilename) - 1 ];
+                    $previewPath = str_replace($originalName, 'preview_' . $originalName, $docoInduk->file_path);
+
+                    $this->_addKadaluarsaStamp($docoInduk->file_path);
+                    $this->_addKadaluarsaStamp($previewPath);
+
                     $noRevisi = empty($docoInduk->no_revisi) ? 1 : ($docoInduk->no_revisi + 1);
 
                     DB::table(self::T_DOCO)->where('id', $docoInduk->id)->update([
@@ -409,6 +416,8 @@ class ValidasiDocoController extends Controller
         $fileContent = file_get_contents($filePath);
         $bucketPath = str_replace( storage_path('app/public') . '/', '', $filePath );
         Storage::disk('s3')->put($bucketPath, $fileContent);
+
+        @unlink($filePath);
     }
 
     public function validPenghapusan(Request $request)

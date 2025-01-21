@@ -389,7 +389,7 @@
         }
 
         function LoadPdfFromUrl(url) {
-            pdfjsLib.getDocument(url).promise.then(function (pdfDoc_) {
+            pdfjsLib.getDocument({ data: atob(url) }).promise.then(function (pdfDoc_) {
                 pdfDoc = pdfDoc_;
                 let pdf_container = document.getElementById("pdf_container");
                 pdf_container.style.display = "block";
@@ -618,7 +618,7 @@
             });
         }
 
-        secureConfidential();
+        // secureConfidential();
 
         $('#filterSite').select2({
             theme: 'bootstrap-5', // Menggunakan tema Bootstrap 5
