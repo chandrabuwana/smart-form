@@ -343,7 +343,7 @@
         }
 
         function LoadPdfFromUrl(url) {
-            pdfjsLib.getDocument(url).promise.then(function (pdfDoc_) {
+            pdfjsLib.getDocument({ data: atob(url) }).promise.then(function (pdfDoc_) {
                 pdfDoc = pdfDoc_;
                 let pdf_container = document.getElementById("pdf_container");
                 pdf_container.style.display = "block";
@@ -466,6 +466,7 @@
                             $('#keterangan-kadaluarsa').parent().addClass('d-none');
                         }
 
+                        $('#pdf_container').html('');
                         LoadPdfFromUrl(response.file_converted_path);
                         $('#modalDetail').modal("show");
                     }

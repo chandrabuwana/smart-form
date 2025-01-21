@@ -116,7 +116,7 @@ class FormDocoController extends Controller
                 return redirect()->back()->with('error', 'File dokumen wajib di upload');
             }
 
-            $originalName = $request->file('dokumen')->getClientOriginalName();
+            $originalName = time() . '_' . $request->file('dokumen')->getClientOriginalName();
             $path = 'dokumen_mutu/pembuatan/' . $pemohon->KodeDP;
             // if(file_exists( storage_path('app/public/' . $path .'/'. $originalName) )) {
             //     $originalName = time() . '_' . $originalName;
@@ -124,17 +124,12 @@ class FormDocoController extends Controller
 
             // $filePath = $request->file('dokumen')->storeAs($path, $originalName);
 
-            if( Storage::disk('s3')->exists($path) ) {
-                $originalName = time() . '_' . $originalName;
-            }
-
             $tempFilePath = $request->file('dokumen')->storeAs($path, $originalName);
             // $tempFilePath = str_replace('\\', '/', storage_path('app/public/' . $tempFilePath));
             $tempFilePath = storage_path('app/public/' . $tempFilePath);
 
             putenv('PATH=' . env('DOCO_GS_PATH'));
             shell_exec('gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile="' . $tempFilePath . '" "' . $tempFilePath . '"');
-
 
             $mpdf = new Mpdf();
             $pageCount = $mpdf->setSourceFile($tempFilePath);
@@ -156,7 +151,7 @@ class FormDocoController extends Controller
             Storage::disk('s3')->put($path .'/'. $originalName, $fileContent);
 
             $previewFileContent = file_get_contents($previewTempFilePath);
-            $previewFilePath = Storage::disk('s3')->put($path .'/preview_'. $originalName, $previewFileContent);
+            Storage::disk('s3')->put($path .'/preview_'. $originalName, $previewFileContent);
 
             @unlink($previewTempFilePath);
             @unlink($tempFilePath);
@@ -203,7 +198,6 @@ Terima kasih.";
         } catch(\Throwable $e) {
             DB::rollBack();
             Log::error($e);
-            dd($e);
             return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan, mohon coba beberapa saat lagi');
         }
     }
@@ -261,9 +255,40 @@ Terima kasih.";
                 return redirect()->back()->with('error', 'Mohon maaf anda tidak dapat untuk membuat pengajuan dokumen mutu');
             }
 
-            $originalName = $dokumen->getClientOriginalName();
+            $originalName = time() . '_' . $dokumen->getClientOriginalName();
             $path = 'dokumen_mutu/revisi/' . $doco->KodeDP;
-            $filePath = $dokumen->storeAs($path, $originalName);
+            // $filePath = $dokumen->storeAs($path, $originalName);
+
+            $tempFilePath = $dokumen->storeAs($path, $originalName);
+            $tempFilePath = storage_path('app/public/' . $tempFilePath);
+
+            putenv('PATH=' . env('DOCO_GS_PATH'));
+            shell_exec('gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile="' . $tempFilePath . '" "' . $tempFilePath . '"');
+
+            $mpdf = new Mpdf();
+            $pageCount = $mpdf->setSourceFile($tempFilePath);
+
+            for($i=1; $i <= $pageCount; $i++) {
+                $tplIdx = $mpdf->ImportPage($i);
+
+                $mpdf->SetWatermarkText('Preview Only');
+                $mpdf->showWatermarkText = true;
+
+                $mpdf->AddPage();
+                $mpdf->useTemplate($tplIdx, 10, 10, 200);
+            }
+
+            $previewTempFilePath = str_replace($originalName, 'preview_' . $originalName, $tempFilePath);
+            $mpdf->OutputFile($previewTempFilePath);
+
+            $fileContent = file_get_contents($tempFilePath);
+            Storage::disk('s3')->put($path .'/'. $originalName, $fileContent);
+
+            $previewFileContent = file_get_contents($previewTempFilePath);
+            Storage::disk('s3')->put($path .'/preview_'. $originalName, $previewFileContent);
+
+            @unlink($previewTempFilePath);
+            @unlink($tempFilePath);
 
             $pengajuan = DB::table(self::T_PENGAJUAN_DOCO)->insertGetId([
                 'id_ref_doco' => $idRefDoco,
@@ -283,7 +308,7 @@ Terima kasih.";
             DB::table(self::T_VERSI_DOCO)->insert([
                 'id_pengajuan_dokumen' => $pengajuan,
                 'no_versi' => 1,
-                'file_path' => $filePath,
+                'file_path' => $path .'/'. $originalName,
             ]);
 
             $today = date('Y/m/d');
@@ -427,14 +452,42 @@ Terima kasih.";
                 ->join(self::T_KARYAWAN, self::T_KARYAWAN . '.NIK', self::T_PENGAJUAN_DOCO . '.nik_pemohon')
                 ->where('id', $idPengajuan)->first();
 
-            $originalName = $dokumen->getClientOriginalName();
+            $originalName = time() . '_' . $dokumen->getClientOriginalName();
             $path = 'dokumen_mutu/' . strtolower($doco->jenis_pengajuan) . '/' . $doco->KodeDP;
-            if(file_exists( storage_path('app/public/' . $path .'/'. $originalName) )) {
-                $originalName = time() . '_' . $originalName;
+            // if(file_exists( storage_path('app/public/' . $path .'/'. $originalName) )) {
+            //     $originalName = time() . '_' . $originalName;
+            // }
+
+            $tempFilePath = $request->file('dokumenTerbaru')->storeAs($path, $originalName);
+            $tempFilePath = storage_path('app/public/' . $tempFilePath);
+
+            putenv('PATH=' . env('DOCO_GS_PATH'));
+            shell_exec('gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile="' . $tempFilePath . '" "' . $tempFilePath . '"');
+
+            $mpdf = new Mpdf();
+            $pageCount = $mpdf->setSourceFile($tempFilePath);
+
+            for($i=1; $i <= $pageCount; $i++) {
+                $tplIdx = $mpdf->ImportPage($i);
+
+                $mpdf->SetWatermarkText('Preview Only');
+                $mpdf->showWatermarkText = true;
+
+                $mpdf->AddPage();
+                $mpdf->useTemplate($tplIdx, 10, 10, 200);
             }
 
-            $filePath = $dokumen->storeAs($path, $originalName);
+            $previewTempFilePath = str_replace($originalName, 'preview_' . $originalName, $tempFilePath);
+            $mpdf->OutputFile($previewTempFilePath);
+
+            $filePath = $dokumen->storeAs($path, $originalName, 's3');
             $lastVersion = DB::table(self::T_VERSI_DOCO)->find($idVersi);
+
+            $previewFileContent = file_get_contents($previewTempFilePath);
+            $previewFilePath = Storage::disk('s3')->put($path .'/preview_'. $originalName, $previewFileContent);
+
+            @unlink($previewTempFilePath);
+            @unlink($tempFilePath);
 
             $dueDay = 3 - $lastVersion->no_versi;
             $dueDate = date('Y-m-d', strtotime('+' . ($dueDay < 1 ? 1 : $dueDay) . ' days'));
@@ -445,10 +498,14 @@ Terima kasih.";
             ]);
 
             if($lastVersion->no_versi > 1) {
-                $lastFilePath = storage_path('app/public/' . $lastVersion->file_path);
-                if(file_exists($lastFilePath)) {
-                    @unlink($lastFilePath);
+                if( Storage::disk('s3')->exists($lastVersion->file_path) ) {
+                    Storage::disk('s3')->delete($lastVersion->file_path);
                 }
+
+                // $lastFilePath = storage_path('app/public/' . $lastVersion->file_path);
+                // if(file_exists($lastFilePath)) {
+                //     @unlink($lastFilePath);
+                // }
 
                 DB::table(self::T_FEEDBACK_VALIDASI)->where('id_versi', $idVersi)->delete();
                 DB::table(self::T_VERSI_DOCO)->where('id', $idVersi)

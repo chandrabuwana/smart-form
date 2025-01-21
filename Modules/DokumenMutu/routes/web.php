@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\FetchMenu;
 use App\Http\Middleware\PermissionMenu;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Route;
 use Modules\DokumenMutu\App\Http\Controllers\DocoController;
 use Modules\DokumenMutu\App\Http\Controllers\DokumenMutuController;
