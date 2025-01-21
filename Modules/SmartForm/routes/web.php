@@ -32,6 +32,9 @@ use Modules\SmartForm\App\Http\Controllers\TeamManagement\UserManagementControll
 use Modules\SmartForm\App\Http\Controllers\UnderCarriage\UnderCarriageInspectionController;
 use Modules\SmartForm\App\Http\Controllers\FAT\PPH\PPHDashboardController;
 use Modules\SmartForm\App\Http\Controllers\FAT\PPH\HelperPPHController;
+use Modules\SmartForm\App\Http\Controllers\IT\PrinterFormController;
+use Modules\SmartForm\App\Http\Controllers\IT\CctvFormController;
+use Modules\SmartForm\App\Http\Controllers\IT\DeviceFormController;
 
 /*
 |--------------------------------------------------------------------------
@@ -185,6 +188,24 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
                 Route::delete('/delete-mapping-vendor-day', [VendorController::class, 'DeleteMappingVendorDay'])->name('delete-mapping-vendor-day');
                 Route::post('toggle-mapping-day', [VendorController::class, 'toggleMappingDayStatus'])->name('toggle-mapping-day');
             });
+        });
+
+        Route::prefix('it-ops')->group(function () {
+            // PRINTER
+            Route::get('/dashboard-printer', [PrinterFormController::class, 'IndexPrinterForm'])->name('it-ops.dashboard-printer');
+            Route::get('/form-printer/{id}/export-pdf', [PrinterFormController::class, 'ExportPrinter'])->name('it-ops.form-printer.export');
+            Route::post('/submit-printer', [PrinterFormController::class, 'SubmitPrinterForm'])->name('it-ops.submit-printer');
+            Route::get('/form-printer', [PrinterFormController::class, 'CreatePrinterForm'])->name('it-ops.form-printer');
+            // CCTV
+            Route::get('/dashboard-cctv', [CctvFormController::class, 'IndexCctvForm'])->name('it-ops.dashboard-cctv');
+            Route::get('/form-cctv', [CctvFormController::class, 'CreateCctvForm'])->name('it-ops.form-cctv');
+            Route::post('/submit-cctv', [CctvFormController::class, 'SubmitCctvForm'])->name('it-ops.submit-cctv');
+            Route::get('/form-cctv/{id}/export-pdf', [CctvFormController::class, 'ExportCctv'])->name('it-ops.form-cctv.export');
+            // DEVICE
+            Route::get('/dashboard-device', [DeviceFormController::class, 'IndexDeviceForm'])->name('it-ops.dashboard-device');
+            Route::get('/form-device', [DeviceFormController::class, 'CreateDeviceForm'])->name('it-ops.form-device');
+            Route::post('/submit-device', [DeviceFormController::class, 'SubmitDeviceForm'])->name('it-ops.submit-device');
+            Route::get('/form-device/{id}/export-pdf', [DeviceFormController::class, 'ExportDevice'])->name('it-ops.form-device.export');
         });
     });
 
