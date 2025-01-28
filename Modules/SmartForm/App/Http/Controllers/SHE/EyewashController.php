@@ -127,13 +127,13 @@ class EyewashController extends Controller
                 // Decode monthly data
                 $record->monthly_data = json_decode($record->monthly_data, true);
 
-                return view('SmartForm::she/eyewash/test', [
+                return view('SmartForm::she/eyewash/form', [
                     'isShowDetail' => true,
                     'maintenanceRecord' => $record
                 ]);
             }
 
-            return view('SmartForm::she/eyewash/test', [
+            return view('SmartForm::she/eyewash/form', [
                 'isShowDetail' => false,
                 'maintenanceRecord' => null
             ]);
@@ -154,15 +154,16 @@ class EyewashController extends Controller
                 'inspection_date' => 'required|date',
                 'location' => 'required|string',
                 'created_by' => 'required|string',
-                'supervisor' => 'required|string',
-                'dh' => 'required|string',
+                // 'supervisor' => 'required|string',
+                // 'dh' => 'required|string',
             ]);
 
             if ($validator->fails()) {
                 Log::warning('Validation failed: ' . json_encode($validator->errors()));
-                return redirect()->back()
-                    ->withErrors($validator)
-                    ->withInput();
+                return response()->json([
+                    'success' => false,
+                    'errors' => $validator->errors()
+                ], 422);
             }
 
             DB::beginTransaction();
@@ -185,7 +186,8 @@ class EyewashController extends Controller
                         $request->has("bau_air_$month") || 
                         $request->has("volume_air_$month") || 
                         $request->has("kebersihan_tangki_$month") || 
-                        $request->has("fungsi_eyewash_$month")) {
+                        $request->has("fungsi_eyewash_$month") ||
+                        $request->has("paraf_$month")) {
                         
                         $monthlyData[$month] = [
                             'kondisi_tangki' => $request->input("kondisi_tangki_$month"),
@@ -194,43 +196,47 @@ class EyewashController extends Controller
                             'bau_air' => $request->input("bau_air_$month"),
                             'volume_air' => $request->input("volume_air_$month"),
                             'kebersihan_tangki' => $request->input("kebersihan_tangki_$month"),
-                            'fungsi_eyewash' => $request->input("fungsi_eyewash_$month")
+                            'fungsi_eyewash' => $request->input("fungsi_eyewash_$month"),
+                            'paraf' => $request->has("paraf_$month") ? true : false
                         ];
                     }
                 }
 
                 // Create record
-                $record = DB::table('she_eyewash')->insert([
+                DB::table('she_eyewash')->insert([
                     'doc_number' => $docNumber,
                     'inspection_date' => $request->inspection_date,
                     'location' => $request->location,
                     'monthly_data' => json_encode($monthlyData),
                     'notes' => $request->notes,
                     'created_by' => $request->created_by,
-                    'supervisor' => $request->supervisor,
-                    'dh' => $request->dh,
-                    'dh_terkait' => $request->dh_terkait,
                     'created_at' => now(),
                     'updated_at' => now()
                 ]);
 
                 DB::commit();
-                Log::info('Successfully created Eyewash record with doc number: ' . $docNumber);
-
-                return redirect()->route('she-inspeksi.dashboard')
-                    ->with('success', 'Form submitted successfully');
+                Log::info('Eyewash form submitted successfully');
+                
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Form inspeksi eyewash berhasil disimpan.'
+                ]);
 
             } catch (\Exception $e) {
                 DB::rollBack();
-                Log::error('Database error in Store: ' . $e->getMessage());
-                throw $e;
+                Log::error('Error in transaction: ' . $e->getMessage());
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal menyimpan form: ' . $e->getMessage()
+                ], 500);
             }
 
         } catch (\Exception $e) {
             Log::error('Error in Store: ' . $e->getMessage());
-            return redirect()->back()
-                ->with('error', 'Failed to submit form: ' . $e->getMessage())
-                ->withInput();
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to submit form: ' . $e->getMessage()
+            ], 500);
         }
     }
 

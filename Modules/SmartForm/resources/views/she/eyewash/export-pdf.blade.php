@@ -127,7 +127,7 @@
                     <td>{{ $monthData['volume_air'] ?? '' }}</td>
                     <td>{{ $monthData['kebersihan_tangki'] ?? '' }}</td>
                     <td>{{ $monthData['fungsi_eyewash'] ?? '' }}</td>
-                    <td>{{ isset($monthData) ? 'Signed' : '' }}</td>
+                    <td>{{ isset($monthData['paraf']) && $monthData['paraf'] ? 'Signed' : '' }}</td>
                 </tr>
             @endforeach
         </tbody>
