@@ -19,6 +19,7 @@ use Modules\SmartForm\App\Http\Controllers\Production\ProductionTimeSheetDashboa
 use Modules\SmartForm\App\Http\Controllers\SHE\DashboardSHEFRM19BController;
 use Modules\SmartForm\App\Http\Controllers\SHE\TransactionSHEFRM19BController;
 use Modules\SmartForm\App\Http\Controllers\SHE\EyewashController;
+use Modules\SmartForm\App\Http\Controllers\SHE\P3KController;
 use Modules\SmartForm\App\Http\Controllers\SKL\DashboardSKLController;
 use Modules\SmartForm\App\Http\Controllers\SKL\SKLFormController;
 use Modules\SmartForm\App\Http\Controllers\SM\AssetRequestController;
@@ -233,6 +234,14 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/form', [EyewashController::class, 'AddForm'])->name('she-inspeksi.form');
             Route::post('/store', [EyewashController::class, 'Store'])->name('she-inspeksi.submit');
             Route::put('/form/{id}', [EyewashController::class, 'Update'])->name('she-inspeksi.form.update');
+        });
+
+        Route::prefix('she-p3k')->group(function () {
+            Route::get('/dashboard', [P3KController::class, 'Dashboard'])->name('she-p3k.dashboard');
+            Route::get('/form/export/{id}', [P3KController::class, 'ExportForm'])->name('she-p3k.export');
+            Route::get('/form', [P3KController::class, 'AddForm'])->name('she-p3k.form');
+            Route::post('/store', [P3KController::class, 'Store'])->name('she-p3k.submit');
+            Route::put('/form/{id}', [P3KController::class, 'Update'])->name('she-p3k.form.update');
         });
     });
 
