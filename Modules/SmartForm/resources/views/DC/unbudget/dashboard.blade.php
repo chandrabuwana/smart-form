@@ -128,12 +128,12 @@
                           </tr>
                         </thead>
                         <tbody>
-                            @for ($i = 0; $i < count($finalResult['bySite']); $i++)
+                            @for ($i = 0; $i < count($finalResult['sortedBySite']); $i++)
                             <tr>
                                 <td>{{ $i+1 }}</td>
-                                <td>{{ $finalResult['bySite'][$i]['KodeST'] }}</td>
-                                <td>{{ $finalResult['bySite'][$i]['Jumlah'] }}</td>
-                                <td>{{ $finalResult['bySite'][$i]['Total'] }}</td>
+                                <td>{{ $finalResult['sortedBySite'][$i]['KodeST'] }}</td>
+                                <td>{{ $finalResult['sortedBySite'][$i]['Jumlah'] }}</td>
+                                <td>{{ $finalResult['sortedBySite'][$i]['TotalRupiah'] }}</td>
                             </tr>
                             @endfor
                         </tbody>
@@ -151,12 +151,12 @@
                           </tr>
                         </thead>
                         <tbody>
-                            @for ($i = 0; $i < count($finalResult['byDept']); $i++)
+                            @for ($i = 0; $i < count($finalResult['sortedByDept']); $i++)
                             <tr>
                                 <td>{{ $i+1 }}</td>
-                                <td>{{ $finalResult['byDept'][$i]['KodeDP'] }}</td>
-                                <td>{{ $finalResult['byDept'][$i]['Jumlah'] }}</td>
-                                <td>{{ $finalResult['byDept'][$i]['Total'] }}</td>
+                                <td>{{ $finalResult['sortedByDept'][$i]['KodeDP'] }}</td>
+                                <td>{{ $finalResult['sortedByDept'][$i]['Jumlah'] }}</td>
+                                <td>{{ $finalResult['sortedByDept'][$i]['TotalRupiah'] }}</td>
                             </tr>
                             @endfor
                         </tbody>

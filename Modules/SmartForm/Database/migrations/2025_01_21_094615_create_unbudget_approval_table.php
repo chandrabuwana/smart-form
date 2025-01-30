@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('unbudget_approval', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('master_id');
-            $table->string('NIK', 20);
+            $table->string('NIK', 50)->nullable();
             $table->integer('status')->default(0)->comment('0: not yet, 1: approved, -1: rejected, -2: replaced');
             $table->integer('urutan');
             $table->bigInteger('replacing')->nullable()->comment('diisi ID dari approval jika mengedit PIC approval');

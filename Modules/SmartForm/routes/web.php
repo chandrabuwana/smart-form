@@ -363,6 +363,8 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('form-list', [UnbudgetController::class, 'FormList'])->name('dc.unbudget.form-list');
             Route::get('helper/coa', [UnbudgetController::class, 'HelperCOA'])->name('dc.unbudget.helper-coa');
             Route::get('helper/mp', [UnbudgetController::class, 'HelperMP'])->name('dc.unbudget.helper-mp');
+            Route::get('migrasi', [UnbudgetController::class, 'Migrasi']);
+            Route::post('migrasi-submit', [UnbudgetController::class, 'MigrasiSubmit'])->name('dc.unbudget.migrasi-submit');
         });
     });
 

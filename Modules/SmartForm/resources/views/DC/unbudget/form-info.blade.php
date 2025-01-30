@@ -253,7 +253,7 @@
                                 <tr>
                                     <td>{{ $data['master']->Nama }}</td>
                                     @foreach ($data['approval'] as $item)
-                                        <td>{{ $item->Nama }}</td>
+                                        <td>{{ $item->Nama ? $item->Nama : $item->NIK}}</td>
                                     @endforeach
                                 </tr>
                                 <tr class="my-3">

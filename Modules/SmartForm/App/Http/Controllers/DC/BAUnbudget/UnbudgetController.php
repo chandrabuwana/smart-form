@@ -6,6 +6,7 @@ use Exception;
 use Google\Cloud\Core\Exception\NotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -554,6 +555,7 @@ class UnbudgetController extends Controller {
             return [
                 "KodeST" => $item->KodeST,
                 "Total" => $item->Total,
+                "TotalRupiah" => $this->formatRupiah($item->Total),
                 "Jumlah" => $jumlah->Jumlah ?? null, // Gunakan null jika tidak ditemukan
             ];
         })->values()->toArray();
@@ -567,18 +569,28 @@ class UnbudgetController extends Controller {
             return [
                 "KodeDP" => $item->KodeDP,
                 "Total" => $item->Total,
+                "TotalRupiah" => $this->formatRupiah($item->Total),
                 "Jumlah" => $jumlah->Jumlah ?? null, // Gunakan null jika tidak ditemukan
             ];
         })->values()->toArray();
         
         // Hasil akhir tanpa redundansi KodeDP
+        // $result = collect($result)->sortByDesc('Total');
+        // $result2 = collect($result2);
+        // dd($result);
+        $sortedResult = collect($result)->sortByDesc('Total')->values();
+        $sortedResult2 = collect($result2)->sortByDesc('Total')->values();
+
         $finalResult = [
             "bySite" => $result,
-            "byDept" => $result2
+            "byDept" => $result2,
+            "sortedBySite" => $sortedResult,
+            "sortedByDept" => $sortedResult2
         ];
 
         
         // return response()->json($finalResult);
+        // dd($finalResult['sortedByDept']);
         return view('SmartForm::DC/unbudget/dashboard', ['finalResult' => $finalResult]);
     }
 
@@ -633,5 +645,106 @@ class UnbudgetController extends Controller {
         $splittedTgl[1] = self::bulanMappingDesc[(int) $splittedTgl[1]];
 
         return $splittedTgl[2] . ' ' . $splittedTgl[1] . ' ' . $splittedTgl[0];
+    }
+
+    public function Migrasi(Request $request) {
+        return view('SmartForm::DC/unbudget/migrasi');
+    }
+
+    public function MigrasiSubmit(Request $request) {
+        $isSuccess = false;
+        $msg = "";
+        $errMsg = [];
+        $tgl = now();
+        
+        try {
+            DB::beginTransaction();
+            $migrasi = $request->input('migrasi');
+            $costControl = DB::table(self::T_HRD_KARYAWAN)->select('Nama')->where('NIK', env('UNBUDGET_COST_CONTROL', '1001114'))->first();
+            $insertedID = [];
+            
+            foreach ($migrasi as $valueMigrasi) {
+                $bulan = self::bulanMapping[Carbon::parse($valueMigrasi['master']['tanggal'])->month];
+                $tahun = Carbon::parse($valueMigrasi['master']['tanggal'])->year;
+                Log::debug([
+                    'bulan' => $bulan,
+                    'tahun' => $tahun
+                ]);
+                $result = DB::select('EXEC '. self::SP_UNBUDGET .' :KodeST, :KodeDP, :Tanggal, :s, :e, :f, :t, :o, :tempat, :created_by, :created_at, :bulan, :tahun', [
+                    'KodeST' => $valueMigrasi['master']['KodeST'],
+                    'KodeDP' => $valueMigrasi['master']['KodeDP'],
+                    'Tanggal' => $valueMigrasi['master']['tanggal'],
+                    's' => $valueMigrasi['master']['strategi'],
+                    'e' => $valueMigrasi['master']['ekonomi'],
+                    'f' => $valueMigrasi['master']['finance'],
+                    't' => $valueMigrasi['master']['technology'],
+                    'o' => $valueMigrasi['master']['operation'],
+                    'tempat' => $valueMigrasi['master']['tempat'],
+                    'created_by' => $valueMigrasi['master']['nik'],
+                    'created_at' => $tgl,
+                    'bulan' => $bulan,
+                    'tahun' => $tahun
+                ]);
+
+                if($result[0]->status != 0) new Exception('Error exec SP : ' . $result[0]->msg); 
+                if(empty($result)) new Exception('Error exec SP : empty result');
+                $insertedID[] = $result[0]->id_master;
+
+                foreach($valueMigrasi['detail'] as $valueDtl) {
+                    DB::table(self::T_UNBUDGET_DTL)->insert([
+                        'master_id' => $result[0]->id_master,
+                        'KodeMaterial' => $valueDtl['KodeMaterial'],
+                        'NamaMaterial' => $valueDtl['NamaMaterial'],
+                        'Code_COA' => $valueDtl['Code_COA'],
+                        'COA' => $valueDtl['COA'],
+                        'QTY' => $valueDtl['QTY'],
+                        'HargaSatuan' => $valueDtl['HargaSatuan'],
+                        'keterangan' => $valueDtl['keterangan']
+                    ]);
+                }
+
+
+                array_push($valueMigrasi['approval'], [
+                    'nik' => $costControl->Nama,
+                    'approvalOrder' => 2,
+                    'role' => 'Sect. Head Cost Control'
+                ]);
+
+                $listApproval = collect($valueMigrasi['approval'])->sortBy('approvalOrder');
+                
+                foreach($listApproval as $valueApproval) {
+                    DB::table(self::T_UNBUDGET_APPROVAL)->insert([
+                        'NIK' => $valueApproval['nik'],
+                        'master_id' => $result[0]->id_master,
+                        'status' => 1,
+                        'urutan' => $valueApproval['approvalOrder'],
+                        'role' => $valueApproval['role']
+                    ]);
+                }
+            }
+
+            DB::table(self::T_UNBUDGET_MASTER)->whereIn('id', $insertedID)->update(['status' => 1]);
+            // dd($migrasi);
+            $msg = "Berhasil migrasi data";
+            $isSuccess = true;
+
+            DB::commit();
+        } catch (Exception $ex) {
+            DB::rollBack();
+            $errID = Str::uuid();
+            $msg = 'Terjadi kesalahan, trace ID : ' . $errID;
+            Log::error('Error ' . $errID . ' : '. $ex->getMessage());
+            Log::error($ex->getTraceAsString());
+        }
+
+        return response()->json([
+            'isSuccess' => $isSuccess,
+            'message' => $msg,
+            'errorMessage' => $errMsg,
+        ]);
+    }
+
+    private function formatRupiah($angka, $prefix = 'Rp ') {
+        return $prefix . number_format($angka, 2, ',', '.');
     }
 }
