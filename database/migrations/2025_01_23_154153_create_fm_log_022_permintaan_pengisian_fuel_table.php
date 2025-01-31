@@ -11,25 +11,26 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('fm_log_022_permintaan_pengisian_fuel', function (Blueprint $table) {
-            $table->id();
+        Schema::create('FM_LOG_022_PERMINTAAN_PENGISIAN_FUEL', function (Blueprint $table) {
+            $table->increments('id');
             $table->string('no');
-            $table->string('no_dok');
+            $table->string('no_dok')->nullable();
             $table->string('nama');
             $table->string('jabatan');
             $table->string('nik');
             $table->string('departemen');
-            $table->timestamp('tanggal');
+            $table->date('tanggal');
             $table->string('no_lambung');
             $table->string('jenis_kendaraan');
             $table->string('jam');
             $table->string('shift');
             $table->string('hm');
+            $table->string('km');
             $table->string('awal');
             $table->string('akhir');
             $table->string('total_liter');
-            $table->string('diserahkan_oleh');
-            $table->string('diterima_oleh');
+            $table->string('diserahkan_oleh')->nullable();
+            $table->string('diterima_oleh')->nullable();
         });
     }
 
@@ -38,6 +39,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('fm_log_022_permintaan_pengisian_fuel');
+        Schema::dropIfExists('FM_LOG_022_PERMINTAAN_PENGISIAN_FUEL');
     }
 };
