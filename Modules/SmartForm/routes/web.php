@@ -18,6 +18,8 @@ use Modules\SmartForm\App\Http\Controllers\PLANT\PlantTransmissionController;
 use Modules\SmartForm\App\Http\Controllers\Production\ProductionTimeSheetDashboarController;
 use Modules\SmartForm\App\Http\Controllers\SHE\DashboardSHEFRM19BController;
 use Modules\SmartForm\App\Http\Controllers\SHE\TransactionSHEFRM19BController;
+use Modules\SmartForm\App\Http\Controllers\SHE\EyewashController;
+use Modules\SmartForm\App\Http\Controllers\SHE\P3KController;
 use Modules\SmartForm\App\Http\Controllers\SKL\DashboardSKLController;
 use Modules\SmartForm\App\Http\Controllers\SKL\SKLFormController;
 use Modules\SmartForm\App\Http\Controllers\SM\AssetRequestController;
@@ -224,6 +226,22 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/form-device', [DeviceFormController::class, 'CreateDeviceForm'])->name('it-ops.form-device');
             Route::post('/submit-device', [DeviceFormController::class, 'SubmitDeviceForm'])->name('it-ops.submit-device');
             Route::get('/form-device/{id}/export-pdf', [DeviceFormController::class, 'ExportDevice'])->name('it-ops.form-device.export');
+        });
+
+        Route::prefix('she-inspeksi')->group(function () {
+            Route::get('/dashboard', [EyewashController::class, 'Dashboard'])->name('she-inspeksi.dashboard');
+            Route::get('/form/export/{id}', [EyewashController::class, 'ExportForm'])->name('she-inspeksi.form.export');
+            Route::get('/form', [EyewashController::class, 'AddForm'])->name('she-inspeksi.form');
+            Route::post('/store', [EyewashController::class, 'Store'])->name('she-inspeksi.submit');
+            Route::put('/form/{id}', [EyewashController::class, 'Update'])->name('she-inspeksi.form.update');
+        });
+
+        Route::prefix('she-p3k')->group(function () {
+            Route::get('/dashboard', [P3KController::class, 'Dashboard'])->name('she-p3k.dashboard');
+            Route::get('/form/export/{id}', [P3KController::class, 'ExportForm'])->name('she-p3k.export');
+            Route::get('/form', [P3KController::class, 'AddForm'])->name('she-p3k.form');
+            Route::post('/store', [P3KController::class, 'Store'])->name('she-p3k.submit');
+            Route::put('/form/{id}', [P3KController::class, 'Update'])->name('she-p3k.form.update');
         });
     });
 

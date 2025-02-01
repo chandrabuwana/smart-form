@@ -105,21 +105,25 @@
                                     <div class="mb-0 d-flex align-items-center">
                                         <label class="form-label me-2 w-25" for="nama">Nama</label>
                                         <input type="text" class="form-control input-text" id="nama" name="nama" required
+                                            {{ $isShowDetail ? 'disabled' : '' }}
                                             value="{{ $isShowDetail ? $maintenanceRecord->nama : (session('username') ?? '') }}">
                                     </div>
                                     <div class="mb-0 d-flex align-items-center">
                                         <label class="form-label me-2 w-25" for="nik">NIK</label>
                                         <input type="text" class="form-control input-text" id="nik" name="nik" required
+                                        {{ $isShowDetail ? 'disabled' : '' }}
                                         value="{{ $isShowDetail ? $maintenanceRecord->nik :  (session('user_id') ?? '') }}">
                                     </div>
                                     <div class="mb-0 d-flex align-items-center">
                                         <label class="form-label me-2 w-25" for="dept">Dept</label>
                                         <input type="text" class="form-control input-text" id="dept" name="dept" required
+                                        {{ $isShowDetail ? 'disabled' : '' }}
                                         value="{{ $isShowDetail ? $maintenanceRecord->dept : (session('kode_department') ?? '') }}">
                                     </div>
                                     <div class="mb-0 d-flex align-items-center">
                                         <label class="form-label me-2 w-25" for="site">Site</label>
-                                        <select class="form-select input-text" id="site" name="site" required>
+                                        <select class="form-select input-text" id="site" name="site" required
+                                        {{ $isShowDetail ? 'disabled' : '' }}>
                                         <option value="">-- Pilih Site --</option>
                                             @foreach(['agm', 'mbl', 'mme', 'mas', 'pmss', 'taj', 'bssr', 'tdm', 'msj'] as $site)
                                                 <option value="{{ $site }}" {{ $isShowDetail && strtolower($maintenanceRecord->site) == $site ? 'selected' : '' }}>
@@ -142,26 +146,31 @@
                                     <div class="mb-0 d-flex align-items-center">
                                         <label class="form-label me-2 w-25" for="no_asset">No Asset</label>
                                         <input type="text" class="form-control input-text" id="no_asset" name="no_asset" required
+                                            {{ $isShowDetail ? 'disabled' : '' }}
                                             value="{{ $isShowDetail ? $maintenanceRecord->no_asset : '' }}">
                                     </div>
                                     <div class="mb-0 d-flex align-items-center">
                                         <label class="form-label me-2 w-25" for="jenis_aset">Jenis Asset</label>
                                         <input type="text" class="form-control input-text" id="jenis_aset" name="jenis_aset" required
+                                            {{ $isShowDetail ? 'disabled' : '' }}
                                             value="{{ $isShowDetail ? $maintenanceRecord->jenis_aset : '' }}">
                                     </div>
                                     <div class="mb-0 d-flex align-items-center">
                                         <label class="form-label me-2 w-25" for="merk">Merk</label>
                                         <input type="text" class="form-control input-text" id="merk" name="merk" required
+                                            {{ $isShowDetail ? 'disabled' : '' }}
                                             value="{{ $isShowDetail ? $maintenanceRecord->merk : '' }}">
                                     </div>
                                     <div class="mb-0 d-flex align-items-center">
                                         <label class="form-label me-2 w-25" for="model">Model</label>
                                         <input type="text" class="form-control input-text" id="model" name="model" required
+                                            {{ $isShowDetail ? 'disabled' : '' }}
                                             value="{{ $isShowDetail ? $maintenanceRecord->model : '' }}">
                                     </div>
                                     <div class="mb-0 d-flex align-items-center">
                                         <label class="form-label me-2 w-25" for="area_cctv">Area CCTV</label>
                                         <input type="text" class="form-control input-text" id="area_cctv" name="area_cctv" required
+                                            {{ $isShowDetail ? 'disabled' : '' }}
                                             value="{{ $isShowDetail ? $maintenanceRecord->area_cctv : '' }}">
                                     </div>
                                 </div>
@@ -314,7 +323,7 @@
                             text: response.data.message
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                window.location.reload();
+                                window.location.href = '{{ route("it-ops.dashboard-cctv") }}';
                             }
                         });
                     }
