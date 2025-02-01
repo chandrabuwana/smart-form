@@ -262,8 +262,7 @@ class CCTVFormController extends Controller
             $pdf = PDF::loadView('SmartForm::it/exports/cctv-maintenance', [
                 'record' => $maintenanceRecord
             ]);
-
-            $filename = 'BSS-FORM-IT-014_' . $maintenanceRecord->no_asset . '_' . date('Ymd') . '.pdf';
+            $filename = 'form-cctv-' . str_replace('/', '-', $maintenanceRecord->doc_number) . '.pdf';
 
             return $pdf->download($filename);
 

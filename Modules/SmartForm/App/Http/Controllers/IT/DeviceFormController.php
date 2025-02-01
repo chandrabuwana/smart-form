@@ -288,10 +288,11 @@ class DeviceFormController extends Controller
         ]);
 
         DB::beginTransaction();
+        $docNumber = $this->generateDocNumber();
 
         $deviceMaintenance = DB::table('it_fm_device')->insertGetId([
             // Document Info
-            'doc_number' => $validated['doc_number'] ?? null,
+            'doc_number' => $docNumber,
             'revision' => $validated['revision'] ?? 0,
             'doc_date' => $validated['doc_date'] ?? now(),
 
@@ -373,22 +374,22 @@ class DeviceFormController extends Controller
             'data' => $deviceMaintenance
         ]);
 
-    } catch (ValidationException $e) {
-        DB::rollBack();
-        return response()->json([
-            'success' => false,
-            'message' => 'Validation error',
-            'errors' => $e->errors()
-        ], 422);
-    } catch (\Exception $e) {
-        DB::rollBack();
-        Log::error('Error in SubmitDeviceForm: ' . $e->getMessage());
-        return response()->json([
-            'success' => false,
-            'message' => 'An error occurred while saving the Device maintenance record',
-            'error' => $e->getMessage()
-        ], 500);
-    }
+        } catch (ValidationException $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error in SubmitDeviceForm: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while saving the Device maintenance record',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function ExportDevice($id)
@@ -439,7 +440,7 @@ class DeviceFormController extends Controller
                 'record' => $maintenanceRecord
             ]);
 
-            $filename = 'BSS-FORM-IT-012_' . $maintenanceRecord->doc_number . '_' . now()->format('Ymd_His') . '.pdf';
+            $filename = 'form-device-' . str_replace('/', '-', $maintenanceRecord->doc_number) . '.pdf';
             
             
             return $pdf->download($filename);
@@ -448,6 +449,31 @@ class DeviceFormController extends Controller
             Log::error('Error in ExportDevice: ' . $e->getMessage());
             return redirect()->route('it-ops.dashboard-device')
                 ->with('error', 'An error occurred while generating the PDF');
+        }
+    }
+
+    private function generateDocNumber()
+    {
+        try {
+            $prefix = 'BSS-FRM-IT-012';
+            $date = now()->format('dmY');
+            
+            // Get the latest sequence number for the current month
+            $lastRecord = DB::table('it_fm_device')
+                ->whereDate('created_at', now())
+                ->orderBy('created_at', 'desc')
+                ->value('doc_number');
+
+            $sequence = 1;
+            if ($lastRecord && preg_match('/-(\d+)$/', $lastRecord->doc_number, $matches)) {
+                $sequence = intval($matches[1]) + 1;
+            }
+
+            return sprintf("%s-%s-%03d", $prefix, $date, $sequence);
+
+        } catch (\Exception $e) {
+            Log::error('Error generating doc number: ' . $e->getMessage());
+            throw $e;
         }
     }
 }

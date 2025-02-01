@@ -320,7 +320,7 @@ class PrinterFormController extends Controller
                 'record' => $maintenanceRecord
             ]);
 
-            $filename = 'BSS-FORM-IT-013_' . $maintenanceRecord->no_asset . '_' . date('Ymd') . '.pdf';
+            $filename = 'form-printer-' . str_replace('/', '-', $maintenanceRecord->doc_number) . '.pdf';
 
             return $pdf->download($filename);
 
