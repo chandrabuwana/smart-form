@@ -86,17 +86,20 @@
     </style>
 </head>
 <body>
-    <table class="header-table">
+    <table class="header-table" style="border: 1px solid #000;">
         <tr>
-            <td colspan="4" class="title-cell">
-                <div class="form-title">FORM PEMERIKSAAN PRINTER</div>
-                <div class="company-name">PT BINA SARANA SUKSES</div>
-                <div class="form-number">NO: BSS-FORM-IT-013</div>
+            <td width="15%" style="border: 1px solid #000;">
+                <img src="{{ public_path('img/logo-ct-dark.png') }}" class="logo">
             </td>
-            <td style="width: 150px;" class="doc-number">
-                <div class="doc-number-box">
-                    No. Form: {{ str_pad($record->id, 3, '0', STR_PAD_LEFT) }}
-                </div>
+            <td width="55%" style="text-align: center;">
+                <div style="font-size: 14px; font-weight: bold; border-bottom: 1px solid black;">BSS SHE Management System</div>
+                <div style="font-size: 16px; font-weight: bold; margin: 10px 0;">FORM PEMERIKSAAN PRINTER</div>
+            </td>
+            <td width="30%" style="font-size: 10px; border: 1px solid #000;">
+                <div style="border-bottom: 1px solid #000; padding: 2px;">No Dok : {{ $record->doc_number ?? '-' }}</div>
+                <div style="border-bottom: 1px solid #000; padding: 2px;">Revisi : 00</div>
+                <div style="border-bottom: 1px solid #000; padding: 2px;">Tanggal : {{ $record->created_at ? date('d F Y', strtotime($record->created_at)) : '-' }}</div>
+                <div style="padding: 2px;">Halaman : 1 dari 1</div>
             </td>
         </tr>
     </table>
@@ -106,17 +109,9 @@
             <td class="info-label">Nama</td>
             <td class="info-colon">:</td>
             <td>{{ $record->nama }}</td>
-            <td class="info-label">Departemen</td>
+            <td class="info-label">Merk</td>
             <td class="info-colon">:</td>
-            <td>{{ $record->dept }}</td>
-        </tr>
-        <tr>
-            <td class="info-label">Jabatan</td>
-            <td class="info-colon">:</td>
-            <td>TEKNISI</td>
-            <td class="info-label">Tanggal</td>
-            <td class="info-colon">:</td>
-            <td>{{ date('Y-m-d', strtotime($record->created_at)) }}</td>
+            <td>{{ $record->merk }}</td>
         </tr>
         <tr>
             <td class="info-label">NIK</td>
@@ -133,6 +128,14 @@
             <td class="info-label">Jenis Asset</td>
             <td class="info-colon">:</td>
             <td>{{ $record->jenis_aset }}</td>
+        </tr>
+        <tr>
+        <td class="info-label">Departemen</td>
+            <td class="info-colon">:</td>
+            <td>{{ $record->dept }}</td>
+            <td class="info-label">Model</td>
+            <td class="info-colon">:</td>
+            <td>{{ $record->model }}</td>
         </tr>
     </table>
 

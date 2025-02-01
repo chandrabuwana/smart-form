@@ -228,8 +228,10 @@ class PrinterFormController extends Controller
             ]);
 
             DB::beginTransaction();
+            $docNumber = $this->generateDocNumber();
 
             $printerMaintenance = DB::table('it_fm_printer')->insertGetId([
+                'doc_number' => $docNumber,
                 'nama' => $validated['nama'],
                 'nik' => $validated['nik'],
                 'dept' => $validated['dept'],
@@ -253,6 +255,8 @@ class PrinterFormController extends Controller
                 'bluetooth_test' => $validated['bluetooth_test'] ?? false,
                 'cable_test' => $validated['cable_test'] ?? false,
                 'toner_level' => $validated['toner_level'] ?? false,
+                'created_at' => now(),
+                'updated_at' => now()
             ]);
 
             DB::commit();
@@ -324,6 +328,31 @@ class PrinterFormController extends Controller
             Log::error('Error in ExportPrinter: ' . $e->getMessage());
             return redirect()->route('it-ops.dashboard-printer')
                 ->with('error', 'An error occurred while exporting the record');
+        }
+    }
+
+    private function generateDocNumber()
+    {
+        try {
+            $prefix = 'BSS-FRM-IT-013';
+            $date = now()->format('dmY');
+            
+            // Get the latest sequence number for the current month
+            $lastRecord = DB::table('it_fm_printer')
+                ->whereDate('created_at', now())
+                ->orderBy('created_at', 'desc')
+                ->value('doc_number');
+
+            $sequence = 1;
+            if ($lastRecord && preg_match('/-(\d+)$/', $lastRecord->doc_number, $matches)) {
+                $sequence = intval($matches[1]) + 1;
+            }
+
+            return sprintf("%s-%s-%03d", $prefix, $date, $sequence);
+
+        } catch (\Exception $e) {
+            Log::error('Error generating doc number: ' . $e->getMessage());
+            throw $e;
         }
     }
 }
