@@ -1,166 +1,191 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Form Pemeriksaan Device</title>
+    <meta charset="utf-8">
+    <title>BSS-FORM-IT-016</title>
     <style>
+        @page {
+            margin: 30px;
+            padding: 0;
+        }
         body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            font-size: 12px;
-            line-height: 1.5;
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .header h1 {
-            font-size: 18px;
+            font-family: 'DejaVu Sans', sans-serif;
             margin: 0;
             padding: 0;
-        }
-        .header h2 {
-            font-size: 16px;
-            margin: 5px 0;
-            padding: 0;
-        }
-        .header p {
-            font-size: 14px;
-            margin: 5px 0;
-            padding: 0;
-        }
-        .form-number {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            border: 1px solid #000;
-            padding: 5px 10px;
+            font-size: 12px;
+            line-height: 1.5;
+            color: #000;
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            margin: 0;
+            padding: 0;
         }
-        table.info {
-            margin-bottom: 20px;
+        .header-table {
+            margin-bottom: 15px;
         }
-        table.info td {
-            padding: 3px 0;
+        .header-table td {
+            padding: 6px;
+            vertical-align: middle;
         }
-        table.info td:first-child {
-            width: 120px;
+        .logo {
+            width: 100px;
+            height: auto;
         }
-        table.info td:nth-child(2) {
-            width: 10px;
+        .title-section {
+            text-align: center;
+            border-left: 1px solid #000;
+            border-right: 1px solid #000;
+        }
+        .system-title {
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+            display: block;
+            border-bottom: 1px solid #000;
+        }
+        .form-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .doc-info {
+            font-size: 10px;
+            border-left: 1px solid #000;
+        }
+        .doc-info div {
+            border-bottom: 1px solid #000;
+            padding: 4px 8px;
+        }
+        .doc-info div:last-child {
+            border-bottom: none;
+        }
+        .info-table {
+            margin-bottom: 15px;
+        }
+        .info-table td {
+            padding: 4px 8px;
+            vertical-align: middle;
+        }
+        .info-label {
+            width: 100px;
+            font-weight: bold;
+        }
+        .info-colon {
+            width: 20px;
+            text-align: center;
         }
         .main-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
+            margin-bottom: 25px;
         }
-        .main-table th,
-        .main-table td {
+        .main-table th, .main-table td {
             border: 1px solid #000;
             padding: 8px;
-            text-align: left;
+            text-align: center;
+            vertical-align: middle;
         }
         .main-table th {
-            text-align: center;
-        }
-        .checklist {
-            border: 1px solid #000;
-        }
-        .checklist th,
-        .checklist td {
-            border: 1px solid #000;
-            padding: 8px;
-            text-align: left;
-        }
-        .checklist th {
-            background-color: #f0f0f0;
-        }
-        .warning {
-            text-align: center;
-            margin: 20px 0;
+            background-color: #f5f5f5;
             font-weight: bold;
-            border-top: 1px solid #000;
-            border-bottom: 1px solid #000;
-            padding: 10px;
         }
-        .signatures {
-            margin-top: 30px;
-            display: flex;
-            justify-content: space-between;
-        }
-        .signature {
-            width: 45%;
+        .warning-text {
             text-align: center;
-        }
-        .signature p {
-            margin: 5px 0;
-        }
-        .signature .line {
-            border-bottom: 1px solid #000;
-            margin: 50px 0 10px 0;
-        }
-        .note {
-            margin-top: 30px;
-            font-style: italic;
-            font-size: 10px;
+            font-weight: bold;
+            margin: 25px 0;
+            text-transform: uppercase;
+            border: 2px solid #000;
+            padding: 10px;
+            background-color: #f5f5f5;
         }
     </style>
 </head>
 <body>
     <table class="header-table" style="border: 1px solid #000;">
         <tr>
-            <td width="15%" style="border: 1px solid #000;">
+            <td width="20%" style="border-right: 1px solid #000; text-align: center;">
                 <img src="{{ public_path('img/logo-ct-dark.png') }}" class="logo">
             </td>
-            <td width="55%" style="text-align: center;">
-                <div style="font-size: 14px; font-weight: bold; border-bottom: 1px solid black;">BSS SHE Management System</div>
-                <div style="font-size: 16px; font-weight: bold; margin: 10px 0;">FORM PEMERIKSAAN DEVICE</div>
+            <td width="50%" class="title-section">
+                <div class="system-title">BSS SHE Management System</div>
+                <div class="form-title">FORM PEMERIKSAAN DEVICE</div>
             </td>
-            <td width="30%" style="font-size: 10px; border: 1px solid #000;">
-                <div style="border-bottom: 1px solid #000; padding: 2px;">No Dok : {{ $record->doc_number ?? '-' }}</div>
-                <div style="border-bottom: 1px solid #000; padding: 2px;">Revisi : 00</div>
-                <div style="border-bottom: 1px solid #000; padding: 2px;">Tanggal : {{ $record->created_at ? date('d F Y', strtotime($record->created_at)) : '-' }}</div>
-                <div style="padding: 2px;">Halaman : 1 dari 1</div>
+            <td width="30%" class="doc-info">
+                <div>No Dok : {{ $record->doc_number }}</div>
+                <div>Revisi : 00</div>
+                <div>Tanggal : {{ date('d F Y', strtotime($record->created_at)) }}</div>
+                <div>Halaman : 1 dari 1</div>
             </td>
         </tr>
     </table>
 
-    <table class="info">
+    <table class="info-table">
         <tr>
-            <td>Nama</td>
-            <td>:</td>
+            <td class="info-label">Nama</td>
+            <td class="info-colon">:</td>
             <td>{{ $record->nama }}</td>
-            <td style="width: 100px;">Departemen</td>
-            <td>:</td>
+            <td class="info-label">Departemen</td>
+            <td class="info-colon">:</td>
             <td>{{ $record->dept }}</td>
         </tr>
         <tr>
-            <td>Jabatan</td>
-            <td>:</td>
-            <td>TEKNISI</td>
-            <td>Tanggal</td>
-            <td>:</td>
-            <td>{{ $record->doc_date ? date('Y-m-d', strtotime($record->doc_date)) : date('Y-m-d') }}</td>
-        </tr>
-        <tr>
-            <td>NIK</td>
-            <td>:</td>
+            <td class="info-label">NIK</td>
+            <td class="info-colon">:</td>
             <td>{{ $record->nik }}</td>
-            <td>No. Asset</td>
-            <td>:</td>
+            <td class="info-label">No. Asset</td>
+            <td class="info-colon">:</td>
             <td>{{ $record->user_no_asset }}</td>
         </tr>
         <tr>
-            <td>Site</td>
-            <td>:</td>
+            <td class="info-label">Site</td>
+            <td class="info-colon">:</td>
             <td>{{ strtoupper($record->site) }}</td>
-            <td>Jenis Asset</td>
-            <td>:</td>
+            <td class="info-label">Jenis Asset</td>
+            <td class="info-colon">:</td>
             <td>{{ $record->jenis_aset }}</td>
+        </tr>
+    </table>
+
+    <table class="info-table">
+        <tr>
+            <td colspan="6" style="font-weight: bold; padding: 10px 8px; background-color: #f5f5f5; border: 1px solid #000;">Spesifikasi Asset</td>
+        </tr>
+        <tr>
+            <td class="info-label">Jenis Asset</td>
+            <td class="info-colon">:</td>
+            <td>{{ $record->jenis_aset }}</td>
+            <td class="info-label">Tipe Asset</td>
+            <td class="info-colon">:</td>
+            <td>{{ $record->tipe_aset }}</td>
+        </tr>
+        <tr>
+            <td class="info-label">Merk</td>
+            <td class="info-colon">:</td>
+            <td>{{ $record->merk }}</td>
+            <td class="info-label">Model</td>
+            <td class="info-colon">:</td>
+            <td>{{ $record->model }}</td>
+        </tr>
+        <tr>
+            <td class="info-label">Processor</td>
+            <td class="info-colon">:</td>
+            <td>{{ $record->processor }}</td>
+            <td class="info-label">RAM</td>
+            <td class="info-colon">:</td>
+            <td>{{ $record->ram }}</td>
+        </tr>
+        <tr>
+            <td class="info-label">HDD</td>
+            <td class="info-colon">:</td>
+            <td>{{ $record->hdd }}</td>
+            <td class="info-label">VGA</td>
+            <td class="info-colon">:</td>
+            <td>{{ $record->vga }}</td>
+        </tr>
+        <tr>
+            <td class="info-label">OS</td>
+            <td class="info-colon">:</td>
+            <td colspan="4">{{ $record->os }}</td>
         </tr>
     </table>
 
@@ -259,32 +284,8 @@
         @endfor
     </table>
 
-    <div class="warning">
+    <div class="warning-text">
         !!! PASTIKAN DEVICE DALAM KONDISI BAIK !!!
-    </div>
-
-    <div class="signature-section">
-        <table class="signature-table">
-            <tr>
-                <td style="width: 50%; text-align: center;">Diperiksa Oleh,</td>
-                <td style="width: 50%; text-align: center;">Diketahui Oleh,</td>
-            </tr>
-            <tr>
-                <td style="text-align: center; padding-top: 60px;">
-                    <div style="border-top: 1px solid black; display: inline-block; width: 200px;"></div>
-                    <div>Teknisi IT</div>
-                </td>
-                <td style="text-align: center; padding-top: 60px;">
-                    <div style="border-top: 1px solid black; display: inline-block; width: 200px;"></div>
-                    <div>User</div>
-                </td>
-            </tr>
-        </table>
-    </div>
-
-    <div style="margin-top: 30px; font-size: 10px; font-style: italic;">
-        Note: Form Mohon diprint menggunakan kertas carbonize 3 (tiga) rangkap<br>
-        Peruntukkan rangkap putih (IT), rangkap merah (user) & rangkap kuning (admin data center)
     </div>
 </body>
 </html>

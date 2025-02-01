@@ -118,8 +118,6 @@ class CCTVFormController extends Controller
         try {
             // If ID is provided, get maintenance data
             if ($request->has('id')) {
-                Log::info('Fetching CCTV maintenance record for ID: ' . $request->id);
-                
                 $maintenanceRecord = DB::table('it_fm_cctv')
                     ->where('id', $request->id)
                     ->first();
