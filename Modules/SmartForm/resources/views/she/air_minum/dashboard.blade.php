@@ -190,11 +190,11 @@
                                     <td>
                                         @php
                                             $conclusionClass = match($record->conclusion) {
-                                                'Excellent' => 'text-success',
-                                                'Good' => 'text-info',
-                                                'Poor' => 'text-warning',
-                                                'Very Poor' => 'text-danger',
-                                                default => 'text-secondary'
+                                                'Excellent' => 'bg-info',
+                                                'Good' => 'bg-success',
+                                                'Poor' => 'bg-warning',
+                                                'Very Poor' => 'bg-danger',
+                                                default => 'bg-secondary'
                                             };
                                         @endphp
                                         <span class="badge {{ $conclusionClass }}">{{ $record->conclusion }}</span>
