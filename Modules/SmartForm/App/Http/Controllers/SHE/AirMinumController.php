@@ -19,7 +19,7 @@ class AirMinumController extends Controller
             $query = DB::table('she_air_minum')
                 ->select([
                     'she_air_minum.*',
-                    DB::raw('FORMAT(inspection_date, \'yyyy-MM-dd\') as formatted_date')
+                    DB::raw('CONVERT(varchar, inspection_date, 23) as formatted_date')
                 ]);
 
             // Search functionality
@@ -78,6 +78,7 @@ class AirMinumController extends Controller
                     ->count()
             ];
 
+            Log::info($records);
             return view('SmartForm::she/air_minum/dashboard', [
                 'records' => $records,
                 'statistics' => $statistics,

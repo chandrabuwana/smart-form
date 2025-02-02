@@ -216,14 +216,28 @@
                                 </div>
                             </div>
 
-                            <!-- Submit Button -->
-                            @if(!isset($isShowDetail) || !$isShowDetail)
-                            <div class="row mt-4">
+                            <!-- Submit/Back Buttons -->
+                            <div class="row">
                                 <div class="col-12 text-end">
-                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                    @if($isShowDetail)
+                                        <a href="{{ route('she.air-minum.dashboard') }}" class="btn btn-secondary">Back</a>
+                                        <a href="{{ route('she.air-minum.export', $maintenanceRecord->id) }}" class="btn btn-primary">
+                                            <i class="fas fa-file-export"></i> Export
+                                        </a>
+                                    @else
+                                    <div class="row mt-4">
+                                        <div class="col-12 d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <a href="{{ route('she.air-minum.dashboard') }}" class="btn btn-secondary">Back</a>
+                                            </div>
+                                            <div>
+                                                <button type="submit" class="btn btn-primary">Submit</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @endif
                                 </div>
                             </div>
-                            @endif
                         </div>
                     </form>
                 </div>

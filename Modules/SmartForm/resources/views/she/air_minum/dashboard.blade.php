@@ -203,11 +203,8 @@
                                         <p class="text-xs font-weight-bold mb-0">{{ $record->formatted_date }}</p>
                                     </td>
                                     <td class="align-middle">
-                                        <a href="{{ route('she.air-minum.form', ['id' => $record->id]) }}" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit record">
-                                            <i class="fas fa-eye me-2"></i>
-                                        </a>
-                                        <a href="{{ route('she.air-minum.export', ['id' => $record->id]) }}" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Export record">
-                                            <i class="fas fa-file-pdf"></i>
+                                        <a href="{{ route('she.air-minum.form', ['id' => $record->id]) }}" class="btn btn-primary btn-action text-white">
+                                            <i class="fas fa-eye"></i> Detail
                                         </a>
                                     </td>
                                 </tr>
