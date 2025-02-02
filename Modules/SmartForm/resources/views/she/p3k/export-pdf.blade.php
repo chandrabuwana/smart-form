@@ -113,8 +113,8 @@
                     <td style="text-align: left;">{{ $item['name'] }}</td>
                     <td>{{ $item['qty'] }}</td>
                     <td>{{ $itemData ? $itemData['current_qty'] : $item['qty'] }}</td>
-                    <td style="text-align: left;">{{ $itemData ? $itemData['notes'] : '' }}</td>
-                    <td colspan="2">{{ $itemData && $itemData['in_stock'] ? '√' : '' }}</td>
+                    <td style="text-align: left;">{{ $itemData ? $itemData['notes'] : '-' }}</td>
+                    <td colspan="2" style="font-family: DejaVu Sans, sans-serif;">{!! $itemData && $itemData['in_stock'] ? '√' : 'x' !!}</td>
                 </tr>
             @endforeach
         </tbody>
