@@ -20,6 +20,7 @@ use Modules\SmartForm\App\Http\Controllers\SHE\DashboardSHEFRM19BController;
 use Modules\SmartForm\App\Http\Controllers\SHE\TransactionSHEFRM19BController;
 use Modules\SmartForm\App\Http\Controllers\SHE\EyewashController;
 use Modules\SmartForm\App\Http\Controllers\SHE\P3KController;
+use Modules\SmartForm\App\Http\Controllers\SHE\AirMinumController;
 use Modules\SmartForm\App\Http\Controllers\SKL\DashboardSKLController;
 use Modules\SmartForm\App\Http\Controllers\SKL\SKLFormController;
 use Modules\SmartForm\App\Http\Controllers\SM\AssetRequestController;
@@ -249,6 +250,15 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/store', [P3KController::class, 'Store'])->name('she-p3k.submit');
             Route::put('/form/{id}', [P3KController::class, 'Update'])->name('she-p3k.form.update');
         });
+
+        Route::prefix('she-air-minum')->group(function () {
+            Route::get('/dashboard', [AirMinumController::class, 'Dashboard'])->name('she.air-minum.dashboard');
+            Route::get('/form/export/{id}', [AirMinumController::class, 'ExportForm'])->name('she.air-minum.export');
+            Route::get('/form', [AirMinumController::class, 'AddForm'])->name('she.air-minum.form');
+            Route::post('/store', [AirMinumController::class, 'Store'])->name('she.air-minum.store');
+            Route::put('/form/{id}', [AirMinumController::class, 'Update'])->name('she.air-minum.form.update');
+        });
+
     });
 
     Route::get('/dashboard-menu', [AdminController::class, 'index'])->name('dashboard-menu');
