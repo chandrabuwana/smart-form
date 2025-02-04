@@ -13,7 +13,10 @@ use Illuminate\Validation\Rule;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class LogController extends Controller {
-    private const TABLE_REQUEST_MASTER = "FM_LOG_002_REQUESTER_MASTER";
+
+
+    private const TABLE_MASTER = 'FM_LOG_002_REQUESTER_MASTER';
+    private const TABLE_DETAIL = 'FM_LOG_002_REQUESTER_MASTER_DETAIL';
 
     public function download() {
         $pdf = Pdf::loadView('pdf');
@@ -21,57 +24,30 @@ class LogController extends Controller {
         return $pdf->download();
     }
 
+    // ***** START REQ MASTER *****
     public function RequestMasterDashboard()
     {
         return view('SmartForm::LOG/request-master');
     }
 
-    function GetFormsRequestMaster(Request $request) {
+    function GetListRequestMaster(Request $request) {
         $TABLE_REQUEST_MASTER = "FM_LOG_002_REQUESTER_MASTER";
         $response = array(
             'message' => '',
             'isSuccess' => false
         );
-        $filterTanggal = $request->query('tanggal', null);
-        $filterSite = $request->query('site', null);
-        $filterNik = $request->query('nama', null);
-        $filterStatus = $request->query('status', null);
-        $search = $request->query('search', '');
+
         $sort = $request->query('sort', 'id'); // Default sort by id
         $order = $request->query('order', 'asc'); // Default order is ascending
         $offset = $request->query('offset', 0); // Default offset
         $limit = $request->query('limit', null); // Default limit
         $filter = $request->query('filter', null); // Default limit
         try {
-            // $jml = DB::table($TABLE_MASTER)->count();
             $master = DB::table($TABLE_REQUEST_MASTER)
-                ->select('no_dok','part_name');
+                ->select('id', 'no_dok', 'site', 'created_by');
             
-            if($filterTanggal == null || $filterTanggal == 'null') {
-            } else {
-                $tgl = Carbon::createFromFormat('Y-m-d', $filterTanggal);
-                $master->whereDate('tanggal', $tgl);
-            }
-            if($filterSite == null || $filterSite == 'null') {
-            } else {
-                $master->where('site', $filterSite);
-            }
-            if($filterNik == null || $filterNik == 'null') {
-            } else {
-                $master->where('nik', $filterNik);
-            }
-            if($filterStatus == null || $filterStatus == 'null') {
-            } else {
-                $master->where('status', $filterStatus);
-            }
             $master->orderBy($sort, $order);
-            // Log::debug("SQL : ".$master->toRawSql());
-            $jml = $master->count();
-            if($limit == null || $limit == 'null' || $limit == '') {
-                $master->skip($offset);
-            } else {
-                $master->skip($offset)->limit($limit);
-            }
+            $jml = $master->count();            
             $document = $master->get();
 
             $response['message'] = "Ok";
@@ -92,6 +68,122 @@ class LogController extends Controller {
 
         return response()->json($response);
     }
+    
+    function formReqMaster() {
+        return view("SmartForm::log/form-request-master");
+    }
+
+    function SubmitFormRequestMaster(Request $req) {
+        $TABLE_MASTER = "FM_LOG_002_REQUESTER_MASTER";
+        $TABLE_DETAIL = "FM_LOG_002_REQUESTER_MASTER_DETAIL";
+        $response = array(
+            'message' => "",
+            'isSuccess' => false
+        );
+        $tgl = now()->toDateTimeString();
+        $requested_by = $req->session()->get('user_id');
+        $data = $req->input();
+        
+        $data_insert = [
+            'created_by' => $requested_by,
+            'site' => $data['site'],
+            'no_dok' => $data['noDoc'],
+            'created_at' => $data['tglDoc'],
+            'disetujui_oleh' => $data['disetujuiOleh']
+        ];
+        $spliited_no_doc = explode("/", $data_insert['no_dok']);
+        $data_item = json_decode($data['item']);
+        
+        try {
+            DB::beginTransaction();
+            $id = DB::table($TABLE_MASTER)->insertGetId($data_insert);
+
+            foreach ($data_item as $data_item_detail) {
+                DB::table($TABLE_DETAIL)->insert(array(
+                    'id_req_master' => $id,
+                    'kode_master' => $data_item_detail->kodeMaster,
+                    'part_name' => $data_item_detail->kodeMaster,
+                    'uom' => $data_item_detail->partName,
+                    'part_number' => $data_item_detail->uom,
+                    'brand' => $data_item_detail->brand,
+                    'gen_itc' => $data_item_detail->gen,
+                    'model' => $data_item_detail->model,
+                    'compartement' => $data_item_detail->compartement,
+                    'fff_class' => $data_item_detail->fffC,
+                    'plan_material_status' => $data_item_detail->planMatStatus,
+                    'mrp_type' => $data_item_detail->mrpType,
+                    'scrap' => $data_item_detail->scrap,
+                    'material_type' => $data_item_detail->matType,
+                    'material_group' => $data_item_detail->matGroup,
+                    'valuation_class' => $data_item_detail->valuationStatus
+                ));
+            }
+
+            $spliited_no_doc[0] = $id;
+            $updated_no_doc = implode("/", $spliited_no_doc);
+
+            $affected = DB::table($TABLE_MASTER)
+              ->where('id', $id)
+              ->update(['no_dok' => $updated_no_doc]);
+
+            Db::commit();
+
+
+            $response['message'] = "Ok";
+            $response['isSuccess'] = true;
+            $response['data'] = array(
+                'no_doc' => $updated_no_doc
+            );
+        } catch (Exception $ex) {
+            //throw $th;
+            Log::error($ex->getTraceAsString());
+            DB::rollBack();
+            $response['message'] = $ex->getMessage();
+            $response['isSuccess'] = false;
+        }
+
+        return response()->json($response);
+    }
+
+    public function PdfReqMaster($id)
+    {
+        $TABLE_MASTER = "FM_LOG_002_REQUESTER_MASTER";
+        $TABLE_DETAIL = "FM_LOG_002_REQUESTER_MASTER_DETAIL";
+        $errors = array(
+            'error' => false,
+            'message' => ''
+        );
+        try {
+            $data = DB::table($TABLE_MASTER)
+                    ->select('id', 'no_dok','site','created_at','created_by','disetujui_oleh')
+                    ->where('id', $id)
+                    ->first();
+                
+            $data_detail = DB::table($TABLE_DETAIL)
+                ->select('kode_master as kodeMaster','part_name as partName','uom', 'part_number as partNumber','brand','gen_itc as gen','model','compartement as cmp','fff_class as fC','plan_material_status as pms','mrp_type as mrpT','scrap','material_type as matType','material_group as matGroup','valuation_class as vC')
+                ->where('id_req_master', $data->id)
+                ->get();
+            
+            $nomor = 1;
+            foreach($data_detail as $detail) {
+                $detail->nomor = $nomor;            
+                $nomor++;
+            }
+        
+            $data_master['id'] = $data->id;
+            $data_master['no_dok'] = $data->no_dok;
+            $data_master['site'] = $data->site;
+            $data_master['dibuat_tgl'] = $data->created_at;
+            $data_master['dibuat_oleh'] = $data->created_by;
+            $data_master['disetujui_oleh'] = $data->disetujui_oleh;
+        } catch (Exception $ex) {
+            Log::error($ex->getMessage());
+        }
+        Log::info("data_master : ". json_encode($data_master));
+        $pdf = PDF::loadView('SmartForm::LOG/req-master-pdf',  ['data' => $data_master, 'data_detail' => $data_detail, 'error' => $errors])->setPaper('a4', 'landscape');
+        return $pdf->download('BSS-FRM-LOG-002.pdf');
+    }
+    // ***** END REQ MASTER *****
 
     // ***** SATRT FUEL CONTROLLER *****
     public function FuelDashboard()
@@ -228,7 +320,7 @@ class LogController extends Controller {
         $data = DB::table('FM_LOG_022_PERMINTAAN_PENGISIAN_FUEL')->where('id', $id)->first();
         $pdf = PDF::loadView('SmartForm::LOG/req-fuel-pdf',  compact('data'));
 
-        return $pdf->download('form_req_fuel.pdf');
+        return $pdf->download('BSS-FRM-LOG-022.pdf');
     }
     // ***** END FUEL CONTROLLER *****
 }
