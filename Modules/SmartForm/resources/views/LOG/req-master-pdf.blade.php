@@ -126,7 +126,7 @@ table.atas td {
          <tr>
             <td style="text-align: center"> FROM REQUEST CODE MATERIAL</td>
             <td>Halaman</td>
-            <td colspan="2">: {{ $data['dibuat_tgl'] }}</td>
+            <td colspan="2">: 1 dari 1</td>
          </tr>
     </table>
 
