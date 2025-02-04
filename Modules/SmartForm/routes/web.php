@@ -21,6 +21,7 @@ use Modules\SmartForm\App\Http\Controllers\SHE\TransactionSHEFRM19BController;
 use Modules\SmartForm\App\Http\Controllers\SHE\EyewashController;
 use Modules\SmartForm\App\Http\Controllers\SHE\P3KController;
 use Modules\SmartForm\App\Http\Controllers\SHE\AirMinumController;
+use Modules\SmartForm\App\Http\Controllers\SHE\NoiseController;
 use Modules\SmartForm\App\Http\Controllers\SKL\DashboardSKLController;
 use Modules\SmartForm\App\Http\Controllers\SKL\SKLFormController;
 use Modules\SmartForm\App\Http\Controllers\SM\AssetRequestController;
@@ -257,6 +258,14 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/form', [AirMinumController::class, 'AddForm'])->name('she.air-minum.form');
             Route::post('/store', [AirMinumController::class, 'Store'])->name('she.air-minum.store');
             Route::put('/form/{id}', [AirMinumController::class, 'Update'])->name('she.air-minum.form.update');
+        });
+
+        Route::prefix('she-noise')->group(function () {
+            Route::get('/dashboard', [NoiseController::class, 'Dashboard'])->name('she.noise.dashboard');
+            Route::get('/form/export/{id}', [NoiseController::class, 'ExportForm'])->name('she.noise.export');
+            Route::get('/form', [NoiseController::class, 'AddForm'])->name('she.noise.form');
+            Route::post('/store', [NoiseController::class, 'Store'])->name('she.noise.store');
+            Route::put('/form/{id}', [NoiseController::class, 'Update'])->name('she.noise.form.update');
         });
 
     });
