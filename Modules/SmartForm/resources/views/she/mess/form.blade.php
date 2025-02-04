@@ -95,14 +95,14 @@
                                 <tr style="background-color: #3498db; color: white;">
                                     <th>TINGKAT RISIKO</th>
                                     <th>POTENSI RISIKO</th>
-                                    <th>KEMUNGKINAN AKIBAT</th>
-                                    <th>TINDAKAN PERBAIKAN</th>
+                                    <th class="text-center">KEMUNGKINAN AKIBAT</th>
+                                    <th class="text-center">TINDAKAN PERBAIKAN</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td style="background-color: #ff0000; color: white;">Risiko Kritikal</td>
-                                    <td>75 - 125</td>
+                                    <td style="background-color: #ff0000; color: white;" class="text-center">Risiko Kritikal</td>
+                                    <td class="text-center">75 - 125</td>
                                     <td style="white-space: pre-line;">
                                         > Rp 100 Juta dan Sakit akut/ meninggal
 
@@ -115,8 +115,8 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style="background-color: #ffa500; color: white;">Risiko Tinggi</td>
-                                    <td>32 - 75</td>
+                                    <td style="background-color: #ffa500; color: white;" class="text-center">Risiko Tinggi</td>
+                                    <td class="text-center">32 - 75</td>
                                     <td style="white-space: pre-line;">
                                         Rp 50 Juta – Rp 100 Juta dan Sakit dan rawat inap /kronis/PAK
 
@@ -129,8 +129,8 @@ Tidak sesuai baku mutu/peraturan perundangan dan mendapatkan peringatan keras da
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style="background-color: #ffff00;">Risiko Sedang</td>
-                                    <td>18 - 32</td>
+                                    <td style="background-color: #ffff00;" class="text-center">Risiko Sedang</td>
+                                    <td class="text-center">18 - 32</td>
                                     <td style="white-space: pre-line;">
                                         Rp 10 Juta – Rp 50 Juta, Ada gangguan tidak dapat masuk kerja
 
@@ -143,8 +143,8 @@ Sesuai dengan baku mutu/peraturan perundangan atau berdampak ke masyarakat di se
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style="background-color: #90EE90;">Risiko Rendah</td>
-                                    <td>2 - 18</td>
+                                    <td style="background-color: #90EE90;" class="text-center">Risiko Rendah</td>
+                                    <td class="text-center">2 - 18</td>
                                     <td style="white-space: pre-line;">
                                         Ada Kerusakan dan Rp 0 - Rp 10 Juta
 
