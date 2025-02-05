@@ -3,6 +3,7 @@
 // use App\Http\Controllers\GS\SmartCateringController;
 use App\Http\Middleware\FetchMenu;
 use App\Http\Middleware\PermissionMenu;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Modules\SmartForm\App\Http\Controllers\Admin\AdminController;
 use Modules\SmartForm\App\Http\Controllers\Approval\ApprovalFormController;
@@ -37,6 +38,10 @@ use Modules\SmartForm\App\Http\Controllers\TeamManagement\UserManagementControll
 use Modules\SmartForm\App\Http\Controllers\UnderCarriage\UnderCarriageInspectionController;
 use Modules\SmartForm\App\Http\Controllers\FAT\PPH\PPHDashboardController;
 use Modules\SmartForm\App\Http\Controllers\FAT\PPH\HelperPPHController;
+use Modules\SmartForm\App\Http\Controllers\FAT\PPH\UserVendorController;
+use Modules\SmartForm\App\Http\Controllers\IC\PengajuanTraining\HelperTraininingController;
+use Modules\SmartForm\App\Http\Controllers\IC\PengajuanTraining\PengajuanTrainingController;
+use Modules\SmartForm\App\Http\Middleware\PengajuanTrainingIC;
 use Modules\SmartForm\App\Http\Controllers\IT\PrinterFormController;
 use Modules\SmartForm\App\Http\Controllers\IT\CctvFormController;
 use Modules\SmartForm\App\Http\Controllers\IT\DeviceFormController;
@@ -131,6 +136,17 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
                 Route::post('/hapus-document-potongan', [HelperPPHController::class, 'HapusDocumentPotonganPPH']);
                 Route::post('/update-document-potongan', [HelperPPHController::class, 'UpdateDocumentPotonganPPH']);
                 Route::get('/view-detail-master-potongan-pph/{id}', [PPHDashboardController::class, 'indexViewDataDetailMasterPPh']);
+                Route::get('/view-document/{id}', [PPHDashboardController::class, 'indexViewDetailDocument']);
+
+                Route::prefix('vendor')->group( function() {
+                    Route::get('/dashboard', [UserVendorController::class, 'index'])->name('bss-pph-vendor.dashboard');
+                    Route::get('/dashboard/fetch-data', [UserVendorController::class, 'fetchData'])->name('bss-pph-vendor.fetch-dashboard-data');
+                    Route::get('/create', [UserVendorController::class, 'create'])->name('bss-pph-vendor.add');
+                    Route::get('/store', [UserVendorController::class, 'store'])->name('bss-pph-vendor.store');
+                    Route::get('/edit/{id}', [UserVendorController::class, 'edit'])->name('bss-pph-vendor.edit');
+                    Route::post('/update/{id}', [UserVendorController::class, 'update'])->name('bss-pph-vendor.update');
+                    Route::get('/delete/{id}', [UserVendorController::class, 'delete'])->name('bss-pph-vendor.delete');
+                });
             });
         });
 
@@ -376,6 +392,58 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
         Route::get('/download', [DashboardSKLController::class, 'downloadExcel'])->name('bss-skl.download-excel');
     });
 
+    Route::prefix('ic/training')->group(function () {
+        Route::get('/', [PengajuanTrainingController::class, 'index'])->name('ic.training.index');
+        Route::get('add', [PengajuanTrainingController::class, 'AddPengajuan'])->name('ic.training.add');
+        Route::post('submit-pengajuan', [PengajuanTrainingController::class, 'SubmitPengajuan'])->name('ic.training.submit-pengajuan');
+
+        Route::group(['middleware' => [PengajuanTrainingIC::class]], function () {
+            Route::get('import-approval', [PengajuanTrainingController::class, 'ImportApproval'])->name('ic.training.import-approval');
+            Route::post('import-approval/submit', [PengajuanTrainingController::class, 'ImportApprovalSubmit'])->name('ic.training.import-approval-submit');
+
+            Route::get('import-master-training', [PengajuanTrainingController::class, 'training'])->name('ic.training.master-training');
+            Route::post('import-master-training', [PengajuanTrainingController::class, 'ImportMasterTraining'])->name('ic.training.submit-master-training');
+            Route::get('import-std-jab', [PengajuanTrainingController::class, 'ImportStdJab'])->name('ic.training.import-std-jab');
+            Route::get('import-atmp', [PengajuanTrainingController::class, 'atmp'])->name('ic.training.import-atmp');
+            Route::post('import-atmp', [PengajuanTrainingController::class, 'ImportATMP'])->name('ic.training.submit-atmp');
+        });
+
+        // Route::get('import-master-training', [PengajuanTrainingController::class, 'training'])->name('ic.training.master-training');
+        // Route::post('import-master-training', [PengajuanTrainingController::class, 'ImportMasterTraining'])->name('ic.training.submit-master-training');
+        // Route::get('import-std-jab', [PengajuanTrainingController::class, 'ImportStdJab'])->name('ic.training.import-std-jab');
+        // Route::get('import-atmp', [PengajuanTrainingController::class, 'atmp'])->name('ic.training.import-atmp');
+        // Route::post('import-atmp', [PengajuanTrainingController::class, 'ImportATMP'])->name('ic.training.submit-atmp');
+
+        // Route::get('import-approval', [PengajuanTrainingController::class, 'ImportApproval'])->name('ic.training.import-approval');
+        // Route::post('import-approval/submit', [PengajuanTrainingController::class, 'ImportApprovalSubmit'])->name('ic.training.import-approval-submit');
+
+        Route::get('cross-check', [PengajuanTrainingController::class, 'CrossCheck'])->name('ic.training.crosscheck');
+        Route::get('data-cross-check', [PengajuanTrainingController::class, 'DataCrossCheck'])->name('ic.training.data-crosscheck');
+        Route::get('cross-check-dtl/{id}', [PengajuanTrainingController::class, 'CrossCheckDtl'])->name('ic.training.crosscheck-dtl');
+        Route::get('data-cross-check-dtl', [PengajuanTrainingController::class, 'DataCrossCheckDtl'])->name('ic.training.crosscheck-dtl-data');
+        Route::post('cross-check-approve', [PengajuanTrainingController::class, 'CrossCheckApprove'])->name('ic.training.crosscheck-approve');
+
+        Route::get('form-komitmen/{id}', [PengajuanTrainingController::class, 'FormKomitmen'])->name('ic.training.form-komitmen');
+        Route::post('form-komitmen-act', [PengajuanTrainingController::class, 'SubmitFormKomitmen'])->name('ic.training.form-komitmen-act');
+        Route::post('komitmen-approve', [PengajuanTrainingController::class, 'KomitmenApprove'])->name('ic.training.komitment-approve');
+
+        Route::get('dashboard-komitmen', [PengajuanTrainingController::class, 'DashboardKomitmen'])->name('ic.training.dashboard-komitmen');
+        Route::get('dashboard-komitmen-data', [PengajuanTrainingController::class, 'DataDashboardKomitmen'])->name('ic.training.dashboard-komitmen-data');
+        Route::get('justifikasi/{id}', [PengajuanTrainingController::class, 'Justifikasi'])->name('ic.training.dashboard-justifikasi');
+        Route::post('submit-justifikasi', [PengajuanTrainingController::class, 'SubmitJustifikasi'])->name('ic.training.submit-justifikasi');
+        Route::post('justifikasi-approve', [PengajuanTrainingController::class, 'JustifikasiApprove'])->name('ic.training.justifikasi-approve');
+
+        Route::prefix('helper')->group(function() {
+            Route::get('mtraining', [HelperTraininingController::class, 'GetMTraining'])->name('ic.training.helper.master');
+            Route::post('select-mtraining', [HelperTraininingController::class, 'SelectMTraining'])->name('ic.training.helper.select-master');
+            Route::post('cari-mp', [HelperTraininingController::class, 'SelectKaryawan'])->name('ic.training.helper.mp');
+            Route::get('cari-dept', [HelperTraininingController::class, 'SelectDept'])->name('ic.training.helper.cari-dept');
+            Route::get('training-syarat-std', [HelperTraininingController::class, 'SelectSyaratAndStd'])->name('ic.training.helper.training-syarat-std');
+            Route::get('check-pelatihan-mp', [HelperTraininingController::class, 'CheckNIkAndPelatihan'])->name('ic.training.helper.check-pelatihan-mp');
+        });
+
+        // Route::get('jimmy', [PengajuanTrainingController::class, '']);
+    });
 
     Route::prefix('approval')->group(function () {
         Route::post('/form', [ApprovalFormController::class, 'approveForm'])->name('bss-approval-form');
@@ -393,3 +461,7 @@ Route::get('/bss-form/induksi-karyawan/listing-karyawan/{data}', [ICFM05InduksiK
 Route::post('/bss-form/induksi-karyawan/listing-karyawan-add', [ICFM05InduksiKaryawanController::class, 'formAddKaryawanListing']);
 
 Route::get('/helper-download-pdf/{docno}', [HelperPdfMobilisasiFormController::class, 'DownloadPDFHelperPdf']);
+// Route::get('/jimmy', function() {
+//     dd(DB::connection('sqlsrv_training')->table('pengajuan_training_detail')->where('NIK', '1020341')->exists());
+// });
+// Route::get('/jimmy', [HelperTraininingController::class, 'CheckNIkAndPelatihan']);

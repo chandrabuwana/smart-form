@@ -51,7 +51,9 @@
                                             <i class="fa-solid fa-circle-info" style="color: #3fc3ee; font-size: 18px;padding: 5px 0;"></i>
                                         @endif
                                         <div>
-                                            <h6 style="margin: 0;">{{ $notif->message }}</h6>
+                                            <a href="{{ $notif->link }}" style="margin: 0;">
+                                                <h6 style="font-size: small">{{ $notif->message }}</h6>
+                                            </a>
                                             <span style="font-size: smaller;">{{ $notif->created_at }}</span>
                                         </div>
                                     </div>

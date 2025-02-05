@@ -1,0 +1,11 @@
+{
+    "name": "DokumenMutu",
+    "alias": "dokumenmutu",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\DokumenMutu\\App\\Providers\\DokumenMutuServiceProvider"
+    ],
+    "files": []
+}

@@ -124,9 +124,9 @@
         function dataListMasterBuktiPotonganActionFormater(value, row, index) {
 
             let data = `
-                    <button onclick="RedirectToDetail(this)"><a class="like"  title="Like">
+                    <button onclick="RedirectToDetail(this)" class="btn btn-dark btn-sm">
                         <i class="fa fa-eye"></i> View
-                    </a></button> 
+                    </button>
                 `
             return data;
         }
