@@ -447,7 +447,7 @@
             var items = [];
             data.sender.data.forEach(function (item, index, arr) {
                 // console.log(item)
-                totalQty.text((parseInt(iAkhir.val())) - (parseInt(iAwal.val()))||9)
+                // totalQty.text((parseInt(iAkhir.val())) - (parseInt(iAwal.val()))||9)
                 item.no = index;
                 items.push(item)
             })
@@ -471,6 +471,10 @@
             dataPengeluaranOli.foreman = iForeman.val()
             dataPengeluaranOli.lube = iLube.val()
 
+            iAkhir.change(function(e) {
+                totalQty.text((iAkhir.val()) - (iAwal.val() ))
+            });
+
             function validateItem() {
                 var errorValidate = []
 
@@ -489,12 +493,6 @@
                 if(iHm.val() == "") {
                     errorValidate.push({
                         field: "Kolom HM",
-                        message: "tidak boleh kosong"
-                    })
-                }
-                if(totalQty.val() == "") {
-                    errorValidate.push({
-                        field: "Kolom Qty",
                         message: "tidak boleh kosong"
                     })
                 }
