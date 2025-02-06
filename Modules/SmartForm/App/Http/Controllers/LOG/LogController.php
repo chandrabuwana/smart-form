@@ -481,4 +481,162 @@ class LogController extends Controller {
         return $pdf->download('BSS-FRM-LOG-034.pdf');
     }
     // ***** END PENGELUARAN OLI *****
+
+    // ***** START PEMAKAIAN SOLAR *****
+    public function PemakaianSolarDashboard()
+    {
+        return view('SmartForm::LOG/pemakaian-solar');
+    }
+
+    function GetListPemakaianSolar(Request $request) {
+        $TABLE_PENGELUARAN_OLI = "FM_LOG_037_PEMAKAIAN_SOLAR";
+        $response = array(
+            'message' => '',
+            'isSuccess' => false
+        );
+
+        $sort = $request->query('sort', 'id'); // Default sort by id
+        $order = $request->query('order', 'desc'); // Default order is ascending
+        $offset = $request->query('offset', 0); // Default offset
+        $limit = $request->query('limit', null); // Default limit
+        $filter = $request->query('filter', null); // Default limit
+        try {
+            $master = DB::table($TABLE_PENGELUARAN_OLI)
+                ->select('id', 'no_dok', 'job_site as site', 'dibuat_oleh','no_fuel_station as fuel');
+            
+            $master->orderBy($sort, $order);
+            $jml = $master->count();            
+            $document = $master->get();
+
+            $response['message'] = "Ok";
+            $response['isSuccess'] = true;
+            $response['data'] = [
+                'total' => $jml,
+                'totalNotFiltered' => $jml,
+                'rows' => $document
+            ];
+
+        } catch (Exception $ex) {
+            Log::error($ex->getMessage());
+            Log::error($ex->getTraceAsString());
+            
+            $response['message'] = $ex->getMessage();
+            $response['isSuccess'] = false;
+        }
+
+        return response()->json($response);
+    }
+
+    function formPemakaianSolar() {
+        return view("SmartForm::log/form-pemakaian-solar");
+    }
+
+    function SubmitFormPemakaianSolar(Request $req) {
+        $TABLE_MASTER = "FM_LOG_037_PEMAKAIAN_SOLAR";
+        $TABLE_DETAIL = "FM_LOG_037_PEMAKAIAN_SOLAR_DETAIL";
+        $response = array(
+            'message' => "",
+            'isSuccess' => false
+        );
+        $tgl = now()->toDateTimeString();
+        $requested_by = $req->session()->get('user_id');
+        $data = $req->input();
+        
+        $data_insert = [
+            'dibuat_oleh' => $requested_by,
+            'job_site' => $data['jobSite'],
+            'no_dok' => $data['noDoc'],
+            'tanggal' => $data['tglDoc'],
+            'no_fuel_station' => $data['fuel'],
+            'diketahui_oleh' => $data['foreman']
+        ];
+        $spliited_no_doc = explode("/", $data_insert['no_dok']);
+        $data_item = json_decode($data['item']);
+        
+        try {
+            DB::beginTransaction();
+            $id = DB::table($TABLE_MASTER)->insertGetId($data_insert);
+
+            foreach ($data_item as $data_item_detail) {
+                DB::table($TABLE_DETAIL)->insert(array(
+                    'id_pemakai_solar' => $id,
+                    'kode_unit' => $data_item_detail->kodeUnit,
+                    'jam' => $data_item_detail->jam,
+                    'awal' => $data_item_detail->awal,
+                    'akhir' => $data_item_detail->akhir,
+                    'total_liter' => $data_item_detail->totalLiter,
+                    'nama_operator' => $data_item_detail->namaOperator,
+                    'km' => $data_item_detail->km,
+                    'hm' => $data_item_detail->hm,
+                    'keterangan' => $data_item_detail->ket
+                ));
+            }
+
+            $spliited_no_doc[0] = $id;
+            $updated_no_doc = implode("/", $spliited_no_doc);
+
+            $affected = DB::table($TABLE_MASTER)
+              ->where('id', $id)
+              ->update(['no_dok' => $updated_no_doc]);
+
+            Db::commit();
+
+
+            $response['message'] = "Ok";
+            $response['isSuccess'] = true;
+            $response['data'] = array(
+                'no_doc' => $updated_no_doc
+            );
+        } catch (Exception $ex) {
+            //throw $th;
+            Log::error($ex->getTraceAsString());
+            DB::rollBack();
+            $response['message'] = $ex->getMessage();
+            $response['isSuccess'] = false;
+        }
+
+        return response()->json($response);
+    }
+
+    public function PdfPemakaianSolar($id)
+    {
+        $TABLE_MASTER = "FM_LOG_037_PEMAKAIAN_SOLAR";
+        $TABLE_DETAIL = "FM_LOG_037_PEMAKAIAN_SOLAR_DETAIL";
+        $errors = array(
+            'error' => false,
+            'message' => ''
+        );
+        try {
+            $data = DB::table($TABLE_MASTER)
+                    ->select('id', 'no_dok','revisi','tanggal','job_site as jobsite','no_fuel_station as noFuel','shift','dibuat_oleh as dibuat','diketahui_oleh as mengetahui','disetujui_oleh as approval')
+                    ->where('id', $id)
+                    ->first();
+                
+            $data_detail = DB::table($TABLE_DETAIL)
+                ->select('id_pemakai_solar','kode_unit as unit','jam','awal','akhir','total_liter as totalLiter','nama_operator','km','hm','keterangan')
+                ->where('id_pemakai_solar', $data->id)
+                ->get();
+            
+            $nomor = 1;
+            foreach($data_detail as $detail) {
+                $detail->nomor = $nomor;            
+                $nomor++;
+            }
+        
+            $data_master['id'] = $data->id;
+            $data_master['no_dok'] = $data->no_dok;
+            $data_master['jobsite'] = $data->jobsite;
+            $data_master['tanggal'] = $data->tanggal;
+            $data_master['dibuat'] = $data->dibuat;
+            $data_master['noFuel'] = $data->noFuel;
+            $data_master['shift'] = $data->shift;
+            $data_master['mengetahui'] = $data->mengetahui;
+        } catch (Exception $ex) {
+            Log::error($ex->getMessage());
+        }
+        Log::info("data_master : ". json_encode($data_master));
+        $pdf = PDF::loadView('SmartForm::LOG/pemakaian-solar-pdf',  ['data' => $data_master, 'data_detail' => $data_detail, 'error' => $errors]);
+        return $pdf->download('BSS-FRM-LOG-037.pdf');
+    }
+    // ***** END PEMAKAIAN SOLAR *****
 }
