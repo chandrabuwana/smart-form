@@ -145,7 +145,7 @@
                         </div>
 
                         <div class="col-12 mt-4">
-                            <iframe src="{{ $docUrl }}" frameborder="0" width="100%" height="800px" />
+                            <iframe src="{{ $docUrl }}" frameborder="0" width="100%" height="800px"></iframe>
                         </div>
                     </div>
                 </div>
