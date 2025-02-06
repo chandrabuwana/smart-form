@@ -309,16 +309,46 @@ class SheMessController extends Controller
                 return redirect()->back()->with('error', 'Record not found');
             }
 
-            // Decode JSON fields if they are strings
-            $record->checklist_items = is_string($record->checklist_items) ? json_decode($record->checklist_items, true) : $record->checklist_items;
+            // Decode and validate JSON fields
+            try {
+                $record->checklist_items = is_string($record->checklist_items) ? 
+                    json_decode($record->checklist_items, true) : 
+                    (is_array($record->checklist_items) ? $record->checklist_items : []);
+                
+                // Ensure checklist_items is always an array
+                if (!is_array($record->checklist_items)) {
+                    $record->checklist_items = [];
+                    Log::warning('Checklist items converted to empty array for record ID: ' . $id);
+                }
+            } catch (\Exception $e) {
+                Log::error('Error decoding checklist items: ' . $e->getMessage());
+                $record->checklist_items = [];
+            }
 
-            // Format dates for display
-            $record->formatted_inspection_date = $record->inspection_date ? Carbon::createFromFormat('Y-m-d', $record->inspection_date)->format('d/m/Y') : '';
-            $record->formatted_acknowledgment_date = $record->acknowledgment_date ? Carbon::createFromFormat('Y-m-d', $record->acknowledgment_date)->format('d/m/Y') : '';
-            $record->formatted_survey_date = $record->survey_date ? Carbon::createFromFormat('Y-m-d', $record->survey_date)->format('d/m/Y') : '';
+            // Format dates for display with error handling
+            try {
+                $record->formatted_inspection_date = $record->inspection_date ? 
+                    Carbon::parse($record->inspection_date)->format('d/m/Y') : '';
+                $record->formatted_acknowledgment_date = $record->acknowledgment_date ? 
+                    Carbon::parse($record->acknowledgment_date)->format('d/m/Y') : '';
+                $record->formatted_survey_date = $record->survey_date ? 
+                    Carbon::parse($record->survey_date)->format('d/m/Y') : '';
+            } catch (\Exception $e) {
+                Log::error('Error formatting dates: ' . $e->getMessage());
+                $record->formatted_inspection_date = '';
+                $record->formatted_acknowledgment_date = '';
+                $record->formatted_survey_date = '';
+            }
 
+            // Ensure all necessary fields are present
+            $record->site_name = $record->site_name ?? '';
+            $record->work_location = $record->work_location ?? '';
+            $record->department = $record->department ?? '';
+            $record->shift = $record->shift ?? '';
+            $record->doc_number = $record->doc_number ?? '';
+            
             $pdf = PDF::loadView('smartform::she.mess.export-pdf', [
-                'record' => $record
+                'data' => $record,
             ]);
 
             Log::info('Successfully generated PDF for record ID: ' . $id);
@@ -326,6 +356,7 @@ class SheMessController extends Controller
 
         } catch (\Exception $e) {
             Log::error('Error in ExportForm: ' . $e->getMessage());
+            Log::error('Stack trace: ' . $e->getTraceAsString());
             return redirect()->back()
                 ->with('error', 'Failed to export form: ' . $e->getMessage());
         }

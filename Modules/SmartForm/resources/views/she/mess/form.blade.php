@@ -246,13 +246,13 @@ Tidak ada peraturan yg berlaku atau berdampak kelingkungan perusahaan
                             <tbody>
                                 <tr>
                                     <td style="border: 1px solid #dee2e6;">
-                                        <textarea class="form-control border-0" name="risk_description" rows="3" {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>{{ isset($data->risk_description) ? $data->risk_description : '' }}</textarea>
+                                        <textarea class="form-control border-0" name="risk_description" rows="3" {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }} placeholder="Deskripsi Rincian Bahaya">{{ isset($data->risk_description) ? $data->risk_description : '' }}</textarea>
                                     </td>
                                     <td style="border: 1px solid #dee2e6;">
-                                        <textarea class="form-control border-0" name="improvement_action" rows="3" {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>{{ isset($data->improvement_action) ? $data->improvement_action : '' }}</textarea>
+                                        <textarea class="form-control border-0" name="improvement_action" rows="3" {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }} placeholder="Deskripsi Perbaikan langsung">{{ isset($data->improvement_action) ? $data->improvement_action : '' }}</textarea>
                                     </td>
                                     <td style="border: 1px solid #dee2e6;">
-                                        <textarea class="form-control border-0" name="done_by" rows="3" {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>{{ isset($data->done_by) ? $data->done_by : '' }}</textarea>
+                                        <textarea class="form-control border-0" name="done_by" rows="3" {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }} placeholder="Dilakukan oleh">{{ isset($data->done_by) ? $data->done_by : '' }}</textarea>
                                     </td>
                                     <td style="border: 1px solid #dee2e6;">
                                         <input type="date" class="form-control" name="completion_date" 
@@ -337,11 +337,26 @@ Tidak ada peraturan yg berlaku atau berdampak kelingkungan perusahaan
                             </tr>
                         </table>
 
+                        <!-- Form Actions -->
                         <div class="row">
                             <div class="col-12 text-end">
-                                <button type="submit" class="btn btn-primary">Submit</button>
+                            @if (isset($isShowDetail) && $isShowDetail)
                                 <a href="{{ route('she.mess.dashboard') }}" class="btn btn-secondary">Back</a>
-                            </div>
+                                <a href="{{ route('she.mess.export', $data->id) }}" class="btn btn-primary">
+                                    <i class="material-icons">download</i> Export
+                                </a>
+                            @else
+                                <div class="row mt-4">
+                                    <div class="col-12 d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <a href="{{ route('she.mess.dashboard') }}" class="btn btn-secondary">Back</a>
+                                        </div>
+                                        <div>
+                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                        </div>
+                                    </div>  
+                                </div>
+                            @endif
                         </div>
                     </form>
                 </div>
@@ -369,17 +384,6 @@ Tidak ada peraturan yg berlaku atau berdampak kelingkungan perusahaan
 @section('custom-js')
 <script>
 $(document).ready(function() {
-    // Initialize all datepickers
-    $('.datepicker').datepicker({
-        format: 'dd/mm/yyyy',
-        autoclose: true,
-        todayHighlight: true,
-        orientation: 'bottom'
-    }).on('show', function() {
-        // Ensure datepicker is above other elements
-        $('.datepicker-dropdown').css('z-index', '9999');
-    });
-
     // Form validation
     $('#messForm').on('submit', function(e) {
         e.preventDefault();
@@ -397,17 +401,6 @@ $(document).ready(function() {
             }
         });
 
-        // Validate radio buttons
-        $('.checklist-row').each(function() {
-            const radioButtons = $(this).find('input[type="radio"]');
-            if (!radioButtons.is(':checked')) {
-                isValid = false;
-                $(this).find('.form-check').addClass('is-invalid');
-            } else {
-                $(this).find('.form-check').removeClass('is-invalid');
-            }
-        });
-
         if (!isValid) {
             Swal.fire({
                 icon: 'error',
@@ -417,60 +410,8 @@ $(document).ready(function() {
             return;
         }
 
-        // Get form data
-        let formData = new FormData(this);
-
-        // Add checklist items
-        $('.checklist-row').each(function(index) {
-            const condition = $(this).find('input[type="radio"]:checked').val();
-            const notes = $(this).find('input[name^="notes"]').val();
-            formData.append(`condition[${index}]`, condition || '');
-            formData.append(`notes[${index}]`, notes || '');
-        });
-
-        // Submit form via AJAX
-        $.ajax({
-            url: $(this).attr('action'),
-            method: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(response) {
-                if (response.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Berhasil',
-                        text: response.message || 'Data inspeksi berhasil disimpan',
-                        showConfirmButton: false,
-                        timer: 1500
-                    }).then(() => {
-                        window.location.href = '{{ route("she.mess.dashboard") }}';
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: response.message || 'Terjadi kesalahan saat menyimpan data'
-                    });
-                }
-            },
-            error: function(xhr) {
-                let errorMessage = 'Terjadi kesalahan saat menyimpan data';
-                
-                if (xhr.responseJSON && xhr.responseJSON.message) {
-                    errorMessage = xhr.responseJSON.message;
-                }
-                
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: errorMessage
-                });
-            }
-        });
+        // Submit form normally
+        this.submit();
     });
 });
 </script>
