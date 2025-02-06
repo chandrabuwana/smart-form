@@ -338,7 +338,7 @@ class LogController extends Controller {
         );
 
         $sort = $request->query('sort', 'id'); // Default sort by id
-        $order = $request->query('order', 'asc'); // Default order is ascending
+        $order = $request->query('order', 'desc'); // Default order is ascending
         $offset = $request->query('offset', 0); // Default offset
         $limit = $request->query('limit', null); // Default limit
         $filter = $request->query('filter', null); // Default limit
