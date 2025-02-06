@@ -193,11 +193,10 @@
                                             <input type="text" class="form-control" id="iAkhir" name="iAkhir">
                                         </div>
                                     </div>
-                                    <div class="col-md-4 col-lg-2">
-                                        <div class="input-group input-group-static mb-4">
-                                            <label for="iQty">Qty</label>
-                                            <input type="text" class="form-control" id="iQty" name="iQty">
-                                        </div>
+                                                                       
+                                    <div class="col-md-2 col-lg-2">
+                                        <label >Qty :</label>
+                                        <span id="totalQty">-</span>
                                     </div>
                                     <div class="col-md-4 col-lg-2">
                                         <label for="iCompo">Component</label>
@@ -298,7 +297,7 @@
                                         <th data-field="merk">Merk</th>
                                         <th data-field="awal">Awal</th>
                                         <th data-field="akhir">Akhir</th>
-                                        <th data-field="qty">Qty</th>
+                                        <th data-formatter="flowmeter">Qty</th>
                                         <th data-field="compo">Component</th>
                                         <th data-field="remark">Remark</th>
                                         <th data-field="pic">PIC / Nama</th>
@@ -335,6 +334,7 @@
         var btnSubmitPengeluaranOli = $("#btnSubmitPengeluaranOli");
         var $table = $("#item-pengeluaran");
         var $buttonTambah = $("#btn-add-item")
+        var totalQty = $("#totalQty")
         
         // Variable form
         var tanggalSekarang = $("#tanggalSekarang")
@@ -353,7 +353,6 @@
         var iMerk = $("#iMerk")
         var iAwal = $("#iAwal")
         var iAkhir = $("#iAkhir")
-        var iQty = $("#iQty")
         var iCompo = $("#iCompo")
         var iRemark = $("#iRemark")
         var iPic = $("#iPic")
@@ -366,6 +365,7 @@
             jobSite: "",
             lube: "",
             shift: "",
+            totalQty: "",
             
             item: [{}]
         }
@@ -386,6 +386,10 @@
 
         function formatTgl() {
             return tglNow.getDate() + "-" + months[tglNow.getMonth()] + "-" + tglNow.getFullYear();
+        }
+
+        function flowmeter(value, row, index) {
+            return row.akhir - row.awal;
         }
 
         function generateNoDoc() {
@@ -443,15 +447,7 @@
             var items = [];
             data.sender.data.forEach(function (item, index, arr) {
                 // console.log(item)
-                if(item.currency == "IDR") {
-                    idr = idr + parseInt(item.price) * item.qty
-                }
-                if(item.currency == "USD") {
-                    usd = usd + parseInt(item.price) * item.qty
-                }
-                if(item.currency == "CNY") {
-                    cny = cny + parseInt(item.price) * item.qty
-                }
+                totalQty.text((parseInt(iAkhir.val())) - (parseInt(iAwal.val()))||9)
                 item.no = index;
                 items.push(item)
             })
@@ -493,6 +489,12 @@
                 if(iHm.val() == "") {
                     errorValidate.push({
                         field: "Kolom HM",
+                        message: "tidak boleh kosong"
+                    })
+                }
+                if(totalQty.val() == "") {
+                    errorValidate.push({
+                        field: "Kolom Qty",
                         message: "tidak boleh kosong"
                     })
                 }
@@ -554,7 +556,7 @@
                         merk: iMerk.val(),
                         awal: iAwal.val(),
                         akhir: iAkhir.val(),
-                        qty: iQty.val(),
+                        qty: totalQty.text(),
                         compo: iCompo.val(),
                         remark: iRemark.val(),
                         pic: iPic.val()
