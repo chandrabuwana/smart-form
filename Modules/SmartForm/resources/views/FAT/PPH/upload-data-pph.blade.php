@@ -160,7 +160,15 @@
                                             file.</small>
                                     </div>
                                 </div>
-                                <div class="row">
+
+                                <div class="row flex-column">
+                                    <div class="col-md-10 col-lg-8 col-xl-6 mb-3 d-none" id="col-progressbar">
+                                        <div class="progress">
+                                            <div class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuenow="0"
+                                                id="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+
                                     <div class="col-md-2">
                                         <button id="buttonGenerateLinkButton" class="btn btn-primary ms-auto uploadBtn"
                                             onclick="ExtractZip()">
@@ -315,6 +323,7 @@
             dataKirim.append('bulan', $('#pc_bln').val());
 
             dataKirim.append('zip', fileInput);
+            $('#col-progressbar').removeClass('d-none');
 
             $.ajax({
                 type: 'post',
@@ -326,6 +335,21 @@
                 processData: false, // Important for file upload
                 contentType: false, // Important for file upload
                 dataType: 'json',
+                xhr: function() {
+                    const xhr = new window.XMLHttpRequest();
+
+                    xhr.upload.addEventListener("progress", function(evt) {
+                        if (evt.lengthComputable) {
+                            var percentComplete = evt.loaded / evt.total;
+                            percentComplete = parseInt(percentComplete * 100);
+
+                            $('#progressbar').attr('aria-valuenow', percentComplete);
+                            $('#progressbar').attr('style', `width: ${percentComplete}%`);
+                        }
+                    }, false);
+
+                    return xhr;
+                },
                 success: function(response) {
                     if (response.code == 200) {
                         Swal.fire({
