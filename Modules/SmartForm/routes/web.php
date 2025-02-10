@@ -116,10 +116,10 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
                     Route::get('/dashboard', [UserVendorController::class, 'index'])->name('bss-pph-vendor.dashboard');
                     Route::get('/dashboard/fetch-data', [UserVendorController::class, 'fetchData'])->name('bss-pph-vendor.fetch-dashboard-data');
                     Route::get('/create', [UserVendorController::class, 'create'])->name('bss-pph-vendor.add');
-                    Route::get('/store', [UserVendorController::class, 'store'])->name('bss-pph-vendor.store');
-                    Route::get('/edit/{id}', [UserVendorController::class, 'edit'])->name('bss-pph-vendor.edit');
-                    Route::post('/update/{id}', [UserVendorController::class, 'update'])->name('bss-pph-vendor.update');
-                    Route::get('/delete/{id}', [UserVendorController::class, 'delete'])->name('bss-pph-vendor.delete');
+                    Route::post('/store', [UserVendorController::class, 'store'])->name('bss-pph-vendor.store');
+                    Route::get('/edit/{npwp}', [UserVendorController::class, 'edit'])->name('bss-pph-vendor.edit');
+                    Route::post('/update/{npwp}', [UserVendorController::class, 'update'])->name('bss-pph-vendor.update');
+                    Route::get('/delete/{npwp}', [UserVendorController::class, 'delete'])->name('bss-pph-vendor.delete');
                 });
             });
         });

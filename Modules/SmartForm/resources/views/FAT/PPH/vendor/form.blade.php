@@ -33,7 +33,8 @@
                             <div class="input-group input-group-static">
                                 <label for="npwp">NPWP</label>
                                 <input type="text" class="form-control" id="npwp" name="npwp"
-                                    value="{{ $vendorPPH->npwp ?? '' }}" placeholder="--- Masukkan NPWP ---" required>
+                                    value="{{ $vendorPPH->npwp ?? '' }}" placeholder="--- Masukkan NPWP ---"
+                                    {{ isset($vendorPPH) ? 'disabled' : 'required' }}>
                             </div>
                         </div>
 
@@ -41,7 +42,7 @@
                             <div class="input-group input-group-static">
                                 <label for="email">Email</label>
                                 <input type="text" class="form-control" id="email" name="email"
-                                    value="{{ $vendorPPH->email ?? '' }}" placeholder="--- Masukkan Email ---" required>
+                                    value="{{ $vendorPPH->Email ?? '' }}" placeholder="--- Masukkan Email ---" required>
                             </div>
                         </div>
                     </div>
@@ -59,10 +60,25 @@
                             <div class="input-group input-group-static">
                                 <label for="password">Password</label>
                                 <input type="password" class="form-control" id="password" name="password"
-                                    placeholder="--- Buat Password ---" {{ isset($vendorPPH) ? 'required' : '' }}>
+                                    placeholder="{{ isset($vendorPPH) ? '--- Isi jika ingin di ubah ---' : '--- Buat Password ---' }}" {{ isset($vendorPPH) ? 'required' : '' }}>
                             </div>
                         </div>
                     </div>
+
+                    @if(isset($vendorPPH))
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="input-group input-group-static">
+                                    <label for="status">Status</label>
+                                    <select class="form-control" id="status" name="status" required>
+                                        <option value="" selected disabled>--- Pilih Status ---</option>
+                                        <option value="0" {{ $vendorPPH->Status == '0' ? 'selected' : '' }}>Aktif</option>
+                                        <option value="1" {{ $vendorPPH->Status == '1' ? 'selected' : '' }}>Nonaktif</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                 </div>
 
                 <div class="card-footer py-3">
@@ -85,7 +101,7 @@
             e.preventDefault();
             const formData = $('#formUser').serialize();
 
-            axios.post(`{{ isset($vendorPPH) ? route('bss-pph-vendor.update', ['id' => $vendorPPH->id]) : route('bss-pph-vendor.store') }}`, formData, {
+            axios.post(`{{ isset($vendorPPH) ? route('bss-pph-vendor.update', ['npwp' => $vendorPPH->npwp]) : route('bss-pph-vendor.store') }}`, formData, {
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
             })
             .then(function (response) {
@@ -93,7 +109,7 @@
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil!',
-                    text: 'Form User Vendor Berhasil di Simpan!',
+                    text: response.data.message ?? 'Perubahan data user berhasil di simpan!',
 
                 }).then((result) => {
                     window.location.href = `{{ route('bss-pph-vendor.dashboard') }}`;
