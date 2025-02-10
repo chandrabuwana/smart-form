@@ -23,7 +23,7 @@ class UserVendorController extends Controller
     public function fetchData(Request $request)
     {
         $search  = $request->query('search', '');
-        $sort    = $request->query('sort', 'id');
+        $sort    = $request->query('sort', 'created_at');
         $order   = $request->query('order', 'desc');
         $offset  = $request->query('offset', 0);
         $limit   = $request->query('limit', 10);
@@ -65,8 +65,8 @@ class UserVendorController extends Controller
     {
         $request->validate([
             'npwp' => 'required|string|min:15|max:18',
-            'nama' => 'required|string|min:15|max:18',
-            'email' => 'required|email',
+            'nama' => 'required|max:30',
+            // 'email' => 'required|email',
             'password' => 'required|min:5|max:10'
         ]);
 
@@ -90,6 +90,7 @@ class UserVendorController extends Controller
 
         } catch (Exception $e) {
             DB::rollBack();
+            dd($e);
             return response()->json([
                 'message' => 'Something went wrong: ' . $e->getMessage(),
                 'code' => 500
@@ -97,11 +98,57 @@ class UserVendorController extends Controller
         }
     }
 
-    public function edit($id, Request $request)
+    public function edit($npwp, Request $request)
     {
-        $vendor = DB::table(self::T_PPH_VENDOR)->find($id);
-        
+        $vendor = DB::table(self::T_PPH_VENDOR)->where('npwp', $npwp)->first();
 
-        return view('SmartForm::FAT/PPH/vendor/form');
+        return view('SmartForm::FAT/PPH/vendor/form', [
+            'vendorPPH' => $vendor
+        ]);
+    }
+
+    public function update($npwp, Request $request)
+    {
+        $vendor = DB::table(self::T_PPH_VENDOR)->where('npwp', $npwp)->first();
+        if(!$vendor) {
+            abort(404);
+        }
+
+        $request->validate([
+            'nama' => 'required|string|max:30',
+            // 'email' => 'nullable|email',
+            'password' => 'nullable|min:5|max:10'
+        ]);
+
+        DB::beginTransaction();
+        $requestData = $request->all();
+
+        try {
+            DB::table(self::T_PPH_VENDOR)->where('npwp', $npwp)->update([
+                'Email' => $requestData['email'],
+                'Password' => !empty($requestData['password']) ? Hash::make($requestData['password']) : $vendor->Password,
+                'Status' => $requestData['status'],
+                'Nama' => $requestData['nama'],
+            ]);
+
+            DB::commit();
+            return response()->json([
+                'message' => 'Perubahan data user berhasil di simpan!',
+                'code' => 200
+            ]);
+
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Something went wrong: ' . $e->getMessage(),
+                'code' => 500
+            ]);
+        }
+    }
+
+    public function delete($npwp)
+    {
+        DB::table(self::T_PPH_VENDOR)->where('npwp', $npwp)->delete();
+        return redirect(route('bss-pph-vendor.dashboard'));
     }
 }

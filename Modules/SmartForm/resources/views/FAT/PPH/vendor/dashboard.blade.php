@@ -58,7 +58,7 @@
                                     <th data-field="Nama" data-align="center" data-halign="center">
                                         Nama
                                     </th>
-                                    <th data-field="Status" data-align="center" data-halign="center">
+                                    <th data-field="Status" data-align="center" data-halign="center" data-formatter="statusFormatter">
                                         Status
                                     </th>
                                     <th data-field="action" data-formatter="actionFormatter" >Actions</th>
@@ -98,9 +98,13 @@
 
         function actionFormatter(value, row, index) {
             return `
-                <a class="btn btn-primary btn-action btn-sm me-1" href="/bss-form/fat/pph/vendor/edit/${row.id}">Edit</a>
-                <a class="btn btn-danger btn-action btn-sm" href="/bss-form/fat/pph/vendor/destroy/${row.id}">Delete</a>
+                <a class="btn btn-primary btn-action btn-sm me-1" href="/bss-form/fat/pph/vendor/edit/${row.npwp}">Edit</a>
+                <a class="btn btn-danger btn-action btn-sm" href="/bss-form/fat/pph/vendor/delete/${row.npwp}">Delete</a>
             `;
+        }
+
+        function statusFormatter(value, row, index) {
+            return row.Status == '0' ? 'Aktif' : 'Nonaktif';
         }
 
         function fetchFormsData(params) {
