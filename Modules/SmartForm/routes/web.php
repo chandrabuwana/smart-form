@@ -34,6 +34,7 @@ use Modules\SmartForm\App\Http\Controllers\TeamManagement\UserManagementControll
 use Modules\SmartForm\App\Http\Controllers\UnderCarriage\UnderCarriageInspectionController;
 use Modules\SmartForm\App\Http\Controllers\FAT\PPH\PPHDashboardController;
 use Modules\SmartForm\App\Http\Controllers\FAT\PPH\HelperPPHController;
+use Modules\SmartForm\App\Http\Controllers\FAT\PPH\UserVendorController;
 use Modules\SmartForm\App\Http\Controllers\IC\PengajuanTraining\HelperTraininingController;
 use Modules\SmartForm\App\Http\Controllers\IC\PengajuanTraining\PengajuanTrainingController;
 use Modules\SmartForm\App\Http\Middleware\PengajuanTrainingIC;
@@ -57,6 +58,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/dashboard/detail/{id}', [PlantTransmissionController::class, 'detail'])->name('bss-form.plant-transmission.detail');
             Route::get('/form', [PlantTransmissionController::class, 'form'])->name('bss-form.plant-transmission.form');
             Route::post('/form/store', [PlantTransmissionController::class, 'store'])->name('bss-form.plant-transmission.store');
+            Route::get('/download-report', [PlantTransmissionController::class, 'downloadReport'])->name('bss-form.plant-transmission.download');
         });
 
         Route::prefix('under-carriage')->group(function () {
@@ -65,6 +67,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/dashboard/detail/{id}', [UnderCarriageInspectionController::class, 'detail'])->name('bss-form.undercarriage.detail');
             Route::get('/form', [UnderCarriageInspectionController::class, 'form'])->name('bss-form.undercarriage.form');
             Route::post('/form/store', [UnderCarriageInspectionController::class, 'store'])->name('bss-form.undercarriage.store');
+            Route::get('/download-report', [UnderCarriageInspectionController::class, 'downloadReport'])->name('bss-form.undercarriage.download');
         });
 
         Route::prefix('sm')->group(function () {
@@ -108,6 +111,17 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
                 Route::post('/hapus-document-potongan', [HelperPPHController::class, 'HapusDocumentPotonganPPH']);
                 Route::post('/update-document-potongan', [HelperPPHController::class, 'UpdateDocumentPotonganPPH']);
                 Route::get('/view-detail-master-potongan-pph/{id}', [PPHDashboardController::class, 'indexViewDataDetailMasterPPh']);
+                Route::get('/view-document/{id}', [PPHDashboardController::class, 'indexViewDetailDocument']);
+
+                Route::prefix('vendor')->group( function() {
+                    Route::get('/dashboard', [UserVendorController::class, 'index'])->name('bss-pph-vendor.dashboard');
+                    Route::get('/dashboard/fetch-data', [UserVendorController::class, 'fetchData'])->name('bss-pph-vendor.fetch-dashboard-data');
+                    Route::get('/create', [UserVendorController::class, 'create'])->name('bss-pph-vendor.add');
+                    Route::post('/store', [UserVendorController::class, 'store'])->name('bss-pph-vendor.store');
+                    Route::get('/edit/{npwp}', [UserVendorController::class, 'edit'])->name('bss-pph-vendor.edit');
+                    Route::post('/update/{npwp}', [UserVendorController::class, 'update'])->name('bss-pph-vendor.update');
+                    Route::get('/delete/{npwp}', [UserVendorController::class, 'delete'])->name('bss-pph-vendor.delete');
+                });
             });
         });
 
@@ -221,6 +235,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
         Route::post('/site', [HelperController::class, 'HelperSelect2PicaKSite']);
         Route::post('/department', [HelperController::class, 'HelperSelect2PicaKDept']);
         Route::post('/karyawan', [HelperController::class, 'HelperSelect2PicaKaryawanByDept']);
+        Route::post('/change-password-pegawai', [HelperController::class, 'ChangepasswordPegawaiPost']);
         Route::get('/data-pica', [HelperController::class, 'HelperDataTablePica']);
         Route::get('/data-update-progress', [HelperController::class, 'HelperDataTableStepSolutionPica']);
         Route::get('/data-history-progress', [HelperController::class, 'HelperDataTableHistoryProgressPica']);
@@ -304,14 +319,14 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
         Route::group(['middleware' => [PengajuanTrainingIC::class]], function () {
             Route::get('import-approval', [PengajuanTrainingController::class, 'ImportApproval'])->name('ic.training.import-approval');
             Route::post('import-approval/submit', [PengajuanTrainingController::class, 'ImportApprovalSubmit'])->name('ic.training.import-approval-submit');
-            
+
             Route::get('import-master-training', [PengajuanTrainingController::class, 'training'])->name('ic.training.master-training');
             Route::post('import-master-training', [PengajuanTrainingController::class, 'ImportMasterTraining'])->name('ic.training.submit-master-training');
             Route::get('import-std-jab', [PengajuanTrainingController::class, 'ImportStdJab'])->name('ic.training.import-std-jab');
             Route::get('import-atmp', [PengajuanTrainingController::class, 'atmp'])->name('ic.training.import-atmp');
             Route::post('import-atmp', [PengajuanTrainingController::class, 'ImportATMP'])->name('ic.training.submit-atmp');
         });
-        
+
         // Route::get('import-master-training', [PengajuanTrainingController::class, 'training'])->name('ic.training.master-training');
         // Route::post('import-master-training', [PengajuanTrainingController::class, 'ImportMasterTraining'])->name('ic.training.submit-master-training');
         // Route::get('import-std-jab', [PengajuanTrainingController::class, 'ImportStdJab'])->name('ic.training.import-std-jab');
@@ -320,7 +335,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
 
         // Route::get('import-approval', [PengajuanTrainingController::class, 'ImportApproval'])->name('ic.training.import-approval');
         // Route::post('import-approval/submit', [PengajuanTrainingController::class, 'ImportApprovalSubmit'])->name('ic.training.import-approval-submit');
-        
+
         Route::get('cross-check', [PengajuanTrainingController::class, 'CrossCheck'])->name('ic.training.crosscheck');
         Route::get('data-cross-check', [PengajuanTrainingController::class, 'DataCrossCheck'])->name('ic.training.data-crosscheck');
         Route::get('cross-check-dtl/{id}', [PengajuanTrainingController::class, 'CrossCheckDtl'])->name('ic.training.crosscheck-dtl');

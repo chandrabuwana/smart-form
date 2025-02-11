@@ -19,7 +19,7 @@ class Helper
         'error' => 'error',
         'question' => 'question',
     ];
-    
+
 
     public static function isGrantPermission(string $username, string $moduleName)
     {
@@ -168,5 +168,28 @@ class Helper
             Log::error($ex->getMessage());
             Log::error($ex->getTraceAsString());
         }
+    }
+
+    public static function formatDurationAgoFS($durationInSeconds) {
+        $seconds = $durationInSeconds % 60;
+        $minutes = floor(($durationInSeconds / 60) % 60);
+        $hours = floor(($durationInSeconds / 3600) % 24);
+        $days = floor($durationInSeconds / 86400);
+
+        if ($days > 0) {
+            return "$days hari";
+        } elseif ($hours > 0) {
+            return "$hours jam";
+        } elseif ($minutes > 0) {
+            return "$minutes menit";
+        } else {
+            return "$seconds detik";
+        }
+    }
+
+    public static function getFileNameFromPath($path) {
+        $exploded = explode('/', $path);
+        $count = count($exploded);
+        return $exploded[ $count - 1 ];
     }
 }

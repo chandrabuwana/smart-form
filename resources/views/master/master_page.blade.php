@@ -114,8 +114,10 @@
         }
 
         .loader {
-            border: 8px solid #f3f3f3; /* Light grey */
-            border-top: 8px solid #3498db; /* Blue */
+            border: 8px solid #f3f3f3;
+            /* Light grey */
+            border-top: 8px solid #3498db;
+            /* Blue */
             border-radius: 50%;
             width: 100px;
             height: 100px;
@@ -124,8 +126,13 @@
 
         /* Keyframes untuk animasi berputar */
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         /* Pusatkan loader di tengah layar */
@@ -149,7 +156,7 @@
     <div class="loader-center" id="loading-animation">
         <div class="loader"></div>
     </div>
-    
+
     @include('master.part.menu-navbar-main')
     <main class="main-content position-relative h-100 border-radius-lg ">
         <!-- Navbar -->
@@ -163,6 +170,7 @@
     </main>
     @yield('modal')
     @include('master.part.config-template')
+    @include('master.part.change-modal-password')
     <!--   Core JS Files   -->
     <script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
@@ -241,6 +249,87 @@
     <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
     <script src="{{ asset('master/js/material-dashboard.min.js?v=3.1.0') }}"></script>
     @yield('custom-js')
+
+    <script>
+        function OpenModalChangePasswordUser() {
+            $('#changePasswordUserModal').modal("show");
+        }
+
+        function sendDataChangePasswordUser() {
+            let oldPassword = $('#old_passwordChangePassword').val();
+            let newPassword = $('#new_passwordChangePassword').val();
+            let confirmPassword = $('#konfirmation_passwordChangePassword').val();
+            if (!oldPassword || !newPassword || !confirmPassword) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Form Tidak Lengkap',
+                    text: 'Pastikan semua field sudah terisi!'
+                });
+                return false;
+            }
+
+            if (newPassword.length < 7) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Password Terlalu Pendek',
+                    text: 'Password baru harus minimal 7 karakter.'
+                });
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Password Tidak Cocok',
+                    text: 'Konfirmasi password tidak sama dengan password baru.'
+                });
+                return false;
+            }
+
+            let dataKirim = {
+                p1: oldPassword,
+                p2: newPassword
+            }
+
+            $.ajax({
+                type: 'post',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: "/helper/change-password-pegawai",
+                data: dataKirim,
+                dataType: 'json',
+                success: function(response) {
+                    if (response.code == 200) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: response.message,
+                        }).then((result) => {
+                            window.location.href = `/logout`
+                        })
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: `Error 00003`,
+                            html: response.message,
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: `Error 00002`,
+                        html: message,
+                        confirmButtonText: 'OK'
+                    });
+                }
+            })
+
+
+        }
+    </script>
 </body>
 
 </html>

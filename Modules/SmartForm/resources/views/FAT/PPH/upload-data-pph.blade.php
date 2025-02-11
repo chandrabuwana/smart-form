@@ -98,7 +98,7 @@
             <div class="card my-4">
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                     <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                        <h6 class="text-white text-capitalize ps-3">Form Induksi Karyawan</h6>
+                        <h6 class="text-white text-capitalize ps-3">Form Upload Data Potongan</h6>
                     </div>
                 </div>
                 <div class="card-body my-1">
@@ -155,12 +155,20 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static my-4">
                                         <label for="pc_zip" class="ms-0">Upload Data ZIP </label>
-                                        <input type="file" class="form-control" name="pc_zip" id="pc_zip" />
+                                        <input type="file" class="form-control" name="pc_zip" id="pc_zip" accept="application/zip" />
                                         <small id="fileError" style="color:red; display:none;">Please upload a valid ZIP
                                             file.</small>
                                     </div>
                                 </div>
-                                <div class="row">
+
+                                <div class="row flex-column">
+                                    <div class="col-md-10 col-lg-8 col-xl-6 mb-3 d-none" id="col-progressbar">
+                                        <div class="progress">
+                                            <div class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuenow="0"
+                                                id="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+
                                     <div class="col-md-2">
                                         <button id="buttonGenerateLinkButton" class="btn btn-primary ms-auto uploadBtn"
                                             onclick="ExtractZip()">
@@ -179,6 +187,24 @@
                                             <span>Daftar dokument yang sudah terupload</span>
                                         </legend>
                                         <div class="form-horizontal">
+                                            <div class="row">
+                                                <div class="col-md-2">
+                                                    <div class="input-group input-group-static mb-4">
+                                                        <label for="FILTERNAMAVENDOR">Vendor</label>
+                                                        <input type="text" class="form-control" id="FILTERNAMAVENDOR"
+                                                            name="FILTERNAMAVENDOR" onkeypress="refreshTable()"
+                                                            placeholder=" -- Masukkan Nama Vendor -- ">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="input-group input-group-static mb-4">
+                                                        <label for="FILTERNPWPVENDOR">NPWP / NIK</label>
+                                                        <input type="text" class="form-control" id="FILTERNPWPVENDOR"
+                                                            onkeypress="refreshTable()" name="FILTERNPWPVENDOR"
+                                                            placeholder=" -- Masukkan NPWP -- ">
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <table id="tableListOfDocumentUploaded" data-toggle="table"
                                                 data-ajax="tableListOfDocumentUploadedGenerateData"
                                                 data-query-params="tableListOfDocumentUploadedParamsGenerate"
@@ -187,10 +213,10 @@
                                                 data-data-type="json" data-pagination="true" data-unique-id="id">
                                                 <thead>
                                                     <tr>
-                                                            <th data-field="nama_file" data-halign="center" data-sortable="true">
-                                                            Nama Document</th>
-                                                        <th data-field="npwp" data-halign="center"
+                                                        <th data-field="nama_file" data-halign="center"
                                                             data-sortable="true">
+                                                            Nama Document</th>
+                                                        <th data-field="npwp" data-halign="center" data-sortable="true">
                                                             NPWP</th>
                                                     </tr>
                                                 </thead>
@@ -205,9 +231,10 @@
                     <div class="card-footer">
                         <div class="row justify-content-between">
                             <div class="col-md-3">
-                                <button class="btn btn-primary ms-auto back-button-by-history">
+                                <a class="btn btn-primary ms-auto back-button-by-history" href="{{ route('bss-dahboard-fat-pph-dashboard') }}">
                                     <i class="fas fa-back"></i>
-                                    Back Page</button>
+                                    Back Page
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -226,7 +253,23 @@
     <script type="text/javascript">
         var MateriTambahanInputData_Obj_datas = [];
 
+        function showLoading() {
+            $("body").css("overflow-y", "hidden")
+            $("#loading-animation").css("display", "flex")
+        }
+
+        function stopLoading() {
+            $("body").css("overflow-y", "auto")
+            $("#loading-animation").css("display", "none")
+        }
+
+        function refreshTable() {
+            $('#tableListOfDocumentUploaded').bootstrapTable('refresh');
+            $("#tableListOfDocumentUploaded").bootstrapTable("uncheckAll");
+        }
+
         function ExtractZip() {
+            showLoading()
             let isValid = true;
 
             if ($('#pc_thn').val() === '') {
@@ -270,6 +313,7 @@
             }
 
             if (!isValid) {
+                stopLoading()
                 return false;
             }
             let dataKirim = new FormData();
@@ -279,6 +323,7 @@
             dataKirim.append('bulan', $('#pc_bln').val());
 
             dataKirim.append('zip', fileInput);
+            $('#col-progressbar').removeClass('d-none');
 
             $.ajax({
                 type: 'post',
@@ -290,6 +335,21 @@
                 processData: false, // Important for file upload
                 contentType: false, // Important for file upload
                 dataType: 'json',
+                xhr: function() {
+                    const xhr = new window.XMLHttpRequest();
+
+                    xhr.upload.addEventListener("progress", function(evt) {
+                        if (evt.lengthComputable) {
+                            var percentComplete = evt.loaded / evt.total;
+                            percentComplete = parseInt(percentComplete * 100);
+
+                            $('#progressbar').attr('aria-valuenow', percentComplete);
+                            $('#progressbar').attr('style', `width: ${percentComplete}%`);
+                        }
+                    }, false);
+
+                    return xhr;
+                },
                 success: function(response) {
                     if (response.code == 200) {
                         Swal.fire({
@@ -302,7 +362,7 @@
                         $('#pc_site').val('');
                         $('#nodocpph').val(response.codepph);
                         $('#tableListOfDocumentUploaded').bootstrapTable('refresh');
-
+                        stopLoading()
                     } else {
                         Swal.fire({
                             icon: "error",
@@ -386,6 +446,8 @@
         function tableListOfDocumentUploadedParamsGenerate(params) {
 
             params.search = {
+                'FILTERNPWPVENDOR': $('#FILTERNPWPVENDOR').val(),
+                'FILTERNAMAVENDOR': $('#FILTERNAMAVENDOR').val(),
                 'FILTERNODOC': $('#nodocpph').val()
             };
 

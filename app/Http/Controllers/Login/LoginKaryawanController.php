@@ -33,7 +33,7 @@ class LoginKaryawanController extends Controller
             'password.required' => 'Password harus diisi.',
         ]);
 
-        
+
 
         // Cek validasi
         if ($validator->fails()) {
@@ -69,7 +69,14 @@ class LoginKaryawanController extends Controller
                 'kode_department' => $dataUser[0]->KodeDP
             ]);
 
-            return redirect()->route('dashboard-smart-pica');
+            $prevAuthRoute = $_COOKIE['prev_auth_route'] ?? '';
+            if(!empty($prevAuthRoute)) {
+                setcookie('prev_auth_route', '', -1, '/');
+                unset($_COOKIE['prev_auth_route']);
+                return redirect()->intended($prevAuthRoute);
+            }
+
+            return redirect()->intended(route('dashboard-smart-pica'));
         } else {
             // Jika otentikasi gagal
             return back()

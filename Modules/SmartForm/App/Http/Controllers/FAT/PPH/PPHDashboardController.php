@@ -3,13 +3,18 @@
 namespace Modules\SmartForm\App\Http\Controllers\FAT\PPH;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use ZipArchive;
 use DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class PPHDashboardController extends Controller
 {
-    //
+    protected const T_PPH_MASTER = 'PICA.dbo.FM_FAT_PPH_MASTER';
+    protected const V_NODOC_PPH = 'PICA.dbo.vw_master_nodocpph_FM_FAT_PPH';
+    protected const T_PPH_DETAIL_DOC = 'PICA.dbo.FM_FAT_PPH_DETAIL_DOCUMENT';
 
     function DashboardIndex()
     {
@@ -26,13 +31,13 @@ class PPHDashboardController extends Controller
             'zip' => 'required|file|mimes:zip',  // max size 10MB
         ]);
 
-        $nodocPPH = DB::select("SELECT * FROM vw_master_nodocpph_FM_FAT_PPH where status = 0");
+        $nodocPPH = DB::select("SELECT * FROM " . self::V_NODOC_PPH . " where status = 0");
         $nodocPPH = collect($nodocPPH)->first();
 
         DB::beginTransaction();
 
         try {
-            DB::table("FM_FAT_PPH_MASTER")->insert([
+            DB::table(self::T_PPH_MASTER)->insert([
                 "nodocpph" => $nodocPPH->nodocpph,
                 "tsite" => $r->site,
                 "tahun" => $r->tahun,
@@ -55,11 +60,16 @@ class PPHDashboardController extends Controller
                         $parts = explode('_', $fileName);
                         // Check if the second part (NPWP) exists
                         if (isset($parts[1])) {
+                            $filecontent = $zip->getStreamIndex($i);
+                            $filename = $nodocPPH->nodocpph . "_" . $parts[0] . "_" . $parts[1] .'.'. $parts[ count($parts) - 1 ];
+                            $bucketPath = 'pph/' . $nodocPPH->nodocpph . '/' . $filename;
+                            Storage::disk('s3')->put($bucketPath, $filecontent);
+
                             $pdfFiles[] = [
                                 "nodocpph" => $nodocPPH->nodocpph,
                                 "npwp" => $parts[1],
                                 "potongan" => $parts[0],
-                                "nama_file" => $nodocPPH->nodocpph . "_" . $parts[0] . "_" . $parts[1],
+                                "nama_file" => $filename,
                                 "created_at" => now(),
                                 "created_by" => session("user_id")
                             ];
@@ -68,7 +78,7 @@ class PPHDashboardController extends Controller
                 }
                 $zip->close();
 
-                db::table("FM_FAT_PPH_DETAIL_DOCUMENT")->
+                db::table(self::T_PPH_DETAIL_DOC)->
                     insert($pdfFiles);
                 DB::commit();
 
@@ -83,6 +93,8 @@ class PPHDashboardController extends Controller
             }
         } catch (\Throwable $th) {
             DB::rollBack();
+            Log::error($th);
+            dd($th);
             return response()->json([
                 'message' => 'Failed to insert records: ' . $th->getMessage(),
                 'code' => 500
@@ -92,10 +104,10 @@ class PPHDashboardController extends Controller
 
     function indexViewDataDetailMasterPPh(string $nodocpph)
     {
-        $dataMaster = DB::table("FM_FAT_PPH_MASTER")->where("nodocpph", "=", $nodocpph)
+        $dataMaster = DB::table(self::T_PPH_MASTER)->where("nodocpph", "=", $nodocpph)
         ->select("*")
         ->selectRaw("DATENAME(MONTH, DATEFROMPARTS(2024, bulan, 1)) AS nama_bulan")->get()->first();
-        $dataDetail = DB::table("FM_FAT_PPH_DETAIL_DOCUMENT")->where("nodocpph", "=", $nodocpph)->get();
+        $dataDetail = DB::table(self::T_PPH_DETAIL_DOC)->where("nodocpph", "=", $nodocpph)->get();
 
         // dd($dataMaster);
         $dataKirim = [
@@ -105,4 +117,21 @@ class PPHDashboardController extends Controller
         return view("SmartForm::FAT/PPH/detail-master-pph-vendor", $dataKirim);
     }
 
+    function indexViewDetailDocument($id, Request $r)
+    {
+        $dataMaster = DB::table(self::T_PPH_DETAIL_DOC)->select(self::T_PPH_MASTER . '.*', self::T_PPH_DETAIL_DOC . '.nama_file')
+            ->selectRaw("DATENAME(MONTH, DATEFROMPARTS(2024, bulan, 1)) AS nama_bulan")
+            ->join(self::T_PPH_MASTER, self::T_PPH_MASTER . '.nodocpph', self::T_PPH_DETAIL_DOC . '.nodocpph')
+            ->where(self::T_PPH_DETAIL_DOC . '.id', $id)->first();
+
+        $docBucketPath = 'pph/' . $dataMaster->nodocpph . '/' . $dataMaster->nama_file;
+        $docUrl = Storage::disk('s3')->temporaryUrl($docBucketPath, Carbon::now()->addMinutes(5));
+
+        return view("SmartForm::FAT/PPH/detail-document", [
+            'dataMaster' => $dataMaster,
+            'docUrl' => $docUrl
+        ]);
+    }
+
 }
+
