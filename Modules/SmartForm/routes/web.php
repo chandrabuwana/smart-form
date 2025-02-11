@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Modules\SmartForm\App\Http\Controllers\Admin\AdminController;
 use Modules\SmartForm\App\Http\Controllers\Approval\ApprovalFormController;
+use Modules\SmartForm\App\Http\Controllers\DC\BAUnbudget\UnbudgetController;
 use Modules\SmartForm\App\Http\Controllers\GS\MessController;
 use Modules\SmartForm\App\Http\Controllers\GS\SmartCateringController;
 use Modules\SmartForm\App\Http\Controllers\GS\VendorController;
@@ -361,6 +362,25 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
         });
 
         // Route::get('jimmy', [PengajuanTrainingController::class, '']);
+    });
+
+    Route::prefix('dc')->group(function () {
+        Route::prefix('unbudget')->group(function () {
+            Route::get('/', [UnbudgetController::class, 'Index'])->name('dc.unbudget.index');
+            Route::get('dashboard', [UnbudgetController::class, 'Dashboard'])->name('dc.unbudget.dashboard');
+            Route::get('form', [UnbudgetController::class, 'FormBAUnbudget'])->name('dc.unbudget.form');
+            Route::get('form-edit', [UnbudgetController::class, 'FormEdit'])->name('dc.unbudget.form-edit');
+            Route::post('form-edit', [UnbudgetController::class, 'FormEditSubmit'])->name('dc.unbudget.form-edit-submit');
+            // Route::get('form-cetak', [UnbudgetController::class, 'FormCetak'])->name('dc.unbudget.form-cetak');
+            Route::get('form-info', [UnbudgetController::class, 'FormInfo'])->name('dc.unbudget.form-info');
+            Route::post('form-approval', [UnbudgetController::class, 'FormApproval'])->name('dc.unbudget.form-approval');
+            Route::post('form-submit', [UnbudgetController::class, 'SubmitBA'])->name('dc.unbudget.form-submit');
+            Route::get('form-list', [UnbudgetController::class, 'FormList'])->name('dc.unbudget.form-list');
+            Route::get('helper/coa', [UnbudgetController::class, 'HelperCOA'])->name('dc.unbudget.helper-coa');
+            Route::get('helper/mp', [UnbudgetController::class, 'HelperMP'])->name('dc.unbudget.helper-mp');
+            Route::get('migrasi', [UnbudgetController::class, 'Migrasi']);
+            Route::post('migrasi-submit', [UnbudgetController::class, 'MigrasiSubmit'])->name('dc.unbudget.migrasi-submit');
+        });
     });
 
     Route::prefix('approval')->group(function () {
