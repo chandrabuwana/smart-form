@@ -81,12 +81,15 @@
                                 <table class="w-full">
                                     <tr>
                                         <td>No Kupon</td>
-                                        <td><input type="text" class="input-text w-full" id="i_kupon" name="i_kupon"></td>
+                                        <!-- <td><input type="text" id="iKupon" name="iKupon"></td> -->
+                                        <td><input type="text" class="input-text w-full" id="iKupon" name="iKupon"></td>
                                     </tr>
                                     <tr>
-                                        <td>Nama</td>
-                                        <td><input type="text" class="input-text w-full" id="i_nama" value="{{ session('username') }}" disabled></td>
+                                        <td>Date</td>
+                                        <td><input type="text" class="input-text w-full" id="tglDoc" name="tglDoc"></td>
+                                        <!-- <td id="tglDoc"></td> -->
                                     </tr>
+                                    
                                     <tr>
                                         <td>Jabatan</td>
                                         <td><input type="text" class="input-text w-full" id="i_jabatan" name="i_jabatan"></td>
@@ -101,15 +104,39 @@
                                 <table class="w-full">
                                     <tr>
                                         <td>Departemen</td>
-                                        <td><input type="text" class="input-text w-full" id="i_departemen" name="i_departemen"></td>
+                                        <td>
+                                            <select class="form-select form-select-sm input-text" aria-label="Default select example" id="i_departemen" name="i_departemen">
+                                            <option value="" selected>-- Pilih Departemen --</option>    
+                                                <option value="ENG">ENGINEERING</option>
+                                                <option value="SHE">SHE</option>
+                                                <option value="PRD">PRODUKSI</option>
+                                                <option value="SM">SM</option>
+                                                <option value="IC">IC</option>
+                                                <option value="GS">GS</option>
+                                                <option value="RM">PLANT</option>
+                                                <option value="BDV">BUSDEV</option>
+                                                <option value="FIN">FINANCE</option>
+                                                <option value="ATA">Accounting & Tax</option>
+                                                <option value="DTC">DATA CENTER</option>
+                                                <option value="MM">LOGISTIK</option>
+                                                <option value="OPR">OPERATION</option>
+                                                <option value="LEG">LEGAL</option>
+                                                <option value="OD">ORGANIZATION DEVELOPMENT</option>
+                                                <option value="Z001">ASSESSMENT CENTER</option>
+                                                <option value="Z002">LABOR SUPPLY</option>
+                                                <option value="Z003">MANAGEMENT CONSULTANT</option>
+                                                <option value="Z004">SERTIFIKASI</option>
+                                                <option value="TC">TRAINING CENTER</option>
+                                        </select>
+                                    </td>
                                     </tr>
                                     <tr>
-                                        <td>Tanggal</td>
-                                        <td><input type="date" class="input-text w-full" id="i_tgl" name="i_tgl"></td>
+                                        <td>Nama</td>
+                                        <td><input type="text" class="input-text w-full" id="i_nama" value="{{ session('username') }}" disabled></td>
                                     </tr>
                                     <tr>
                                         <td>No Lambung</td>
-                                        <td><input type="text" class="input-text w-full" id="i_no_lambung" name="i_no_lambung"></td>
+                                        <td><input type="number" onkeypress="return event.charCode >= 48" min="1" class="input-text w-full" id="i_no_lambung" name="i_no_lambung"></td>
                                     </tr>
                                     <tr>
                                         <td>Jenis Kendaraan</td>
@@ -120,34 +147,33 @@
                             <!-- ====================================== -->
                             <div class="w-1/2 md:w-1/6">
                                 <span>Jam</span>
-                                <td><input type="text" class="input-text w-full" id="i_jam" name="i_jam"></td>
-                                <!-- <select class="form-select form-select-sm input-text" aria-label="Default select example" id="inputJam" name="inputJam">
+                                <select class="form-select form-select-sm input-text" aria-label="Default select example" id="iJam" name="iJam">
                                     <option value="" selected>-- Pilih Jam --</option> 
-                                    <option value="aa">06:00-07:00</option>
-                                    <option value="ab">18:00-19:00</option>
-                                    <option value="ba">07:00-08:00</option>
-                                    <option value="bb">19:00-20:00</option>
-                                    <option value="ca">08:00-09:00</option>
-                                    <option value="cb">20:00-21:00</option>
-                                    <option value="da">09:00-10:00</option>
-                                    <option value="db">21:00-22:00</option>
-                                    <option value="ea">10:00-11:00</option>
-                                    <option value="eb">22:00-23:00</option>
-                                    <option value="fa">11:00-12:00</option>
-                                    <option value="fb">23:00-24:00</option>
-                                    <option value="ga">12:00-13:00</option>
-                                    <option value="gb">24:00-01:00</option>
-                                    <option value="ha">13:00-14:00</option>
-                                    <option value="hb">01:00-02:00</option>
-                                    <option value="ia">14:00-15:00</option>
-                                    <option value="ib">02:00-03:00</option>
-                                    <option value="ja">15:00-16:00</option>
-                                    <option value="jb">03:00-04:00</option>
-                                    <option value="ka">16:00-17:00</option>
-                                    <option value="kb">04:00-05:00</option>
-                                    <option value="la">17:00-18:00</option>
-                                    <option value="lb">05:00-06:00</option>
-                                </select> -->
+                                    <option value="06:00-07:00">06:00-07:00</option>
+                                    <option value="18:00-19:00">18:00-19:00</option>
+                                    <option value="07:00-08:00">07:00-08:00</option>
+                                    <option value="19:00-20:00">19:00-20:00</option>
+                                    <option value="08:00-09:00">08:00-09:00</option>
+                                    <option value="20:00-21:00">20:00-21:00</option>
+                                    <option value="09:00-10:00">09:00-10:00</option>
+                                    <option value="21:00-22:00">21:00-22:00</option>
+                                    <option value="10:00-11:00">10:00-11:00</option>
+                                    <option value="22:00-23:00">22:00-23:00</option>
+                                    <option value="11:00-12:00">11:00-12:00</option>
+                                    <option value="23:00-24:00">23:00-24:00</option>
+                                    <option value="12:00-13:00">12:00-13:00</option>
+                                    <option value="24:00-01:00">24:00-01:00</option>
+                                    <option value="13:00-14:00">13:00-14:00</option>
+                                    <option value="01:00-02:00">01:00-02:00</option>
+                                    <option value="14:00-15:00">14:00-15:00</option>
+                                    <option value="02:00-03:00">02:00-03:00</option>
+                                    <option value="15:00-16:00">15:00-16:00</option>
+                                    <option value="03:00-04:00">03:00-04:00</option>
+                                    <option value="16:00-17:00">16:00-17:00</option>
+                                    <option value="04:00-05:00">04:00-05:00</option>
+                                    <option value="17:00-18:00">17:00-18:00</option>
+                                    <option value="05:00-06:00">05:00-06:00</option>
+                                </select>
                             </div>
                             <div class="w-1/2 md:w-1/6">
                                 <span>Shift</span>
@@ -160,23 +186,23 @@
                             </div>
                             <div class="w-1/2 md:w-1/6">
                                 <span>HM</span>
-                                    <input type="text" class="input-text w-full" id="i_hm" name="i_hm">
+                                    <input  type="number" onkeypress="return event.charCode >= 48" min="1" class="input-text w-full" id="i_hm" name="i_hm">
                             </div>
                             <div class="w-1/2 md:w-1/6">
                                 <span>KM</span>
-                                    <input type="text" class="input-text w-full" id="i_km" name="i_km">
+                                    <input  type="number" onkeypress="return event.charCode >= 48" min="1" class="input-text w-full" id="i_km" name="i_km">
                             </div>
                             <div class="w-1/2 md:w-1/6">
                                 <span>Awal</span>
-                                    <input type="text" class="input-text w-full" id="i_awal" name="i_awal">
+                                    <input  type="number" onkeypress="return event.charCode >= 48" min="1" class="input-text w-full" id="i_awal" name="i_awal">
                             </div>
                             <div class="w-1/2 md:w-1/6">
                                 <span>Akhir</span>
-                                    <input type="text" class="input-text w-full" id="i_akhir" name="i_akhir">
+                                    <input  type="number" onkeypress="return event.charCode >= 48" min="1" class="input-text w-full" id="i_akhir" name="i_akhir">
                             </div>
                             <div class="w-1/2 md:w-1/6">
                                 <span>Total Liter</span>
-                                    <input type="text" class="input-text w-full" id="i_total_liter" name="i_total_liter">
+                                    <input  type="number" onkeypress="return event.charCode >= 48" min="1" class="input-text w-full" id="i_total_liter" name="i_total_liter">
                             </div>
                         </div>
 
@@ -200,7 +226,77 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script>
-            $('#btnSubmitFormRequestFuel').click( function(e) {
+        var tglNow = new Date()
+        var mudof = new Date();
+        var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        var months_angka = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
+        var tanggalSekarang = $("#tanggalSekarang")
+        var iKupon = $("#iKupon");
+        var tglDoc = $("#tglDoc");
+
+        //  START MEMBUAT NO KUPON URUT FORMAT YYMMDD000x
+        function getMonth(mudof) {
+            //get the month
+            var month = mudof.getMonth();
+
+            //increment month by 1 since it is 0 indexed
+            //converts month to a string
+            //if month is 1-9 pad right with a 0 for two digits
+            month = (month + 1).toString().padStart(2, '0');
+
+            return month;
+        }
+
+        // function getDay with 1 parameter expecting date
+        // This function returns a string of type dd (example: 09 = The 9th day of the month)
+        function getDay(mudof) {
+            //get the day
+            //convert day to string
+            //if day is between 1-9 pad right with a 0 for two digits
+            var day = mudof.getDate().toString().padStart(2, '0');;
+
+            return day;
+        }
+
+        function getYear(tglNow) {
+            //get the year
+            var year = mudof.getFullYear();
+
+            //pull the last two digits of the year
+            year = year.toString().substr(-2);
+
+            return year;
+        }
+        //A function for formatting a date to yyMMDD
+        function formatNomor(mudof)
+        {
+            //return the string "yyMMDD"
+            return getYear(mudof) + getMonth(mudof) + getDay(mudof);
+        }
+        
+        function getTodayDate() {
+            const today = new Date();
+            const year = today.getYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+        function generateNoDoc() {
+            return (formatNomor(mudof) + ( (Math.random()*100000).toFixed()));
+        }
+        //  END MEMBUAT NO KUPON URUT FORMAT YYMMDD000x
+
+        tanggalSekarang.attr('min', getTodayDate())
+
+        function formatTgl() {
+            return tglNow.getDate() + "-" + months[tglNow.getMonth()] + "-" + tglNow.getFullYear();
+        }
+        $(function() {
+            document.getElementById("iKupon").value=(generateNoDoc());
+            document.getElementById("tglDoc").value=(formatTgl() || "-");
+        })
+        
+        $('#btnSubmitFormRequestFuel').click( function(e) {
             e.preventDefault();
             const formData = $('#formRequestFuel').serialize();
 
@@ -227,5 +323,6 @@
                 });
             });
         });
+        
     </script>
 @endsection

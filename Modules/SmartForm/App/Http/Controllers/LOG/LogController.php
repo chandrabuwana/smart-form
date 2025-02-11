@@ -268,15 +268,15 @@ class LogController extends Controller {
 
         try {
             DB::table('FM_LOG_022_PERMINTAAN_PENGISIAN_FUEL')->insert([
-                'no' => $requestData['i_kupon'],
+                'no' => $requestData['iKupon'],
                 'nama' => session("username"),
                 'jabatan' => $requestData['i_jabatan'],
                 'nik' => session("user_id"),
                 'departemen' =>  $requestData['i_departemen'],
-                'tanggal' =>  $requestData['i_tgl'],
+                'tanggal' =>  $requestData['tglDoc'],
                 'no_lambung' =>  $requestData['i_no_lambung'],
                 'jenis_kendaraan' =>  $requestData['i_jenis_kendaraan'],
-                'jam' =>  $requestData['i_jam'],
+                'jam' =>  $requestData['iJam'],
                 'shift' =>  $requestData['i_shift'],
                 'hm' =>  $requestData['i_hm'],
                 'km' =>  $requestData['i_km'],
