@@ -78,10 +78,9 @@ class DashboardSKLController extends Controller
                 $sklMaster->whereDate('TglPelaksanaan', $tanggal);
             }
 
-            $data = $sklMaster->orderBy(self::T_FORM_MST . '.created_at', 'desc')->offset($offset)
-                ->limit($limit);
+            $data = $sklMaster->orderBy(self::T_FORM_MST . '.created_at', 'desc')->offset($offset);
 
-            $rows = $data->get()->map( function($item) {
+            $rows = $data->limit($limit)->get()->map( function($item) {
                 $item->NamaDepartement = DB::table(self::T_DEPARTEMENT)
                     ->select('Nama')->where('KodeDP', $item->KodeDepartement)->first()->Nama;
 
@@ -106,7 +105,7 @@ class DashboardSKLController extends Controller
             });
 
             return response()->json([
-                'total' => $rows->count(),
+                'total' => $data->count(),
                 'totalNotFiltered' => $sklMasterNotFiltered->count(),
                 'rows' => $rows
             ]);
