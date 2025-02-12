@@ -276,7 +276,6 @@
                                                 'brightness_level' => 'Test Brightness Display',
                                                 'speaker' => 'Test Speaker',
                                                 'wifi_connection' => 'Test Connection WiFi',
-                                                'cleaning_keyboard' => 'Cleaning Keyboard',
                                                 'hdmi' => 'Test HDMI',
                                             ] as $field => $label)
                                                 <tr>

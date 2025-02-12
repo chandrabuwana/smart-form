@@ -275,7 +275,7 @@
                         $taskLabel = array_values($software_installed)[$i];
                     @endphp
                     <td>{{ $taskLabel }}</td>
-                    <td>{{ $record->$taskField ? 'Ya' : 'Tidak' }}</td>
+                    <td>{{ ucfirst($record->$taskField) }}</td>
                 @else
                     <td></td>
                     <td></td>
