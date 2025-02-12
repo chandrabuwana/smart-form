@@ -301,13 +301,16 @@ class DashboardSKLController extends Controller
         }
 
         $dataExport = $qExport->orderBy(self::T_FORM_MST . '.created_at', 'DESC')->get();
-        // dd($dataExport);
         $i = 2;
 
         foreach($dataExport as $item) {
-            $isApprovedForm = DB::table(self::T_FORM_APPROVER)->where('NoForm', $item->NoForm)
-                ->where('status', 'Approved')->count('ID');
-            if($isApprovedForm < 4) {
+            $approver = DB::table(self::T_FORM_APPROVER)->where('NoForm', $item->NoForm)->get();
+                // ->where('status', 'Approved')->count('ID');
+
+            $totalApprover = $approver->count();
+            $totalHasApproved = $approver->filter( fn($item) => $item->Status == 'Approved')->count();
+
+            if($totalHasApproved >= $totalApprover) {
                 continue;
             }
 
