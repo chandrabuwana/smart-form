@@ -162,8 +162,8 @@
         <tr>
             <td style="width: 25%;">Case/Casing</td>
             <td style="width: 25%;">{{ ucfirst($record->case_casing_condition) }}</td>
-            <td style="width: 25%;">Test Print</td>
-            <td style="width: 25%;">{{ $record->print_test ? 'Ya' : 'Tidak' }}</td>
+            <td style="width: 25%;">Software Update</td>
+            <td style="width: 25%;">{{ $record->software_update ? 'Ya' : 'Tidak' }}</td>
         </tr>
         <tr>
             <td>Adaptor</td>
@@ -196,10 +196,16 @@
             <td>{{ $record->cable_test ? 'Ya' : 'Tidak' }}</td>
         </tr>
         <tr>
-            <td>Touchscreen*</td>
-            <td>{{ ucfirst($record->touchscreen_condition) }}</td>
+            <td>Kabel Power</td>
+            <td>{{ ucfirst($record->kabel_power_condition) }}</td>
             <td>Level Tinta</td> 
             <td>{{ $record->toner_level ? 'Ya' : 'Tidak' }}</td>
+        </tr>
+        <tr>
+            <td>Touchscreen*</td>
+            <td>{{ ucfirst($record->touchscreen_condition) }}</td>
+            <td></td>
+            <td></td>
         </tr>
     </table>
     <div class="warning-text">
