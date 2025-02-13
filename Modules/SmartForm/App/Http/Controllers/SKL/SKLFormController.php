@@ -47,14 +47,13 @@ class SKLFormController extends Controller
         $kodeDP = $request->get('KodeDP');
         $kodeST = $request->get('KodeST');
 
-        return DB::table(self::T_KARYAWAN)->select('NIK AS id', 'Panggilan AS text', self::T_JABATAN . '.Nama AS jabatan')
+        return DB::table(self::T_KARYAWAN)->select('NIK AS id', self::T_KARYAWAN . '.Nama AS text', self::T_JABATAN . '.Nama AS jabatan')
             ->distinct('NIK')
             ->join(self::T_JABATAN, self::T_JABATAN . '.KodeJB', '=', self::T_KARYAWAN . '.KodeJB')
             ->when(!empty($kodeDP), fn($q) => $q->where('KodeDP', $kodeDP))
             ->when(!empty($kodeST), fn($q) => $q->where('KodeST', $kodeST))
-            ->where('Panggilan', '!=', '')
             ->where('AKTIF', '0')
-            ->orderBy('Panggilan', 'ASC')->get();
+            ->orderBy(self::T_KARYAWAN . '.Nama', 'ASC')->get();
     }
 
     public function getKategoriPekerjaan(Request $request)
