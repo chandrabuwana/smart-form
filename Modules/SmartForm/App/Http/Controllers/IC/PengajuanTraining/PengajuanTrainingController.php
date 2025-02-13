@@ -64,6 +64,9 @@ class PengajuanTrainingController extends Controller {
         'DATA CENTER' => 'DTC',
         'BUSDEV' => 'BDV',
         'INTERNAL AUDIT' => 'OD',
+        'FAT' => 'FAT',
+        'OPERATION' => 'OPR',
+        'SINERGY INSTITUTE' => 'SI'
     ];
     private  $bulanMapping = [
         '1' => 'Janurari',
