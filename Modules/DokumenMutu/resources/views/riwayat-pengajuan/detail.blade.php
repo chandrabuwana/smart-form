@@ -216,6 +216,11 @@
                         @endif
                     </div>
 
+                    @if( $doco->status == 'Ditolak' && !empty($doco->keterangan_status) )
+                        <p class="fw-bold mb-1">Keterangan Penolakan :</p>
+                        <p class="mb-5"> {!! nl2br($doco->keterangan_status) !!} </p>
+                    @endif
+
                     <div class="row">
                         <div class="col-md-8">
                             {{-- <iframe src="{{ $doco->file_converted_path }}" width="100%" frameborder="0"></iframe> --}}
