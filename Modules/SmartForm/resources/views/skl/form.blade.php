@@ -511,6 +511,9 @@
         let optionKategoriPekerjaan = [];
         let optionApprover = [];
 
+        const yesterday = `{{ date('Y-m-d', strtotime('-1 days')) }}`;
+        const today = `{{ date('Y-m-d') }}`;
+
         $( function() {
             $departement = $('#inputDepartement');
             $site = $('#inputSite');
@@ -678,6 +681,14 @@
                     }
                 });
             }
+
+            $shift.change( () => {
+                if( $shift.val() == 'NS' ) {
+                    $('#inputTanggal').attr('min', yesterday);
+                } else {
+                    $('#inputTanggal').attr('min', today);
+                }
+            });
 
             $departement.change( () => {
                 fetchOptionKaryawan();
