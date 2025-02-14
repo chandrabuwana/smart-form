@@ -62,6 +62,11 @@
             display: none;
             padding: 5px;
         }
+
+        .feedback-popover .popover-body {
+            max-height: 300px;
+            overflow-y: auto;
+        }
     </style>
 @endsection
 
@@ -353,6 +358,11 @@
         let resolution = 1;
 
         $( function() {
+            $('body').popover({
+                selector: '[data-bs-toggle="popover"]',
+                trigger: 'focus'
+            });
+
             $('#modalValidasiPenghapusan button[type="submit"]').on('click', function(e) {
                 const $form = $(this).closest('form')
                 const isFormValid = $form.length > 0 && $form[0].checkValidity()
@@ -495,7 +505,23 @@
             } else if(value == 'Dibatalkan Oleh Sistem') {
                 formatData = '<span class="text-danger fw-bold">Dibatalkan Oleh Sistem</span>'
             } else if(value == 'Ditolak') {
-                formatData = '<span class="text-danger fw-bold">Ditolak</span>'
+                let keteranganEl = ''
+                if(row.keterangan_status) {
+                    keteranganEl = `
+                        <span data-bs-toggle="popover" tabindex="0" data-bs-trigger="focus" title="Keterangan"
+                            data-bs-custom-class="feedback-popover" data-bs-html="true"
+                            data-bs-content="${row.keterangan_status}" style="cursor: pointer!important;">
+                            <i class="fas fa-info-circle"></i>
+                        </span>
+                    `
+                }
+
+                formatData = `
+                    <span class="text-danger fw-bold">
+                        Ditolak ${ keteranganEl }
+                    </span>
+                `
+
             } else if(value == 'Sudah Revisi') {
                 formatData = '<span class="text-dark fw-bold">Sudah Revisi</span>'
             }
