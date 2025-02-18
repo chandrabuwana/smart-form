@@ -50,17 +50,6 @@
             font-weight: bold;
             margin: 10px 0;
         }
-        .doc-info {
-            font-size: 10px;
-            border-left: 1px solid #000;
-        }
-        .doc-info div {
-            border-bottom: 1px solid #000;
-            padding: 4px 8px;
-        }
-        .doc-info div:last-child {
-            border-bottom: none;
-        }
         .info-table {
             margin-bottom: 15px;
         }
@@ -103,18 +92,18 @@
 <body>
     <table class="header-table" style="border: 1px solid #000;">
         <tr>
-            <td width="20%" style="border-right: 1px solid #000; text-align: center;">
+            <td width="15%" style="border: 1px solid #000;">
                 <img src="{{ public_path('img/logo-ct-dark.png') }}" class="logo">
             </td>
-            <td width="50%" class="title-section">
-                <div class="system-title">BSS SHE Management System</div>
-                <div class="form-title">FORM PEMERIKSAAN DEVICE</div>
+            <td width="55%" style="text-align: center;">
+                <div style="font-size: 14px; font-weight: bold;">BSS SHE Management System</div>
+                <div style="font-size: 16px; font-weight: bold; margin: 10px 0;">Checklist Maintenance Asset</div>
             </td>
-            <td width="30%" class="doc-info">
-                <div>No Dok : {{ $record->doc_number }}</div>
-                <div>Revisi : 00</div>
-                <div>Tanggal : {{ date('d F Y', strtotime($record->created_at)) }}</div>
-                <div>Halaman : 1 dari 1</div>
+            <td width="30%" style="font-size: 10px; border: 1px solid #000;">
+                <div style="border-bottom: 1px solid #000; padding: 2px;">No Dok : {{ $record->doc_number }}</div>
+                <div style="border-bottom: 1px solid #000; padding: 2px;">Revisi : 00</div>
+                <div style="border-bottom: 1px solid #000; padding: 2px;">Tanggal : {{ date('d F Y', strtotime($record->created_at)) }}</div>
+                <div style="padding: 2px;">Halaman : 1 dari 1</div>
             </td>
         </tr>
     </table>
@@ -275,7 +264,7 @@
                         $taskLabel = array_values($software_installed)[$i];
                     @endphp
                     <td>{{ $taskLabel }}</td>
-                    <td>{{ $record->$taskField ? 'Ya' : 'Tidak' }}</td>
+                    <td>{{ ucfirst($record->$taskField) }}</td>
                 @else
                     <td></td>
                     <td></td>
