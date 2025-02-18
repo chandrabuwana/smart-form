@@ -241,14 +241,14 @@
                                 <td class="text-center" id="totalPesanan"></td>
                                 <td class="text-center" id="totalPesananBySystem"></td>
                             </tr>
-                            <tr>
+                            <tr style="display: none;">
                                 <td colspan="2">Jenis Pemesanan</td>
                                 <td colspan="2">
                                     {{-- <div class="input-group input-group-static mb-4"> --}}
                                         <select class="form-control form-select" required id="selectedJenisPemesanan">
-                                            <option value="" selected>-- Pilih Jenis Pemesanan --</option>
+                                            <option value="">-- Pilih Jenis Pemesanan --</option>
                                             <option value="request">By Request</option>
-                                            <option value="system">By System</option>
+                                            <option value="system" selected>By System</option>
                                         </select>
                                     {{-- </div> --}}
                                 </td>
