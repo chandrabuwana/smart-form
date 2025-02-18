@@ -270,7 +270,7 @@
                                 </tr>
                             </tbody>
                         </table>
-
+                    </div>
                 </div>
                 
                 <div class="card-footer" style="align-items: flex-end; display: flex; gap: 1rem; justify-content: end;">
