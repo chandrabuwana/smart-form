@@ -69,9 +69,9 @@
                 <div style="font-size: 16px; font-weight: bold; margin: 10px 0;">INSPEKSI EYEWASH</div>
             </td>
             <td width="30%" style="font-size: 10px; border: 1px solid #000;">
-                <div style="border-bottom: 1px solid #000; padding: 2px;">No Dok : {{ $record->doc_number }}</div>
+                <div style="border-bottom: 1px solid #000; padding: 2px;">No Dok : BSS-FRM-SHE-037</div>
                 <div style="border-bottom: 1px solid #000; padding: 2px;">Revisi : 00</div>
-                <div style="border-bottom: 1px solid #000; padding: 2px;">Tanggal : {{ Carbon\Carbon::parse($record->inspection_date)->format('d F Y') }}</div>
+                <div style="border-bottom: 1px solid #000; padding: 2px;">Tanggal : 23 November 2021</div>
                 <div style="padding: 2px;">Halaman : 1 dari 1</div>
             </td>
         </tr>
