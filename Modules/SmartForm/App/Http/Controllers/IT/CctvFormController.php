@@ -273,6 +273,27 @@ class CCTVFormController extends Controller
 
     private function generateDocNumber()
     {
-        return 'BSS-FRM-IT-014';
+        try {
+            $prefix = 'BSS-FRM-IT-014';
+            $date = now()->format('dmY');
+            
+            // Get the latest sequence number for the current month
+            $lastRecord = DB::table('it_fm_cctv')
+                ->whereDate('created_at', now())
+                ->orderBy('created_at', 'desc')
+                ->value('doc_number');
+
+            $sequence = 1;
+            if ($lastRecord && preg_match('/-(\d+)$/', $lastRecord->doc_number, $matches)) {
+                $sequence = intval($matches[1]) + 1;
+            }
+
+            return sprintf("%s-%s-%03d", $prefix, $date, $sequence);
+
+        } catch (\Exception $e) {
+            Log::error('Error generating doc number: ' . $e->getMessage());
+            throw $e;
+        }
+
     }
 }
