@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('changed_dtl')->nullable();
             $table->string('created_by', 20)->nullable();
             $table->string('updated_by', 20)->nullable();
+            $table->integer('revisi_ke')->default(0);
             $table->timestamps();
             $table->foreign('id_m_cpm')->on('cpm_m_form')->references('id');
         });
