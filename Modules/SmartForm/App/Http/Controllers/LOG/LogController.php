@@ -203,7 +203,7 @@ class LogController extends Controller {
         $filterStatus = $request->query('status', null);
         $search = $request->query('search', '');
         $sort = $request->query('sort', 'id'); // Default sort by id
-        $order = $request->query('order', 'asc'); // Default order is ascending
+        $order = $request->query('order', 'desc');
         $offset = $request->query('offset', 0); // Default offset
         $limit = $request->query('limit', null); // Default limit
         $filter = $request->query('filter', null); // Default limit
@@ -266,9 +266,32 @@ class LogController extends Controller {
         DB::beginTransaction();
         $requestData = $request->all();
 
+        // START NO KUPON
+	    $month = date("m");
+	    $year = date("y");
+        $nomor = "0001";
+	    // e.g. 23 
+	    // Get the last bill number from the database
+        $TABLE_REQUEST_FUEL = "FM_LOG_022_PERMINTAAN_PENGISIAN_FUEL";
+        
+        $query = DB::table($TABLE_REQUEST_FUEL)
+                // ->select('id','no')
+                ->orderBy('no', 'desc')
+                ->value('no');
+        $no = $query;
+	    // Check if the last bill number is empty or has a different month or year 
+	    if(empty($no) || substr($no, 0, 2) != $year || substr($no, 2, 2) != $month) 
+	    { 
+	    	$number = "$year$month$nomor"; }
+	    else {
+	    	$idd = substr($no, 4);
+	    	$id = str_pad($idd + 1, 4, 0, STR_PAD_LEFT); 
+	    	$number = "$year$month$id"; } 
+        // END NO KUPON
+
         try {
             DB::table('FM_LOG_022_PERMINTAAN_PENGISIAN_FUEL')->insert([
-                'no' => $requestData['iKupon'],
+                'no' => $number,
                 'nama' => session("username"),
                 'jabatan' => $requestData['i_jabatan'],
                 'nik' => session("user_id"),
