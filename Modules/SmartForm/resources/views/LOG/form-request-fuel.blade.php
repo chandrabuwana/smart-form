@@ -131,7 +131,7 @@
                                     </tr>
                                     <tr>
                                         <td>No Lambung</td>
-                                        <td><input type="text" class="input-text w-full" id="i_no_lambung" name="i_no_lambung"></td>
+                                        <td><input type="number" onkeypress="return event.charCode >= 48" min="1" class="input-text w-full" id="i_no_lambung" name="i_no_lambung"></td>
                                     </tr>
                                     <tr>
                                         <td>Jenis Kendaraan</td>
@@ -142,7 +142,7 @@
                             <!-- ====================================== -->
                             <div class="w-1/2 md:w-1/6">
                                 <span>Jam</span>
-                                    <input  type="time" class="input-text w-full" id="iJam" name="iJam">   
+                                    <input  type="time" class="input-text w-full" id="iJam" name="iJam">
                             </div>
                             <div class="w-1/2 md:w-1/6">
                                 <span>Shift</span>

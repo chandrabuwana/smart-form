@@ -475,6 +475,5 @@ class DeviceFormController extends Controller
             Log::error('Error generating doc number: ' . $e->getMessage());
             throw $e;
         }
-
     }
 }

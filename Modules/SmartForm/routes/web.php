@@ -23,6 +23,7 @@ use Modules\SmartForm\App\Http\Controllers\SHE\P3KController;
 use Modules\SmartForm\App\Http\Controllers\SHE\AirMinumController;
 use Modules\SmartForm\App\Http\Controllers\SHE\NoiseController;
 use Modules\SmartForm\App\Http\Controllers\SHE\SheMessController;
+use Modules\SmartForm\App\Http\Controllers\SHE\CoalGettingController;
 use Modules\SmartForm\App\Http\Controllers\SKL\DashboardSKLController;
 use Modules\SmartForm\App\Http\Controllers\SKL\SKLFormController;
 use Modules\SmartForm\App\Http\Controllers\SM\AssetRequestController;
@@ -274,6 +275,15 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('form/export/{id}', [SheMessController::class, 'ExportForm'])->name('she.mess.export');
             Route::get('form', [SheMessController::class, 'AddForm'])->name('she.mess.form');
             Route::post('store', [SheMessController::class, 'Store'])->name('she.mess.store');
+            Route::put('form/{id}', [SheMessController::class, 'Update'])->name('she.mess.form.update');
+        });
+
+        Route::prefix('she-coal')->group(function () {
+            Route::get('dashboard', [CoalGettingController::class, 'Dashboard'])->name('she.coal.dashboard');
+            Route::get('form/export/{id}', [CoalGettingController::class, 'ExportForm'])->name('she.coal.export');
+            Route::get('form', [CoalGettingController::class, 'AddForm'])->name('she.coal.form');
+            Route::post('store', [CoalGettingController::class, 'Store'])->name('she.coal.store');
+            Route::put('form/{id}', [CoalGettingController::class, 'Update'])->name('she.coal.form.update');
         });
 
     });
