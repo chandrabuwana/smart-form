@@ -78,111 +78,76 @@
                                 <table class="table table-bordered">
                                     <thead class="bg-light">
                                         <tr>
-                                            <th class="text-center" style="width: 5%">No</th>
-                                            <th class="text-center" style="width: 50%">Pemeriksaan</th>
-                                            <th class="text-center" colspan="2" style="width: 25%">Kondisi</th>
-                                            <th class="text-center" style="width: 20%">Tindakan</th>
+                                            <th class="text-center" style="width: 5%; border: 1px solid #dee2e6;">No</th>
+                                            <th class="text-center" style="width: 50%; border: 1px solid #dee2e6;">Pemeriksaan</th>
+                                            <th class="text-center" colspan="2" style="width: 25%; border: 1px solid #dee2e6;">Kondisi</th>
+                                            <th class="text-center" style="width: 20%; border: 1px solid #dee2e6;">Tindakan</th>
                                         </tr>
                                         <tr>
-                                            <th colspan="2"></th>
-                                            <th class="text-center">Ya</th>
-                                            <th class="text-center">Tidak</th>
-                                            <th></th>
+                                            <th colspan="2" style="border: 1px solid #dee2e6;"></th>
+                                            <th class="text-center" style="border: 1px solid #dee2e6;">Ya</th>
+                                            <th class="text-center" style="border: 1px solid #dee2e6;">Tidak</th>
+                                            <th style="border: 1px solid #dee2e6;"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @php
-                                            $checklistItems = [
-                                                'Pengawas melakukan validasi P2H fleet coal getting',
-                                                'Operator sudah mendapatkan edukasi coal quality',
-                                                'Kebersihan Track shoe Excavator',
-                                                'Teeth Bucket dalam kondisi baik/normal',
-                                                'Tidak ada kebocoran oli/solar unit',
-                                                'Kebersihan bak unit hauler',
-                                                'Tidak ada potensi komponen unit hauler terlepas',
-                                                'Batubara ter expose',
-                                                'Cleaning batubara menggunakan cutting edge',
-                                                'Cleaning area offset roof dan floor min 1 meter',
-                                                'Batubara sudah di cleaning',
-                                                'Size batubara sesuai keinginan customer',
-                                                [
-                                                    'title' => 'Kebersihan Front Loading',
-                                                    'subitems' => [
-                                                        'a. tanah',
-                                                        'b. lumpur',
-                                                        'c. parting',
-                                                        'd. sampah'
-                                                    ]
-                                                ],
-                                                'Drainase area loading point',
-                                                'Penanganan parting (penanganan batas dan pengerjaan pada siang hari)',
-                                                'penerangan pada malam hari',
-                                                'Pengukuran data roof dan floor'
-                                            ];
-                                        @endphp
-
                                         @foreach($checklistItems as $index => $item)
                                             @if(is_array($item))
-                                                <!-- Parent item -->
+                                                <!-- Parent item with subitems -->
                                                 <tr>
                                                     <td class="text-center">{{ $index + 1 }}</td>
                                                     <td>{{ $item['title'] }}</td>
-                                                    <td colspan="3"></td>
+                                                    <td colspan="2"></td>
+                                                    <td></td>
                                                 </tr>
-                                                <!-- Subitems -->
-                                                @foreach($item['subitems'] as $subitem)
+                                                @foreach($item['subitems'] as $subIndex => $subitem)
                                                     <tr>
                                                         <td></td>
-                                                        <td>{{ $subitem }}</td>
+                                                        <td style="padding-left: 20px;">{{ $subitem }}</td>
                                                         <td class="text-center">
                                                             <div class="form-check d-flex justify-content-center">
-                                                                <input class="form-check-input" type="radio" 
-                                                                    name="checklist[{{ $index }}][{{ $loop->index }}]" value="1"
-                                                                    {{ $isShowDetail && isset($record->checklist_items[$index][$loop->index]) && $record->checklist_items[$index][$loop->index] == 1 ? 'checked' : '' }}
+                                                                <input class="form-check-input" type="radio" name="checklist[{{ $index }}][{{ $subIndex }}]" value="1" 
+                                                                    {{ isset($record->checklist_items[$index][$subIndex]['value']) && $record->checklist_items[$index][$subIndex]['value'] == '1' ? 'checked' : '' }}
                                                                     {{ $isShowDetail ? 'disabled' : '' }}>
                                                             </div>
                                                         </td>
                                                         <td class="text-center">
                                                             <div class="form-check d-flex justify-content-center">
-                                                                <input class="form-check-input" type="radio" 
-                                                                    name="checklist[{{ $index }}][{{ $loop->index }}]" value="0"
-                                                                    {{ $isShowDetail && isset($record->checklist_items[$index][$loop->index]) && $record->checklist_items[$index][$loop->index] == 0 ? 'checked' : '' }}
+                                                                <input class="form-check-input" type="radio" name="checklist[{{ $index }}][{{ $subIndex }}]" value="0"
+                                                                    {{ isset($record->checklist_items[$index][$subIndex]['value']) && $record->checklist_items[$index][$subIndex]['value'] == '0' ? 'checked' : '' }}
                                                                     {{ $isShowDetail ? 'disabled' : '' }}>
                                                             </div>
                                                         </td>
                                                         <td>
-                                                            <input type="text" class="form-control" 
-                                                                name="notes[{{ $index }}][{{ $loop->index }}]"
-                                                                value="{{ $isShowDetail && isset($record->checklist_items[$index][$loop->index]['notes']) ? $record->checklist_items[$index][$loop->index]['notes'] : '' }}"
-                                                                {{ $isShowDetail ? 'disabled' : '' }}>
+                                                            <input type="text" class="form-control" name="notes[{{ $index }}][{{ $subIndex }}]" 
+                                                                value="{{ isset($record->checklist_items[$index][$subIndex]['notes']) ? $record->checklist_items[$index][$subIndex]['notes'] : '' }}"
+                                                                {{ $isShowDetail ? 'readonly' : '' }}>
                                                         </td>
                                                     </tr>
                                                 @endforeach
                                             @else
+                                                <!-- Regular item -->
                                                 <tr>
                                                     <td class="text-center">{{ $index + 1 }}</td>
                                                     <td>{{ $item }}</td>
                                                     <td class="text-center">
                                                         <div class="form-check d-flex justify-content-center">
-                                                            <input class="form-check-input" type="radio" 
-                                                                name="checklist[{{ $index }}]" value="1"
-                                                                {{ $isShowDetail && isset($record->checklist_items[$index]) && $record->checklist_items[$index] == 1 ? 'checked' : '' }}
-                                                                {{ $isShowDetail ? 'disabled' : '' }} required>
+                                                            <input class="form-check-input" type="radio" name="checklist[{{ $index }}]" value="1"
+                                                                {{ isset($record->checklist_items[$index]['value']) && $record->checklist_items[$index]['value'] == '1' ? 'checked' : '' }}
+                                                                {{ $isShowDetail ? 'disabled' : '' }}>
                                                         </div>
                                                     </td>
                                                     <td class="text-center">
                                                         <div class="form-check d-flex justify-content-center">
-                                                            <input class="form-check-input" type="radio" 
-                                                                name="checklist[{{ $index }}]" value="0"
-                                                                {{ $isShowDetail && isset($record->checklist_items[$index]) && $record->checklist_items[$index] == 0 ? 'checked' : '' }}
-                                                                {{ $isShowDetail ? 'disabled' : '' }} required>
+                                                            <input class="form-check-input" type="radio" name="checklist[{{ $index }}]" value="0"
+                                                                {{ isset($record->checklist_items[$index]['value']) && $record->checklist_items[$index]['value'] == '0' ? 'checked' : '' }}
+                                                                {{ $isShowDetail ? 'disabled' : '' }}>
                                                         </div>
                                                     </td>
                                                     <td>
-                                                        <input type="text" class="form-control" 
-                                                            name="notes[{{ $index }}]"
-                                                            value="{{ $isShowDetail && isset($record->checklist_items[$index]['notes']) ? $record->checklist_items[$index]['notes'] : '' }}"
-                                                            {{ $isShowDetail ? 'disabled' : '' }}>
+                                                        <input type="text" class="form-control" name="notes[{{ $index }}]" 
+                                                            value="{{ isset($record->checklist_items[$index]['notes']) ? $record->checklist_items[$index]['notes'] : '' }}"
+                                                            {{ $isShowDetail ? 'readonly' : '' }}>
                                                     </td>
                                                 </tr>
                                             @endif
@@ -215,14 +180,28 @@
                                 </div>
                             </div>
 
-                            @if(!$isShowDetail)
-                            <div class="row mt-4">
+                            <!-- Submit/Back Buttons -->
+                            <div class="row">
                                 <div class="col-12 text-end">
-                                    <button type="button" class="btn btn-secondary" onclick="window.history.back()">Kembali</button>
-                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                    @if($isShowDetail)
+                                        <a href="{{ route('she.coal.dashboard') }}" class="btn btn-secondary">Back</a>
+                                        <a href="{{ route('she.coal.export', ['id' => $record->id]) }}" class="btn btn-primary">
+                                            <i class="fas fa-file-export"></i> Export
+                                        </a>
+                                    @else
+                                    <div class="row mt-4">
+                                        <div class="col-12 d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <a href="{{ route('she.coal.dashboard') }}" class="btn btn-secondary">Back</a>
+                                            </div>
+                                            <div>
+                                                <button type="submit" class="btn btn-primary">Submit</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @endif
                                 </div>
                             </div>
-                            @endif
                         </div>
                     </form>
                 </div>

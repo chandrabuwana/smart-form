@@ -102,7 +102,7 @@ class CoalGettingController extends Controller
 
                 if (!$record) {
                     Log::error('Coal Getting record not found for ID: ' . $request->id);
-                    return redirect()->route('she-coal-getting.dashboard')
+                    return redirect()->route('she.coal.dashboard')
                         ->with('error', 'Record not found');
                 }
 
@@ -121,18 +121,20 @@ class CoalGettingController extends Controller
 
                 return view('smartform::she/coal_getting/form', [
                     'isShowDetail' => true,
-                    'record' => $record
+                    'record' => $record,
+                    'checklistItems' => $this->getChecklistItems()
                 ]);
             }
 
+            // For new record
             return view('smartform::she/coal_getting/form', [
                 'isShowDetail' => false,
-                'record' => null
+                'record' => null,
+                'checklistItems' => $this->getChecklistItems()
             ]);
-
         } catch (\Exception $e) {
             Log::error('Error in AddForm: ' . $e->getMessage());
-            return redirect()->route('she-coal-getting.dashboard')
+            return redirect()->route('she.coal.dashboard')
                 ->with('error', 'Failed to load form: ' . $e->getMessage());
         }
     }
@@ -229,7 +231,7 @@ class CoalGettingController extends Controller
         }
     }
 
-    public function ExportPdf($id)
+    public function ExportForm($id)
     {
         try {
             $record = DB::table('she_coal_getting')->where('id', $id)->first();
@@ -241,10 +243,15 @@ class CoalGettingController extends Controller
             $record->checklist_items = json_decode($record->checklist_items, true);
 
             $pdf = PDF::loadView('smartform::she/coal_getting/export-pdf', [
-                'data' => $record
+                'record' => $record,
+                'checklistItems' => $this->getChecklistItems()
             ]);
 
-            return $pdf->stream('coal-getting-inspection-' . $record->doc_number . '.pdf');
+            // Set paper size and orientation
+            $pdf->setPaper('A4', 'portrait');
+
+            return $pdf->download('coal-getting-inspection-' . $record->doc_number . '.pdf');
+            // return $pdf->stream('coal-getting-inspection-' . $record->doc_number . '.pdf');
 
         } catch (\Exception $e) {
             Log::error('Error in ExportPdf: ' . $e->getMessage());
@@ -274,5 +281,36 @@ class CoalGettingController extends Controller
 
         // Format: CG/YYYY/MM/001
         return sprintf('%s-%s-%s-%03d', $prefix, $year, $month, $newSequence);
+    }
+
+    private function getChecklistItems()
+    {
+        return [
+            'Pengawas melakukan validasi P2H fleet coal getting',
+            'Operator sudah mendapatkan edukasi coal quality',
+            'Kebersihan Track shoe Excavator',
+            'Teeth Bucket dalam kondisi baik/normal',
+            'Tidak ada kebocoran oli/solar unit',
+            'Kebersihan bak unit hauler',
+            'Tidak ada potensi komponen unit hauler terlepas',
+            'Batubara ter expose',
+            'Cleaning batubara menggunakan cutting edge',
+            'Cleaning area offset roof dan floor min 1 meter',
+            'Batubara sudah di cleaning',
+            'Size batubara sesuai keinginan customer',
+            [
+                'title' => 'Kebersihan Front Loading',
+                'subitems' => [
+                    'a. tanah',
+                    'b. lumpur',
+                    'c. parting',
+                    'd. sampah'
+                ]
+            ],
+            'Drainase area loading point',
+            'Penanganan parting (penanganan batas dan pengerjaan pada siang hari)',
+            'penerangan pada malam hari',
+            'Pengukuran data roof dan floor'
+        ];
     }
 }
