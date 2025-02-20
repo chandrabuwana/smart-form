@@ -69,9 +69,9 @@
             </td>
             <td width="30%" style="padding: 0;">
                 <table style="margin: 0; border: none;">
-                    <tr><td style="border: none;">No.Dok : {{ $data->doc_number }}</td></tr>
+                    <tr><td style="border: none;">No.Dok : BSS-FRM-SHE-034</td></tr>
                     <tr><td style="border: none;">Revisi : 00</td></tr>
-                    <tr><td style="border: none;">Tanggal : {{ date('d F Y', strtotime(str_replace(':AM', ' AM', str_replace(':PM', ' PM', $data->inspection_date)))) }}</td></tr>
+                    <tr><td style="border: none;">Tanggal : 23 November 2021</td></tr>
                     <tr><td style="border: none;">Halaman : 1 dari 1</td></tr>
                 </table>
             </td>
