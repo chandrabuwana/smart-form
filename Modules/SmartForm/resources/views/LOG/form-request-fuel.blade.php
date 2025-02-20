@@ -131,7 +131,7 @@
                                     </tr>
                                     <tr>
                                         <td>No Lambung</td>
-                                        <td><input type="number" onkeypress="return event.charCode >= 48" min="1" class="input-text w-full" id="i_no_lambung" name="i_no_lambung"></td>
+                                        <td><input type="text" class="input-text w-full" id="i_no_lambung" name="i_no_lambung"></td>
                                     </tr>
                                     <tr>
                                         <td>Jenis Kendaraan</td>
