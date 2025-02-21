@@ -127,6 +127,16 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/get-form-detail', [AssetRequestController::class, 'FormDetailByNoDoc'])->name("bss-form.sm.form-detail-by-no-doc");
             Route::get('/asset-request-download/{fileName}', [AssetRequestController::class, 'download'])->name("bss-form.sm.asset-request-download");
             Route::post('/validasi-asset-request', [AssetRequestController::class, 'ValidasiRequest'])->name("bss-form.sm.validasi-asset-request");
+
+            // REGISTRASI SUPPLIER
+            Route::get('/registrasi-supplier', [RegistrasiSupplierController::class, 'RegisSupplierDashboard'])->name("bss-form.sm.registrasi-supplier");
+            Route::get('/list-supplier', [RegistrasiSupplierController::class, 'GetListRegistrasiSupplier'])->name("bss-form.sm.list-supplier");
+            Route::get('/form-registrasi-supplier', [RegistrasiSupplierController::class, 'FormRegistrasiSupplier'])->name('bss-form.sm.form-registrasi-supplier');
+            Route::post('/create-registrasi-supplier', [RegistrasiSupplierController::class, 'CreateRegisSupplier'])->name('bss-form.sm.create-registrasi-supplier');
+            Route::get('/edit-registrasi-supplier/{id}', [RegistrasiSupplierController::class, 'editRegisSupplier'])->name('bss-form.sm.edit-registrasi-supplier');
+            Route::post('/update-fuel/{id}', [RegistrasiSupplierController::class, 'updateReqFuel'])->name('bss-form.log.update-req-fuel');
+            Route::get('/delete-fuel/{id}', [RegistrasiSupplierController::class, 'DeleteReqFuel'])->name('bss-form.log.delete-fuel');
+            Route::get('/pdf-fuel/{id}', [RegistrasiSupplierController::class, 'PdfReqFuel'])->name('bss-form.log.pdf-fuel');
         });
 
         Route::prefix('induksi-karyawan')->group(function () {
