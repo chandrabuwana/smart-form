@@ -125,7 +125,10 @@ class DashboardSKLController extends Controller
     {
         $NoForm = $request->query('NoForm');
 
-        $formMasterData = DB::table(self::T_FORM_MST)->where('NoForm', $NoForm)->first();
+        $formMasterData = DB::table(self::T_FORM_MST)->select(self::T_FORM_MST . '.*', self::T_DEPARTEMENT . '.Nama AS NamaDP')
+            ->join(self::T_DEPARTEMENT, self::T_DEPARTEMENT . '.KodeDP', '=', self::T_FORM_MST . '.KodeDepartement')
+            ->where('NoForm', $NoForm)->first();
+
         if(!$formMasterData) abort(404);
 
         $formMasterData->karyawans = DB::table(self::T_FORM_KARYAWAN)
