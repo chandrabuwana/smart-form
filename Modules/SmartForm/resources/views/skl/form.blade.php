@@ -701,6 +701,14 @@
                 fetchOptionApprover();
             });
 
+            $('#btnSubmitForm').click( function(e) {
+                Swal.fire({
+                    title: 'Loading...',
+                    allowOutsideClick: false,
+                    didOpen: () => Swal.showLoading()
+                });
+            });
+
             $('#baPekerjaan').change( function() {
                 const checked = $('#baPekerjaan:checked').length > 0;
                 if(checked) {
