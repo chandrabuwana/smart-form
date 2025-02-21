@@ -108,20 +108,20 @@ table.atas td {
          </tr>
          <tr>
             <td>No. Dok</td>
-            <td colspan="2">: {{ $data['no_dok'] }}</td>
+            <td colspan="2"> BSS-FRM-LOG-034</td>
          </tr>
          <tr>
-            <td>Site</td>
-            <td colspan="2">: {{ $data['jobsite'] }}</td>
+            <td>Revisi</td>
+            <td colspan="2"> 1</td>
          </tr>
          <tr>
             <td>Tanggal</td>
-            <td colspan="2">: {{ $data['tanggal'] }}</td>
+            <td colspan="2"> 7 Agustus 2024</td>
          </tr>
          <tr>
             <td style="text-align: center"> FROM PENGELUARAN OIL, GREASE & COOLANT</td>
             <td>Halaman</td>
-            <td colspan="2">: 1 dari 1</td>
+            <td colspan="2"> 1 dari 1</td>
          </tr>
     </table>
 

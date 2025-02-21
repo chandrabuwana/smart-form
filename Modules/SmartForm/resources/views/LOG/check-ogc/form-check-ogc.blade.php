@@ -18,7 +18,7 @@
             <div class="card my-4">
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                     <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                        <h6 class="text-white text-capitalize ps-3">FORM BSS-FRM-LOG-037 PEMAKAIAN SOLAR (LOG SHEET)</h6>
+                        <h6 class="text-white text-capitalize ps-3">FORM BSS-FRM-LOG-031 CHECKLIST OGC COMPLIANCE</h6>
                     </div>
                 </div>
                 <div class="card-body my-1">
@@ -37,6 +37,12 @@
                                             <td>:</td>
                                             <td id="tglDoc"></td>
                                         </tr>
+                                        
+                                    </table>
+                                </div>
+                                
+                                <div class="card col-md-6">
+                                    <table class="w-full">
                                         <tr>
                                             <td>Pilih Foreman/Spv</td>
                                             <td>:</td>
@@ -49,138 +55,204 @@
                                         </tr>
                                     </table>
                                 </div>
-                                
-                                <div class="card col-md-6">
-                                    <table class="w-full">
-                                        <tr>
-                                            <td>No. Fuel Station / Fuel Truck</td>
-                                            <td>:</td>
-                                            <td>
-                                                <input type="text" class="form-control" id="iFuel" name="iFuel" placeholder="Input no fuel station">
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Shift</td>
-                                            <td>:</td>
-                                            <td>
-                                                <select class="form-select form-select-sm input-text" aria-label="Default select example" id="iShift" name="iShift">
-                                                    <option value="" selected>-- Pilih Shift --</option>    
-                                                    <option value="I">I</option>
-                                                    <option value="II">II</option>
-                                                    <option value="III">III</option>
-                                                </select> 
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Job Site</td>
-                                            <td>:</td>
-                                            <td>
-                                                <select class="form-select form-select-sm input-text" id="iJobSite" name="iJobSite">
-                                                    <option selected value="">-- Pilih Job Site --</option>
-                                                    <option value="AGM">AGM</option>
-                                                    <option value="MBL">MBL</option>
-                                                    <option value="MME">MME</option>
-                                                    <option value="MAS">MAS</option>
-                                                    <option value="PMSS">PMSS</option>
-                                                    <option value="TAJ">TAJ</option>
-                                                    <option value="BSSR">BSSR</option>
-                                                    <option value="TDM">TDM</option>
-                                                    <option value="MSJ">MSJ</option>
-                                                </select>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                    
-                                </div>
                         </div>
 
-                        <div class="my-3">
-                            <div class="mb-1">
-                                <label class="form-label">ITEM</label>
-                                <div class="row mb-2">
-                                    <div class="col-md-4 col-lg-2">
-                                        <div class="input-group input-group-static mb-4">
-                                            <label for="iKodeUnit">Kode Unit</label>
-                                            <input type="text" class="form-control" id="iKodeUnit" name="iKodeUnit">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 col-lg-2">
-                                        <label for="iJam">Jam</label>
-                                        <input type="time" class="form-control" id="iJam" name="iJam">
-                                    </div>
-                                    <div class="col-md-4 col-lg-2">
-                                        <div class="input-group input-group-static mb-4">
-                                            <label for="iAwal">Awal</label>
-                                            <input type="number" onkeypress="return event.charCode >= 48" min="1" class="form-control" id="iAwal" name="iAwal">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 col-lg-2">
-                                        <div class="input-group input-group-static mb-4">
-                                            <label for="iAkhir">Akhir</label>
-                                            <input type="number" onkeypress="return event.charCode >= 48" min="1" class="form-control" id="iAkhir" name="iAkhir">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 col-lg-2">
-                                        <div class="input-group input-group-static mb-4">
-                                            <label for="iTotalLiter">Total Liter</label>
-                                            <input type="number" onkeypress="return event.charCode >= 48" min="1" class="form-control" id="iTotalLiter" name="iTotalLiter">
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="col-md-4 col-lg-2">
-                                        <div class="input-group input-group-static mb-4">
-                                            <label for="iNamaOperator">Nama Operator</label>
-                                            <input type="text" class="form-control" id="iNamaOperator" name="iNamaOperator">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 col-lg-2">
-                                        <div class="input-group input-group-static mb-4">
-                                            <label for="iKm">KM</label>
-                                            <input type="number" onkeypress="return event.charCode >= 48" min="1" class="form-control" id="iKm" name="iKm">
-                                        </div>
-                                    </div>                                    
-                                    <div class="col-md-4 col-lg-2">
-                                        <div class="input-group input-group-static mb-4">
-                                            <label for="iHm">HM</label>
-                                            <input type="number" onkeypress="return event.charCode >= 48" min="1" class="form-control" id="iHm" name="iHm">
-                                        </div>
-                                    </div>                                    
-                                    <div class="col-md-4 col-lg-2">
-                                        <div class="input-group input-group-static mb-4">
-                                            <label for="iKet">Keterangan</label>
-                                            <input type="text" class="form-control" id="iKet" name="iKet">
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="col-md-4 col-lg-2">
-                                        <div class="input-group input-group-static mb-4">
-                                            <button id="btn-add-item" class="btn btn-primary">Tambah</button>                                            
-                                        </div>
-                                    </div>
+                        {{-- CHECK LIST OGC QUESTION --}}
+                        {{-- W1 --}}
+                        <div class="card border mt-5">
+                            <a href="#" class="card-header p-0 position-relative mt-n4 mx-3 z-index-2"
+                                data-bs-toggle="collapse" data-bs-target="#collapse-w1" aria-expanded="true" aria-controls="collapse-w1">
+                                <div class="bg-gradient-warning shadow-warning border-radius-lg py-3 d-flex justify-content-between align-items-center px-3">
+                                    <h6 class="text-white text-capitalize mb-0">WEEK 1</h6>
+                                    <i class="fa fa-circle-arrow-up text-white fa-lg"></i>
                                 </div>
-
+                            </a>
+                            <div class="card-body collapse pb-1" id="collapse-w1">
+                                <div class="table-responsive">
+                                    <table data-toggle="table">
+                                        <tr>
+                                            <th colspan="3">LUBE STATION</th>
+                                        </tr>
+                                        <tr>
+                                            <td>1</td>
+                                            <td><input class="form-check-input" type="checkbox" value="1" id="cTabung2"></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>2</td>
+                                            <td>j</td>
+                                            <td>Apakah Flow Meter tersedia dan sudah dilakukan kalibrasi rutin sesuai jadwal periodik?</td>
+                                        </tr>
+                                        <tr>
+                                            <td>3</td>
+                                            <td>j</td>
+                                            <td>Apakah asesoris perlengkapan K3LH sudah terpenuhi semua seperti apar 15 kg, hiydrant,
+                                                safety cone, kotak P3K, spill kit, kabel grounding dan eye Wash?</td>
+                                        </tr>
+                                        <tr>
+                                            <td>4</td>
+                                            <td>j</td>
+                                            <td>Apakah assesoris perlengkapan penerimaan Lube seperti Gelas ukur, hose Lube in, tabel tera
+                                                tangki, Stik Sonding dan area pembongkaran sudah tersedia?</td>
+                                        </tr>
+                                        <tr>
+                                            <td>5</td>
+                                            <td>j</td>
+                                            <td>Apakah tersedia kelengkapan media informasi seperti alat komunikasi (Radio), rambu larangan
+                                                merokok, Papan Informasi dan Dokumen SOP?td>
+                                        </tr>
+                                        <tr>
+                                            <td>6</td>
+                                            <td>j</td>
+                                            <td>Apakah sudah tersedia Instalasi Lube filtration ?</td>
+                                        </tr>
+                                        <tr>
+                                            <td>7</td>
+                                            <td>j</td>
+                                            <td>Apakah Area Bandwall Maintank dalam kondisi layak pakai dan memenuhi standart ?</td>
+                                        </tr>
+                                        <tr>
+                                            <td>8</td>
+                                            <td>j</td>
+                                            <td>Apakah tersedia komputer sebagai alat pendataan transaksi penerimaan maupun pemakaian
+                                                Lube?</td>
+                                        </tr>
+                                        <tr>
+                                            <td>9</td>
+                                            <td>j</td>
+                                            <td>Apakah tersedia kelengkapan keamanan terhadap tindakan pencurian seperti Cctv dan pagar
+                                                pembatas maintank diarea Lube station ?</td>
+                                        </tr>
+                                        <tr>
+                                            <td>10</td>
+                                            <td>j</td>
+                                            <td>Apakah Instalasi pipa dan maintank Lube station dalam kondisi baik tidak ada retakan atau
+                                                berkarat ?</td>
+                                        </tr>
+                                        <tr>
+                                            <td>11</td>
+                                            <td>j</td>
+                                            <td>Apakah tersedia lembar log sheet sebagai pencatatan ketika proses penerimaan, pemakaian
+                                                dan transfer Lube ?</td>
+                                        </tr>
+                                        <tr>
+                                            <th colspan="3">LUBE TRUCK</th>
+                                        </tr>
+                                        <tr>
+                                            <td>12</td>
+                                            <td>j</td>
+                                            <td>???</td>
+                                        </tr>
+                                        <tr>
+                                            <td>13</td>
+                                            <td>j</td>
+                                            <td>???</td>
+                                        </tr>
+                                        <tr>
+                                            <td>14</td>
+                                            <td>j</td>
+                                            <td>???</td>
+                                        </tr>
+                                        <tr>
+                                            <td>15</td>
+                                            <td>j</td>
+                                            <td>???</td>
+                                        </tr>
+                                        <tr>
+                                            <td>16</td>
+                                            <td>j</td>
+                                            <td>???</td>
+                                        </tr>
+                                        <tr>
+                                            <td>17</td>
+                                            <td>j</td>
+                                            <td>???</td>
+                                        </tr>
+                                        <tr>
+                                            <td>18</td>
+                                            <td>j</td>
+                                            <td>???</td>
+                                        </tr>
+                                        <tr>
+                                            <td>19</td>
+                                            <td>j</td>
+                                            <td>???</td>
+                                        </tr>
+                                        <tr>
+                                            <td>20</td>
+                                            <td>j</td>
+                                            <td>???</td>
+                                        </tr>
+                                    </table>
+                                
+                                </div>
                             </div>
                         </div>
 
-                        <div class="table-responsive">
-                            <table id="item-pemakaian" class="display" data-toggle="table">
-                                <thead>
-                                    <tr>
-                                        <th data-formatter="indexFormatter" data-field="no">No</th>
-                                        <th data-field="kodeUnit">Kode Unit</th>
-                                        <th data-field="jam">Jam</th>
-                                        <th data-field="awal">Awal</th>
-                                        <th data-field="akhir">Akhir</th>
-                                        <th data-field="totalLiter">Total (Liter)</th>
-                                        <th data-field="namaOperator">Nama Operator</th>
-                                        <th data-field="km">KM</th>
-                                        <th data-field="hm">HM</th>
-                                        <th data-field="ket">KET</th>
-                                        <th data-formatter="actionFormatter">Actions</th>
-                                    </tr>
-                                </thead>
-                            </table>
+                        <div class="card border mt-5">
+                            <a href="#" class="card-header p-0 position-relative mt-n4 mx-3 z-index-2"
+                                data-bs-toggle="collapse" data-bs-target="#collapse-w2" aria-expanded="true" aria-controls="collapse-w2">
+                                <div class="bg-gradient-warning shadow-warning border-radius-lg py-3 d-flex justify-content-between align-items-center px-3">
+                                    <h6 class="text-white text-capitalize mb-0">WEEK 2</h6>
+                                    <i class="fa fa-circle-arrow-up text-white fa-lg"></i>
+                                </div>
+                            </a>
+                            <div class="card-body collapse pb-1" id="collapse-w2">
+                                <div class="table-responsive">
+                                    
+                                
+                                </div>
+                            </div>
+                        </div>                        
+                        
+                        <div class="card border mt-5">
+                            <a href="#" class="card-header p-0 position-relative mt-n4 mx-3 z-index-2"
+                                data-bs-toggle="collapse" data-bs-target="#collapse-w3" aria-expanded="true" aria-controls="collapse-w3">
+                                <div class="bg-gradient-warning shadow-warning border-radius-lg py-3 d-flex justify-content-between align-items-center px-3">
+                                    <h6 class="text-white text-capitalize mb-0">WEEK 3</h6>
+                                    <i class="fa fa-circle-arrow-up text-white fa-lg"></i>
+                                </div>
+                            </a>
+                            <div class="card-body collapse pb-1" id="collapse-w3">
+                                <div class="table-responsive">
+                                    
+                                
+                                </div>
+                            </div>
+                        </div>   
+                        
+                        <div class="card border mt-5">
+                            <a href="#" class="card-header p-0 position-relative mt-n4 mx-3 z-index-2"
+                                data-bs-toggle="collapse" data-bs-target="#collapse-w4" aria-expanded="true" aria-controls="collapse-w4">
+                                <div class="bg-gradient-warning shadow-warning border-radius-lg py-3 d-flex justify-content-between align-items-center px-3">
+                                    <h6 class="text-white text-capitalize mb-0">WEEK 4</h6>
+                                    <i class="fa fa-circle-arrow-up text-white fa-lg"></i>
+                                </div>
+                            </a>
+                            <div class="card-body collapse pb-1" id="collapse-w4">
+                                <div class="table-responsive">
+                                    
+                                
+                                </div>
+                            </div>
                         </div>
+
+                        <div class="card border mt-5">
+                            <a href="#" class="card-header p-0 position-relative mt-n4 mx-3 z-index-2"
+                                data-bs-toggle="collapse" data-bs-target="#collapse-w5" aria-expanded="true" aria-controls="collapse-w5">
+                                <div class="bg-gradient-warning shadow-warning border-radius-lg py-3 d-flex justify-content-between align-items-center px-3">
+                                    <h6 class="text-white text-capitalize mb-0">WEEK 5</h6>
+                                    <i class="fa fa-circle-arrow-up text-white fa-lg"></i>
+                                </div>
+                            </a>
+                            <div class="card-body collapse pb-1" id="collapse-w5">
+                                <div class="table-responsive">
+                                    
+                                
+                                </div>
+                            </div>
+                        </div>
+
                     </form>
 
                     <div class="card-footer">
@@ -261,7 +333,7 @@
         }
 
         function generateNoDoc() {
-            return "_/BSS-FRM-LOG-037/" + months_romawi[tglNow.getMonth()] + "/" + tglNow.getFullYear();
+            return "_/BSS-FRM-LOG-031/" + months_romawi[tglNow.getMonth()] + "/" + tglNow.getFullYear();
         }
 
         function validateInput() {

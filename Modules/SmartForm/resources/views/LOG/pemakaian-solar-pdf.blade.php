@@ -112,15 +112,15 @@ table.atas td {
          </tr>
          <tr>
             <td style="font-size: 0.8rem;">No. Dok</td>
-            <td style="font-size: 0.8rem;" colspan="2">: {{ $data['no_dok'] }}</td>
+            <td style="font-size: 0.8rem;" colspan="2">: BSS-FRM-LOG-037</td>
          </tr>
          <tr>
-            <td style="font-size: 0.8rem;">Job Site</td>
-            <td style="font-size: 0.8rem;" colspan="2">: {{ $data['jobsite'] }}</td>
+            <td style="font-size: 0.8rem;">Revisi</td>
+            <td style="font-size: 0.8rem;" colspan="2">: 02</td>
          </tr>
          <tr>
             <td style="font-size: 0.8rem;">Tanggal</td>
-            <td style="font-size: 0.8rem;" colspan="2">: {{ $data['tanggal'] }}</td>
+            <td style="font-size: 0.8rem;" colspan="2">: 16 September 2024</td>
          </tr>
          <tr>
             <td style="text-align: center"> LAPORAN HARIAN PEMAKAIAN SOLAR (LOG SHEET)</td>
