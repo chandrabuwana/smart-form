@@ -113,20 +113,23 @@ table.atas td {
          </tr>
          <tr>
             <td>No. Dok</td>
-            <td colspan="2">: {{ $data['no_dok'] }}</td>
+            <td colspan="2">: BSS-FRM-LOG-002</td>
          </tr>
          <tr>
             <td>Site</td>
-            <td colspan="2">: {{ $data['site'] }}</td>
+            <td colspan="2">: </td>
+            <!-- <td colspan="2">: {{ $data['site'] }}</td> -->
          </tr>
          <tr>
             <td>Tanggal</td>
-            <td colspan="2">: {{ $data['dibuat_tgl'] }}</td>
+            <td colspan="2">: </td>
+            <!-- <td colspan="2">: {{ $data['dibuat_tgl'] }}</td> -->
          </tr>
          <tr>
             <td style="text-align: center"> FROM REQUEST CODE MATERIAL</td>
             <td>Halaman</td>
-            <td colspan="2">: 1 dari 1</td>
+            <td colspan="2">: </td>
+            <!-- <td colspan="2">: 1 dari 1</td> -->
          </tr>
     </table>
 
