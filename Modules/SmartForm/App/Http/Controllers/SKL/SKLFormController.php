@@ -129,7 +129,9 @@ class SKLFormController extends Controller
         $requestAll = $request->all();
         $NoForm = $this->_genNoForm($request);
 
+        DB::beginTransaction();
         try {
+
             DB::table(self::T_FORM_MST)->insert([
                 'NoForm' => $NoForm,
                 'NoDok' => $request->noDok,
