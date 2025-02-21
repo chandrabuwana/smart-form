@@ -106,50 +106,24 @@
                                     </div>
                                     <div class="col-md-4 col-lg-2">
                                         <label for="iJam">Jam</label>
-                                        <select class="form-select form-select-sm input-text" aria-label="Default select example" id="iJam" name="iJam">
-                                            <option value="" selected>-- Pilih Jam --</option> 
-                                            <option value="06:00-07:00">06:00-07:00</option>
-                                            <option value="18:00-19:00">18:00-19:00</option>
-                                            <option value="07:00-08:00">07:00-08:00</option>
-                                            <option value="19:00-20:00">19:00-20:00</option>
-                                            <option value="08:00-09:00">08:00-09:00</option>
-                                            <option value="20:00-21:00">20:00-21:00</option>
-                                            <option value="09:00-10:00">09:00-10:00</option>
-                                            <option value="21:00-22:00">21:00-22:00</option>
-                                            <option value="10:00-11:00">10:00-11:00</option>
-                                            <option value="22:00-23:00">22:00-23:00</option>
-                                            <option value="11:00-12:00">11:00-12:00</option>
-                                            <option value="23:00-24:00">23:00-24:00</option>
-                                            <option value="12:00-13:00">12:00-13:00</option>
-                                            <option value="24:00-01:00">24:00-01:00</option>
-                                            <option value="13:00-14:00">13:00-14:00</option>
-                                            <option value="01:00-02:00">01:00-02:00</option>
-                                            <option value="14:00-15:00">14:00-15:00</option>
-                                            <option value="02:00-03:00">02:00-03:00</option>
-                                            <option value="15:00-16:00">15:00-16:00</option>
-                                            <option value="03:00-04:00">03:00-04:00</option>
-                                            <option value="16:00-17:00">16:00-17:00</option>
-                                            <option value="04:00-05:00">04:00-05:00</option>
-                                            <option value="17:00-18:00">17:00-18:00</option>
-                                            <option value="05:00-06:00">05:00-06:00</option>
-                                        </select>
+                                        <input type="time" class="form-control" id="iJam" name="iJam">
                                     </div>
                                     <div class="col-md-4 col-lg-2">
                                         <div class="input-group input-group-static mb-4">
                                             <label for="iAwal">Awal</label>
-                                            <input type="text" class="form-control" id="iAwal" name="iAwal">
+                                            <input type="number" onkeypress="return event.charCode >= 48" min="1" class="form-control" id="iAwal" name="iAwal">
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-lg-2">
                                         <div class="input-group input-group-static mb-4">
                                             <label for="iAkhir">Akhir</label>
-                                            <input type="text" class="form-control" id="iAkhir" name="iAkhir">
+                                            <input type="number" onkeypress="return event.charCode >= 48" min="1" class="form-control" id="iAkhir" name="iAkhir">
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-lg-2">
                                         <div class="input-group input-group-static mb-4">
                                             <label for="iTotalLiter">Total Liter</label>
-                                            <input type="text" class="form-control" id="iTotalLiter" name="iTotalLiter">
+                                            <input type="number" onkeypress="return event.charCode >= 48" min="1" class="form-control" id="iTotalLiter" name="iTotalLiter">
                                         </div>
                                     </div>
                                     
@@ -162,13 +136,13 @@
                                     <div class="col-md-4 col-lg-2">
                                         <div class="input-group input-group-static mb-4">
                                             <label for="iKm">KM</label>
-                                            <input type="text" class="form-control" id="iKm" name="iKm">
+                                            <input type="number" onkeypress="return event.charCode >= 48" min="1" class="form-control" id="iKm" name="iKm">
                                         </div>
                                     </div>                                    
                                     <div class="col-md-4 col-lg-2">
                                         <div class="input-group input-group-static mb-4">
                                             <label for="iHm">HM</label>
-                                            <input type="text" class="form-control" id="iHm" name="iHm">
+                                            <input type="number" onkeypress="return event.charCode >= 48" min="1" class="form-control" id="iHm" name="iHm">
                                         </div>
                                     </div>                                    
                                     <div class="col-md-4 col-lg-2">
