@@ -317,7 +317,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
         Route::prefix('she-mess')->group(function () {
             Route::get('dashboard', [SheMessController::class, 'Dashboard'])->name('she.mess.dashboard');
             Route::get('form/export/{id}', [SheMessController::class, 'ExportForm'])->name('she.mess.export');
-            Route::get('form', [SheMessController::class, 'AddForm'])->name('she.mess.form');
+            Route::get('form/{id?}', [SheMessController::class, 'AddForm'])->name('she.mess.form');
             Route::post('store', [SheMessController::class, 'Store'])->name('she.mess.store');
             Route::put('form/{id}', [SheMessController::class, 'Update'])->name('she.mess.form.update');
         });

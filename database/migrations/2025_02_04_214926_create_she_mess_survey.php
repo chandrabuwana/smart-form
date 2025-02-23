@@ -21,6 +21,7 @@ return new class extends Migration
             $table->integer('inspector_count');
             $table->date('survey_date');
             $table->json('checklist_items');
+            $table->text('keterangan')->nullable();
             $table->text('risk_description')->nullable();
             $table->text('improvement_action')->nullable();
             $table->text('done_by')->nullable();

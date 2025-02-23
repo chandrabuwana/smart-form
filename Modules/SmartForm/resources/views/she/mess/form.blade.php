@@ -160,78 +160,90 @@ Tidak ada peraturan yg berlaku atau berdampak kelingkungan perusahaan
                         </table>
 
                         <!-- Checklist Table -->
-                        <table class="table table-bordered mb-4">
-                            <thead>
-                                <tr style="background-color: #3498db;">
-                                    <th colspan="6" class="text-center text-white" >CHECKLIST INSPEKSI MESS</th>
-                                </tr>
-                                <tr style="background-color: #f4f4f4;">
-                                    <th width="5%">No</th>
-                                    <th width="50%">HAL UNTUK DIPERIKSA</th>
-                                    <th colspan="2" class="text-center">Kondisi Actual</th>
-                                    <th width="15%">Tingkat Risiko</th>
-                                    <th width="20%">Keterangan</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @php
-                                    $checklistItems = [
-                                        'Bangunan, Atap, dinding, pintu, jendela, aman dan bersih.',
-                                        'Permukaan tempat jalan, lantai dalam kondis bersih dan didisinfeksi',
-                                        'Pencahayaan / Penerangan kamar / ruangan memadai',
-                                        'Ventilasi kamar, segala ruangan Memadai',
-                                        'Kebersihan dan housekeeping yang baik di dalam rumah dan sekitarnya',
-                                        'Tempat tidur dan kasur dalam kondisi bersih dan rapi',
-                                        'Kamar mandi dan toilet bersih dan berfungsi dengan baik',
-                                        'Tempat sampah tersedia dan dikelola dengan baik',
-                                        'Peralatan P3K tersedia dan lengkap',
-                                        'APAR tersedia dan dalam kondisi baik',
-                                        'Instalasi listrik aman dan rapi',
-                                        'Area dapur bersih dan tertata rapi',
-                                        'Peralatan dapur bersih dan tersimpan dengan baik',
-                                        'Area makan bersih dan nyaman',
-                                        'Sistem drainase berfungsi dengan baik'
-                                    ];
-                                @endphp
+                        <div class="table-responsive mb-4">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr style="background-color: #f4f4f4;">
+                                        <th width="5%" class="text-center align-middle">No</th>
+                                        <th width="40%" class="align-middle">Item Pemeriksaan</th>
+                                        <th width="20%" class="text-center align-middle">Kondisi Aktual</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php
+                                        $checklistItems = [
+                                            'Bangunan, Atap, dinding, pintu, jendela, aman dan bersih.',
+                                            'Permukaan tempat jalan, lantai dalam kondis bersih dan didisinfeksi',
+                                            'Pencahayaan / Penerangan kamar / ruangan memadai',
+                                            'Ventilasi kamar, segala ruangan Memadai',
+                                            'Kebersihan dan housekeeping yang baik di dalam rumah dan sekitarnya',
+                                            'Tempat tidur dan kasur dalam kondisi bersih dan rapi',
+                                            'Kamar mandi dan toilet bersih dan berfungsi dengan baik',
+                                            'Tempat sampah tersedia dan dikelola dengan baik',
+                                            'Peralatan P3K tersedia dan lengkap',
+                                            'APAR tersedia dan dalam kondisi baik',
+                                            'Instalasi listrik aman dan rapi',
+                                            'Area dapur bersih dan tertata rapi',
+                                            'Peralatan dapur bersih dan tersimpan dengan baik',
+                                            'Area makan bersih dan nyaman',
+                                            'Sistem drainase berfungsi dengan baik'
+                                        ];
+                                    @endphp
 
-                                @foreach($checklistItems as $index => $item)
-                                <tr class="checklist-row">
-                                    <td class="text-center" style="border: 1px solid #dee2e6;">{{ $index + 1 }}</td>
-                                    <td style="border: 1px solid #dee2e6;">{{ $item }}</td>
-                                    <td colspan="2" style="border: 1px solid #dee2e6;">
-                                        @php
-                                            $savedCondition = '';
-                                            $savedNotes = '';
-                                            if (isset($data->checklist_items) && is_array($data->checklist_items) && isset($data->checklist_items[$index])) {
-                                                $savedCondition = $data->checklist_items[$index]['condition'] ?? '';
-                                                $savedNotes = $data->checklist_items[$index]['notes'] ?? '';
-                                            }
-                                        @endphp
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="condition[{{ $index }}]" 
-                                                   value="OK" {{ $savedCondition === 'OK' ? 'checked' : '' }} 
-                                                   {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
-                                            <label class="form-check-label">Ya</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="condition[{{ $index }}]"
-                                                   value="NOT OK" {{ $savedCondition === 'NOT OK' ? 'checked' : '' }} 
-                                                   {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
-                                            <label class="form-check-label">Tidak</label>
-                                        </div>
-                                    </td>
-                                    <td style="border: 1px solid #dee2e6;">
-                                        
-                                    </td>
-                                    <td style="border: 1px solid #dee2e6;">
-                                        <input type="text" class="form-control" name="notes[{{ $index }}]" 
-                                               value="{{ $savedNotes }}"
-                                               {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                                    @foreach($checklistItems as $index => $item)
+                                    <tr>
+                                        <td class="text-center align-middle">{{ $index + 1 }}</td>
+                                        <td class="align-middle">{{ $item }}</td>
+                                        <td class="text-center align-middle">
+                                            <div class="d-flex justify-content-center gap-3">
+                                                @php
+                                                    $checklist_value = isset($data->checklist_items) && is_array($data->checklist_items) ? 
+                                                        ($data->checklist_items[$index] ?? '') : '';
+                                                @endphp
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio"
+                                                        name="checklist[{{ $index }}]" value="OK"
+                                                        required
+                                                        {{ $checklist_value === 'OK' ? 'checked' : '' }}
+                                                        {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                                    <label class="form-check-label">OK</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio"
+                                                        name="checklist[{{ $index }}]" value="NOT OK"
+                                                        required
+                                                        {{ $checklist_value === 'NOT OK' ? 'checked' : '' }}
+                                                        {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                                    <label class="form-check-label">NOT OK</label>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Risk Level and Notes Section -->
+                        <div class="row mb-4">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label"><strong>Tingkat Risiko</strong></label>
+                                    <div class="p-3" style="background-color: #ffff00;">
+                                        <strong>Resiko Sedang</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label for="keterangan" class="form-label"><strong>Keterangan</strong></label>
+                                    <textarea class="form-control" id="keterangan" name="keterangan" rows="4"
+                                        {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}
+                                        placeholder="Harus dilakukan pengendalian tambahan untuk menurunkan tingkat resiko. Pengendalian tambahan harus diterapkan dalam periode waktu tertentu."
+                                        style="resize: none;">{{ isset($data->keterangan) ? $data->keterangan : '' }}</textarea>
+                                </div>
+                            </div>
+                        </div>
 
                         <!-- Rincian Bahaya -->
                         <table class="table table-bordered mb-4">
@@ -268,18 +280,22 @@ Tidak ada peraturan yg berlaku atau berdampak kelingkungan perusahaan
                             <tr>
                                 <td width="25%">Diinspeksi Oleh</td>
                                 <td width="25%">: <input type="text" class="form-control d-inline-block w-75" name="inspected_by[]" 
-                                                        value="{{ isset($data->inspected_by) ? $data->inspected_by : '' }}"
-                                                        {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}></td>
-                                <td width="25%">Tanda Tangan</td>
-                                <td width="25%">
+                                           value="{{ isset($data->inspected_by) ? $data->inspected_by : '' }}"
+                                           {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}></td>
+                                <td width="15%">Tanda Tangan</td>
+                                <td width="10%">
                                     <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="inspected_signature[]" value="1"
+                                               {{ isset($data->inspected_signature) && $data->inspected_signature ? 'checked' : '' }}
+                                               {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                        <label class="form-check-label">Signed</label>
                                     </div>
                                 </td>
-                                <td>Tanggal</td>
-                                <td>
-                                    <input type="date" class="form-control" name="acknowledgment_date"
-                                        value="{{ isset($data->inspection_date) ? $data->inspection_date : now()->format('Y-m-d') }}"
-                                        {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                <td width="10%">Tanggal</td>
+                                <td width="15%">
+                                    <input type="date" class="form-control" name="inspection_date"
+                                           value="{{ isset($data->inspection_date) ? $data->inspection_date : now()->format('Y-m-d') }}"
+                                           {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
                                 </td>
                             </tr>
                             <tr>
@@ -290,13 +306,17 @@ Tidak ada peraturan yg berlaku atau berdampak kelingkungan perusahaan
                                 <td>Tanda Tangan</td>
                                 <td>
                                     <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="inspected_signature[]" value="1"
+                                               {{ isset($data->inspected_signature2) && $data->inspected_signature2 ? 'checked' : '' }}
+                                               {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                        <label class="form-check-label">Signed</label>
                                     </div>
                                 </td>
                                 <td>Tanggal</td>
                                 <td>
-                                    <input type="date" class="form-control" name="acknowledgment_date"
-                                        value="{{ isset($data->inspection_date2) ? $data->inspection_date2 : '' }}"
-                                        {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                    <input type="date" class="form-control" name="inspection_date2"
+                                           value="{{ isset($data->inspection_date2) ? $data->inspection_date2 : now()->format('Y-m-d') }}"
+                                           {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
                                 </td>
                             </tr>
                             <tr>
@@ -307,24 +327,30 @@ Tidak ada peraturan yg berlaku atau berdampak kelingkungan perusahaan
                                 <td>Tanda Tangan</td>
                                 <td>
                                     <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="inspected_signature[]" value="1"
+                                               {{ isset($data->inspected_signature3) && $data->inspected_signature3 ? 'checked' : '' }}
+                                               {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                        <label class="form-check-label">Signed</label>
                                     </div>
                                 </td>
                                 <td>Tanggal</td>
                                 <td>
-                                    <input type="date" class="form-control" name="acknowledgment_date"
-                                        value="{{ isset($data->inspection_date3) ? $data->inspection_date3 : '' }}"
-                                        {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                    <input type="date" class="form-control" name="inspection_date3"
+                                           value="{{ isset($data->inspection_date3) ? $data->inspection_date3 : now()->format('Y-m-d') }}"
+                                           {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
                                 </td>
                             </tr>
                             <tr>
-                                <td>Mengetahui</td>
+                                <td>Disetujui Oleh</td>
                                 <td>: <input type="text" class="form-control d-inline-block w-75" name="acknowledged_by"
-                                           value="{{ isset($data->acknowledged_by) ? $data->acknowledged_by : '' }}" {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}></td>
+                                           value="{{ isset($data->acknowledged_by) ? $data->acknowledged_by : '' }}"
+                                           {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}></td>
                                 <td>Tanda Tangan</td>
                                 <td>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="acknowledged_signature"
-                                               {{ isset($data->acknowledged_signature) && $data->acknowledged_signature ? 'checked' : '' }} {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                        <input class="form-check-input" type="checkbox" name="acknowledged_signature" value="1"
+                                               {{ isset($data->acknowledged_signature) && $data->acknowledged_signature ? 'checked' : '' }}
+                                               {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
                                         <label class="form-check-label">Signed</label>
                                     </div>
                                 </td>
@@ -368,51 +394,136 @@ Tidak ada peraturan yg berlaku atau berdampak kelingkungan perusahaan
 
 @section('custom-css')
 <style>
-.table th, .table td {
-    padding: 8px;
-    vertical-align: middle;
-}
-.form-check-input {
-    margin-top: 0;
-}
-.table-bordered > :not(caption) > * > * {
-    border-width: 1px;
-}
+    .table th, .table td {
+        padding: 8px;
+        vertical-align: middle;
+    }
+    
+    .form-check-input {
+        margin-top: 0;
+    }
+    
+    .table-bordered > :not(caption) > * > * {
+        border-width: 1px;
+    }
+
+    .kondisi-actual-cell {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+        padding: 8px !important;
+    }
+
+    .form-check-inline {
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .form-check-label {
+        margin: 0;
+    }
 </style>
 @endsection
 
 @section('custom-js')
 <script>
-$(document).ready(function() {
-    // Form validation
-    $('#messForm').on('submit', function(e) {
-        e.preventDefault();
-        
-        // Basic validation
-        let isValid = true;
-        const requiredFields = $(this).find('[required]');
-        
-        requiredFields.each(function() {
-            if (!$(this).val()) {
-                isValid = false;
-                $(this).addClass('is-invalid');
-            } else {
-                $(this).removeClass('is-invalid');
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function(e) {
+            // Validate checklist items
+            const checklistItems = document.querySelectorAll('input[type="radio"][name^="checklist"]');
+            const checklistGroups = {};
+            
+            // Group radio buttons by their name
+            checklistItems.forEach(item => {
+                const name = item.getAttribute('name');
+                if (!checklistGroups[name]) {
+                    checklistGroups[name] = [];
+                }
+                checklistGroups[name].push(item);
+            });
+            
+            // Check if each group has a selected option
+            for (let name in checklistGroups) {
+                const isChecked = checklistGroups[name].some(radio => radio.checked);
+                if (!isChecked) {
+                    e.preventDefault();
+                    const itemNumber = Array.prototype.indexOf.call(checklistItems, checklistGroups[name][0]) + 1;
+                    alert(`Please select a condition for checklist item #${itemNumber}`);
+                    checklistGroups[name][0].focus();
+                    return false;
+                }
+            }
+
+            // Existing validation
+            const acknowledgedBy = document.querySelector('input[name="acknowledged_by"]');
+            const acknowledgmentDate = document.querySelector('input[name="acknowledgment_date"]');
+            const inspectedBy = document.querySelector('input[name="inspected_by[]"]');
+            const inspectionDate = document.querySelector('input[name="inspection_date"]');
+
+            if (!acknowledgedBy.value) {
+                e.preventDefault();
+                alert('Mengetahui field is required');
+                acknowledgedBy.focus();
+                return false;
+            }
+
+            if (!acknowledgmentDate.value) {
+                e.preventDefault();
+                alert('Acknowledgment date is required');
+                acknowledgmentDate.focus();
+                return false;
+            }
+
+            if (!inspectedBy.value) {
+                e.preventDefault();
+                alert('First inspector name is required');
+                inspectedBy.focus();
+                return false;
+            }
+
+            if (!inspectionDate.value) {
+                e.preventDefault();
+                alert('First inspection date is required');
+                inspectionDate.focus();
+                return false;
             }
         });
-
-        if (!isValid) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Validasi Error',
-                text: 'Mohon lengkapi semua field yang wajib diisi'
-            });
-            return;
-        }
-
-        // Submit form normally
-        this.submit();
     });
-});
+
+    $(document).ready(function() {
+        // Form validation
+        $('#messForm').on('submit', function(e) {
+            e.preventDefault();
+            
+            // Basic validation
+            let isValid = true;
+            const requiredFields = $(this).find('[required]');
+            
+            requiredFields.each(function() {
+                if (!$(this).val()) {
+                    isValid = false;
+                    $(this).addClass('is-invalid');
+                } else {
+                    $(this).removeClass('is-invalid');
+                }
+            });
+
+            if (!isValid) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validasi Error',
+                    text: 'Mohon lengkapi semua field yang wajib diisi'
+                });
+                return;
+            }
+
+            // Submit form normally
+            this.submit();
+        });
+    });
 </script>
 @endsection
