@@ -16,6 +16,7 @@ use Modules\SmartForm\App\Http\Controllers\MasterData\MasterFormPICController;
 use Modules\SmartForm\App\Http\Controllers\PDF\HelperPdfMobilisasiFormController;
 use Modules\SmartForm\App\Http\Controllers\PLANT\PlantTransmissionController;
 use Modules\SmartForm\App\Http\Controllers\Production\ProductionTimeSheetDashboarController;
+use Modules\SmartForm\App\Http\Controllers\Production\AnakAsuhController;
 use Modules\SmartForm\App\Http\Controllers\SHE\DashboardSHEFRM19BController;
 use Modules\SmartForm\App\Http\Controllers\SHE\TransactionSHEFRM19BController;
 use Modules\SmartForm\App\Http\Controllers\SHE\EyewashController;
@@ -316,6 +317,14 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('form', [CoalGettingController::class, 'AddForm'])->name('she.coal.form');
             Route::post('store', [CoalGettingController::class, 'Store'])->name('she.coal.store');
             Route::put('form/{id}', [CoalGettingController::class, 'Update'])->name('she.coal.form.update');
+        });
+
+        Route::prefix('prod-anak-asuh')->group(function () {
+            Route::get('/dashboard', [AnakAsuhController::class, 'Dashboard'])->name('prod.anak-asuh.dashboard');
+            Route::get('/form/export/{id}', [AnakAsuhController::class, 'ExportForm'])->name('prod.anak-asuh.export');
+            Route::get('/form', [AnakAsuhController::class, 'AddForm'])->name('prod.anak-asuh.form');
+            Route::post('/store', [AnakAsuhController::class, 'Store'])->name('prod.anak-asuh.store');
+            Route::put('/form/{id}', [AnakAsuhController::class, 'Update'])->name('prod.anak-asuh.form.update');
         });
 
     });
