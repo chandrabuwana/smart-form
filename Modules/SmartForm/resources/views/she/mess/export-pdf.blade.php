@@ -155,14 +155,18 @@
     <!-- Checklist Table -->
     <table>
         <tr>
-            <td colspan="5" class="checklist-header">CHECKLIST INSPEKSI MESS</td>
+            <td colspan="4" class="checklist-header">CHECKLIST INSPEKSI MESS</td>
         </tr>
         <tr class="gray-bg">
             <td width="5%">No</td>
             <td width="45%">HAL UNTUK DIPERIKSA</td>
-            <td width="12%" class="text-center">Ya</td>
-            <td width="12%" class="text-center">Tidak</td>
-            <td width="26%">Keterangan</td>
+            <td colspan="2" width="20%" class="text-center">Kondisi Actual</td>
+        </tr>
+        <tr class="gray-bg">
+            <td></td>
+            <td></td>
+            <td width="10%" class="text-center">Ya</td>
+            <td width="10%" class="text-center">Tidak</td>
         </tr>
         @php
             $checklistItems = [
@@ -187,12 +191,43 @@
         <tr>
             <td class="text-center">{{ $index + 1 }}</td>
             <td>{{ $item }}</td>
-            <td class="text-center check">{!! isset($data->checklist_items[$index]['condition']) && $data->checklist_items[$index]['condition'] === 'OK' ? '✓' : '' !!}</td>
-            <td class="text-center check">{!! isset($data->checklist_items[$index]['condition']) && $data->checklist_items[$index]['condition'] === 'NOT OK' ? '✓' : '' !!}</td>
-            <td>{{ isset($data->checklist_items[$index]['notes']) ? $data->checklist_items[$index]['notes'] : '' }}</td>
+            <td class="text-center check">{!! isset($data->checklist_items[$index]) && $data->checklist_items[$index] === 'OK' ? '✓' : '' !!}</td>
+            <td class="text-center check">{!! isset($data->checklist_items[$index]) && $data->checklist_items[$index] === 'NOT OK' ? '✓' : '' !!}</td>
         </tr>
         @endforeach
+        <tr>
+            <td class="gray-bg">Keterangan</td>
+            <td colspan="3">{{ $data->keterangan ?? '-' }}</td>
+        </tr>
+        <tr>
+            <td class="gray-bg">Tingkat Resiko</td>
+            <td colspan="3" style="background-color: yellow;">Resiko Sedang</td>
+        </tr>
     </table>
+
+    <style>
+        .checklist-header {
+            background-color: #4472c4;
+            color: white;
+            text-align: center;
+            font-weight: bold;
+            padding: 5px;
+        }
+        .gray-bg {
+            background-color: #f0f0f0;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .check {
+            font-family: DejaVu Sans, sans-serif;
+        }
+        td {
+            padding: 5px;
+            border: 1px solid #000;
+            vertical-align: middle;
+        }
+    </style>
 
     <!-- Rincian Bahaya & Perbaikan -->
     <table>
@@ -202,45 +237,45 @@
             <td width="20%" class="gray-bg">Dilakukan Oleh</td>
         </tr>
         <tr>
-            <td>{{ $data->hazard_details ?? '-' }}</td>
-            <td>{{ $data->immediate_repair ?? '-' }}</td>
-            <td>{{ $data->repaired_by ?? '-' }}</td>
+            <td>{{ $data->risk_description ?? '-' }}</td>
+            <td>{{ $data->improvement_action ?? '-' }}</td>
+            <td>{{ $data->done_by ?? '-' }}</td>
         </tr>
     </table>
 
     <!-- Signatures -->
     <table class="signature-table">
         <tr>
-            <td style="padding: 10px; background-color: #f5f5f5;">Diinspeksi Oleh</td>
-            <td style="padding: 10px;">{{ $data->inspected_by ?? '-'}}</td>
-            <td style="padding: 10px; background-color: #f5f5f5;">Tanda Tangan</td>
-            <td style="padding: 10px;">{{ $data->inspected_signature ? 'Signed' : '-' }}</td>
-            <td style="padding: 10px; background-color: #f5f5f5;">Tanggal</td>
-            <td style="padding: 10px;">{{ $data->inspection_date ? date('d F Y', strtotime(str_replace(':AM', ' AM', str_replace(':PM', ' PM', $data->inspection_date)))) : '-' }}</td>
+            <td width="25%" style="padding: 10px; background-color: #f5f5f5;">Diinspeksi Oleh</td>
+            <td width="25%" style="padding: 10px;">{{ $data->inspected_by ?? '-' }}</td>
+            <td width="15%" style="padding: 10px; background-color: #f5f5f5;">Tanda Tangan</td>
+            <td width="10%" style="padding: 10px; text-align: center;">{!! $data->inspected_signature ? '✓' : '' !!}</td>
+            <td width="10%" style="padding: 10px; background-color: #f5f5f5;">Tanggal</td>
+            <td width="15%" style="padding: 10px;">{{ $data->inspection_date ? date('d/m/Y', strtotime($data->inspection_date)) : '-' }}</td>
         </tr>
         <tr>
             <td style="padding: 10px; background-color: #f5f5f5;">Diinspeksi Oleh</td>
-            <td style="padding: 10px;">{{ $data->inspected_by2 ?? '-'}}</td>
+            <td style="padding: 10px;">{{ $data->inspected_by2 ?? '-' }}</td>
             <td style="padding: 10px; background-color: #f5f5f5;">Tanda Tangan</td>
-            <td style="padding: 10px;">{{ $data->inspected_signature2 ? 'Signed' : '-' }}</td>
+            <td style="padding: 10px; text-align: center;">{!! $data->inspected_signature2 ? '✓' : '' !!}</td>
             <td style="padding: 10px; background-color: #f5f5f5;">Tanggal</td>
-            <td style="padding: 10px;">{{ $data->inspection_date2 ? date('d F Y', strtotime(str_replace(':AM', ' AM', str_replace(':PM', ' PM', $data->inspection_date2)))) : '-' }}</td>
+            <td style="padding: 10px;">{{ $data->inspection_date2 ? date('d/m/Y', strtotime($data->inspection_date2)) : '-' }}</td>
         </tr>
         <tr>
             <td style="padding: 10px; background-color: #f5f5f5;">Diinspeksi Oleh</td>
-            <td style="padding: 10px;">{{ $data->inspected_by3 ?? '-'}}</td>
+            <td style="padding: 10px;">{{ $data->inspected_by3 ?? '-' }}</td>
             <td style="padding: 10px; background-color: #f5f5f5;">Tanda Tangan</td>
-            <td style="padding: 10px;">{{ $data->inspected_signature3 ? 'Signed' : '-' }}</td>
+            <td style="padding: 10px; text-align: center;">{!! $data->inspected_signature3 ? '✓' : '' !!}</td>
             <td style="padding: 10px; background-color: #f5f5f5;">Tanggal</td>
-            <td style="padding: 10px;">{{ $data->inspection_date3 ? date('d F Y', strtotime(str_replace(':AM', ' AM', str_replace(':PM', ' PM', $data->inspection_date3)))) : '-' }}</td>
+            <td style="padding: 10px;">{{ $data->inspection_date3 ? date('d/m/Y', strtotime($data->inspection_date3)) : '-' }}</td>
         </tr>
         <tr>
-            <td style="padding: 10px; background-color: #f5f5f5;">Mengetahui</td>
-            <td style="padding: 10px;">{{ $data->acknowledged_by ?? '-'}}</td>
+            <td style="padding: 10px; background-color: #f5f5f5;">Disetujui Oleh</td>
+            <td style="padding: 10px;">{{ $data->acknowledged_by ?? '-' }}</td>
             <td style="padding: 10px; background-color: #f5f5f5;">Tanda Tangan</td>
-            <td style="padding: 10px;">{{ $data->acknowledged_signature ? 'Signed' : '-' }}</td>
+            <td style="padding: 10px; text-align: center;">{!! $data->acknowledged_signature ? '✓' : '' !!}</td>
             <td style="padding: 10px; background-color: #f5f5f5;">Tanggal</td>
-            <td style="padding: 10px;">{{ $data->acknowledgment_date ? date('d F Y', strtotime(str_replace(':AM', ' AM', str_replace(':PM', ' PM', $data->acknowledgment_date)))) : '-' }}</td>
+            <td style="padding: 10px;">{{ $data->acknowledgment_date ? date('d/m/Y', strtotime($data->acknowledgment_date)) : '-' }}</td>
         </tr>
     </table>
 </body>
