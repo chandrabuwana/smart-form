@@ -4,6 +4,8 @@ use App\Http\Controllers\absensi\CompareAbsensiController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Login\LoginKaryawanController;
 use App\Http\Controllers\REVA\produksi\RevaProduksiController;
+use Mpdf\Mpdf;
+use Smalot\PdfParser\Parser;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,4 +28,18 @@ Route::prefix('reva')->group( function(){
     Route::get('api/ob', [RevaProduksiController::class, 'getOB']);
     Route::get('api/const', [RevaProduksiController::class, 'getConstraint']);
     Route::get('api/event', [RevaProduksiController::class, 'getEvent']);
+});
+
+Route::get('/test-rann', function() {
+    $filePath = storage_path('app/LOGISTIK/SOP/BSS-SOP-LOG-001 PENGADAAN BARANG DAN JASA.pdf');
+
+    $mpdf = new Mpdf();
+    $pageCount = $mpdf->setSourceFile($filePath);
+    dd($pageCount);
+
+    // $parser = new Parser();
+    // $pdf = $parser->parseFile($filePath);
+    // $metadata = $pdf->getDetails();
+
+    dd($metadata);
 });
