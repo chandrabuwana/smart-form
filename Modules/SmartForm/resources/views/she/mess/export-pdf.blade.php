@@ -106,20 +106,20 @@
             <th width="35%" class="risk-table">KEMUNGKINAN AKIBAT</th>
             <th width="35%" class="risk-table">TINDAKAN PERBAIKAN</th>
         </tr>
-        <tr class="risk-critical">
-            <td>Risiko Kritikal</td>
-            <td class="text-center">75 - 125</td>
+        <tr>
+            <td class="risk-critical">Risiko Kritikal</td>
+            <td class="text-center" style="font-weight: bold;">75 - 125</td>
             <td class="small-text">
                 > Rp 100 Juta dan Sakit akut/ meninggal<br>
                 Tidak sesuai baku mutu/peraturan perundangan, penghentian permanen perusahaan atau berdampak ke masyarakat nasional
             </td>
             <td class="small-text">
-                TIDAK DAPAT DITERIMA (STOP). Pekerjaan tidak boleh dilakukan sampai tingkat risiko diturunkan. Jika tidak dapat diturunkan sekaligus dengan sumberdaya yang lebih terbatas, pekerjaan dihentikan dan tidak boleh dilakukan
+                <span class="risk-critical">TIDAK DAPAT DITERIMA (STOP).</span> Pekerjaan tidak boleh dilakukan sampai tingkat risiko diturunkan. Jika tidak dapat diturunkan sekaligus dengan sumberdaya yang lebih terbatas, pekerjaan dihentikan dan tidak boleh dilakukan
             </td>
         </tr>
-        <tr class="risk-high">
-            <td>Risiko Tinggi</td>
-            <td class="text-center">32 - 75</td>
+        <tr>
+            <td class="risk-high">Risiko Tinggi</td>
+            <td class="text-center" style="font-weight: bold;">32 - 75</td>
             <td class="small-text">
                 Rp 50 Juta – Rp 100 Juta dan Sakit dan rawat inap /kronis/PAK<br>
                 Tidak sesuai baku mutu/peraturan perundangan dan mendapatkan peringatan keras dari pemerintah, penghentian operasional perusahaan sementara atau berdampak ke masyarakat yg lebih luas
@@ -128,9 +128,9 @@
                 Pekerjaan dapat dilakukan. Tindakan pengendalian segera dilakukan untuk menurunkan tingkat resiko. Keterlibatan Pimpinan diperlukan untuk pengendalian resiko tersebut
             </td>
         </tr>
-        <tr class="risk-medium">
-            <td>Risiko Sedang</td>
-            <td class="text-center">18 - 32</td>
+        <tr>
+            <td class="risk-medium">Risiko Sedang</td>
+            <td class="text-center" style="font-weight: bold;">18 - 32</td>
             <td class="small-text">
                 Rp 10 Juta – Rp 50 Juta, Ada gangguan tidak dapat masuk kerja<br>
                 Sesuai dengan baku mutu/peraturan perundangan atau berdampak ke masyarakat di sekitar area perusahaan
@@ -139,9 +139,9 @@
                 Harus dilakukan pengendalian tambahan untuk menurunkan tingkat resiko. Pengendalian tambahan harus diterapkan dalam periode waktu tertentu
             </td>
         </tr>
-        <tr class="risk-low">
-            <td>Risiko Rendah</td>
-            <td class="text-center">2 - 18</td>
+        <tr>
+            <td class="risk-low">Risiko Rendah</td>
+            <td class="text-center" style="font-weight: bold;">2 - 18</td>
             <td class="small-text">
                 Ada Kerusakan dan Rp 0 - Rp 10 Juta<br>
                 Tidak ada peraturan yg berlaku atau berdampak kelingkungan perusahaan
@@ -155,19 +155,24 @@
     <!-- Checklist Table -->
     <table>
         <tr>
-            <td colspan="4" class="checklist-header">CHECKLIST INSPEKSI MESS</td>
+            <td colspan="6" class="checklist-header">CHECKLIST INSPEKSI MESS</td>
         </tr>
         <tr class="gray-bg">
             <td width="5%">No</td>
             <td width="45%">HAL UNTUK DIPERIKSA</td>
             <td colspan="2" width="20%" class="text-center">Kondisi Actual</td>
+            <td class="gray-bg">Tingkat Resiko</td>
+            <td class="gray-bg">Keterangan</td>
         </tr>
         <tr class="gray-bg">
             <td></td>
             <td></td>
             <td width="10%" class="text-center">Ya</td>
             <td width="10%" class="text-center">Tidak</td>
+            <td></td>
+            <td></td>
         </tr>
+        
         @php
             $checklistItems = [
                 'Bangunan, Atap, dinding, pintu, jendela, aman dan bersih.',
@@ -193,16 +198,12 @@
             <td>{{ $item }}</td>
             <td class="text-center check">{!! isset($data->checklist_items[$index]) && $data->checklist_items[$index] === 'OK' ? '✓' : '' !!}</td>
             <td class="text-center check">{!! isset($data->checklist_items[$index]) && $data->checklist_items[$index] === 'NOT OK' ? '✓' : '' !!}</td>
+            @if($index === 0)
+                <td rowspan="{{ count($checklistItems) }}" style="background-color: yellow;">Resiko Sedang</td>
+                <td rowspan="{{ count($checklistItems) }}" class="text-center">{{ $data->keterangan ?? '-' }}</td>
+            @endif
         </tr>
         @endforeach
-        <tr>
-            <td class="gray-bg">Keterangan</td>
-            <td colspan="3">{{ $data->keterangan ?? '-' }}</td>
-        </tr>
-        <tr>
-            <td class="gray-bg">Tingkat Resiko</td>
-            <td colspan="3" style="background-color: yellow;">Resiko Sedang</td>
-        </tr>
     </table>
 
     <style>
