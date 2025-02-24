@@ -78,13 +78,13 @@ class PPHDashboardController extends Controller
                 }
                 $zip->close();
 
-                $chunkPdfs = array_chunk($pdfFiles, 500);
+                $chunkPdfs = array_chunk($pdfFiles, 50);
                 foreach($chunkPdfs as $PdfFile) {
                     db::table(self::T_PPH_DETAIL_DOC)->
                         insert($PdfFile);
+                    DB::commit();
                 }
 
-                DB::commit();
                 return response()->json([
                     'message' => 'Done Induksi Tersimpan',
                     'code' => 200,
