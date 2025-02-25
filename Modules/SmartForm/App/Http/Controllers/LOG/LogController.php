@@ -573,12 +573,16 @@ class LogController extends Controller {
         $data_insert = [
             'dibuat_oleh' => $requested_by,
             'job_site' => $data['jobSite'],
-            'no_dok' => $data['noDoc'],
-            'tanggal' => $data['tglDoc'],
+            // 'no_dok' => $data['noDoc'],
+            'no_dok' => "BSS-FRM-LOG-037",
+            'revisi' => "02",
+            'tanggal' => "16 September 2024",
+            'halaman' => "1 dari 1",
             'no_fuel_station' => $data['fuel'],
+            'shift' => $data['shift'],
             'diketahui_oleh' => $data['foreman']
         ];
-        $spliited_no_doc = explode("/", $data_insert['no_dok']);
+        // $spliited_no_doc = explode("/", $data_insert['no_dok']);
         $data_item = json_decode($data['item']);
         
         try {
@@ -601,11 +605,11 @@ class LogController extends Controller {
             }
 
             $spliited_no_doc[0] = $id;
-            $updated_no_doc = implode("/", $spliited_no_doc);
+            // $updated_no_doc = implode("/", $spliited_no_doc);
 
-            $affected = DB::table($TABLE_MASTER)
-              ->where('id', $id)
-              ->update(['no_dok' => $updated_no_doc]);
+            // $affected = DB::table($TABLE_MASTER)
+            //   ->where('id', $id)
+            //   ->update(['no_dok' => $updated_no_doc]);
 
             Db::commit();
 
@@ -613,7 +617,7 @@ class LogController extends Controller {
             $response['message'] = "Ok";
             $response['isSuccess'] = true;
             $response['data'] = array(
-                'no_doc' => $updated_no_doc
+                // 'no_doc' => $updated_no_doc
             );
         } catch (Exception $ex) {
             //throw $th;
@@ -636,7 +640,7 @@ class LogController extends Controller {
         );
         try {
             $data = DB::table($TABLE_MASTER)
-                    ->select('id', 'no_dok','revisi','tanggal','job_site as jobsite','no_fuel_station as noFuel','shift','dibuat_oleh as dibuat','diketahui_oleh as mengetahui','disetujui_oleh as approval')
+                    ->select('id', 'no_dok','revisi as revisi','halaman','tanggal','job_site as jobsite','no_fuel_station as noFuel','shift','dibuat_oleh as dibuat','diketahui_oleh as mengetahui','disetujui_oleh as approval')
                     ->where('id', $id)
                     ->first();
                 
@@ -655,6 +659,8 @@ class LogController extends Controller {
             $data_master['no_dok'] = $data->no_dok;
             $data_master['jobsite'] = $data->jobsite;
             $data_master['tanggal'] = $data->tanggal;
+            $data_master['revisi'] = $data->revisi;
+            $data_master['halaman'] = $data->halaman;
             $data_master['dibuat'] = $data->dibuat;
             $data_master['noFuel'] = $data->noFuel;
             $data_master['shift'] = $data->shift;

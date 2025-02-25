@@ -112,20 +112,20 @@ table.atas td {
          </tr>
          <tr>
             <td style="font-size: 0.8rem;">No. Dok</td>
-            <td style="font-size: 0.8rem;" colspan="2">: BSS-FRM-LOG-037</td>
+            <td style="font-size: 0.8rem;" colspan="2">: {{ $data['no_dok'] }}</td>
          </tr>
          <tr>
             <td style="font-size: 0.8rem;">Revisi</td>
-            <td style="font-size: 0.8rem;" colspan="2">: 02</td>
+            <td style="font-size: 0.8rem;" colspan="2">: {{ $data['revisi'] }}</td>
          </tr>
          <tr>
             <td style="font-size: 0.8rem;">Tanggal</td>
-            <td style="font-size: 0.8rem;" colspan="2">: 16 September 2024</td>
+            <td style="font-size: 0.8rem;" colspan="2">: {{ $data['tanggal'] }}</td>
          </tr>
          <tr>
             <td style="text-align: center"> LAPORAN HARIAN PEMAKAIAN SOLAR (LOG SHEET)</td>
             <td style="font-size: 0.8rem;">Halaman</td>
-            <td style="font-size: 0.8rem;" colspan="2">: 1 dari 1</td>
+            <td style="font-size: 0.8rem;" colspan="2">: {{ $data['halaman'] }}</td>
          </tr>
     </table>
 

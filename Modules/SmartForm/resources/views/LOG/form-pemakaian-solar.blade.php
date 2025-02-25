@@ -28,9 +28,9 @@
                                 <div class="card col-md-6">
                                     <table class="w-full">
                                         <tr>
-                                            <td>No. Doc</td>
-                                            <td>:</td>
-                                            <td id="noDoc">No.Doc</td>
+                                            <!-- <td>No. Doc</td>
+                                            <td>:</td> -->
+                                            <td id="noDoc" hidden>No.Doc</td>
                                         </tr>
                                         <tr>
                                             <td>Date</td>
@@ -440,6 +440,7 @@
                         jobSite: iJobSite.val(),
                         tglDoc: formatTgl(),
                         foreman: iForeman.val(),
+                        shift: iShift.val(),
                         fuel: iFuel.val()
                     }
                     let formData = new FormData();
@@ -461,7 +462,7 @@
                         console.log(response.data)
                         Swal.fire({
                                 icon: 'success',
-                                title: 'Request sukses direkam dgn no dokumen:',
+                                title: 'Pemakaian Solar berhasil direkam',
                                 text: response.data.data.no_doc,
                             }).then((result) => {
                                 window.location.href = `/bss-form/log/pemakaian-solar`;
