@@ -135,9 +135,9 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/form-registrasi-supplier', [RegistrasiSupplierController::class, 'FormRegistrasiSupplier'])->name('bss-form.sm.form-registrasi-supplier');
             Route::post('/create-registrasi-supplier', [RegistrasiSupplierController::class, 'CreateRegisSupplier'])->name('bss-form.sm.create-registrasi-supplier');
             Route::get('/edit-registrasi-supplier/{id}', [RegistrasiSupplierController::class, 'editRegisSupplier'])->name('bss-form.sm.edit-registrasi-supplier');
-            Route::post('/update-fuel/{id}', [RegistrasiSupplierController::class, 'updateReqFuel'])->name('bss-form.log.update-req-fuel');
-            Route::get('/delete-fuel/{id}', [RegistrasiSupplierController::class, 'DeleteReqFuel'])->name('bss-form.log.delete-fuel');
-            Route::get('/pdf-fuel/{id}', [RegistrasiSupplierController::class, 'PdfReqFuel'])->name('bss-form.log.pdf-fuel');
+            Route::post('/update-fuel/{id}', [RegistrasiSupplierController::class, 'updateReqFuel'])->name('bss-form.sm.update-req-fuel');
+            Route::get('/delete-supplier/{id}', [RegistrasiSupplierController::class, 'DeleteSupplier'])->name('bss-form.sm.delete-supplier');
+            Route::get('/pdf-registrasi-supplier/{id}', [RegistrasiSupplierController::class, 'PdfRegSupplier'])->name('bss-form.sm.pdf-registrasi-supplier');
         });
 
         Route::prefix('induksi-karyawan')->group(function () {

@@ -101,10 +101,10 @@
             event.preventDefault();
         }
 
+        // <a class="btn btn-info btn-action btn-sm me-1" href="/bss-form/sm/edit-registrasi-supplier/${row.id}">Edit</a>
         function actionFormatter(value, row, index) {
             return `
-                <a class="btn btn-info btn-action btn-sm me-1" href="/bss-form/sm/edit-registrasi-supplier/${row.id}">Edit</a>
-                <a class="btn btn-danger btn-action btn-sm" onclick="return myFunction();" href="/bss-form/sm/delete-registrasi-supplier/${row.id}">Delete</a>
+                <a class="btn btn-danger btn-action btn-sm" onclick="return myFunction();" href="/bss-form/sm/delete-supplier/${row.id}">Delete</a>
                 <a class="btn btn-primary btn-action btn-sm" href="/bss-form/sm/pdf-registrasi-supplier/${row.id}">Pdf</a>
             `;
         }
