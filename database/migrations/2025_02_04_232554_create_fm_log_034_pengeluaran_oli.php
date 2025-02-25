@@ -15,12 +15,13 @@ return new class extends Migration
             $table->increments('id');
             $table->string('no_dok');
             $table->string('revisi');
-            $table->date('tanggal');
+            $table->string('tanggal');
+            $table->string('halaman');
             $table->string('job_site');
             $table->string('no_lube_station');
             $table->string('shift');
-            $table->string('dilaporkan_oleh');
-            $table->string('diketahui_oleh');
+            $table->string('dilaporkan_oleh')->nullable();
+            $table->string('diketahui_oleh')->nullable();
         });
     }
 

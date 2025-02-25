@@ -410,9 +410,14 @@ class LogController extends Controller {
         $data_insert = [
             'dilaporkan_oleh' => $requested_by,
             'job_site' => $data['jobSite'],
-            'no_dok' => $data['noDoc'],
-            'tanggal' => $data['tglDoc'],
+            // 'no_dok' => $data['noDoc'],
+            'no_dok' => "BSS-FRM-LOG-034",
+            'revisi' => "1",
+            // 'tanggal' => $data['tglDoc'],
+            'tanggal' => "7 Agustus 2024",
+            'halaman' => "1 dari 1",
             'no_lube_station' => $data['lube'],
+            'shift' => $data['shift'],
             'diketahui_oleh' => $data['foreman']
         ];
         $spliited_no_doc = explode("/", $data_insert['no_dok']);
