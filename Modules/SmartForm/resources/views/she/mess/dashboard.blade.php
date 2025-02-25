@@ -214,8 +214,8 @@
                                         <i class="fas fa-eye text-dark me-2"></i>View
                                     </a>
                                     @if($record->doc_number)
-                                    <a href="{{ route('she.mess.export', $record->id) }}" class="btn btn-link text-primary px-3 mb-0">
-                                        <i class="fas fa-download text-primary me-2"></i>Export
+                                    <a href="{{ route('she.mess.export', ['id' => $record->id]) }}" class="btn btn-link text-dark px-3 mb-0">
+                                        <i class="fas fa-download text-dark me-2"></i>Export
                                     </a>
                                     @endif
                                 </td>

@@ -38,9 +38,10 @@
                                     <div class="input-group input-group-static mb-3">
                                         <label>Site Name</label>
                                         <select class="form-control" id="site_name" name="site_name" required {{ $isShowDetail ? 'disabled' : '' }}>
-                                            <option value="">-- Pilih Site --</option>
-                                            @foreach(['agm', 'mbl', 'mme', 'mas', 'pmss', 'taj', 'bssr', 'tdm', 'msj'] as $site)
-                                                <option value="{{ $site }}" {{ $isShowDetail && strtolower($maintenanceRecord->site_name) == $site ? 'selected' : '' }}>
+                                            @foreach(['bss', 'agm', 'mbl', 'mme', 'mas', 'pmss', 'taj', 'bssr', 'tdm', 'msj'] as $site)
+                                                <option value="{{ strtoupper($site) }}" 
+                                                    {{ $isShowDetail && strtolower($maintenanceRecord->site_name) == strtolower($site) ? 'selected' : 
+                                                    (!$isShowDetail && isset($defaultValues['site_name']) && strtolower($defaultValues['site_name']) == strtolower($site) ? 'selected' : '') }}>
                                                     {{ strtoupper($site) }}
                                                 </option>
                                             @endforeach

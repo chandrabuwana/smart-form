@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('doc_number')->nullable();
             $table->string('revision')->nullable();
             $table->date('survey_date')->nullable();
+            $table->string('site_name');
             $table->integer('inspector_count');
             $table->date('inspection_date');
             $table->date('acknowledgment_date');

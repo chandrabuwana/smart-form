@@ -260,6 +260,7 @@ class NoiseController extends Controller
                 'doc_number' => $docNumber,
                 'revision' => '00',
                 'survey_date' => now()->format('Y-m-d'),
+                'site_name' => $request->site_name,
                 'inspector_count' => $request->inspector_count,
                 'inspection_date' => \Carbon\Carbon::parse($request->inspection_date)->format('Y-m-d'),
                 'acknowledgment_date' => \Carbon\Carbon::parse($request->acknowledgment_date)->format('Y-m-d'),

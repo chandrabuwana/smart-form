@@ -81,18 +81,35 @@ class SheMessController extends Controller
         }
     }
 
-    public function AddForm(Request $request)
+    public function AddForm(Request $request, $id = null)
     {
         try {
-            if ($request->has('id')) {
+            Log::info('AddForm method called with request:', $request->all());
+            Log::info('Route parameters:', $request->route()->parameters());
+            
+            if ($id) {
+                Log::info('ID from route parameter: ' . $id);
                 $record = DB::table('she_mess_survey')
-                    ->where('id', $request->id)
+                    ->where('id', $id)
                     ->first();
 
                 if (!$record) {
-                    Log::error('Record not found for ID: ' . $request->id);
+                    Log::error('Record not found for ID: ' . $id);
                     return redirect()->route('she.mess.dashboard')
                         ->with('error', 'Record not found');
+                }
+
+                // Parse checklist items - now stored as simple array
+                try {
+                    $record->checklist_items = json_decode($record->checklist_items, true);
+                    Log::info('Checklist items decoded:', ['id' => $id, 'items' => $record->checklist_items]);
+                    if (!is_array($record->checklist_items)) {
+                        Log::error('Invalid checklist items format: ' . $record->checklist_items);
+                        $record->checklist_items = [];
+                    }
+                } catch (\Exception $e) {
+                    Log::error('Error decoding checklist items: ' . $e->getMessage());
+                    $record->checklist_items = [];
                 }
 
                 // Format survey_date
@@ -163,18 +180,6 @@ class SheMessController extends Controller
                     $record->acknowledgment_date = now()->format('Y-m-d');
                 }
 
-                // Parse checklist items
-                try {
-                    $record->checklist_items = json_decode($record->checklist_items, true);
-                    if (!is_array($record->checklist_items)) {
-                        Log::error('Invalid checklist items format: ' . $record->checklist_items);
-                        $record->checklist_items = [];
-                    }
-                } catch (\Exception $e) {
-                    Log::error('Error decoding checklist items: ' . $e->getMessage());
-                    $record->checklist_items = [];
-                }
-
                 return view('smartform::she.mess.form', [
                     'data' => $record,
                     'isShowDetail' => true
@@ -206,16 +211,31 @@ class SheMessController extends Controller
 
             return view('smartform::she.mess.form', [
                 'data' => (object)[
-                    'checklist_items' => $defaultChecklistItems,
-                    'site_name' => 'AGM',
-                    'department' => 'SHE & GS',
-                    'shift' => 'Day',
-                    'work_location' => 'BTS',
-                    'inspector_count' => 3,
+                    'doc_number' => $this->generateDocNumber(),
+                    'site_name' => '',
+                    'work_location' => '',
+                    'department' => '',
+                    'shift' => '',
+                    'inspector_count' => '',
                     'survey_date' => now()->format('Y-m-d'),
+                    'completion_date' => now()->format('Y-m-d'),
+                    'inspection_date' => now()->format('Y-m-d'),
+                    'inspection_date2' => now()->format('Y-m-d'),
+                    'inspection_date3' => now()->format('Y-m-d'),
+                    'acknowledgment_date' => now()->format('Y-m-d'),
+                    'checklist_items' => $defaultChecklistItems,
+                    'keterangan' => '',
+                    'risk_description' => '',
+                    'improvement_action' => '',
+                    'done_by' => '',
                     'inspected_by' => '',
                     'inspected_by2' => '',
-                    'inspected_by3' => ''
+                    'inspected_by3' => '',
+                    'inspected_signature' => 0,
+                    'inspected_signature2' => 0,
+                    'inspected_signature3' => 0,
+                    'acknowledged_by' => '',
+                    'acknowledged_signature' => 0
                 ],
                 'isShowDetail' => false
             ]);
@@ -232,19 +252,17 @@ class SheMessController extends Controller
         try {
             Log::info('Store method called with request:', $request->all());
             
-            // Format checklist items
+            // Format checklist items - store only conditions
             $checklistItems = [];
-            if ($request->has('condition')) {
-                foreach ($request->condition as $index => $condition) {
-                    $checklistItems[] = [
-                        'condition' => $condition,
-                        'notes' => $request->notes[$index] ?? ''
-                    ];
+            if ($request->has('checklist')) {
+                foreach ($request->checklist as $index => $condition) {
+                    $checklistItems[] = $condition;
                 }
             }
 
             // Handle arrays and nullable fields
             $inspectedBy = $request->input('inspected_by', []);
+            $inspectedSignatures = $request->input('inspected_signature', []);
             $doneBy = $request->input('done_by');
             $riskDescription = $request->input('risk_description');
             $improvementAction = $request->input('improvement_action');
@@ -264,6 +282,7 @@ class SheMessController extends Controller
                 'inspection_date3' => $request->inspection_date3,
                 'acknowledgment_date' => $request->acknowledgment_date,
                 'checklist_items' => json_encode($checklistItems),
+                'keterangan' => $request->keterangan,
                 'risk_description' => $riskDescription,
                 'improvement_action' => $improvementAction,
                 'done_by' => $doneBy,
@@ -271,6 +290,10 @@ class SheMessController extends Controller
                 'inspected_by2' => isset($inspectedBy[1]) ? $inspectedBy[1] : null,
                 'inspected_by3' => isset($inspectedBy[2]) ? $inspectedBy[2] : null,
                 'acknowledged_by' => $acknowledgedBy,
+                'inspected_signature' => isset($inspectedSignatures[0]) ? 1 : 0,
+                'inspected_signature2' => isset($inspectedSignatures[1]) ? 1 : 0,
+                'inspected_signature3' => isset($inspectedSignatures[2]) ? 1 : 0,
+                'acknowledged_signature' => $request->has('acknowledged_signature') ? 1 : 0,
                 'updated_at' => now()->format('Y-m-d H:i:s')
             ];
 
