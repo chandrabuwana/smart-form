@@ -15,13 +15,14 @@ return new class extends Migration
             $table->increments('id');
             $table->string('no_dok');
             $table->string('revisi');
-            $table->date('tanggal');
+            $table->string('tanggal');
+            $table->string('halaman');
             $table->string('lokasi_inspeksi');
-            $table->string('dibuat_oleh');
-            $table->string('diperiksa_oleh');
-            $table->string('diketahui_oleh');
-            $table->string('disetujui_oleh');
-            $table->string('catatan');
+            $table->string('dibuat_oleh')->nullable();
+            $table->string('diperiksa_oleh')->nullable();
+            $table->string('diketahui_oleh')->nullable();
+            $table->string('disetujui_oleh')->nullable();
+            $table->string('catatan')->nullable();
         });
     }
 

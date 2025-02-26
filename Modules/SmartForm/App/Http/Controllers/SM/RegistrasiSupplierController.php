@@ -96,32 +96,76 @@ class RegistrasiSupplierController extends Controller {
     }
     
     public function CreateRegisSupplier(Request $request)
-    {
-        DB::beginTransaction();
-        $requestData = $request->all();
+    {    
+        $files = [];
+        if($request->hasfile('filenames'))
 
-        try {
+         {
+            foreach($request->file('filenames') as $file)
+            {
+                $name = time().rand(1,100).'.'.$file->extension();
+                $file->move(public_path('images/SM/registrasi_supplier'), $name);  
+                $files[] = $name;  
+            }
+         }
+
             DB::table('FM_SM_00X_REGISTRASI_SUPPLIER')->insert([
-                // 'nama' => session("username"),
-                'nama_vendor' => $requestData['tVendorName'],
-                'no_npwp' => $requestData['tNoNpwp']
-                // 'nik' => session("user_id"),
+                'nodok_form' => "BSS-FRM-SM-000",
+                'revisi_form' => "0",
+                'tanggal_form' => "04-Aug-24",
+                'halaman_form' => "1 of 1",
+                'nama_vendor' => $request->tVendorName,
+                'status_pajak_pkp' => $request->rPkp,
+                'no_npwp' => $request->tNoNpwp,
+                'bidang_usaha' => $request->tBidang,
+                'alamat_kantor' => $request->tAlamatKan,
+                'kota' => $request->tKota,
+                'telepon' => $request->tTlp,
+                'kode_pos' => $request->tKodePos,
+                'email' => $request->tEmail,
+                'metode_pembayaran' => $request->rMetodePembayaran,
+                'syarat_pembayaran' => $request->tSyaratPemb,
+                'ppn' => $request->tPpn,
+                'pph' => $request->tPph,
+                'nama_rekening_1' => $request->tAccNm1,
+                'nomor_rekening_1' => $request->tAccNo1,
+                'nama_bank_1' => $request->tNamaBank1,
+                'alamat_bank_1' => $request->tBankAdd1,
+                'nama_rekening_2' => $request->tAccNm2,
+                'nomor_rekening_2' => $request->tAccNo2,
+                'nama_bank_2' => $request->tNamaBank2,
+                'alamat_bank_2' => $request->tBankAdd2,
+                'pj_1' => $request->tPic1,
+                'tlp_1' => $request->tTlpPic1,
+                'jabatan_1' => $request->tJabatPic1,
+                'jabatan_1_email' => $request->tEmailPic1,
+                'pj_2' => $request->tPic2,
+                'tlp_2' => $request->tTlpPic2,
+                'jabatan_2' => $request->tJabatPic2,
+                'jabatan_2_email' => $request->tEmailPic2,
+                'npwp' => $request->rNpwp1,
+                // MUDOF
+	    	    'file_npwp' => $files[0],
+	    	    'file_sppkp' => $files[1],
+	    	    'file_nib_siup' => $files[2],
+	    	    'file_akta_perusahaan' => $files[3],
+	    	    'file_pakta_integritas' => $files[4],
+	    	    'file_ident_direk' => $files[5],
+	    	    'file_struktur_org' => $files[6],
+	    	    'file_profile_per' => $files[7],
+	    	    'file_lain' => $files[8],
+
+	    	    'sppkp' => $request->rSppkp,
+	    	    'nib_siup' => $request->rNib,
+	    	    'akta_perusahaan' => $request->rAkta,
+	    	    'pakta_integritas' => $request->rPakta,
+	    	    'kartu_identitas_direktur' => $request->rKartu,
+	    	    'struktur_organisasi' => $request->rStruktur,
+	    	    'profile_perusahaan' => $request->rProfile,
+	    	    'surat_lainnya' => $request->rSurat
 
             ]);
-
-            DB::commit();
-            return response()->json([
-                'message' => 'Berhasil menyimpan data form Registrasi Supplier!',
-                'code' => 200
-            ]);
-
-        } catch (QueryException $e) {
-            DB::rollBack();
-            return response()->json([
-                'message' => 'Something went wrong: ' . $e->getMessage(),
-                'code' => 500
-            ], 500);
-        }
+            return redirect('/bss-form/sm/registrasi-supplier');
     }
 
     public function editRegisSupplier($id)
@@ -132,18 +176,18 @@ class RegistrasiSupplierController extends Controller {
         ]);
     }
 
-    public function DeleteReqFuel($id)
+    public function DeleteSupplier($id)
     {
-        DB::table('FM_LOG_022_PERMINTAAN_PENGISIAN_FUEL')->where('id', $id)->delete();
-        return view('SmartForm::LOG/request-fuel');
+        DB::table('FM_SM_00X_REGISTRASI_SUPPLIER')->where('id', $id)->delete();
+        return view('SmartForm::SM/registrasi-supplier/registrasi-supplier');
     }
 
-    public function PdfReqFuel($id)
+    public function PdfRegSupplier($id)
     {
-        $data = DB::table('FM_LOG_022_PERMINTAAN_PENGISIAN_FUEL')->where('id', $id)->first();
-        $pdf = PDF::loadView('SmartForm::LOG/req-fuel-pdf',  compact('data'));
+        $data = DB::table('FM_SM_00X_REGISTRASI_SUPPLIER')->where('id', $id)->first();
+        $pdf = PDF::loadView('SmartForm::SM/registrasi-supplier/reg-supplier-pdf',  compact('data'));
 
-        return $pdf->download('BSS-FRM-LOG-022.pdf');
+        return $pdf->download('BSS-FRM-SM-000.pdf');
     }
 
 }

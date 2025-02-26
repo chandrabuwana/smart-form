@@ -28,9 +28,9 @@
                                 <div class="card col-md-6">
                                     <table class="w-full">
                                         <tr>
-                                            <td>No. Doc</td>
-                                            <td>:</td>
-                                            <td id="noDoc">No.Doc</td>
+                                            <!-- <td>No. Doc</td>
+                                            <td>:</td> -->
+                                            <td id="noDoc" hidden>No.Doc</td>
                                         </tr>
                                         <tr>
                                             <td>Date</td>

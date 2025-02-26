@@ -111,7 +111,7 @@
                                     <div class="col-md-4 col-lg-2">
                                         <div class="input-group input-group-static mb-4">
                                             <label for="iHm">HM</label>
-                                            <input type="number" onkeypress="return event.charCode >= 48" min="1" class="form-control" id="iHm" name="iHm">
+                                            <input type="text" class="form-control" id="iHm" name="iHm">
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-lg-2">
@@ -158,13 +158,13 @@
                                     <div class="col-md-4 col-lg-2">
                                         <div class="input-group input-group-static mb-4">
                                             <label for="iAwal">Awal</label>
-                                            <input type="number" onkeypress="return event.charCode >= 48" min="1"  class="form-control" id="iAwal" name="iAwal">
+                                            <input type="text" class="form-control" id="iAwal" name="iAwal">
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-lg-2">
                                         <div class="input-group input-group-static mb-4">
                                             <label for="iAkhir">Akhir</label>
-                                            <input type="number" onkeypress="return event.charCode >= 48" min="1"  class="form-control" id="iAkhir" name="iAkhir">
+                                            <input type="text" class="form-control" id="iAkhir" name="iAkhir">
                                         </div>
                                     </div>
                                                                        
@@ -557,6 +557,7 @@
                         formName: dataPengeluaranOli.formName,
                         noDoc: noDoc.text(),
                         jobSite: iJobSite.val(),
+                        shift: iShift.val(),
                         lube: iLube.text(),
                         tglDoc: formatTgl(),
                         foreman: iForeman.val(),

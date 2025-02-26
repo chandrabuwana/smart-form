@@ -81,8 +81,11 @@ class AparController extends Controller {
         $data_insert = [
             'dibuat_oleh' => $requested_by,
             'lokasi_inspeksi' => $data['lok1'],
-            'no_dok' => $data['noDoc'],
-            'tanggal' => $data['tglDoc'],
+            // 'no_dok' => $data['noDoc'],
+            'no_dok' => "BSS-FRM-SHE-036",
+            'revisi' => "01",
+            'tanggal' => "26 November 2022",
+            'halaman' => "1 dari 2",
             'catatan' => $data['catatan']
         ];
         $spliited_no_doc = explode("/", $data_insert['no_dok']);
