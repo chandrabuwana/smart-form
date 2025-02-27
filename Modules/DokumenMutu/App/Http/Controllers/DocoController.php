@@ -221,7 +221,7 @@ class DocoController extends Controller
                 ->join(self::T_DEPARTEMENT, self::T_DEPARTEMENT . '.KodeDP', self::T_KARYAWAN . '.KodeDP');
 
             if(!empty($departement)) {
-                $doco->where('KodeDP', $departement);
+                $doco->where(self::T_KARYAWAN . '.KodeDP', $departement);
             }
 
             if(!empty($site)) {
