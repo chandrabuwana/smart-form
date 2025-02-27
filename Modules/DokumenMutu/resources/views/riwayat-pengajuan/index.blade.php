@@ -67,6 +67,10 @@
             max-height: 300px;
             overflow-y: auto;
         }
+
+        #pdf_container > * {
+            width: 80% !important;
+        }
     </style>
 @endsection
 
@@ -354,7 +358,7 @@
         let pdfjsLib = window['pdfjs-dist/build/pdf'];
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.worker.min.js';
         let pdfDoc = null;
-        let scale = 1;
+        let scale = 1.8;
         let resolution = 1;
 
         $( function() {
