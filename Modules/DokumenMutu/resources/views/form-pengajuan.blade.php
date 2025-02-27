@@ -146,7 +146,7 @@
                         <option value="" selected disabled>-- Pilih Jenis Dokumen --</option>
                         <option value="SOP">Standart Operating Procedur</option>
                         <option value="STD">Standart</option>
-                        <option value="WI">Working Instruction</option>
+                        <option value="WI">Work Instruction</option>
                         <option value="FRM">Form</option>
                     `);
                 } else {
