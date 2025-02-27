@@ -28,10 +28,10 @@ class ImportExisting extends Command
      */
     public function handle()
     {
-        $folder = 'SM';
+        $folder = 'LOGISTIK';
         $site = 'JKT';
-        $kodeDP = 'SM';
-        $NIK = '1004579';
+        $kodeDP = 'MM';
+        $NIK = '1016048';
 
         $tipeDocs = [ 'FRM', 'SOP', 'WI', 'STD' ];
         DB::beginTransaction();
@@ -63,12 +63,13 @@ class ImportExisting extends Command
                     copy( $dirPath .'/'.$fileName, storage_path('app/public/' . $filePath . '/' . $fileName) );
                     // $tempFilePath = $request->file('dokumenTervalidasi')->storeAs($path, $originalName);
                     $tempFilePath = storage_path('app/public/' . $filePath . '/' . $fileName);
+                    $convertedFilePath = str_replace($fileName, 'converted_' . $fileName, $tempFilePath);
 
                     putenv('PATH=' . env('DOCO_GS_PATH'));
-                    shell_exec('gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile="' . $tempFilePath . '" "' . $tempFilePath . '"');
+                    shell_exec('gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile="' . $convertedFilePath . '" "' . $tempFilePath . '"');
 
                     $mpdf = new Mpdf();
-                    $pageCount = $mpdf->setSourceFile($tempFilePath);
+                    $pageCount = $mpdf->setSourceFile($convertedFilePath);
 
                     for($i=1; $i <= $pageCount; $i++) {
                         $tplIdx = $mpdf->ImportPage($i);
@@ -83,7 +84,7 @@ class ImportExisting extends Command
                     $previewTempFilePath = str_replace($fileName, 'preview_' . $fileName, $tempFilePath);
                     $mpdf->OutputFile($previewTempFilePath);
 
-                    $fileContent = file_get_contents($tempFilePath);
+                    $fileContent = file_get_contents($convertedFilePath);
                     Storage::disk('s3')->put($filePath .'/'. $fileName, $fileContent);
 
                     $previewFileContent = file_get_contents($previewTempFilePath);
@@ -91,6 +92,7 @@ class ImportExisting extends Command
 
                     @unlink($previewTempFilePath);
                     @unlink($tempFilePath);
+                    @unlink($convertedFilePath);
 
                     DB::table('DB_Dokumen_Mutu.dbo.T_Dokumen_Mutu')->insert([
                         'nik_pembuat' => $NIK,

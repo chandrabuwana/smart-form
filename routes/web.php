@@ -29,17 +29,3 @@ Route::prefix('reva')->group( function(){
     Route::get('api/const', [RevaProduksiController::class, 'getConstraint']);
     Route::get('api/event', [RevaProduksiController::class, 'getEvent']);
 });
-
-Route::get('/test-rann', function() {
-    $filePath = storage_path('app/LOGISTIK/SOP/BSS-SOP-LOG-001 PENGADAAN BARANG DAN JASA.pdf');
-
-    $mpdf = new Mpdf();
-    $pageCount = $mpdf->setSourceFile($filePath);
-    dd($pageCount);
-
-    // $parser = new Parser();
-    // $pdf = $parser->parseFile($filePath);
-    // $metadata = $pdf->getDetails();
-
-    dd($metadata);
-});
