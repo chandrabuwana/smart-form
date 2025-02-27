@@ -33,12 +33,11 @@ class SKLFormController extends Controller
             ->select('KodeDP', self::T_DEPARTEMENT . '.Nama AS NamaDepartement')->join(self::T_DEPARTEMENT, self::T_DEPARTEMENT . '.KodeDP', '=', self::T_MST_PEKERJAAN . '.KodeDepartement')
             ->orderBy('KodeDP', 'ASC')->get();
 
-        // $sites = DB::table(self::T_SITE)->select('KodeST', 'Nama')
-        //     ->orderBy('Nama', 'asc')->get();
+        $sites = DB::table(self::T_SITE)->select('KodeST')->orderBy('Nama', 'asc')->get();
 
         return view('SmartForm::skl/form', [
             'departements' => $departements,
-            // 'sites' => $sites
+            'sites' => $sites
         ]);
     }
 
