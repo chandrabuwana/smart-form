@@ -196,7 +196,10 @@ public function AddFormCompressor( Request $request ) {
             $data[ 'question22' ] = json_encode( array_values( $question22 ) );
             $id = DB::table( 'plant_pompa_compressor' )->insertGetId( $data );
 
-            return redirect()->route( 'plant.compressor.dashboard' );
+            return response()->json( [
+                'success' => true,
+                'message' => 'Data berhasil disimpan'
+            ] );
 
         } catch ( QueryException $e ) {
             Log::error( 'Error in Store: ' . $e->getMessage() );
@@ -282,7 +285,11 @@ public function AddFormCompressor( Request $request ) {
             DB::table( 'prod_anak_asuh_monitoring' )
             ->where( 'id', $id )
             ->update( $data );
-            return redirect()->route( 'plant.compressor.dashboard' );
+
+            return response()->json( [
+                'success' => true,
+                'message' => 'Data berhasil diperbarui'
+            ] );
 
         } catch ( QueryException $e ) {
             Log::error( 'Error in Store: ' . $e->getMessage() );

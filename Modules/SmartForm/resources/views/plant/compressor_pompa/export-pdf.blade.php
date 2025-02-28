@@ -373,8 +373,8 @@
                 @endfor
             </tr>
             <tr>
-                <td colspan="3"style="font-weight: bold;" class="text-center">Catatan</td>
-                <td colspan="31" class="text-center">{{ $record->catatan }}</td>
+                <td colspan="3"style="font-weight: bold;" class="text-center">Catatan :</td>
+                <td colspan="31" class="text-left">{{ $record->catatan }}</td>
             </tr>
         </tbody>
     </table>
