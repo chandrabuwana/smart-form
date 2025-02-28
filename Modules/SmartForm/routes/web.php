@@ -37,6 +37,8 @@ use Modules\SmartForm\App\Http\Controllers\FAT\PPH\HelperPPHController;
 use Modules\SmartForm\App\Http\Controllers\FAT\PPH\UserVendorController;
 use Modules\SmartForm\App\Http\Controllers\IC\PengajuanTraining\HelperTraininingController;
 use Modules\SmartForm\App\Http\Controllers\IC\PengajuanTraining\PengajuanTrainingController;
+use Modules\SmartForm\App\Http\Controllers\OD\CPM\CPMController;
+use Modules\SmartForm\App\Http\Controllers\OD\CPM\CPMHelper;
 use Modules\SmartForm\App\Http\Middleware\PengajuanTrainingIC;
 
 /*
@@ -203,6 +205,27 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
                 Route::post('toggle-mapping-day', [VendorController::class, 'toggleMappingDayStatus'])->name('toggle-mapping-day');
             });
         });
+
+        Route::prefix('od')->group(function () {
+            Route::prefix('cpm')->group(function () {
+                Route::get('/', [CPMController::class, 'Index'])->name('cpm.index');
+                Route::get('form', [CPMController::class, 'Form'])->name('cpm.form');
+                Route::get('form/{id}', [CPMController::class, 'FormDtl'])->name('cpm.form');
+                Route::get('form-dtl/data', [CPMController::class, 'FormDtlData'])->name('cpm.form-dtl.data');
+                Route::post('form-dtl/action', [CPMController::class, 'ApprovalAction'])->name('cpm.form-dtl.action');
+                Route::get('form-edit/{id}', [CPMController::class, 'FormEdit'])->name('cpm.form-edit');
+                Route::post('form-edit', [CPMController::class, 'FormEditSubmit'])->name('cpm.form-edit.submit');
+                Route::post('form', [CPMController::class, 'FormSubmit'])->name('cpm.form-submit');
+                Route::get('list-data', [CPMController::class, 'ListCPM'])->name('cpm.list-data');
+                Route::get('helper/objective', [CPMHelper::class, 'HelperObjective'])->name('cpm.helper-objective');
+                Route::get('helper/category-objective', [CPMHelper::class, 'HelperObjectiveCategory'])->name('cpm.helper-objective.category');
+
+                Route::get('objective', [CPMController::class, 'IndexObjective'])->name('cpm.objective-index');
+                Route::post('objective', [CPMController::class, 'SubmitObjective'])->name('cpm.objective-submit');
+                Route::get('objective/list', [CPMController::class, 'ListObjective'])->name('cpm.objective-list');
+                Route::post('objective/category', [CPMController::class, 'AddObjectiveCategory'])->name('cpm.objective.category-add');
+            });
+        });
     });
 
     Route::get('/dashboard-menu', [AdminController::class, 'index'])->name('dashboard-menu');
@@ -361,7 +384,6 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('check-pelatihan-mp', [HelperTraininingController::class, 'CheckNIkAndPelatihan'])->name('ic.training.helper.check-pelatihan-mp');
         });
 
-        // Route::get('jimmy', [PengajuanTrainingController::class, '']);
     });
 
     Route::prefix('dc')->group(function () {
@@ -399,7 +421,3 @@ Route::get('/bss-form/induksi-karyawan/listing-karyawan/{data}', [ICFM05InduksiK
 Route::post('/bss-form/induksi-karyawan/listing-karyawan-add', [ICFM05InduksiKaryawanController::class, 'formAddKaryawanListing']);
 
 Route::get('/helper-download-pdf/{docno}', [HelperPdfMobilisasiFormController::class, 'DownloadPDFHelperPdf']);
-// Route::get('/jimmy', function() {
-//     dd(DB::connection('sqlsrv_training')->table('pengajuan_training_detail')->where('NIK', '1020341')->exists());
-// });
-// Route::get('/jimmy', [HelperTraininingController::class, 'CheckNIkAndPelatihan']);

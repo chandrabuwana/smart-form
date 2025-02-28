@@ -17,10 +17,12 @@ class SmartFormDatabaseSeeder extends Seeder
         // $this->call(MandatoryTypeSeed::class);
         // $this->call(MOfflineOnlineSeed::class);
         
-        $this->call(MApprovalRoleSeed::class);
-        $this->call(MPengajuanTrainingStatusSeed::class);
-        $this->call(MTrainingApprovalSeed::class);
-        $this->call(JenisApprovalSeed::class);
-        $this->call(AuthorizedUserSeed::class);
+        // $this->call(MApprovalRoleSeed::class);
+        // $this->call(MPengajuanTrainingStatusSeed::class);
+        // $this->call(MTrainingApprovalSeed::class);
+        // $this->call(JenisApprovalSeed::class);
+        // $this->call(AuthorizedUserSeed::class);
+
+        $this->call(CPMObjectiveSeedSeeder::class);
     }
 }

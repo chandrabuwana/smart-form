@@ -74,6 +74,12 @@
             justify-content: end;
             gap: 8px;
         }
+        /* .page-item .page-link {
+            color: #FFFFFF;
+        } */
+        .active > .page-link {
+            color: #cccccc;
+        }
     </style>
 @endsection
 
@@ -443,5 +449,67 @@
             
             $("#table-data").bootstrapTable('refresh', {pageNumber: 1})
         }
+
+        $('#table-data').bootstrapTable({
+            search: true,
+            onPostBody: function () {
+                // Seleksi input pencarian yang dihasilkan Bootstrap Table
+                let searchInput = $('.search-input');
+
+                // Ubah type="search" menjadi type="text"
+                searchInput.attr('type', 'text');
+
+                // Tambahkan autocomplete="off"
+                searchInput.attr('autocomplete', 'off');
+
+                // Tambahkan readonly yang akan dihapus saat focus untuk mencegah autofill
+                searchInput.attr('readonly', true).on('focus', function () {
+                    $(this).removeAttr('readonly');
+                });
+            }
+        })
+
+        // let stopwatchTime = 0; // Waktu total dalam detik
+        // let stopwatchInterval; // Interval untuk stopwatch
+        // let startTime; // Waktu mulai stopwatch
+
+        // // Fungsi untuk memulai stopwatch
+        // function startStopwatch() {
+        //     if (!stopwatchInterval) {
+        //         startTime = new Date();
+        //         stopwatchInterval = setInterval(() => {
+        //             const currentTime = new Date();
+        //             stopwatchTime += Math.floor((currentTime - startTime) / 1000); // Tambahkan waktu dalam detik
+        //             startTime = currentTime; // Reset waktu mulai
+        //         }, 1000);
+        //     }
+        // }
+
+        // // Fungsi untuk menghentikan stopwatch
+        // function stopStopwatch() {
+        //     if (stopwatchInterval) {
+        //         clearInterval(stopwatchInterval);
+        //         stopwatchInterval = null;
+        //     }
+        // }
+
+        // document.addEventListener('visibilitychange', () => {
+        //     if (document.visibilityState === 'visible') {
+        //         console.log('Tab aktif, stopwatch dimulai');
+        //         startStopwatch();
+        //     } else {
+        //         console.log('Tab tidak aktif, stopwatch dihentikan');
+        //         stopStopwatch();
+        //     }
+        // })
+
+        // window.addEventListener('beforeunload', () => {
+        //     stopStopwatch(); // Pastikan stopwatch berhenti
+        //     console.log(`Total waktu akses: ${stopwatchTime} detik`);
+
+        //     // Kirim data ke backend
+        //     const data = { duration: stopwatchTime };
+        //     navigator.sendBeacon('/api/log-tab-access', JSON.stringify(data));
+        // })
     </script>
 @endsection
