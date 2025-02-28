@@ -1,0 +1,758 @@
+@extends('master.master_page')
+
+@section('content')
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            @if(session('success'))
+            <div class="alert alert-success alert-dismissible text-white fade show" role="alert">
+                <span class="alert-icon align-middle"><i class="fas fa-check-circle"></i></span>
+                <span class="alert-text">{{ session('success') }}</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">×</button>
+            </div>
+            @endif
+
+            @if(session('error'))
+            <div class="alert alert-danger alert-dismissible text-white fade show" role="alert">
+                <span class="alert-icon align-middle"><i class="fas fa-exclamation-circle"></i></span>
+                <span class="alert-text">{{ session('error') }}</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">×</button>
+            </div>
+            @endif
+
+            <div class="card">
+                <!-- Card Header -->
+                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                    <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+                        <h6 class="text-white text-capitalize ps-3">{{$isShowDetail ? 'Detail' : 'New'}} Ergonomi Survey</h6>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <form action="{{ route('she.ergonomi.store') }}" method="POST">
+                        @csrf
+                        <div class="mx-3">
+                            <!-- Header Information -->
+                            <div class="table-responsive mb-4">
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <td colspan="5" class="text-center bg-warning">
+                                            <h5 class="mb-0">SURVEY ERGONOMI</h5>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>Posisi yang dievaluasi</strong><br/>
+                                            <span class="text-xs">Job Position</span>
+                                        </td>
+                                        <td>
+                                            <strong>Tanggal</strong><br/>
+                                            <span class="text-xs">Date</span>
+                                        </td>
+                                        <td>
+                                            <strong>Jumlah Pekerja pada pekerjaan ini</strong><br/>
+                                            <span class="text-xs">Total of Employee in These Job</span>
+                                        </td>
+                                        <td>
+                                            <strong>Nama Karyawan</strong><br/>
+                                            <span class="text-xs">Employee Name</span>
+                                        </td>
+                                        <td>
+                                            <strong>Nama Peninjau</strong><br/>
+                                            <span class="text-xs">Reviewer Name</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <input type="text" name="job_position" class="form-control"
+                                                value="{{ $isShowDetail ? $data->job_position : old('job_position') }}"
+                                                {{ $isShowDetail ? 'disabled' : '' }}>
+                                        </td>
+                                        <td>
+                                            <input type="date" name="evaluation_date" class="form-control"
+                                                value="{{ $isShowDetail ? $data->evaluation_date : old('evaluation_date') }}"
+                                                {{ $isShowDetail ? 'disabled' : '' }}>
+                                        </td>
+                                        <td>
+                                            <input type="number" name="total_employee" class="form-control"
+                                                value="{{ $isShowDetail ? $data->total_employee : old('total_employee') }}"
+                                                {{ $isShowDetail ? 'disabled' : '' }}>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="employee_name" class="form-control"
+                                                value="{{ $isShowDetail ? $data->employee_name : old('employee_name') }}"
+                                                {{ $isShowDetail ? 'disabled' : '' }}>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="reviewer_name" class="form-control"
+                                                value="{{ $isShowDetail ? $data->reviewer_name : old('reviewer_name') }}"
+                                                {{ $isShowDetail ? 'disabled' : '' }}>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <!-- Caution Zone Checklist -->
+                            <div class="table-responsive mb-4">
+                                <table class="table table-bordered">
+                                    <tr class="text-center">
+                                        <td style="width: 5%" class="bg-warning fw-bold text-black">A</td>
+                                        <td colspan="4" class="bg-warning">
+                                            <strong>DAFTAR UJI ZONA PERHATIAN</strong><br/>
+                                            <span class="text-xs">CAUTION ZONE CHECKLIST</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" class="text-wrap text-center border">Setiap pergerakan atau posture yang dilakukan regular atau merupakan bagian dari pekerjaan, terjadi lebih dari sehari dalam seminggu dan semingkat lebih dari satu minggu dalam setahun</td>
+                                        
+                                        <td class="border text-center">Jika dikerjakan, beri
+                                        pada kotak</td>
+                                        <td style="width: 15%" class="border text-center">
+                                            <input type="checkbox" class="form-check-input" checked disabled>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <!-- Postur Tubuh Janggal -->
+                            <div class="table-responsive mb-4">
+                                <table class="table table-bordered">
+                                    <tr class="text-center" style="background-color: #FACC15;">
+                                        <td colspan="3">
+                                            <strong>Postur Tubuh Janggal / Awkward Posture</strong>
+                                        </td>
+                                        <td>
+                                            <strong>Komentar Observasi / Comments Observation</strong>
+                                        </td>
+                                    </tr>
+                                    <!-- Item 1 -->
+                                    <tr>
+                                        <td style="width: 5%" class="text-center">1</td>
+                                        <td style="width: 15%">
+                                            <img src="{{ asset('images/ergonomi/postur1.png') }}" class="img-fluid">
+                                        </td>
+                                        <td style="width: 40%" class="text-wrap text-center">Bekerja dengan tangan diatas kepala, atau siku diatas bahu lebih dari 2 (dua) jam per hari</td>
+                                        <td>
+                                            <div class="form-check d-flex align-items-center mb-2">
+                                                <input type="checkbox" class="form-check-input" name="item_1"
+                                                    {{ $isShowDetail && $data->item_1 ? 'checked' : '' }}
+                                                    {{ $isShowDetail ? 'disabled' : '' }}>
+                                                <label class="form-check-label ms-2">Status</label>
+                                            </div>
+                                            <div class="input-group input-group-static">
+                                                <textarea name="item_1_observation" class="form-control" rows="2"
+                                                    {{ $isShowDetail ? 'disabled' : '' }}>{{ $isShowDetail ? $data->item_1_observation : old('item_1_observation') }}</textarea>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Item 2 -->
+                                    <tr>
+                                        <td style="width: 5%" class="text-center">2</td>
+                                        <td style="width: 15%">
+                                            <img src="{{ asset('images/ergonomi/postur2.png') }}" class="img-fluid">
+                                        </td>
+                                        <td style="width: 40%" class="text-wrap text-center">Bekerja dengan tangan diatas kepala, atau siku diatas bahu lebih dari 2 (dua) jam per hari</td>
+                                        <td>
+                                            <div class="form-check d-flex align-items-center mb-2">
+                                                <input type="checkbox" class="form-check-input" name="item_2"
+                                                    {{ $isShowDetail && $data->item_2 ? 'checked' : '' }}
+                                                    {{ $isShowDetail ? 'disabled' : '' }}>
+                                                <label class="form-check-label ms-2">Status</label>
+                                            </div>
+                                            <div class="input-group input-group-static">
+                                                <textarea name="item_2_observation" class="form-control" rows="2"
+                                                    {{ $isShowDetail ? 'disabled' : '' }}>{{ $isShowDetail ? $data->item_2_observation : old('item_2_observation') }}</textarea>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Item 3 -->
+                                    <tr>
+                                        <td style="width: 5%" class="text-center">3</td>
+                                        <td style="width: 15%">
+                                            <img src="{{ asset('images/ergonomi/postur3.png') }}" class="img-fluid">
+                                        </td>
+                                        <td style="width: 40%" class="text-wrap text-center">Bekerja dengan tangan diatas kepala, atau siku diatas bahu lebih dari 2 (dua) jam per hari</td>
+                                        <td>
+                                            <div class="form-check d-flex align-items-center mb-2">
+                                                <input type="checkbox" class="form-check-input" name="item_3"
+                                                    {{ $isShowDetail && $data->item_3 ? 'checked' : '' }}
+                                                    {{ $isShowDetail ? 'disabled' : '' }}>
+                                                <label class="form-check-label ms-2">Status</label>
+                                            </div>
+                                            <div class="input-group input-group-static">
+                                                <textarea name="item_3_observation" class="form-control" rows="2"
+                                                    {{ $isShowDetail ? 'disabled' : '' }}>{{ $isShowDetail ? $data->item_3_observation : old('item_3_observation') }}</textarea>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Item 4 -->
+                                    <tr>
+                                        <td style="width: 5%" class="text-center">4</td>
+                                        <td style="width: 15%">
+                                            <img src="{{ asset('images/ergonomi/postur4.png') }}" class="img-fluid">
+                                        </td>
+                                        <td style="width: 40%" class="text-wrap text-center">Bekerja dengan tangan diatas kepala, atau siku diatas bahu lebih dari 2 (dua) jam per hari</td>
+                                        <td>
+                                            <div class="form-check d-flex align-items-center mb-2">
+                                                <input type="checkbox" class="form-check-input" name="item_4"
+                                                    {{ $isShowDetail && $data->item_4 ? 'checked' : '' }}
+                                                    {{ $isShowDetail ? 'disabled' : '' }}>
+                                                <label class="form-check-label ms-2">Status</label>
+                                            </div>
+                                            <div class="input-group input-group-static">
+                                                <textarea name="item_4_observation" class="form-control" rows="2"
+                                                    {{ $isShowDetail ? 'disabled' : '' }}>{{ $isShowDetail ? $data->item_4_observation : old('item_4_observation') }}</textarea>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+
+                            <!-- Tenaga Kuat dengan Tangan -->
+                            <div class="table-responsive mb-4">
+                                <table class="table table-bordered">
+                                    <tr class="text-center" style="background-color: #FACC15;">
+                                        <td colspan="3">
+                                            <strong>Tenaga Kuat dengan Tangan / High End Force</strong>
+                                        </td>
+                                        <td>
+                                            <strong>Komentar Observasi / Comments Observation</strong>
+                                        </td>
+                                    </tr>
+                                    <!-- Item 5 -->
+                                    <tr>
+                                        <td style="width: 5%" class="text-center">5</td>
+                                        <td style="width: 15%">
+                                            <img src="{{ asset('images/ergonomi/tenaga1.png') }}" class="img-fluid">
+                                        </td>
+                                        <td style="width: 40%" class="text-wrap text-center">Menjepit objek tanpa bantuan dengan berat 1 (satu) kilogram pertangan, atau menjepit dengan tenaga 2 (dua) kilogram lebih dari 2 (dua) jam sehari (bandingkan dengan menjepit setengah rim kertas)</td>
+                                        <td>
+                                            <div class="form-check d-flex align-items-center mb-2">
+                                                <input type="checkbox" class="form-check-input" name="item_5"
+                                                    {{ $isShowDetail && $data->item_5 ? 'checked' : '' }}
+                                                    {{ $isShowDetail ? 'disabled' : '' }}>
+                                                <label class="form-check-label ms-2">Status</label>
+                                            </div>
+                                            <div class="input-group input-group-static">
+                                                <textarea name="item_5_observation" class="form-control" rows="2"
+                                                    {{ $isShowDetail ? 'disabled' : '' }}>{{ $isShowDetail ? $data->item_5_observation : old('item_5_observation') }}</textarea>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <!-- Item 6 -->
+                                    <tr>
+                                        <td style="width: 5%" class="text-center">6</td>
+                                        <td style="width: 15%">
+                                            <img src="{{ asset('images/ergonomi/tenaga2.png') }}" class="img-fluid">
+                                        </td>
+                                        <td style="width: 40%" class="text-wrap text-center">Mencengkram objek tanpa bantuan dengan beban 5 kilogram atau lebih per tangan atau menjepit dengan tenaga sebesar 5 kilogram per tangan, lebih dari 2 (dua) jam sehari</td>
+                                        <td>
+                                            <div class="form-check d-flex align-items-center mb-2">
+                                                <input type="checkbox" class="form-check-input" name="item_6"
+                                                    {{ $isShowDetail && $data->item_6 ? 'checked' : '' }}
+                                                    {{ $isShowDetail ? 'disabled' : '' }}>
+                                                <label class="form-check-label ms-2">Status</label>
+                                            </div>
+                                            <div class="input-group input-group-static">
+                                                <textarea name="item_6_observation" class="form-control" rows="2"
+                                                    {{ $isShowDetail ? 'disabled' : '' }}>{{ $isShowDetail ? $data->item_6_observation : old('item_6_observation') }}</textarea>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <!-- Dampak Berulang -->
+                            <div class="table-responsive mb-4">
+                                <table class="table table-bordered">
+                                    <tr class="text-center" style="background-color: #FACC15;">
+                                        <td colspan="3">
+                                            <strong>Dampak Berulang / Repeated Impact</strong>
+                                        </td>
+                                        <td>
+                                            <strong>Komentar Observasi / Comments Observation</strong>
+                                        </td>
+                                    </tr>
+                                    <!-- Items 7-12 -->
+                                    <tr>
+                                        <td style="width: 5%" class="text-center">7</td>
+                                        <td style="width: 15%">
+                                            <img src="{{ asset('images/ergonomi/dampak1.png') }}" class="img-fluid">
+                                        </td>
+                                        <td style="width: 40%" class="text-wrap text-center">Mengulang pergerakan yang sama pada leher, bahu, siku, pergelangan tangan, atau tangan (diluar kegiatan jari) tanpa variasi atau sedikit variasi beberapa detik, lebih dari 2 (dua) jam total per hari</td>
+                                        <td>
+                                            <div class="form-check d-flex align-items-center mb-2">
+                                                <input type="checkbox" class="form-check-input" name="item_7"
+                                                    {{ $isShowDetail && $data->item_7 ? 'checked' : '' }}
+                                                    {{ $isShowDetail ? 'disabled' : '' }}>
+                                                <label class="form-check-label ms-2">Status</label>
+                                            </div>
+                                            <div class="input-group input-group-static">
+                                                <textarea name="item_7_observation" class="form-control" rows="2"
+                                                    {{ $isShowDetail ? 'disabled' : '' }}>{{ $isShowDetail ? $data->item_7_observation : old('item_7_observation') }}</textarea>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <!-- Getaran -->
+                            <div class="table-responsive mb-4">
+                                <table class="table table-bordered">
+                                    <tr class="text-center" style="background-color: #FACC15;">
+                                        <td colspan="3">
+                                            <strong>Getaran Sedang s.d. Tinggi pada Tangan-Lengan / Moderate to High Hand-Arm Vibration</strong>
+                                        </td>
+                                        <td>
+                                            <strong>Komentar Observasi / Comments Observation</strong>
+                                        </td>
+                                    </tr>
+                                    <!-- Items 13-14 -->
+                                    <tr>
+                                        <td style="width: 5%" class="text-center">13</td>
+                                        <td style="width: 15%">
+                                            <img src="{{ asset('images/ergonomi/getaran1.png') }}" class="img-fluid">
+                                        </td>
+                                        <td style="width: 40%" class="text-wrap text-center">Menggunakan Impact Wrenches, vibration impact, dan peralatan tangan lainnya yang memiliki getaran tinggi lebih dari 30 (tigapuluh) menit per hari</td>
+                                        <td>
+                                            <div class="form-check d-flex align-items-center mb-2">
+                                                <input type="checkbox" class="form-check-input" name="item_13"
+                                                    {{ $isShowDetail && $data->item_13 ? 'checked' : '' }}
+                                                    {{ $isShowDetail ? 'disabled' : '' }}>
+                                                <label class="form-check-label ms-2">Status</label>
+                                            </div>
+                                            <div class="input-group input-group-static">
+                                                <textarea name="item_13_observation" class="form-control" rows="2"
+                                                    {{ $isShowDetail ? 'disabled' : '' }}>{{ $isShowDetail ? $data->item_13_observation : old('item_13_observation') }}</textarea>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 5%" class="text-center">14</td>
+                                        <td style="width: 15%">
+                                            <img src="{{ asset('images/ergonomi/getaran2.png') }}" class="img-fluid">
+                                        </td>
+                                        <td style="width: 40%" class="text-wrap text-center">Menggunakan gerinda (gerinda tangan atau stand), atau peralatan tangan lain yang biasasnya memiliki getaran sedang lebih dari 2 (dua) jam total dalam sehari</td>
+                                        <td>
+                                            <div class="form-check d-flex align-items-center mb-2">
+                                                <input type="checkbox" class="form-check-input" name="item_14"
+                                                    {{ $isShowDetail && $data->item_14 ? 'checked' : '' }}
+                                                    {{ $isShowDetail ? 'disabled' : '' }}>
+                                                <label class="form-check-label ms-2">Status</label>
+                                            </div>
+                                            <div class="input-group input-group-static">
+                                                <textarea name="item_14_observation" class="form-control" rows="2"
+                                                    {{ $isShowDetail ? 'disabled' : '' }}>{{ $isShowDetail ? $data->item_14_observation : old('item_14_observation') }}</textarea>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <!-- Faktor Resiko Tindak Lanjut Title -->
+                            <div class="table-responsive mb-4">
+                                <table class="table table-bordered">
+                                    <tr class="text-center">
+                                        <td style="width: 5%" class="bg-warning fw-bold text-black">B</td>
+                                        <td colspan="3" class="bg-warning">
+                                            <strong>DAFTAR UJI TINDAK LANJUT FAKTOR RESIKO FISIK</strong><br/>
+                                            <span class="text-xs">FOLLOW-UP PHYSICAL RISK FACTOR CHECKLIST</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="border">
+                                        <td colspan="2" class="text-wrap text-center border">Untuk setiap ‘Zona Perhatian’ yang teridentifikasi, temuan setiap factor fisik
+                                            menggunakan checklist berikut ini. Tentukan setiap kondisi yang ada di tempat kerja.
+                                            Jika ada, bahaya WMSD harus direduksi sampai pada level aman atau pada</td>
+                                        <td style="width: 15%" class="border">
+                                        Jika terdapat bahaya WMSD,
+                                        beri pada kotak
+                                        </td>
+                                        <td style="width: 15%" class="border text-center">
+                                            <input type="checkbox" class="form-check-input" checked disabled>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <!-- Faktor Resiko Tindak Lanjut Checklist -->
+                            <div class="table-responsive mb-4">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr class="bg-info text-white text-center">
+                                            <th style="width: 15%">
+                                                Organ Tubuh<br/>
+                                                <span class="text-xs">Body Part</span>
+                                            </th>
+                                            <th style="width: 25%">
+                                                Faktor Resiko Fisik<br/>
+                                                <span class="text-xs">Physical Risk Factor</span>
+                                            </th>
+                                            <th style="width: 20%">
+                                                Durasi<br/>
+                                                <span class="text-xs">Duration</span>
+                                            </th>
+                                            <th style="width: 20%">
+                                                Visualisasi<br/>
+                                                <span class="text-xs">Visualization</span>
+                                            </th>
+                                            <th style="width: 10%">WMSD ?</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Bahu (Shoulders) -->
+                                        <tr class="text-center">
+                                            <td rowspan="2">
+                                                Bahu<br/>
+                                                <span class="text-primary">Shoulders</span>
+                                            </td>
+                                            <td class="text-wrap px-2">Bekerja dengan menggunakan tangan diatas bahu atau siku diatas bahu</td>
+                                            <td class="text-wrap px-2">Lebih dari 4 jam total per hari</td>
+                                            <td class="text-center">
+                                                <img src="{{ asset('images/ergonomi/bahu1.png') }}" class="img-fluid" style="max-height: 100px">
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="form-check d-flex justify-content-center">
+                                                    <input type="checkbox" class="form-check-input" name="wmsd_bahu_1"
+                                                        {{ $isShowDetail && $data->wmsd_bahu_1 ? 'checked' : '' }}
+                                                        {{ $isShowDetail ? 'disabled' : '' }}>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr class="text-center">
+                                            <td class="text-wrap px-2">Gerakan mengangkat tangan berulang diatas kepala atau siku diatas bahu lebih dari sekali per menit</td>
+                                            <td class="text-wrap px-2">Lebih dari 4 jam total per hari</td>
+                                            <td class="text-center">
+                                                <img src="{{ asset('images/ergonomi/bahu2.png') }}" class="img-fluid" style="max-height: 100px">
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="form-check d-flex justify-content-center">
+                                                    <input type="checkbox" class="form-check-input" name="wmsd_bahu_2"
+                                                        {{ $isShowDetail && $data->wmsd_bahu_2 ? 'checked' : '' }}
+                                                        {{ $isShowDetail ? 'disabled' : '' }}>
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                        <!-- Leher (Neck) -->
+                                        <tr class="text-center">
+                                            <td>
+                                                Leher<br/>
+                                                <span class="text-primary">Neck</span>
+                                            </td>
+                                            <td>Bekerja dengan leher menekuk 45° derajat (tanpa penopang atau kemungkinan postur bervariasi)</td>
+                                            <td>Lebih dari 4 jam total per hari</td>
+                                            <td class="text-center">
+                                                <img src="{{ asset('images/ergonomi/leher.png') }}" class="img-fluid" style="max-height: 100px">
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="form-check d-flex justify-content-center">
+                                                    <input type="checkbox" class="form-check-input" name="wmsd_leher"
+                                                        {{ $isShowDetail && $data->wmsd_leher ? 'checked' : '' }}
+                                                        {{ $isShowDetail ? 'disabled' : '' }}>
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                        <!-- Punggung (Back) -->
+                                        <tr class="text-center">
+                                            <td rowspan="2">
+                                                Punggung<br/>
+                                                <span class="text-primary">Back</span>
+                                            </td>
+                                            <td>Bekerja dengan punggung lebih dari 30° (tanpa penopang atau kemampuan postur bervariasi)</td>
+                                            <td>Lebih dari 4 jam total per hari</td>
+                                            <td class="text-center">
+                                                <img src="{{ asset('images/ergonomi/punggung1.png') }}" class="img-fluid" style="max-height: 100px">
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="form-check d-flex justify-content-center">
+                                                    <input type="checkbox" class="form-check-input" name="wmsd_punggung_1"
+                                                        {{ $isShowDetail && $data->wmsd_punggung_1 ? 'checked' : '' }}
+                                                        {{ $isShowDetail ? 'disabled' : '' }}>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr class="text-center">
+                                            <td class="text-wrap px-2">Bekerja dengan punggung lebih dari 45° (tanpa penopang atau kemampuan postur bervariasi)</td>
+                                            <td class="text-wrap px-2">Lebih dari 2 Jam total per hari</td>
+                                            <td class="text-center">
+                                                <img src="{{ asset('images/ergonomi/punggung2.png') }}" class="img-fluid" style="max-height: 100px">
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="form-check d-flex justify-content-center">
+                                                    <input type="checkbox" class="form-check-input" name="wmsd_punggung_2"
+                                                        {{ $isShowDetail && $data->wmsd_punggung_2 ? 'checked' : '' }}
+                                                        {{ $isShowDetail ? 'disabled' : '' }}>
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                        <!-- Lutut (Knee) -->
+                                        <tr class="text-center">
+                                            <td rowspan="2" class="border">
+                                                Lutut<br/>
+                                                <span class="text-primary">Knee</span>
+                                            </td>
+                                            <td class="border">Berjongkok</td>
+                                            <td class="border">Lebih dari 2 Jam total per hari</td>
+                                            <td class="text-center border">
+                                                <img src="{{ asset('images/ergonomi/punggung1.png') }}" class="img-fluid" style="max-height: 100px">
+                                            </td>
+                                            <td class="text-center border">
+                                                <div class="form-check d-flex justify-content-center">
+                                                    <input type="checkbox" class="form-check-input" name="wmsd_punggung_1"
+                                                        {{ $isShowDetail && $data->wmsd_punggung_1 ? 'checked' : '' }}
+                                                        {{ $isShowDetail ? 'disabled' : '' }}>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr class="text-center">
+                                            <td>Berlutut</td>
+                                            <td>Lebih dari 4 Jam total per hari</td>
+                                            <td class="text-center">
+                                                <img src="{{ asset('images/ergonomi/punggung2.png') }}" class="img-fluid" style="max-height: 100px">
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="form-check d-flex justify-content-center">
+                                                    <input type="checkbox" class="form-check-input" name="wmsd_punggung_2"
+                                                        {{ $isShowDetail && $data->wmsd_punggung_2 ? 'checked' : '' }}
+                                                        {{ $isShowDetail ? 'disabled' : '' }}>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Tenaga Kuat Pada Tangan Section -->
+                             <div class="table-responsive mb-4">
+                                <div class="bg-warning p-2 mb-2">
+                                    <h6 class="mb-0">Tenaga Kuat Pada Tangan / <span class="text-primary">High End Force</span></h6>
+                                </div>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr class="bg-info text-white text-center">
+                                            <th style="width: 15%">
+                                                Organ Tubuh<br/>
+                                                <span class="text-xs">Body Part</span>
+                                            </th>
+                                            <th style="width: 30%">
+                                                Faktor Resiko Fisik<br/>
+                                                <span class="text-xs">Physical Risk Factor</span>
+                                            </th>
+                                            <th style="width: 25%">
+                                                Kombinasi Dengan<br/>
+                                                <span class="text-xs">Combination With</span>
+                                            </th>
+                                            <th style="width: 10%">
+                                                Durasi<br/>
+                                                <span class="text-xs">Duration</span>
+                                            </th>
+                                            <th style="width: 10%">
+                                                Visualisasi<br/>
+                                                <span class="text-xs">Visualization</span>
+                                            </th>
+                                            <th style="width: 10%">WMSD ?</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="text-center">
+                                            <td rowspan="3" class="text-wrap px-2">
+                                                Lengan, Pergelangan, Tangan<br/>
+                                                <span class="text-primary">Arm, Wrists, Hand</span>
+                                            </td>
+                                            <td rowspan="3" class="text-wrap px-2">Menjepit beban tanpa bantuan dengan berat 1 (satu) Kilogram atau lebih, atau menjepit dengan tenaga 1 (satu) Kilogram per tangan</td>
+                                            <td class="text-wrap px-2">Gerakan Sering Berulang</td>
+                                            <td class="text-wrap px-2">Lebih dari 3 Jam total per hari</td>
+                                            <td rowspan="3">
+                                                <img src="{{ asset('images/ergonomi/tangan_kuat1.png') }}" class="img-fluid" style="max-height: 100px"><br/>
+                                                <img src="{{ asset('images/ergonomi/tangan_kuat2.png') }}" class="img-fluid" style="max-height: 100px"><br/>
+                                                <img src="{{ asset('images/ergonomi/tangan_kuat3.png') }}" class="img-fluid" style="max-height: 100px">
+                                            </td>
+                                            <td>
+                                                <div class="form-check d-flex justify-content-center">
+                                                    <input type="checkbox" class="form-check-input" name="wmsd_tangan_kuat_1"
+                                                        {{ $isShowDetail && $data->wmsd_tangan_kuat_1 ? 'checked' : '' }}
+                                                        {{ $isShowDetail ? 'disabled' : '' }}>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr class="text-center">
+                                            <td class="text-wrap px-2">Pergelangan tangan menekuk sebesar 30° atau lebih, atau sebesar 45° atau kelurusan tulang hasta sebesar 30° atau lebih</td>
+                                            <td>Lebih dari 3 Jam total per hari</td>
+                                            <td>
+                                                <div class="form-check d-flex justify-content-center">
+                                                    <input type="checkbox" class="form-check-input" name="wmsd_tangan_kuat_2"
+                                                        {{ $isShowDetail && $data->wmsd_tangan_kuat_2 ? 'checked' : '' }}
+                                                        {{ $isShowDetail ? 'disabled' : '' }}>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr class="text-center">
+                                            <td>Tidak ada factor Risiko</td>
+                                            <td>Lebih dari 4 Jam total per hari</td>
+                                            <td>
+                                                <div class="form-check d-flex justify-content-center">
+                                                    <input type="checkbox" class="form-check-input" name="wmsd_tangan_kuat_3"
+                                                        {{ $isShowDetail && $data->wmsd_tangan_kuat_3 ? 'checked' : '' }}
+                                                        {{ $isShowDetail ? 'disabled' : '' }}>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Gerakan Sering Berulang Section -->
+                            <div class="table-responsive mb-4">
+                                <div class="bg-warning p-2 mb-2">
+                                    <h6 class="mb-0">Gerakan Sering Berulang / <span class="text-primary">High Repititive Motion</span></h6>
+                                </div>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr class="bg-info text-white text-center">
+                                            <th style="width: 15%">
+                                                Organ Tubuh<br/>
+                                                <span class="text-xs">Body Part</span>
+                                            </th>
+                                            <th style="width: 30%">
+                                                Faktor Resiko Fisik<br/>
+                                                <span class="text-xs">Physical Risk Factor</span>
+                                            </th>
+                                            <th style="width: 25%">
+                                                Kombinasi Dengan<br/>
+                                                <span class="text-xs">Combination With</span>
+                                            </th>
+                                            <th style="width: 20%">
+                                                Durasi<br/>
+                                                <span class="text-xs">Duration</span>
+                                            </th>
+                                            <th style="width: 10%">WMSD ?</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="text-center">
+                                            <td rowspan="2" class="text-wrap px-2">
+                                                Leher, Bahu, Siku, Pergelangan, Tanga<br/>
+                                                <span class="text-primary">Neck, Shoulders, Elbow, Wrists, Hand</span>
+                                            </td>
+                                            <td class="text-wrap px-2">Menggunakan Gerakan yang sama dengan perbedaan variasi yang kecil atau tanpa variasi dalam beberapa detik (diluar mengetik)</td>
+                                            <td class="text-wrap px-2">Tidak Ada Faktor Resiko</td>
+                                            <td class="text-wrap px-2">Lebih dari 6 Jam total per hari</td>
+                                            <td>
+                                                <div class="form-check d-flex justify-content-center">
+                                                    <input type="checkbox" class="form-check-input" name="wmsd_berulang_1"
+                                                        {{ $isShowDetail && $data->wmsd_berulang_1 ? 'checked' : '' }}
+                                                        {{ $isShowDetail ? 'disabled' : '' }}>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr class="text-center">
+                                            <td class="text-wrap px-2">Pergelangan tangan menekuk sebesar 30° atau lebih, atau sebesar 45° atau kelurusan tulang hasta sebesar 30° atau lebih</td>
+                                            <td class="text-wrap px-2">Pergelangan tangan menekuk sebesar 30° atau lebih, atau sebesar 45° atau kelurusan tulang hasta sebesar 30° atau lebih dan kuat, tenaga berlebihan pada tangan</td>
+                                            <td class="text-wrap px-2">Lebih dari 2 Jam total per hari</td>
+                                            <td>
+                                                <div class="form-check d-flex justify-content-center">
+                                                    <input type="checkbox" class="form-check-input" name="wmsd_berulang_2"
+                                                        {{ $isShowDetail && $data->wmsd_berulang_2 ? 'checked' : '' }}
+                                                        {{ $isShowDetail ? 'disabled' : '' }}>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Kesimpulan Penilai -->
+                            <div class="table-responsive mb-4">
+                                <table class="table table-bordered">
+                                    <tr class="text-center" style="background-color: #FACC15;">
+                                        <td>
+                                            <strong>KESIMPULAN PENILAI / RESUME OF ASSESSOR</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="input-group input-group-static">
+                                                <textarea name="kesimpulan_penilai" class="form-control" rows="4"
+                                                    {{ $isShowDetail ? 'disabled' : '' }}>{{ $isShowDetail ? $data->kesimpulan_penilai : old('kesimpulan_penilai') }}</textarea>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <!-- Signatures -->
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <td style="width: 33%">
+                                            <strong>Disusun Oleh / Propose By</strong>
+                                        </td>
+                                        <td style="width: 33%">
+                                            <strong>Diperiksa Oleh / Checked By</strong>
+                                        </td>
+                                        <td style="width: 33%">
+                                            <strong>Tanggal / Date</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div>Paramedic</div>
+                                            <input type="text" name="paramedic_name" class="form-control"
+                                                value="{{ $isShowDetail ? $data->paramedic_name : old('paramedic_name') }}"
+                                                {{ $isShowDetail ? 'disabled' : '' }}>
+                                        </td>
+                                        <td>
+                                            <div>Doctor</div>
+                                            <input type="text" name="doctor_name" class="form-control"
+                                                value="{{ $isShowDetail ? $data->doctor_name : old('doctor_name') }}"
+                                                {{ $isShowDetail ? 'disabled' : '' }}>
+                                        </td>
+                                        <td>
+                                            <div>Dept Head of SHE</div>
+                                            <input type="text" name="dept_head_name" class="form-control"
+                                                value="{{ $isShowDetail ? $data->dept_head_name : old('dept_head_name') }}"
+                                                {{ $isShowDetail ? 'disabled' : '' }}>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <!-- Form Actions -->
+                            <div class="row mt-4">
+                                <div class="col-12 text-end">
+                                    @if($isShowDetail)
+                                        <a href="{{ route('she.ergonomi.dashboard') }}" class="btn btn-secondary">Back</a>
+                                        <a href="{{ route('she.ergonomi.export', $data->id) }}" class="btn btn-primary">
+                                            <i class="material-icons">download</i> Export PDF
+                                        </a>
+                                    @else
+                                        <a href="{{ route('she.ergonomi.dashboard') }}" class="btn btn-secondary">Cancel</a>
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+
+@section('custom-css')
+<style>
+    .form-check-input {
+        margin-top: 0.25rem;
+    }
+    .form-check-label {
+        margin-left: 0.5rem;
+    }
+</style>
+@endsection

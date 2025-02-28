@@ -26,6 +26,7 @@ use Modules\SmartForm\App\Http\Controllers\SHE\AirMinumController;
 use Modules\SmartForm\App\Http\Controllers\SHE\NoiseController;
 use Modules\SmartForm\App\Http\Controllers\SHE\SheMessController;
 use Modules\SmartForm\App\Http\Controllers\SHE\CoalGettingController;
+use Modules\SmartForm\App\Http\Controllers\SHE\ErgonomiController;
 use Modules\SmartForm\App\Http\Controllers\SKL\DashboardSKLController;
 use Modules\SmartForm\App\Http\Controllers\SKL\SKLFormController;
 use Modules\SmartForm\App\Http\Controllers\SM\AssetRequestController;
@@ -328,6 +329,13 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('form', [CoalGettingController::class, 'AddForm'])->name('she.coal.form');
             Route::post('store', [CoalGettingController::class, 'Store'])->name('she.coal.store');
             Route::put('form/{id}', [CoalGettingController::class, 'Update'])->name('she.coal.form.update');
+        });
+        Route::prefix('she-ergonomi')->group(function () {
+            Route::get('dashboard', [ErgonomiController::class, 'Dashboard'])->name('she.ergonomi.dashboard');
+            Route::get('form/export/{id}', [ErgonomiController::class, 'ExportForm'])->name('she.ergonomi.export');
+            Route::get('form', [ErgonomiController::class, 'AddForm'])->name('she.ergonomi.form');
+            Route::post('store', [ErgonomiController::class, 'Store'])->name('she.ergonomi.store');
+            Route::put('form/{id}', [ErgonomiController::class, 'Update'])->name('she.ergonomi.form.update');
         });
 
         Route::prefix('prod-anak-asuh')->group(function () {
