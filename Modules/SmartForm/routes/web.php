@@ -339,13 +339,14 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::put('/form/{id}', [AnakAsuhController::class, 'Update'])->name('prod.anak-asuh.form.update');
         });
 
-        Route::prefix("plant-compressor")->group(function(){
+        Route::prefix('plant-compressor')->group(function(){
             Route::get('/dashboard', [CompressorPompaController::class, 'dashboard'])->name('plant.compressor.dashboard');
             Route::get('/form-compressor/export/{id}', [CompressorPompaController::class, 'ExportForm'])->name('plant.compressor.export');
             Route::get('/form-compressor', [CompressorPompaController::class, 'AddFormCompressor'])->name('plant.compressor.form');
             Route::post('/store-compressor', [CompressorPompaController::class, 'StoreCompressor'])->name('plant.compressor.store');
-            Route::put('/form-compressor/{id}', [Compressor::class, 'UpdateCompressor'])->name('plant.compressor.update');
+            Route::put('/form-compressor/{id}', [CompressorPompaController::class, 'UpdateCompressor'])->name('plant.compressor.update');
         });
+
 
     });
 
