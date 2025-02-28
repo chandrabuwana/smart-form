@@ -174,23 +174,29 @@
         </tr>
         
         @php
-            $checklistItems = [
-                'Bangunan, Atap, dinding, pintu, jendela, aman dan bersih.',
-                'Permukaan tempat jalan, lantai dalam kondis bersih dan didisinfeksi',
-                'Pencahayaan / Penerangan kamar / ruangan memadai',
-                'Ventilasi kamar, segala ruangan Memadai',
-                'Kebersihan dan housekeeping yang baik di dalam rumah dan sekitarnya',
-                'Tempat tidur dan kasur dalam kondisi bersih dan rapi',
-                'Kamar mandi dan toilet bersih dan berfungsi dengan baik',
-                'Tempat sampah tersedia dan dikelola dengan baik',
-                'Peralatan P3K tersedia dan lengkap',
-                'APAR tersedia dan dalam kondisi baik',
-                'Instalasi listrik aman dan rapi',
-                'Area dapur bersih dan tertata rapi',
-                'Peralatan dapur bersih dan tersimpan dengan baik',
-                'Area makan bersih dan nyaman',
-                'Sistem drainase berfungsi dengan baik'
-            ];
+        $checklistItems = [
+                                            'Bangunan, Atap, dinding, pintu, jendela, aman dan bersih.',
+                                            'Permukaan tempat jalan, lantai dalam kondis bersih dan didisinfeksi',
+                                            'Pencahayaan / Penerangan kamar / ruangan memadai',
+                                            'Ventilasi kamar, segala ruangan Memadai',
+                                            'Kebersihan dan housekeeping yang baik di dalam rumah dan sekitarnya',
+                                            'Tempat sampah mencukupi / dikosongkan secara berkala',
+                                            'Tempat tidur / kamar bersih, rapi dan tidak bau lembab, ada kipas / ACnya',
+                                            'Kamar mandi bersih, mnim 3 X seminggu dikuras baknya .',
+                                            'Ada tempat jemuran yang bersih, sinar cukup dan aman',
+                                            'Toilet bersih dan Didisinfeksi, ketersediaan air cukup dan kran air berfungsi baik, ada peralatan kebersihannya.',
+                                            'Atap tidak bocor',
+                                            'Tempat penyiapan makanan yang mencukupi, bersih dan bebas serangga,',
+                                            'Instalasi Gas terkompresi Aman',
+                                            'Kunci pintu - jendela dalam kondisi bagus dan bisa digunakan - ada teralis',
+                                            'Kotak listrik / saklar penggerak / sambungan kabel aman',
+                                            'Furnitur rumah dan Ergonomi',
+                                            'Rak sepatu, tempat air minum, dan peralatan lain bersih dan keadaan baik',
+                                            'Rambu tanda – tanda dan kode warna',
+                                            'Tersedia Kotak P3K dan selalu di cek terkait isinya.',
+                                            'Tersedia APAR, atau alat pencegah dan perlindungan dari kebakaran',
+                                            'Tersedia air bersih yang cukup, dan adanya profiltank / tandon'
+                                        ];
         @endphp
         @foreach($checklistItems as $index => $item)
         <tr>
