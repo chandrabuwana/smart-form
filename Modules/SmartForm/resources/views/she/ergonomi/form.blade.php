@@ -63,28 +63,28 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>
-                                            <input type="text" name="job_position" class="form-control"
+                                        <td class="border">
+                                            <input type="text" name="job_position" class="form-control" required
                                                 value="{{ $isShowDetail ? $data->job_position : old('job_position') }}"
                                                 {{ $isShowDetail ? 'disabled' : '' }}>
                                         </td>
-                                        <td>
-                                            <input type="date" name="evaluation_date" class="form-control"
+                                        <td class="border">
+                                            <input type="date" name="evaluation_date" class="form-control" required
                                                 value="{{ $isShowDetail ? $data->evaluation_date : old('evaluation_date') }}"
                                                 {{ $isShowDetail ? 'disabled' : '' }}>
                                         </td>
-                                        <td>
-                                            <input type="number" name="total_employee" class="form-control"
+                                        <td class="border">
+                                            <input type="number" name="total_employee" class="form-control" required
                                                 value="{{ $isShowDetail ? $data->total_employee : old('total_employee') }}"
                                                 {{ $isShowDetail ? 'disabled' : '' }}>
                                         </td>
-                                        <td>
-                                            <input type="text" name="employee_name" class="form-control"
+                                        <td class="border">
+                                            <input type="text" name="employee_name" class="form-control" required
                                                 value="{{ $isShowDetail ? $data->employee_name : old('employee_name') }}"
                                                 {{ $isShowDetail ? 'disabled' : '' }}>
                                         </td>
-                                        <td>
-                                            <input type="text" name="reviewer_name" class="form-control"
+                                        <td class="border">
+                                            <input type="text" name="reviewer_name" class="form-control" required
                                                 value="{{ $isShowDetail ? $data->reviewer_name : old('reviewer_name') }}"
                                                 {{ $isShowDetail ? 'disabled' : '' }}>
                                         </td>
@@ -423,12 +423,12 @@
                                             </td>
                                         </tr>
                                         <tr class="text-center">
-                                            <td class="text-wrap px-2">Gerakan mengangkat tangan berulang diatas kepala atau siku diatas bahu lebih dari sekali per menit</td>
-                                            <td class="text-wrap px-2">Lebih dari 4 jam total per hari</td>
-                                            <td class="text-center">
+                                            <td class="text-wrap px-2 border">Gerakan mengangkat tangan berulang diatas kepala atau siku diatas bahu lebih dari sekali per menit</td>
+                                            <td class="text-wrap px-2 border">Lebih dari 4 jam total per hari</td>
+                                            <td class="text-center border">
                                                 <img src="{{ asset('images/ergonomi/bahu2.png') }}" class="img-fluid" style="max-height: 100px">
                                             </td>
-                                            <td class="text-center">
+                                            <td class="text-center border">
                                                 <div class="form-check d-flex justify-content-center">
                                                     <input type="checkbox" class="form-check-input" name="wmsd_bahu_2"
                                                         {{ $isShowDetail && $data->wmsd_bahu_2 ? 'checked' : '' }}
@@ -511,12 +511,12 @@
                                             </td>
                                         </tr>
                                         <tr class="text-center">
-                                            <td>Berlutut</td>
-                                            <td>Lebih dari 4 Jam total per hari</td>
-                                            <td class="text-center">
+                                            <td class="border">Berlutut</td>
+                                            <td class="border">Lebih dari 4 Jam total per hari</td>
+                                            <td class="text-center border">
                                                 <img src="{{ asset('images/ergonomi/punggung2.png') }}" class="img-fluid" style="max-height: 100px">
                                             </td>
-                                            <td class="text-center">
+                                            <td class="text-center border">
                                                 <div class="form-check d-flex justify-content-center">
                                                     <input type="checkbox" class="form-check-input" name="wmsd_punggung_2"
                                                         {{ $isShowDetail && $data->wmsd_punggung_2 ? 'checked' : '' }}
@@ -568,7 +568,7 @@
                                             <td rowspan="3" class="text-wrap px-2">Menjepit beban tanpa bantuan dengan berat 1 (satu) Kilogram atau lebih, atau menjepit dengan tenaga 1 (satu) Kilogram per tangan</td>
                                             <td class="text-wrap px-2">Gerakan Sering Berulang</td>
                                             <td class="text-wrap px-2">Lebih dari 3 Jam total per hari</td>
-                                            <td rowspan="3">
+                                            <td rowspan="3" class="text-center border">
                                                 <img src="{{ asset('images/ergonomi/tangan_kuat1.png') }}" class="img-fluid" style="max-height: 100px"><br/>
                                                 <img src="{{ asset('images/ergonomi/tangan_kuat2.png') }}" class="img-fluid" style="max-height: 100px"><br/>
                                                 <img src="{{ asset('images/ergonomi/tangan_kuat3.png') }}" class="img-fluid" style="max-height: 100px">
@@ -582,9 +582,9 @@
                                             </td>
                                         </tr>
                                         <tr class="text-center">
-                                            <td class="text-wrap px-2">Pergelangan tangan menekuk sebesar 30° atau lebih, atau sebesar 45° atau kelurusan tulang hasta sebesar 30° atau lebih</td>
-                                            <td>Lebih dari 3 Jam total per hari</td>
-                                            <td>
+                                            <td class="text-wrap px-2 border">Pergelangan tangan menekuk sebesar 30° atau lebih, atau sebesar 45° atau kelurusan tulang hasta sebesar 30° atau lebih</td>
+                                            <td class="text-wrap px-2 border">Lebih dari 3 Jam total per hari</td>
+                                            <td class="text-center border">
                                                 <div class="form-check d-flex justify-content-center">
                                                     <input type="checkbox" class="form-check-input" name="wmsd_tangan_kuat_2"
                                                         {{ $isShowDetail && $data->wmsd_tangan_kuat_2 ? 'checked' : '' }}
@@ -593,9 +593,9 @@
                                             </td>
                                         </tr>
                                         <tr class="text-center">
-                                            <td>Tidak ada factor Risiko</td>
-                                            <td>Lebih dari 4 Jam total per hari</td>
-                                            <td>
+                                            <td class="border">Tidak ada factor Risiko</td>
+                                            <td class="border">Lebih dari 4 Jam total per hari</td>
+                                            <td class="text-center border">
                                                 <div class="form-check d-flex justify-content-center">
                                                     <input type="checkbox" class="form-check-input" name="wmsd_tangan_kuat_3"
                                                         {{ $isShowDetail && $data->wmsd_tangan_kuat_3 ? 'checked' : '' }}
@@ -652,10 +652,10 @@
                                             </td>
                                         </tr>
                                         <tr class="text-center">
-                                            <td class="text-wrap px-2">Pergelangan tangan menekuk sebesar 30° atau lebih, atau sebesar 45° atau kelurusan tulang hasta sebesar 30° atau lebih</td>
-                                            <td class="text-wrap px-2">Pergelangan tangan menekuk sebesar 30° atau lebih, atau sebesar 45° atau kelurusan tulang hasta sebesar 30° atau lebih dan kuat, tenaga berlebihan pada tangan</td>
-                                            <td class="text-wrap px-2">Lebih dari 2 Jam total per hari</td>
-                                            <td>
+                                            <td class="text-wrap px-2 border">Pergelangan tangan menekuk sebesar 30° atau lebih, atau sebesar 45° atau kelurusan tulang hasta sebesar 30° atau lebih</td>
+                                            <td class="text-wrap px-2 border">Pergelangan tangan menekuk sebesar 30° atau lebih, atau sebesar 45° atau kelurusan tulang hasta sebesar 30° atau lebih dan kuat, tenaga berlebihan pada tangan</td>
+                                            <td class="text-wrap px-2 border">Lebih dari 2 Jam total per hari</td>
+                                            <td class="text-center border">
                                                 <div class="form-check d-flex justify-content-center">
                                                     <input type="checkbox" class="form-check-input" name="wmsd_berulang_2"
                                                         {{ $isShowDetail && $data->wmsd_berulang_2 ? 'checked' : '' }}
@@ -687,40 +687,64 @@
                             </div>
 
                             <!-- Signatures -->
-                            <div class="table-responsive">
-                                <table class="table table-bordered">
-                                    <tr>
-                                        <td style="width: 33%">
-                                            <strong>Disusun Oleh / Propose By</strong>
-                                        </td>
-                                        <td style="width: 33%">
-                                            <strong>Diperiksa Oleh / Checked By</strong>
-                                        </td>
-                                        <td style="width: 33%">
-                                            <strong>Tanggal / Date</strong>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div>Paramedic</div>
-                                            <input type="text" name="paramedic_name" class="form-control"
-                                                value="{{ $isShowDetail ? $data->paramedic_name : old('paramedic_name') }}"
-                                                {{ $isShowDetail ? 'disabled' : '' }}>
-                                        </td>
-                                        <td>
-                                            <div>Doctor</div>
-                                            <input type="text" name="doctor_name" class="form-control"
-                                                value="{{ $isShowDetail ? $data->doctor_name : old('doctor_name') }}"
-                                                {{ $isShowDetail ? 'disabled' : '' }}>
-                                        </td>
-                                        <td>
-                                            <div>Dept Head of SHE</div>
-                                            <input type="text" name="dept_head_name" class="form-control"
-                                                value="{{ $isShowDetail ? $data->dept_head_name : old('dept_head_name') }}"
-                                                {{ $isShowDetail ? 'disabled' : '' }}>
-                                        </td>
-                                    </tr>
-                                </table>
+                            <div class="row g-3">
+                                <div class="col-md-8">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered">
+                                            <tr>
+                                                <td colspan="2" class="text-center">
+                                                    <strong>Disusun Oleh / <span class="text-primary">Propose By</span></strong>
+                                                </td>
+                                                <td class="text-center">
+                                                    <strong>Diperiksa Oleh / <span class="text-primary">Checked By</span></strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="width: 25%" class="text-center">Paramedic</td>
+                                                <td style="width: 25%" class="text-center">Doctor</td>
+                                                <td style="width: 50%" class="text-center">Dept Head of SHE</td>
+                                            </tr>
+                                            <tr style="height: 100px">
+                                                <td class="align-bottom text-center border">
+                                                    <input type="text" name="paramedic_name" class="form-control text-center" required
+                                                        value="{{ $isShowDetail ? $data->paramedic_name : old('paramedic_name') }}"
+                                                        {{ $isShowDetail ? 'disabled' : '' }}>
+                                                </td>
+                                                <td class="align-bottom text-center border">
+                                                    <input type="text" name="doctor_name" class="form-control text-center" required
+                                                        value="{{ $isShowDetail ? $data->doctor_name : old('doctor_name') }}"
+                                                        {{ $isShowDetail ? 'disabled' : '' }}>
+                                                </td>
+                                                <td class="align-bottom text-center border">
+                                                    <input type="text" name="dept_head_name" class="form-control text-center" required
+                                                        value="{{ $isShowDetail ? $data->dept_head_name : old('dept_head_name') }}"
+                                                        {{ $isShowDetail ? 'disabled' : '' }}>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered">
+                                            <tr>
+                                                <td class="text-center">
+                                                    <div class="py-2">
+                                                        <strong>Tanggal<br/><span class="text-primary">Date</span></strong>
+                                                    </div>
+                                                    
+                                                </td>
+                                            </tr>
+                                            <tr style="height: 100px">
+                                                <td class="align-bottom text-center border">
+                                                    <input type="date" name="review_date" class="form-control text-center mb-2" required
+                                                        value="{{ $isShowDetail ? $data->review_date : old('review_date') }}"
+                                                        {{ $isShowDetail ? 'disabled' : '' }}>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
 
                             <!-- Form Actions -->
@@ -755,4 +779,96 @@
         margin-left: 0.5rem;
     }
 </style>
+@endsection
+
+@section('custom-js')
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+    <script>
+    $(function() {
+        var form = $("form");
+        var submitBtn = form.find('button[type="submit"]');
+
+        // Function to validate required fields
+        function validateForm() {
+            var isValid = true;
+            var requiredFields = [
+                { name: 'job_position', label: 'Job Position' },
+                { name: 'evaluation_date', label: 'Evaluation Date' },
+                { name: 'total_employee', label: 'Total Employee' },
+                { name: 'employee_name', label: 'Employee Name' },
+                { name: 'reviewer_name', label: 'Reviewer Name' },
+                { name: 'paramedic_name', label: 'Paramedic Name' },
+                { name: 'doctor_name', label: 'Doctor Name' },
+                { name: 'dept_head_name', label: 'Department Head Name' }
+            ];
+
+            var missingFields = [];
+            requiredFields.forEach(function(field) {
+                var value = $('[name="' + field.name + '"]').val();
+                if (!value || value.trim() === '') {
+                    isValid = false;
+                    missingFields.push(field.label);
+                }
+            });
+
+            if (!isValid) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Required Fields Missing',
+                    text: 'Please fill in the following fields:\n' + missingFields.join('\n')
+                });
+            }
+
+            return isValid;
+        }
+
+        form.submit(function(e) {
+            e.preventDefault();
+
+            // Validate form before submission
+            if (!validateForm()) {
+                return false;
+            }
+
+            submitBtn.prop('disabled', true);
+            var formData = new FormData(this);
+            
+            axios.post('{{ route("she-inspeksi.submit") }}', formData)
+                .then(function(response) {
+                    if (response.data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: response.data.message
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = '{{ route("she-inspeksi.dashboard") }}';
+                            }
+                        });
+                    }
+                })
+                .catch(function(error) {
+                    let errorMessage = 'Terjadi kesalahan pada sistem';
+                    
+                    if (error.response) {
+                        if (error.response.data.errors) {
+                            errorMessage = Object.values(error.response.data.errors).flat().join('\n');
+                        } else if (error.response.data.message) {
+                            errorMessage = error.response.data.message;
+                        }
+                    }
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: errorMessage
+                    });
+                })
+                .finally(function() {
+                    submitBtn.prop('disabled', false);
+                });
+        });
+    });
+    </script>
 @endsection
