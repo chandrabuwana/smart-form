@@ -505,7 +505,7 @@
                                             <td class="text-wrap px-2">Bekerja dengan menggunakan tangan diatas bahu atau siku diatas bahu</td>
                                             <td class="text-wrap px-2">Lebih dari 4 jam total per hari</td>
                                             <td class="text-center">
-                                                <img src="{{ asset('images/ergonomi/bahu1.png') }}" class="img-fluid" style="max-height: 100px">
+                                                <img src="{{ asset('img/form-she-ergonomi/organ1.png') }}" class="img-fluid" style="max-height: 100px">
                                             </td>
                                             <td class="text-center">
                                                 <div class="form-check d-flex justify-content-center">
@@ -519,7 +519,7 @@
                                             <td class="text-wrap px-2 border">Gerakan mengangkat tangan berulang diatas kepala atau siku diatas bahu lebih dari sekali per menit</td>
                                             <td class="text-wrap px-2 border">Lebih dari 4 jam total per hari</td>
                                             <td class="text-center border">
-                                                <img src="{{ asset('images/ergonomi/bahu2.png') }}" class="img-fluid" style="max-height: 100px">
+                                                <img src="{{ asset('img/form-she-ergonomi/organ2.png') }}" class="img-fluid" style="max-height: 100px">
                                             </td>
                                             <td class="text-center border">
                                                 <div class="form-check d-flex justify-content-center">
@@ -539,7 +539,7 @@
                                             <td>Bekerja dengan leher menekuk 45° derajat (tanpa penopang atau kemungkinan postur bervariasi)</td>
                                             <td>Lebih dari 4 jam total per hari</td>
                                             <td class="text-center">
-                                                <img src="{{ asset('images/ergonomi/leher.png') }}" class="img-fluid" style="max-height: 100px">
+                                                <img src="{{ asset('img/form-she-ergonomi/organ3.png') }}" class="img-fluid" style="max-height: 100px">
                                             </td>
                                             <td class="text-center">
                                                 <div class="form-check d-flex justify-content-center">
@@ -559,7 +559,7 @@
                                             <td>Bekerja dengan punggung lebih dari 30° (tanpa penopang atau kemampuan postur bervariasi)</td>
                                             <td>Lebih dari 4 jam total per hari</td>
                                             <td class="text-center">
-                                                <img src="{{ asset('images/ergonomi/punggung1.png') }}" class="img-fluid" style="max-height: 100px">
+                                                <img src="{{ asset('img/form-she-ergonomi/organ4.png') }}" class="img-fluid" style="max-height: 100px">
                                             </td>
                                             <td class="text-center">
                                                 <div class="form-check d-flex justify-content-center">
@@ -573,7 +573,7 @@
                                             <td class="text-wrap px-2">Bekerja dengan punggung lebih dari 45° (tanpa penopang atau kemampuan postur bervariasi)</td>
                                             <td class="text-wrap px-2">Lebih dari 2 Jam total per hari</td>
                                             <td class="text-center">
-                                                <img src="{{ asset('images/ergonomi/punggung2.png') }}" class="img-fluid" style="max-height: 100px">
+                                                <img src="{{ asset('img/form-she-ergonomi/organ5.png') }}" class="img-fluid" style="max-height: 100px">
                                             </td>
                                             <td class="text-center">
                                                 <div class="form-check d-flex justify-content-center">
@@ -593,7 +593,7 @@
                                             <td class="border">Berjongkok</td>
                                             <td class="border">Lebih dari 2 Jam total per hari</td>
                                             <td class="text-center border">
-                                                <img src="{{ asset('images/ergonomi/punggung1.png') }}" class="img-fluid" style="max-height: 100px">
+                                                <img src="{{ asset('img/form-she-ergonomi/lutut1.png') }}" class="img-fluid" style="max-height: 100px">
                                             </td>
                                             <td class="text-center border">
                                                 <div class="form-check d-flex justify-content-center">
@@ -607,7 +607,7 @@
                                             <td class="border">Berlutut</td>
                                             <td class="border">Lebih dari 4 Jam total per hari</td>
                                             <td class="text-center border">
-                                                <img src="{{ asset('images/ergonomi/punggung2.png') }}" class="img-fluid" style="max-height: 100px">
+                                                <img src="{{ asset('img/form-she-ergonomi/lutut2.png') }}" class="img-fluid" style="max-height: 100px">
                                             </td>
                                             <td class="text-center border">
                                                 <div class="form-check d-flex justify-content-center">
@@ -662,9 +662,9 @@
                                             <td class="text-wrap px-2">Gerakan Sering Berulang</td>
                                             <td class="text-wrap px-2">Lebih dari 3 Jam total per hari</td>
                                             <td rowspan="3" class="text-center border">
-                                                <img src="{{ asset('images/ergonomi/tangan_kuat1.png') }}" class="img-fluid" style="max-height: 100px"><br/>
-                                                <img src="{{ asset('images/ergonomi/tangan_kuat2.png') }}" class="img-fluid" style="max-height: 100px"><br/>
-                                                <img src="{{ asset('images/ergonomi/tangan_kuat3.png') }}" class="img-fluid" style="max-height: 100px">
+                                                <img src="{{ asset('img/form-she-ergonomi/lengan1.png') }}" class="img-fluid" style="max-height: 100px"><br/>
+                                                <img src="{{ asset('img/form-she-ergonomi/lengan2.png') }}" class="img-fluid" style="max-height: 100px"><br/>
+                                                <img src="{{ asset('img/form-she-ergonomi/lengan3.png') }}" class="img-fluid" style="max-height: 100px">
                                             </td>
                                             <td>
                                                 <div class="form-check d-flex justify-content-center">
