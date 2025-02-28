@@ -128,7 +128,7 @@
                                     <tr>
                                         <td style="width: 5%" class="text-center border">1</td>
                                         <td style="width: 15%" class="border">
-                                            <img src="{{ asset('images/ergonomi/postur1.png') }}" class="img-fluid">
+                                            <img src="{{ asset('img/form-she-ergonomi/postur1.png') }}" class="img-fluid">
                                         </td>
                                         <td style="width: 40%" class="text-wrap text-center border">Bekerja dengan tangan diatas kepala, atau siku diatas bahu lebih dari 2 (dua) jam per hari</td>
                                         <td class="border">
@@ -149,7 +149,7 @@
                                     <tr>
                                         <td style="width: 5%" class="text-center border">2</td>
                                         <td style="width: 15%" class="border">
-                                            <img src="{{ asset('images/ergonomi/postur2.png') }}" class="img-fluid">
+                                            <img src="{{ asset('img/form-she-ergonomi/postur2.png') }}" class="img-fluid">
                                         </td>
                                         <td style="width: 40%" class="text-wrap text-center border">Bekerja dengan tangan diatas kepala, atau siku diatas bahu lebih dari 2 (dua) jam per hari</td>
                                         <td class="border">
@@ -170,7 +170,7 @@
                                     <tr>
                                         <td style="width: 5%" class="text-center border">3</td>
                                         <td style="width: 15%" class="border">
-                                            <img src="{{ asset('images/ergonomi/postur3.png') }}" class="img-fluid">
+                                            <img src="{{ asset('img/form-she-ergonomi/postur3.png') }}" class="img-fluid">
                                         </td>
                                         <td style="width: 40%" class="text-wrap text-center border">Bekerja dengan tangan diatas kepala, atau siku diatas bahu lebih dari 2 (dua) jam per hari</td>
                                         <td class="border">
@@ -191,7 +191,7 @@
                                     <tr>
                                         <td style="width: 5%" class="text-center border">4</td>
                                         <td style="width: 15%" class="border">
-                                            <img src="{{ asset('images/ergonomi/postur4.png') }}" class="img-fluid">
+                                            <img src="{{ asset('img/form-she-ergonomi/postur4.png') }}" class="img-fluid">
                                         </td>
                                         <td style="width: 40%" class="text-wrap text-center border">Bekerja dengan tangan diatas kepala, atau siku diatas bahu lebih dari 2 (dua) jam per hari</td>
                                         <td class="border">
@@ -226,7 +226,7 @@
                                     <tr>
                                         <td style="width: 5%" class="text-center">5</td>
                                         <td style="width: 15%">
-                                            <img src="{{ asset('images/ergonomi/tenaga1.png') }}" class="img-fluid">
+                                            <img src="{{ asset('img/form-she-ergonomi/postur5.png') }}" class="img-fluid">
                                         </td>
                                         <td style="width: 40%" class="text-wrap text-center">Menjepit objek tanpa bantuan dengan berat 1 (satu) kilogram pertangan, atau menjepit dengan tenaga 2 (dua) kilogram lebih dari 2 (dua) jam sehari (bandingkan dengan menjepit setengah rim kertas)</td>
                                         <td>
@@ -246,7 +246,7 @@
                                     <tr>
                                         <td style="width: 5%" class="text-center border">6</td>
                                         <td style="width: 15%" class="border">
-                                            <img src="{{ asset('images/ergonomi/tenaga2.png') }}" class="img-fluid">
+                                            <img src="{{ asset('img/form-she-ergonomi/postur5.png') }}" class="img-fluid">
                                         </td>
                                         <td style="width: 40%" class="text-wrap text-center border">Mencengkram objek tanpa bantuan dengan beban 5 kilogram atau lebih per tangan atau menjepit dengan tenaga sebesar 5 kilogram per tangan, lebih dari 2 (dua) jam sehari</td>
                                         <td class="border">
@@ -259,6 +259,44 @@
                                             <div class="input-group input-group-static">
                                                 <textarea name="item_6_observation" class="form-control" rows="2"
                                                     {{ $isShowDetail ? 'disabled' : '' }}>{{ $isShowDetail ? $data->item_6_observation : old('item_6_observation') }}</textarea>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 5%" class="text-center border">7</td>
+                                        <td style="width: 15%" class="border">
+                                            <img src="{{ asset('img/form-she-ergonomi/postur6.png') }}" class="img-fluid">
+                                        </td>
+                                        <td style="width: 40%" class="text-wrap text-center border">Mengulang pergerakan yang sama pada leher, bahu, siku, pergelangan tangan, atau tangan (diluar kegiatan jari) tanpa variasi atau sedikit variasi beberapa detik, lebih dari 2 (dua) jam total per hari</td>
+                                        <td class="border">
+                                            <div class="form-check d-flex align-items-center mb-2">
+                                                <input type="checkbox" class="form-check-input" name="item_7"
+                                                    {{ $isShowDetail && $data->item_7 ? 'checked' : '' }}
+                                                    {{ $isShowDetail ? 'disabled' : '' }}>
+                                                <label class="form-check-label ms-2">Status</label>
+                                            </div>
+                                            <div class="input-group input-group-static">
+                                                <textarea name="item_7_observation" class="form-control" rows="2"
+                                                    {{ $isShowDetail ? 'disabled' : '' }}>{{ $isShowDetail ? $data->item_7_observation : old('item_7_observation') }}</textarea>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 5%" class="text-center border">8</td>
+                                        <td style="width: 15%" class="border">
+                                            <img src="{{ asset('img/form-she-ergonomi/postur8.png') }}" class="img-fluid">
+                                        </td>
+                                        <td style="width: 40%" class="text-wrap text-center border">Mengerjakan pengetikan secara intensif lebih dari 4 (empat) jam dalam sehari</td>
+                                        <td class="border">
+                                            <div class="form-check d-flex align-items-center mb-2">
+                                                <input type="checkbox" class="form-check-input" name="item_8"
+                                                    {{ $isShowDetail && $data->item_8 ? 'checked' : '' }}
+                                                    {{ $isShowDetail ? 'disabled' : '' }}>
+                                                <label class="form-check-label ms-2">Status</label>
+                                            </div>
+                                            <div class="input-group input-group-static">
+                                                <textarea name="item_8_observation" class="form-control" rows="2"
+                                                    {{ $isShowDetail ? 'disabled' : '' }}>{{ $isShowDetail ? $data->item_8_observation : old('item_8_observation') }}</textarea>
                                             </div>
                                         </td>
                                     </tr>
@@ -276,23 +314,79 @@
                                             <strong>Komentar Observasi / Comments Observation</strong>
                                         </td>
                                     </tr>
-                                    <!-- Items 7-12 -->
                                     <tr>
-                                        <td style="width: 5%" class="text-center border">7</td>
+                                        <td style="width: 5%" class="text-center border">9</td>
                                         <td style="width: 15%" class="border">
-                                            <img src="{{ asset('images/ergonomi/dampak1.png') }}" class="img-fluid">
+                                            <img src="{{ asset('img/form-she-ergonomi/postur9.png') }}" class="img-fluid">
                                         </td>
-                                        <td style="width: 40%" class="text-wrap text-center border">Mengulang pergerakan yang sama pada leher, bahu, siku, pergelangan tangan, atau tangan (diluar kegiatan jari) tanpa variasi atau sedikit variasi beberapa detik, lebih dari 2 (dua) jam total per hari</td>
+                                        <td style="width: 40%" class="text-wrap text-center border">Menggunakan tangan (telapak tangan menyiku) untuk memukul atau lutut sebagai dasar untuk memukul selama lebih dari 10 kali per jam dengan toal 2 (dua) jam sehari</td>
                                         <td class="border">
                                             <div class="form-check d-flex align-items-center mb-2">
-                                                <input type="checkbox" class="form-check-input" name="item_7"
-                                                    {{ $isShowDetail && $data->item_7 ? 'checked' : '' }}
+                                                <input type="checkbox" class="form-check-input" name="item_9"
+                                                    {{ $isShowDetail && $data->item_9 ? 'checked' : '' }}
                                                     {{ $isShowDetail ? 'disabled' : '' }}>
                                                 <label class="form-check-label ms-2">Status</label>
                                             </div>
                                             <div class="input-group input-group-static">
-                                                <textarea name="item_7_observation" class="form-control" rows="2"
-                                                    {{ $isShowDetail ? 'disabled' : '' }}>{{ $isShowDetail ? $data->item_7_observation : old('item_7_observation') }}</textarea>
+                                                <textarea name="item_9_observation" class="form-control" rows="2"
+                                                    {{ $isShowDetail ? 'disabled' : '' }}>{{ $isShowDetail ? $data->item_9_observation : old('item_9_observation') }}</textarea>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 5%" class="text-center border">10</td>
+                                        <td style="width: 15%" class="border">
+                                            <img src="{{ asset('img/form-she-ergonomi/postur10.png') }}" class="img-fluid">
+                                        </td>
+                                        <td style="width: 40%" class="text-wrap text-center border">Mengangkat benda lebih dari 35 (tiga puluh lima) kilogram per hari atau lebih dari 20 (dua puluh) kilogram leboh dari 10 (sepuluh) kali per hari</td>
+                                        <td class="border">
+                                            <div class="form-check d-flex align-items-center mb-2">
+                                                <input type="checkbox" class="form-check-input" name="item_10"
+                                                    {{ $isShowDetail && $data->item_10 ? 'checked' : '' }}
+                                                    {{ $isShowDetail ? 'disabled' : '' }}>
+                                                <label class="form-check-label ms-2">Status</label>
+                                            </div>
+                                            <div class="input-group input-group-static">
+                                                <textarea name="item_10_observation" class="form-control" rows="2"
+                                                    {{ $isShowDetail ? 'disabled' : '' }}>{{ $isShowDetail ? $data->item_10_observation : old('item_9_observation') }}</textarea>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 5%" class="text-center border">11</td>
+                                        <td style="width: 15%" class="border">
+                                            <img src="{{ asset('img/form-she-ergonomi/postur11.png') }}" class="img-fluid">
+                                        </td>
+                                        <td style="width: 40%" class="text-wrap text-center border">Mengangkat objek lebih dari 5 (lima) kilogram jika dilakukan dalam dua kali per menit lebih dari total 2 (dua) jam sehari</td>
+                                        <td class="border">
+                                            <div class="form-check d-flex align-items-center mb-2">
+                                                <input type="checkbox" class="form-check-input" name="item_12"
+                                                    {{ $isShowDetail && $data->item_11 ? 'checked' : '' }}
+                                                    {{ $isShowDetail ? 'disabled' : '' }}>
+                                                <label class="form-check-label ms-2">Status</label>
+                                            </div>
+                                            <div class="input-group input-group-static">
+                                                <textarea name="item_11_observation" class="form-control" rows="2"
+                                                    {{ $isShowDetail ? 'disabled' : '' }}>{{ $isShowDetail ? $data->item_11_observation : old('item_11_observation') }}</textarea>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 5%" class="text-center border">12</td>
+                                        <td style="width: 15%" class="border">
+                                            <img src="{{ asset('img/form-she-ergonomi/postur12.png') }}" class="img-fluid">
+                                        </td>
+                                        <td style="width: 40%" class="text-wrap text-center border">Mengangkat objek lebih dari 5 (lima) kilogram jika dilakukan dalam dua kali per menit lebih dari total 2 (dua) jam sehari</td>
+                                        <td class="border">
+                                            <div class="form-check d-flex align-items-center mb-2">
+                                                <input type="checkbox" class="form-check-input" name="item_12"
+                                                    {{ $isShowDetail && $data->item_12 ? 'checked' : '' }}
+                                                    {{ $isShowDetail ? 'disabled' : '' }}>
+                                                <label class="form-check-label ms-2">Status</label>
+                                            </div>
+                                            <div class="input-group input-group-static">
+                                                <textarea name="item_12_observation" class="form-control" rows="2"
+                                                    {{ $isShowDetail ? 'disabled' : '' }}>{{ $isShowDetail ? $data->item_12_observation : old('item_12_observation') }}</textarea>
                                             </div>
                                         </td>
                                     </tr>
@@ -314,7 +408,7 @@
                                     <tr>
                                         <td style="width: 5%" class="text-center">13</td>
                                         <td style="width: 15%">
-                                            <img src="{{ asset('images/ergonomi/getaran1.png') }}" class="img-fluid">
+                                            <img src="{{ asset('img/form-she-ergonomi/postur9.png') }}" class="img-fluid">
                                         </td>
                                         <td style="width: 40%" class="text-wrap text-center">Menggunakan Impact Wrenches, vibration impact, dan peralatan tangan lainnya yang memiliki getaran tinggi lebih dari 30 (tigapuluh) menit per hari</td>
                                         <td>
@@ -333,7 +427,7 @@
                                     <tr>
                                         <td style="width: 5%" class="text-center border">14</td>
                                         <td style="width: 15%" class="border">
-                                            <img src="{{ asset('images/ergonomi/getaran2.png') }}" class="img-fluid">
+                                            <img src="{{ asset('img/form-she-ergonomi/postur14.png') }}" class="img-fluid">
                                         </td>
                                         <td style="width: 40%" class="text-wrap text-center border">Menggunakan gerinda (gerinda tangan atau stand), atau peralatan tangan lain yang biasasnya memiliki getaran sedang lebih dari 2 (dua) jam total dalam sehari</td>
                                         <td class="border">
@@ -833,7 +927,7 @@
             submitBtn.prop('disabled', true);
             var formData = new FormData(this);
             
-            axios.post('{{ route("she-inspeksi.submit") }}', formData)
+            axios.post('{{ route("she.ergonomi.store") }}', formData)
                 .then(function(response) {
                     if (response.data.success) {
                         Swal.fire({
@@ -842,7 +936,7 @@
                             text: response.data.message
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                window.location.href = '{{ route("she-inspeksi.dashboard") }}';
+                                window.location.href = '{{ route("she.ergonomi.dashboard") }}';
                             }
                         });
                     }
