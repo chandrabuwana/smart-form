@@ -109,31 +109,31 @@
                                             {{ $isShowDetail ? 'disabled' : '' }}>
                                             <option disabled selected>-- Select Site --</option>
                                             <option value="agm"
-                                                {{ old('site', $record->lokasi ?? '') == 'agm' ? 'selected' : '' }}>
+                                                {{ old('site', $record->site ?? '') == 'agm' ? 'selected' : '' }}>
                                                 agm</option>
                                             <option value="mbl"
-                                                {{ old('site', $record->lokasi ?? '') == 'mbl' ? 'selected' : '' }}>
+                                                {{ old('site', $record->site ?? '') == 'mbl' ? 'selected' : '' }}>
                                                 mbl</option>
                                             <option value="mme"
-                                                {{ old('site', $record->lokasi ?? '') == 'mme' ? 'selected' : '' }}>
+                                                {{ old('site', $record->site ?? '') == 'mme' ? 'selected' : '' }}>
                                                 mme</option>
                                             <option value="mas"
-                                                {{ old('site', $record->lokasi ?? '') == 'mas' ? 'selected' : '' }}>
+                                                {{ old('site', $record->site ?? '') == 'mas' ? 'selected' : '' }}>
                                                 mas</option>
                                             <option value="pmss"
-                                                {{ old('site', $record->lokasi ?? '') == 'pmss' ? 'selected' : '' }}>
+                                                {{ old('site', $record->site ?? '') == 'pmss' ? 'selected' : '' }}>
                                                 pmss</option>
                                             <option value="taj"
-                                                {{ old('site', $record->lokasi ?? '') == 'taj' ? 'selected' : '' }}>
+                                                {{ old('site', $record->site ?? '') == 'taj' ? 'selected' : '' }}>
                                                 taj</option>
                                             <option value="bssr"
-                                                {{ old('site', $record->lokasi ?? '') == 'bssr' ? 'selected' : '' }}>
+                                                {{ old('site', $record->site ?? '') == 'bssr' ? 'selected' : '' }}>
                                                 bssr</option>
                                             <option value="tdm"
-                                                {{ old('site', $record->lokasi ?? '') == 'tdm' ? 'selected' : '' }}>
+                                                {{ old('site', $record->site ?? '') == 'tdm' ? 'selected' : '' }}>
                                                 tdm</option>
                                             <option value="msj"
-                                                {{ old('site', $record->lokasi ?? '') == 'msj' ? 'selected' : '' }}>
+                                                {{ old('site', $record->site ?? '') == 'msj' ? 'selected' : '' }}>
                                                 msj</option>
                                         </select>
                                     </div>
