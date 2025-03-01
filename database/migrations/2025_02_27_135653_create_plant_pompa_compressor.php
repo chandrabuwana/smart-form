@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('engine_model');
             $table->string('generator_model');
             $table->string('paraf_item');
+            $table->string('site');
             $table->string('question1');
             $table->string('question2');
             $table->string('question3');
