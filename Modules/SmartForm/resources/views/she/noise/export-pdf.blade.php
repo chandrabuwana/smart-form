@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
     <title>Noise Survey Form</title>
@@ -9,89 +10,122 @@
             font-size: 12px;
             line-height: 1.4;
         }
+
         .header-table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
         }
+
         .header-table td {
             padding: 5px;
         }
+
         .logo {
             width: 120px;
         }
+
         .main-title {
             font-size: 16px;
             font-weight: bold;
             text-align: center;
         }
+
         .info-table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
         }
+
         .info-table td {
             padding: 5px;
             border: 1px solid #000;
             background-color: #f0f0f0;
         }
+
         .risk-table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
         }
+
         .risk-table th,
         .risk-table td {
             padding: 5px;
             border: 1px solid #000;
             font-size: 11px;
         }
+
         .risk-table th {
             background-color: #4472c4;
             color: white;
             text-align: center;
         }
-        .risk-critical { background-color: #ff0000; color: white; }
-        .risk-high { background-color: #ffc000; }
-        .risk-medium { background-color: #ffff00; }
-        .risk-low { background-color: #92d050; }
+
+        .risk-critical {
+            background-color: #ff0000;
+            color: white;
+        }
+
+        .risk-high {
+            background-color: #ffc000;
+        }
+
+        .risk-medium {
+            background-color: #ffff00;
+        }
+
+        .risk-low {
+            background-color: #92d050;
+        }
+
         .measurement-table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
         }
+
         .measurement-table th,
         .measurement-table td {
             padding: 5px;
             border: 1px solid #000;
             font-size: 11px;
         }
+
         .measurement-table th {
             background-color: #ff9900;
             color: white;
             text-align: center;
         }
+
         .findings-table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
         }
+
         .findings-table td {
             padding: 5px;
             border: 1px solid #000;
             min-height: 50px;
         }
+
         .signature-table {
             width: 100%;
             border-collapse: collapse;
         }
+
         .signature-table td {
             padding: 5px;
             border: 1px solid #000;
         }
-        .check { font-family: DejaVu Sans, sans-serif; }
+
+        .check {
+            font-family: DejaVu Sans, sans-serif;
+        }
     </style>
 </head>
+
 <body>
     <!-- Header -->
     <table class="header-table" style="border: 1px solid #000;">
@@ -172,7 +206,8 @@
     <table class="measurement-table">
         <thead>
             <tr>
-                <th colspan="5" style="background-color: #4472c4; color: white;">PENGUKURAN KEBISINGAN/ NOISE SURVEY</th>
+                <th colspan="5" style="background-color: #4472c4; color: white;">PENGUKURAN KEBISINGAN/ NOISE SURVEY
+                </th>
             </tr>
             <tr>
                 <th width="5%" style="background-color: #d9d9d9; color: black;">No</th>
@@ -186,49 +221,55 @@
             <tr>
                 <td colspan="5" style="background-color: #ff9900; color: white;">Aktifitas Pekerjaan</td>
             </tr>
-            @foreach($record->activities as $index => $activity)
-            <tr>
-                <td>{{ $index + 1 }}</td>
-                <td>{{ $activity['name'] }}</td>
-                <td style="text-align: center;">&lt; 85-100</td>
-                <td style="text-align: center;">{{ is_numeric($activity['actual']) && $activity['actual'] != 0? number_format($activity['actual'], 1) : '' }}</td>
-                <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">
-                @switch($activity['status'])
-                    @case('below_nab')
-                        &lt; NAB
-                        @break
-                    @case('above_nab')
-                        &gt; NAB
-                        @break
-                    @default
-                        
-                @endswitch
-                </td>
-            </tr>
+            @foreach ($record->activities as $index => $activity)
+                <tr>
+                    <td>{{ $index + 1 }}</td>
+                    <td>{{ $activity['name'] }}</td>
+                    <td style="text-align: center;">&lt; 85-100</td>
+                    <td style="text-align: center;">
+                        {{ is_numeric($activity['actual']) && $activity['actual'] != 0 ? number_format($activity['actual'], 1) : '' }}
+                    </td>
+                    <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">
+                        @switch($activity['status'])
+                            @case('below_nab')
+                                &lt; NAB
+                            @break
+
+                            @case('above_nab')
+                                &gt; NAB
+                            @break
+
+                            @default
+                        @endswitch
+                    </td>
+                </tr>
             @endforeach
-            
+
             <tr>
                 <td colspan="5" style="background-color: #ff9900; color: white;">Area Kerja</td>
             </tr>
-            @foreach($record->work_areas as $index => $area)
-            <tr>
-                <td>{{ $index + 1 }}</td>
-                <td>{{ $area['name'] }}</td>
-                <td style="text-align: center;">&lt; 85-100</td>
-                <td style="text-align: center;">{{ is_numeric($area['actual']) && $area['actual'] != 0 ? number_format($area['actual'], 1) : '' }}</td>
-                <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">
-                    @switch($area['status'])
-                        @case('below_nab')
-                            &lt; NAB
+            @foreach ($record->work_areas as $index => $area)
+                <tr>
+                    <td>{{ $index + 1 }}</td>
+                    <td>{{ $area['name'] }}</td>
+                    <td style="text-align: center;">&lt; 85-100</td>
+                    <td style="text-align: center;">
+                        {{ is_numeric($area['actual']) && $area['actual'] != 0 ? number_format($area['actual'], 1) : '' }}
+                    </td>
+                    <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">
+                        @switch($area['status'])
+                            @case('below_nab')
+                                &lt; NAB
                             @break
-                        @case('above_nab')
-                            &gt; NAB
+
+                            @case('above_nab')
+                                &gt; NAB
                             @break
-                        @default
-                            
-                    @endswitch
-                </td>
-            </tr>
+
+                            @default
+                        @endswitch
+                    </td>
+                </tr>
             @endforeach
         </tbody>
     </table>
@@ -263,4 +304,5 @@
         </tr>
     </table>
 </body>
+
 </html>

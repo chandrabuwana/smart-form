@@ -15,6 +15,7 @@ use Modules\SmartForm\App\Http\Controllers\Master\DashboardController;
 use Modules\SmartForm\App\Http\Controllers\MasterData\MasterFormPICController;
 use Modules\SmartForm\App\Http\Controllers\PDF\HelperPdfMobilisasiFormController;
 use Modules\SmartForm\App\Http\Controllers\PLANT\PlantTransmissionController;
+use Modules\SmartForm\App\Http\Controllers\PLANT\CompressorPompaController;
 use Modules\SmartForm\App\Http\Controllers\Production\ProductionTimeSheetDashboarController;
 use Modules\SmartForm\App\Http\Controllers\Production\AnakAsuhController;
 use Modules\SmartForm\App\Http\Controllers\SHE\DashboardSHEFRM19BController;
@@ -73,14 +74,14 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
 
         // LOG BNP
         Route::prefix('log')->group(function () {
-			
+
             // REQUEST MASTER MENU
             Route::get('/request-master', [LogController::class, 'RequestMasterDashboard'])->name('bss-form.log.request-master.dashboard');
             Route::get('/list', [LogController::class, 'GetListRequestMaster'])->name("bss-form.log.list-request-master");
             Route::get('/form-req-master', [LogController::class, 'formReqMaster'])->name('bss-form.log.form-req-master');
             Route::post('/add-request-master', [LogController::class, 'SubmitFormRequestMaster'])->name("bss-form.log.add-request-master");
             Route::get('/pdf-req-master/{id}', [LogController::class, 'PdfReqMaster'])->name('bss-form.log.pdf-req-master');
-			
+
             // PERMINTAAN PENGISIAN FUEL
             Route::get('/request-fuel', [LogController::class, 'FuelDashboard'])->name('bss-form.log.fuel.dashboard');
             Route::get('/list-fuel', [LogController::class, 'GetListRequestFuel'])->name("bss-form.log.list-fuel");
@@ -90,7 +91,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/update-fuel/{id}', [LogController::class, 'updateReqFuel'])->name('bss-form.log.update-req-fuel');
             Route::get('/delete-fuel/{id}', [LogController::class, 'DeleteReqFuel'])->name('bss-form.log.delete-fuel');
             Route::get('/pdf-fuel/{id}', [LogController::class, 'PdfReqFuel'])->name('bss-form.log.pdf-fuel');
-			
+
             // PENGELUARAN OIL, GREASE & COOLANT MENU
             Route::get('/pengeluaran-oli', [LogController::class, 'PengeluaranOliDashboard'])->name('bss-form.log.pengeluaran-oli.dashboard');
             Route::get('/list-pengeluaran-oli', [LogController::class, 'GetListPengeluaranOli'])->name("bss-form.log.list-pengeluaran-oli");
@@ -180,7 +181,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/store', [TransactionSHEFRM19BController::class, 'addDataPraCheckUp']);
             Route::get('/get-dashboard-data', [TransactionSHEFRM19BController::class, 'helperDataListSHE019B']);
             Route::post('/store-petugas-checker', [TransactionSHEFRM19BController::class, 'addDataCheckUpPetugas']);
-			
+
 			// INSPEKSI APAR
             Route::get('/inspeksi-apar', [AparController::class, 'inspeksiAparDashboard'])->name('bss-form.she-019B.inspeksi-apar.dashboard');
             Route::get('/list-inspeksi-apar', [AparController::class, 'GetListInspeksiApar'])->name("bss-form.she-019B.list-inspeksi-apar");
@@ -349,6 +350,15 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::put('/form/{id}', [AnakAsuhController::class, 'Update'])->name('prod.anak-asuh.form.update');
         });
 
+        Route::prefix('plant-compressor')->group(function(){
+            Route::get('/dashboard', [CompressorPompaController::class, 'dashboard'])->name('plant.compressor.dashboard');
+            Route::get('/form-compressor/export/{id}', [CompressorPompaController::class, 'ExportForm'])->name('plant.compressor.export');
+            Route::get('/form-compressor', [CompressorPompaController::class, 'AddFormCompressor'])->name('plant.compressor.form');
+            Route::post('/store-compressor', [CompressorPompaController::class, 'StoreCompressor'])->name('plant.compressor.store');
+            Route::put('/form-compressor/{id}', [CompressorPompaController::class, 'UpdateCompressor'])->name('plant.compressor.update');
+        });
+
+
     });
 
     Route::get('/dashboard-menu', [AdminController::class, 'index'])->name('dashboard-menu');
@@ -398,7 +408,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
         Route::get('/edit/{id}', [RoleManagementController::class, 'edit'])->name('role-management.edit');
         Route::post('/edit/update/{id}', [RoleManagementController::class, 'update'])->name('role-management.store-edit');
         Route::get('/destroy/{id}', [RoleManagementController::class, 'destroy'])->name('role-management.destroy');
-    }); 
+    });
 
     Route::prefix('user-management')->group(function () {
         Route::get('/dashboard', [UserManagementController::class, 'dashboard'])->name('user-management.dashboard');
