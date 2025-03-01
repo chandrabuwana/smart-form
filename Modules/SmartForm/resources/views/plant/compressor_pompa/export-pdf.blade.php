@@ -2,14 +2,12 @@
 <html>
 
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <title>Form P2H Unit Compressor</title>
-
 
     <style>
         body {
-            font-family: Arial, sans-serif;
-            padding: 3px;
+            font-family: Arial, "Segoe UI", sans-serif;
         }
 
         .container {
@@ -91,6 +89,7 @@
 <body>
     <div class="top">
         <p class="title">BSS-FRM-PLA-040 P2H COMPRESOR POMPA (STANDARD)</p>
+        <P class="title" style="margin-top: 10px;">Site : {{ $record->site }}</P>
     </div>
 
     <div class="detail">
@@ -121,7 +120,7 @@
                 <p>LOKASI: {{ $record->location }}</p>
             </td>
             <td colspan="15" class="text-left" style="border: none;">
-                <p>BULAN: {{ $record->month }}</p>
+                <p>BULAN: {{ \Carbon\Carbon::parse($record->month)->format('F') }}</p>
             </td>
         </tr>
         <tr>
@@ -185,9 +184,7 @@
                 <td class="text-left">Level Oli Mesin</td>
                 <td>AA</td>
                 @for ($i = 1; $i <= 31; $i++)
-                    <td>
-                        {!! isset($question1[$i - 1]) && $question1[$i - 1] === '1' ? '✓' : '' !!}
-                    </td>
+                    <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">{!! isset($question1[$i - 1]) && $question1[$i - 1] === '1' ? '✓' : '' !!}</td>
                 @endfor
             </tr>
             <tr>
@@ -195,9 +192,7 @@
                 <td class="text-left">Level Air Radiator</td>
                 <td>AA</td>
                 @for ($i = 1; $i <= 31; $i++)
-                    <td>
-                        {!! isset($question1[$i - 1]) && $question1[$i - 1] === '1' ? '✓' : '' !!}
-                    </td>
+                    <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">{!! isset($question2[$i - 1]) && $question2[$i - 1] === '1' ? '✓' : '' !!}</td>
                 @endfor
             </tr>
             <tr>
@@ -205,7 +200,7 @@
                 <td class="text-left">Level Air Battery dan Cable Battery</td>
                 <td>B</td>
                 @for ($i = 1; $i <= 31; $i++)
-                    <td>{!! isset($question3[$i - 1]) && $question3[$i - 1] === '1' ? '✓' : '' !!}</td>
+                    <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">{!! isset($question3[$i - 1]) && $question3[$i - 1] === '1' ? '✓' : '' !!}</td>
                 @endfor
             </tr>
             <tr>
@@ -213,7 +208,7 @@
                 <td class="text-left">Level Solar</td>
                 <td>A</td>
                 @for ($i = 1; $i <= 31; $i++)
-                    <td>{!! isset($question4[$i - 1]) && $question4[$i - 1] === '1' ? '✓' : '' !!}</td>
+                    <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">{!! isset($question4[$i - 1]) && $question4[$i - 1] === '1' ? '✓' : '' !!}</td>
                 @endfor
             </tr>
             <tr>
@@ -221,7 +216,7 @@
                 <td class="text-left">Rubber Coupling Mesin</td>
                 <td>A</td>
                 @for ($i = 1; $i <= 31; $i++)
-                    <td>{!! isset($question5[$i - 1]) && $question5[$i - 1] === '1' ? '✓' : '' !!}</td>
+                    <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">{!! isset($question5[$i - 1]) && $question5[$i - 1] === '1' ? '✓' : '' !!}</td>
                 @endfor
             </tr>
             <tr>
@@ -229,7 +224,7 @@
                 <td class="text-left">Kekencangan V-Belt</td>
                 <td>A</td>
                 @for ($i = 1; $i <= 31; $i++)
-                    <td>{!! isset($question6[$i - 1]) && $question6[$i - 1] === '1' ? '✓' : '' !!}</td>
+                    <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">{!! isset($question6[$i - 1]) && $question6[$i - 1] === '1' ? '✓' : '' !!}</td>
                 @endfor
             </tr>
             <tr>
@@ -237,7 +232,7 @@
                 <td class="text-left">Kondisi Guard Fan</td>
                 <td>A</td>
                 @for ($i = 1; $i <= 31; $i++)
-                    <td>{!! isset($question7[$i - 1]) && $question7[$i - 1] === '1' ? '✓' : '' !!}</td>
+                    <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">{!! isset($question7[$i - 1]) && $question7[$i - 1] === '1' ? '✓' : '' !!}</td>
                 @endfor
             </tr>
             <tr>
@@ -245,7 +240,7 @@
                 <td class="text-left">Rubber Mountin Mesin</td>
                 <td>B</td>
                 @for ($i = 1; $i <= 31; $i++)
-                    <td>{!! isset($question8[$i - 1]) && $question8[$i - 1] === '1' ? '✓' : '' !!}</td>
+                    <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">{!! isset($question8[$i - 1]) && $question8[$i - 1] === '1' ? '✓' : '' !!}</td>
                 @endfor
             </tr>
             <tr>
@@ -253,7 +248,7 @@
                 <td class="text-left">Rubber Mounting Compresor</td>
                 <td>B</td>
                 @for ($i = 1; $i <= 31; $i++)
-                    <td>{!! isset($question9[$i - 1]) && $question9[$i - 1] === '1' ? '✓' : '' !!}</td>
+                    <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">{!! isset($question9[$i - 1]) && $question9[$i - 1] === '1' ? '✓' : '' !!}</td>
                 @endfor
             </tr>
             <tr>
@@ -261,7 +256,7 @@
                 <td class="text-left">Radiator dan House Radiator</td>
                 <td>B</td>
                 @for ($i = 1; $i <= 31; $i++)
-                    <td>{!! isset($question10[$i - 1]) && $question10[$i - 1] === '1' ? '✓' : '' !!}</td>
+                    <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">{!! isset($question10[$i - 1]) && $question10[$i - 1] === '1' ? '✓' : '' !!}</td>
                 @endfor
             </tr>
             <tr>
@@ -269,7 +264,7 @@
                 <td class="text-left">Air Cleaner dan Bracket</td>
                 <td>B</td>
                 @for ($i = 1; $i <= 31; $i++)
-                    <td>{!! isset($question11[$i - 1]) && $question11[$i - 1] === '1' ? '✓' : '' !!}</td>
+                    <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">{!! isset($question11[$i - 1]) && $question11[$i - 1] === '1' ? '✓' : '' !!}</td>
                 @endfor
             </tr>
             <tr>
@@ -277,7 +272,7 @@
                 <td class="text-left">Muffler dan Bolt Mounting</td>
                 <td>B</td>
                 @for ($i = 1; $i <= 31; $i++)
-                    <td>{!! isset($question12[$i - 1]) && $question12[$i - 1] === '1' ? '✓' : '' !!}</td>
+                    <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">{!! isset($question12[$i - 1]) && $question12[$i - 1] === '1' ? '✓' : '' !!}</td>
                 @endfor
             </tr>
             <tr>
@@ -285,7 +280,7 @@
                 <td class="text-left">Check Adhusment throtle Gad Engine</td>
                 <td>B</td>
                 @for ($i = 1; $i <= 31; $i++)
-                    <td>{!! isset($question13[$i - 1]) && $question13[$i - 1] === '1' ? '✓' : '' !!}</td>
+                    <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">{!! isset($question13[$i - 1]) && $question13[$i - 1] === '1' ? '✓' : '' !!}</td>
                 @endfor
             </tr>
             <tr>
@@ -293,7 +288,7 @@
                 <td class="text-left">Kekencangan Bolt Nut</td>
                 <td>B</td>
                 @for ($i = 1; $i <= 31; $i++)
-                    <td>{!! isset($question14[$i - 1]) && $question14[$i - 1] === '1' ? '✓' : '' !!}</td>
+                    <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">{!! isset($question14[$i - 1]) && $question14[$i - 1] === '1' ? '✓' : '' !!}</td>
                 @endfor
             </tr>
             <tr>
@@ -301,7 +296,7 @@
                 <td class="text-left">Main Circuit Breaker & Cable</td>
                 <td>B</td>
                 @for ($i = 1; $i <= 31; $i++)
-                    <td>{!! isset($question15[$i - 1]) && $question15[$i - 1] === '1' ? '✓' : '' !!}</td>
+                    <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">{!! isset($question15[$i - 1]) && $question15[$i - 1] === '1' ? '✓' : '' !!}</td>
                 @endfor
             </tr>
             <tr>
@@ -309,13 +304,13 @@
                 <td class="text-left">Check Kebocoran Oil, Solar, & Air</td>
                 <td>B</td>
                 @for ($i = 1; $i <= 31; $i++)
-                    <td>{!! isset($question16[$i - 1]) && $question16[$i - 1] === '1' ? '✓' : '' !!}</td>
+                    <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">{!! isset($question16[$i - 1]) && $question16[$i - 1] === '1' ? '✓' : '' !!}</td>
                 @endfor
             </tr>
             <tr>
                 <td colspan="3" style="font-weight: bold;" class="text-center">CHECK SESUDAH START</td>
                 @for ($i = 1; $i <= 31; $i++)
-                    <td></td>
+                    <td style="text-align: center; font-family: DejaVu Sans, sans-serif;"></td>
                 @endfor
             </tr>
             <tr>
@@ -323,7 +318,7 @@
                 <td class="text-left">Noise / Suara Mesin</td>
                 <td>AA</td>
                 @for ($i = 1; $i <= 31; $i++)
-                    <td>{!! isset($question17[$i - 1]) && $question17[$i - 1] === '1' ? '✓' : '' !!}</td>
+                    <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">{!! isset($question17[$i - 1]) && $question17[$i - 1] === '1' ? '✓' : '' !!}</td>
                 @endfor
             </tr>
             <tr>
@@ -331,7 +326,7 @@
                 <td class="text-left">Noise / Suara Generator</td>
                 <td>AA</td>
                 @for ($i = 1; $i <= 31; $i++)
-                    <td>{!! isset($question18[$i - 1]) && $question18[$i - 1] === '1' ? '✓' : '' !!}</td>
+                    <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">{!! isset($question18[$i - 1]) && $question18[$i - 1] === '1' ? '✓' : '' !!}</td>
                 @endfor
             </tr>
             <tr>
@@ -339,7 +334,7 @@
                 <td class="text-left">Gauge Panel Oil Pressure</td>
                 <td>A</td>
                 @for ($i = 1; $i <= 31; $i++)
-                    <td>{!! isset($question19[$i - 1]) && $question19[$i - 1] === '1' ? '✓' : '' !!}</td>
+                    <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">{!! isset($question19[$i - 1]) && $question19[$i - 1] === '1' ? '✓' : '' !!}</td>
                 @endfor
             </tr>
             <tr>
@@ -347,7 +342,7 @@
                 <td class="text-left">Gauge Panel Water Temperatur</td>
                 <td>B</td>
                 @for ($i = 1; $i <= 31; $i++)
-                    <td>{!! isset($question20[$i - 1]) && $question20[$i - 1] === '1' ? '✓' : '' !!}</td>
+                    <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">{!! isset($question20[$i - 1]) && $question20[$i - 1] === '1' ? '✓' : '' !!}</td>
                 @endfor
             </tr>
             <tr>
@@ -355,7 +350,8 @@
                 <td class="text-left">Kebocoran Oli, Air dan Solar</td>
                 <td>A</td>
                 @for ($i = 1; $i <= 31; $i++)
-                    <td>{{ $question21[$i - 1] === '1' ? '✓' : '' }}</td>
+                    <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">
+                        {{ $question21[$i - 1] === '1' ? '✓' : '' }}</td>
                 @endfor
             </tr>
             <tr>
@@ -363,18 +359,20 @@
                 <td class="text-left">Charging System</td>
                 <td>AA</td>
                 @for ($i = 1; $i <= 31; $i++)
-                    <td>{{ $question22[$i - 1] === '1' ? '✓' : '' }}</td>
+                    <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">
+                        {{ $question22[$i - 1] === '1' ? '✓' : '' }}</td>
                 @endfor
             </tr>
             <tr>
                 <td colspan="3" style="font-weight: bold;" class="text-center">PARAF PENGECEK</td>
                 @for ($i = 1; $i <= 31; $i++)
-                    <td>{{ $paraf[$i - 1] === '1' ? '✓' : '' }}</td>
+                    <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">
+                        {{ $paraf[$i - 1] === '1' ? '✓' : '' }}</td>
                 @endfor
             </tr>
             <tr>
-                <td colspan="3"style="font-weight: bold;" class="text-center">Catatan :</td>
-                <td colspan="31" class="text-left">{{ $record->catatan }}</td>
+                <td colspan="34" class="text-left"> <span style="font-weight: bold;">Catatan : </span>
+                    {{ $record->catatan }}</td>
             </tr>
         </tbody>
     </table>

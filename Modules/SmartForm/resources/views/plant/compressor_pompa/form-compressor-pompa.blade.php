@@ -34,9 +34,10 @@
                         @if ($isShowDetail && $record)
                             <input type="hidden" name="id" value="{{ $record->id }}">
                         @endif
-                        <div class="mx-3">
+                        <div class="mx-4">
                             <!-- Basic Information -->
                             <div class="row mb-3">
+
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="unit" class="ms-0">C/N Unit</label>
@@ -58,7 +59,7 @@
                                         <label for="lokasi" class="ms-0">Lokasi</label>
                                         <select class="form-control" name="lokasi" id="lokasi" required
                                             {{ $isShowDetail ? 'disabled' : '' }}>
-
+                                            <option disabled selected>-- Select Location --</option>
                                             <option value="Workshop"
                                                 {{ old('lokasi', $record->lokasi ?? '') == 'Workshop' ? 'selected' : '' }}>
                                                 Workshop</option>
@@ -99,6 +100,42 @@
                                         <input type="text" class="form-control" id="generator" name="generator" required
                                             value="{{ old('generator', $record->generator_model ?? '') }}" required
                                             {{ $isShowDetail ? 'disabled' : '' }}>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label for="site" class="ms-0">Site</label>
+                                        <select class="form-control" name="site" id="site" required
+                                            {{ $isShowDetail ? 'disabled' : '' }}>
+                                            <option disabled selected>-- Select Site --</option>
+                                            <option value="agm"
+                                                {{ old('site', $record->site ?? '') == 'agm' ? 'selected' : '' }}>
+                                                agm</option>
+                                            <option value="mbl"
+                                                {{ old('site', $record->site ?? '') == 'mbl' ? 'selected' : '' }}>
+                                                mbl</option>
+                                            <option value="mme"
+                                                {{ old('site', $record->site ?? '') == 'mme' ? 'selected' : '' }}>
+                                                mme</option>
+                                            <option value="mas"
+                                                {{ old('site', $record->site ?? '') == 'mas' ? 'selected' : '' }}>
+                                                mas</option>
+                                            <option value="pmss"
+                                                {{ old('site', $record->site ?? '') == 'pmss' ? 'selected' : '' }}>
+                                                pmss</option>
+                                            <option value="taj"
+                                                {{ old('site', $record->site ?? '') == 'taj' ? 'selected' : '' }}>
+                                                taj</option>
+                                            <option value="bssr"
+                                                {{ old('site', $record->site ?? '') == 'bssr' ? 'selected' : '' }}>
+                                                bssr</option>
+                                            <option value="tdm"
+                                                {{ old('site', $record->site ?? '') == 'tdm' ? 'selected' : '' }}>
+                                                tdm</option>
+                                            <option value="msj"
+                                                {{ old('site', $record->site ?? '') == 'msj' ? 'selected' : '' }}>
+                                                msj</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -377,7 +414,7 @@
                                             @for ($i = 1; $i <= 31; $i++)
                                                 <td> <input type="checkbox" class="custom-checkbox"
                                                         name="after-6-{{ $i }}" value=1
-                                                        {{ old('after-22-' . $i, isset($record->question22[$i - 1]) ? $record->question22[$i - 1] : '') == 1 ? 'checked' : '' }}
+                                                        {{ old('after-6-' . $i, isset($record->question22[$i - 1]) ? $record->question22[$i - 1] : '') == 1 ? 'checked' : '' }}
                                                         {{ $isShowDetail ? 'disabled' : '' }}></td>
                                             @endfor
                                         </tr>
@@ -386,7 +423,7 @@
                                             @for ($i = 1; $i <= 31; $i++)
                                                 <td> <input type="checkbox" class="custom-checkbox"
                                                         name="paraf-{{ $i }}" value=1
-                                                        {{ old('paraf-2-' . $i, isset($record->paraf_item[$i - 1]) ? $record->paraf_item[$i - 1] : '') == 1 ? 'checked' : '' }}
+                                                        {{ old('paraf-' . $i, isset($record->paraf_item[$i - 1]) ? $record->paraf_item[$i - 1] : '') == 1 ? 'checked' : '' }}
                                                         {{ $isShowDetail ? 'disabled' : '' }}></td>
                                             @endfor
                                         </tr>

@@ -69,11 +69,26 @@
                             <div class="card-body p-3">
                                 <div class="d-flex justify-content-between">
                                     <div>
-                                        <i class="fas fa-calendar text-success fa-2x"></i>
+                                        <i class="fas fa-solid fa-location-dot text-danger fa-2x"></i>
                                     </div>
                                     <div class="text-end pt-1">
                                         <p class="text-sm mb-0 text-capitalize">Location</p>
                                         <h4 class="mb-0">{{ $statistics->location }}</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card stats-card">
+                            <div class="card-body p-3">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <i class="fas fa-solid fa-code-branch fa-2x"></i>
+                                    </div>
+                                    <div class="text-end pt-1">
+                                        <p class="text-sm mb-0 text-capitalize">Site</p>
+                                        <h4 class="mb-0">{{ $statistics->site }}</h4>
                                     </div>
                                 </div>
                             </div>
@@ -107,7 +122,7 @@
                                     <div class="input-group input-group-static mb-4 position-relative">
                                         <label for="location" class="ms-0">Location</label>
                                         <select class="form-control" id="location" name="location">
-                                            <option value="" selected disabled></option>
+                                            <option selected disabled>-- Select Location --</option>
                                             <option value="Workshop"
                                                 {{ isset($filters['location']) && $filters['location'] == 'Workshop' ? 'selected' : '' }}>
                                                 Workshop</option>
@@ -120,6 +135,43 @@
                                             <option value="Truck"
                                                 {{ isset($filters['location']) && $filters['location'] == 'Truck' ? 'selected' : '' }}>
                                                 Truck</option>
+                                        </select>
+
+                                    </div>
+                                </div>
+                                <div class="col-md-3
+                                            mb-3">
+                                    <div class="input-group input-group-static mb-4 position-relative">
+                                        <label for="location" class="ms-0">Site</label>
+                                        <select class="form-control" name="site" id="site">
+                                            <option disabled selected>-- Select Site --</option>
+                                            <option value="agm"
+                                                {{ isset($filters['site']) && $filters['site'] == 'agm' ? 'selected' : '' }}>
+                                                agm</option>
+                                            <option value="mbl"
+                                                {{ isset($filters['site']) && $filters['site'] == 'mbl' ? 'selected' : '' }}>
+                                                mbl</option>
+                                            <option value="mme"
+                                                {{ isset($filters['site']) && $filters['site'] == 'mme' ? 'selected' : '' }}>
+                                                mme</option>
+                                            <option value="mas"
+                                                {{ isset($filters['site']) && $filters['site'] == 'mas' ? 'selected' : '' }}>
+                                                mas</option>
+                                            <option value="pmss"
+                                                {{ isset($filters['site']) && $filters['site'] == 'pmss' ? 'selected' : '' }}>
+                                                pmss</option>
+                                            <option value="taj"
+                                                {{ isset($filters['site']) && $filters['site'] == 'taj' ? 'selected' : '' }}>
+                                                taj</option>
+                                            <option value="bssr"
+                                                {{ isset($filters['site']) && $filters['site'] == 'bssr' ? 'selected' : '' }}>
+                                                bssr</option>
+                                            <option value="tdm"
+                                                {{ isset($filters['site']) && $filters['site'] == 'tdm' ? 'selected' : '' }}>
+                                                tdm</option>
+                                            <option value="msj"
+                                                {{ isset($filters['site']) && $filters['site'] == 'msj' ? 'selected' : '' }}>
+                                                msj</option>
                                         </select>
 
                                     </div>
@@ -161,7 +213,7 @@
                                             Lokasi</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Engine Model</th>
+                                            Site</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Generator Model</th>
@@ -191,7 +243,7 @@
                                             </td>
                                             <td>
                                                 <p class="text-xs font-weight-bold mb-0">
-                                                    {{ $record->engine_model }}
+                                                    {{ $record->site }}
                                                 </p>
                                             </td>
                                             <td>

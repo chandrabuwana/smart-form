@@ -27,12 +27,16 @@ class CompressorPompaController extends Controller {
                     ->orWhere( 'unit_name', 'like', '%' . $searchTerm . '%' )
                     ->orWhere( 'location', 'like', '%' . $searchTerm . '%' )
                     ->orWhere( 'engine_model', 'like', '%' . $searchTerm . '%' )
+                    ->orWhere( 'site', 'like', '%' . $searchTerm . '%' )
                     ->orWhere( 'generator_model', 'like', '%' . $searchTerm . '%' );
                 }
             );
         }
         if ( $request->has( 'location' ) && $request->location ) {
             $query->where( 'location', $request->location );
+        }
+        if ( $request->has( 'site' ) && $request->site ) {
+            $query->where( 'site', $request->site );
         }
 
         // Date range filter
@@ -50,6 +54,7 @@ class CompressorPompaController extends Controller {
             ->whereYear( 'created_at', now()->year )
             ->count(),
             'location' => DB::table( 'plant_pompa_compressor' )->distinct()->count( 'location' ),
+            'site' => DB::table( 'plant_pompa_compressor' )->distinct()->count( 'site' ),
         ];
         $records = $query->paginate( 10 );
         return view( 'smartform::PLANT.compressor_pompa.dashboard-compressor-pompa', [ 'records' => $records, 'statistics'=>$statistics, 'filters' => [
@@ -57,6 +62,7 @@ class CompressorPompaController extends Controller {
             'location' => $request->location,
             'unit_name' => $request->unit,
             'date' => $request->date,
+            'site' => $request->site
         ] ] );
     } catch( \Exception $e ) {
         Log::error( 'Error in Dashboard: ' . $e->getMessage() );
@@ -131,6 +137,7 @@ public function AddFormCompressor( Request $request ) {
                 'doc_number' => $this->generateDocNumber(),
                 'unit_name' => $request->unit,
                 'name' => $request->nama,
+                'site' => $request->site,
                 'location' => $request->lokasi,
                 'month' => $request->month,
                 'engine_model' => $request->engine,
@@ -168,7 +175,7 @@ public function AddFormCompressor( Request $request ) {
                     $question22[] = $request->input( "after-6-$i" ) ?? 0,
 
                 ];
-                $paraf[] = $request->input( "paraf_$i" )??0;
+                $paraf[] = $request->input( "paraf-$i" )??0;
             }
 
             $data[ 'paraf_item' ] = json_encode( array_values( $paraf ) );
@@ -220,6 +227,7 @@ public function AddFormCompressor( Request $request ) {
                 'name' => $request->nama,
                 'location' => $request->lokasi,
                 'month' => $request->month,
+                'site' => $request->site,
                 'engine_model' => $request->engine,
                 'generator_model' => $request->generator,
                 'catatan' => $request->catatan ?? '',
