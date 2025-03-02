@@ -72,7 +72,7 @@
                                         <i class="fas fa-calendar text-success fa-2x"></i>
                                     </div>
                                     <div class="text-end pt-1">
-                                        <p class="text-sm mb-0 text-capitalize">Location</p>
+                                        <p class="text-sm mb-0 text-capitalize">Alat Angkut</p>
                                         <h4 class="mb-0"></h4>
                                     </div>
                                 </div>
@@ -84,7 +84,7 @@
                 <!-- Filters and Search -->
                 <div class="card-body px-0 pb-2">
                     <div class="d-flex align-items-center mx-3">
-                        <a href="{{ route('plant.compressor.form') }}">
+                        <a href="{{ route('prod.form.checker.form') }}">
                             <button class="btn btn-primary ms-auto uploadBtn">
                                 New Form
                             </button>
@@ -104,8 +104,8 @@
                                 <div class="col-md-3
                                             mb-3">
                                     <div class="input-group input-group-static mb-4 position-relative">
-                                        <label for="location" class="ms-0">Location</label>
-                                        <select class="form-control" id="location" name="location">
+                                        <label for="shift" class="ms-0">Shift</label>
+                                        <select class="form-control" id="shift" name="shift">
 
                                         </select>
 
@@ -141,19 +141,17 @@
                                             Number</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Unit</th>
+                                            Alat Angkut</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Lokasi</th>
+                                            Start Loading</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Engine Model</th>
+                                            Stop Loading</th>
+
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Generator Model</th>
-                                        <th
-                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Month</th>
+                                            Date</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Actions</th>
@@ -161,45 +159,38 @@
                                 </thead>
                                 <tbody>
 
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex px-2 py-1">
-                                                    <div class="d-flex flex-column justify-content-center">
-                                                        <h6 class="mb-0 text-sm"></h6>
-                                                    </div>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex px-2 py-1">
+                                                <div class="d-flex flex-column justify-content-center">
+                                                    <h6 class="mb-0 text-sm"></h6>
                                                 </div>
-                                            </td>
-                                            <td>
-                                                <p class="text-xs font-weight-bold mb-0"></p>
-                                            </td>
-                                            <td>
-                                                <p class="text-xs font-weight-bold mb-0"></p>
-                                            </td>
-                                            <td>
-                                                <p class="text-xs font-weight-bold mb-0">
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <p class="text-xs font-weight-bold mb-0"></p>
+                                        </td>
+                                        <td>
+                                            <p class="text-xs font-weight-bold mb-0"></p>
+                                        </td>
+                                        <td>
+                                            <p class="text-xs font-weight-bold mb-0">
 
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <p class="text-xs font-weight-bold mb-0">
+                                            </p>
+                                        </td>
 
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <span
-                                                    class="text-xs font-weight-bold"></span>
-                                            </td>
-                                            <td>
-                                                <a href=""
-                                                    class="btn btn-info btn-sm">
-                                                    <i class="fas fa-eye"></i>
-                                                </a>
-                                                <a href=""
-                                                    class="btn btn-primary btn-sm">
-                                                    <i class="fas fa-download"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
+                                        <td>
+                                            <span class="text-xs font-weight-bold"></span>
+                                        </td>
+                                        <td>
+                                            <a href="" class="btn btn-info btn-sm">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="" class="btn btn-primary btn-sm">
+                                                <i class="fas fa-download"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
 
 
 
@@ -222,7 +213,7 @@
         $(function() {
             // Clear filter button
             $('#btnClearFilter').click(function() {
-                window.location.href = '{{ route('plant.compressor.dashboard') }}';
+                window.location.href = '{{ route('prod.form.checker.dashboard') }}';
             });
 
         });

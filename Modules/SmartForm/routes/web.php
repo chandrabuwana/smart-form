@@ -360,11 +360,11 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
         });
 
         Route::prefix('prod-form-checker')->group(function(){
-            Route::get('/dashboard', [FormCheckerController::class, 'dashboard'])->name('plant.form.checker.dashboard');
-            Route::get('/form-checker/export/{id}', [FormCheckerController::class, 'ExportForm'])->name('plant.form.checker.export');
-            Route::get('/form-checker', [FormCheckerController::class, 'AddFormChecker'])->name('plant.form.checker.form');
-            Route::post('/store-form-checker', [FormCheckerController::class, 'StoreChecker'])->name('plant.form.checker.store');
-            Route::put('/form-checker/{id}', [FormCheckerController::class, 'UpdateChecker'])->name('plant.form.checker.update');
+            Route::get('/dashboard', [FormCheckerController::class, 'dashboard'])->name('prod.form.checker.dashboard');
+            Route::get('/form-checker/export/{id}', [FormCheckerController::class, 'ExportForm'])->name('prod.form.checker.export');
+            Route::get('/form-checker', [FormCheckerController::class, 'AddFormChecker'])->name('prod.form.checker.form');
+            Route::post('/store-form-checker', [FormCheckerController::class, 'StoreChecker'])->name('prod.form.checker.store');
+            Route::put('/form-checker/{id}', [FormCheckerController::class, 'UpdateChecker'])->name('prod.form.checker.update');
         });
 
 
