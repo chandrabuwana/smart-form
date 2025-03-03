@@ -56,7 +56,7 @@ class CompressorPompaController extends Controller {
             'location' => DB::table( 'plant_pompa_compressor' )->distinct()->count( 'location' ),
             'site' => DB::table( 'plant_pompa_compressor' )->distinct()->count( 'site' ),
         ];
-        $records = $query->paginate( 10 );
+        $records = $query->paginate( 5 );
         return view( 'smartform::PLANT.compressor_pompa.dashboard-compressor-pompa', [ 'records' => $records, 'statistics'=>$statistics, 'filters' => [
             'search' => $request->search,
             'location' => $request->location,

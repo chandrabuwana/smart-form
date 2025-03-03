@@ -272,7 +272,7 @@
                                 </tbody>
                             </table>
                             <div class="d-flex justify-content-center mt-3">
-                                {{ $records->links() }}
+                                {{ $records->links('pagination::bootstrap-4') }}
                             </div>
                         </div>
                     </div>

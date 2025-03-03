@@ -43,7 +43,7 @@
                                     </div>
                                     <div class="text-end pt-1">
                                         <p class="text-sm mb-0 text-capitalize">Total Records</p>
-                                        <h4 class="mb-0"></h4>
+                                        <h4 class="mb-0">{{ $statistics->total_records }}</h4>
                                     </div>
                                 </div>
                             </div>
@@ -58,7 +58,7 @@
                                     </div>
                                     <div class="text-end pt-1">
                                         <p class="text-sm mb-0 text-capitalize">This Month</p>
-                                        <h4 class="mb-0"></h4>
+                                        <h4 class="mb-0">{{ $statistics->total_this_month }}</h4>
                                     </div>
                                 </div>
                             </div>
@@ -69,11 +69,11 @@
                             <div class="card-body p-3">
                                 <div class="d-flex justify-content-between">
                                     <div>
-                                        <i class="fas fa-calendar text-success fa-2x"></i>
+                                        <i class="fas fa-truck-loading fa-2x" style="color: #63E6BE;"></i>
                                     </div>
                                     <div class="text-end pt-1">
                                         <p class="text-sm mb-0 text-capitalize">Alat Angkut</p>
-                                        <h4 class="mb-0"></h4>
+                                        <h4 class="mb-0">{{ $statistics->alat_angkut }}</h4>
                                     </div>
                                 </div>
                             </div>
@@ -98,7 +98,8 @@
                                     <div class="input-group input-group-static mb-4 position-relative">
                                         <label>Search</label>
                                         <input type="text" name="search" class="form-control"
-                                            placeholder="Search by doc number or name">
+                                            placeholder="Search by doc number or name"
+                                            value="{{ $filters['search'] ?? '' }}">
                                     </div>
                                 </div>
                                 <div class="col-md-3
@@ -106,7 +107,13 @@
                                     <div class="input-group input-group-static mb-4 position-relative">
                                         <label for="shift" class="ms-0">Shift</label>
                                         <select class="form-control" id="shift" name="shift">
-
+                                            <option disabled selected>-- Select Shift --</option>
+                                            <option value="DS"
+                                                {{ isset($filters['shift']) && $filters['shift'] == 'DS' ? 'selected' : '' }}>
+                                                DS</option>
+                                            <option value="NS"
+                                                {{ isset($filters['shift']) && $filters['shift'] == 'NS' ? 'selected' : '' }}>
+                                                NS</option>
                                         </select>
 
                                     </div>
@@ -114,7 +121,8 @@
                                 <div class="col-md-3 mb-3">
                                     <div class="input-group input-group-static mb-4 position-relative">
                                         <label for="date" class="ms-0">Date</label>
-                                        <input type="date" class="form-control" id="date" name="date">
+                                        <input type="date" class="form-control" id="date" name="date"
+                                            value="{{ $filters['date'] ?? '' }}">
                                     </div>
                                 </div>
                                 <div class="col-md-12 mb-3 d-flex justify-content-start">
@@ -141,10 +149,10 @@
                                             Number</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Alat Angkut</th>
+                                            Alat Muat</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Start Loading</th>
+                                            shift</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Stop Loading</th>
@@ -158,46 +166,47 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex px-2 py-1">
-                                                <div class="d-flex flex-column justify-content-center">
-                                                    <h6 class="mb-0 text-sm"></h6>
+                                    @foreach ($record as $data)
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex px-2 py-1">
+                                                    <div class="d-flex flex-column justify-content-center">
+                                                        <h6 class="mb-0 text-sm">{{ $data->doc_num }}</h6>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <p class="text-xs font-weight-bold mb-0"></p>
-                                        </td>
-                                        <td>
-                                            <p class="text-xs font-weight-bold mb-0"></p>
-                                        </td>
-                                        <td>
-                                            <p class="text-xs font-weight-bold mb-0">
+                                            </td>
+                                            <td>
+                                                <p class="text-xs font-weight-bold mb-0">{{ $data->alat_muat }}</p>
+                                            </td>
+                                            <td>
+                                                <p class="text-xs font-weight-bold mb-0">{{ $data->shift }}</p>
+                                            </td>
+                                            <td>
+                                                <p class="text-xs font-weight-bold mb-0">{{ $data->stop_loading }} </p>
+                                            </td>
 
-                                            </p>
-                                        </td>
-
-                                        <td>
-                                            <span class="text-xs font-weight-bold"></span>
-                                        </td>
-                                        <td>
-                                            <a href="" class="btn btn-info btn-sm">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
-                                            <a href="" class="btn btn-primary btn-sm">
-                                                <i class="fas fa-download"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
+                                            <td>
+                                                <span class="text-xs font-weight-bold">{{ $data->tanggal }}</span>
+                                            </td>
+                                            <td>
+                                                <a href="{{ route('prod.form.checker.form', ['id' => $data->id]) }}"
+                                                    class="btn btn-info btn-sm">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a href="{{ route('prod.form.checker.export', ['id' => $data->id]) }}"
+                                                    class="btn btn-primary btn-sm">
+                                                    <i class="fas fa-download"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    @endforeach
 
 
 
                                 </tbody>
                             </table>
-                            <div class="d-flex justify-content-center mt-3">
-                                {{-- {{ $records->links() }} --}}
+                            <div class="d-flex justify-content-left mt-3">
+                                {{ $record->links('pagination::bootstrap-4') }}
                             </div>
                         </div>
                     </div>

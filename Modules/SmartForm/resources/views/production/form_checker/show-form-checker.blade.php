@@ -28,7 +28,7 @@
                         </div>
                     </div>
 
-                    <form action="{{ route('prod.checker.submit') }}" method="POST">
+                    <form action="" method="POST">
                         @csrf
                         <div class="mx-3">
                             <!-- Basic Information -->
@@ -36,19 +36,22 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="date" class="ms-0">Tanggal</label>
-                                        <input type="date" class="form-control" id="date" name="date">
+                                        <input type="date" class="form-control" value="{{ $record->tanggal }}"
+                                            id="date" name="date" disabled>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="alat_pc" class="ms-0">Alat Muat PC:</label>
-                                        <input type="text" class="form-control" id="alat_pc" name="alat_pc">
+                                        <input type="text" class="form-control" id="alat_pc" name="alat_pc"
+                                            value="{{ $record->alat_muat[0] }}" disabled>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="alat_x" class="ms-0">Alat Muat X:</label>
-                                        <input type="text" class="form-control" id="alat_x" name="alat_x">
+                                        <input type="text" class="form-control" id="alat_x" name="alat_x"
+                                            value="{{ $record->alat_muat[1] }}" disabled>
                                     </div>
                                 </div>
 
@@ -57,22 +60,28 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="start_load" class="ms-0">Start Loading</label>
-                                        <input type="time" class="form-control" id="start_load" name="start_load">
+                                        <input type="time" class="form-control" value="{{ $record->start_loading }}"
+                                            id="start_load" name="start_load" disabled>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="stop_load" class="ms-0">Stop Loading</label>
-                                        <input type="time" class="form-control" id="stop_load" name="stop_load" required>
+                                        <input type="time" class="form-control" id="stop_load"
+                                            value="{{ $record->stop_loading }}" name="stop_load" disabled>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="shift" class="ms-0">Shift</label>
-                                        <select class="form-control" name="shift" id="shiftSelector">
+                                        <select class="form-control" name="shift" id="shiftSelector" disabled>
                                             <option disabled selected>-- Select Shift --</option>
-                                            <option value="DS">DS</option>
-                                            <option value="NS">NS</option>
+                                            <option value="DS"
+                                                {{ old('shift', $record->shift ?? '') == 'DS' ? 'selected' : '' }}>
+                                                DS</option>
+                                            <option value="DS"
+                                                {{ old('shift', $record->shift ?? '') == 'NS' ? 'selected' : '' }}>
+                                                NS</option>
                                         </select>
                                     </div>
                                 </div>
@@ -82,14 +91,15 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="operator_load" class="ms-0">Nama Operator Loader</label>
-                                        <input type="text" class="form-control" id="operator_load" name="operator_load"
-                                            required>
+                                        <input type="text" class="form-control" id="operator_load"
+                                            value="{{ $record->operator_leader }}" name="operator_load" disabled>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="nama_pic" class="ms-0">Nama PIC</label>
-                                        <input type="text" class="form-control" id="nama-pic" name="nama_pic"required>
+                                        <input type="text" class="form-control" id="nama-pic"
+                                            value="{{ $record->pic_area }}" name="nama_pic" disabled>
                                     </div>
                                 </div>
                             </div>
@@ -102,9 +112,10 @@
                                             <th>CN</th>
                                             <th colspan="4" style="text-align: center;">
                                                 <input class="form-control" type="text" name="alat_angkut"
-                                                    placeholder="Input Alat Angkut"
+                                                    placeholder="Input Alat Angkut" disabled
                                                     style="text-align: center; background-color: #eee7e8; color: rgb(11, 10, 10);">
                                             </th>
+                                            <th>∑</th>
 
                                             <th rowspan="2" style="text-align: center; vertical-align: middle;">
                                                 Material
@@ -115,9 +126,9 @@
                                             <th colspan="5" style="text-align: center;">
                                                 <input class="form-control" type="text" name="nama_operator"
                                                     style="text-align: center; background-color: #eee7e8; color: rgb(11, 10, 10);"
-                                                    placeholder="Input Nama Operator">
+                                                    placeholder="Input Nama Operator" disabled>
                                             </th>
-
+                                            <th>RITASI</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -136,12 +147,13 @@
                                                 @for ($i = 1; $i <= 5; $i++)
                                                     <td><input type="time" class="time-input form-control"
                                                             oninput="countFilled({{ $id }})"
-                                                            name="time[{{ $id }}][{{ $i }}]">
+                                                            name="time[{{ $id }}][{{ $i }}]"
+                                                            disabled>
                                                     </td>
                                                 @endfor
 
                                                 <td>
-                                                    <textarea class="form-control" name="material[]" cols="5"></textarea>
+                                                    <textarea class="form-control" name="material[]" cols="5" disabled></textarea>
                                                 </td>
                                             </tr>
                                             @php
@@ -157,33 +169,42 @@
                             <div class="bg-gradient-success rounded p-2">
                                 <div id="row-container">
                                     <h6 class="custom-text-color">IDENTIFIKASI TINDAKAN YANG DILAKUKAN</h6>
-                                    <div class="row input-row">
-                                        <div class="col-3 mt-4">
-                                            <div class="input-group input-group-static mb-3">
-                                                <label class="custom-text-color">Kendala / Lokasi</label>
-                                                <input type="text" class="form-control" name="kendala[]">
+                                    @foreach ($record->kendala as $index => $kendala)
+                                        <div class="row input-row">
+                                            <div class="col-3 mt-4">
+                                                <div class="input-group input-group-static mb-3">
+                                                    <label class="custom-text-color">Kendala / Lokasi</label>
+                                                    <input type="text" class="form-control"
+                                                        value="{{ $kendala }}" name="kendala[]" disabled>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col-3 mt-4">
-                                            <div class="input-group input-group-static mb-3">
-                                                <label class="custom-text-color">Waktu Mulai</label>
-                                                <input type="time" class="form-control" name="waktu_mulai[]">
+                                            <div class="col-3 mt-4">
+                                                <div class="input-group input-group-static mb-3">
+                                                    <label class="custom-text-color">Waktu Mulai</label>
+                                                    <input type="time" class="form-control"
+                                                        value="{{ $record->waktu_mulai[$index] }}" name="waktu_mulai[]"
+                                                        disabled>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col-3 mt-4">
-                                            <div class="input-group input-group-static mb-3">
-                                                <label class="custom-text-color">Waktu Selesai</label>
-                                                <input type="time" class="form-control" name="waktu_selesai[]">
+                                            <div class="col-3 mt-4">
+                                                <div class="input-group input-group-static mb-3">
+                                                    <label class="custom-text-color">Waktu Selesai</label>
+                                                    <input type="time" class="form-control"
+                                                        value="{{ $record->waktu_selesai[$index] }}"
+                                                        name="waktu_selesai[]" disabled>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col-3 mt-4">
-                                            <div class="input-group input-group-static mb-3">
-                                                <label class="custom-text-color">Keterangan</label>
-                                                <input type="text" class="form-control" name="keterangan[]">
-                                            </div>
+                                            <div class="col-3 mt-4">
+                                                <div class="input-group input-group-static mb-3">
+                                                    <label class="custom-text-color">Keterangan</label>
+                                                    <input type="text" value="{{ $record->keterangan[$index] }}"
+                                                        class="form-control" name="keterangan[]" disabled>
+                                                </div>
 
+                                            </div>
                                         </div>
-                                    </div>
+                                    @endforeach
+
                                 </div>
 
                                 <a class="btn btn-primary" id="addRowButton">Add Row</a>
@@ -193,7 +214,8 @@
                                     <div class="input-group input-group-static mb-3">
                                         <div class="input-group input-group-static mb-3">
                                             <label>Loading Point</label>
-                                            <input type="text" class="form-control" name="loading_point">
+                                            <input type="text" class="form-control"
+                                                value="{{ $record->loading_point }}" name="loading_point" disabled>
                                         </div>
                                     </div>
                                 </div>
@@ -201,7 +223,8 @@
                                     <div class="input-group input-group-static mb-3">
                                         <div class="input-group input-group-static mb-3">
                                             <label>Jarak (M)</label>
-                                            <input type="text" class="form-control" name="jarak">
+                                            <input type="text" class="form-control" value="{{ $record->jarak }}"
+                                                name="jarak" disabled>
                                         </div>
                                     </div>
                                 </div>
@@ -209,22 +232,27 @@
                                     <div class="input-group input-group-static mb-3">
                                         <div class="input-group input-group-static mb-3">
                                             <label>Disposal</label>
-                                            <input type="text" class="form-control" name="disposal">
+                                            <input type="text" class="form-control" value="{{ $record->disposal }}"
+                                                name="disposal" disabled>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
                             <div class="row">
+
                                 <div class="col-6">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="dibuat" class="ms-0">Dibuat Oleh</label>
-                                        <input type="text" class="form-control" id="dibuat" name="dibuat_oleh">
+                                        <input type="text" class="form-control" id="dibuat"
+                                            value="{{ $record->checker }}" name="dibuat_oleh" disabled>
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="diperiksa" class="ms-0">Diperiksa Oleh</label>
-                                        <input type="text" class="form-control" id="diperiksa" name="diperiksa_oleh">
+                                        <input type="text" class="form-control" id="diperiksa"
+                                            value="{{ $record->pengawas }}" name="diperiksa_oleh" disabled>
                                     </div>
                                 </div>
                                 <div class="row">

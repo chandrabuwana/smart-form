@@ -363,7 +363,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/dashboard', [FormCheckerController::class, 'dashboard'])->name('prod.form.checker.dashboard');
             Route::get('/form-checker/export/{id}', [FormCheckerController::class, 'ExportForm'])->name('prod.form.checker.export');
             Route::get('/form-checker', [FormCheckerController::class, 'AddFormChecker'])->name('prod.form.checker.form');
-            Route::post('/store-form-checker', [FormCheckerController::class, 'StoreChecker'])->name('prod.form.checker.store');
+            Route::post('/store-form-checker', [FormCheckerController::class, 'StoreChecker'])->name('prod.checker.submit');
             Route::put('/form-checker/{id}', [FormCheckerController::class, 'UpdateChecker'])->name('prod.form.checker.update');
         });
 

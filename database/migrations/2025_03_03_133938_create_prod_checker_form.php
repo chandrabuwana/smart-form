@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('prod_form_checker', function (Blueprint $table) {
+        Schema::create('prod_checker_form', function (Blueprint $table) {
             $table->id();
             $table->string('doc_num')->unique();
             $table->string('tanggal');
@@ -23,9 +23,18 @@ return new class extends Migration
             $table->string('pic_area');
             $table->string('alat_angkut');
             $table->string('nama_operator');
-            $table->string('time_operational');
-            $table->string('time_detail');
-            $table->string('ritasi');
+            $table->string('time_detail1');
+            $table->string('time_detail2');
+            $table->string('time_detail3');
+            $table->string('time_detail4');
+            $table->string('time_detail5');
+            $table->string('time_detail6');
+            $table->string('time_detail7');
+            $table->string('time_detail8');
+            $table->string('time_detail9');
+            $table->string('time_detail10');
+            $table->string('time_detail11');
+            $table->string('time_detail12');
             $table->string('material');
             $table->string('kendala');
             $table->string('waktu_mulai');
@@ -45,6 +54,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('prod_form_checker');
+        Schema::dropIfExists('prod_checker_form');
     }
 };
