@@ -1,0 +1,432 @@
+{
+    "ENGINE SYSTEM": [
+        {
+            "activity": "Check Engine",
+            "critical_point": "Noise / Leakage / Perform"
+        },
+        {
+            "activity": "Check Oil Engine",
+            "critical_point": "Level & Condition"
+        },
+        {
+            "activity": "Check Oil Line",
+            "critical_point": "Cracked & Leakage"
+        },
+        {
+            "activity": "Check Oil Cooler Engine",
+            "critical_point": "Leakage & Condition"
+        },
+        {
+            "activity": "Check Radiator",
+            "critical_point": "Leakage & Condition"
+        },
+        {
+            "activity": "Check Reservoir Tank",
+            "critical_point": "Leakage & Condition"
+        },
+        {
+            "activity": "Check Exhaust Brake Valve",
+            "critical_point": "Leakage & Condition"
+        },
+        {
+            "activity": "Check Exhaust Pipe",
+            "critical_point": "Leakage & Condition"
+        },
+        {
+            "activity": "Check Turbocharger",
+            "critical_point": "Noise & Leakage"
+        },
+        {
+            "activity": "Check Fuel Injection Pump",
+            "critical_point": "Leakage & Condition"
+        },
+        {
+            "activity": "Check Fuel Line System",
+            "critical_point": "Leakage & Condition"
+        },
+        {
+            "activity": "Check Fuel Injection Pump",
+            "critical_point": "Leakage & Condition"
+        },
+        {
+            "activity": "Check Air Hose and Intake",
+            "critical_point": "Crack & Leakage"
+        },
+        {
+            "activity": "Check Air Breathing Air Cleaner",
+            "critical_point": "Condition & Leakage"
+        },
+        {
+            "activity": "Check Intercooler & Piping",
+            "critical_point": "Condition & Leakage"
+        },
+        {
+            "activity": "Check Water Pump",
+            "critical_point": "Leakage & Condition"
+        },
+        {
+            "activity": "Check Alternator",
+            "critical_point": "Wear Out & Condition"
+        },
+        {
+            "activity": "Check Fan Cooling",
+            "critical_point": "Function & Condition"
+        },
+        {
+            "activity": "Check Tensioner Belt",
+            "critical_point": "Wear Out & Condition"
+        },
+        {
+            "activity": "Check Oil Pan",
+            "critical_point": "Noise & Leakage"
+        },
+        {
+            "activity": "Check Air Compressor",
+            "critical_point": "Leakage & Condition"
+        }
+    ],
+    "TRANSMISSION SYSTEM": [
+        {
+            "activity": "Check Transmission",
+            "critical_point": "Performance"
+        },
+        {
+            "activity": "Check Transmission Oil",
+            "critical_point": "Level & Leakage"
+        },
+        {
+            "activity": "Check Handle Transmission",
+            "critical_point": "Function & Condition"
+        },
+        {
+            "activity": "Check Torque Converter",
+            "critical_point": "Leakage & Condition"
+        },
+        {
+            "activity": "Check Control Unit Transmission",
+            "critical_point": "Leakage & Condition"
+        },
+        {
+            "activity": "Check Hose Oil Torque Converter",
+            "critical_point": "Leakage & Condition"
+        },
+        {
+            "activity": "Check Control Valve",
+            "critical_point": "Leakage & Condition"
+        },
+        {
+            "activity": "Check Oil Filter",
+            "critical_point": "Leakage & Condition"
+        },
+        {
+            "activity": "Check Mounting Transmission",
+            "critical_point": "Tighten & Condition"
+        }
+    ],
+    "HYDRAULIC SYSTEM": [
+        {
+            "activity": "Check Hydraulic Oil",
+            "critical_point": "Level & Leakage"
+        },
+        {
+            "activity": "Check Hydraulic Tank",
+            "critical_point": "Crack & Leakage"
+        },
+        {
+            "activity": "Check Cylinder Dump",
+            "critical_point": "Leakage & Tighten"
+        },
+        {
+            "activity": "Check Brake/Boost Pump",
+            "critical_point": "Function & Tighten"
+        },
+        {
+            "activity": "Check Solenoid Valve",
+            "critical_point": "Function & Leakage"
+        },
+        {
+            "activity": "Check Steering Valve",
+            "critical_point": "Function & Leakage"
+        },
+        {
+            "activity": "Check All Hose Oil Hydraulic",
+            "critical_point": "Condition & Leakage"
+        },
+        {
+            "activity": "Check Air and Filling Hose",
+            "critical_point": "Leakage & Condition"
+        },
+        {
+            "activity": "Check Pump Hydraulic (PTO)",
+            "critical_point": "Tighten & Condition"
+        },
+        {
+            "activity": "Check Hydraulic Filter",
+            "critical_point": "Leakage & Condition"
+        },
+        {
+            "activity": "Check Control Valve",
+            "critical_point": "Tighten & Condition"
+        },
+        {
+            "activity": "Check Hose Oil Hydro",
+            "critical_point": "Tighten & Condition"
+        }
+    ],
+    "STEERING SYSTEM": [
+        {
+            "activity": "Check Steering Column",
+            "critical_point": "Function & Condition"
+        },
+        {
+            "activity": "Check Cylinder Steering & Fitting",
+            "critical_point": "Leakage & Function"
+        },
+        {
+            "activity": "Check Gear Pump Steering & Fitting",
+            "critical_point": "Leakage & Condition"
+        },
+        {
+            "activity": "Check Hose High Pressure Steering",
+            "critical_point": "Leakage & Tighten"
+        },
+        {
+            "activity": "Check Control Valve Steering",
+            "critical_point": "Leakage & Tighten"
+        },
+        {
+            "activity": "Check Gear Box Steering & Fitting",
+            "critical_point": "Leakage & Tighten"
+        },
+        {
+            "activity": "Check Pin Cylinder Steering",
+            "critical_point": "Condition"
+        },
+        {
+            "activity": "Check Oil Steering",
+            "critical_point": "Level & Leakage"
+        }
+    ],
+    "BRAKING SYSTEM": [
+        {
+            "activity": "Check Service Brake",
+            "critical_point": "Function"
+        },
+        {
+            "activity": "Check Parking Brake",
+            "critical_point": "Function"
+        },
+        {
+            "activity": "Check All Limiting Brake",
+            "critical_point": "Condition & Limit"
+        },
+        {
+            "activity": "Check All Chamber Brake",
+            "critical_point": "Condition & Leakage"
+        },
+        {
+            "activity": "Check All Hose Chamber",
+            "critical_point": "Condition & Leakage"
+        },
+        {
+            "activity": "Check Selenoid Valve",
+            "critical_point": "Function & Leakage"
+        },
+        {
+            "activity": "Check Relay Valve Brake",
+            "critical_point": "Function & Leakage"
+        },
+        {
+            "activity": "Check Pressure Limited Valve",
+            "critical_point": "Function & Leakage"
+        },
+        {
+            "activity": "Check All Brake Adjuster",
+            "critical_point": "Function & Condition"
+        },
+        {
+            "activity": "Check Four Way Valve",
+            "critical_point": "Leakage & Function"
+        },
+        {
+            "activity": "Check Hose And Pipe Air Compressor",
+            "critical_point": "Leakage & Condition"
+        },
+        {
+            "activity": "Clearance Lining Brake 0.7 mm - 11mm",
+            "critical_point": "Limit"
+        }
+    ],
+    "SUSPENSION SYSTEM": [
+        {
+            "activity": "Check All Spring FR & RR",
+            "critical_point": "Crack & Condition"
+        },
+        {
+            "activity": "Check Bracket Spring FR RH / LH",
+            "critical_point": "Fracture"
+        },
+        {
+            "activity": "Check Bolt Spring FR",
+            "critical_point": "Fracture"
+        },
+        {
+            "activity": "Check Rubber Stoper Spring FR",
+            "critical_point": "Fracture"
+        },
+        {
+            "activity": "Check Torqueroq FR",
+            "critical_point": "Fracture"
+        },
+        {
+            "activity": "Check All Shock Absorber",
+            "critical_point": "Fracture"
+        },
+        {
+            "activity": "Check Body Truck",
+            "critical_point": "Fracture"
+        },
+        {
+            "activity": "Check Body Truck",
+            "critical_point": "Fracture"
+        },
+        {
+            "activity": "Check Front Frame",
+            "critical_point": "Fracture"
+        }
+    ],
+    "FRAME & BODY": [
+        {
+            "activity": "Check Guard Crankcase",
+            "critical_point": "Fracture"
+        },
+        {
+            "activity": "Check Guard Hydraulic Tank",
+            "critical_point": "Fracture"
+        },
+        {
+            "activity": "Check Guard Radiator",
+            "critical_point": "Fracture"
+        },
+        {
+            "activity": "Check Guard Platform",
+            "critical_point": "Fracture"
+        },
+        {
+            "activity": "Check Hitch",
+            "critical_point": "Wear Out"
+        },
+        {
+            "activity": "Check Hitch Oscillating",
+            "critical_point": "Wear Out"
+        },
+        {
+            "activity": "Check Pin Hitch",
+            "critical_point": "Wear Out"
+        },
+        {
+            "activity": "Check Engine Hood",
+            "critical_point": "Fracture"
+        },
+        {
+            "activity": "Check Fender & Support",
+            "critical_point": "Fracture"
+        },
+        {
+            "activity": "Check Lifting Machine",
+            "critical_point": "Fracture"
+        },
+        {
+            "activity": "Check Steering Frame Lock",
+            "critical_point": "Function"
+        },
+        {
+            "activity": "Check Body Vessel",
+            "critical_point": "Fracture"
+        },
+        {
+            "activity": "Check Step",
+            "critical_point": "Fracture"
+        }
+    ],
+    "OPERATOR STATION": [
+        {
+            "activity": "Check Cabin",
+            "critical_point": "Fracture"
+        },
+        {
+            "activity": "Check Cylinder Cab Tilt",
+            "critical_point": "Function & Leakage"
+        },
+        {
+            "activity": "Check Motor Wipper",
+            "critical_point": "Function"
+        },
+        {
+            "activity": "Check Motor Rear View",
+            "critical_point": "Function"
+        },
+        {
+            "activity": "Check Monitor & Panel",
+            "critical_point": "Function & Fracture"
+        },
+        {
+            "activity": "Check Steering Wheel",
+            "critical_point": "Function & Fracture"
+        },
+        {
+            "activity": "Check Pedal Brake",
+            "critical_point": "Function & Fracture"
+        },
+        {
+            "activity": "Check Pedal Governor",
+            "critical_point": "Function & Fracture"
+        },
+        {
+            "activity": "Check Operator Seat",
+            "critical_point": "Function & Fracture"
+        },
+        {
+            "activity": "Check Tilt Platform",
+            "critical_point": "Function & Fracture"
+        },
+        {
+            "activity": "Check ROPS",
+            "critical_point": "Fracture"
+        },
+        {
+            "activity": "Check Hand Rail",
+            "critical_point": "Fracture"
+        },
+        {
+            "activity": "Check Mirror",
+            "critical_point": "Fracture"
+        }
+    ],
+    "DIFFERENTIAL & FINAL DRIVE": [
+        {
+            "activity": "Check Bolt Propeller Shaft",
+            "critical_point": "Kekencangan"
+        },
+        {
+            "activity": "Check Seal & Gasket",
+            "critical_point": "Kebocoran"
+        },
+        {
+            "activity": "Center Propeller Shaft",
+            "critical_point": "Kondisi & Fungsi"
+        },
+        {
+            "activity": "Check Seal Hub",
+            "critical_point": "Keausan"
+        },
+        {
+            "activity": "Check Diff Oil",
+            "critical_point": "Level & Kebocoran"
+        },
+        {
+            "activity": "Check Difflock & Interlock",
+            "critical_point": "Fungsi"
+        }
+    ]
+}

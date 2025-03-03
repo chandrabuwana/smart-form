@@ -49,6 +49,7 @@ use Modules\SmartForm\App\Http\Controllers\IT\PrinterFormController;
 use Modules\SmartForm\App\Http\Controllers\IT\CctvFormController;
 use Modules\SmartForm\App\Http\Controllers\IT\DeviceFormController;
 use Modules\SmartForm\App\Http\Controllers\IT\RouterFormController;
+use Modules\SmartForm\App\Http\Controllers\PLANT\GeneralInspection\InspectionCmtController;
 
 /*
 |--------------------------------------------------------------------------
@@ -356,6 +357,16 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/form-compressor', [CompressorPompaController::class, 'AddFormCompressor'])->name('plant.compressor.form');
             Route::post('/store-compressor', [CompressorPompaController::class, 'StoreCompressor'])->name('plant.compressor.store');
             Route::put('/form-compressor/{id}', [CompressorPompaController::class, 'UpdateCompressor'])->name('plant.compressor.update');
+        });
+
+        // PLANT
+        Route::prefix('plant')->name('bss-form.plant.')->group(function () {
+            // General Inspection
+            Route::prefix('general-inspection')->name('general-inspection.')->group(function () {
+                Route::get('cmt/{id}/print', [InspectionCmtController::class, 'print'])->name('cmt.print');
+                Route::get('cmt/get-data', [InspectionCmtController::class, 'getData'])->name('cmt.get-data');
+                Route::resource('cmt', InspectionCmtController::class);
+            });
         });
 
 
