@@ -359,7 +359,7 @@
         // });
 
         $('#pc_site').select2({
-            theme: 'bootstrap-5', // Menggunakan tema Bootstrap 5
+            theme: 'bootstrap-5', // Menggunakan tema Bootstrap 5.
             dropdownParent: $('#pc_site').closest('.input-group'),
             placeholder: '--- Cari Site ---',
             ajax: {
