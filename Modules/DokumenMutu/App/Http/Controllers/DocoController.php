@@ -74,6 +74,7 @@ class DocoController extends Controller
                     self::T_PENGAJUAN_DOCO . '.status',
                     self::T_PENGAJUAN_DOCO . '.jenis_dokumen',
                     self::T_PENGAJUAN_DOCO . '.alasan_pengajuan',
+                    self::T_PENGAJUAN_DOCO . '.keterangan_status',
                     self::T_KARYAWAN . '.KodeDP',
                     self::T_KARYAWAN . '.KodeST'
                 )
@@ -220,7 +221,7 @@ class DocoController extends Controller
                 ->join(self::T_DEPARTEMENT, self::T_DEPARTEMENT . '.KodeDP', self::T_KARYAWAN . '.KodeDP');
 
             if(!empty($departement)) {
-                $doco->where('KodeDP', $departement);
+                $doco->where(self::T_KARYAWAN . '.KodeDP', $departement);
             }
 
             if(!empty($site)) {

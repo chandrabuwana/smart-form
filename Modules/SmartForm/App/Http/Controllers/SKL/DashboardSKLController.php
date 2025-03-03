@@ -78,35 +78,36 @@ class DashboardSKLController extends Controller
                 $sklMaster->whereDate('TglPelaksanaan', $tanggal);
             }
 
-            $data = $sklMaster->orderBy(self::T_FORM_MST . '.created_at', 'desc')->offset($offset)
-                ->limit($limit);
+            $data = $sklMaster->orderBy(self::T_FORM_MST . '.created_at', 'desc');
+            $total = $data->count();
 
-            $rows = $data->get()->map( function($item) {
-                $item->NamaDepartement = DB::table(self::T_DEPARTEMENT)
-                    ->select('Nama')->where('KodeDP', $item->KodeDepartement)->first()->Nama;
+            $rows = $data->offset($offset)->limit($limit)
+                ->get()->map( function($item) {
+                    $item->NamaDepartement = DB::table(self::T_DEPARTEMENT)
+                        ->select('Nama')->where('KodeDP', $item->KodeDepartement)->first()->Nama;
 
-                $approver = DB::table(self::T_FORM_APPROVER)->select('Status')
-                    ->where('NoForm', $item->NoForm)->get();
+                    $approver = DB::table(self::T_FORM_APPROVER)->select('Status')
+                        ->where('NoForm', $item->NoForm)->get();
 
-                if($item->Status == 'Approved') {
-                    $item->ApprovalProgress = $approver->count() . '/' . $approver->count();
+                    if($item->Status == 'Approved') {
+                        $item->ApprovalProgress = $approver->count() . '/' . $approver->count();
 
-                } else {
-                    $approvedCount = 0;
-                    foreach($approver as $appr) {
-                        if($appr->Status == 'Approved') {
-                            $approvedCount++;
+                    } else {
+                        $approvedCount = 0;
+                        foreach($approver as $appr) {
+                            if($appr->Status == 'Approved') {
+                                $approvedCount++;
+                            }
                         }
+
+                        $item->ApprovalProgress = $approvedCount . '/' . $approver->count();
                     }
 
-                    $item->ApprovalProgress = $approvedCount . '/' . $approver->count();
-                }
-
-                return $item;
-            });
+                    return $item;
+                });
 
             return response()->json([
-                'total' => $rows->count(),
+                'total' => $total,
                 'totalNotFiltered' => $sklMasterNotFiltered->count(),
                 'rows' => $rows
             ]);
@@ -124,7 +125,10 @@ class DashboardSKLController extends Controller
     {
         $NoForm = $request->query('NoForm');
 
-        $formMasterData = DB::table(self::T_FORM_MST)->where('NoForm', $NoForm)->first();
+        $formMasterData = DB::table(self::T_FORM_MST)->select(self::T_FORM_MST . '.*', self::T_DEPARTEMENT . '.Nama AS NamaDP')
+            ->join(self::T_DEPARTEMENT, self::T_DEPARTEMENT . '.KodeDP', '=', self::T_FORM_MST . '.KodeDepartement')
+            ->where('NoForm', $NoForm)->first();
+
         if(!$formMasterData) abort(404);
 
         $formMasterData->karyawans = DB::table(self::T_FORM_KARYAWAN)
@@ -300,13 +304,16 @@ class DashboardSKLController extends Controller
         }
 
         $dataExport = $qExport->orderBy(self::T_FORM_MST . '.created_at', 'DESC')->get();
-        // dd($dataExport);
         $i = 2;
 
         foreach($dataExport as $item) {
-            $isApprovedForm = DB::table(self::T_FORM_APPROVER)->where('NoForm', $item->NoForm)
-                ->where('status', 'Approved')->count('ID');
-            if($isApprovedForm < 4) {
+            $approver = DB::table(self::T_FORM_APPROVER)->where('NoForm', $item->NoForm)->get();
+                // ->where('status', 'Approved')->count('ID');
+
+            $totalApprover = $approver->count();
+            $totalHasApproved = $approver->filter( fn($item) => $item->Status == 'Approved')->count();
+
+            if($totalHasApproved >= $totalApprover) {
                 continue;
             }
 

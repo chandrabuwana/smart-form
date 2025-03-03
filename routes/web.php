@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Login\LoginKaryawanController;
 use App\Http\Controllers\absensi\CompareAbsensiController;
 use App\Http\Controllers\REVA\produksi\RevaProduksiController;
+use Mpdf\Mpdf;
+use Smalot\PdfParser\Parser;
 
 /*
 |--------------------------------------------------------------------------

@@ -260,11 +260,11 @@ class ValidasiDocoController extends Controller
                         ->first();
 
                     $expFilename = explode('/', $docoInduk->file_path);
-                    $originalName = $expFilename[ count($expFilename) - 1 ];
-                    $previewPath = str_replace($originalName, 'preview_' . $originalName, $docoInduk->file_path);
+                    $originalExpiredName = $expFilename[ count($expFilename) - 1 ];
+                    $previewExpiredPath = str_replace($originalExpiredName, 'preview_' . $originalExpiredName, $docoInduk->file_path);
 
                     $this->_addKadaluarsaStamp($docoInduk->file_path);
-                    $this->_addKadaluarsaStamp($previewPath);
+                    $this->_addKadaluarsaStamp($previewExpiredPath);
 
                     $noRevisi = empty($docoInduk->no_revisi) ? 1 : ($docoInduk->no_revisi + 1);
 
@@ -494,26 +494,33 @@ class ValidasiDocoController extends Controller
 
         } catch(\Throwable $e) {
             DB::rollBack();
-            dd($e);
             return redirect()->back()->with('error', 'Terjadi kesalahan, mohon coba beberapa saat lagi');
         }
     }
 
     public function reject($id, Request $request)
     {
+        $keterangan = $request->input('keterangan');
         DB::beginTransaction();
 
         try {
             DB::table(self::T_PENGAJUAN_DOCO)->where('id', $id)->update([
                 'status' => 'Ditolak',
+                'keterangan_status' => $keterangan
             ]);
 
             DB::commit();
-            return redirect(route('dokumen-mutu.riwayat-pengajuan'))->with('success', 'Berhasil menolak pengajuan dokumen');
+            return response()->json([
+                'code' => 200,
+                'message' => 'Berhasil menolak pengajuan dokumen',
+            ]);
 
         } catch(\Throwable $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Terjadi kesalahan, mohon coba beberapa saat lagi');
+            return response()->json([
+                'code' => 500,
+                'message' => 'Terjadi kesalahan, mohon coba beberapa saat lagi'
+            ]);
         }
     }
 

@@ -125,6 +125,10 @@
             max-height: 300px;
             overflow-y: auto;
         }
+
+        #pdf_container > * {
+            width: 80% !important;
+        }
     </style>
 @endsection
 
@@ -444,7 +448,7 @@
         let pdfjsLib = window['pdfjs-dist/build/pdf'];
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.worker.min.js';
         let pdfDoc = null;
-        let scale = 1;
+        let scale = 1.8;
         let resolution = 1;
         let komentars = [];
         const ID_VERSI = `{!! $lastVersion->id !!}`;
@@ -582,11 +586,58 @@
                 confirmButtonText: "Hapus",
                 cancelButtonText: "Batal",
                 cancelButtonColor: "#3085d6",
-                confirmButtonColor: "#d33"
+                confirmButtonColor: "#d33",
+                input: "textarea",
+                inputLabel: "Masukkan Alasan",
+                inputValidator: (value) => {
+                    if (!value) {
+                        return "Alasan pengajuan wajib diisi!";
+                    }
+                }
 
             }).then(function(result) {
                 if(result.isConfirmed) {
-                    location.href = `/doco/riwayat-pengajuan/validasi/${id}/reject`;
+                    Swal.fire({
+                        title: 'Loading...',
+                        allowOutsideClick: false,
+                        didOpen: () => Swal.showLoading()
+                    });
+
+                    $.ajax({
+                        url: `/doco/riwayat-pengajuan/validasi/${id}/reject`,
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                            'Content-Type': 'application/json'
+                        },
+                        data: JSON.stringify({
+                            id: id,
+                            keterangan: result.value,
+                        }),
+                        type: "POST",
+                        dataType: 'json',
+                        success: function(response) {
+                            Swal.close();
+
+                            Swal.fire({
+                                icon: response.code == 200 ? 'success' : 'error',
+                                title: response.code == 200 ? 'Yeay!' : 'Oops...',
+                                text: response.message,
+
+                            }).then( () => {
+                                location.href = '/doco/riwayat-pengajuan';
+                            });
+                        },
+                        error: function(xhr, ajaxOptions, thrownError) {
+                            console.error(thrownError);
+                            Swal.close();
+
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: `Terjadi kesalahan tidak terduga`,
+                            });
+                        }
+                    });
                 }
             });
         }

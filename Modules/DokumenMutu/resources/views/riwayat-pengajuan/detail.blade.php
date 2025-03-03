@@ -86,6 +86,10 @@
             max-height: 300px;
             overflow-y: auto;
         }
+
+        #pdf_container > * {
+            width: 80% !important;
+        }
     </style>
 @endsection
 
@@ -215,6 +219,11 @@
                             </button>
                         @endif
                     </div>
+
+                    @if( $doco->status == 'Ditolak' && !empty($doco->keterangan_status) )
+                        <p class="fw-bold mb-1">Keterangan Penolakan :</p>
+                        <p class="mb-5"> {!! nl2br($doco->keterangan_status) !!} </p>
+                    @endif
 
                     <div class="row">
                         <div class="col-md-8">
@@ -382,7 +391,7 @@
         let pdfjsLib = window['pdfjs-dist/build/pdf'];
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.worker.min.js';
         let pdfDoc = null;
-        let scale = 1;
+        let scale = 1.8;
         let resolution = 1;
         const ID_VERSI = `{{ $lastVersion->id }}`;
 

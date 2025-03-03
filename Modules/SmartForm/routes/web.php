@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Modules\SmartForm\App\Http\Controllers\Admin\AdminController;
 use Modules\SmartForm\App\Http\Controllers\Approval\ApprovalFormController;
+use Modules\SmartForm\App\Http\Controllers\DC\BAUnbudget\UnbudgetController;
 use Modules\SmartForm\App\Http\Controllers\GS\MessController;
 use Modules\SmartForm\App\Http\Controllers\GS\SmartCateringController;
 use Modules\SmartForm\App\Http\Controllers\GS\VendorController;
@@ -49,6 +50,8 @@ use Modules\SmartForm\App\Http\Controllers\FAT\PPH\HelperPPHController;
 use Modules\SmartForm\App\Http\Controllers\FAT\PPH\UserVendorController;
 use Modules\SmartForm\App\Http\Controllers\IC\PengajuanTraining\HelperTraininingController;
 use Modules\SmartForm\App\Http\Controllers\IC\PengajuanTraining\PengajuanTrainingController;
+use Modules\SmartForm\App\Http\Controllers\OD\CPM\CPMController;
+use Modules\SmartForm\App\Http\Controllers\OD\CPM\CPMHelper;
 use Modules\SmartForm\App\Http\Middleware\PengajuanTrainingIC;
 use Modules\SmartForm\App\Http\Controllers\IT\PrinterFormController;
 use Modules\SmartForm\App\Http\Controllers\IT\CctvFormController;
@@ -183,10 +186,10 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
                     Route::get('/dashboard', [UserVendorController::class, 'index'])->name('bss-pph-vendor.dashboard');
                     Route::get('/dashboard/fetch-data', [UserVendorController::class, 'fetchData'])->name('bss-pph-vendor.fetch-dashboard-data');
                     Route::get('/create', [UserVendorController::class, 'create'])->name('bss-pph-vendor.add');
-                    Route::get('/store', [UserVendorController::class, 'store'])->name('bss-pph-vendor.store');
-                    Route::get('/edit/{id}', [UserVendorController::class, 'edit'])->name('bss-pph-vendor.edit');
-                    Route::post('/update/{id}', [UserVendorController::class, 'update'])->name('bss-pph-vendor.update');
-                    Route::get('/delete/{id}', [UserVendorController::class, 'delete'])->name('bss-pph-vendor.delete');
+                    Route::post('/store', [UserVendorController::class, 'store'])->name('bss-pph-vendor.store');
+                    Route::get('/edit/{npwp}', [UserVendorController::class, 'edit'])->name('bss-pph-vendor.edit');
+                    Route::post('/update/{npwp}', [UserVendorController::class, 'update'])->name('bss-pph-vendor.update');
+                    Route::get('/delete/{npwp}', [UserVendorController::class, 'delete'])->name('bss-pph-vendor.delete');
                 });
             });
         });
@@ -533,7 +536,25 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('check-pelatihan-mp', [HelperTraininingController::class, 'CheckNIkAndPelatihan'])->name('ic.training.helper.check-pelatihan-mp');
         });
 
-        // Route::get('jimmy', [PengajuanTrainingController::class, '']);
+    });
+
+    Route::prefix('dc')->group(function () {
+        Route::prefix('unbudget')->group(function () {
+            Route::get('/', [UnbudgetController::class, 'Index'])->name('dc.unbudget.index');
+            Route::get('dashboard', [UnbudgetController::class, 'Dashboard'])->name('dc.unbudget.dashboard');
+            Route::get('form', [UnbudgetController::class, 'FormBAUnbudget'])->name('dc.unbudget.form');
+            Route::get('form-edit', [UnbudgetController::class, 'FormEdit'])->name('dc.unbudget.form-edit');
+            Route::post('form-edit', [UnbudgetController::class, 'FormEditSubmit'])->name('dc.unbudget.form-edit-submit');
+            // Route::get('form-cetak', [UnbudgetController::class, 'FormCetak'])->name('dc.unbudget.form-cetak');
+            Route::get('form-info', [UnbudgetController::class, 'FormInfo'])->name('dc.unbudget.form-info');
+            Route::post('form-approval', [UnbudgetController::class, 'FormApproval'])->name('dc.unbudget.form-approval');
+            Route::post('form-submit', [UnbudgetController::class, 'SubmitBA'])->name('dc.unbudget.form-submit');
+            Route::get('form-list', [UnbudgetController::class, 'FormList'])->name('dc.unbudget.form-list');
+            Route::get('helper/coa', [UnbudgetController::class, 'HelperCOA'])->name('dc.unbudget.helper-coa');
+            Route::get('helper/mp', [UnbudgetController::class, 'HelperMP'])->name('dc.unbudget.helper-mp');
+            Route::get('migrasi', [UnbudgetController::class, 'Migrasi']);
+            Route::post('migrasi-submit', [UnbudgetController::class, 'MigrasiSubmit'])->name('dc.unbudget.migrasi-submit');
+        });
     });
 
     Route::prefix('approval')->group(function () {
@@ -552,7 +573,3 @@ Route::get('/bss-form/induksi-karyawan/listing-karyawan/{data}', [ICFM05InduksiK
 Route::post('/bss-form/induksi-karyawan/listing-karyawan-add', [ICFM05InduksiKaryawanController::class, 'formAddKaryawanListing']);
 
 Route::get('/helper-download-pdf/{docno}', [HelperPdfMobilisasiFormController::class, 'DownloadPDFHelperPdf']);
-// Route::get('/jimmy', function() {
-//     dd(DB::connection('sqlsrv_training')->table('pengajuan_training_detail')->where('NIK', '1020341')->exists());
-// });
-// Route::get('/jimmy', [HelperTraininingController::class, 'CheckNIkAndPelatihan']);

@@ -153,7 +153,7 @@ class Helper
 
     public static function validateDateFormat($format, $date) {
         $dt = DateTime::createFromFormat($format, $date);
-        return $dt !== false && !array_sum($dt::getLastErrors());
+        return $dt !== false && ($dt::getLastErrors() === false || !array_sum($dt::getLastErrors()));
     }
 
     public static function SFNotification($nik, $message, $category, $link) {

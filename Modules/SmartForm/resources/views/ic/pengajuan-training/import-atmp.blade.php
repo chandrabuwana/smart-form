@@ -258,5 +258,24 @@
                 stopLoading()
             })
         }
+
+        $('#table-data').bootstrapTable({
+            search: true,
+            onPostBody: function () {
+                // Seleksi input pencarian yang dihasilkan Bootstrap Table
+                let searchInput = $('.search-input');
+
+                // Ubah type="search" menjadi type="text"
+                searchInput.attr('type', 'text');
+
+                // Tambahkan autocomplete="off"
+                searchInput.attr('autocomplete', 'off');
+
+                // Tambahkan readonly yang akan dihapus saat focus untuk mencegah autofill
+                searchInput.attr('readonly', true).on('focus', function () {
+                    $(this).removeAttr('readonly');
+                });
+            }
+        })
     </script>
 @endsection

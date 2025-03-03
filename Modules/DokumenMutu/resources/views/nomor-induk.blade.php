@@ -55,6 +55,10 @@
             display: none;
             padding: 5px;
         }
+
+        #pdf_container > * {
+            width: 80% !important;
+        }
     </style>
 @endsection
 
@@ -113,7 +117,7 @@
                                     <option value="" selected>-- Filter Jenis Dokumen --</option>
                                     <option value="SOP">Standart Operating Procedur</option>
                                     <option value="STD">Standart</option>
-                                    <option value="WI">Working Instruction</option>
+                                    <option value="WI">Work Instruction</option>
                                     <option value="FRM">Form</option>
                                 </select>
                             </div>
@@ -279,7 +283,7 @@
                                     </div>
                                 @endif
 
-                                <div id="pdf_container"></div>
+                                <div id="pdf_container" style="width: 100%;"></div>
                             </div>
                         </div>
                     </div>
@@ -320,7 +324,7 @@
         let pdfjsLib = window['pdfjs-dist/build/pdf'];
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.worker.min.js';
         let pdfDoc = null;
-        let scale = 1;
+        let scale = 1.8;
         let resolution = 1;
 
         var $table = $("#list-form");
@@ -466,7 +470,9 @@
                             $('#keterangan-kadaluarsa').parent().addClass('d-none');
                         }
 
-                        $('#pdf_container').html('');
+                        // $('#pdf_container').html('');
+                        // $('#pdf_container').attr('src', `data:application/pdf;base64,${response.file_converted_path}`);
+                        // $('#pdf_container').addClass('d-block');
                         LoadPdfFromUrl(response.file_converted_path);
                         $('#modalDetail').modal("show");
                     }
