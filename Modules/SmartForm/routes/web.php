@@ -23,6 +23,7 @@ use Modules\SmartForm\App\Http\Controllers\SHE\DashboardSHEFRM19BController;
 use Modules\SmartForm\App\Http\Controllers\SHE\TransactionSHEFRM19BController;
 use Modules\SmartForm\App\Http\Controllers\SHE\EyewashController;
 use Modules\SmartForm\App\Http\Controllers\SHE\AparController;
+use Modules\SmartForm\App\Http\Controllers\SHE\InspeksiCateringController;
 use Modules\SmartForm\App\Http\Controllers\SHE\P3KController;
 use Modules\SmartForm\App\Http\Controllers\SHE\AirMinumController;
 use Modules\SmartForm\App\Http\Controllers\SHE\NoiseController;
@@ -49,6 +50,7 @@ use Modules\SmartForm\App\Http\Controllers\IT\PrinterFormController;
 use Modules\SmartForm\App\Http\Controllers\IT\CctvFormController;
 use Modules\SmartForm\App\Http\Controllers\IT\DeviceFormController;
 use Modules\SmartForm\App\Http\Controllers\IT\RouterFormController;
+use Modules\SmartForm\App\Http\Controllers\PLANT\GeneralInspection\InspectionCmtController;
 
 /*
 |--------------------------------------------------------------------------
@@ -188,6 +190,16 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/form-inspeksi-apar', [AparController::class, 'formInspeksiApar'])->name('bss-form.she-019B.form-inspeksi-apar');
             Route::post('/add-inspeksi-apar', [AparController::class, 'SubmitFormInspeksiApar'])->name("bss-form.she-019B.add-inspeksi-apar");
             Route::get('/pdf-inspeksi-apar/{id}', [AparController::class, 'PdfInspeksiApar'])->name('bss-form.log.pdf-inspeksi-apar');
+
+            // INSPEKSI CATERING
+            Route::get('/inspeksi-catering', [InspeksiCateringController::class, 'InspeksiCateringDashboard'])->name('bss-form.she-048.inspeksi-catering.dashboard');
+            Route::get('/list-inspeksi-catering', [InspeksiCateringController::class, 'GetListInspeksiCatering'])->name("bss-form.she-048.list-inspeksi-catering");
+            Route::get('/form-inspeksi-catering', [InspeksiCateringController::class, 'FormInspeksiCatering'])->name('bss-form.she-019B.form-inspeksi-catering');
+            Route::post('/create-inspeksi-catering', [InspeksiCateringController::class, 'CreateInspeksiCatering'])->name('bss-form.she-019B.create-inspeksi-catering');
+            Route::get('/edit-fuel/{id}', [LogController::class, 'editReqFuel'])->name('bss-form.log.edit-req-fuel');
+            Route::post('/update-fuel/{id}', [LogController::class, 'updateReqFuel'])->name('bss-form.log.update-req-fuel');
+            Route::get('/delete-inspeksi-catering/{id}', [InspeksiCateringController::class, 'DeleteInspeksiCatering'])->name('bss-form.she-019B.delete-inspeksi-catering');
+            Route::get('/pdf-inspeksi-catering/{id}', [InspeksiCateringController::class, 'PdfInspeksiCatering'])->name('bss-form.she-019B.pdf-inspeksi-catering');
         });
 
         Route::prefix('timesheet')->group(function () {
@@ -355,6 +367,17 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/store-welding', [PlantWeldingController::class, 'StoreWelding'])->name('plant.welding.store');
             Route::put('/form-welding/{id}', [PlantWeldingController::class, 'UpdateWelding'])->name('plant.welding.update');
         });
+        // PLANT
+        Route::prefix('plant')->name('bss-form.plant.')->group(function () {
+            // General Inspection
+            Route::prefix('general-inspection')->name('general-inspection.')->group(function () {
+                Route::get('cmt/{id}/print', [InspectionCmtController::class, 'print'])->name('cmt.print');
+                Route::get('cmt/get-data', [InspectionCmtController::class, 'getData'])->name('cmt.get-data');
+                Route::resource('cmt', InspectionCmtController::class);
+            });
+        });
+
+
     });
 
     Route::get('/dashboard-menu', [AdminController::class, 'index'])->name('dashboard-menu');
