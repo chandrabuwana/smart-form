@@ -36,19 +36,19 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="date" class="ms-0">Tanggal</label>
-                                        <input type="date" class="form-control" id="date" name="date">
+                                        <input type="date" class="form-control" id="date" name="date" required>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="alat_pc" class="ms-0">Alat Muat PC:</label>
-                                        <input type="text" class="form-control" id="alat_pc" name="alat_pc">
+                                        <input type="text" class="form-control" id="alat_pc" name="alat_pc" required>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="alat_x" class="ms-0">Alat Muat X:</label>
-                                        <input type="text" class="form-control" id="alat_x" name="alat_x">
+                                        <input type="text" class="form-control" id="alat_x" name="alat_x" required>
                                     </div>
                                 </div>
 
@@ -57,19 +57,21 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="start_load" class="ms-0">Start Loading</label>
-                                        <input type="time" class="form-control" id="start_load" name="start_load">
+                                        <input type="time" class="form-control" id="start_load" name="start_load"
+                                            required>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="stop_load" class="ms-0">Stop Loading</label>
-                                        <input type="time" class="form-control" id="stop_load" name="stop_load" required>
+                                        <input type="time" class="form-control" id="stop_load" name="stop_load" required
+                                            required>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="shift" class="ms-0">Shift</label>
-                                        <select class="form-control" name="shift" id="shiftSelector">
+                                        <select class="form-control" name="shift" id="shiftSelector" required>
                                             <option disabled selected>-- Select Shift --</option>
                                             <option value="DS">DS</option>
                                             <option value="NS">NS</option>
@@ -101,7 +103,7 @@
                                             <th>Alat Angkut</th>
                                             <th>CN</th>
                                             <th colspan="4" style="text-align: center;">
-                                                <input class="form-control" type="text" name="alat_angkut"
+                                                <input class="form-control" type="text" name="alat_angkut" required
                                                     placeholder="Input Alat Angkut"
                                                     style="text-align: center; background-color: #eee7e8; color: rgb(11, 10, 10);">
                                             </th>
@@ -113,7 +115,7 @@
                                         <tr>
                                             <th>Nama Operator</th>
                                             <th colspan="5" style="text-align: center;">
-                                                <input class="form-control" type="text" name="nama_operator"
+                                                <input class="form-control" type="text" name="nama_operator" required
                                                     style="text-align: center; background-color: #eee7e8; color: rgb(11, 10, 10);"
                                                     placeholder="Input Nama Operator">
                                             </th>
@@ -161,25 +163,25 @@
                                         <div class="col-3 mt-4">
                                             <div class="input-group input-group-static mb-3">
                                                 <label class="custom-text-color">Kendala / Lokasi</label>
-                                                <input type="text" class="form-control" name="kendala[]">
+                                                <input type="text" class="form-control" name="kendala[]" required>
                                             </div>
                                         </div>
                                         <div class="col-3 mt-4">
                                             <div class="input-group input-group-static mb-3">
                                                 <label class="custom-text-color">Waktu Mulai</label>
-                                                <input type="time" class="form-control" name="waktu_mulai[]">
+                                                <input type="time" class="form-control" name="waktu_mulai[]" required>
                                             </div>
                                         </div>
                                         <div class="col-3 mt-4">
                                             <div class="input-group input-group-static mb-3">
                                                 <label class="custom-text-color">Waktu Selesai</label>
-                                                <input type="time" class="form-control" name="waktu_selesai[]">
+                                                <input type="time" class="form-control" name="waktu_selesai[]" required>
                                             </div>
                                         </div>
                                         <div class="col-3 mt-4">
                                             <div class="input-group input-group-static mb-3">
                                                 <label class="custom-text-color">Keterangan</label>
-                                                <input type="text" class="form-control" name="keterangan[]">
+                                                <input type="text" class="form-control" name="keterangan[]" required>
                                             </div>
 
                                         </div>
@@ -193,7 +195,7 @@
                                     <div class="input-group input-group-static mb-3">
                                         <div class="input-group input-group-static mb-3">
                                             <label>Loading Point</label>
-                                            <input type="text" class="form-control" name="loading_point">
+                                            <input type="text" class="form-control" name="loading_point" required>
                                         </div>
                                     </div>
                                 </div>
@@ -201,7 +203,7 @@
                                     <div class="input-group input-group-static mb-3">
                                         <div class="input-group input-group-static mb-3">
                                             <label>Jarak (M)</label>
-                                            <input type="text" class="form-control" name="jarak">
+                                            <input type="text" class="form-control" name="jarak" required>
                                         </div>
                                     </div>
                                 </div>
@@ -209,7 +211,7 @@
                                     <div class="input-group input-group-static mb-3">
                                         <div class="input-group input-group-static mb-3">
                                             <label>Disposal</label>
-                                            <input type="text" class="form-control" name="disposal">
+                                            <input type="text" class="form-control" name="disposal" required>
                                         </div>
                                     </div>
                                 </div>
@@ -218,13 +220,15 @@
                                 <div class="col-6">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="dibuat" class="ms-0">Dibuat Oleh</label>
-                                        <input type="text" class="form-control" id="dibuat" name="dibuat_oleh">
+                                        <input type="text" class="form-control" id="dibuat" name="dibuat_oleh"
+                                            required>
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="diperiksa" class="ms-0">Diperiksa Oleh</label>
-                                        <input type="text" class="form-control" id="diperiksa" name="diperiksa_oleh">
+                                        <input type="text" class="form-control" id="diperiksa" name="diperiksa_oleh"
+                                            required>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -320,6 +324,7 @@
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <script>
+
         document.getElementById('shiftSelector').addEventListener('change', function() {
             var selectedShift = this.value;
 

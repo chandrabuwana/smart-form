@@ -103,68 +103,71 @@
                                     </div>
                                 </div>
                             </div>
-                            <a class="btn btn-primary" id="addNewAlatAngkut">+ New Alat Angkut</a>
+
                             <div class="table-responsive mt-4" id="tablesContainer">
-                                <table class="table table-bordered" id="mainTable">
-                                    <thead class="bg-success text-white">
-                                        <tr>
-                                            <th>Alat Angkut</th>
-                                            <th>CN</th>
-                                            <th colspan="4" style="text-align: center;">
-                                                <input class="form-control" type="text" name="alat_angkut"
-                                                    placeholder="Input Alat Angkut" disabled
-                                                    style="text-align: center; background-color: #eee7e8; color: rgb(11, 10, 10);">
-                                            </th>
-                                            <th>∑</th>
-
-                                            <th rowspan="2" style="text-align: center; vertical-align: middle;">
-                                                Material
-                                            </th>
-                                        </tr>
-                                        <tr>
-                                            <th>Nama Operator</th>
-                                            <th colspan="5" style="text-align: center;">
-                                                <input class="form-control" type="text" name="nama_operator"
-                                                    style="text-align: center; background-color: #eee7e8; color: rgb(11, 10, 10);"
-                                                    placeholder="Input Nama Operator" disabled>
-                                            </th>
-                                            <th>RITASI</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @php
-                                            $id = 1;
-                                            $combinedData = collect($dataDS)->merge(collect($dataNS));
-                                        @endphp
-                                        @foreach ($combinedData as $data)
-                                            @php
-
-                                                $shift = in_array($data, $dataDS) ? 'DS' : 'NS';
-                                            @endphp
-                                            <tr class="shift-row {{ $shift }}" style="display: none;"
-                                                id="row{{ $id }}">
-                                                <td>{{ $data }}</td>
-                                                @for ($i = 1; $i <= 5; $i++)
-                                                    <td><input type="time" class="time-input form-control"
-                                                            oninput="countFilled({{ $id }})"
-                                                            name="time[{{ $id }}][{{ $i }}]"
-                                                            disabled>
-                                                    </td>
-                                                @endfor
-
-                                                <td>
-                                                    <textarea class="form-control" name="material[]" cols="5" disabled></textarea>
-                                                </td>
+                                @foreach ($record->alat_angkut as $index => $alat)
+                                    <table class="table table-bordered" id="mainTable">
+                                        <thead class="bg-success text-white">
+                                            <tr>
+                                                <th>Alat Angkut</th>
+                                                <th>CN</th>
+                                                <th colspan="4" class="text-center">
+                                                    <input class="form-control" type="text" name="alat_angkut"
+                                                        placeholder="Input Alat Angkut" disabled
+                                                        value="{{ $alat }}"
+                                                        style="text-align: center; background-color: #eee7e8; color: rgb(11, 10, 10);">
+                                                </th>
+                                                <th>∑</th>
+                                                <th rowspan="2" class="text-center align-middle">Material</th>
                                             </tr>
+                                            <tr>
+                                                <th>Nama Operator</th>
+                                                <th colspan="5" class="text-center">
+                                                    <input class="form-control" type="text" name="nama_operator"
+                                                        style="text-align: center; background-color: #eee7e8; color: rgb(11, 10, 10);"
+                                                        placeholder="Input Nama Operator"
+                                                        value="{{ $record->nama_operator[$index] }}" disabled>
+                                                </th>
+                                                <th>RITASI</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
                                             @php
-                                                $id++;
+
+                                                $alatAngkut = $record->shift == 'DS' ? $dataDS : $dataNS;
+                                                $counts = 1;
                                             @endphp
-                                        @endforeach
 
+                                            @foreach ($alatAngkut as $id => $alat)
+                                                <tr>
+                                                    <td>{{ $alat }}</td>
+                                                    @for ($i = 1; $i <= 5; $i++)
+                                                        <td>
+                                                            <input type="time" class="time-input form-control"
+                                                                value="{{ $time_details[$counts][$index]->{$i} }}"
+                                                                disabled>
+                                                        </td>
+                                                    @endfor
+                                                    <td>
+                                                        <input type="text" class="form-control text-center"
+                                                            value="{{ $nonNullCounts[$counts][$index] }}" disabled>
+                                                    </td>
+                                                    <td>
+                                                        <textarea class="form-control" name="material[]" cols="5" disabled>{{ $record->material[$index][$id] }}</textarea>
+                                                    </td>
+                                                </tr>
+                                                @php
+                                                    $counts++;
+                                                @endphp
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                @endforeach
 
-                                    </tbody>
-                                </table>
                             </div>
+
+
+
 
                             <div class="bg-gradient-success rounded p-2">
                                 <div id="row-container">
@@ -207,7 +210,6 @@
 
                                 </div>
 
-                                <a class="btn btn-primary" id="addRowButton">Add Row</a>
                             </div>
                             <div class="row">
                                 <div class="col-3 mt-4">
@@ -260,7 +262,8 @@
                                         <div class="form-actions">
                                             <a href="{{ route('prod.form.checker.dashboard') }}"
                                                 class="btn btn-secondary">Cancel</a>
-                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                            <a href="{{ route('prod.form.checker.export', ['id' => $record->id]) }}"
+                                                class="btn btn-primary">Export</a>
                                         </div>
                                     </div>
                                 </div>

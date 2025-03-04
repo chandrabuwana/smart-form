@@ -130,7 +130,7 @@ class FormCheckerController extends Controller {
 
                 if (isset($record->$time_detail_key)) {
 
-                    $time_details[$time_detail_key] = $record->$time_detail_key;
+                    $time_details[$i] = $record->$time_detail_key;
                 }
             }
 
@@ -152,7 +152,7 @@ class FormCheckerController extends Controller {
                     $nonNullCounts[$key][$index] = $nonNullCount;
                 }
             }
-            // dd($record);
+
 
             return view( 'smartform::production.form_checker.show-form-checker', [
                 'record' => $record, 'dataDS' => $dataDS, 'dataNS' => $dataNS, 'time_details' => $time_details, 'nonNullCounts' => $nonNullCounts
@@ -165,6 +165,7 @@ class FormCheckerController extends Controller {
 
 
     public function StoreChecker( Request $request ) {
+
         try {
             $data = [
                 'doc_num' => $this->generateDocNumber(),
@@ -192,6 +193,7 @@ class FormCheckerController extends Controller {
             $alat = [];
             $time = [];
             $operator = [];
+
             // insert to array alat angkut, nama operator, time detail, material
             foreach ( $request->all() as $key => $value ) {
 
@@ -212,42 +214,28 @@ class FormCheckerController extends Controller {
             $data[ 'alat_angkut' ] = json_encode( array_values( $alat ) );
             $data[ 'nama_operator' ] = json_encode( array_values( $operator ) );
 
-            // mapping array time and material
-            $timeNullCheck = array_map( function( $subArray ) {
-                return array_slice( $subArray, 0, 12 );
-            }
-            , $time );
-
-            $materialNullCheck = array_map( function( $subArray ) {
-                return array_slice( $subArray, 0, 12 );
-            }
-            , $data[ 'material' ] );
-
-            if ( array_filter( array_merge( ...$timeNullCheck ), fn( $value ) => $value !== null ) === [] &&
-            array_filter( array_merge( ...$materialNullCheck ), fn( $value ) => $value !== null ) === [] ) {
-
-                $filteredTime = array_map( function( $subArray ) {
-                    return array_slice( $subArray, 12, 12 );
+                if ($request->shift == 'DS') {
+                    $filteredTime = [];
+                    $filteredMaterial = [];
+                    foreach ($time as $array) {
+                    $filteredTime[] = array_slice($array, 0, 12);
+                    }
+                    foreach ($data[ 'material' ] as $mat) {
+                        $filteredMaterial[] = array_slice($mat, 0, 12);
+                    }
+                } elseif ($request->shift == 'NS') {
+                    $filteredMaterial = [];
+                    $filteredTime = [];
+                    foreach ($time as $index => $array) {
+                     $filteredTime[] = array_slice($array, 12, 12);
+                    }
+                    foreach ($data[ 'material' ] as $mat) {
+                        $filteredMaterial[] = array_slice($mat, 12, 12);
+                    }
+                } else {
+                    $filteredMaterial = [];
+                    $filteredTime = [];
                 }
-                , $time );
-
-                $filteredMaterial = array_map( function( $subArray ) {
-                    return array_slice( $subArray, 12, 12 );
-                }
-                , $data[ 'material' ] );
-
-            } else {
-
-                $filteredTime = array_map( function( $subArray ) {
-                    return array_slice( $subArray, 0, 12 );
-                }
-                , $time );
-
-                $filteredMaterial = array_map( function( $subArray ) {
-                    return array_slice( $subArray, 0, 12 );
-                }
-                , $data[ 'material' ] );
-            }
 
             $time = $filteredTime ;
             $data[ 'material' ] = json_encode( array_values( $filteredMaterial ) );
@@ -263,6 +251,7 @@ class FormCheckerController extends Controller {
                 $data[ $time_detail_key ] = json_encode( array_values( $time_detail_values ) );
             }
 
+           
 
             DB::table( 'prod_checker_form' )->insert( $data );
 
@@ -274,6 +263,131 @@ class FormCheckerController extends Controller {
 
         }
 
+    }
+    public function ExportForm( $id ) {
+        $dataDS = [
+            '06-00 sd 07.00',
+            '07-00 sd 08.00',
+            '08-00 sd 09.00',
+            '09-00 sd 10.00',
+            '10-00 sd 11.00',
+            '11-00 sd 12.00',
+            '12-00 sd 13.00',
+            '13-00 sd 14.00',
+            '14-00 sd 15.00',
+            '15-00 sd 16.00',
+            '16-00 sd 17.00',
+            '17-00 sd 18.00',
+        ];
+        $dataNS = [
+            '18-00 sd 19.00',
+            '19-00 sd 20.00',
+            '20-00 sd 21.00',
+            '21-00 sd 22.00',
+            '22-00 sd 23.00',
+            '23-00 sd 00.00',
+            '00-00 sd 01.00',
+            '01-00 sd 02.00',
+            '02-00 sd 03.00',
+            '03-00 sd 04.00',
+            '04-00 sd 05.00',
+            '05-00 sd 06.00',
+        ];
+        try {
+            $record = DB::table( 'prod_checker_form' )
+            ->where( 'id', $id )
+            ->first();
+
+            if ( !$record ) {
+                return redirect()
+                ->route( 'prod.form.checker.dashboard' )
+                ->with( 'error', 'Data tidak ditemukan' );
+            }
+            $safeJsonDecode = function( $value ) {
+                if ( is_string( $value ) ) {
+                    return json_decode( $value );
+                } elseif ( is_array( $value ) ) {
+                    return $value;
+                }
+                return null;
+            };
+
+             // Parse JSON arrays
+             $record->alat_muat = $safeJsonDecode( $record->alat_muat );
+             $record->alat_angkut =$safeJsonDecode( $record->alat_angkut );
+             $record->nama_operator =$safeJsonDecode( $record->nama_operator );
+             $record->time_detail1 =$safeJsonDecode( $record->time_detail1 );
+             $record->time_detail2 =$safeJsonDecode( $record->time_detail2 );
+             $record->time_detail3 =$safeJsonDecode( $record->time_detail3 );
+             $record->time_detail4 =$safeJsonDecode( $record->time_detail4 );
+             $record->time_detail5 =$safeJsonDecode( $record->time_detail5 );
+             $record->time_detail6 = $safeJsonDecode( $record->time_detail6 );
+             $record->time_detail7 = $safeJsonDecode( $record->time_detail7 );
+             $record->time_detail8 = $safeJsonDecode( $record->time_detail8 );
+             $record->time_detail9 = $safeJsonDecode( $record->time_detail9 );
+             $record->time_detail10 = $safeJsonDecode( $record->time_detail10 );
+             $record->time_detail11 = $safeJsonDecode( $record->time_detail11 );
+             $record->time_detail12 = $safeJsonDecode( $record->time_detail12 );
+             $record->material = $safeJsonDecode( $record->material );
+             $record->waktu_mulai = $safeJsonDecode( $record->waktu_mulai );
+             $record->waktu_selesai = $safeJsonDecode( $record->waktu_selesai );
+             $record->keterangan =$safeJsonDecode( $record->keterangan );
+             $record->kendala = $safeJsonDecode( $record->kendala );
+
+
+            $time_details = [];
+
+
+            for ($i = 1; $i <= 12; $i++) {
+
+                $time_detail_key = "time_detail" . $i;
+
+
+                if (isset($record->$time_detail_key)) {
+
+                    $time_details[$i] = $record->$time_detail_key;
+                }
+            }
+
+            $nonNullCounts = [];
+
+            foreach ($time_details as $key => $timeDetail) {
+                $nonNullCounts[$key] = [];
+
+
+                foreach ($timeDetail as $index => $times) {
+                    $nonNullCount = 0;
+
+
+                    foreach ($times as $time) {
+                        if ($time !== null) {
+                            $nonNullCount++;
+                        }
+                    }
+                    $nonNullCounts[$key][$index] = $nonNullCount;
+                }
+            }
+            $sumRitasi = 0;
+            foreach ($nonNullCounts as $key => $item) {
+                foreach ($item as $value) {
+                    $sumRitasi += $value;
+                }
+            }
+
+            $pdf = PDF::loadView( 'smartform::production.form_checker.export-pdf', [
+                'record' => $record, 'dataDS' => $dataDS, 'dataNS' => $dataNS, 'time_details' => $time_details, 'nonNullCounts' => $nonNullCounts, 'sumRitasi' => $sumRitasi
+
+            ] );
+            $pdf->setPaper('A4', 'landscape');
+
+            return $pdf->download( 'Form_checker' . '.pdf' );
+
+        } catch ( \Exception $e ) {
+            Log::error( 'Error in ExportForm: ' . $e->getMessage() );
+            return redirect()
+            ->route( 'prod.form.checker.dashboard' )
+            ->with( 'error', 'Failed to generate PDF: ' . $e->getMessage() );
+        }
     }
 
     private function generateDocNumber() {
@@ -305,4 +419,6 @@ class FormCheckerController extends Controller {
         while ( $exists );
         return $docNumber;
     }
+
+
 }

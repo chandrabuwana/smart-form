@@ -402,8 +402,4 @@ public function AddFormCompressor( Request $request ) {
         return $docNumber;
     }
 
-    public function showPDF() {
-        return view( 'smartform::plant.compressor_pompa.export-pdf' );
-    }
-
 }
