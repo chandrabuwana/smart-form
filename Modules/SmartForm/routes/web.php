@@ -17,6 +17,7 @@ use Modules\SmartForm\App\Http\Controllers\PDF\HelperPdfMobilisasiFormController
 use Modules\SmartForm\App\Http\Controllers\PLANT\PlantTransmissionController;
 use Modules\SmartForm\App\Http\Controllers\PLANT\CompressorPompaController;
 use Modules\SmartForm\App\Http\Controllers\PLANT\PlantWeldingController;
+use Modules\SmartForm\App\Http\Controllers\Production\FormCheckerController;
 use Modules\SmartForm\App\Http\Controllers\Production\ProductionTimeSheetDashboarController;
 use Modules\SmartForm\App\Http\Controllers\Production\AnakAsuhController;
 use Modules\SmartForm\App\Http\Controllers\SHE\DashboardSHEFRM19BController;
@@ -375,6 +376,15 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
                 Route::get('cmt/get-data', [InspectionCmtController::class, 'getData'])->name('cmt.get-data');
                 Route::resource('cmt', InspectionCmtController::class);
             });
+        });
+
+        Route::prefix('prod-form-checker')->group(function(){
+            Route::get('/dashboard', [FormCheckerController::class, 'dashboard'])->name('prod.form.checker.dashboard');
+            Route::get('/form-checker/export/{id}', [FormCheckerController::class, 'ExportForm'])->name('prod.form.checker.export');
+            Route::get('/form-checker', [FormCheckerController::class, 'AddFormChecker'])->name('prod.form.checker.form');
+            Route::post('/store-form-checker', [FormCheckerController::class, 'StoreChecker'])->name('prod.checker.submit');
+            Route::put('/form-checker/{id}', [FormCheckerController::class, 'UpdateChecker'])->name('prod.form.checker.update');
+
         });
 
 

@@ -29,7 +29,7 @@
             <div class="card my-4">
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                     <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                        <h6 class="text-white text-capitalize ps-3">Dashboard Compressor Pompa (Standard)</h6>
+                        <h6 class="text-white text-capitalize ps-3">Dashboard Form Checker</h6>
                     </div>
                 </div>
                 <!-- Statistics Cards -->
@@ -69,26 +69,11 @@
                             <div class="card-body p-3">
                                 <div class="d-flex justify-content-between">
                                     <div>
-                                        <i class="fas fa-solid fa-location-dot text-danger fa-2x"></i>
+                                        <i class="fas fa-truck-loading fa-2x" style="color: #63E6BE;"></i>
                                     </div>
                                     <div class="text-end pt-1">
-                                        <p class="text-sm mb-0 text-capitalize">Location</p>
-                                        <h4 class="mb-0">{{ $statistics->location }}</h4>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="card stats-card">
-                            <div class="card-body p-3">
-                                <div class="d-flex justify-content-between">
-                                    <div>
-                                        <i class="fas fa-solid fa-code-branch fa-2x"></i>
-                                    </div>
-                                    <div class="text-end pt-1">
-                                        <p class="text-sm mb-0 text-capitalize">Site</p>
-                                        <h4 class="mb-0">{{ $statistics->site }}</h4>
+                                        <p class="text-sm mb-0 text-capitalize">Alat Angkut</p>
+                                        <h4 class="mb-0">{{ $statistics->alat_angkut }}</h4>
                                     </div>
                                 </div>
                             </div>
@@ -99,7 +84,7 @@
                 <!-- Filters and Search -->
                 <div class="card-body px-0 pb-2">
                     <div class="d-flex align-items-center mx-3">
-                        <a href="{{ route('plant.compressor.form') }}">
+                        <a href="{{ route('prod.form.checker.form') }}">
                             <button class="btn btn-primary ms-auto uploadBtn">
                                 New Form
                             </button>
@@ -107,7 +92,7 @@
                     </div>
                     <h4 class="mx-3">Filter Data</h4>
                     <div class="mx-4 row">
-                        <form action="{{ route('plant.compressor.dashboard') }}" method="GET" id="filterForm">
+                        <form action="" method="GET" id="filterForm">
                             <div class="row align-items-center">
                                 <div class="col-md-2 mb-3">
                                     <div class="input-group input-group-static mb-4 position-relative">
@@ -120,58 +105,15 @@
                                 <div class="col-md-3
                                             mb-3">
                                     <div class="input-group input-group-static mb-4 position-relative">
-                                        <label for="location" class="ms-0">Location</label>
-                                        <select class="form-control" id="location" name="location">
-                                            <option selected disabled>-- Select Location --</option>
-                                            <option value="Workshop"
-                                                {{ isset($filters['location']) && $filters['location'] == 'Workshop' ? 'selected' : '' }}>
-                                                Workshop</option>
-                                            <option value="Pitstop"
-                                                {{ isset($filters['location']) && $filters['location'] == 'Pitstop' ? 'selected' : '' }}>
-                                                Pitstop</option>
-                                            <option value="Service"
-                                                {{ isset($filters['location']) && $filters['location'] == 'Service' ? 'selected' : '' }}>
-                                                Service</option>
-                                            <option value="Truck"
-                                                {{ isset($filters['location']) && $filters['location'] == 'Truck' ? 'selected' : '' }}>
-                                                Truck</option>
-                                        </select>
-
-                                    </div>
-                                </div>
-                                <div class="col-md-3
-                                            mb-3">
-                                    <div class="input-group input-group-static mb-4 position-relative">
-                                        <label for="location" class="ms-0">Site</label>
-                                        <select class="form-control" name="site" id="site">
-                                            <option disabled selected>-- Select Site --</option>
-                                            <option value="agm"
-                                                {{ isset($filters['site']) && $filters['site'] == 'agm' ? 'selected' : '' }}>
-                                                agm</option>
-                                            <option value="mbl"
-                                                {{ isset($filters['site']) && $filters['site'] == 'mbl' ? 'selected' : '' }}>
-                                                mbl</option>
-                                            <option value="mme"
-                                                {{ isset($filters['site']) && $filters['site'] == 'mme' ? 'selected' : '' }}>
-                                                mme</option>
-                                            <option value="mas"
-                                                {{ isset($filters['site']) && $filters['site'] == 'mas' ? 'selected' : '' }}>
-                                                mas</option>
-                                            <option value="pmss"
-                                                {{ isset($filters['site']) && $filters['site'] == 'pmss' ? 'selected' : '' }}>
-                                                pmss</option>
-                                            <option value="taj"
-                                                {{ isset($filters['site']) && $filters['site'] == 'taj' ? 'selected' : '' }}>
-                                                taj</option>
-                                            <option value="bssr"
-                                                {{ isset($filters['site']) && $filters['site'] == 'bssr' ? 'selected' : '' }}>
-                                                bssr</option>
-                                            <option value="tdm"
-                                                {{ isset($filters['site']) && $filters['site'] == 'tdm' ? 'selected' : '' }}>
-                                                tdm</option>
-                                            <option value="msj"
-                                                {{ isset($filters['site']) && $filters['site'] == 'msj' ? 'selected' : '' }}>
-                                                msj</option>
+                                        <label for="shift" class="ms-0">Shift</label>
+                                        <select class="form-control" id="shift" name="shift">
+                                            <option disabled selected>-- Select Shift --</option>
+                                            <option value="DS"
+                                                {{ isset($filters['shift']) && $filters['shift'] == 'DS' ? 'selected' : '' }}>
+                                                DS</option>
+                                            <option value="NS"
+                                                {{ isset($filters['shift']) && $filters['shift'] == 'NS' ? 'selected' : '' }}>
+                                                NS</option>
                                         </select>
 
                                     </div>
@@ -207,60 +149,51 @@
                                             Number</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Unit</th>
+                                            Alat Muat</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Lokasi</th>
+                                            shift</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Site</th>
+                                            Stop Loading</th>
+
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Generator Model</th>
-                                        <th
-                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Month</th>
+                                            Date</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($records as $record)
+                                    @foreach ($record as $data)
                                         <tr>
                                             <td>
                                                 <div class="d-flex px-2 py-1">
                                                     <div class="d-flex flex-column justify-content-center">
-                                                        <h6 class="mb-0 text-sm">{{ $record->doc_number }}</h6>
+                                                        <h6 class="mb-0 text-sm">{{ $data->doc_num }}</h6>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td>
-                                                <p class="text-xs font-weight-bold mb-0">{{ $record->unit_name }}</p>
+                                                <p class="text-xs font-weight-bold mb-0">{{ $data->alat_muat }}</p>
                                             </td>
                                             <td>
-                                                <p class="text-xs font-weight-bold mb-0">{{ $record->location }}</p>
+                                                <p class="text-xs font-weight-bold mb-0">{{ $data->shift }}</p>
                                             </td>
                                             <td>
-                                                <p class="text-xs font-weight-bold mb-0">
-                                                    {{ $record->site }}
-                                                </p>
+                                                <p class="text-xs font-weight-bold mb-0">{{ $data->stop_loading }} </p>
+                                            </td>
+
+                                            <td>
+                                                <span class="text-xs font-weight-bold">{{ $data->tanggal }}</span>
                                             </td>
                                             <td>
-                                                <p class="text-xs font-weight-bold mb-0">
-                                                    {{ $record->generator_model }}
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <span
-                                                    class="text-xs font-weight-bold">{{ \Carbon\Carbon::parse($record->month)->format('F') }}</span>
-                                            </td>
-                                            <td>
-                                                <a href="{{ route('plant.compressor.form', ['id' => $record->id]) }}"
+                                                <a href="{{ route('prod.form.checker.form', ['id' => $data->id]) }}"
                                                     class="btn btn-info btn-sm">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
-                                                <a href="{{ route('plant.compressor.export', ['id' => $record->id]) }}"
+                                                <a href="{{ route('prod.form.checker.export', ['id' => $data->id]) }}"
                                                     class="btn btn-primary btn-sm">
                                                     <i class="fas fa-download"></i>
                                                 </a>
@@ -269,10 +202,11 @@
                                     @endforeach
 
 
+
                                 </tbody>
                             </table>
-                            <div class="d-flex justify-content-center mt-3">
-                                {{ $records->links('pagination::bootstrap-4') }}
+                            <div class="d-flex justify-content-left mt-3">
+                                {{ $record->links('pagination::bootstrap-4') }}
                             </div>
                         </div>
                     </div>
@@ -288,7 +222,7 @@
         $(function() {
             // Clear filter button
             $('#btnClearFilter').click(function() {
-                window.location.href = '{{ route('plant.compressor.dashboard') }}';
+                window.location.href = '{{ route('prod.form.checker.dashboard') }}';
             });
 
         });

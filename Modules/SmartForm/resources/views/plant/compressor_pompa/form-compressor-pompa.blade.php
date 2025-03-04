@@ -61,16 +61,16 @@
                                             {{ $isShowDetail ? 'disabled' : '' }}>
                                             <option disabled selected>-- Select Location --</option>
                                             <option value="Workshop"
-                                                {{ old('lokasi', $record->lokasi ?? '') == 'Workshop' ? 'selected' : '' }}>
+                                                {{ old('lokasi', $record->location ?? '') == 'Workshop' ? 'selected' : '' }}>
                                                 Workshop</option>
                                             <option value="Pitstop"
-                                                {{ old('lokasi', $record->lokasi ?? '') == 'Pitstop' ? 'selected' : '' }}>
+                                                {{ old('lokasi', $record->location ?? '') == 'Pitstop' ? 'selected' : '' }}>
                                                 Pitstop</option>
                                             <option value="Service"
-                                                {{ old('lokasi', $record->lokasi ?? '') == 'Service' ? 'selected' : '' }}>
+                                                {{ old('lokasi', $record->location ?? '') == 'Service' ? 'selected' : '' }}>
                                                 Service</option>
                                             <option value="Truck"
-                                                {{ old('lokasi', $record->lokasi ?? '') == 'Truck' ? 'selected' : '' }}>
+                                                {{ old('lokasi', $record->location ?? '') == 'Truck' ? 'selected' : '' }}>
                                                 Truck</option>
                                         </select>
                                     </div>
@@ -432,30 +432,34 @@
                                 </table>
 
                             </div>
-                            <div class="form-container">
-                                <div class="input-group input-group-static mb-3">
+                            <div class="row">
+                                <div class="col-12 mt-4">
                                     <div class="input-group input-group-static mb-3">
-                                        <label>Catatan</label>
-                                        <textarea class="form-control" name="catatan" rows="4" {{ $isShowDetail ? 'disabled' : '' }}>{{ $isShowDetail ? $record->catatan : '' }}</textarea>
+                                        <div class="input-group input-group-static mb-3">
+                                            <label>Catatan</label>
+                                            <textarea class="form-control" name="catatan" rows="4" {{ $isShowDetail ? 'disabled' : '' }}>{{ $isShowDetail ? $record->catatan : '' }}</textarea>
+                                        </div>
                                     </div>
                                 </div>
-
-                                @if ($isShowDetail)
-                                    <div class="form-actions">
-                                        <a href="{{ route('plant.compressor.dashboard') }}"
-                                            class="btn btn-secondary">Cancel</a>
-                                        <a href="{{ route('plant.compressor.export', ['id' => $record->id]) }}"
-                                            class="btn btn-primary">Export</a>
-                                    </div>
-                                @else
-                                    <div class="form-actions">
-                                        <a href="{{ route('plant.compressor.dashboard') }}"
-                                            class="btn btn-secondary">Cancel</a>
-                                        <button type="submit" class="btn btn-primary">Submit</button>
-                                    </div>
-                                @endif
                             </div>
-
+                            <div class="row">
+                                <div class="col-12">
+                                    @if ($isShowDetail)
+                                        <div class="form-actions">
+                                            <a href="{{ route('plant.compressor.dashboard') }}"
+                                                class="btn btn-secondary">Cancel</a>
+                                            <a href="{{ route('plant.compressor.export', ['id' => $record->id]) }}"
+                                                class="btn btn-primary">Export</a>
+                                        </div>
+                                    @else
+                                        <div class="form-actions">
+                                            <a href="{{ route('plant.compressor.dashboard') }}"
+                                                class="btn btn-secondary">Cancel</a>
+                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
                     </form>
 
                 </div>
