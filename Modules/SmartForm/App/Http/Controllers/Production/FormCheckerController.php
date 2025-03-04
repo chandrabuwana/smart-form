@@ -251,15 +251,22 @@ class FormCheckerController extends Controller {
                 $data[ $time_detail_key ] = json_encode( array_values( $time_detail_values ) );
             }
 
-           
+
 
             DB::table( 'prod_checker_form' )->insert( $data );
-
-            return redirect()->route('prod.form.checker.dashboard')->with('success', 'Data berhasil disimpan');
+            return response()->json( [
+                'success' => true,
+                'message' => 'Data berhasil disimpan'
+            ] );
+            // return redirect()->route('prod.form.checker.dashboard')->with('success', 'Data berhasil disimpan');
 
         } catch ( QueryException $e ) {
             Log::error( 'Error in Store: ' . $e->getMessage() );
-            return redirect()->route('prod.form.checker.dashboard')->with('error', 'Data gagal disimpan');
+            // return redirect()->route('prod.form.checker.dashboard')->with('error', 'Data gagal disimpan');
+            return response()->json( [
+                'success' => false,
+                'message' => 'Data gagal disimpan'
+            ] );
 
         }
 
@@ -380,7 +387,7 @@ class FormCheckerController extends Controller {
             ] );
             $pdf->setPaper('A4', 'landscape');
 
-            return $pdf->download( 'Form_checker' . '.pdf' );
+            return $pdf->download( 'Form_checker' . $record->doc_num .'.pdf' );
 
         } catch ( \Exception $e ) {
             Log::error( 'Error in ExportForm: ' . $e->getMessage() );

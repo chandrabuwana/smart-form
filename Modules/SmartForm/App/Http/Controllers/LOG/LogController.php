@@ -393,7 +393,7 @@ class LogController extends Controller {
     }
 
     function formPengeluaranOli() {
-        return view("SmartForm::log/form-pengeluaran-oli");
+        return view("SmartForm::LOG/form-pengeluaran-oli");
     }
 
     function SubmitFormPengeluaranOli(Request $req) {

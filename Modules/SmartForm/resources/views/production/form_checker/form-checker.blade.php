@@ -28,7 +28,7 @@
                         </div>
                     </div>
 
-                    <form action="{{ route('prod.checker.submit') }}" method="POST">
+                    <form id="formChecker" method="POST">
                         @csrf
                         <div class="mx-3">
                             <!-- Basic Information -->
@@ -175,7 +175,8 @@
                                         <div class="col-3 mt-4">
                                             <div class="input-group input-group-static mb-3">
                                                 <label class="custom-text-color">Waktu Selesai</label>
-                                                <input type="time" class="form-control" name="waktu_selesai[]" required>
+                                                <input type="time" class="form-control" name="waktu_selesai[]"
+                                                    required>
                                             </div>
                                         </div>
                                         <div class="col-3 mt-4">
@@ -324,7 +325,54 @@
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <script>
+        $(function() {
+            var form = $("#formChecker");
+            var submitBtn = form.find('button[type="submit"]');
 
+            form.submit(function(e) {
+                e.preventDefault();
+                submitBtn.prop('disabled', true);
+
+                var formData = new FormData(this);
+
+                axios.post('{{ route('prod.checker.submit') }}', formData)
+                    .then(function(response) {
+                        if (response.data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: response.data.message
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href =
+                                        '{{ route('prod.form.checker.dashboard') }}';
+                                }
+                            });
+                        }
+                    })
+                    .catch(function(error) {
+                        let errorMessage = 'Terjadi kesalahan pada sistem';
+
+                        if (error.response) {
+                            if (error.response.data.errors) {
+                                errorMessage = Object.values(error.response.data.errors).flat().join(
+                                    '\n');
+                            } else if (error.response.data.message) {
+                                errorMessage = error.response.data.message;
+                            }
+                        }
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: errorMessage
+                        });
+                    })
+                    .finally(function() {
+                        submitBtn.prop('disabled', false);
+                    });
+            });
+        });
         document.getElementById('shiftSelector').addEventListener('change', function() {
             var selectedShift = this.value;
 
