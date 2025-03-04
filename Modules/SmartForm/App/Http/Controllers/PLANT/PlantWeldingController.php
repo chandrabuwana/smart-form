@@ -54,7 +54,7 @@ class PlantWeldingController extends Controller
                 'location' => DB::table('plant_welding')->distinct()->count('location'),
             ];
             $records = $query->paginate(10);
-            return view('smartform::PLANT.welding.dashboard-welding', ['records' => $records, 'statistics' => $statistics, 'filters' => [
+            return view('smartform::plant.welding.dashboard-welding', ['records' => $records, 'statistics' => $statistics, 'filters' => [
                 'search' => $request->search,
                 'location' => $request->location,
                 'site_name' => $request->site_name,
