@@ -29,11 +29,11 @@
             <div class="card my-4">
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                     <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                        <h6 class="text-white text-capitalize ps-3">Dashboard Compressor Pompa (Standard)</h6>
+                        <h6 class="text-white text-capitalize ps-3">Dashboard Welding (Standard)</h6>
                     </div>
                 </div>
                 <!-- Statistics Cards -->
-                <div class="row g-3 mb-4">
+                <div class="row g-3 mb-4 ">
                     <div class="col-md-3">
                         <div class="card stats-card">
                             <div class="card-body p-3">
@@ -69,26 +69,11 @@
                             <div class="card-body p-3">
                                 <div class="d-flex justify-content-between">
                                     <div>
-                                        <i class="fas fa-solid fa-location-dot text-danger fa-2x"></i>
+                                        <i class="fas fa-calendar text-success fa-2x"></i>
                                     </div>
                                     <div class="text-end pt-1">
                                         <p class="text-sm mb-0 text-capitalize">Location</p>
                                         <h4 class="mb-0">{{ $statistics->location }}</h4>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="card stats-card">
-                            <div class="card-body p-3">
-                                <div class="d-flex justify-content-between">
-                                    <div>
-                                        <i class="fas fa-solid fa-code-branch fa-2x"></i>
-                                    </div>
-                                    <div class="text-end pt-1">
-                                        <p class="text-sm mb-0 text-capitalize">Site</p>
-                                        <h4 class="mb-0">{{ $statistics->site }}</h4>
                                     </div>
                                 </div>
                             </div>
@@ -99,15 +84,15 @@
                 <!-- Filters and Search -->
                 <div class="card-body px-0 pb-2">
                     <div class="d-flex align-items-center mx-3">
-                        <a href="{{ route('plant.compressor.form') }}">
+                        <a href="{{ route('plant.welding.form') }}">
                             <button class="btn btn-primary ms-auto uploadBtn">
                                 New Form
                             </button>
                         </a>
                     </div>
-                    <h4 class="mx-3">Filter Data</h4>
+                    <h5 class="mx-4">Filter Data</h5>
                     <div class="mx-4 row">
-                        <form action="{{ route('plant.compressor.dashboard') }}" method="GET" id="filterForm">
+                        <form action="{{ route('plant.welding.dashboard') }}" method="GET" id="filterForm">
                             <div class="row align-items-center">
                                 <div class="col-md-2 mb-3">
                                     <div class="input-group input-group-static mb-4 position-relative">
@@ -122,7 +107,7 @@
                                     <div class="input-group input-group-static mb-4 position-relative">
                                         <label for="location" class="ms-0">Location</label>
                                         <select class="form-control" id="location" name="location">
-                                            <option selected disabled>-- Select Location --</option>
+                                            <option value="" selected disabled></option>
                                             <option value="Workshop"
                                                 {{ isset($filters['location']) && $filters['location'] == 'Workshop' ? 'selected' : '' }}>
                                                 Workshop</option>
@@ -136,44 +121,6 @@
                                                 {{ isset($filters['location']) && $filters['location'] == 'Truck' ? 'selected' : '' }}>
                                                 Truck</option>
                                         </select>
-
-                                    </div>
-                                </div>
-                                <div class="col-md-3
-                                            mb-3">
-                                    <div class="input-group input-group-static mb-4 position-relative">
-                                        <label for="location" class="ms-0">Site</label>
-                                        <select class="form-control" name="site" id="site">
-                                            <option disabled selected>-- Select Site --</option>
-                                            <option value="agm"
-                                                {{ isset($filters['site']) && $filters['site'] == 'agm' ? 'selected' : '' }}>
-                                                agm</option>
-                                            <option value="mbl"
-                                                {{ isset($filters['site']) && $filters['site'] == 'mbl' ? 'selected' : '' }}>
-                                                mbl</option>
-                                            <option value="mme"
-                                                {{ isset($filters['site']) && $filters['site'] == 'mme' ? 'selected' : '' }}>
-                                                mme</option>
-                                            <option value="mas"
-                                                {{ isset($filters['site']) && $filters['site'] == 'mas' ? 'selected' : '' }}>
-                                                mas</option>
-                                            <option value="pmss"
-                                                {{ isset($filters['site']) && $filters['site'] == 'pmss' ? 'selected' : '' }}>
-                                                pmss</option>
-                                            <option value="taj"
-                                                {{ isset($filters['site']) && $filters['site'] == 'taj' ? 'selected' : '' }}>
-                                                taj</option>
-                                            <option value="bssr"
-                                                {{ isset($filters['site']) && $filters['site'] == 'bssr' ? 'selected' : '' }}>
-                                                bssr</option>
-                                            <option value="tdm"
-                                                {{ isset($filters['site']) && $filters['site'] == 'tdm' ? 'selected' : '' }}>
-                                                tdm</option>
-                                            <option value="msj"
-                                                {{ isset($filters['site']) && $filters['site'] == 'msj' ? 'selected' : '' }}>
-                                                msj</option>
-                                        </select>
-
                                     </div>
                                 </div>
                                 <div class="col-md-3 mb-3">
@@ -183,7 +130,7 @@
                                             value="{{ $filters['date'] ?? '' }}">
                                     </div>
                                 </div>
-                                <div class="col-md-12 mb-3 d-flex justify-content-start">
+                                    <div class="col-md-12 mb-3 d-flex justify-content-start">
                                     <button type="submit" class="btn btn-primary filter-btn" id="btnFilterSubmit">
                                         Filter
                                     </button>
@@ -207,16 +154,16 @@
                                             Number</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Unit</th>
-                                        <th
-                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Lokasi</th>
-                                        <th
-                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Site</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Generator Model</th>
+                                            Location</th>
+                                        <th
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            Jenis Instalasi</th>
+                                        <th
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            Pemeriksa</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Month</th>
@@ -236,19 +183,19 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <p class="text-xs font-weight-bold mb-0">{{ $record->unit_name }}</p>
+                                                <p class="text-xs font-weight-bold mb-0">{{ $record->site_name }}</p>
                                             </td>
                                             <td>
                                                 <p class="text-xs font-weight-bold mb-0">{{ $record->location }}</p>
                                             </td>
                                             <td>
                                                 <p class="text-xs font-weight-bold mb-0">
-                                                    {{ $record->site }}
+                                                    {{ $record->jenis_instalasi }}
                                                 </p>
                                             </td>
                                             <td>
                                                 <p class="text-xs font-weight-bold mb-0">
-                                                    {{ $record->generator_model }}
+                                                    {{ $record->pemeriksa }}
                                                 </p>
                                             </td>
                                             <td>
@@ -256,11 +203,11 @@
                                                     class="text-xs font-weight-bold">{{ \Carbon\Carbon::parse($record->month)->format('F') }}</span>
                                             </td>
                                             <td>
-                                                <a href="{{ route('plant.compressor.form', ['id' => $record->id]) }}"
+                                                <a href="{{ route('plant.welding.form', ['id' => $record->id]) }}"
                                                     class="btn btn-info btn-sm">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
-                                                <a href="{{ route('plant.compressor.export', ['id' => $record->id]) }}"
+                                                <a href="{{ route('plant.welding.export', ['id' => $record->id]) }}"
                                                     class="btn btn-primary btn-sm">
                                                     <i class="fas fa-download"></i>
                                                 </a>
@@ -272,7 +219,7 @@
                                 </tbody>
                             </table>
                             <div class="d-flex justify-content-center mt-3">
-                                {{ $records->links('pagination::bootstrap-4') }}
+                                {{ $records->links() }}
                             </div>
                         </div>
                     </div>
@@ -288,7 +235,7 @@
         $(function() {
             // Clear filter button
             $('#btnClearFilter').click(function() {
-                window.location.href = '{{ route('plant.compressor.dashboard') }}';
+                window.location.href = '{{ route('plant.welding.dashboard') }}';
             });
 
         });

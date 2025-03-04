@@ -129,11 +129,11 @@
                                     <tr>
                                         <td>Mengetahui</td>
                                         <td>
-                                             <select name="sDataKaryawan" >
+                                            <!-- <select name="sDataKaryawan" >
                                                 @foreach($dataKaryawan as $dataKaryawan)
                                                 <option value="{{ $dataKaryawan->id }}">{{ $dataKaryawan->nik }}</option>
                                                 @endforeach
-                                            </select>
+                                            </select> -->
                                         </td>
                                     </tr>
                                 </table>

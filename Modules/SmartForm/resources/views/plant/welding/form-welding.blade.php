@@ -25,52 +25,86 @@
                     <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                         <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
                             <h6 class="text-white text-capitalize ps-3">{{ $isShowDetail ? 'Detail' : 'New' }} Form P2H
-                                Compressor Pompa (Standard)</h6>
+                                Welding (Standard)</h6>
                         </div>
                     </div>
 
-                    <form action="" id="compressorForm" method="POST">
+                    <form action="" id="weldingForm" method="POST">
                         @csrf
                         @if ($isShowDetail && $record)
                             <input type="hidden" name="id" value="{{ $record->id }}">
                         @endif
-                        <div class="mx-4">
+                        <div class="mx-3">
                             <!-- Basic Information -->
                             <div class="row mb-3">
-
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
-                                        <label for="unit" class="ms-0">C/N Unit</label>
-                                        <input type="text" class="form-control" id="unit" name="unit"
-                                            value="{{ old('unit', $record->name ?? '') }}" required
+                                        <label for="site_name" class="ms-0">Site Name</label>
+                                        <select class="form-control" name="site_name" id="site_name" required
                                             {{ $isShowDetail ? 'disabled' : '' }}>
+                                            <option value="agm"
+                                                {{ old('site_name', $record->site ?? '') == 'agm' ? 'selected' : '' }}>
+                                                Agm</option>
+                                            <option value="mbl"
+                                                {{ old('site_name', $record->site ?? '') == 'mbl' ? 'selected' : '' }}>
+                                                Mbl</option>
+                                            <option value="mme"
+                                                {{ old('site_name', $record->site ?? '') == 'mme' ? 'selected' : '' }}>
+                                                Mme</option>
+                                            <option value="mas"
+                                                {{ old('site_name', $record->site ?? '') == 'mas' ? 'selected' : '' }}>
+                                                Mas</option>
+                                            <option value="pmss"
+                                                {{ old('site_name', $record->site ?? '') == 'pmss' ? 'selected' : '' }}>
+                                                Pmss</option>
+                                            <option value="taj"
+                                                {{ old('site_name', $record->site ?? '') == 'taj' ? 'selected' : '' }}>
+                                                Taj</option>
+                                            <option value="bssr"
+                                                {{ old('site_name', $record->site ?? '') == 'bssr' ? 'selected' : '' }}>
+                                                Bssr</option>
+                                            <option value="tdm"
+                                                {{ old('site_name', $record->site ?? '') == 'tdm' ? 'selected' : '' }}>
+                                                Tdm</option>
+                                            <option value="msj"
+                                                {{ old('site_name', $record->site ?? '') == 'msj' ? 'selected' : '' }}>
+                                                Msj</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
+
                                     <div class="input-group input-group-static mb-3">
-                                        <label for="nama" class="ms-0">Nama Pengecheck</label>
-                                        <input type="text" class="form-control" id="nama" name="nama"
-                                            value="{{ old('nama', $record->name ?? '') }}" required
+                                        <label for="jenis_instalasi" class="ms-0">Jenis Instalasi</label>
+                                        <select class="form-control" name="jenis_instalasi" id="jenis_instalasi" required
                                             {{ $isShowDetail ? 'disabled' : '' }}>
+                                            <option value="Instalasi Tetap"
+                                                {{ old('jenis_instalasi', $record->jenis_instalasi ?? '') == 'Instalasi Tetap' ? 'selected' : '' }}>
+                                                Instalasi Tetap</option>
+                                            <option value="Troli Portable"
+                                                {{ old('jenis_instalasi', $record->jenis_instalasi ?? '') == 'Troli Portable' ? 'selected' : '' }}>
+                                                Troli Portable</option>
+                                        </select>
                                     </div>
+                                    
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="lokasi" class="ms-0">Lokasi</label>
                                         <select class="form-control" name="lokasi" id="lokasi" required
                                             {{ $isShowDetail ? 'disabled' : '' }}>
-                                            <option disabled selected>-- Select Location --</option>
+
                                             <option value="Workshop"
-                                                {{ old('lokasi', $record->location ?? '') == 'Workshop' ? 'selected' : '' }}>
+                                                {{ old('lokasi', $record->lokasi ?? '') == 'Workshop' ? 'selected' : '' }}>
                                                 Workshop</option>
                                             <option value="Pitstop"
-                                                {{ old('lokasi', $record->location ?? '') == 'Pitstop' ? 'selected' : '' }}>
+                                                {{ old('lokasi', $record->lokasi ?? '') == 'Pitstop' ? 'selected' : '' }}>
                                                 Pitstop</option>
                                             <option value="Service"
-                                                {{ old('lokasi', $record->location ?? '') == 'Service' ? 'selected' : '' }}>
+                                                {{ old('lokasi', $record->lokasi ?? '') == 'Service' ? 'selected' : '' }}>
                                                 Service</option>
                                             <option value="Truck"
-                                                {{ old('lokasi', $record->location ?? '') == 'Truck' ? 'selected' : '' }}>
+                                                {{ old('lokasi', $record->lokasi ?? '') == 'Truck' ? 'selected' : '' }}>
                                                 Truck</option>
                                         </select>
                                     </div>
@@ -88,54 +122,37 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
-                                        <label for="engine" class="ms-0">Engine Model</label>
-                                        <input type="text" class="form-control" id="engine" name="engine" required
-                                            value="{{ old('engine', $record->engine_model ?? '') }}" required
+                                        <label for="pemeriksa" class="ms-0">Nama Pemeriksa</label>
+                                        <input type="text" class="form-control" id="pemeriksa" name="pemeriksa" required
+                                            value="{{ old('pemeriksa', $record->pemeriksa ?? '') }}" required
                                             {{ $isShowDetail ? 'disabled' : '' }}>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
-                                        <label for="generator" class="ms-0">Generator Model</label>
-                                        <input type="text" class="form-control" id="generator" name="generator" required
-                                            value="{{ old('generator', $record->generator_model ?? '') }}" required
+                                        <label for="jabatan" class="ms-0">Jabatan</label>
+                                        <input type="text" class="form-control" id="jabatan" name="jabatan" required
+                                            value="{{ old('jabatan', $record->jabatan ?? '') }}" required
+                                            {{ $isShowDetail ? 'disabled' : '' }}>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label for="nrp" class="ms-0">NRP</label>
+                                        <input type="number" class="form-control" id="nrp" name="nrp" required
+                                            value="{{ old('nrp', $record->nrp ?? '') }}" required
                                             {{ $isShowDetail ? 'disabled' : '' }}>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
-                                        <label for="site" class="ms-0">Site</label>
-                                        <select class="form-control" name="site" id="site" required
+                                        <label for="atasan" class="ms-0">Nama Atasan Langsung</label>
+                                        <input type="text" class="form-control" id="atasan" name="atasan" required
+                                            value="{{ old('atasan', $record->atasan ?? '') }}" required
                                             {{ $isShowDetail ? 'disabled' : '' }}>
-                                            <option disabled selected>-- Select Site --</option>
-                                            <option value="agm"
-                                                {{ old('site', $record->site ?? '') == 'agm' ? 'selected' : '' }}>
-                                                agm</option>
-                                            <option value="mbl"
-                                                {{ old('site', $record->site ?? '') == 'mbl' ? 'selected' : '' }}>
-                                                mbl</option>
-                                            <option value="mme"
-                                                {{ old('site', $record->site ?? '') == 'mme' ? 'selected' : '' }}>
-                                                mme</option>
-                                            <option value="mas"
-                                                {{ old('site', $record->site ?? '') == 'mas' ? 'selected' : '' }}>
-                                                mas</option>
-                                            <option value="pmss"
-                                                {{ old('site', $record->site ?? '') == 'pmss' ? 'selected' : '' }}>
-                                                pmss</option>
-                                            <option value="taj"
-                                                {{ old('site', $record->site ?? '') == 'taj' ? 'selected' : '' }}>
-                                                taj</option>
-                                            <option value="bssr"
-                                                {{ old('site', $record->site ?? '') == 'bssr' ? 'selected' : '' }}>
-                                                bssr</option>
-                                            <option value="tdm"
-                                                {{ old('site', $record->site ?? '') == 'tdm' ? 'selected' : '' }}>
-                                                tdm</option>
-                                            <option value="msj"
-                                                {{ old('site', $record->site ?? '') == 'msj' ? 'selected' : '' }}>
-                                                msj</option>
-                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -150,11 +167,7 @@
                                             <th class="fix" rowspan="2"
                                                 style="text-align: center; vertical-align: middle; ">ITEM YANG
                                                 DI
-                                                CHECK</th>
-                                            <th class="fix"
-                                                rowspan="2"style="text-align: center; vertical-align: middle;">CODE
-                                                BAHAYA
-                                            </th>
+                                                PERIKSA</th>
 
 
                                             <th colspan="31" class="text-center">TANGGAL</th>
@@ -168,13 +181,12 @@
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td colspan="3">CHECK SEBELUM MULAI</td>
+                                            <td colspan="3"><b>A.CUTTING BLANDER DARI OKSIGEN & ACTILIN</b></td>
 
                                         </tr>
                                         <tr>
                                             <td class="fix">1</td>
-                                            <td class="fix" style="text-align: left;">Level Oil Mesin</td>
-                                            <td class="fix">AA</td>
+                                            <td class="fix" style="text-align: left;">Ulir regulator tabung dalam kondisi baik</td>
                                             @for ($i = 1; $i <= 31; $i++)
                                                 <td> <input type="checkbox" class="custom-checkbox"
                                                         name="before-1-{{ $i }}" value=1
@@ -185,8 +197,7 @@
                                         </tr>
                                         <tr>
                                             <td>2</td>
-                                            <td style="text-align: left;">Level Air Radiator</td>
-                                            <td>AA</td>
+                                            <td style="text-align: left;">Regulator berfungsi baik</td>
                                             @for ($i = 1; $i <= 31; $i++)
                                                 <td> <input type="checkbox" class="custom-checkbox"
                                                         name="before-2-{{ $i }}" value=1
@@ -196,8 +207,7 @@
                                         </tr>
                                         <tr>
                                             <td>3</td>
-                                            <td style="text-align: left;">Level Air Battery dan Cable Battery</td>
-                                            <td>B</td>
+                                            <td style="text-align: left;">Semua flash back arestor berfungsi</td>
                                             @for ($i = 1; $i <= 31; $i++)
                                                 <td> <input type="checkbox" class="custom-checkbox"
                                                         name="before-3-{{ $i }}" value=1
@@ -207,8 +217,7 @@
                                         </tr>
                                         <tr>
                                             <td>4</td>
-                                            <td style="text-align: left;">Level Solar</td>
-                                            <td>A</td>
+                                            <td style="text-align: left;">Tabung & perlengkapan bersih dan tidak</td>
                                             @for ($i = 1; $i <= 31; $i++)
                                                 <td> <input type="checkbox" class="custom-checkbox"
                                                         name="before-4-{{ $i }}" value=1
@@ -218,8 +227,7 @@
                                         </tr>
                                         <tr>
                                             <td>5</td>
-                                            <td style="text-align: left;">Rubber Coupling Mesin</td>
-                                            <td>A</td>
+                                            <td style="text-align: left;">Tabung di rantai secara individual </td>
                                             @for ($i = 1; $i <= 31; $i++)
                                                 <td> <input type="checkbox" class="custom-checkbox"
                                                         name="before-5-{{ $i }}" value=1
@@ -229,8 +237,7 @@
                                         </tr>
                                         <tr>
                                             <td>6</td>
-                                            <td style="text-align: left;">Kekencangan V-Belt</td>
-                                            <td>A</td>
+                                            <td style="text-align: left;">Clamp hose standart (bukan kawat, selotip atau klem silang) </td>
                                             @for ($i = 1; $i <= 31; $i++)
                                                 <td> <input type="checkbox" class="custom-checkbox"
                                                         name="before-6-{{ $i }}" value=1
@@ -240,8 +247,7 @@
                                         </tr>
                                         <tr>
                                             <td>7</td>
-                                            <td style="text-align: left;">Kondisi Guard Fan</td>
-                                            <td>A</td>
+                                            <td style="text-align: left;">Tabung Posisi tegak pada kerangka / rak / troli</td>
                                             @for ($i = 1; $i <= 31; $i++)
                                                 <td> <input type="checkbox" class="custom-checkbox"
                                                         name="before-7-{{ $i }}" value=1
@@ -251,8 +257,7 @@
                                         </tr>
                                         <tr>
                                             <td>8</td>
-                                            <td style="text-align: left;">Rubber Mounting Mesin</td>
-                                            <td>B</td>
+                                            <td style="text-align: left;">Troli mempunyai pemadam api sendiri</td>
                                             @for ($i = 1; $i <= 31; $i++)
                                                 <td> <input type="checkbox" class="custom-checkbox"
                                                         name="before-8-{{ $i }}" value=1
@@ -262,8 +267,7 @@
                                         </tr>
                                         <tr>
                                             <td>9</td>
-                                            <td style="text-align: left;">Rubber Mounting Compresor</td>
-                                            <td>B</td>
+                                            <td style="text-align: left;">Tabung / perlengkapan tidak korosi </td>
                                             @for ($i = 1; $i <= 31; $i++)
                                                 <td> <input type="checkbox" class="custom-checkbox"
                                                         name="before-9-{{ $i }}" value=1
@@ -273,8 +277,7 @@
                                         </tr>
                                         <tr>
                                             <td>10</td>
-                                            <td style="text-align: left;">Radiator dan House Radiator</td>
-                                            <td>B</td>
+                                            <td style="text-align: left;">Tabung / selang / hose tidak bocor</td>
                                             @for ($i = 1; $i <= 31; $i++)
                                                 <td> <input type="checkbox" class="custom-checkbox"
                                                         name="before-10-{{ $i }}" value=1
@@ -284,8 +287,7 @@
                                         </tr>
                                         <tr>
                                             <td>11</td>
-                                            <td style="text-align: left;">Air Cleaner dan Bracket</td>
-                                            <td>B</td>
+                                            <td style="text-align: left;">Semua menggunakan flash back arrestor</td>
                                             @for ($i = 1; $i <= 31; $i++)
                                                 <td> <input type="checkbox" class="custom-checkbox"
                                                         name="before-11-{{ $i }}" value=1
@@ -295,8 +297,7 @@
                                         </tr>
                                         <tr>
                                             <td>12</td>
-                                            <td style="text-align: left;">Muffler dan Bolt Mounting</td>
-                                            <td>B</td>
+                                            <td style="text-align: left;">Pemantik tersedia dan baik</td>
                                             @for ($i = 1; $i <= 31; $i++)
                                                 <td> <input type="checkbox" class="custom-checkbox"
                                                         name="before-12-{{ $i }}" value=1
@@ -306,8 +307,7 @@
                                         </tr>
                                         <tr>
                                             <td>13</td>
-                                            <td style="text-align: left;">Check Adhusment throtle Gad Engine</td>
-                                            <td>B</td>
+                                            <td style="text-align: left;">Semua torch dalam kondisi balk </td>
                                             @for ($i = 1; $i <= 31; $i++)
                                                 <td> <input type="checkbox" class="custom-checkbox"
                                                         name="before-13-{{ $i }}" value=1
@@ -315,10 +315,30 @@
                                                         {{ $isShowDetail ? 'disabled' : '' }}></td>
                                             @endfor
                                         </tr>
+
+                                        <tr>
+                                        <td colspan="10">
+                                            <div class="form-container">
+                                            <div class="input-group input-group-static mb-3">
+                                                <div class="input-group input-group-static mb-3">
+                                                    <label>Catatan</label>
+                                                    <textarea class="form-control" name="catatan1" rows="4" {{ $isShowDetail ? 'disabled' : '' }}>{{ $isShowDetail ? $record->catatan1 : '' }}</textarea>
+                                            </div>
+                                        </div>
+                                        </td>    
+                                        
+                                        </tr>    
+
+
+                                        <tr>
+                                            <td colspan="3"><b>MESIN LAS & ALAT PELINDUNG DIRI</b></td>
+
+                                        </tr>  
+
+
                                         <tr>
                                             <td>14</td>
-                                            <td style="text-align: left;">Kekencangan Bolt Nut</td>
-                                            <td>B</td>
+                                            <td style="text-align: left;">Kabel/scone positif (+) & negatif (-)</td>
                                             @for ($i = 1; $i <= 31; $i++)
                                                 <td> <input type="checkbox" class="custom-checkbox"
                                                         name="before-14-{{ $i }}" value=1
@@ -328,8 +348,7 @@
                                         </tr>
                                         <tr>
                                             <td>15</td>
-                                            <td style="text-align: left;">Main Circuit Breaker & Cable</td>
-                                            <td>B</td>
+                                            <td style="text-align: left;">Periksa isolasi semua kabel </td>
                                             @for ($i = 1; $i <= 31; $i++)
                                                 <td> <input type="checkbox" class="custom-checkbox"
                                                         name="before-15-{{ $i }}" value=1
@@ -339,8 +358,7 @@
                                         </tr>
                                         <tr>
                                             <td>16</td>
-                                            <td style="text-align: left;">Check Kebocoran Oil, Solar, & Air</td>
-                                            <td>B</td>
+                                            <td style="text-align: left;">Cek kabel ground & holder</td>
                                             @for ($i = 1; $i <= 31; $i++)
                                                 <td> <input type="checkbox" class="custom-checkbox"
                                                         name="before-16-{{ $i }}" value=1
@@ -348,14 +366,10 @@
                                                         {{ $isShowDetail ? 'disabled' : '' }}></td>
                                             @endfor
                                         </tr>
-                                        <tr>
-                                            <td colspan="3">CHECK SETELAH MESIN HIDUP</td>
 
-                                        </tr>
                                         <tr>
-                                            <td>1</td>
-                                            <td style="text-align: left;">Noise / Suara Mesin</td>
-                                            <td>AA</td>
+                                            <td>17</td>
+                                            <td style="text-align: left;">Cek olie engine</td>
                                             @for ($i = 1; $i <= 31; $i++)
                                                 <td> <input type="checkbox" class="custom-checkbox"
                                                         name="after-1-{{ $i }}" value=1
@@ -364,9 +378,8 @@
                                             @endfor
                                         </tr>
                                         <tr>
-                                            <td>2</td>
-                                            <td style="text-align: left;">Noise / Suara Generator</td>
-                                            <td>AA</td>
+                                            <td>18</td>
+                                            <td style="text-align: left;">Cek air radiator</td>
                                             @for ($i = 1; $i <= 31; $i++)
                                                 <td> <input type="checkbox" class="custom-checkbox"
                                                         name="after-2-{{ $i }}" value=1
@@ -375,9 +388,8 @@
                                             @endfor
                                         </tr>
                                         <tr>
-                                            <td>3</td>
-                                            <td style="text-align: left;">Gauge Panel Oil Pressure</td>
-                                            <td>A</td>
+                                            <td>19</td>
+                                            <td style="text-align: left;">Cek air battery</td>
                                             @for ($i = 1; $i <= 31; $i++)
                                                 <td> <input type="checkbox" class="custom-checkbox"
                                                         name="after-3-{{ $i }}" value=1
@@ -386,9 +398,8 @@
                                             @endfor
                                         </tr>
                                         <tr>
-                                            <td>4</td>
-                                            <td style="text-align: left;">Gauge Panel Water Temperatur</td>
-                                            <td>B</td>
+                                            <td>20</td>
+                                            <td style="text-align: left;">Cek kondisi Alat Pelindung</td>
                                             @for ($i = 1; $i <= 31; $i++)
                                                 <td> <input type="checkbox" class="custom-checkbox"
                                                         name="after-4-{{ $i }}" value=1
@@ -396,70 +407,44 @@
                                                         {{ $isShowDetail ? 'disabled' : '' }}></td>
                                             @endfor
                                         </tr>
+
                                         <tr>
-                                            <td>5</td>
-                                            <td style="text-align: left;">Kebocoran Oli, Air dan Solar</td>
-                                            <td>AA</td>
-                                            @for ($i = 1; $i <= 31; $i++)
-                                                <td> <input type="checkbox" class="custom-checkbox"
-                                                        name="after-5-{{ $i }}" value=1
-                                                        {{ old('after-5-' . $i, isset($record->question21[$i - 1]) ? $record->question21[$i - 1] : '') == 1 ? 'checked' : '' }}
-                                                        {{ $isShowDetail ? 'disabled' : '' }}></td>
-                                            @endfor
+                                            <td colspan="10">
+                                            <div class="form-container">
+                                                <div class="input-group input-group-static mb-3">
+                                                    <div class="input-group input-group-static mb-3">
+                                                        <label>Catatan 2</label>
+                                                        <textarea class="form-control" name="catatan2" rows="4" {{ $isShowDetail ? 'disabled' : '' }}>{{ $isShowDetail ? $record->catatan2 : '' }}</textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            </td>
+
                                         </tr>
-                                        <tr>
-                                            <td>6</td>
-                                            <td style="text-align: left;">Charging System</td>
-                                            <td>B</td>
-                                            @for ($i = 1; $i <= 31; $i++)
-                                                <td> <input type="checkbox" class="custom-checkbox"
-                                                        name="after-6-{{ $i }}" value=1
-                                                        {{ old('after-6-' . $i, isset($record->question22[$i - 1]) ? $record->question22[$i - 1] : '') == 1 ? 'checked' : '' }}
-                                                        {{ $isShowDetail ? 'disabled' : '' }}></td>
-                                            @endfor
-                                        </tr>
-                                        <tr>
-                                            <td colspan="3">Paraf Pengecek</td>
-                                            @for ($i = 1; $i <= 31; $i++)
-                                                <td> <input type="checkbox" class="custom-checkbox"
-                                                        name="paraf-{{ $i }}" value=1
-                                                        {{ old('paraf-' . $i, isset($record->paraf_item[$i - 1]) ? $record->paraf_item[$i - 1] : '') == 1 ? 'checked' : '' }}
-                                                        {{ $isShowDetail ? 'disabled' : '' }}></td>
-                                            @endfor
-                                        </tr>
+
 
                                     </tbody>
                                 </table>
 
+                            
+
+
                             </div>
-                            <div class="row">
-                                <div class="col-12 mt-4">
-                                    <div class="input-group input-group-static mb-3">
-                                        <div class="input-group input-group-static mb-3">
-                                            <label>Catatan</label>
-                                            <textarea class="form-control" name="catatan" rows="4" {{ $isShowDetail ? 'disabled' : '' }}>{{ $isShowDetail ? $record->catatan : '' }}</textarea>
-                                        </div>
+                                @if ($isShowDetail)
+                                    <div class="form-actions">
+                                        <a href="{{ route('plant.welding.dashboard') }}"
+                                            class="btn btn-secondary">Cancel</a>
+                                        <a href="{{ route('plant.welding.export', ['id' => $record->id]) }}"
+                                            class="btn btn-primary">Export</a>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12">
-                                    @if ($isShowDetail)
-                                        <div class="form-actions">
-                                            <a href="{{ route('plant.compressor.dashboard') }}"
-                                                class="btn btn-secondary">Cancel</a>
-                                            <a href="{{ route('plant.compressor.export', ['id' => $record->id]) }}"
-                                                class="btn btn-primary">Export</a>
-                                        </div>
-                                    @else
-                                        <div class="form-actions">
-                                            <a href="{{ route('plant.compressor.dashboard') }}"
-                                                class="btn btn-secondary">Cancel</a>
-                                            <button type="submit" class="btn btn-primary">Submit</button>
-                                        </div>
-                                    @endif
-                                </div>
-                            </div>
+                                @else
+                                    <div class="form-actions">
+                                        <a href="{{ route('plant.welding.dashboard') }}"
+                                            class="btn btn-secondary">Cancel</a>
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </div>
+                                @endif
                     </form>
 
                 </div>
@@ -537,7 +522,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <script>
         $(function() {
-            var form = $("#compressorForm");
+            var form = $("#weldingForm");
             var submitBtn = form.find('button[type="submit"]');
 
             form.submit(function(e) {
@@ -546,7 +531,7 @@
 
                 var formData = new FormData(this);
 
-                axios.post('{{ route('plant.compressor.store') }}', formData)
+                axios.post('{{ route('plant.welding.store') }}', formData)
                     .then(function(response) {
                         if (response.data.success) {
                             Swal.fire({
@@ -556,7 +541,7 @@
                             }).then((result) => {
                                 if (result.isConfirmed) {
                                     window.location.href =
-                                        '{{ route('plant.compressor.dashboard') }}';
+                                        '{{ route('plant.welding.dashboard') }}';
                                 }
                             });
                         }
