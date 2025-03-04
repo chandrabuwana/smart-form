@@ -797,7 +797,7 @@
                                                 <td style="width: 25%" class="text-center border">Doctor</td>
                                                 <td style="width: 50%" class="text-center border">Dept Head of SHE</td>
                                             </tr>
-                                            <tr style="height: 100px">
+                                            <tr>
                                                 <td class="align-bottom text-center border">
                                                     <input type="text" name="paramedic_name" class="form-control text-center" required
                                                         value="{{ $isShowDetail ? $data->paramedic_name : old('paramedic_name') }}"
@@ -822,13 +822,12 @@
                                         <table class="table table-bordered">
                                             <tr>
                                                 <td class="text-center border">
-                                                    <div class="py-2">
+                                                    <div class="py-1">
                                                         <strong>Tanggal<br/><span class="text-primary">Date</span></strong>
                                                     </div>
-                                                    
                                                 </td>
                                             </tr>
-                                            <tr style="height: 100px">
+                                            <tr>
                                                 <td class="align-bottom text-center border">
                                                     <input type="date" name="review_date" class="form-control text-center mb-2" required
                                                         value="{{ $isShowDetail ? $data->review_date : old('review_date') }}"

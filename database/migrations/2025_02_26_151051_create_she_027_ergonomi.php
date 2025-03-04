@@ -146,6 +146,7 @@ return new class extends Migration
             // WMSD Checkboxes
             $table->boolean('wmsd_bahu_1')->default(false);
             $table->boolean('wmsd_bahu_2')->default(false);
+            $table->boolean('wmsd_leher')->default(false);
             $table->boolean('wmsd_punggung_1')->default(false);
             $table->boolean('wmsd_punggung_2')->default(false);
             $table->boolean('wmsd_tangan_kuat_1')->default(false);
