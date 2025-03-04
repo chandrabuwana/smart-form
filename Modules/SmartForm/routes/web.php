@@ -16,6 +16,7 @@ use Modules\SmartForm\App\Http\Controllers\MasterData\MasterFormPICController;
 use Modules\SmartForm\App\Http\Controllers\PDF\HelperPdfMobilisasiFormController;
 use Modules\SmartForm\App\Http\Controllers\PLANT\PlantTransmissionController;
 use Modules\SmartForm\App\Http\Controllers\PLANT\CompressorPompaController;
+use Modules\SmartForm\App\Http\Controllers\PLANT\PlantWeldingController;
 use Modules\SmartForm\App\Http\Controllers\Production\ProductionTimeSheetDashboarController;
 use Modules\SmartForm\App\Http\Controllers\Production\AnakAsuhController;
 use Modules\SmartForm\App\Http\Controllers\SHE\DashboardSHEFRM19BController;
@@ -49,6 +50,7 @@ use Modules\SmartForm\App\Http\Controllers\IT\PrinterFormController;
 use Modules\SmartForm\App\Http\Controllers\IT\CctvFormController;
 use Modules\SmartForm\App\Http\Controllers\IT\DeviceFormController;
 use Modules\SmartForm\App\Http\Controllers\IT\RouterFormController;
+use Modules\SmartForm\App\Http\Controllers\PLANT\GeneralInspection\InspectionCmtController;
 
 /*
 |--------------------------------------------------------------------------
@@ -356,6 +358,23 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/form-compressor', [CompressorPompaController::class, 'AddFormCompressor'])->name('plant.compressor.form');
             Route::post('/store-compressor', [CompressorPompaController::class, 'StoreCompressor'])->name('plant.compressor.store');
             Route::put('/form-compressor/{id}', [CompressorPompaController::class, 'UpdateCompressor'])->name('plant.compressor.update');
+        });
+
+        Route::prefix('plant-welding')->group(function(){
+            Route::get('/dashboard',[PlantWeldingController::class, 'dashboard'])->name('plant.welding.dashboard');
+            Route::get('/form-welding/export/{id}',[PlantWeldingController::class, 'ExportForm'])->name('plant.welding.export');
+            Route::get('/form-welding', [PlantWeldingController::class, 'AddFormWelding'])->name('plant.welding.form');
+            Route::post('/store-welding', [PlantWeldingController::class, 'StoreWelding'])->name('plant.welding.store');
+            Route::put('/form-welding/{id}', [PlantWeldingController::class, 'UpdateWelding'])->name('plant.welding.update');
+        });
+        // PLANT
+        Route::prefix('plant')->name('bss-form.plant.')->group(function () {
+            // General Inspection
+            Route::prefix('general-inspection')->name('general-inspection.')->group(function () {
+                Route::get('cmt/{id}/print', [InspectionCmtController::class, 'print'])->name('cmt.print');
+                Route::get('cmt/get-data', [InspectionCmtController::class, 'getData'])->name('cmt.get-data');
+                Route::resource('cmt', InspectionCmtController::class);
+            });
         });
 
 
