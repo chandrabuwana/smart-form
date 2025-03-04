@@ -64,6 +64,7 @@ class CompressorPompaController extends Controller {
             'date' => $request->date,
             'site' => $request->site
         ] ] );
+       
     } catch( \Exception $e ) {
         Log::error( 'Error in Dashboard: ' . $e->getMessage() );
         return redirect()->back()->with( 'error', 'Failed to load dashboard data: ' . $e->getMessage() );

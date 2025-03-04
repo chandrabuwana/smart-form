@@ -376,17 +376,6 @@
             </tr>
         </tbody>
     </table>
-    <div class="bottom">
-        <strong>Master Data :</strong>
-        <ul>
-            <li>1. <strong>Site:</strong> All Site</li>
-            <li>2. <strong>C/N Unit:</strong> Free Text</li>
-            <li>3. <strong>Nama Pengecek:</strong> Free Text</li>
-            <li>4. <strong>Lokasi:</strong> Workshop, Pitstop, Service Truck</li>
-            <li>5. <strong>Bulan:</strong> Januari – Desember</li>
-        </ul>
-    </div>
-
 </body>
 
 </html>
