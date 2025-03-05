@@ -571,7 +571,7 @@
     </table>
 
     <!-- Signature Section -->
-    <div style="margin-top: 20px;">
+    <div style="margin-top: 20px; margin-bottom: 20px;">
         <table style="width: 75%; border-collapse: collapse; float: left;">
             <tr>
                 <td colspan="2" style="border: 1px solid #000; text-align: center; padding: 5px;">
@@ -617,6 +617,121 @@
             </tr>
         </table>
         <div style="clear: both;"></div>
+    </div>
+
+    <div style="page-break">
+      <table class="content-table" style="margin-bottom: 10px; margin-top: 30px;">
+        <tr>
+            <td style="background-color: #ffff00; text-align: center; font-weight: bold; padding: 5px;">C</td>
+            <td style="background-color: #ffff00; text-align: center; font-weight: bold; padding: 5px;">
+                LAMPIRAN PEMERIKSAAN<br/>
+                <span class="text-primary">APPENDIX OF EXAMINATION</span>
+            </td>
+        </tr>
+      </table>
+
+      <table class="content-table" style="margin-bottom: 5px;">
+        <tr style="background-color: #E3F2FD;">
+            <td style="text-align: center; padding: 10px;">
+                Daftar Pemeriksaan Peta Tubuh<br/>
+                <span class="text-primary">Body Mapping Checklist</span>
+            </td>
+        </tr>
+      </table>
+      <table style="width: 100%; border-collapse: collapse; border: none;">
+        <tr>
+          <td style="width: 35%; padding-right: 10px; vertical-align: top;">
+              <div style="text-align: center;">
+                  <img src="{{ public_path('img/form-she-ergonomi/body-mapping.png') }}" style="width: 200px;">
+              </div>
+          </td>
+          <td style="width: 65%; vertical-align: top;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <tr style="background-color: #E3F2FD;">
+                    <th style="border: 1px solid #000; padding: 5px; text-align: center;">No<br/>Nr</th>
+                    <th style="border: 1px solid #000; padding: 5px; text-align: center;">Jenis Keluhan<br/><span class="text-primary">Sign Type</span></th>
+                    <th colspan="4" style="border: 1px solid #000; padding: 5px; text-align: center;">Keluhan / <span class="text-primary">Sign</span></th>
+                </tr>
+                @for($i = 0; $i <= 27; $i++)
+                    <tr>
+                        <td style="border: 1px solid #000; padding: 5px; text-align: center;">{{ $i }}</td>
+                        <td style="border: 1px solid #000; padding: 5px;">
+                            @switch($i)
+                                @case(0) Sakit/Kaku di leher bagian atas @break
+                                @case(1) Sakit/Kaku di leher bagian bawah @break
+                                @case(2) Sakit di bahu kiri @break
+                                @case(3) Sakit di bahu kanan @break
+                                @case(4) Sakit pada lengan atas kiri @break
+                                @case(5) Sakit pada punggung @break
+                                @case(6) Sakit pada lengan atas kanan @break
+                                @case(7) Sakit pada pinggang @break
+                                @case(8) Sakit pada bokong @break
+                                @case(9) Sakit pada pantat @break
+                                @case(10) Sakit pada siku kiri @break
+                                @case(11) Sakit pada siku kanan @break
+                                @case(12) Sakit pada lengan bawah kiri @break
+                                @case(13) Sakit pada lengan bawah kanan @break
+                                @case(14) Sakit pada pergelangan tangan kiri @break
+                                @case(15) Sakit pada pergelangan tangan kanan @break
+                                @case(16) Sakit pada telapak tangan kanan @break
+                                @case(17) Sakit pada telapak tangan kiri @break
+                                @case(18) Sakit pada paha kiri @break
+                                @case(19) Sakit pada paha kanan @break
+                                @case(20) Sakit pada lutut kiri @break
+                                @case(21) Sakit pada lutut kanan @break
+                                @case(22) Sakit pada betis kiri @break
+                                @case(23) Sakit pada betis kanan @break
+                                @case(24) Sakit pada pergelangan kaki kiri @break
+                                @case(25) Sakit pada pergelangan kaki kanan @break
+                                @case(26) Sakit pada telapak kaki kiri @break
+                                @case(27) Sakit pada telapak kaki kanan @break
+                            @endswitch
+                        </td>
+                        <td style="border: 1px solid #000; padding: 5px; text-align: center;" class="check">✓</td>
+                        <td style="border: 1px solid #000; padding: 5px; text-align: center;"></td>
+                        <td style="border: 1px solid #000; padding: 5px; text-align: center;"></td>
+                        <td style="border: 1px solid #000; padding: 5px; text-align: center;"></td>
+                    </tr>
+                @endfor
+            </table>
+
+            <div style="margin-top: 10px;">
+                <p style="margin-bottom: 5px;">KETERANGAN :</p>
+                <table style="width: 100%;">
+                    <tr>
+                        <td style="width: 30px;">A</td>
+                        <td>: Tidak Sakit / <span class="text-primary">Painless</span></td>
+                    </tr>
+                    <tr>
+                        <td>B</td>
+                        <td>: Agak Sakit / <span class="text-primary">Rather ill</span></td>
+                    </tr>
+                    <tr>
+                        <td>C</td>
+                        <td>: Sakit / <span class="text-primary">Pain</span></td>
+                    </tr>
+                    <tr>
+                        <td>D</td>
+                        <td>: Sangat Sakit / <span class="text-primary">Very ill</span></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div style="margin-top: 10px;">
+                <table style="width: 100%;">
+                    <tr>
+                        <td style="width: 150px;">Dibuat Oleh / <span class="text-primary">Propose By</span></td>
+                        <td>: {{ $data->paramedic_name ?? 'Aspianor' }}</td>
+                    </tr>
+                    <tr>
+                        <td>Tand Tangan / <span class="text-primary">Sign</span></td>
+                        <td>: <span style="font-family: 'Dancing Script', cursive;">Signature</span></td>
+                    </tr>
+                </table>
+            </div>
+          </td>
+        </tr>
+      </table>
     </div>
 
     <div class="page-number">Revisi 0</div>
