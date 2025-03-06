@@ -13,6 +13,10 @@ use Illuminate\Support\Facades\Log;
 
 class AirMinumController extends Controller
 {
+    private const DB_HRD = "HRD";
+    private const TABLE_KARYAWAN_HRD = self::DB_HRD . ".dbo.TKaryawan";
+    private const DB_CONN2_NAME = 'sqlsrv2';
+
     public function Dashboard(Request $request)
     {
         try {
@@ -78,7 +82,6 @@ class AirMinumController extends Controller
                     ->count()
             ];
 
-            Log::info($records);
             return view('SmartForm::she/air_minum/dashboard', [
                 'records' => $records,
                 'statistics' => $statistics,
@@ -146,21 +149,25 @@ class AirMinumController extends Controller
                     $record->acknowledged_date = now()->format('Y-m-d');
                 }
 
-                Log::info('Air Minum record for ID: ' . $record->acknowledged_date);
-
                 return view('SmartForm::she/air_minum/form', [
                     'isShowDetail' => true,
+                    'userList' => $this->getUserList(),
                     'maintenanceRecord' => $record
                 ]);
             }
 
             return view('SmartForm::she/air_minum/form', [
                 'isShowDetail' => false,
+                'userList' => $this->getUserList(),
                 'maintenanceRecord' => null
             ]);
 
         } catch (\Exception $e) {
-            Log::error('Error in AddForm: ' . $e->getMessage());
+            Log::error('Error in AddForm: ' . $e->getMessage(), [
+                'request' => $request->all(),
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
             return redirect()->route('she-air-minum.dashboard')
                 ->with('error', 'Failed to load form: ' . $e->getMessage());
         }
@@ -267,7 +274,11 @@ class AirMinumController extends Controller
 
             } catch (\Exception $e) {
                 DB::rollBack();
-                Log::error('Error in transaction: ' . $e->getMessage());
+                Log::error('Error in transaction: ' . $e->getMessage(), [
+                    'request' => $request->all(),
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
+                ]);
                 return response()->json([
                     'success' => false,
                     'message' => 'Gagal menyimpan form: ' . $e->getMessage()
@@ -275,7 +286,11 @@ class AirMinumController extends Controller
             }
 
         } catch (\Exception $e) {
-            Log::error('Error in Store: ' . $e->getMessage());
+            Log::error('Error in Store: ' . $e->getMessage(), [
+                'request' => $request->all(),
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to submit form: ' . $e->getMessage()
@@ -340,9 +355,51 @@ class AirMinumController extends Controller
             return $pdf->download('air-minum-inspection-' . $record->doc_number . '.pdf');
 
         } catch (\Exception $e) {
-            Log::error('Error in ExportForm: ' . $e->getMessage());
+            Log::error('Error in ExportForm: ' . $e->getMessage(), [
+                'id' => $id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
             return redirect()->back()
                 ->with('error', 'Failed to export form: ' . $e->getMessage());
+        }
+    }
+
+    private function getUserList()
+    {
+        try {
+            // Test the connection first
+            try {
+                DB::connection(self::DB_CONN2_NAME)->getPdo();
+            } catch (\Exception $e) {
+                Log::error('Database connection failed', [
+                    'error' => $e->getMessage()
+                ]);
+                return collect([]);
+            }
+            
+            // Build and execute query
+            try {
+                $query = DB::connection(self::DB_CONN2_NAME)
+                    ->table(DB::raw(self::TABLE_KARYAWAN_HRD))
+                    ->select([
+                        'NIK as nik',
+                        'Nama as nama',
+                    ])
+                    ->where('AKTIF', 0);
+                
+                return $query->get();
+                
+            } catch (\Exception $e) {
+                Log::error('Query execution failed', [
+                    'error' => $e->getMessage()
+                ]);
+                return collect([]);
+            }
+            
+        } catch (\Exception $e) {
+            Log::error('Error in getUserList: ' . $e->getMessage());
+            return collect([]);
         }
     }
 
