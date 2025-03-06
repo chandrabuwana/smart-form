@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
+use Modules\SmartForm\helpers\HrdHelper;
 
 class FormCheckerController extends Controller {
     public function dashboard(Request $request) {
@@ -155,11 +156,11 @@ class FormCheckerController extends Controller {
 
 
             return view( 'smartform::production.form_checker.show-form-checker', [
-                'record' => $record, 'dataDS' => $dataDS, 'dataNS' => $dataNS, 'time_details' => $time_details, 'nonNullCounts' => $nonNullCounts
+                'record' => $record, 'dataDS' => $dataDS, 'dataNS' => $dataNS, 'time_details' => $time_details, 'nonNullCounts' => $nonNullCounts,  'approvalList' => HrdHelper::getApprovalList()
 
             ] );
         }
-        return view( 'smartform::production.form_checker.form-checker', compact( 'dataDS', 'dataNS' ) );
+        return view( 'smartform::production.form_checker.form-checker', ['dataDS' => $dataDS, 'dataNS'=> $dataNS,  'approvalList' => HrdHelper::getApprovalList()] );
     }
 
 
@@ -258,11 +259,11 @@ class FormCheckerController extends Controller {
                 'success' => true,
                 'message' => 'Data berhasil disimpan'
             ] );
-            // return redirect()->route('prod.form.checker.dashboard')->with('success', 'Data berhasil disimpan');
+
 
         } catch ( QueryException $e ) {
             Log::error( 'Error in Store: ' . $e->getMessage() );
-            // return redirect()->route('prod.form.checker.dashboard')->with('error', 'Data gagal disimpan');
+
             return response()->json( [
                 'success' => false,
                 'message' => 'Data gagal disimpan'

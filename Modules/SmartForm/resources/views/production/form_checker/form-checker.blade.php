@@ -136,8 +136,7 @@
                                                 id="row{{ $id }}">
                                                 <td>{{ $data }}</td>
                                                 @for ($i = 1; $i <= 5; $i++)
-                                                    <td><input type="time" class="time-input form-control"
-                                                            oninput="countFilled({{ $id }})"
+                                                    <td><input type="time" class=" form-control"
                                                             name="time[{{ $id }}][{{ $i }}]">
                                                     </td>
                                                 @endfor
@@ -221,15 +220,23 @@
                                 <div class="col-6">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="dibuat" class="ms-0">Dibuat Oleh</label>
-                                        <input type="text" class="form-control" id="dibuat" name="dibuat_oleh"
-                                            required>
+                                        <select name="dibuat_oleh" id="dibuat_oleh" class="form-control" required>
+                                            <option disabled selected>-- Select Creator --</option>
+                                            @foreach ($approvalList as $data)
+                                                <option value="{{ $data->nama }}">{{ $data->nama }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="diperiksa" class="ms-0">Diperiksa Oleh</label>
-                                        <input type="text" class="form-control" id="diperiksa" name="diperiksa_oleh"
-                                            required>
+                                        <select name="diperiksa_oleh" id="diperiksa" class="form-control" required>
+                                            <option disabled selected>-- Select Approval --</option>
+                                            @foreach ($approvalList as $data)
+                                                <option value="{{ $data->nama }}">{{ $data->nama }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -352,7 +359,6 @@
                     })
                     .catch(function(error) {
                         let errorMessage = 'Terjadi kesalahan pada sistem';
-
                         if (error.response) {
                             if (error.response.data.errors) {
                                 errorMessage = Object.values(error.response.data.errors).flat().join(
@@ -361,7 +367,6 @@
                                 errorMessage = error.response.data.message;
                             }
                         }
-
                         Swal.fire({
                             icon: 'error',
                             title: 'Error',
@@ -371,6 +376,7 @@
                     .finally(function() {
                         submitBtn.prop('disabled', false);
                     });
+
             });
         });
         document.getElementById('shiftSelector').addEventListener('change', function() {
