@@ -10,13 +10,10 @@ use Illuminate\Validation\ValidationException;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Modules\SmartForm\helpers\HrdHelper;
 
 class AirMinumController extends Controller
 {
-    private const DB_HRD = "HRD";
-    private const TABLE_KARYAWAN_HRD = self::DB_HRD . ".dbo.TKaryawan";
-    private const DB_CONN2_NAME = 'sqlsrv2';
-
     public function Dashboard(Request $request)
     {
         try {
@@ -151,14 +148,14 @@ class AirMinumController extends Controller
 
                 return view('SmartForm::she/air_minum/form', [
                     'isShowDetail' => true,
-                    'userList' => $this->getUserList(),
+                    'approvalList' => HrdHelper::getApprovalList(),
                     'maintenanceRecord' => $record
                 ]);
             }
 
             return view('SmartForm::she/air_minum/form', [
                 'isShowDetail' => false,
-                'userList' => $this->getUserList(),
+                'approvalList' => HrdHelper::getApprovalList(),
                 'maintenanceRecord' => null
             ]);
 
@@ -362,44 +359,6 @@ class AirMinumController extends Controller
             ]);
             return redirect()->back()
                 ->with('error', 'Failed to export form: ' . $e->getMessage());
-        }
-    }
-
-    private function getUserList()
-    {
-        try {
-            // Test the connection first
-            try {
-                DB::connection(self::DB_CONN2_NAME)->getPdo();
-            } catch (\Exception $e) {
-                Log::error('Database connection failed', [
-                    'error' => $e->getMessage()
-                ]);
-                return collect([]);
-            }
-            
-            // Build and execute query
-            try {
-                $query = DB::connection(self::DB_CONN2_NAME)
-                    ->table(DB::raw(self::TABLE_KARYAWAN_HRD))
-                    ->select([
-                        'NIK as nik',
-                        'Nama as nama',
-                    ])
-                    ->where('AKTIF', 0);
-                
-                return $query->get();
-                
-            } catch (\Exception $e) {
-                Log::error('Query execution failed', [
-                    'error' => $e->getMessage()
-                ]);
-                return collect([]);
-            }
-            
-        } catch (\Exception $e) {
-            Log::error('Error in getUserList: ' . $e->getMessage());
-            return collect([]);
         }
     }
 

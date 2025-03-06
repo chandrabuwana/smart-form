@@ -168,22 +168,22 @@
                                     <div class="table-responsive">
                                         <table class="table table-bordered">
                                             <tr class="text-center">
-                                                <th>Diinspeksi Oleh</th>
-                                                <th>Tanda Tangan</th>
-                                                <th>Tanggal</th>
+                                                <th class="border">Diinspeksi Oleh</th>
+                                                <th class="border">Tanda Tangan</th>
+                                                <th class="border">Tanggal</th>
                                             </tr>
                                             <tr>
-                                                <td>
+                                                <td class="border">
                                                     <select name="inspector_1" class="form-control text-center" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
                                                         <option value="">-- Pilih Inspektor --</option>
-                                                        @foreach($userList as $user)
+                                                        @foreach($approvalList as $user)
                                                             <option value="{{ $user->nama }}" {{ $isShowDetail && $maintenanceRecord->inspector_1 == $user->nama ? 'selected' : '' }}>
                                                                 {{ $user->nama }} ({{ $user->nik }})
                                                             </option>
                                                         @endforeach
                                                     </select>
                                                 </td>
-                                                <td class="text-center">
+                                                <td class="text-center border">
                                                     <div class="form-check d-inline">
                                                         <input class="form-check-input" type="checkbox" 
                                                             name="inspector_1_signature" value="1"
@@ -191,29 +191,29 @@
                                                             {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
                                                     </div>
                                                 </td>
-                                                <td>
+                                                <td class="border">
                                                     <input type="date" name="inspection_date" class="form-control text-center" 
                                                         value="{{ $isShowDetail ? $maintenanceRecord->inspection_date : now()->format('Y-m-d') }}"
                                                         required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
                                                 </td>
                                             </tr>
                                             <tr class="text-center">
-                                                <th>Diinspeksi Oleh</th>
-                                                <th>Tanda Tangan</th>
-                                                <th>Tanggal</th>
+                                                <th class="border">Diinspeksi Oleh</th>
+                                                <th class="border">Tanda Tangan</th>
+                                                <th class="border">Tanggal</th>
                                             </tr>
                                             <tr>
-                                                <td>
+                                                <td class="border">
                                                     <select name="inspector_2" class="form-control text-center" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
                                                         <option value="">-- Pilih Inspektor --</option>
-                                                        @foreach($userList as $user)
+                                                        @foreach($approvalList as $user)
                                                             <option value="{{ $user->nama }}" {{ $isShowDetail && $maintenanceRecord->inspector_1 == $user->nama ? 'selected' : '' }}>
                                                                 {{ $user->nama }} ({{ $user->nik }})
                                                             </option>
                                                         @endforeach
                                                     </select>
                                                 </td>
-                                                <td class="text-center">
+                                                <td class="text-center border">
                                                     <div class="form-check d-inline">
                                                         <input class="form-check-input" type="checkbox" 
                                                             name="inspector_2_signature" value="1"
@@ -221,22 +221,22 @@
                                                             {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
                                                     </div>
                                                 </td>
-                                                <td>
+                                                <td class="border">
                                                     <input type="date" name="inspector_2_date" class="form-control text-center" 
                                                         value="{{ $isShowDetail ? $maintenanceRecord->inspector_2_date : now()->format('Y-m-d') }}"
                                                         required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
                                                 </td>
                                             </tr>
                                             <tr class="text-center">
-                                                <th>Mengetahui</th>
-                                                <th>Tanda Tangan</th>
-                                                <th>Tanggal</th>
+                                                <th class="border">Mengetahui</th>
+                                                <th class="border">Tanda Tangan</th>
+                                                <th class="border">Tanggal</th>
                                             </tr>
                                             <tr>
                                                 <td class="border">
                                                     <select name="acknowledged_by" class="form-control text-center" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
                                                         <option value="">-- Pilih Inspektor --</option>
-                                                        @foreach($userList as $user)
+                                                        @foreach($approvalList as $user)
                                                             <option value="{{ $user->nama }}" {{ $isShowDetail && $maintenanceRecord->acknowledged_by == $user->nama ? 'selected' : '' }}>
                                                                 {{ $user->nama }} ({{ $user->nik }})
                                                             </option>
