@@ -394,6 +394,13 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::put('/form-checker/{id}', [FormCheckerController::class, 'UpdateChecker'])->name('prod.form.checker.update');
 
         });
+        
+        Route::prefix('ppm-900d')->group(function(){
+            Route::get('/dashboard', [FormCheckerController::class, 'Dashboard'])->name('plant.ppm.900d.dashboard');
+            Route::get('/ppm-900d/export/{id}', [FormCheckerController::class, 'Export'])->name('plant.ppm.900d.export');
+            Route::get('/ppm-900d', [FormCheckerController::class, 'Add'])->name('plant.ppm.900d.form');
+            Route::post('/store-ppm-900d', [FormCheckerController::class, 'Store'])->name('plant.ppm.900d.store');
+        });
 
 
     });
