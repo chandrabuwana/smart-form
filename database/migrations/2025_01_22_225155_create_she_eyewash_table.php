@@ -31,9 +31,18 @@ return new class extends Migration
             $table->timestamp('approved_at')->nullable();
             
             // Supervisor and DH information
+            $table->string('hygiene')->nullable();
+            $table->string('hygiene_sign')->nullable();
+            $table->timestamp('hygiene_signed_at')->nullable();
             $table->string('supervisor')->nullable();
+            $table->string('supervisor_sign')->nullable();
+            $table->timestamp('supervisor_signed_at')->nullable();
             $table->string('dh')->nullable();
+            $table->string('dh_sign')->nullable();
+            $table->timestamp('dh_signed_at')->nullable();
             $table->string('dh_terkait')->nullable();
+            $table->string('dh_terkait_sign')->nullable();
+            $table->timestamp('dh_terkait_signed_at')->nullable();
             
             $table->timestamps();
             $table->softDeletes();

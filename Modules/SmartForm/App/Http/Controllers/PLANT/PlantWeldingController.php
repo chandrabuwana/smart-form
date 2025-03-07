@@ -129,7 +129,7 @@ class PlantWeldingController extends Controller
             $data = [
                 'doc_number' => $this->generateDocNumber(),
                 'site_name' => $request->site_name,
-                'location' => $request->lokasi,
+                'location' => $request->location,
                 'month' => $request->month,
                 'jenis_instalasi' => $request->jenis_instalasi,
                 'pemeriksa' => $request->pemeriksa,
