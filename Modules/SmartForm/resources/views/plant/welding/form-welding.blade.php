@@ -43,31 +43,31 @@
                                         <select class="form-control" name="site_name" id="site_name" required
                                             {{ $isShowDetail ? 'disabled' : '' }}>
                                             <option value="agm"
-                                                {{ old('site_name', $record->site ?? '') == 'agm' ? 'selected' : '' }}>
+                                                {{ old('site_name', $record->site_name ?? '') == 'agm' ? 'selected' : '' }}>
                                                 Agm</option>
                                             <option value="mbl"
-                                                {{ old('site_name', $record->site ?? '') == 'mbl' ? 'selected' : '' }}>
+                                                {{ old('site_name', $record->site_name ?? '') == 'mbl' ? 'selected' : '' }}>
                                                 Mbl</option>
                                             <option value="mme"
-                                                {{ old('site_name', $record->site ?? '') == 'mme' ? 'selected' : '' }}>
+                                                {{ old('site_name', $record->site_name ?? '') == 'mme' ? 'selected' : '' }}>
                                                 Mme</option>
                                             <option value="mas"
-                                                {{ old('site_name', $record->site ?? '') == 'mas' ? 'selected' : '' }}>
+                                                {{ old('site_name', $record->site_name ?? '') == 'mas' ? 'selected' : '' }}>
                                                 Mas</option>
                                             <option value="pmss"
-                                                {{ old('site_name', $record->site ?? '') == 'pmss' ? 'selected' : '' }}>
+                                                {{ old('site_name', $record->site_name ?? '') == 'pmss' ? 'selected' : '' }}>
                                                 Pmss</option>
                                             <option value="taj"
-                                                {{ old('site_name', $record->site ?? '') == 'taj' ? 'selected' : '' }}>
+                                                {{ old('site_name', $record->site_name ?? '') == 'taj' ? 'selected' : '' }}>
                                                 Taj</option>
                                             <option value="bssr"
-                                                {{ old('site_name', $record->site ?? '') == 'bssr' ? 'selected' : '' }}>
+                                                {{ old('site_name', $record->site_name ?? '') == 'bssr' ? 'selected' : '' }}>
                                                 Bssr</option>
                                             <option value="tdm"
-                                                {{ old('site_name', $record->site ?? '') == 'tdm' ? 'selected' : '' }}>
+                                                {{ old('site_name', $record->site_name ?? '') == 'tdm' ? 'selected' : '' }}>
                                                 Tdm</option>
                                             <option value="msj"
-                                                {{ old('site_name', $record->site ?? '') == 'msj' ? 'selected' : '' }}>
+                                                {{ old('site_name', $record->site_name ?? '') == 'msj' ? 'selected' : '' }}>
                                                 Msj</option>
                                         </select>
                                     </div>
@@ -86,25 +86,25 @@
                                                 Troli Portable</option>
                                         </select>
                                     </div>
-                                    
+
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="lokasi" class="ms-0">Lokasi</label>
-                                        <select class="form-control" name="lokasi" id="lokasi" required
+                                        <select class="form-control" name="location" id="location" required
                                             {{ $isShowDetail ? 'disabled' : '' }}>
 
                                             <option value="Workshop"
-                                                {{ old('lokasi', $record->lokasi ?? '') == 'Workshop' ? 'selected' : '' }}>
+                                                {{ old('location', $record->location ?? '') == 'Workshop' ? 'selected' : '' }}>
                                                 Workshop</option>
                                             <option value="Pitstop"
-                                                {{ old('lokasi', $record->lokasi ?? '') == 'Pitstop' ? 'selected' : '' }}>
+                                                {{ old('location', $record->location ?? '') == 'Pitstop' ? 'selected' : '' }}>
                                                 Pitstop</option>
                                             <option value="Service"
-                                                {{ old('lokasi', $record->lokasi ?? '') == 'Service' ? 'selected' : '' }}>
+                                                {{ old('location', $record->location ?? '') == 'Service' ? 'selected' : '' }}>
                                                 Service</option>
                                             <option value="Truck"
-                                                {{ old('lokasi', $record->lokasi ?? '') == 'Truck' ? 'selected' : '' }}>
+                                                {{ old('location', $record->location ?? '') == 'Truck' ? 'selected' : '' }}>
                                                 Truck</option>
                                         </select>
                                     </div>

@@ -199,7 +199,7 @@
                 <td class="text-left">Regulator berfungsi baik</td>
                 @for ($i = 1; $i <= 31; $i++)
                     <td>
-                        {!! isset($question1[$i - 1]) && $question1[$i - 1] === '1' ? '✓' : '' !!}
+                        {!! isset($question2[$i - 1]) && $question2[$i - 1] === '1' ? '✓' : '' !!}
                     </td>
                 @endfor
             </tr>
