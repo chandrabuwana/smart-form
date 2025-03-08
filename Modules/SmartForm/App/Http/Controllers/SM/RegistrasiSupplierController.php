@@ -92,7 +92,7 @@ class RegistrasiSupplierController extends Controller {
     }
 
     function FormRegistrasiSupplier() {
-        return view("SmartForm::sm/registrasi-supplier/form-registrasi-supplier");
+        return view("SmartForm::SM/registrasi-supplier/form-registrasi-supplier");
     }
     
     public function CreateRegisSupplier(Request $request)
