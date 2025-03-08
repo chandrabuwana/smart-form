@@ -21,7 +21,7 @@ return new class extends Migration
 			/** Informasi umur Vendor */
             $table->string('nama_vendor');
             $table->string('status_pajak_pkp');
-            $table->string('no_npwp');
+            $table->string('no_npwp')->nullable();
             $table->string('bidang_usaha');
             $table->string('alamat_kantor');
             $table->string('kota');
@@ -62,15 +62,15 @@ return new class extends Migration
             $table->string('profile_perusahaan');
             $table->string('surat_lainnya');
 			
-            $table->string('file_npwp');
-            $table->string('file_sppkp');
-            $table->string('file_nib_siup');
-            $table->string('file_akta_perusahaan');
-            $table->string('file_pakta_integritas');
-            $table->string('file_ident_direk');
-            $table->string('file_struktur_org');
-            $table->string('file_profile_per');
-            $table->string('file_lain');
+            $table->string('file_npwp')->nullable();
+            $table->string('file_sppkp')->nullable();
+            $table->string('file_nib_siup')->nullable();
+            $table->string('file_akta_perusahaan')->nullable();
+            $table->string('file_pakta_integritas')->nullable();
+            $table->string('file_ident_direk')->nullable();
+            $table->string('file_struktur_org')->nullable();
+            $table->string('file_profile_per')->nullable();
+            $table->string('file_lain')->nullable();
 			
             $table->string('diisi_oleh');
             $table->string('diterima_oleh');
