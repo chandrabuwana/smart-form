@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Modules\SmartForm\helpers\HrdHelper;
 
 class RegistrasiSupplierController extends Controller {
 
@@ -43,7 +44,7 @@ class RegistrasiSupplierController extends Controller {
         $filter = $request->query('filter', null); // Default limit
         try {
             $master = DB::table($TABLE_MASTER)
-                ->select('id','nama_vendor','no_npwp');
+                ->select('id','nama_vendor','no_npwp','bidang_usaha','kota');
             
             if($filterTanggal == null || $filterTanggal == 'null') {
             } else {
@@ -92,7 +93,10 @@ class RegistrasiSupplierController extends Controller {
     }
 
     function FormRegistrasiSupplier() {
-        return view("SmartForm::SM/registrasi-supplier/form-registrasi-supplier");
+        return view('SmartForm::SM/registrasi-supplier/form-registrasi-supplier', [
+                    'isShowDetail' => true,
+                    'approvalList' => HrdHelper::getApprovalList()
+                ]);
     }
     
     public function CreateRegisSupplier(Request $request)
@@ -165,7 +169,8 @@ class RegistrasiSupplierController extends Controller {
 	    	    'profile_perusahaan' => $request->rProfile,
 	    	    'surat_lainnya' => $request->rSurat,
                 'diisi_oleh' => $requested_by,
-	    	    'profile_perusahaan' => $request->rProfile
+                'diterima_oleh' => $request->dDiterima,
+                'disetujui_oleh' => $request->dApproved
 
             ]);
             return redirect('/bss-form/sm/registrasi-supplier');

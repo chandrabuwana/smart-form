@@ -72,9 +72,9 @@ return new class extends Migration
             $table->string('file_profile_per')->nullable();
             $table->string('file_lain')->nullable();
 			
-            $table->string('diisi_oleh');
-            $table->string('diterima_oleh');
-            $table->string('disetujui_oleh');
+            $table->string('diisi_oleh')->nullable();
+            $table->string('diterima_oleh')->nullable();
+            $table->string('disetujui_oleh')->nullable();
         });
     }
 
