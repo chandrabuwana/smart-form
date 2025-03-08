@@ -40,6 +40,7 @@
                             <thead>
                                 <tr>
                                     <th data-field="nama_vendor" data-align="left" data-halign="text-center" data-sortable="true">Nama Supplier</th>
+                                    <th data-field="status" data-align="left" data-halign="text-center" data-sortable="true">Status</th>
                                     <th data-field="no_npwp" data-align="left" data-halign="text-center" data-sortable="true">No NPWP</th>
                                     <th data-field="bidang_usaha" data-align="left" data-halign="text-center" data-sortable="true">Bidang Usaha</th>
                                     <th data-field="kota" data-align="left" data-halign="text-center" data-sortable="true">Kota</th>

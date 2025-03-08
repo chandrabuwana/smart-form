@@ -46,7 +46,7 @@
                                                 <td style="width:40%">Nama Vendor (CV/PT)</td>
                                                 <td>:</td>
                                                 <td>
-                                                    <input type="text" class="form-control" id="tVendorName" name="tVendorName" placeholder="Vendor's Name" required>
+                                                    <input type="text" style="text-transform:uppercase" class="form-control" id="tVendorName" name="tVendorName" placeholder="Vendor's Name" required>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -77,7 +77,7 @@
                                                 <td style="width:40%">Bidang Usaha</td>
                                                 <td>:</td>
                                                 <td>
-                                                    <input type="text" class="form-control" id="tBidang" name="tBidang" placeholder="Business Field" required>
+                                                    <input type="text" style="text-transform:uppercase" class="form-control" id="tBidang" name="tBidang" placeholder="Business Field" required>
                                                 </td>
                                             </tr>
                                         </table>
@@ -135,7 +135,7 @@
                                                 <td style="width:40%">Nama Rekening 1</td>
                                                 <td>:</td>
                                                 <td>
-                                                    <input type="text" class="form-control" id="tAccNm1" name="tAccNm1" placeholder="Account Name" required>
+                                                    <input type="text" style="text-transform:uppercase" class="form-control" id="tAccNm1" name="tAccNm1" placeholder="Account Name" required>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -149,21 +149,21 @@
                                                 <td style="width:40%">Nama Bank 1</td>
                                                 <td>:</td>
                                                 <td>
-                                                    <input type="text" class="form-control" id="tNamaBank1" name="tNamaBank1" placeholder="Bank Name" required>
+                                                    <input type="text" style="text-transform:uppercase" class="form-control" id="tNamaBank1" name="tNamaBank1" placeholder="Bank Name" required>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td style="width:40%">Alamat Bank 1</td>
                                                 <td>:</td>
                                                 <td>
-                                                    <input type="text" class="form-control" id="tBankAdd1" name="tBankAdd1" placeholder="Bank Address" required>
+                                                    <input type="text" style="text-transform:uppercase" class="form-control" id="tBankAdd1" name="tBankAdd1" placeholder="Bank Address" required>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td style="width:40%">Nama Rekening 2</td>
                                                 <td>:</td>
                                                 <td>
-                                                    <input type="text" class="form-control" id="tAccNm2" name="tAccNm2" placeholder="Account Name" required>
+                                                    <input type="text" style="text-transform:uppercase" class="form-control" id="tAccNm2" name="tAccNm2" placeholder="Account Name" required>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -177,14 +177,14 @@
                                                 <td style="width:40%">Nama Bank 2</td>
                                                 <td>:</td>
                                                 <td>
-                                                    <input type="text" class="form-control" id="tNamaBank2" name="tNamaBank2" placeholder="Bank Name" required>
+                                                    <input type="text" style="text-transform:uppercase" class="form-control" id="tNamaBank2" name="tNamaBank2" placeholder="Bank Name" required>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td style="width:40%">Alamat Bank 2</td>
                                                 <td>:</td>
                                                 <td>
-                                                    <input type="text" class="form-control" id="tBankAdd2" name="tBankAdd2" placeholder="Bank Address" required>
+                                                    <input type="text" style="text-transform:uppercase" class="form-control" id="tBankAdd2" name="tBankAdd2" placeholder="Bank Address" required>
                                                 </td>
                                             </tr>
                                         </table>
@@ -201,14 +201,14 @@
                                                 <td style="width:40%">Alamat Kantor</td>
                                                 <td>:</td>
                                                 <td>
-                                                    <input type="text" class="form-control" id="tAlamatKan" name="tAlamatKan" placeholder="Company Address" required>
+                                                    <input type="text" style="text-transform:uppercase" class="form-control" id="tAlamatKan" name="tAlamatKan" placeholder="Company Address" required>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td style="width:40%">Kota</td>
                                                 <td>:</td>
                                                 <td>
-                                                    <input type="text" class="form-control" id="tKota" name="tKota" placeholder="City" required>
+                                                    <input type="text" style="text-transform:uppercase" class="form-control" id="tKota" name="tKota" placeholder="City" required>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -236,7 +236,7 @@
                                                 <td style="width:40%">Penanggung Jawab 1</td>
                                                 <td>:</td>
                                                 <td>
-                                                    <input type="text" class="form-control" id="tPic1" name="tPic1" placeholder="Person in charge" required>
+                                                    <input type="text" style="text-transform:uppercase" class="form-control" id="tPic1" name="tPic1" placeholder="Person in charge" required>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -250,7 +250,7 @@
                                                 <td style="width:40%">Jabatan</td>
                                                 <td>:</td>
                                                 <td>
-                                                    <input type="text" class="form-control" id="tJabatPic1" name="tJabatPic1" placeholder="Postion" required>
+                                                    <input type="text" style="text-transform:uppercase" class="form-control" id="tJabatPic1" name="tJabatPic1" placeholder="Postion" required>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -264,7 +264,7 @@
                                                 <td style="width:40%">Penanggung Jawab 2</td>
                                                 <td>:</td>
                                                 <td>
-                                                    <input type="text" class="form-control" id="tPic2" name="tPic2" placeholder="Person in charge" required>
+                                                    <input type="text" style="text-transform:uppercase" class="form-control" id="tPic2" name="tPic2" placeholder="Person in charge" required>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -278,7 +278,7 @@
                                                 <td style="width:40%">Jabatan</td>
                                                 <td>:</td>
                                                 <td>
-                                                    <input type="text" class="form-control" id="tJabatPic2" name="tJabatPic2" placeholder="Postion" required>
+                                                    <input type="text" style="text-transform:uppercase" class="form-control" id="tJabatPic2" name="tJabatPic2" placeholder="Postion" required>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -501,7 +501,7 @@
                             </td>
                             <td>Diterima Oleh/Received by, :</td>
                             <td> 
-                                <select name="dDiterima" class="form-control text-center">
+                                <select name="dDiterima" class="form-control text-center" required>
                                     <option value="">-- Pilih Penerima --</option>
                                     @foreach($approvalList as $user)
                                         <option value="{{ $user->nama }}">
@@ -512,7 +512,7 @@
                             </td>
                             <td>Disetujui Oleh/Approved by, :</td>
                             <td>
-                                <select name="dApproved" class="form-control text-center">
+                                <select name="dApproved" class="form-control text-center" required>
                                     <option value="">-- Pilih Approver --</option>
                                     @foreach($approvalList as $user)
                                         <option value="{{ $user->nama }}">

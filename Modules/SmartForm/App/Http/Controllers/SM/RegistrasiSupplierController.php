@@ -44,7 +44,7 @@ class RegistrasiSupplierController extends Controller {
         $filter = $request->query('filter', null); // Default limit
         try {
             $master = DB::table($TABLE_MASTER)
-                ->select('id','nama_vendor','no_npwp','bidang_usaha','kota');
+                ->select('id','nama_vendor','status','no_npwp','bidang_usaha','kota');
             
             if($filterTanggal == null || $filterTanggal == 'null') {
             } else {
@@ -170,6 +170,7 @@ class RegistrasiSupplierController extends Controller {
 	    	    'surat_lainnya' => $request->rSurat,
                 'diisi_oleh' => $requested_by,
                 'diterima_oleh' => $request->dDiterima,
+                'status' => "NEED APPROVAL",
                 'disetujui_oleh' => $request->dApproved
 
             ]);

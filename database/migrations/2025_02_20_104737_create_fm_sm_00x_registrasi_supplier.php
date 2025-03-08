@@ -74,6 +74,7 @@ return new class extends Migration
 			
             $table->string('diisi_oleh')->nullable();
             $table->string('diterima_oleh')->nullable();
+            $table->string('status')->nullable();
             $table->string('disetujui_oleh')->nullable();
         });
     }
