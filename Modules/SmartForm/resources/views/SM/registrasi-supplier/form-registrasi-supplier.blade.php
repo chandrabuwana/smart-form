@@ -308,14 +308,14 @@
                                                         Ada
                                                       </label>
                                                     
-                                                      <input class="form-check-input" type="radio" value="Tidak" name="rNpwp1" id="rNonNpwp1" required>
+                                                      <input class="form-check-input" type="radio" value="Tidak" name="rNpwp1" id="rNpwp1" required>
                                                       <label class="form-check-label" for="rNonPkp">
                                                         Tidak
                                                       </label>
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" required>
+                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fNpwp" required>
                                                     <div class="invalid-feedback">Lampiran NPWP belum dipilih</div>
                                                 </td>
                                             </tr>
@@ -336,7 +336,7 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" required>
+                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fSppkp" required>
                                                     <div class="invalid-feedback">Lampiran SPPKP belum dipilih</div>
                                                 </td>
                                             </tr>
@@ -357,7 +357,7 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" required>
+                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fNib" required>
                                                     <div class="invalid-feedback">Lampiran NIB/SIUP belum dipilih</div>
                                                 </td>
                                             </tr>
@@ -378,7 +378,7 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" required>
+                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fAkta" required>
                                                     <div class="invalid-feedback">Lampiran Akta Perusahaan belum dipilih</div>
                                                 </td>
                                             </tr>
@@ -399,7 +399,7 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" required>
+                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fPakta" required>
                                                     <div class="invalid-feedback">Lampiran Pakta Integritas belum dipilih</div>
                                                 </td>
                                             </tr>
@@ -420,7 +420,7 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" required>
+                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fKartu" required>
                                                     <div class="invalid-feedback">Lampiran Kartu Identitas Direktur belum dipilih</div>
                                                 </td>
                                             </tr>
@@ -441,7 +441,7 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" required>
+                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fStruktur" required>
                                                     <div class="invalid-feedback">Lampiran Struktur Organisasi belum dipilih</div>
                                                 </td>
                                             </tr>
@@ -462,7 +462,7 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" required>
+                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fProfile" required>
                                                     <div class="invalid-feedback">Lampiran Profile Perusahaan belum dipilih</div>
                                                 </td>
                                             </tr>
@@ -483,7 +483,7 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" required>
+                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fSurat" required>
                                                     <div class="invalid-feedback">Lampiran lainnya belum dipilih</div>
                                                 </td>
                                             </tr>
@@ -514,5 +514,105 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script>
+        // PKP NON PKP
+        $(document).ready(function(){
+            $('input[name="rPkp"]').change(function () {
+                if($(this).val() =='PKP') {
+                    $('#tNoNpwp').prop('required',true);
+                } else {
+                    $('#tNoNpwp').prop('required',false);
+                }
+            });
+        });
+        // NPWP
+        $(document).ready(function(){
+            $('input[name="rNpwp1"]').change(function () {
+                if($(this).val() =='Ada') {
+                    $('#fNpwp').prop('required',true);
+                } else {
+                    $('#fNpwp').prop('required',false);
+                }
+            });
+        });
+        // SPPKP
+        $(document).ready(function(){
+            $('input[name="rSppkp"]').change(function () {
+                if($(this).val() =='Ada') {
+                    $('#fSppkp').prop('required',true);
+                } else {
+                    $('#fSppkp').prop('required',false);
+                }
+            });
+        });
+        // NIB/SIP
+        $(document).ready(function(){
+            $('input[name="rNib"]').change(function () {
+                if($(this).val() =='Ada') {
+                    $('#fNib').prop('required',true);
+                } else {
+                    $('#fNib').prop('required',false);
+                }
+            });
+        });
+        // AKTA PERUSAHAAN
+        $(document).ready(function(){
+            $('input[name="rAkta"]').change(function () {
+                if($(this).val() =='Ada') {
+                    $('#fAkta').prop('required',true);
+                } else {
+                    $('#fAkta').prop('required',false);
+                }
+            });
+        });
+        // PAKTA INTEGRITAS
+        $(document).ready(function(){
+            $('input[name="rPakta"]').change(function () {
+                if($(this).val() =='Ada') {
+                    $('#fPakta').prop('required',true);
+                } else {
+                    $('#fPakta').prop('required',false);
+                }
+            });
+        });
+        // KARTU IDENTITAS
+        $(document).ready(function(){
+            $('input[name="rKartu"]').change(function () {
+                if($(this).val() =='Ada') {
+                    $('#fKartu').prop('required',true);
+                } else {
+                    $('#fKartu').prop('required',false);
+                }
+            });
+        });
+        // STRUKTUR ORGANISASI
+        $(document).ready(function(){
+            $('input[name="rStruktur"]').change(function () {
+                if($(this).val() =='Ada') {
+                    $('#fStruktur').prop('required',true);
+                } else {
+                    $('#fStruktur').prop('required',false);
+                }
+            });
+        });
+        // PROFIL PERUSAHAAN
+        $(document).ready(function(){
+            $('input[name="rProfile"]').change(function () {
+                if($(this).val() =='Ada') {
+                    $('#fProfile').prop('required',true);
+                } else {
+                    $('#fProfile').prop('required',false);
+                }
+            });
+        });
+        // SURAT LAINNYA
+        $(document).ready(function(){
+            $('input[name="rSurat"]').change(function () {
+                if($(this).val() =='Ada') {
+                    $('#fSurat').prop('required',true);
+                } else {
+                    $('#fSurat').prop('required',false);
+                }
+            });
+        });
     </script>
 @endsection

@@ -97,6 +97,7 @@ class RegistrasiSupplierController extends Controller {
     
     public function CreateRegisSupplier(Request $request)
     {    
+        $requested_by = $request->session()->get('user_id');
         $files = [];
         if($request->hasfile('filenames'))
 
@@ -162,7 +163,9 @@ class RegistrasiSupplierController extends Controller {
 	    	    'kartu_identitas_direktur' => $request->rKartu,
 	    	    'struktur_organisasi' => $request->rStruktur,
 	    	    'profile_perusahaan' => $request->rProfile,
-	    	    'surat_lainnya' => $request->rSurat
+	    	    'surat_lainnya' => $request->rSurat,
+                'diisi_oleh' => $requested_by,
+	    	    'profile_perusahaan' => $request->rProfile
 
             ]);
             return redirect('/bss-form/sm/registrasi-supplier');
