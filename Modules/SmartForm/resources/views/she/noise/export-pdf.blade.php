@@ -150,19 +150,19 @@
     <table class="info-table">
         <tr>
             <td width="20%">Nama Site</td>
-            <td width="30%">AGM</td>
+            <td width="30%">{{ strtoupper($record->site_name) }}</td>
             <td width="20%">Lokasi Kerja</td>
-            <td width="30%">WORKSHOP</td>
+            <td width="30%">{{ $record->work_location }}</td>
         </tr>
         <tr>
             <td>Dept./Section</td>
-            <td>SHE</td>
+            <td>{{ $record->department }}</td>
             <td>Jumlah Inspektor</td>
             <td>{{ $record->inspector_count }}</td>
         </tr>
         <tr>
             <td>Shift</td>
-            <td>DS</td>
+            <td>{{ $record->shift }}</td>
             <td></td>
             <td></td>
         </tr>
