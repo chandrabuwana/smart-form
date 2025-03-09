@@ -16,6 +16,7 @@ use Modules\SmartForm\App\Http\Controllers\MasterData\MasterFormPICController;
 use Modules\SmartForm\App\Http\Controllers\PDF\HelperPdfMobilisasiFormController;
 use Modules\SmartForm\App\Http\Controllers\PLANT\PlantTransmissionController;
 use Modules\SmartForm\App\Http\Controllers\PLANT\CompressorPompaController;
+use Modules\SmartForm\App\Http\Controllers\PLANT\PpmXcmg900dController;
 use Modules\SmartForm\App\Http\Controllers\PLANT\PlantWeldingController;
 use Modules\SmartForm\App\Http\Controllers\Production\FormCheckerController;
 use Modules\SmartForm\App\Http\Controllers\Production\ProductionTimeSheetDashboarController;
@@ -393,6 +394,14 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/store-form-checker', [FormCheckerController::class, 'StoreChecker'])->name('prod.checker.submit');
             Route::put('/form-checker/{id}', [FormCheckerController::class, 'UpdateChecker'])->name('prod.form.checker.update');
 
+        });
+
+        Route::prefix('ppm-900d')->group(function(){
+            Route::get('/dashboard', [PpmXcmg900dController::class, 'Dashboard'])->name('plant.ppm.900d.dashboard');
+            Route::get('/export/{id}', [PpmXcmg900dController::class, 'Export'])->name('plant.ppm.900d.export');
+            Route::get('/add', [PpmXcmg900dController::class, 'Add'])->name('plant.ppm.900d.form');
+            Route::post('/store', [PpmXcmg900dController::class, 'Store'])->name('plant.ppm.900d.store');
+            Route::get('/detail/{id}', [PpmXcmg900dController::class, 'detail'])->name('plant.ppm.900d.detail');
         });
 
 
