@@ -291,9 +291,14 @@
                                 <div class="col-md-6">
                                     <div class="input-group input-group-static mb-3">
                                         <label>Diinspeksi Oleh</label>
-                                        <input type="text" name="inspected_by" class="form-control" 
-                                            value="{{ $isShowDetail ? $maintenanceRecord->inspected_by : '' }}" 
-                                            required {{ $isShowDetail ? 'disabled' : '' }}>
+                                        <select name="inspected_by" class="form-control text-left" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                            <option value="">-- Pilih Inspektor --</option>
+                                            @foreach($approvalList as $user)
+                                                <option value="{{ $user->nama }}" {{ $isShowDetail && $maintenanceRecord->inspected_by == $user->nama ? 'selected' : '' }}>
+                                                    {{ $user->nama }} ({{ $user->nik }})
+                                                </option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                     <div class="input-group input-group-static mb-3">
                                         <label>Tanggal Inspeksi</label>
@@ -313,9 +318,14 @@
                                 <div class="col-md-6">
                                     <div class="input-group input-group-static mb-3">
                                         <label>Mengetahui</label>
-                                        <input type="text" name="acknowledged_by" class="form-control" 
-                                            value="{{ $isShowDetail ? $maintenanceRecord->acknowledged_by : '' }}" 
-                                            required {{ $isShowDetail ? 'disabled' : '' }}>
+                                        <select name="acknowledged_by" class="form-control text-left" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                            <option value="">-- Pilih Acknowledged --</option>
+                                            @foreach($approvalList as $user)
+                                                <option value="{{ $user->nama }}" {{ $isShowDetail && $maintenanceRecord->acknowledged_by == $user->nama ? 'selected' : '' }}>
+                                                    {{ $user->nama }} ({{ $user->nik }})
+                                                </option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                     <div class="input-group input-group-static mb-3">
                                         <label>Tanggal Mengetahui</label>

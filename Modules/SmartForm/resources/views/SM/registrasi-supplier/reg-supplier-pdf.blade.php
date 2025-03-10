@@ -429,16 +429,19 @@ p.thick {
             </tr>
             <tr class="approval">
                 <td>
-                    <div>______________________</div>
-                    <div>Vendor/ Representative</div>
+                    <div><br></div>
+                    <div>Vendor/Representative</div>
+                    <div>{{$data->diisi_oleh}}</div>
                 </td>
                 <td>
-                    <div>_______________________</div>
+                    <div><br></div>
                     <div>Staff Supply Management</div>
+                    <div>{{$data->diterima_oleh}}</div>
                 </td>
                 <td>
-                    <div>_______________________</div>
+                    <div>{{$data->status}}</div>
                     <div>Kadep Supply Management</div>
+                    <div>{{$data->disetujui_oleh}}</div>
                 </td>
             </tr>
         </table>

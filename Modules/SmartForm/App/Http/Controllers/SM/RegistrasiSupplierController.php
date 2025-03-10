@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Modules\SmartForm\helpers\HrdHelper;
 
 class RegistrasiSupplierController extends Controller {
 
@@ -43,7 +44,7 @@ class RegistrasiSupplierController extends Controller {
         $filter = $request->query('filter', null); // Default limit
         try {
             $master = DB::table($TABLE_MASTER)
-                ->select('id','nama_vendor','no_npwp');
+                ->select('id','nama_vendor','status','no_npwp','bidang_usaha','kota');
             
             if($filterTanggal == null || $filterTanggal == 'null') {
             } else {
@@ -92,11 +93,15 @@ class RegistrasiSupplierController extends Controller {
     }
 
     function FormRegistrasiSupplier() {
-        return view("SmartForm::sm/registrasi-supplier/form-registrasi-supplier");
+        return view('SmartForm::SM/registrasi-supplier/form-registrasi-supplier', [
+                    'isShowDetail' => true,
+                    'approvalList' => HrdHelper::getApprovalList()
+                ]);
     }
     
     public function CreateRegisSupplier(Request $request)
     {    
+        $requested_by = $request->session()->get('user_id');
         $files = [];
         if($request->hasfile('filenames'))
 
@@ -145,15 +150,15 @@ class RegistrasiSupplierController extends Controller {
                 'jabatan_2_email' => $request->tEmailPic2,
                 'npwp' => $request->rNpwp1,
                 // MUDOF
-	    	    'file_npwp' => $files[0],
-	    	    'file_sppkp' => $files[1],
-	    	    'file_nib_siup' => $files[2],
-	    	    'file_akta_perusahaan' => $files[3],
-	    	    'file_pakta_integritas' => $files[4],
-	    	    'file_ident_direk' => $files[5],
-	    	    'file_struktur_org' => $files[6],
-	    	    'file_profile_per' => $files[7],
-	    	    'file_lain' => $files[8],
+	    	    'file_npwp' => $files[0] ?? "Tidak ada",
+	    	    'file_sppkp' => $files[1] ?? "Tidak ada",
+	    	    'file_nib_siup' => $files[2] ?? "Tidak ada",
+	    	    'file_akta_perusahaan' => $files[3] ?? "Tidak ada",
+	    	    'file_pakta_integritas' => $files[4] ?? "Tidak ada",
+	    	    'file_ident_direk' => $files[5] ?? "Tidak ada",
+	    	    'file_struktur_org' => $files[6] ?? "Tidak ada",
+	    	    'file_profile_per' => $files[7] ?? "Tidak ada",
+	    	    'file_lain' => $files[8] ?? "Tidak ada",
 
 	    	    'sppkp' => $request->rSppkp,
 	    	    'nib_siup' => $request->rNib,
@@ -162,7 +167,11 @@ class RegistrasiSupplierController extends Controller {
 	    	    'kartu_identitas_direktur' => $request->rKartu,
 	    	    'struktur_organisasi' => $request->rStruktur,
 	    	    'profile_perusahaan' => $request->rProfile,
-	    	    'surat_lainnya' => $request->rSurat
+	    	    'surat_lainnya' => $request->rSurat,
+                'diisi_oleh' => $requested_by,
+                'diterima_oleh' => $request->dDiterima,
+                'status' => "NEED APPROVAL",
+                'disetujui_oleh' => $request->dApproved
 
             ]);
             return redirect('/bss-form/sm/registrasi-supplier');

@@ -40,7 +40,10 @@
                             <thead>
                                 <tr>
                                     <th data-field="nama_vendor" data-align="left" data-halign="text-center" data-sortable="true">Nama Supplier</th>
+                                    <th data-field="status" data-align="left" data-halign="text-center" data-sortable="true">Status</th>
                                     <th data-field="no_npwp" data-align="left" data-halign="text-center" data-sortable="true">No NPWP</th>
+                                    <th data-field="bidang_usaha" data-align="left" data-halign="text-center" data-sortable="true">Bidang Usaha</th>
+                                    <th data-field="kota" data-align="left" data-halign="text-center" data-sortable="true">Kota</th>
                                     <th data-field="action" data-formatter="actionFormatter" >Actions</th>
                                 </tr>
                             </thead>
@@ -102,9 +105,9 @@
         }
 
         // <a class="btn btn-info btn-action btn-sm me-1" href="/bss-form/sm/edit-registrasi-supplier/${row.id}">Edit</a>
+        // <a class="btn btn-danger btn-action btn-sm" onclick="return myFunction();" href="/bss-form/sm/delete-supplier/${row.id}">Delete</a>
         function actionFormatter(value, row, index) {
             return `
-                <a class="btn btn-danger btn-action btn-sm" onclick="return myFunction();" href="/bss-form/sm/delete-supplier/${row.id}">Delete</a>
                 <a class="btn btn-primary btn-action btn-sm" href="/bss-form/sm/pdf-registrasi-supplier/${row.id}">Pdf</a>
             `;
         }

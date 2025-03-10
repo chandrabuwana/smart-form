@@ -70,7 +70,7 @@ class LogController extends Controller {
     }
     
     function formReqMaster() {
-        return view("SmartForm::log/form-request-master");
+        return view("SmartForm::LOG/form-request-master");
     }
 
     function SubmitFormRequestMaster(Request $req) {
@@ -258,7 +258,7 @@ class LogController extends Controller {
     }
 
     function FormFuel() {
-        return view("SmartForm::log/form-request-fuel");
+        return view("SmartForm::LOG/form-request-fuel");
     }
     
     public function CreateReqFuel(Request $request)
@@ -327,7 +327,7 @@ class LogController extends Controller {
     public function EditReqFuel($id)
     {
         $editReqFuel = DB::table('FM_LOG_022_PERMINTAAN_PENGISIAN_FUEL')->find($id);
-        return view('SmartForm::bss-form/log/form-fuel', [
+        return view('SmartForm::bss-form/LOG/form-fuel', [
             'formRequestFuel' => $editReqFuel
         ]);
     }
@@ -556,7 +556,7 @@ class LogController extends Controller {
     }
 
     function formPemakaianSolar() {
-        return view("SmartForm::log/form-pemakaian-solar");
+        return view("SmartForm::LOG/form-pemakaian-solar");
     }
 
     function SubmitFormPemakaianSolar(Request $req) {
