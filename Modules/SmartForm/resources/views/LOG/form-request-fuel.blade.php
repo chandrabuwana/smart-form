@@ -162,11 +162,11 @@
                                     <input  type="number" onkeypress="return event.charCode >= 48" min="1" class="input-text w-full" id="i_km" name="i_km">
                             </div>
                             <div class="w-1/2 md:w-1/6">
-                                <span>Awal</span>
+                                <span>Flow Meter Awal</span>
                                     <input  type="number" onkeypress="return event.charCode >= 48" min="1" class="input-text w-full" id="i_awal" name="i_awal">
                             </div>
                             <div class="w-1/2 md:w-1/6">
-                                <span>Akhir</span>
+                                <span>Flow Meter Akhir</span>
                                     <input  type="number" onkeypress="return event.charCode >= 48" min="1" class="input-text w-full" id="i_akhir" name="i_akhir">
                             </div>
                             <div class="w-1/2 md:w-1/6">

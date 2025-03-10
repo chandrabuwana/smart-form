@@ -439,6 +439,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
         Route::post('/karyawan', [HelperController::class, 'HelperSelect2PicaKaryawanByDept']);
         Route::post('/change-password-pegawai', [HelperController::class, 'ChangepasswordPegawaiPost']);
         Route::get('/data-pica', [HelperController::class, 'HelperDataTablePica']);
+        Route::get('/data-regis-supplier', [HelperController::class, 'HelperDataTableRegisSupplier']);
         Route::get('/data-update-progress', [HelperController::class, 'HelperDataTableStepSolutionPica']);
         Route::get('/data-history-progress', [HelperController::class, 'HelperDataTableHistoryProgressPica']);
         Route::get('/data-dashboard-history-progress', [HelperController::class, 'HelperDataTableDashboardHistoryProgressPica']);

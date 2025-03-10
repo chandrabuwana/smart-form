@@ -53,10 +53,9 @@
                                             <td>:</td>
                                             <td>
                                                 <select name="dApproved" class="form-control text-center" required>
-                                                <option value="">-- Pilih Atasan Langsung --</option>
+                                                <option selected value="">-- Pilih Atasan Langsung --</option>
                                                 @foreach($approvalList as $user)
-                                                    <option value="{{ $user->nama }}">
-                                                        {{ $user->nama }}
+                                                    <option value="{{ $user->nama }}">{{ $user->nama }}
                                                     </option>
                                                 @endforeach
                                             </select>
@@ -230,6 +229,7 @@
         var noDoc = $("#noDoc");
         var tglDoc = $("#tglDoc");
         var iForeman = $("#iForeman")
+        var dApproved = $("#dApproved")
         var iJobSite = $("#iJobSite")
         var iFuel = $("#iFuel")
         var iShift = $("#iShift")
@@ -251,7 +251,7 @@
             formName: "Pemakaian Solar",
             noDoc: "",
             tglDoc: "",
-            foreman: "",
+            approval: "",
             jobSite: "",
             fuel: "",
             shift: "",
@@ -497,7 +497,7 @@
                         noDoc: noDoc.text(),
                         jobSite: iJobSite.val(),
                         tglDoc: formatTgl(),
-                        foreman: iForeman.val(),
+                        approval: dApproved.val(),
                         shift: iShift.val(),
                         total_pemakaian: tTotals.text(),
                         fuel: iFuel.val()

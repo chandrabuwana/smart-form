@@ -139,13 +139,13 @@ table.atas td {
             </tr>
             <tr>
                <td style="font-size: 0.8rem; width:20%">Hari</td>
-               <td style="font-size: 0.8rem;">:</td>
+               <td style="font-size: 0.8rem;">: {{ $data['hari'] }}</td>
                <td style="font-size: 0.8rem;">Shift</td>
                <td style="font-size: 0.8rem;">: {{ $data['shift'] }}</td>
             </tr>
             <tr>
                <td style="font-size: 0.8rem; width:20%">Tanggal</td>
-               <td style="font-size: 0.8rem;">: {{ $data['tanggal'] }}</td>
+               <td style="font-size: 0.8rem;">: {{ $data['tgldibuat'] }}</td>
             </tr>
         </table>
     </div>
@@ -271,16 +271,12 @@ table.atas td {
                     <div>Fuelman</div>
                 </td>
                 <td>
-                    <div>( {{ $data['mengetahui'] }} )</div>
+                    <div>( {{ $data['approval'] }} )</div>
                     <div>FOGC Officer</div>
                 </td>
                 <td>
 
                 </td>
-                <!-- <td>
-                    <div>( {{ $data['mengetahui'] }} )</div>
-                    <div>Kasi. FOGC</div>
-                </td> -->
                 <td>
                     <div style="text-align: left">Stock Akhir</div>
                 </td>

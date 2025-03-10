@@ -22,6 +22,7 @@ return new class extends Migration
 			$table->integer('total_pemakaian');
             $table->string('shift');
             $table->date('created_date');
+            $table->string('hari');
             $table->string('dibuat_oleh')->nullable();
             $table->string('disetujui_oleh')->nullable();
             $table->string('diketahui_oleh')->nullable();
