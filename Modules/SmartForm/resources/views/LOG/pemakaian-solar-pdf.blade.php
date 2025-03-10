@@ -192,7 +192,7 @@ table.atas td {
                     <th style="font-size: 0.8rem; width:40%">Total Pemakaian</th>
                     <th style="font-size: 0.8rem;">:</th>
                     <th style="font-size: 0.8rem;">
-                        {{ $item->totalLiter }}
+                        {{ $data['total_pemakaian'] }}
                     </th>
                     <th style="font-size: 0.8rem;">L</th>
                     <th>
@@ -222,8 +222,11 @@ table.atas td {
                     <div>Disetujui Oleh,</div>
                 </td>
                 <td>
-                    <div>Diketahui Oleh,</div>
+
                 </td>
+                <!-- <td>
+                    <div>Diketahui Oleh,</div>
+                </td> -->
                 <td>
                     <div style="text-align: left">Stock Awal</div>
                 </td>
@@ -272,9 +275,12 @@ table.atas td {
                     <div>FOGC Officer</div>
                 </td>
                 <td>
+
+                </td>
+                <!-- <td>
                     <div>( {{ $data['mengetahui'] }} )</div>
                     <div>Kasi. FOGC</div>
-                </td>
+                </td> -->
                 <td>
                     <div style="text-align: left">Stock Akhir</div>
                 </td>
