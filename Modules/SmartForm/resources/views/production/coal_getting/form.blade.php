@@ -184,15 +184,15 @@
                             <div class="row">
                                 <div class="col-12 text-end">
                                     @if($isShowDetail)
-                                        <a href="{{ route('she.coal.dashboard') }}" class="btn btn-secondary">Back</a>
-                                        <a href="{{ route('she.coal.export', ['id' => $record->id]) }}" class="btn btn-primary">
+                                        <a href="{{ route('prod.coal.dashboard') }}" class="btn btn-secondary">Back</a>
+                                        <a href="{{ route('prod.coal.export', ['id' => $record->id]) }}" class="btn btn-primary">
                                             <i class="fas fa-file-export"></i> Export
                                         </a>
                                     @else
                                     <div class="row mt-4">
                                         <div class="col-12 d-flex justify-content-between align-items-center">
                                             <div>
-                                                <a href="{{ route('she.coal.dashboard') }}" class="btn btn-secondary">Back</a>
+                                                <a href="{{ route('prod.coal.dashboard') }}" class="btn btn-secondary">Back</a>
                                             </div>
                                             <div>
                                                 <button type="submit" class="btn btn-primary">Submit</button>
@@ -237,7 +237,7 @@
 
             var formData = new FormData(this);
             
-            axios.post('{{ route("she.coal.store") }}', formData)
+            axios.post('{{ route("prod.coal.store") }}', formData)
                 .then(function(response) {
                     if (response.data.success) {
                         Swal.fire({
@@ -246,7 +246,7 @@
                             text: response.data.message
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                window.location.href = '{{ route("she.coal.dashboard") }}';
+                                window.location.href = '{{ route("prod.coal.dashboard") }}';
                             }
                         });
                     }
