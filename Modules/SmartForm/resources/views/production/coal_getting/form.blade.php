@@ -160,23 +160,29 @@
                             <div class="row mt-4">
                                 <div class="col-md-6">
                                     <h6>Dibuat oleh,</h6>
-                                    <p class="mb-1">Production Foreman</p>
+                                    
                                     <div class="mb-3">
                                         <input type="text" name="created_by" class="form-control" 
                                             placeholder="Nama Lengkap"
                                             value="{{ $isShowDetail ? $record->created_by : '' }}"
                                             {{ $isShowDetail ? 'disabled' : '' }} required>
                                     </div>
+                                    <p class="mb-1">Production Foreman</p>
                                 </div>
                                 <div class="col-md-6">
                                     <h6>Diketahui oleh,</h6>
-                                    <p class="mb-1">Production Supervisor</p>
+                                    
                                     <div class="mb-3">
-                                        <input type="text" name="acknowledged_by" class="form-control" 
-                                            placeholder="Nama Lengkap"
-                                            value="{{ $isShowDetail ? $record->acknowledged_by : '' }}"
-                                            {{ $isShowDetail ? 'disabled' : '' }} required>
+                                        <select name="acknowledged_by" class="form-control text-left" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                            <option value="">-- Pilih Pengawas --</option>
+                                            @foreach($approvalList as $user)
+                                                <option value="{{ $user->nama }}" {{ $isShowDetail && $record->acknowledged_by == $user->nama ? 'selected' : '' }}>
+                                                    {{ $user->nama }} ({{ $user->nik }})
+                                                </option>
+                                            @endforeach
+                                        </select>
                                     </div>
+                                    <p class="mb-1">Production Supervisor</p>
                                 </div>
                             </div>
 

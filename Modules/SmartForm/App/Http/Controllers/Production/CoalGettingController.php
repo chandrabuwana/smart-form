@@ -10,6 +10,7 @@ use Illuminate\Validation\ValidationException;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Modules\SmartForm\helpers\HrdHelper;
 
 class CoalGettingController extends Controller
 {
@@ -122,7 +123,8 @@ class CoalGettingController extends Controller
                 return view('smartform::production/coal_getting/form', [
                     'isShowDetail' => true,
                     'record' => $record,
-                    'checklistItems' => $this->getChecklistItems()
+                    'checklistItems' => $this->getChecklistItems(),
+                    'approvalList' => HrdHelper::getApprovalList(),
                 ]);
             }
 
@@ -130,7 +132,8 @@ class CoalGettingController extends Controller
             return view('smartform::production/coal_getting/form', [
                 'isShowDetail' => false,
                 'record' => null,
-                'checklistItems' => $this->getChecklistItems()
+                'checklistItems' => $this->getChecklistItems(),
+                'approvalList' => HrdHelper::getApprovalList(),
             ]);
         } catch (\Exception $e) {
             Log::error('Error in AddForm: ' . $e->getMessage());

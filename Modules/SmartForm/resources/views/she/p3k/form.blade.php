@@ -229,16 +229,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- <div class="row mb-3">
-                                <div class="col-md-12">
-                                    <div class="input-group input-group-static">
-                                        <label>Dibuat Oleh Pengawas</label>
-                                        <input type="text" name="created_by" class="form-control" required
-                                            value="{{ $isShowDetail ? $record->created_by : session('username') }}"
-                                            {{ $isShowDetail ? 'disabled' : '' }}>
-                                    </div>
-                                </div>
-                            </div> -->
 
                             <!-- Submit/Back Buttons -->
                             <div class="row">
