@@ -51,6 +51,14 @@ class SmartFormServiceProvider extends ServiceProvider
         // });
     }
 
+    public function registerHelpers(): void
+    {
+        $helperPath = module_path($this->moduleName, 'helpers/HrdHelper.php');
+        if (file_exists($helperPath)) {
+            require_once $helperPath;
+        }
+    }
+
     /**
      * Register translations.
      */

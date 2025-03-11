@@ -15,9 +15,27 @@ return new class extends Migration
             $table->string('location');
             $table->json('items_data')->nullable();
             $table->string('created_by');
-            $table->string('supervisor')->nullable();
-            $table->string('dh')->nullable();
-            $table->string('she')->nullable();
+
+            // Approval Information
+            $table->string('inspector_1')->nullable();
+            $table->string('inspector_1_signature')->nullable();
+            $table->date('inspector_1_date')->nullable();
+            
+            $table->string('inspector_2')->nullable();
+            $table->string('inspector_2_signature')->nullable();
+            $table->date('inspector_2_date')->nullable();
+            
+            $table->string('supervisor_name')->nullable();
+            $table->string('supervisor_signature')->nullable();
+            $table->date('supervisor_date')->nullable();
+            
+            $table->string('dh_name')->nullable();
+            $table->string('dh_signature')->nullable();
+            $table->date('dh_date')->nullable();
+            
+            $table->string('she_name')->nullable();
+            $table->string('she_signature')->nullable();
+            $table->date('she_date')->nullable();
             $table->timestamps();
         });
     }

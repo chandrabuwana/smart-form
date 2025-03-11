@@ -274,6 +274,29 @@ class HelperController extends Controller
     }
 
 
+    function HelperDataTableRegisSupplier(Request $table)
+    {
+        $query = "SELECT 
+                    s.id, 
+                    s.nama_vendor,
+                    s.status,
+                    s.no_npwp, 
+                    s.bidang_usaha, 
+                    s.kota,
+                FROM 
+                    FM_SM_00X_REGISTRASI_SUPPLIER s";
+        $countDataUser = DB::select('select count(*) jumlah FROM FM_SM_00X_REGISTRASI_SUPPLIER');
+
+        // dd($newQuery);
+
+        $dataUser = DB::select($query);
+
+        return response()->json([
+            "rows" => $dataUser,
+        ]);
+    }
+
+
     public function GetQueryDataTableSolutionPica(string $query, Request $req)
     {
         if (isset($req->search['IDSOLUTION']) && $req->search['IDSOLUTION'] != null) {

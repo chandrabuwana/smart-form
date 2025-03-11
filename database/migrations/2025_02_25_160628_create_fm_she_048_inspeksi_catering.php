@@ -131,8 +131,8 @@ return new class extends Migration
 			$table->string('q_keterangan_penggolongan_sampah_8')->nullable();
 			$table->string('q_keterangan_penggolongan_sampah_9')->nullable();
 			
-			$table->smallInteger('total_score');
-			$table->string('conclusion');
+			$table->smallInteger('total_score')->nullable();
+			$table->string('conclusion')->nullable();
 			
             $table->string('diinspeksi_oleh_1')->nullable();
             $table->string('diinspeksi_oleh_2')->nullable();

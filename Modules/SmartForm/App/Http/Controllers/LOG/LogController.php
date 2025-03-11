@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Modules\SmartForm\helpers\HrdHelper;
 
 class LogController extends Controller {
 
@@ -70,7 +71,7 @@ class LogController extends Controller {
     }
     
     function formReqMaster() {
-        return view("SmartForm::log/form-request-master");
+        return view("SmartForm::LOG/form-request-master");
     }
 
     function SubmitFormRequestMaster(Request $req) {
@@ -258,7 +259,7 @@ class LogController extends Controller {
     }
 
     function FormFuel() {
-        return view("SmartForm::log/form-request-fuel");
+        return view("SmartForm::LOG/form-request-fuel");
     }
     
     public function CreateReqFuel(Request $request)
@@ -327,7 +328,7 @@ class LogController extends Controller {
     public function EditReqFuel($id)
     {
         $editReqFuel = DB::table('FM_LOG_022_PERMINTAAN_PENGISIAN_FUEL')->find($id);
-        return view('SmartForm::bss-form/log/form-fuel', [
+        return view('SmartForm::bss-form/LOG/form-fuel', [
             'formRequestFuel' => $editReqFuel
         ]);
     }
@@ -530,7 +531,7 @@ class LogController extends Controller {
         $filter = $request->query('filter', null); // Default limit
         try {
             $master = DB::table($TABLE_PENGELUARAN_OLI)
-                ->select('id', 'no_dok', 'job_site as site', 'dibuat_oleh','no_fuel_station as fuel');
+                ->select('id', 'shift', 'job_site as site', 'dibuat_oleh','no_fuel_station as fuel','total_pemakaian','disetujui_oleh as approved');
             
             $master->orderBy($sort, $order);
             $jml = $master->count();            
@@ -556,7 +557,10 @@ class LogController extends Controller {
     }
 
     function formPemakaianSolar() {
-        return view("SmartForm::log/form-pemakaian-solar");
+        return view('SmartForm::LOG/form-pemakaian-solar', [
+                    'isShowDetail' => true,
+                    'approvalList' => HrdHelper::getApprovalList()
+                ]);
     }
 
     function SubmitFormPemakaianSolar(Request $req) {
@@ -566,7 +570,8 @@ class LogController extends Controller {
             'message' => "",
             'isSuccess' => false
         );
-        $tgl = now()->toDateTimeString();
+        $today = Carbon::now()->isoFormat('D MMMM Y');
+        $hari = Carbon::now()->isoFormat('dddd');
         $requested_by = $req->session()->get('user_id');
         $data = $req->input();
         
@@ -580,7 +585,13 @@ class LogController extends Controller {
             'halaman' => "1 dari 1",
             'no_fuel_station' => $data['fuel'],
             'shift' => $data['shift'],
-            'diketahui_oleh' => $data['foreman']
+            'total_pemakaian' => $data['total_pemakaian'],
+            'created_date' => $today,
+            'hari' => $hari,
+            'stok_awal' => $data['stokAwal'],
+            'stok_akhir' => $data['stokAkhir'],
+            'masuk' => $data['masuk'],
+            'disetujui_oleh' => $data['approval']
         ];
         // $spliited_no_doc = explode("/", $data_insert['no_dok']);
         $data_item = json_decode($data['item']);
@@ -640,7 +651,7 @@ class LogController extends Controller {
         );
         try {
             $data = DB::table($TABLE_MASTER)
-                    ->select('id', 'no_dok','revisi as revisi','halaman','tanggal','job_site as jobsite','no_fuel_station as noFuel','shift','dibuat_oleh as dibuat','diketahui_oleh as mengetahui','disetujui_oleh as approval')
+                    ->select('id', 'no_dok','revisi as revisi','halaman','tanggal','job_site as jobsite','no_fuel_station as noFuel','shift','dibuat_oleh as dibuat','diketahui_oleh as mengetahui','disetujui_oleh as approval','total_pemakaian','created_date as tgldibuat','hari','stok_awal','masuk','stok_akhir')
                     ->where('id', $id)
                     ->first();
                 
@@ -663,8 +674,14 @@ class LogController extends Controller {
             $data_master['halaman'] = $data->halaman;
             $data_master['dibuat'] = $data->dibuat;
             $data_master['noFuel'] = $data->noFuel;
+            $data_master['total_pemakaian'] = $data->total_pemakaian;
             $data_master['shift'] = $data->shift;
-            $data_master['mengetahui'] = $data->mengetahui;
+            $data_master['approval'] = $data->approval;
+            $data_master['tgldibuat'] = $data->tgldibuat;
+            $data_master['hari'] = $data->hari;
+            $data_master['stok_awal'] = $data->stok_awal;
+            $data_master['masuk'] = $data->masuk;
+            $data_master['stok_akhir'] = $data->stok_akhir;
         } catch (Exception $ex) {
             Log::error($ex->getMessage());
         }

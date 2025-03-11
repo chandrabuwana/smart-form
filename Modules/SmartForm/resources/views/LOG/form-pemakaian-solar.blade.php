@@ -26,7 +26,7 @@
                         <div class="row gx-4">
                             <div class="row">
                                 <div class="card col-md-6">
-                                    <table class="w-full">
+                                    <table class="w-full was-validated">
                                         <tr>
                                             <!-- <td>No. Doc</td>
                                             <td>:</td> -->
@@ -38,44 +38,46 @@
                                             <td id="tglDoc"></td>
                                         </tr>
                                         <tr>
-                                            <td>Pilih Foreman/Spv</td>
+                                            <td>Shift</td>
                                             <td>:</td>
                                             <td>
-                                                <select class="form-select form-select-sm input-text" id="iForeman" name="iForeman">
-                                                    <option value="" selected>-- Pilih Submition Foreman/Spv --</option>
-                                                    <option value="Nama Foreman">13259</option>
-                                                </select>
+                                                <select class="form-select form-select-sm input-text" aria-label="Default select example" id="iShift" name="iShift" required>
+                                                    <option value="" selected>-- Pilih Shift --</option>    
+                                                    <option value="DS">DS</option>
+                                                    <option value="NS">NS</option>
+                                                </select> 
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Pilih Atasan Langsung</td>
+                                            <td>:</td>
+                                            <td>
+                                                <select name="dApproved" class="form-control text-center" required>
+                                                <option selected value="">-- Pilih Atasan Langsung --</option>
+                                                @foreach($approvalList as $user)
+                                                    <option value="{{ $user->nama }}">{{ $user->nama }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
                                             </td>
                                         </tr>
                                     </table>
                                 </div>
                                 
                                 <div class="card col-md-6">
-                                    <table class="w-full">
+                                    <table class="w-full was-validated">
                                         <tr>
                                             <td>No. Fuel Station / Fuel Truck</td>
                                             <td>:</td>
                                             <td>
-                                                <input type="text" class="form-control" id="iFuel" name="iFuel" placeholder="Input no fuel station">
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Shift</td>
-                                            <td>:</td>
-                                            <td>
-                                                <select class="form-select form-select-sm input-text" aria-label="Default select example" id="iShift" name="iShift">
-                                                    <option value="" selected>-- Pilih Shift --</option>    
-                                                    <option value="I">I</option>
-                                                    <option value="II">II</option>
-                                                    <option value="III">III</option>
-                                                </select> 
+                                                <input type="text" class="form-control" id="iFuel" name="iFuel" placeholder="Input no fuel station" required>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>Job Site</td>
                                             <td>:</td>
                                             <td>
-                                                <select class="form-select form-select-sm input-text" id="iJobSite" name="iJobSite">
+                                                <select class="form-select form-select-sm input-text" id="iJobSite" name="iJobSite" required>
                                                     <option selected value="">-- Pilih Job Site --</option>
                                                     <option value="AGM">AGM</option>
                                                     <option value="MBL">MBL</option>
@@ -101,48 +103,48 @@
                                     <div class="col-md-4 col-lg-2">
                                         <div class="input-group input-group-static mb-4">
                                             <label for="iKodeUnit">Kode Unit</label>
-                                            <input type="text" class="form-control" id="iKodeUnit" name="iKodeUnit">
+                                            <input type="text" class="form-control" id="iKodeUnit" name="iKodeUnit" required>
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-lg-2">
                                         <label for="iJam">Jam</label>
-                                        <input type="time" class="form-control" id="iJam" name="iJam">
+                                        <input type="time" class="form-control" id="iJam" name="iJam" required>
                                     </div>
                                     <div class="col-md-4 col-lg-2">
                                         <div class="input-group input-group-static mb-4">
-                                            <label for="iAwal">Awal</label>
-                                            <input type="number" onkeypress="return event.charCode >= 48" min="1" class="form-control" id="iAwal" name="iAwal">
+                                            <label for="iAwal">Flow Meter Awal</label>
+                                            <input type="number" onkeypress="return event.charCode >= 48" min="1" class="form-control" id="iAwal" name="iAwal" required>
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-lg-2">
                                         <div class="input-group input-group-static mb-4">
-                                            <label for="iAkhir">Akhir</label>
-                                            <input type="number" onkeypress="return event.charCode >= 48" min="1" class="form-control" id="iAkhir" name="iAkhir">
+                                            <label for="iAkhir">Flow Meter Akhir</label>
+                                            <input type="number" onkeypress="return event.charCode >= 48" min="1" class="form-control" id="iAkhir" name="iAkhir" required>
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-lg-2">
                                         <div class="input-group input-group-static mb-4">
-                                            <label for="iTotalLiter">Total Liter</label>
-                                            <input type="number" onkeypress="return event.charCode >= 48" min="1" class="form-control" id="iTotalLiter" name="iTotalLiter">
+                                            <label for="iTotalLiter">Total Liter : </br></label>
+                                            <span style="font-size: 14px" id="iTotalLiter">
                                         </div>
                                     </div>
                                     
                                     <div class="col-md-4 col-lg-2">
                                         <div class="input-group input-group-static mb-4">
                                             <label for="iNamaOperator">Nama Operator</label>
-                                            <input type="text" class="form-control" id="iNamaOperator" name="iNamaOperator">
+                                            <input type="text" class="form-control" id="iNamaOperator" name="iNamaOperator" required>
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-lg-2">
                                         <div class="input-group input-group-static mb-4">
                                             <label for="iKm">KM</label>
-                                            <input type="number" onkeypress="return event.charCode >= 48" min="1" class="form-control" id="iKm" name="iKm">
+                                            <input type="number" onkeypress="return event.charCode >= 48" min="1" class="form-control" id="iKm" name="iKm" required>
                                         </div>
                                     </div>                                    
                                     <div class="col-md-4 col-lg-2">
                                         <div class="input-group input-group-static mb-4">
                                             <label for="iHm">HM</label>
-                                            <input type="number" onkeypress="return event.charCode >= 48" min="1" class="form-control" id="iHm" name="iHm">
+                                            <input type="number" onkeypress="return event.charCode >= 48" min="1" class="form-control" id="iHm" name="iHm" required>
                                         </div>
                                     </div>                                    
                                     <div class="col-md-4 col-lg-2">
@@ -154,7 +156,7 @@
                                     
                                     <div class="col-md-4 col-lg-2">
                                         <div class="input-group input-group-static mb-4">
-                                            <button id="btn-add-item" class="btn btn-primary">Tambah</button>                                            
+                                            <button id="btn-add-item" class="btn btn-primary" onclick="ClearFields();">Tambah</button>                                            
                                         </div>
                                     </div>
                                 </div>
@@ -180,6 +182,44 @@
                                     </tr>
                                 </thead>
                             </table>
+                            <table>
+                              <tr>
+                                <td style="width:10%">Stok Awal</td>
+                                <td style="width:10%"><input type="number"  onkeypress="return event.charCode >= 48" min="1" class="form-control" id="tStokAwal" name="tStokAwal" placeholder=": ................." required>
+                                </td>
+                                <td style="width:80%">Liter</td>
+                              </tr>
+                              <tr>
+                                <td>Masuk :</td>
+                                <td><input type="number" onkeypress="return event.charCode >= 48" min="1" class="form-control" id="tMasuk" placeholder=": ................." name="tMasuk" required>
+                                </td>
+                                <td>Liter</td>
+                              </tr>
+                              <tr>
+                                <td>Keluar</td>
+                                <td><span id="tTotals">
+                                </td>
+                                <td>Liter</td>
+                              </tr>
+                              <tr>
+                                <td>Stok Akhir</td>
+                                <td><span id="tTotalAkhir">
+                                </td>
+                                <td>Liter</td>
+                              </tr>
+                            </table>
+                            <!-- <div class="col-md-4 col-lg-2">
+                                <div class="input-group input-group-static mb-4">
+                                    <label for="tTotals">Keluar : </label>
+                                    <span id="tTotals">Liter
+                                </div>
+                            </div> -->
+                            <!-- <div class="col-md-4 col-lg-2">
+                                <div class="input-group input-group-static mb-4">
+                                    <label for="tTotalPemakaian">Total Pemakaian : </label>
+                                    <span id="tTotalPemakaian">
+                                </div>
+                            </div> -->
                         </div>
                     </form>
 
@@ -215,6 +255,7 @@
         var noDoc = $("#noDoc");
         var tglDoc = $("#tglDoc");
         var iForeman = $("#iForeman")
+        var dApproved = $("#dApproved")
         var iJobSite = $("#iJobSite")
         var iFuel = $("#iFuel")
         var iShift = $("#iShift")
@@ -223,8 +264,13 @@
         var iKodeUnit = $("#iKodeUnit")
         var iJam = $("#iJam")
         var iAwal = $("#iAwal")
+        var tStokAwal = $("#tStokAwal")
+        var tMasuk = $("#tMasuk")
         var iAkhir = $("#iAkhir")
         var iTotalLiter = $("#iTotalLiter")
+        var tTotalPemakaian = $("#tTotalPemakaian")
+        var tTotals = $("#tTotals")
+        var tTotalAkhir = $("#tTotalAkhir")
         var iNamaOperator = $("#iNamaOperator")
         var iKm = $("#iKm")
         var iHm = $("#iHm")
@@ -234,7 +280,7 @@
             formName: "Pemakaian Solar",
             noDoc: "",
             tglDoc: "",
-            foreman: "",
+            approval: "",
             jobSite: "",
             fuel: "",
             shift: "",
@@ -312,13 +358,20 @@
         }
 
         $table.on('post-body.bs.table', function(data) {
+            var mdf = 0;
+            var totalliter = 0;
             var items = [];
             data.sender.data.forEach(function (item, index, arr) {
                 // console.log(item)
+                mdf = mdf + parseInt(item.akhir) - item.awal
+                item.totalliter = mdf
                 item.no = index;
                 items.push(item)
             })
             dataPemakaianSolar.item = items
+            // tTotalPemakaian.text(iTotalLiter.text() + tTotalPemakaian.text())
+            tTotals.text(( mdf)|| "-")
+            tTotalPemakaian.text((parseInt(iTotalLiter.text()) * mdf)|| "-")
         })
 
         function showLoading() {
@@ -338,6 +391,14 @@
             dataPemakaianSolar.foreman = iForeman.val()
             dataPemakaianSolar.lube = iFuel.val()
 
+            iAkhir.change(function(e) {
+                iTotalLiter.text((iAkhir.val()) - (iAwal.val() ))
+            });
+
+            tStokAwal.change(function(e) {
+                tTotalAkhir.text((tStokAwal.val()) - (parseInt(tTotals.text())))
+            });
+
             function validateItem() {
                 var errorValidate = []
 
@@ -353,6 +414,36 @@
                         message: "Harus dipilih"
                     })
                 }
+                if(iAwal.val() == "") {
+                    errorValidate.push({
+                        field: "Kolom Flow Meter Awal",
+                        message: "Harus Diisi"
+                    })
+                }
+                if(iAkhir.val() == "") {
+                    errorValidate.push({
+                        field: "Kolom Flow Meter Akhir",
+                        message: "Harus Diisi"
+                    })
+                }
+                if(iNamaOperator.val() == "") {
+                    errorValidate.push({
+                        field: "Kolom Nama Operator",
+                        message: "Harus Diisi"
+                    })
+                }
+                if(iKm.val() == "") {
+                    errorValidate.push({
+                        field: "Kolom KM",
+                        message: "Harus Diisi"
+                    })
+                }
+                if(iHm.val() == "") {
+                    errorValidate.push({
+                        field: "Kolom HM",
+                        message: "Harus Diisi"
+                    })
+                }
                 return errorValidate
             }
 
@@ -363,6 +454,18 @@
                     errorValidate.push({
                         field: "Kolom Foreman",
                         message: "Harus dipilih"
+                    })
+                }
+                if(tStokAwal.val() == "") {
+                    errorValidate.push({
+                        field: "Kolom Stok Awal",
+                        message: "Harus Diisi"
+                    })
+                }
+                if(tMasuk.val() == "") {
+                    errorValidate.push({
+                        field: "Kolom Masuk",
+                        message: "Harus Diisi"
                     })
                 }
                 if(iFuel.val() == ""){
@@ -408,7 +511,7 @@
                         jam: iJam.val(),
                         awal: iAwal.val(),
                         akhir: iAkhir.val(),
-                        totalLiter: iTotalLiter.val(),
+                        totalLiter: iTotalLiter.text(),
                         namaOperator: iNamaOperator.val(),
                         km: iKm.val(),
                         hm: iHm.val(),
@@ -439,8 +542,12 @@
                         noDoc: noDoc.text(),
                         jobSite: iJobSite.val(),
                         tglDoc: formatTgl(),
-                        foreman: iForeman.val(),
+                        approval: dApproved.val(),
                         shift: iShift.val(),
+                        total_pemakaian: tTotals.text(),
+                        stokAwal: tStokAwal.val(),
+                        stokAkhir: tTotalAkhir.text(),
+                        masuk: tMasuk.val(),
                         fuel: iFuel.val()
                     }
                     let formData = new FormData();
@@ -476,8 +583,9 @@
                         stopLoading()
                     });
                 }
-                
             })
         })
+
+
     </script>
 @endsection

@@ -10,6 +10,7 @@ use Illuminate\Validation\ValidationException;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Modules\SmartForm\helpers\HrdHelper;
 
 class NoiseController extends Controller
 {
@@ -147,6 +148,7 @@ class NoiseController extends Controller
 
                 return view('smartform::she.noise.form', [
                     'maintenanceRecord' => $record,
+                    'approvalList' => HrdHelper::getApprovalList(),
                     'isShowDetail' => true
                 ]);
             }
@@ -178,6 +180,7 @@ class NoiseController extends Controller
             return view('smartform::she.noise.form', [
                 'activities' => $activities,
                 'workAreas' => $workAreas,
+                'approvalList' => HrdHelper::getApprovalList(),
                 'isShowDetail' => false,
                 'defaultValues' => [
                     'site_name' => 'BSS',

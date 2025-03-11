@@ -10,6 +10,7 @@ use Illuminate\Validation\ValidationException;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Modules\SmartForm\helpers\HrdHelper;
 
 class EyewashController extends Controller
 {
@@ -129,12 +130,14 @@ class EyewashController extends Controller
 
                 return view('SmartForm::she/eyewash/form', [
                     'isShowDetail' => true,
+                    'approvalList' => HrdHelper::getApprovalList(),
                     'maintenanceRecord' => $record
                 ]);
             }
 
             return view('SmartForm::she/eyewash/form', [
                 'isShowDetail' => false,
+                'approvalList' => HrdHelper::getApprovalList(),
                 'maintenanceRecord' => null
             ]);
 

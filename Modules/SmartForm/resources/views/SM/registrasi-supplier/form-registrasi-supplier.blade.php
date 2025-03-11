@@ -46,7 +46,7 @@
                                                 <td style="width:40%">Nama Vendor (CV/PT)</td>
                                                 <td>:</td>
                                                 <td>
-                                                    <input type="text" class="form-control" id="tVendorName" name="tVendorName" placeholder="Vendor's Name" required>
+                                                    <input type="text" style="text-transform:uppercase" class="form-control" id="tVendorName" name="tVendorName" placeholder="Vendor's Name" required>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -77,7 +77,7 @@
                                                 <td style="width:40%">Bidang Usaha</td>
                                                 <td>:</td>
                                                 <td>
-                                                    <input type="text" class="form-control" id="tBidang" name="tBidang" placeholder="Business Field" required>
+                                                    <input type="text" style="text-transform:uppercase" class="form-control" id="tBidang" name="tBidang" placeholder="Business Field" required>
                                                 </td>
                                             </tr>
                                         </table>
@@ -135,7 +135,7 @@
                                                 <td style="width:40%">Nama Rekening 1</td>
                                                 <td>:</td>
                                                 <td>
-                                                    <input type="text" class="form-control" id="tAccNm1" name="tAccNm1" placeholder="Account Name" required>
+                                                    <input type="text" style="text-transform:uppercase" class="form-control" id="tAccNm1" name="tAccNm1" placeholder="Account Name" required>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -149,21 +149,21 @@
                                                 <td style="width:40%">Nama Bank 1</td>
                                                 <td>:</td>
                                                 <td>
-                                                    <input type="text" class="form-control" id="tNamaBank1" name="tNamaBank1" placeholder="Bank Name" required>
+                                                    <input type="text" style="text-transform:uppercase" class="form-control" id="tNamaBank1" name="tNamaBank1" placeholder="Bank Name" required>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td style="width:40%">Alamat Bank 1</td>
                                                 <td>:</td>
                                                 <td>
-                                                    <input type="text" class="form-control" id="tBankAdd1" name="tBankAdd1" placeholder="Bank Address" required>
+                                                    <input type="text" style="text-transform:uppercase" class="form-control" id="tBankAdd1" name="tBankAdd1" placeholder="Bank Address" required>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td style="width:40%">Nama Rekening 2</td>
                                                 <td>:</td>
                                                 <td>
-                                                    <input type="text" class="form-control" id="tAccNm2" name="tAccNm2" placeholder="Account Name" required>
+                                                    <input type="text" style="text-transform:uppercase" class="form-control" id="tAccNm2" name="tAccNm2" placeholder="Account Name" required>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -177,14 +177,14 @@
                                                 <td style="width:40%">Nama Bank 2</td>
                                                 <td>:</td>
                                                 <td>
-                                                    <input type="text" class="form-control" id="tNamaBank2" name="tNamaBank2" placeholder="Bank Name" required>
+                                                    <input type="text" style="text-transform:uppercase" class="form-control" id="tNamaBank2" name="tNamaBank2" placeholder="Bank Name" required>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td style="width:40%">Alamat Bank 2</td>
                                                 <td>:</td>
                                                 <td>
-                                                    <input type="text" class="form-control" id="tBankAdd2" name="tBankAdd2" placeholder="Bank Address" required>
+                                                    <input type="text" style="text-transform:uppercase" class="form-control" id="tBankAdd2" name="tBankAdd2" placeholder="Bank Address" required>
                                                 </td>
                                             </tr>
                                         </table>
@@ -201,14 +201,14 @@
                                                 <td style="width:40%">Alamat Kantor</td>
                                                 <td>:</td>
                                                 <td>
-                                                    <input type="text" class="form-control" id="tAlamatKan" name="tAlamatKan" placeholder="Company Address" required>
+                                                    <input type="text" style="text-transform:uppercase" class="form-control" id="tAlamatKan" name="tAlamatKan" placeholder="Company Address" required>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td style="width:40%">Kota</td>
                                                 <td>:</td>
                                                 <td>
-                                                    <input type="text" class="form-control" id="tKota" name="tKota" placeholder="City" required>
+                                                    <input type="text" style="text-transform:uppercase" class="form-control" id="tKota" name="tKota" placeholder="City" required>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -236,7 +236,7 @@
                                                 <td style="width:40%">Penanggung Jawab 1</td>
                                                 <td>:</td>
                                                 <td>
-                                                    <input type="text" class="form-control" id="tPic1" name="tPic1" placeholder="Person in charge" required>
+                                                    <input type="text" style="text-transform:uppercase" class="form-control" id="tPic1" name="tPic1" placeholder="Person in charge" required>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -250,7 +250,7 @@
                                                 <td style="width:40%">Jabatan</td>
                                                 <td>:</td>
                                                 <td>
-                                                    <input type="text" class="form-control" id="tJabatPic1" name="tJabatPic1" placeholder="Postion" required>
+                                                    <input type="text" style="text-transform:uppercase" class="form-control" id="tJabatPic1" name="tJabatPic1" placeholder="Postion" required>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -264,7 +264,7 @@
                                                 <td style="width:40%">Penanggung Jawab 2</td>
                                                 <td>:</td>
                                                 <td>
-                                                    <input type="text" class="form-control" id="tPic2" name="tPic2" placeholder="Person in charge" required>
+                                                    <input type="text" style="text-transform:uppercase" class="form-control" id="tPic2" name="tPic2" placeholder="Person in charge" required>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -278,7 +278,7 @@
                                                 <td style="width:40%">Jabatan</td>
                                                 <td>:</td>
                                                 <td>
-                                                    <input type="text" class="form-control" id="tJabatPic2" name="tJabatPic2" placeholder="Postion" required>
+                                                    <input type="text" style="text-transform:uppercase" class="form-control" id="tJabatPic2" name="tJabatPic2" placeholder="Postion" required>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -308,14 +308,14 @@
                                                         Ada
                                                       </label>
                                                     
-                                                      <input class="form-check-input" type="radio" value="Tidak" name="rNpwp1" id="rNonNpwp1" required>
+                                                      <input class="form-check-input" type="radio" value="Tidak" name="rNpwp1" id="rNpwp1" required>
                                                       <label class="form-check-label" for="rNonPkp">
                                                         Tidak
                                                       </label>
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" required>
+                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fNpwp" required>
                                                     <div class="invalid-feedback">Lampiran NPWP belum dipilih</div>
                                                 </td>
                                             </tr>
@@ -336,7 +336,7 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" required>
+                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fSppkp" required>
                                                     <div class="invalid-feedback">Lampiran SPPKP belum dipilih</div>
                                                 </td>
                                             </tr>
@@ -357,7 +357,7 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" required>
+                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fNib" required>
                                                     <div class="invalid-feedback">Lampiran NIB/SIUP belum dipilih</div>
                                                 </td>
                                             </tr>
@@ -378,7 +378,7 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" required>
+                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fAkta" required>
                                                     <div class="invalid-feedback">Lampiran Akta Perusahaan belum dipilih</div>
                                                 </td>
                                             </tr>
@@ -399,7 +399,7 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" required>
+                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fPakta" required>
                                                     <div class="invalid-feedback">Lampiran Pakta Integritas belum dipilih</div>
                                                 </td>
                                             </tr>
@@ -420,7 +420,7 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" required>
+                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fKartu" required>
                                                     <div class="invalid-feedback">Lampiran Kartu Identitas Direktur belum dipilih</div>
                                                 </td>
                                             </tr>
@@ -441,7 +441,7 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" required>
+                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fStruktur" required>
                                                     <div class="invalid-feedback">Lampiran Struktur Organisasi belum dipilih</div>
                                                 </td>
                                             </tr>
@@ -462,7 +462,7 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" required>
+                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fProfile" required>
                                                     <div class="invalid-feedback">Lampiran Profile Perusahaan belum dipilih</div>
                                                 </td>
                                             </tr>
@@ -483,7 +483,7 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" required>
+                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fSurat" required>
                                                     <div class="invalid-feedback">Lampiran lainnya belum dipilih</div>
                                                 </td>
                                             </tr>
@@ -493,6 +493,36 @@
                             </div>
                         </div>
                         <span style="display: none;" id="requestornik">{{ session('user_id') }}</span>
+
+                        <table style="width:100%" >
+                          <tr>
+                            <td>Diisi Oleh/Filled by,</td>
+                            <td>: {{ session('username') }} {{ session('user_id') }}
+                            </td>
+                            <td>Diterima Oleh/Received by, :</td>
+                            <td> 
+                                <select name="dDiterima" class="form-control text-center" required>
+                                    <option value="">-- Pilih Penerima --</option>
+                                    @foreach($approvalList as $user)
+                                        <option value="{{ $user->nama }}">
+                                            {{ $user->nama }} ({{ $user->nik }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </td>
+                            <td>Disetujui Oleh/Approved by, :</td>
+                            <td>
+                                <select name="dApproved" class="form-control text-center" required>
+                                    <option value="">-- Pilih Approver --</option>
+                                    @foreach($approvalList as $user)
+                                        <option value="{{ $user->nama }}">
+                                            {{ $user->nama }} ({{ $user->nik }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </td>
+                          </tr>
+                        </table>
                         
                         <div class="card-footer">
                             <div class="d-flex align-items-center">
@@ -514,5 +544,105 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script>
+        // PKP NON PKP
+        $(document).ready(function(){
+            $('input[name="rPkp"]').change(function () {
+                if($(this).val() =='PKP') {
+                    $('#tNoNpwp').prop('required',true);
+                } else {
+                    $('#tNoNpwp').prop('required',false);
+                }
+            });
+        });
+        // NPWP
+        $(document).ready(function(){
+            $('input[name="rNpwp1"]').change(function () {
+                if($(this).val() =='Ada') {
+                    $('#fNpwp').prop('required',true);
+                } else {
+                    $('#fNpwp').prop('required',false);
+                }
+            });
+        });
+        // SPPKP
+        $(document).ready(function(){
+            $('input[name="rSppkp"]').change(function () {
+                if($(this).val() =='Ada') {
+                    $('#fSppkp').prop('required',true);
+                } else {
+                    $('#fSppkp').prop('required',false);
+                }
+            });
+        });
+        // NIB/SIP
+        $(document).ready(function(){
+            $('input[name="rNib"]').change(function () {
+                if($(this).val() =='Ada') {
+                    $('#fNib').prop('required',true);
+                } else {
+                    $('#fNib').prop('required',false);
+                }
+            });
+        });
+        // AKTA PERUSAHAAN
+        $(document).ready(function(){
+            $('input[name="rAkta"]').change(function () {
+                if($(this).val() =='Ada') {
+                    $('#fAkta').prop('required',true);
+                } else {
+                    $('#fAkta').prop('required',false);
+                }
+            });
+        });
+        // PAKTA INTEGRITAS
+        $(document).ready(function(){
+            $('input[name="rPakta"]').change(function () {
+                if($(this).val() =='Ada') {
+                    $('#fPakta').prop('required',true);
+                } else {
+                    $('#fPakta').prop('required',false);
+                }
+            });
+        });
+        // KARTU IDENTITAS
+        $(document).ready(function(){
+            $('input[name="rKartu"]').change(function () {
+                if($(this).val() =='Ada') {
+                    $('#fKartu').prop('required',true);
+                } else {
+                    $('#fKartu').prop('required',false);
+                }
+            });
+        });
+        // STRUKTUR ORGANISASI
+        $(document).ready(function(){
+            $('input[name="rStruktur"]').change(function () {
+                if($(this).val() =='Ada') {
+                    $('#fStruktur').prop('required',true);
+                } else {
+                    $('#fStruktur').prop('required',false);
+                }
+            });
+        });
+        // PROFIL PERUSAHAAN
+        $(document).ready(function(){
+            $('input[name="rProfile"]').change(function () {
+                if($(this).val() =='Ada') {
+                    $('#fProfile').prop('required',true);
+                } else {
+                    $('#fProfile').prop('required',false);
+                }
+            });
+        });
+        // SURAT LAINNYA
+        $(document).ready(function(){
+            $('input[name="rSurat"]').change(function () {
+                if($(this).val() =='Ada') {
+                    $('#fSurat').prop('required',true);
+                } else {
+                    $('#fSurat').prop('required',false);
+                }
+            });
+        });
     </script>
 @endsection

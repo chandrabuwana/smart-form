@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Modules\SmartForm\helpers\HrdHelper;
 
 class InspeksiCateringController extends Controller {
 
@@ -92,7 +93,10 @@ class InspeksiCateringController extends Controller {
     }
 
     function FormInspeksiCatering() {
-        return view("SmartForm::she/inspeksi-catering/form-inspeksi-catering");
+        return view('SmartForm::she/inspeksi-catering/form-inspeksi-catering', [
+                    'isShowDetail' => true,
+                    'approvalList' => HrdHelper::getApprovalList()
+                ]);
     }
     
     public function CreateInspeksiCatering(Request $request)
@@ -100,27 +104,128 @@ class InspeksiCateringController extends Controller {
         DB::beginTransaction();
         $requestData = $request->all();
 
-        // $dataKaryawan = DB::connection('sqlsrv2')->select("SELECT nik FROM TKaryawan");
-        $dataKaryawan = DB::table('FM_SHE_048_INSPEKSI_CATERING');
-        return view('SmartForm::she/inspeksi-catering/form-inspeksi-catering', compact('dataKaryawan'));
-
         try {
             DB::table('FM_SHE_048_INSPEKSI_CATERING')->insert([
                 // 'no' => $number,
                 // 'nama' => session("username"),
-                'no_dok' => "BSS-FRM-SHE-048",
-                'revisi' => "00",
-                'tanggal' => "23 November 2021",
-                'halaman' => "1 dari 3",
+                'no_dok_form' => "BSS-FRM-SHE-048",
+                'revisi_form' => "00",
+                'tanggal_form' => "23 November 2021",
+                'halaman_form' => "1 dari 3",
                 // 'nik' => session("user_id"),
                 'nama_site' =>  $requestData['tNamaSite'],
                 'department' =>  $requestData['dDept'],
                 'shift' =>  $requestData['dShift'],
                 'lokasi_kerja' =>  $requestData['tLoker'],
                 'jumlah_inspektor' =>  $requestData['tJmlIns'],
+                'mengetahui' =>  $requestData['dMengetahui'],
 
                 'q_penerimaan_1' =>  $requestData['tA1'],
-                'q_penerimaan_2' =>  $requestData['tA2']
+                'q_penerimaan_2' =>  $requestData['tA2'],
+                'q_penerimaan_3' =>  $requestData['tA3'],
+                'q_penerimaan_4' =>  $requestData['tA4'],
+                'q_penerimaan_5' =>  $requestData['tA5'],
+                'q_penerimaan_6' =>  $requestData['tA6'],
+                'q_penerimaan_7' =>  $requestData['tA7'],
+                'q_penerimaan_8' =>  $requestData['tA8'],
+                'q_penerimaan_9' =>  $requestData['tA9'],
+                'q_penerimaan_10' =>  $requestData['tA10'],
+
+                'q_keterangan_penerimaan_1' =>  $requestData['tA1a'],
+                'q_keterangan_penerimaan_2' =>  $requestData['tA2b'],
+                'q_keterangan_penerimaan_3' =>  $requestData['tA3c'],
+                'q_keterangan_penerimaan_4' =>  $requestData['tA4d'],
+                'q_keterangan_penerimaan_5' =>  $requestData['tA5e'],
+                'q_keterangan_penerimaan_6' =>  $requestData['tA6f'],
+                'q_keterangan_penerimaan_7' =>  $requestData['tA7g'],
+                'q_keterangan_penerimaan_8' =>  $requestData['tA8h'],
+                'q_keterangan_penerimaan_9' =>  $requestData['tA9i'],
+                'q_keterangan_penerimaan_10' =>  $requestData['tA10j'],
+
+                'q_penyimpanan_1' =>  $requestData['tB1'],
+                'q_penyimpanan_2' =>  $requestData['tB2'],
+                'q_penyimpanan_3' =>  $requestData['tB3'],
+                'q_penyimpanan_4' =>  $requestData['tB4'],
+                'q_penyimpanan_5' =>  $requestData['tB5'],
+                'q_penyimpanan_6' =>  $requestData['tB6'],
+                'q_penyimpanan_7' =>  $requestData['tB7'],
+                'q_penyimpanan_8' =>  $requestData['tB8'],
+                'q_penyimpanan_9' =>  $requestData['tB9'],
+
+                'q_keterangan_penyimpanan_1' =>  $requestData['tB1a'],
+                'q_keterangan_penyimpanan_2' =>  $requestData['tB2b'],
+                'q_keterangan_penyimpanan_3' =>  $requestData['tB3c'],
+                'q_keterangan_penyimpanan_4' =>  $requestData['tB4d'],
+                'q_keterangan_penyimpanan_5' =>  $requestData['tB5e'],
+                'q_keterangan_penyimpanan_6' =>  $requestData['tB6f'],
+                'q_keterangan_penyimpanan_7' =>  $requestData['tB7g'],
+                'q_keterangan_penyimpanan_8' =>  $requestData['tB8h'],
+                'q_keterangan_penyimpanan_9' =>  $requestData['tB9i'],
+
+                'q_persiapan_1' =>  $requestData['tC1'],
+                'q_persiapan_2' =>  $requestData['tC2'],
+                'q_persiapan_3' =>  $requestData['tC3'],
+                'q_persiapan_4' =>  $requestData['tC4'],
+                'q_persiapan_5' =>  $requestData['tC5'],
+                'q_persiapan_6' =>  $requestData['tC6'],
+                'q_persiapan_7' =>  $requestData['tC7'],
+                'q_persiapan_8' =>  $requestData['tC8'],
+                'q_persiapan_9' =>  $requestData['tC9'],
+                'q_persiapan_10' =>  $requestData['tC10'],
+
+                'q_keterangan_persiapan_1' =>  $requestData['tC1a'],
+                'q_keterangan_persiapan_2' =>  $requestData['tC2b'],
+                'q_keterangan_persiapan_3' =>  $requestData['tC3c'],
+                'q_keterangan_persiapan_4' =>  $requestData['tC4d'],
+                'q_keterangan_persiapan_5' =>  $requestData['tC5e'],
+                'q_keterangan_persiapan_6' =>  $requestData['tC6f'],
+                'q_keterangan_persiapan_7' =>  $requestData['tC7g'],
+                'q_keterangan_persiapan_8' =>  $requestData['tC8h'],
+                'q_keterangan_persiapan_9' =>  $requestData['tC9i'],
+                'q_keterangan_persiapan_10' =>  $requestData['tC10j'],
+
+                'q_pengolahan_1' =>  $requestData['td1'],
+                'q_pengolahan_2' =>  $requestData['td2'],
+                'q_pengolahan_3' =>  $requestData['td3'],
+                'q_pengolahan_4' =>  $requestData['td4'],
+                'q_pengolahan_5' =>  $requestData['td5'],
+                'q_pengolahan_6' =>  $requestData['td6'],
+                'q_pengolahan_7' =>  $requestData['td7'],
+                'q_pengolahan_8' =>  $requestData['td8'],
+                'q_pengolahan_9' =>  $requestData['td9'],
+                'q_pengolahan_10' =>  $requestData['td10'],
+
+                'q_keterangan_pengolahan_1' =>  $requestData['td1a'],
+                'q_keterangan_pengolahan_2' =>  $requestData['td2b'],
+                'q_keterangan_pengolahan_3' =>  $requestData['td3c'],
+                'q_keterangan_pengolahan_4' =>  $requestData['td4d'],
+                'q_keterangan_pengolahan_5' =>  $requestData['td5e'],
+                'q_keterangan_pengolahan_6' =>  $requestData['td6f'],
+                'q_keterangan_pengolahan_7' =>  $requestData['td7g'],
+                'q_keterangan_pengolahan_8' =>  $requestData['td8h'],
+                'q_keterangan_pengolahan_9' =>  $requestData['td9i'],
+                'q_keterangan_pengolahan_10' =>  $requestData['td10j'],
+
+                'q_penggolongan_sampah_1' =>  $requestData['td1'],
+                'q_penggolongan_sampah_2' =>  $requestData['td2'],
+                'q_penggolongan_sampah_3' =>  $requestData['td3'],
+                'q_penggolongan_sampah_4' =>  $requestData['td4'],
+                'q_penggolongan_sampah_5' =>  $requestData['td5'],
+                'q_penggolongan_sampah_6' =>  $requestData['td6'],
+                'q_penggolongan_sampah_7' =>  $requestData['td7'],
+                'q_penggolongan_sampah_8' =>  $requestData['td8'],
+                'q_penggolongan_sampah_9' =>  $requestData['td9'],
+
+                'q_keterangan_penggolongan_sampah_1' =>  $requestData['td1a'],
+                'q_keterangan_penggolongan_sampah_2' =>  $requestData['td2b'],
+                'q_keterangan_penggolongan_sampah_3' =>  $requestData['td3c'],
+                'q_keterangan_penggolongan_sampah_4' =>  $requestData['td4d'],
+                'q_keterangan_penggolongan_sampah_5' =>  $requestData['td5e'],
+                'q_keterangan_penggolongan_sampah_6' =>  $requestData['td6f'],
+                'q_keterangan_penggolongan_sampah_7' =>  $requestData['td7g'],
+                'q_keterangan_penggolongan_sampah_8' =>  $requestData['td8h'],
+                'q_keterangan_penggolongan_sampah_9' =>  $requestData['td9i']
+
             ]);
 
             DB::commit();

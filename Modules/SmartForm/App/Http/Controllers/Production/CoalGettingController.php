@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\SmartForm\App\Http\Controllers\SHE;
+namespace Modules\SmartForm\App\Http\Controllers\Production;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -10,6 +10,7 @@ use Illuminate\Validation\ValidationException;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Modules\SmartForm\helpers\HrdHelper;
 
 class CoalGettingController extends Controller
 {
@@ -76,7 +77,7 @@ class CoalGettingController extends Controller
                     ->count()
             ];
 
-            return view('smartform::she/coal_getting/dashboard', [
+            return view('smartform::production/coal_getting/dashboard', [
                 'records' => $records,
                 'statistics' => (object)$statistics,
                 'filter_options' => $filter_options,
@@ -102,7 +103,7 @@ class CoalGettingController extends Controller
 
                 if (!$record) {
                     Log::error('Coal Getting record not found for ID: ' . $request->id);
-                    return redirect()->route('she.coal.dashboard')
+                    return redirect()->route('prod.coal.dashboard')
                         ->with('error', 'Record not found');
                 }
 
@@ -119,22 +120,24 @@ class CoalGettingController extends Controller
                 // Decode checklist items
                 $record->checklist_items = json_decode($record->checklist_items, true);
 
-                return view('smartform::she/coal_getting/form', [
+                return view('smartform::production/coal_getting/form', [
                     'isShowDetail' => true,
                     'record' => $record,
-                    'checklistItems' => $this->getChecklistItems()
+                    'checklistItems' => $this->getChecklistItems(),
+                    'approvalList' => HrdHelper::getApprovalList(),
                 ]);
             }
 
             // For new record
-            return view('smartform::she/coal_getting/form', [
+            return view('smartform::production/coal_getting/form', [
                 'isShowDetail' => false,
                 'record' => null,
-                'checklistItems' => $this->getChecklistItems()
+                'checklistItems' => $this->getChecklistItems(),
+                'approvalList' => HrdHelper::getApprovalList(),
             ]);
         } catch (\Exception $e) {
             Log::error('Error in AddForm: ' . $e->getMessage());
-            return redirect()->route('she.coal.dashboard')
+            return redirect()->route('prod.coal.dashboard')
                 ->with('error', 'Failed to load form: ' . $e->getMessage());
         }
     }
@@ -242,7 +245,7 @@ class CoalGettingController extends Controller
 
             $record->checklist_items = json_decode($record->checklist_items, true);
 
-            $pdf = PDF::loadView('smartform::she/coal_getting/export-pdf', [
+            $pdf = PDF::loadView('smartform::production/coal_getting/export-pdf', [
                 'record' => $record,
                 'checklistItems' => $this->getChecklistItems()
             ]);

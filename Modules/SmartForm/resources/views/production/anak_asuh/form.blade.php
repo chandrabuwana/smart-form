@@ -199,14 +199,8 @@
                             <div class="row mt-4">
                                 <div class="col-md-6">
                                     <div class="input-group input-group-static mb-3">
-                                        <label for="created_by" class="ms-0">Created By</label>
+                                        <label for="created_by" class="ms-0">Dibuat Oleh</label>
                                         <input type="text" class="form-control" id="created_by" name="created_by" value="{{ old('created_by', $record->created_by ?? '') }}" required {{ $isShowDetail ? 'disabled' : '' }}>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="input-group input-group-static mb-3">
-                                        <label for="acknowledged_by" class="ms-0">Acknowledged By</label>
-                                        <input type="text" class="form-control" id="acknowledged_by" name="acknowledged_by" value="{{ old('acknowledged_by', $record->acknowledged_by ?? '') }}" {{ $isShowDetail ? 'disabled' : '' }}>
                                     </div>
                                 </div>
                             </div>
