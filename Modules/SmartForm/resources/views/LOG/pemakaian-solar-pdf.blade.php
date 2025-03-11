@@ -231,7 +231,7 @@ table.atas td {
                     <div style="text-align: left">Stock Awal</div>
                 </td>
                 <td>
-                    <div style="text-align: left">: ..........</div>
+                    <div style="text-align: left">: {{ $data['stok_awal'] }}</div>
                 </td>
                 <td>
                     <div style="text-align: left">Liter</div>
@@ -245,7 +245,7 @@ table.atas td {
                     <div style="text-align: left">Masuk</div>
                 </td>
                 <td>
-                    <div style="text-align: left">: ..........</div>
+                    <div style="text-align: left">: {{ $data['masuk'] }}</div>
                 </td>
                 <td>
                     <div style="text-align: left">Liter</div>
@@ -259,7 +259,7 @@ table.atas td {
                     <div style="text-align: left">Keluar</div>
                 </td>
                 <td>
-                    <div style="text-align: left">: ..........</div>
+                    <div style="text-align: left">: {{ $data['total_pemakaian'] }}</div>
                 </td>
                 <td>
                     <div style="text-align: left">Liter</div>
@@ -281,7 +281,7 @@ table.atas td {
                     <div style="text-align: left">Stock Akhir</div>
                 </td>
                 <td>
-                    <div style="text-align: left">: ..........</div>
+                    <div style="text-align: left">: {{ $data['stok_akhir'] }}</div>
                 </td>
                 <td>
                     <div style="text-align: left">Liter</div>
