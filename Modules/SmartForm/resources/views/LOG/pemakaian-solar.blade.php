@@ -40,9 +40,11 @@
                             data-unique-id="id">
                             <thead>
                                 <tr>
-                                    <th data-field="no_dok" data-align="left" data-halign="text-center" data-sortable="true">No. Document</th>
+                                    <th data-field="approved" data-align="left" data-halign="text-center" data-sortable="true">Approved By</th>
+                                    <th data-field="shift" data-align="left" data-halign="text-center" data-sortable="true">shift</th>
                                     <th data-field="site" data-align="left" data-halign="text-center" data-sortable="true">Job Site</th>
-                                    <th data-field="lube" data-align="left" data-halign="text-center" data-sortable="true">No. Lube Station</th>
+                                    <th data-field="fuel" data-align="left" data-halign="text-center" data-sortable="true">No. Fuel Station</th>
+                                    <th data-field="total_pemakaian" data-align="left" data-halign="text-center" data-sortable="true">Total Pemakaian (liter)</th>
                                     <th data-field="action" data-formatter="actionFormatter" >Actions</th>
                                 </tr>
                             </thead>
