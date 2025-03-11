@@ -799,19 +799,28 @@
                                             </tr>
                                             <tr>
                                                 <td class="align-bottom text-center border">
-                                                    <input type="text" name="paramedic_name" class="form-control text-center" required
-                                                        value="{{ $isShowDetail ? $data->paramedic_name : old('paramedic_name') }}"
-                                                        {{ $isShowDetail ? 'disabled' : '' }}>
+                                                    <select name="paramedic_name" id="paramedic_name" class="form-control text-center" required>
+                                                        <option disabled selected>-- Select Paramedic --</option>
+                                                        @foreach ($approvalList as $data)
+                                                            <option value="{{ $data->nama }}">{{ $data->nama }} ({{ $data->nik }})</option>
+                                                        @endforeach
+                                                    </select>
                                                 </td>
                                                 <td class="align-bottom text-center border">
-                                                    <input type="text" name="doctor_name" class="form-control text-center" required
-                                                        value="{{ $isShowDetail ? $data->doctor_name : old('doctor_name') }}"
-                                                        {{ $isShowDetail ? 'disabled' : '' }}>
+                                                    <select name="doctor_name" id="doctor_name" class="form-control text-center" required>
+                                                        <option disabled selected>-- Select Doctor --</option>
+                                                        @foreach ($approvalList as $data)
+                                                            <option value="{{ $data->nama }}">{{ $data->nama }} ({{ $data->nik }})</option>
+                                                        @endforeach
+                                                    </select>
                                                 </td>
                                                 <td class="align-bottom text-center border">
-                                                    <input type="text" name="dept_head_name" class="form-control text-center" required
-                                                        value="{{ $isShowDetail ? $data->dept_head_name : old('dept_head_name') }}"
-                                                        {{ $isShowDetail ? 'disabled' : '' }}>
+                                                    <select name="dept_head_name" id="dept_head_name" class="form-control text-center" required>
+                                                        <option disabled selected>-- Select Dept Head --</option>
+                                                        @foreach ($approvalList as $data)
+                                                            <option value="{{ $data->nama }}">{{ $data->nama }} ({{ $data->nik }})</option>
+                                                        @endforeach
+                                                    </select>
                                                 </td>
                                             </tr>
                                         </table>
