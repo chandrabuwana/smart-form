@@ -55,6 +55,7 @@ use Modules\SmartForm\App\Http\Controllers\IT\CctvFormController;
 use Modules\SmartForm\App\Http\Controllers\IT\DeviceFormController;
 use Modules\SmartForm\App\Http\Controllers\IT\RouterFormController;
 use Modules\SmartForm\App\Http\Controllers\PLANT\GeneralInspection\InspectionCmtController;
+use Modules\SmartForm\App\Http\Controllers\PLANT\GeneralInspection\InspectionDongfengController;
 
 /*
 |--------------------------------------------------------------------------
@@ -382,9 +383,15 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
         Route::prefix('plant')->name('bss-form.plant.')->group(function () {
             // General Inspection
             Route::prefix('general-inspection')->name('general-inspection.')->group(function () {
+                // CMT
                 Route::get('cmt/{id}/print', [InspectionCmtController::class, 'print'])->name('cmt.print');
                 Route::get('cmt/get-data', [InspectionCmtController::class, 'getData'])->name('cmt.get-data');
                 Route::resource('cmt', InspectionCmtController::class);
+
+                // Dongfeng
+                Route::get('dongfeng/{id}/print', [InspectionDongfengController::class, 'print'])->name('dongfeng.print');
+                Route::get('dongfeng/get-data', [InspectionDongfengController::class, 'getData'])->name('dongfeng.get-data');
+                Route::resource('dongfeng', InspectionDongfengController::class);
             });
         });
 
