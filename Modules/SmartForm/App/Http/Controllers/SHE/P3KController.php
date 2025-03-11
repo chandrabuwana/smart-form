@@ -10,6 +10,7 @@ use Illuminate\Validation\ValidationException;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Modules\SmartForm\helpers\HrdHelper;
 
 class P3KController extends Controller
 {
@@ -71,7 +72,15 @@ class P3KController extends Controller
                             qty int \'$.qty\'
                         )
                         WHERE current_qty < qty
-                    ) as low_stock_items')
+                    ) as low_stock_items'),
+                    DB::raw('CASE 
+                        WHEN she_signature IS NOT NULL THEN \'Approved\'
+                        WHEN dh_signature IS NOT NULL THEN \'DH Approved\'
+                        WHEN supervisor_signature IS NOT NULL THEN \'Supervisor Approved\'
+                        WHEN inspector_signature IS NOT NULL THEN \'Inspector Approved\'
+                        WHEN created_signature IS NOT NULL THEN \'Created Approved\'
+                        ELSE \'Pending\'
+                    END as approval_status')
                 ]);
 
             // Apply filters
@@ -81,7 +90,11 @@ class P3KController extends Controller
                     $q->where('doc_number', 'like', '%' . $searchTerm . '%')
                         ->orWhere('location', 'like', '%' . $searchTerm . '%')
                         ->orWhere('created_by', 'like', '%' . $searchTerm . '%')
-                        ->orWhere('items_data', 'like', '%' . $searchTerm . '%');
+                        ->orWhere('items_data', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('inspector', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('supervisor_name', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('dh_name', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('she_name', 'like', '%' . $searchTerm . '%');
                 });
             }
 
@@ -95,6 +108,33 @@ class P3KController extends Controller
 
             if ($request->filled('location')) {
                 $query->where('location', $request->location);
+            }
+
+            if ($request->filled('approval_status')) {
+                switch ($request->approval_status) {
+                    case 'pending':
+                        $query->whereNull('created_signature');
+                        break;
+                    case 'created':
+                        $query->whereNotNull('created_signature')
+                             ->whereNull('inspector_signature');
+                        break;
+                    case 'inspector':
+                        $query->whereNotNull('inspector_signature')
+                             ->whereNull('supervisor_signature');
+                        break;
+                    case 'supervisor':
+                        $query->whereNotNull('supervisor_signature')
+                             ->whereNull('dh_signature');
+                        break;
+                    case 'dh':
+                        $query->whereNotNull('dh_signature')
+                             ->whereNull('she_signature');
+                        break;
+                    case 'approved':
+                        $query->whereNotNull('she_signature');
+                        break;
+                }
             }
 
             if ($request->filled('status')) {
@@ -147,6 +187,11 @@ class P3KController extends Controller
                     WHERE current_qty < qty
                 )')
                 ->count();
+
+            // Pending approvals
+            $statistics->pending_approvals = DB::table('she_p3k')
+                ->whereNull('she_signature')
+                ->count();
             
             // Get critical items (items below threshold)
             $statistics->critical_items = DB::table('she_p3k')
@@ -179,6 +224,7 @@ class P3KController extends Controller
                 'start_date' => $request->start_date,
                 'end_date' => $request->end_date,
                 'status' => $request->status,
+                'approval_status' => $request->approval_status
             ];
 
             // Get latest inspection dates by location
@@ -219,14 +265,16 @@ class P3KController extends Controller
                 return view('SmartForm::she/p3k/form', [
                     'isShowDetail' => true,
                     'record' => $record,
-                    'p3kItems' => $this->p3kItems
+                    'p3kItems' => $this->p3kItems,
+                    'approvalList' => HrdHelper::getApprovalList(),
                 ]);
             }
 
             return view('SmartForm::she/p3k/form', [
                 'isShowDetail' => false,
                 'record' => null,
-                'p3kItems' => $this->p3kItems
+                'p3kItems' => $this->p3kItems,
+                'approvalList' => HrdHelper::getApprovalList(),
             ]);
 
         } catch (\Exception $e) {
@@ -243,9 +291,20 @@ class P3KController extends Controller
                 'inspection_date' => 'required|date',
                 'location' => 'required|string|max:255',
                 'created_by' => 'required|string|max:255',
-                'supervisor' => 'nullable|string|max:255',
-                'dh' => 'nullable|string|max:255',
-                'she' => 'nullable|string|max:255',
+                'created_signature' => 'nullable|string',
+                'created_date' => 'nullable|date',
+                'inspector' => 'nullable|string|max:255',
+                'inspector_signature' => 'nullable|string',
+                'inspector_date' => 'nullable|date',
+                'supervisor_name' => 'nullable|string|max:255',
+                'supervisor_signature' => 'nullable|string',
+                'supervisor_date' => 'nullable|date',
+                'dh_name' => 'nullable|string|max:255',
+                'dh_signature' => 'nullable|string',
+                'dh_date' => 'nullable|date',
+                'she_name' => 'nullable|string|max:255',
+                'she_signature' => 'nullable|string',
+                'she_date' => 'nullable|date',
             ]);
 
             if ($validator->fails()) {
@@ -289,9 +348,20 @@ class P3KController extends Controller
                     'location' => $request->location,
                     'items_data' => json_encode($itemsData),
                     'created_by' => $request->created_by,
-                    'supervisor' => $request->supervisor,
-                    'dh' => $request->dh,
-                    'she' => $request->she,
+                    'created_signature' => $request->created_signature,
+                    'created_date' => $request->created_date,
+                    'inspector' => $request->inspector,
+                    'inspector_signature' => $request->inspector_signature,
+                    'inspector_date' => $request->inspector_date,
+                    'supervisor_name' => $request->supervisor_name,
+                    'supervisor_signature' => $request->supervisor_signature,
+                    'supervisor_date' => $request->supervisor_date,
+                    'dh_name' => $request->dh_name,
+                    'dh_signature' => $request->dh_signature,
+                    'dh_date' => $request->dh_date,
+                    'she_name' => $request->she_name,
+                    'she_signature' => $request->she_signature,
+                    'she_date' => $request->she_date,
                     'created_at' => now(),
                     'updated_at' => now()
                 ]);
@@ -334,9 +404,20 @@ class P3KController extends Controller
                 'inspection_date' => 'required|date',
                 'location' => 'required|string|max:255',
                 'created_by' => 'required|string|max:255',
-                'supervisor' => 'nullable|string|max:255',
-                'dh' => 'nullable|string|max:255',
-                'she' => 'nullable|string|max:255',
+                'created_signature' => 'nullable|string',
+                'created_date' => 'nullable|date',
+                'inspector' => 'nullable|string|max:255',
+                'inspector_signature' => 'nullable|string',
+                'inspector_date' => 'nullable|date',
+                'supervisor_name' => 'nullable|string|max:255',
+                'supervisor_signature' => 'nullable|string',
+                'supervisor_date' => 'nullable|date',
+                'dh_name' => 'nullable|string|max:255',
+                'dh_signature' => 'nullable|string',
+                'dh_date' => 'nullable|date',
+                'she_name' => 'nullable|string|max:255',
+                'she_signature' => 'nullable|string',
+                'she_date' => 'nullable|date',
             ]);
 
             if ($validator->fails()) {
@@ -384,9 +465,20 @@ class P3KController extends Controller
                         'location' => $request->location,
                         'items_data' => json_encode($itemsData),
                         'created_by' => $request->created_by,
-                        'supervisor' => $request->supervisor,
-                        'dh' => $request->dh,
-                        'she' => $request->she,
+                        'created_signature' => $request->created_signature,
+                        'created_date' => $request->created_date,
+                        'inspector' => $request->inspector,
+                        'inspector_signature' => $request->inspector_signature,
+                        'inspector_date' => $request->inspector_date,
+                        'supervisor_name' => $request->supervisor_name,
+                        'supervisor_signature' => $request->supervisor_signature,
+                        'supervisor_date' => $request->supervisor_date,
+                        'dh_name' => $request->dh_name,
+                        'dh_signature' => $request->dh_signature,
+                        'dh_date' => $request->dh_date,
+                        'she_name' => $request->she_name,
+                        'she_signature' => $request->she_signature,
+                        'she_date' => $request->she_date,
                         'updated_at' => now()
                     ]);
 
