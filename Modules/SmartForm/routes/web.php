@@ -397,21 +397,13 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
 
         });
 
-<<<<<<< HEAD
+        
         Route::prefix('prod-kalibrasi-ct')->group(function () {
             Route::get('/dashboard', [KalibrasiCtController::class, 'Dashboard'])->name('prod.kalibrasi-ct.dashboard');
             Route::get('/form-kalibrasi-ct/export/{id}', [KalibrasiCtController::class, 'ExportForm'])->name('prod.kalibrasi-ct.export');
             Route::get('/form-kalibrasi-ct', [KalibrasiCtController::class, 'AddFormKalibrasi'])->name('prod.kalibrasi-ct.form');
             Route::post('/store-kalibrasi-ct', [KalibrasiCtController::class, 'StoreKalibrasi'])->name('prod.kalibrasi-ct.store');
             Route::put('/form-kalibrasi-ct/{id}', [KalibrasiCtController::class, 'UpdateKalibrasi'])->name('prod.kalibrasi-ct.update');
-=======
-        Route::prefix('ppm-900d')->group(function(){
-            Route::get('/dashboard', [PpmXcmg900dController::class, 'Dashboard'])->name('plant.ppm.900d.dashboard');
-            Route::get('/export/{id}', [PpmXcmg900dController::class, 'Export'])->name('plant.ppm.900d.export');
-            Route::get('/add', [PpmXcmg900dController::class, 'Add'])->name('plant.ppm.900d.form');
-            Route::post('/store', [PpmXcmg900dController::class, 'Store'])->name('plant.ppm.900d.store');
-            Route::get('/detail/{id}', [PpmXcmg900dController::class, 'detail'])->name('plant.ppm.900d.detail');
->>>>>>> e3c6987fba5ec553ea245905d4c3d9a1d5343b2f
         });
 
 

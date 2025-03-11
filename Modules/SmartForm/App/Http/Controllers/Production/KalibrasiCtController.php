@@ -616,11 +616,10 @@ class KalibrasiCtController extends Controller
 
             return $pdf->download('Kalibrasi CT_' . $record->doc_number . '.pdf');
         } catch (\Exception $e) {
-            // Log::error('Error in ExportForm: ' . $e->getMessage());
-            // return redirect()
-            //     ->route('prod.kalibrasi-ct.dashboard')
-            //     ->with('error', 'Failed to generate PDF: ' . $e->getMessage());
-            return response()->json(['error' => $e->getMessage()]);
+            Log::error('Error in ExportForm: ' . $e->getMessage());
+            return redirect()
+                ->route('prod.kalibrasi-ct.dashboard')
+                ->with('error', 'Failed to generate PDF: ' . $e->getMessage());
         }
     }
 
