@@ -10,6 +10,7 @@ use Illuminate\Validation\ValidationException;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Modules\SmartForm\helpers\HrdHelper;
 
 class SheMessController extends Controller
 {
@@ -84,11 +85,7 @@ class SheMessController extends Controller
     public function AddForm(Request $request, $id = null)
     {
         try {
-            Log::info('AddForm method called with request:', $request->all());
-            Log::info('Route parameters:', $request->route()->parameters());
-            
             if ($id) {
-                Log::info('ID from route parameter: ' . $id);
                 $record = DB::table('she_mess_survey')
                     ->where('id', $id)
                     ->first();
@@ -182,7 +179,8 @@ class SheMessController extends Controller
 
                 return view('smartform::she.mess.form', [
                     'data' => $record,
-                    'isShowDetail' => true
+                    'isShowDetail' => true,
+                    'approvalList' => HrdHelper::getApprovalList(),
                 ]);
             }
 
@@ -237,7 +235,8 @@ class SheMessController extends Controller
                     'acknowledged_by' => '',
                     'acknowledged_signature' => 0
                 ],
-                'isShowDetail' => false
+                'isShowDetail' => false,
+                'approvalList' => HrdHelper::getApprovalList(),
             ]);
 
         } catch (\Exception $e) {

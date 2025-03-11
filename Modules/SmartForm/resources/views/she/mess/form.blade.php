@@ -285,9 +285,16 @@ Tidak ada peraturan yg berlaku atau berdampak kelingkungan perusahaan
                         <table class="table table-bordered mb-4">
                             <tr>
                                 <td width="25%">Diinspeksi Oleh</td>
-                                <td width="25%">: <input type="text" class="form-control d-inline-block w-75" name="inspected_by[]" 
-                                           value="{{ isset($data->inspected_by) ? $data->inspected_by : '' }}"
-                                           {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}></td>
+                                <td width="25%">
+                                    <select name="inspected_by" class="form-control text-center" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                        <option value="">-- Pilih Inspektor --</option>
+                                        @foreach($approvalList as $user)
+                                            <option value="{{ $user->nama }}" {{ $isShowDetail && $data->inspected_by == $user->nama ? 'selected' : '' }}>
+                                                {{ $user->nama }} ({{ $user->nik }})
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </td>
                                 <td width="15%">Tanda Tangan</td>
                                 <td width="10%">
                                     <div class="form-check">
@@ -306,9 +313,16 @@ Tidak ada peraturan yg berlaku atau berdampak kelingkungan perusahaan
                             </tr>
                             <tr>
                                 <td>Diinspeksi Oleh</td>
-                                <td>: <input type="text" class="form-control d-inline-block w-75" name="inspected_by[]"
-                                           value="{{ isset($data->inspected_by2) ? $data->inspected_by2 : '' }}"
-                                           {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}></td>
+                                <td>
+                                    <select name="inspected_by2" class="form-control text-center" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                        <option value="">-- Pilih Inspektor --</option>
+                                        @foreach($approvalList as $user)
+                                            <option value="{{ $user->nama }}" {{ $isShowDetail && $data->inspected_by2 == $user->nama ? 'selected' : '' }}>
+                                                {{ $user->nama }} ({{ $user->nik }})
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </td>
                                 <td>Tanda Tangan</td>
                                 <td>
                                     <div class="form-check">
@@ -327,9 +341,16 @@ Tidak ada peraturan yg berlaku atau berdampak kelingkungan perusahaan
                             </tr>
                             <tr>
                                 <td>Diinspeksi Oleh</td>
-                                <td>: <input type="text" class="form-control d-inline-block w-75" name="inspected_by[]"
-                                           value="{{ isset($data->inspected_by3) ? $data->inspected_by3 : '' }}"
-                                           {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}></td>
+                                <td>
+                                    <select name="inspected_by3" class="form-control text-center" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                        <option value="">-- Pilih Inspektor --</option>
+                                        @foreach($approvalList as $user)
+                                            <option value="{{ $user->nama }}" {{ $isShowDetail && $data->inspected_by3 == $user->nama ? 'selected' : '' }}>
+                                                {{ $user->nama }} ({{ $user->nik }})
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </td>
                                 <td>Tanda Tangan</td>
                                 <td>
                                     <div class="form-check">
@@ -348,9 +369,16 @@ Tidak ada peraturan yg berlaku atau berdampak kelingkungan perusahaan
                             </tr>
                             <tr>
                                 <td>Disetujui Oleh</td>
-                                <td>: <input type="text" class="form-control d-inline-block w-75" name="acknowledged_by"
-                                           value="{{ isset($data->acknowledged_by) ? $data->acknowledged_by : '' }}"
-                                           {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}></td>
+                                <td>
+                                    <select name="acknowledged_by" class="form-control text-center" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                        <option value="">-- Pilih Inspektor --</option>
+                                        @foreach($approvalList as $user)
+                                            <option value="{{ $user->nama }}" {{ $isShowDetail && $data->acknowledged_by == $user->nama ? 'selected' : '' }}>
+                                                {{ $user->nama }} ({{ $user->nik }})
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </td>
                                 <td>Tanda Tangan</td>
                                 <td>
                                     <div class="form-check">
