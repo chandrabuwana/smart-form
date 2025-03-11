@@ -21,6 +21,7 @@ use Modules\SmartForm\App\Http\Controllers\PLANT\PlantWeldingController;
 use Modules\SmartForm\App\Http\Controllers\Production\FormCheckerController;
 use Modules\SmartForm\App\Http\Controllers\Production\ProductionTimeSheetDashboarController;
 use Modules\SmartForm\App\Http\Controllers\Production\AnakAsuhController;
+use Modules\SmartForm\App\Http\Controllers\Production\CoalGettingController;
 use Modules\SmartForm\App\Http\Controllers\SHE\DashboardSHEFRM19BController;
 use Modules\SmartForm\App\Http\Controllers\SHE\TransactionSHEFRM19BController;
 use Modules\SmartForm\App\Http\Controllers\SHE\EyewashController;
@@ -30,7 +31,6 @@ use Modules\SmartForm\App\Http\Controllers\SHE\P3KController;
 use Modules\SmartForm\App\Http\Controllers\SHE\AirMinumController;
 use Modules\SmartForm\App\Http\Controllers\SHE\NoiseController;
 use Modules\SmartForm\App\Http\Controllers\SHE\SheMessController;
-use Modules\SmartForm\App\Http\Controllers\SHE\CoalGettingController;
 use Modules\SmartForm\App\Http\Controllers\SHE\ErgonomiController;
 use Modules\SmartForm\App\Http\Controllers\SKL\DashboardSKLController;
 use Modules\SmartForm\App\Http\Controllers\SKL\SKLFormController;
@@ -339,12 +339,12 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::put('form/{id}', [SheMessController::class, 'Update'])->name('she.mess.form.update');
         });
 
-        Route::prefix('she-coal')->group(function () {
-            Route::get('dashboard', [CoalGettingController::class, 'Dashboard'])->name('she.coal.dashboard');
-            Route::get('form/export/{id}', [CoalGettingController::class, 'ExportForm'])->name('she.coal.export');
-            Route::get('form', [CoalGettingController::class, 'AddForm'])->name('she.coal.form');
-            Route::post('store', [CoalGettingController::class, 'Store'])->name('she.coal.store');
-            Route::put('form/{id}', [CoalGettingController::class, 'Update'])->name('she.coal.form.update');
+        Route::prefix('prod-coal')->group(function () {
+            Route::get('dashboard', [CoalGettingController::class, 'Dashboard'])->name('prod.coal.dashboard');
+            Route::get('form/export/{id}', [CoalGettingController::class, 'ExportForm'])->name('prod.coal.export');
+            Route::get('form', [CoalGettingController::class, 'AddForm'])->name('prod.coal.form');
+            Route::post('store', [CoalGettingController::class, 'Store'])->name('prod.coal.store');
+            Route::put('form/{id}', [CoalGettingController::class, 'Update'])->name('prod.coal.form.update');
         });
         Route::prefix('she-ergonomi')->group(function () {
             Route::get('dashboard', [ErgonomiController::class, 'Dashboard'])->name('she.ergonomi.dashboard');
