@@ -1,0 +1,74 @@
+{
+    "ENGINE": {
+        "performance": {
+            "bagus": false,
+            "cukup": false,
+            "kurang": false
+        },
+        "remark": ""
+    },
+    "POWER TRAIN": {
+        "performance": {
+            "bagus": false,
+            "cukup": false,
+            "kurang": false
+        },
+        "remark": ""
+    },
+    "HYDRAULIC SYSTEM": {
+        "performance": {
+            "bagus": false,
+            "cukup": false,
+            "kurang": false
+        },
+        "remark": ""
+    },
+    "STEERING SYSTEM": {
+        "performance": {
+            "bagus": false,
+            "cukup": false,
+            "kurang": false
+        },
+        "remark": ""
+    },
+    "BRAKING SYSTEM": {
+        "performance": {
+            "bagus": false,
+            "cukup": false,
+            "kurang": false
+        },
+        "remark": ""
+    },
+    "SUSPENSION SYSTEM": {
+        "performance": {
+            "bagus": false,
+            "cukup": false,
+            "kurang": false
+        },
+        "remark": ""
+    },
+    "FRAME & BODY": {
+        "performance": {
+            "bagus": false,
+            "cukup": false,
+            "kurang": false
+        },
+        "remark": ""
+    },
+    "OPERATOR STATION": {
+        "performance": {
+            "bagus": false,
+            "cukup": false,
+            "kurang": false
+        },
+        "remark": ""
+    },
+    "DIFFERENTIAL & FINAL DRIVE": {
+        "performance": {
+            "bagus": false,
+            "cukup": false,
+            "kurang": false
+        },
+        "remark": ""
+    }
+}

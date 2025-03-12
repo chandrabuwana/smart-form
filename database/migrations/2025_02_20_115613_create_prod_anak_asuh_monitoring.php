@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('jabatan');
             $table->string('departemen');
             $table->string('created_by');
-            $table->string('acknowledged_by');
+            // $table->string('acknowledged_by');
             $table->text('tanggal_items');
             $table->text('attendance_items');
             $table->text('nama_anak_asuh_items');
