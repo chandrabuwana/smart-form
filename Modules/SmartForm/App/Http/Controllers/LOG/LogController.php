@@ -701,14 +701,86 @@ class LogController extends Controller {
     function editPemakaianSolar(Request $request) {
         $id = $request->query('id');
         $nik_session = $request->session()->get('user_id', '');
-        $data = $this->getDetail($request, $id, $nik_session);
+        $data = $this->getDetailPemakaianSolar($request, $id, $nik_session);
         Log::debug("Data edit : ". json_encode($data, JSON_PRETTY_PRINT));
         if($data['data']['dibuat_oleh'] != $nik_session) {
             return abort(401, 'Unauthoried Request!');
         } else {
-            $data['list_dept'] = self::LIST_DEPT;
             return view("SmartForm::LOG/edit-form-pemakaian-solar", $data);
         }
+    }
+
+    private function getDetailPemakaianSolar(Request $request, $id, $nik) {
+        $TABLE_MASTER = "FM_LOG_037_PEMAKAIAN_SOLAR";
+        $TABLE_DETAIL = "FM_LOG_037_PEMAKAIAN_SOLAR_DETAIL";
+        $isError = true;
+        $errorMessage = '';
+        $data_master = array(
+            'id' => '',
+            'dibuat_oleh' => ''
+        );
+        $data_detail = array();
+        $pendukung_reason = array();
+        try {
+            $data = DB::table($TABLE_MASTER)
+                ->select(
+                    'id',
+                    'dibuat_oleh'
+                )
+                ->where('id', $id)
+                ->first();
+            if(!is_null($data)) {
+                // Log::info("id : ". json_encode($data));
+                $data_detail = DB::table($TABLE_DETAIL)
+                    ->select('kode_unit', 'jam')
+                    ->where('id_pemakai_solar', $data->id)
+                    ->get();
+
+                $calculated_idr = 0;
+                $calculated_usd = 0;
+                $calculated_cny = 0;
+                $nomor = 1;
+                foreach($data_detail as $detail) {
+                    $detail->nomor = $nomor;
+                    if($detail->currency == 'IDR') {
+                        $calculated_idr = $calculated_idr + ($detail->qty * $detail->price);
+                    }
+                    if($detail->currency == 'USD') {
+                        $calculated_usd = $calculated_usd + ($detail->qty * $detail->price);
+                    }
+                    if($detail->currency == 'CNY') {
+                        $calculated_cny = $calculated_cny + ($detail->qty * $detail->price);
+                    }
+
+                    (float) $detail->total_price = (float) $detail->qty * (float) $detail->price;
+                    
+                    $nomor++;
+                }
+
+
+                $data_user = DB::connection('sqlsrv2')
+                    ->table("TKaryawan")
+                    ->select('NIK as nik', 'Nama as nama')
+                    ->where("nik", $data->dibuat_oleh)
+                    ->first();
+
+                // Log::info("pendukungReason : ". json_encode($pendukung_reason));
+                $data_master['dibuat_oleh'] = $data_user->nik;
+                $data_master['id'] = $data->id;
+
+                // Log::info("FormDetailByNoDoc : " .json_encode(array('data_master' => $data_master, 'data_detail' => $data_detail, 'data_user' => $data_user, 'pendukung_reason' => $pendukung_reason)));
+                $isError = false;
+            } else {
+                $isError = true;
+                $errorMessage = "Data tidak ditemukan";
+            }
+        } catch (Exception $ex) {
+            Log::error($ex->getMessage());
+            $errorMessage = $ex->getMessage();
+        }
+        // $is_user_sm = in_array($request->session()->get('user_id', ''), $this->user_sm);
+
+        return ['error' => $isError, 'errorMessage' => $errorMessage, 'data' => $data_master, 'detail' => $data_detail, 'pendukung_reason' => $pendukung_reason, 'nik_session' => $nik];
     }
 
     function SolarDetailById(Request $request) {
