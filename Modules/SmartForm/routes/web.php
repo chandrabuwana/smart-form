@@ -21,8 +21,10 @@ use Modules\SmartForm\App\Http\Controllers\PLANT\CompressorPompaController;
 use Modules\SmartForm\App\Http\Controllers\PLANT\PpmXcmg900dController;
 use Modules\SmartForm\App\Http\Controllers\PLANT\PlantWeldingController;
 use Modules\SmartForm\App\Http\Controllers\Production\FormCheckerController;
+use Modules\SmartForm\App\Http\Controllers\Production\KalibrasiCtController;
 use Modules\SmartForm\App\Http\Controllers\Production\ProductionTimeSheetDashboarController;
 use Modules\SmartForm\App\Http\Controllers\Production\AnakAsuhController;
+use Modules\SmartForm\App\Http\Controllers\Production\CoalGettingController;
 use Modules\SmartForm\App\Http\Controllers\SHE\DashboardSHEFRM19BController;
 use Modules\SmartForm\App\Http\Controllers\SHE\TransactionSHEFRM19BController;
 use Modules\SmartForm\App\Http\Controllers\SHE\EyewashController;
@@ -32,7 +34,6 @@ use Modules\SmartForm\App\Http\Controllers\SHE\P3KController;
 use Modules\SmartForm\App\Http\Controllers\SHE\AirMinumController;
 use Modules\SmartForm\App\Http\Controllers\SHE\NoiseController;
 use Modules\SmartForm\App\Http\Controllers\SHE\SheMessController;
-use Modules\SmartForm\App\Http\Controllers\SHE\CoalGettingController;
 use Modules\SmartForm\App\Http\Controllers\SHE\ErgonomiController;
 use Modules\SmartForm\App\Http\Controllers\SKL\DashboardSKLController;
 use Modules\SmartForm\App\Http\Controllers\SKL\SKLFormController;
@@ -62,6 +63,7 @@ use Modules\SmartForm\App\Http\Controllers\IT\CctvFormController;
 use Modules\SmartForm\App\Http\Controllers\IT\DeviceFormController;
 use Modules\SmartForm\App\Http\Controllers\IT\RouterFormController;
 use Modules\SmartForm\App\Http\Controllers\PLANT\GeneralInspection\InspectionCmtController;
+use Modules\SmartForm\App\Http\Controllers\PLANT\GeneralInspection\InspectionDongfengController;
 
 /*
 |--------------------------------------------------------------------------
@@ -358,12 +360,12 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::put('form/{id}', [SheMessController::class, 'Update'])->name('she.mess.form.update');
         });
 
-        Route::prefix('she-coal')->group(function () {
-            Route::get('dashboard', [CoalGettingController::class, 'Dashboard'])->name('she.coal.dashboard');
-            Route::get('form/export/{id}', [CoalGettingController::class, 'ExportForm'])->name('she.coal.export');
-            Route::get('form', [CoalGettingController::class, 'AddForm'])->name('she.coal.form');
-            Route::post('store', [CoalGettingController::class, 'Store'])->name('she.coal.store');
-            Route::put('form/{id}', [CoalGettingController::class, 'Update'])->name('she.coal.form.update');
+        Route::prefix('prod-coal')->group(function () {
+            Route::get('dashboard', [CoalGettingController::class, 'Dashboard'])->name('prod.coal.dashboard');
+            Route::get('form/export/{id}', [CoalGettingController::class, 'ExportForm'])->name('prod.coal.export');
+            Route::get('form', [CoalGettingController::class, 'AddForm'])->name('prod.coal.form');
+            Route::post('store', [CoalGettingController::class, 'Store'])->name('prod.coal.store');
+            Route::put('form/{id}', [CoalGettingController::class, 'Update'])->name('prod.coal.form.update');
         });
         Route::prefix('she-ergonomi')->group(function () {
             Route::get('dashboard', [ErgonomiController::class, 'Dashboard'])->name('she.ergonomi.dashboard');
@@ -400,9 +402,15 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
         Route::prefix('plant')->name('bss-form.plant.')->group(function () {
             // General Inspection
             Route::prefix('general-inspection')->name('general-inspection.')->group(function () {
+                // CMT
                 Route::get('cmt/{id}/print', [InspectionCmtController::class, 'print'])->name('cmt.print');
                 Route::get('cmt/get-data', [InspectionCmtController::class, 'getData'])->name('cmt.get-data');
                 Route::resource('cmt', InspectionCmtController::class);
+
+                // Dongfeng
+                Route::get('dongfeng/{id}/print', [InspectionDongfengController::class, 'print'])->name('dongfeng.print');
+                Route::get('dongfeng/get-data', [InspectionDongfengController::class, 'getData'])->name('dongfeng.get-data');
+                Route::resource('dongfeng', InspectionDongfengController::class);
             });
         });
 
@@ -415,14 +423,23 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
 
         });
 
+
+        Route::prefix('prod-kalibrasi-ct')->group(function () {
+            Route::get('/dashboard', [KalibrasiCtController::class, 'Dashboard'])->name('prod.kalibrasi-ct.dashboard');
+            Route::get('/form-kalibrasi-ct/export/{id}', [KalibrasiCtController::class, 'ExportForm'])->name('prod.kalibrasi-ct.export');
+            Route::get('/form-kalibrasi-ct', [KalibrasiCtController::class, 'AddFormKalibrasi'])->name('prod.kalibrasi-ct.form');
+            Route::post('/store-kalibrasi-ct', [KalibrasiCtController::class, 'StoreKalibrasi'])->name('prod.kalibrasi-ct.store');
+            Route::put('/form-kalibrasi-ct/{id}', [KalibrasiCtController::class, 'UpdateKalibrasi'])->name('prod.kalibrasi-ct.update');
+        });
+
         Route::prefix('ppm-900d')->group(function(){
             Route::get('/dashboard', [PpmXcmg900dController::class, 'Dashboard'])->name('plant.ppm.900d.dashboard');
             Route::get('/export/{id}', [PpmXcmg900dController::class, 'Export'])->name('plant.ppm.900d.export');
             Route::get('/add', [PpmXcmg900dController::class, 'Add'])->name('plant.ppm.900d.form');
             Route::post('/store', [PpmXcmg900dController::class, 'Store'])->name('plant.ppm.900d.store');
             Route::get('/detail/{id}', [PpmXcmg900dController::class, 'detail'])->name('plant.ppm.900d.detail');
-        });
 
+        });
 
     });
 

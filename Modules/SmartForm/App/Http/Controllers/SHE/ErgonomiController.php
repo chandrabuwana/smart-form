@@ -10,6 +10,7 @@ use Illuminate\Validation\ValidationException;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Modules\SmartForm\helpers\HrdHelper;
 
 class ErgonomiController extends Controller
 {
@@ -118,12 +119,14 @@ class ErgonomiController extends Controller
 
                 return view('smartform::she.ergonomi.form', [
                     'isShowDetail' => true,
-                    'data' => (object)$data
+                    'data' => (object)$data,
+                    'approvalList' => HrdHelper::getApprovalList(),
                 ]);
             }
 
             return view('smartform::she.ergonomi.form', [
-                'isShowDetail' => false
+                'isShowDetail' => false,
+                'approvalList' => HrdHelper::getApprovalList(),
             ]);
         } catch (\Exception $e) {
             Log::error('Error in AddForm: ' . $e->getMessage());

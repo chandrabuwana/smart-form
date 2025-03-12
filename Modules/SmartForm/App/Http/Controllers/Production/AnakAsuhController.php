@@ -148,7 +148,7 @@ class AnakAsuhController extends Controller
                 'jabatan' => $request->jabatan,
                 'departemen' => $request->departemen,
                 'created_by' => $request->created_by,
-                'acknowledged_by' => $request->acknowledged_by,
+                // 'acknowledged_by' => $request->acknowledged_by,
             ];
 
             // Initialize arrays for multiple entries
@@ -222,7 +222,7 @@ class AnakAsuhController extends Controller
                 'jabatan' => $request->jabatan,
                 'departemen' => $request->departemen,
                 'created_by' => $request->created_by,
-                'acknowledged_by' => $request->acknowledged_by,
+                // 'acknowledged_by' => $request->acknowledged_by,
             ];
 
             // Initialize arrays for multiple entries

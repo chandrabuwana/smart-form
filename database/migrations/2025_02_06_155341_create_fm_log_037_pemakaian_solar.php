@@ -23,6 +23,9 @@ return new class extends Migration
             $table->string('shift');
             $table->date('created_date');
             $table->string('hari');
+            $table->integer('stok_awal');
+            $table->integer('masuk');
+            $table->integer('stok_akhir');
             $table->string('dibuat_oleh')->nullable();
             $table->string('disetujui_oleh')->nullable();
             $table->string('diketahui_oleh')->nullable();

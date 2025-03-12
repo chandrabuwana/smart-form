@@ -131,13 +131,101 @@
                             </div>
 
                             <!-- Signatures -->
-                            <div class="row mb-3">
-                                <div class="col-md-12">
-                                    <div class="input-group input-group-static">
-                                        <label>Dibuat Oleh Pengawas</label>
-                                        <input type="text" name="created_by" class="form-control" required
-                                            value="{{ $isShowDetail ? $record->created_by : session('username') }}"
-                                            {{ $isShowDetail ? 'disabled' : '' }}>
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered">
+                                            <tr class="text-center">
+                                                <th class="border">Dibuat Oleh Pengawas</th>
+                                                <th class="border">Tanda Tangan</th>
+                                                <th class="border">Tanggal</th>
+                                            </tr>
+                                            <tr>
+                                                <td class="border">
+                                                    <select name="created_by" class="form-control text-center" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                                        <option value="">-- Pilih Pengawas --</option>
+                                                        @foreach($approvalList as $user)
+                                                            <option value="{{ $user->nama }}" {{ $isShowDetail && $record->created_by == $user->nama ? 'selected' : '' }}>
+                                                                {{ $user->nama }} ({{ $user->nik }})
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td class="text-center border">
+                                                    <div class="form-check d-inline">
+                                                        <input class="form-check-input" type="checkbox" 
+                                                            name="inspector_1_signature" value="1"
+                                                            {{ $isShowDetail && $record->inspector_1_signature ? 'checked' : '' }}
+                                                            {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                                    </div>
+                                                </td>
+                                                <td class="border">
+                                                    <input type="date" name="inspection_date" class="form-control text-center" 
+                                                        value="{{ $isShowDetail ? $record->inspection_date : now()->format('Y-m-d') }}"
+                                                        required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                                </td>
+                                            </tr>
+                                            <tr class="text-center">
+                                                <th class="border">Dibuat Oleh Pengawas</th>
+                                                <th class="border">Tanda Tangan</th>
+                                                <th class="border">Tanggal</th>
+                                            </tr>
+                                            <tr>
+                                                <td class="border">
+                                                    <select name="inspector_2" class="form-control text-center" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                                        <option value="">-- Pilih Pengawas --</option>
+                                                        @foreach($approvalList as $user)
+                                                            <option value="{{ $user->nama }}" {{ $isShowDetail && $record->inspector_1 == $user->nama ? 'selected' : '' }}>
+                                                                {{ $user->nama }} ({{ $user->nik }})
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td class="text-center border">
+                                                    <div class="form-check d-inline">
+                                                        <input class="form-check-input" type="checkbox" 
+                                                            name="inspector_2_signature" value="1"
+                                                            {{ $isShowDetail && $record->inspector_2_signature ? 'checked' : '' }}
+                                                            {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                                    </div>
+                                                </td>
+                                                <td class="border">
+                                                    <input type="date" name="inspector_2_date" class="form-control text-center" 
+                                                        value="{{ $isShowDetail ? $record->inspector_2_date : now()->format('Y-m-d') }}"
+                                                        required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                                </td>
+                                            </tr>
+                                            <tr class="text-center">
+                                                <th class="border">Diperiksa Oleh Supervisor</th>
+                                                <th class="border">Tanda Tangan</th>
+                                                <th class="border">Tanggal</th>
+                                            </tr>
+                                            <tr>
+                                                <td class="border">
+                                                    <select name="acknowledged_by" class="form-control text-center" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                                        <option value="">-- Pilih Supervisor --</option>
+                                                        @foreach($approvalList as $user)
+                                                            <option value="{{ $user->nama }}" {{ $isShowDetail && $maintenanceRecord->acknowledged_by == $user->nama ? 'selected' : '' }}>
+                                                                {{ $user->nama }} ({{ $user->nik }})
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td class="border text-center">
+                                                    <div class="form-check d-inline">
+                                                        <input class="form-check-input" type="checkbox" 
+                                                            name="acknowledged_by_signature" value="1"
+                                                            {{ $isShowDetail && $record->acknowledged_by_signature ? 'checked' : '' }}
+                                                            {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                                    </div>
+                                                </td>
+                                                <td class="border">
+                                                    <input type="date" name="acknowledged_date" class="form-control text-center" 
+                                                        value="{{ $isShowDetail ? $record->acknowledged_date : now()->format('Y-m-d') }}"
+                                                        required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                                </td>
+                                            </tr>
+                                        </table>
                                     </div>
                                 </div>
                             </div>

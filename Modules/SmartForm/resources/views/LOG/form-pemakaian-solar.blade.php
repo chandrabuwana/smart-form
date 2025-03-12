@@ -124,8 +124,8 @@
                                     </div>
                                     <div class="col-md-4 col-lg-2">
                                         <div class="input-group input-group-static mb-4">
-                                            <label for="iTotalLiter">Total Liter : </label>
-                                            <span id="iTotalLiter">
+                                            <label for="iTotalLiter">Total Liter : </br></label>
+                                            <span style="font-size: 14px" id="iTotalLiter">
                                         </div>
                                     </div>
                                     
@@ -156,7 +156,7 @@
                                     
                                     <div class="col-md-4 col-lg-2">
                                         <div class="input-group input-group-static mb-4">
-                                            <button id="btn-add-item" class="btn btn-primary">Tambah</button>                                            
+                                            <button id="btn-add-item" class="btn btn-primary" onclick="ClearFields();">Tambah</button>                                            
                                         </div>
                                     </div>
                                 </div>
@@ -182,12 +182,38 @@
                                     </tr>
                                 </thead>
                             </table>
-                            <div class="col-md-4 col-lg-2">
+                            <table>
+                              <tr>
+                                <td style="width:10%">Stok Awal</td>
+                                <td style="width:10%"><input type="number"  onkeypress="return event.charCode >= 48" min="1" class="form-control" id="tStokAwal" name="tStokAwal" placeholder=": ................." required>
+                                </td>
+                                <td style="width:80%">Liter</td>
+                              </tr>
+                              <tr>
+                                <td>Masuk :</td>
+                                <td><input type="number" onkeypress="return event.charCode >= 48" min="1" class="form-control" id="tMasuk" placeholder=": ................." name="tMasuk" required>
+                                </td>
+                                <td>Liter</td>
+                              </tr>
+                              <tr>
+                                <td>Keluar</td>
+                                <td><span id="tTotals">
+                                </td>
+                                <td>Liter</td>
+                              </tr>
+                              <tr>
+                                <td>Stok Akhir</td>
+                                <td><span id="tTotalAkhir">
+                                </td>
+                                <td>Liter</td>
+                              </tr>
+                            </table>
+                            <!-- <div class="col-md-4 col-lg-2">
                                 <div class="input-group input-group-static mb-4">
-                                    <label for="tTotals">Total Pemakaian : </label>
+                                    <label for="tTotals">Keluar : </label>
                                     <span id="tTotals">Liter
                                 </div>
-                            </div>
+                            </div> -->
                             <!-- <div class="col-md-4 col-lg-2">
                                 <div class="input-group input-group-static mb-4">
                                     <label for="tTotalPemakaian">Total Pemakaian : </label>
@@ -238,10 +264,13 @@
         var iKodeUnit = $("#iKodeUnit")
         var iJam = $("#iJam")
         var iAwal = $("#iAwal")
+        var tStokAwal = $("#tStokAwal")
+        var tMasuk = $("#tMasuk")
         var iAkhir = $("#iAkhir")
         var iTotalLiter = $("#iTotalLiter")
         var tTotalPemakaian = $("#tTotalPemakaian")
         var tTotals = $("#tTotals")
+        var tTotalAkhir = $("#tTotalAkhir")
         var iNamaOperator = $("#iNamaOperator")
         var iKm = $("#iKm")
         var iHm = $("#iHm")
@@ -366,6 +395,10 @@
                 iTotalLiter.text((iAkhir.val()) - (iAwal.val() ))
             });
 
+            tStokAwal.change(function(e) {
+                tTotalAkhir.text((tStokAwal.val()) - (parseInt(tTotals.text())))
+            });
+
             function validateItem() {
                 var errorValidate = []
 
@@ -421,6 +454,18 @@
                     errorValidate.push({
                         field: "Kolom Foreman",
                         message: "Harus dipilih"
+                    })
+                }
+                if(tStokAwal.val() == "") {
+                    errorValidate.push({
+                        field: "Kolom Stok Awal",
+                        message: "Harus Diisi"
+                    })
+                }
+                if(tMasuk.val() == "") {
+                    errorValidate.push({
+                        field: "Kolom Masuk",
+                        message: "Harus Diisi"
                     })
                 }
                 if(iFuel.val() == ""){
@@ -500,6 +545,9 @@
                         approval: dApproved.val(),
                         shift: iShift.val(),
                         total_pemakaian: tTotals.text(),
+                        stokAwal: tStokAwal.val(),
+                        stokAkhir: tTotalAkhir.text(),
+                        masuk: tMasuk.val(),
                         fuel: iFuel.val()
                     }
                     let formData = new FormData();
@@ -535,8 +583,9 @@
                         stopLoading()
                     });
                 }
-                
             })
         })
+
+
     </script>
 @endsection

@@ -588,6 +588,9 @@ class LogController extends Controller {
             'total_pemakaian' => $data['total_pemakaian'],
             'created_date' => $today,
             'hari' => $hari,
+            'stok_awal' => $data['stokAwal'],
+            'stok_akhir' => $data['stokAkhir'],
+            'masuk' => $data['masuk'],
             'disetujui_oleh' => $data['approval']
         ];
         // $spliited_no_doc = explode("/", $data_insert['no_dok']);
@@ -648,7 +651,7 @@ class LogController extends Controller {
         );
         try {
             $data = DB::table($TABLE_MASTER)
-                    ->select('id', 'no_dok','revisi as revisi','halaman','tanggal','job_site as jobsite','no_fuel_station as noFuel','shift','dibuat_oleh as dibuat','diketahui_oleh as mengetahui','disetujui_oleh as approval','total_pemakaian','created_date as tgldibuat','hari')
+                    ->select('id', 'no_dok','revisi as revisi','halaman','tanggal','job_site as jobsite','no_fuel_station as noFuel','shift','dibuat_oleh as dibuat','diketahui_oleh as mengetahui','disetujui_oleh as approval','total_pemakaian','created_date as tgldibuat','hari','stok_awal','masuk','stok_akhir')
                     ->where('id', $id)
                     ->first();
                 
@@ -676,6 +679,9 @@ class LogController extends Controller {
             $data_master['approval'] = $data->approval;
             $data_master['tgldibuat'] = $data->tgldibuat;
             $data_master['hari'] = $data->hari;
+            $data_master['stok_awal'] = $data->stok_awal;
+            $data_master['masuk'] = $data->masuk;
+            $data_master['stok_akhir'] = $data->stok_akhir;
         } catch (Exception $ex) {
             Log::error($ex->getMessage());
         }

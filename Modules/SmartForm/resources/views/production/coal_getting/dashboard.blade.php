@@ -96,7 +96,7 @@
             <!-- Filters and Search -->
             <div class="card-body px-0 pb-2">
                 <div class="d-flex align-items-center mx-3">
-                    <a href="{{ route('she.coal.form') }}">
+                    <a href="{{ route('prod.coal.form') }}">
                         <button class="btn btn-primary ms-auto uploadBtn">
                             New Form
                         </button>
@@ -104,7 +104,7 @@
                 </div>
                 <h4 class="mx-3">Filter Data</h4>
                 <div class="mx-4 row">
-                    <form action="{{ route('she.coal.dashboard') }}" method="GET" id="filterForm">
+                    <form action="{{ route('prod.coal.dashboard') }}" method="GET" id="filterForm">
                     <div class="row align-items-center">
                         <div class="col-md-2 mb-3">
                             <div class="input-group input-group-static mb-4 position-relative">
@@ -198,7 +198,7 @@
                                                 </p>
                                             </td>
                                             <td class="align-middle">
-                                                <a href="{{ route('she.coal.form', ['id' => $record->id]) }}" class="btn btn-primary btn-action text-white">
+                                                <a href="{{ route('prod.coal.form', ['id' => $record->id]) }}" class="btn btn-primary btn-action text-white">
                                                     <i class="fas fa-eye"></i> Detail
                                                 </a>
                                             </td>
@@ -225,7 +225,7 @@
 $(document).ready(function() {
     // Clear filter button
     $('#btnClearFilter').click(function() {
-        window.location.href = '{{ route("she.coal.dashboard") }}';
+        window.location.href = '{{ route("prod.coal.dashboard") }}';
     });
 
     // Initialize date pickers

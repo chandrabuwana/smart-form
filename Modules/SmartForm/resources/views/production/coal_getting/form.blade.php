@@ -160,23 +160,29 @@
                             <div class="row mt-4">
                                 <div class="col-md-6">
                                     <h6>Dibuat oleh,</h6>
-                                    <p class="mb-1">Production Foreman</p>
+                                    
                                     <div class="mb-3">
                                         <input type="text" name="created_by" class="form-control" 
                                             placeholder="Nama Lengkap"
                                             value="{{ $isShowDetail ? $record->created_by : '' }}"
                                             {{ $isShowDetail ? 'disabled' : '' }} required>
                                     </div>
+                                    <p class="mb-1">Production Foreman</p>
                                 </div>
                                 <div class="col-md-6">
                                     <h6>Diketahui oleh,</h6>
-                                    <p class="mb-1">Production Supervisor</p>
+                                    
                                     <div class="mb-3">
-                                        <input type="text" name="acknowledged_by" class="form-control" 
-                                            placeholder="Nama Lengkap"
-                                            value="{{ $isShowDetail ? $record->acknowledged_by : '' }}"
-                                            {{ $isShowDetail ? 'disabled' : '' }} required>
+                                        <select name="acknowledged_by" class="form-control text-left" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                            <option value="">-- Pilih Pengawas --</option>
+                                            @foreach($approvalList as $user)
+                                                <option value="{{ $user->nama }}" {{ $isShowDetail && $record->acknowledged_by == $user->nama ? 'selected' : '' }}>
+                                                    {{ $user->nama }} ({{ $user->nik }})
+                                                </option>
+                                            @endforeach
+                                        </select>
                                     </div>
+                                    <p class="mb-1">Production Supervisor</p>
                                 </div>
                             </div>
 
@@ -184,15 +190,15 @@
                             <div class="row">
                                 <div class="col-12 text-end">
                                     @if($isShowDetail)
-                                        <a href="{{ route('she.coal.dashboard') }}" class="btn btn-secondary">Back</a>
-                                        <a href="{{ route('she.coal.export', ['id' => $record->id]) }}" class="btn btn-primary">
+                                        <a href="{{ route('prod.coal.dashboard') }}" class="btn btn-secondary">Back</a>
+                                        <a href="{{ route('prod.coal.export', ['id' => $record->id]) }}" class="btn btn-primary">
                                             <i class="fas fa-file-export"></i> Export
                                         </a>
                                     @else
                                     <div class="row mt-4">
                                         <div class="col-12 d-flex justify-content-between align-items-center">
                                             <div>
-                                                <a href="{{ route('she.coal.dashboard') }}" class="btn btn-secondary">Back</a>
+                                                <a href="{{ route('prod.coal.dashboard') }}" class="btn btn-secondary">Back</a>
                                             </div>
                                             <div>
                                                 <button type="submit" class="btn btn-primary">Submit</button>
@@ -237,7 +243,7 @@
 
             var formData = new FormData(this);
             
-            axios.post('{{ route("she.coal.store") }}', formData)
+            axios.post('{{ route("prod.coal.store") }}', formData)
                 .then(function(response) {
                     if (response.data.success) {
                         Swal.fire({
@@ -246,7 +252,7 @@
                             text: response.data.message
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                window.location.href = '{{ route("she.coal.dashboard") }}';
+                                window.location.href = '{{ route("prod.coal.dashboard") }}';
                             }
                         });
                     }
