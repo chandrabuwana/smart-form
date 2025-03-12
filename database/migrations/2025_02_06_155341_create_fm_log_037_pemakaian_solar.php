@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('shift');
             $table->date('created_date');
             $table->string('hari');
+            $table->string('status');
             $table->integer('stok_awal');
             $table->integer('masuk');
             $table->integer('stok_akhir');
