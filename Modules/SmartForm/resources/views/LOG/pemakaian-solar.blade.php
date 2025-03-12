@@ -68,6 +68,7 @@
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script type="text/javascript">
         var users_nik = {{ Illuminate\Support\Js::from($nik_session) }}
+        var users_name = {{ Illuminate\Support\Js::from($name_session) }}
         var $table = $("#list-pengeluaran-oli");
         var btnFilterSubmit = document.getElementById("btnFilterSubmit")
         var additonalQuery = {
@@ -112,7 +113,7 @@
         function actionFormatter(value, row, index) {
             var btn = '<a href="/bss-form/sm/get-pemakaian-detail?id=' + row.id + '"><i class="fa fa-info-circle fixed-plugin-button-nav cursor-pointer"></i></a>';
             if(row.status = "Draft" || row.status == null) {
-                if(row.request == users_nik && (row.editable == 0 || row.editable == null)) {
+                if(row.request == users_nik || row.approved == users_name && (row.editable == 0 || row.editable == null)) {
                     btn = btn + '<a href="/bss-form/sm/edit-form-asset-request?id=' + row.id + '"><i class="fa fa-edit fixed-plugin-button-nav cursor-pointer"></i></a>';
                 }
             }

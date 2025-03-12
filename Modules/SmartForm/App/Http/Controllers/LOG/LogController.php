@@ -515,9 +515,11 @@ class LogController extends Controller {
     public function PemakaianSolarDashboard(Request $req)
     {
         $nik_session = $req->session()->get('user_id', '');
+        $name_session = $req->session()->get('username', '');
 
         return view('SmartForm::LOG/pemakaian-solar', [
-            'nik_session' => $nik_session]);
+            'nik_session' => $nik_session,
+            'name_session' => $name_session]);
     }
 
     function GetListPemakaianSolar(Request $request) {
