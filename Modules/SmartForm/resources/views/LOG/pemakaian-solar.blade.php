@@ -40,7 +40,9 @@
                             data-unique-id="id">
                             <thead>
                                 <tr>
-                                    <th data-field="approved" data-align="left" data-halign="text-center" data-sortable="true">Approved By</th>
+                                    <th data-field="request" data-align="left" data-halign="text-center" data-sortable="true">Dibuat Oleh</th>
+                                    <th data-field="approved" data-align="left" data-halign="text-center" data-sortable="true">Disetujui Oleh</th>
+                                    <th data-field="status" data-align="left" data-halign="text-center" data-sortable="true">Status</th>
                                     <th data-field="shift" data-align="left" data-halign="text-center" data-sortable="true">shift</th>
                                     <th data-field="site" data-align="left" data-halign="text-center" data-sortable="true">Job Site</th>
                                     <th data-field="fuel" data-align="left" data-halign="text-center" data-sortable="true">No. Fuel Station</th>
@@ -65,6 +67,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.23.2/dist/extensions/export/bootstrap-table-export.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script type="text/javascript">
+        var users_nik = {{ Illuminate\Support\Js::from($nik_session) }}
         var $table = $("#list-pengeluaran-oli");
         var btnFilterSubmit = document.getElementById("btnFilterSubmit")
         var additonalQuery = {
@@ -99,11 +102,21 @@
             })
         }
 
-        function actionFormatter(value, row, index) {
-            return `
-                <a class="btn btn-primary btn-action btn-sm" href="/bss-form/log/pdf-pemakaian-solar/${row.id}">Pdf</a>
-            `;
-        }
+        // function actionFormatter(value, row, index) {
+        //     return `
+        //         <a class="btn btn-info btn-action btn-sm me-1" href="/bss-form/log/edit-pemakaian-solar/${row.id}">Edit</a>
+        //         <a class="btn btn-primary btn-action btn-sm" href="/bss-form/log/pdf-pemakaian-solar/${row.id}">Pdf</a>
+        //     `;
+        // }
 
+        function actionFormatter(value, row, index) {
+            var btn = '<a href="/bss-form/sm/get-pemakaian-detail?id=' + row.id + '"><i class="fa fa-info-circle fixed-plugin-button-nav cursor-pointer"></i></a>';
+            if(row.status = "Draft" || row.status == null) {
+                if(row.request == users_nik && (row.editable == 0 || row.editable == null)) {
+                    btn = btn + '<a href="/bss-form/sm/edit-form-asset-request?id=' + row.id + '"><i class="fa fa-edit fixed-plugin-button-nav cursor-pointer"></i></a>';
+                }
+            }
+            return btn;
+        }
     </script>
 @endsection
