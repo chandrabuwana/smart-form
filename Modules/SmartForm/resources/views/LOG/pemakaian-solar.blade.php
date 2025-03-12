@@ -111,10 +111,10 @@
         // }
 
         function actionFormatter(value, row, index) {
-            var btn = '<a href="/bss-form/sm/get-pemakaian-detail?id=' + row.id + '"><i class="fa fa-info-circle fixed-plugin-button-nav cursor-pointer"></i></a>';
+            var btn = '<a class="btn btn-info btn-action btn-sm me-1" href="/bss-form/log/get-pemakaian-detail?id=' + row.id + '">Lihat</a>';
             if(row.status = "Draft" || row.status == null) {
-                if(row.request == users_nik || row.approved == users_name && (row.editable == 0 || row.editable == null)) {
-                    btn = btn + '<a href="/bss-form/sm/edit-form-asset-request?id=' + row.id + '"><i class="fa fa-edit fixed-plugin-button-nav cursor-pointer"></i></a>';
+                if(row.request == users_nik && (row.editable == 0 || row.editable == null)) {
+                    btn = btn + '<a  class="btn btn-success btn-action btn-sm me-1" href="/bss-form/log/edit-pemakaian-solar?id=' + row.id + '">Edit</a>';
                 }
             }
             return btn;
