@@ -52,7 +52,7 @@
                                             <td>Pilih Atasan Langsung</td>
                                             <td>:</td>
                                             <td>
-                                                <select name="dApproved" class="form-control text-center" required>
+                                                <select name="dApproved" id="dApproved" class="form-control text-center" required>
                                                 <option selected value="">-- Pilih Atasan Langsung --</option>
                                                 @foreach($approvalList as $user)
                                                     <option value="{{ $user->nama }}">{{ $user->nama }}
@@ -388,7 +388,7 @@
             noDoc.text(generateNoDoc())
             tglDoc.text(formatTgl() || "-")
 
-            dataPemakaianSolar.foreman = iForeman.val()
+            dataPemakaianSolar.approval = dApproved.val()
             dataPemakaianSolar.lube = iFuel.val()
 
             iAkhir.change(function(e) {
