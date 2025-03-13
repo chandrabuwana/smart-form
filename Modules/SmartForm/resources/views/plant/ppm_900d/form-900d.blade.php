@@ -28,7 +28,7 @@
                         </div>
                     </div>
                     {{-- id="formChecker"  --}}
-                    <form id="formChecker" method="POST">
+                    <form id="formXCMG900" method="POST">
                         @csrf
                         <div class="mx-3">
 
@@ -587,14 +587,11 @@
 @section('custom-js')
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
-        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous">
-    </script>
 
 
     <script>
         $(function() {
-            var form = $("#formChecker");
+            var form = $("#formXCMG900");
             var submitBtn = form.find('button[type="submit"]');
 
             form.submit(function(e) {
@@ -622,7 +619,7 @@
                     })
                     .catch(function(error) {
                         let errorMessage = 'Terjadi kesalahan pada sistem';
-                        console.log("Error respons:", error.response); // Log error dari server
+                        console.log("Error respons:", error.response);
 
                         if (error.response) {
                             if (error.response.data.errors) {

@@ -107,12 +107,12 @@ class PpmXcmg900dController extends Controller {
         $data->fin_result = json_decode( $detail->fin_result );
         $data->fin_pr = json_decode( $detail->fin_pr );
         $data->fin_taggal = json_decode( $detail->fin_taggal );
-        $data->fin_remark = json_decode( $detail->fin_remark );  
+        $data->fin_remark = json_decode( $detail->fin_remark );
         // dd($data);
 
         return view( 'smartform::plant.ppm_900d.show-900d', [ 'data' => $data, 'list' => $list   ] );
     }
-  
+
     public function Store( Request $request ) {
         $data = [
             'doc_num' => $this->generateDocNumber(),
@@ -164,7 +164,7 @@ class PpmXcmg900dController extends Controller {
             'updated_at' => Carbon::now()
         ];
 
-       
+
         DB::table( 'ppm_xcmg_900d' )->insert( $data );
         DB::table( 'report_ppm_xcmg_900d' )->insert( $dataDetail );
         return response()->json( [
@@ -213,7 +213,7 @@ class PpmXcmg900dController extends Controller {
         $data->fin_result = json_decode( $detail->fin_result );
         $data->fin_pr = json_decode( $detail->fin_pr );
         $data->fin_taggal = json_decode( $detail->fin_taggal );
-        $data->fin_remark = json_decode( $detail->fin_remark );  
+        $data->fin_remark = json_decode( $detail->fin_remark );
         $pdf = PDF::loadView( 'smartform::plant.ppm_900d.export-pdf', [
             'data' => $data, 'list' => $list,
 
@@ -260,5 +260,5 @@ class PpmXcmg900dController extends Controller {
         return $docNumber;
     }
 
-    
+
 }

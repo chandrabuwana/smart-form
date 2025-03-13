@@ -119,7 +119,9 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/list-pemakaian-solar', [LogController::class, 'GetListPemakaianSolar'])->name("bss-form.log.list-pemakaian-solar");
             Route::get('/form-pemakaian-solar', [LogController::class, 'formPemakaianSolar'])->name('bss-form.log.form-pemakaian-solar');
             Route::post('/add-pemakaian-solar', [LogController::class, 'SubmitFormPemakaianSolar'])->name("bss-form.log.add-pemakaian-solar");
+            Route::get('/edit-pemakaian-solar', [LogController::class, 'editPemakaianSolar'])->name('bss-form.log.edit-pemakaian-solar');
             Route::get('/pdf-pemakaian-solar/{id}', [LogController::class, 'PdfPemakaianSolar'])->name('bss-form.log.pdf-pemakaian-solar');
+            Route::get('/get-pemakaian-detail', [LogController::class, 'SolarDetailById'])->name("bss-form.log.form-detail-by-id");
 
             // CHECK OGC COMPLIANCE
             Route::get('/check-ogc-compliance', [CheckOgcComController::class, 'CheckOgcCompDashboard'])->name('bss-form.log.check-ogc-comp.dashboard');

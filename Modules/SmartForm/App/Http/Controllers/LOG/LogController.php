@@ -512,9 +512,14 @@ class LogController extends Controller {
     // ***** END PENGELUARAN OLI *****
 
     // ***** START PEMAKAIAN SOLAR *****
-    public function PemakaianSolarDashboard()
+    public function PemakaianSolarDashboard(Request $req)
     {
-        return view('SmartForm::LOG/pemakaian-solar');
+        $nik_session = $req->session()->get('user_id', '');
+        $name_session = $req->session()->get('username', '');
+
+        return view('SmartForm::LOG/pemakaian-solar', [
+            'nik_session' => $nik_session,
+            'name_session' => $name_session]);
     }
 
     function GetListPemakaianSolar(Request $request) {
@@ -531,7 +536,7 @@ class LogController extends Controller {
         $filter = $request->query('filter', null); // Default limit
         try {
             $master = DB::table($TABLE_PENGELUARAN_OLI)
-                ->select('id', 'shift', 'job_site as site', 'dibuat_oleh','no_fuel_station as fuel','total_pemakaian','disetujui_oleh as approved');
+                ->select('id', 'shift', 'job_site as site', 'dibuat_oleh','no_fuel_station as fuel','total_pemakaian','disetujui_oleh as approved','dibuat_oleh as request','status');
             
             $master->orderBy($sort, $order);
             $jml = $master->count();            
@@ -556,8 +561,10 @@ class LogController extends Controller {
         return response()->json($response);
     }
 
-    function formPemakaianSolar() {
+    function formPemakaianSolar(Request $req) {
+        $nik_session = $req->session()->get('user_id', '');
         return view('SmartForm::LOG/form-pemakaian-solar', [
+                    'nik_session' => $nik_session,
                     'isShowDetail' => true,
                     'approvalList' => HrdHelper::getApprovalList()
                 ]);
@@ -591,6 +598,7 @@ class LogController extends Controller {
             'stok_awal' => $data['stokAwal'],
             'stok_akhir' => $data['stokAkhir'],
             'masuk' => $data['masuk'],
+            'status' => "Draft",
             'disetujui_oleh' => $data['approval']
         ];
         // $spliited_no_doc = explode("/", $data_insert['no_dok']);
@@ -688,6 +696,146 @@ class LogController extends Controller {
         Log::info("data_master : ". json_encode($data_master));
         $pdf = PDF::loadView('SmartForm::LOG/pemakaian-solar-pdf',  ['data' => $data_master, 'data_detail' => $data_detail, 'error' => $errors]);
         return $pdf->download('BSS-FRM-LOG-037.pdf');
+    }
+
+    function editPemakaianSolar(Request $request) {
+        $id = $request->query('id');
+        $nik_session = $request->session()->get('user_id', '');
+        $data = $this->getDetailPemakaianSolar($request, $id, $nik_session);
+        Log::debug("Data edit : ". json_encode($data, JSON_PRETTY_PRINT));
+        if($data['data']['dibuat_oleh'] != $nik_session) {
+            return abort(401, 'Unauthoried Request!');
+        } else {
+            return view("SmartForm::LOG/edit-form-pemakaian-solar", $data);
+        }
+    }
+
+    private function getDetailPemakaianSolar(Request $request, $id, $nik) {
+        $TABLE_MASTER = "FM_LOG_037_PEMAKAIAN_SOLAR";
+        $TABLE_DETAIL = "FM_LOG_037_PEMAKAIAN_SOLAR_DETAIL";
+        $isError = true;
+        $errorMessage = '';
+        $data_master = array(
+            'id' => '',
+            'dibuat_oleh' => ''
+        );
+        $data_detail = array();
+        $pendukung_reason = array();
+        try {
+            $data = DB::table($TABLE_MASTER)
+                ->select(
+                    'id',
+                    'dibuat_oleh'
+                )
+                ->where('id', $id)
+                ->first();
+            if(!is_null($data)) {
+                // Log::info("id : ". json_encode($data));
+                $data_detail = DB::table($TABLE_DETAIL)
+                    ->select('kode_unit', 'jam')
+                    ->where('id_pemakai_solar', $data->id)
+                    ->get();
+
+                $calculated_idr = 0;
+                $calculated_usd = 0;
+                $calculated_cny = 0;
+                $nomor = 1;
+                foreach($data_detail as $detail) {
+                    $detail->nomor = $nomor;
+                    if($detail->currency == 'IDR') {
+                        $calculated_idr = $calculated_idr + ($detail->qty * $detail->price);
+                    }
+                    if($detail->currency == 'USD') {
+                        $calculated_usd = $calculated_usd + ($detail->qty * $detail->price);
+                    }
+                    if($detail->currency == 'CNY') {
+                        $calculated_cny = $calculated_cny + ($detail->qty * $detail->price);
+                    }
+
+                    (float) $detail->total_price = (float) $detail->qty * (float) $detail->price;
+                    
+                    $nomor++;
+                }
+
+
+                $data_user = DB::connection('sqlsrv2')
+                    ->table("TKaryawan")
+                    ->select('NIK as nik', 'Nama as nama')
+                    ->where("nik", $data->dibuat_oleh)
+                    ->first();
+
+                // Log::info("pendukungReason : ". json_encode($pendukung_reason));
+                $data_master['dibuat_oleh'] = $data_user->nik;
+                $data_master['id'] = $data->id;
+
+                // Log::info("FormDetailByNoDoc : " .json_encode(array('data_master' => $data_master, 'data_detail' => $data_detail, 'data_user' => $data_user, 'pendukung_reason' => $pendukung_reason)));
+                $isError = false;
+            } else {
+                $isError = true;
+                $errorMessage = "Data tidak ditemukan";
+            }
+        } catch (Exception $ex) {
+            Log::error($ex->getMessage());
+            $errorMessage = $ex->getMessage();
+        }
+        // $is_user_sm = in_array($request->session()->get('user_id', ''), $this->user_sm);
+
+        return ['error' => $isError, 'errorMessage' => $errorMessage, 'data' => $data_master, 'detail' => $data_detail, 'pendukung_reason' => $pendukung_reason, 'nik_session' => $nik];
+    }
+
+    function SolarDetailById(Request $request) {
+        $id = $request->query('id');
+        $nik_session = $request->session()->get('user_id', '');
+        $data = $this->getDetail($request, $id, $nik_session);
+        $history_edit = $this->getHistory($data['data']['id']);
+        $data_approval = $this->getApprovalStatus($no_doc, $data['data']['acknowledge_by_1_nik'], $data['data']['acknowledge_by_2_nik'], $data['data']['approved_by_1_nik'], $data['data']['approved_by_2_nik']);
+        $data = array_merge($data, $history_edit, $data_approval);
+        $data['list_dept'] = self::LIST_DEPT;
+
+        return view('SmartForm::LOG/detail-form-pemakaian-solar', $data);
+    }
+
+    private function getApprovalStatus(string $no_doc, $ack1, $ack2, $approve1, $approve2) {
+        $data = null;
+
+        try {
+            // $data['approval_status'] = DB::table('PICA_BETA.dbo.FM_SM_016_MASTER as pfm')
+            $sql_approval = DB::table('FM_SM_016_MASTER as pfm')
+                ->leftJoin('HRD.dbo.TKaryawan as k0', 'pfm.requested_by', '=', 'k0.NIK')
+                ->leftJoin('HRD.dbo.TKaryawan as k1', 'pfm.acknowledge_by_1_nik', '=', 'k1.NIK')
+                ->leftJoin('HRD.dbo.TKaryawan as k1a', 'pfm.cost_control_nik', '=', 'k1a.NIK')
+                ->leftJoin('HRD.dbo.TKaryawan as k2', 'pfm.acknowledge_by_2_nik', '=', 'k2.NIK')
+                ->leftJoin('HRD.dbo.TKaryawan as k3', 'pfm.approved_by_1_nik', '=', 'k3.NIK')
+                ->leftJoin('HRD.dbo.TKaryawan as k4', 'pfm.approved_by_2_nik', '=', 'k4.NIK')
+                ->select(
+                    'pfm.requested_by',
+                    'pfm.acknowledge_1',
+                    'pfm.cost_control',
+                    'pfm.acknowledge_2',
+                    'pfm.approved_1',
+                    'pfm.approved_2',
+                    'pfm.acknowledge_by_1_nik',
+                    'pfm.cost_control_nik',
+                    'pfm.acknowledge_by_2_nik',
+                    'pfm.approved_by_1_nik',
+                    'pfm.approved_by_2_nik',
+                    'k0.Nama as requested_by_nama',
+                    'k1.Nama as acknowledge_by_1_nama',
+                    'k1a.Nama as cost_control_nama',
+                    'k2.Nama as acknowledge_by_2_nama',
+                    'k3.Nama as approved_by_1_nama',
+                    'k4.Nama as approved_by_2_nama'
+                )
+                ->where('pfm.no_doc', $no_doc);
+            Log::debug("SQL approval status : " . $sql_approval->toRawSql());
+
+            $data['approval_status'] = $sql_approval->first();
+        } catch (Exception $ex) {
+            Log::error($ex->getMessage());
+            Log::error($ex->getTraceAsString());
+        }
+        Log::debug($data);
+        return $data;
     }
     // ***** END PEMAKAIAN SOLAR *****
 }
