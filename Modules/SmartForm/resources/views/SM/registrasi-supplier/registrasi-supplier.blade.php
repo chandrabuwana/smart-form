@@ -72,7 +72,7 @@
                     </div>
 
                     <div class="table-responsive p-0">
-                        <table id="dataListFormRegisSupplier" data-toggle="table" data-ajax="dataListFormRegisSupplierGenerateData"
+                        <table id="dataListFormRegisSupplier" data-toggle="table" data-ajax="fetchFormsData"
                             data-side-pagination="server" data-query-params="dataListFormSupplierParamsGenerate"
                             data-page-list="[10, 25, 50, 100, all]" data-sortable="true"
                             data-content-type="application/json" data-data-type="json" data-pagination="true"
@@ -195,6 +195,15 @@
             var url = '/helper/data-regis-supplier'
             $.get(url + '?' + $.param(params.data)).then(function(res) {
                 params.success(res)
+            })
+        }
+
+        function fetchFormsData(params) {
+            params.data = {...params.data, ...additonalQuery}
+            var url = '/bss-form/sm/list-supplier'
+            // console.log(params.data)
+            $.get(url + '?' + $.param(params.data)).then(function(res) {
+                params.success(res.data)
             })
         }
 
