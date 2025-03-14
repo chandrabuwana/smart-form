@@ -18,3 +18,8 @@ yarn-error.log
 /.vscode
 REVA.json
 /public/images
+*.json
+*.lock
+package-lock.json
+*.json
+*.json

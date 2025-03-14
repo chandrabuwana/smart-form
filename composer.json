@@ -16,6 +16,7 @@
         "laravel/tinker": "^2.8",
         "nwidart/laravel-modules": "^10.0",
         "phpoffice/phpspreadsheet": "^3.3",
+        "twbs/bootstrap-icons": "*",
         "tymon/jwt-auth": "^2.1"
     },
     "require-dev": {
