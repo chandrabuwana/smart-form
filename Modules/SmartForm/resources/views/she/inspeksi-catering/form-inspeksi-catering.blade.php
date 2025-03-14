@@ -380,7 +380,7 @@
                                                 <input type="number" onkeypress="return event.charCode >= 48" min="1" max="10" class="form-control" id="tB9" name="tB9" placeholder="1 - 10" required>
                                             </td>
                                             <td>
-                                                <input type="text" class="form-control" id="tB9h" name="tB9h" placeholder="Keterangan">
+                                                <input type="text" class="form-control" id="tB9i" name="tB9i" placeholder="Keterangan">
                                             </td>
                                         </tr>
                                     </table>
@@ -409,7 +409,7 @@
                                             <td style="width:50%">Apakah karyawan sudah menggunakan alat yang aman</td>
                                             <td>:</td>
                                             <td>
-                                                <input type="number" onkeypress="return event.charCode >= 48" min="1" max="10" class="form-control" id="tC2" name="tC3" placeholder="1 - 10" required>
+                                                <input type="number" onkeypress="return event.charCode >= 48" min="1" max="10" class="form-control" id="tC2" name="tC2" placeholder="1 - 10" required>
                                             </td>
                                             <td>
                                                 <input type="text" class="form-control" id="tC2b" name="tC2b" placeholder="Keterangan">
@@ -540,7 +540,7 @@
                                                 <input type="number" onkeypress="return event.charCode >= 48" min="1" max="10" class="form-control" id="tD2" name="tD2" placeholder="1 - 10" required>
                                             </td>
                                             <td>
-                                                <input type="text" class="form-control" id="tD1b" name="tD1b" placeholder="Keterangan">
+                                                <input type="text" class="form-control" id="tD2b" name="tD2b" placeholder="Keterangan">
                                             </td>
                                         </tr>
                                         </tr>
@@ -552,7 +552,7 @@
                                                 <input type="number" onkeypress="return event.charCode >= 48" min="1" max="10" class="form-control" id="tD3" name="tD3" placeholder="1 - 10" required>
                                             </td>
                                             <td>
-                                                <input type="text" class="form-control" id="tD1c" name="tD1c" placeholder="Keterangan">
+                                                <input type="text" class="form-control" id="tD3c" name="tD3c" placeholder="Keterangan">
                                             </td>
                                         </tr>
                                         </tr>
@@ -564,7 +564,7 @@
                                                 <input type="number" onkeypress="return event.charCode >= 48" min="1" max="10" class="form-control" id="tD4" name="tD4" placeholder="1 - 10" required>
                                             </td>
                                             <td>
-                                                <input type="text" class="form-control" id="tD1d" name="tD1d" placeholder="Keterangan">
+                                                <input type="text" class="form-control" id="tD4d" name="tD4d" placeholder="Keterangan">
                                             </td>
                                         </tr>
                                         </tr>
@@ -576,7 +576,7 @@
                                                 <input type="number" onkeypress="return event.charCode >= 48" min="1" max="10" class="form-control" id="tD5" name="tD5" placeholder="1 - 10" required>
                                             </td>
                                             <td>
-                                                <input type="text" class="form-control" id="tD1e" name="tD1e" placeholder="Keterangan">
+                                                <input type="text" class="form-control" id="tD5e" name="tD5e" placeholder="Keterangan">
                                             </td>
                                         </tr>
                                         </tr>
@@ -588,7 +588,7 @@
                                                 <input type="number" onkeypress="return event.charCode >= 48" min="1" max="10" class="form-control" id="tD6" name="tD6" placeholder="1 - 10" required>
                                             </td>
                                             <td>
-                                                <input type="text" class="form-control" id="tD1f" name="tD1f" placeholder="Keterangan">
+                                                <input type="text" class="form-control" id="tD6f" name="tD6f" placeholder="Keterangan">
                                             </td>
                                         </tr>
                                         </tr>
@@ -600,7 +600,7 @@
                                                 <input type="number" onkeypress="return event.charCode >= 48" min="1" max="10" class="form-control" id="tD7" name="tD7" placeholder="1 - 10" required>
                                             </td>
                                             <td>
-                                                <input type="text" class="form-control" id="tD1g" name="tD1g" placeholder="Keterangan">
+                                                <input type="text" class="form-control" id="tD7g" name="tD7g" placeholder="Keterangan">
                                             </td>
                                         </tr>
                                         </tr>
@@ -612,7 +612,7 @@
                                                 <input type="number" onkeypress="return event.charCode >= 48" min="1" max="10" class="form-control" id="tD8" name="tD8" placeholder="1 - 10" required>
                                             </td>
                                             <td>
-                                                <input type="text" class="form-control" id="tD1h" name="tD1h" placeholder="Keterangan">
+                                                <input type="text" class="form-control" id="tD8h" name="tD8h" placeholder="Keterangan">
                                             </td>
                                         </tr>
                                         </tr>
@@ -624,7 +624,7 @@
                                                 <input type="number" onkeypress="return event.charCode >= 48" min="1" max="10" class="form-control" id="tD9" name="tD9" placeholder="1 - 10" required>
                                             </td>
                                             <td>
-                                                <input type="text" class="form-control" id="tD1i" name="tD1i" placeholder="Keterangan">
+                                                <input type="text" class="form-control" id="tD9i" name="tD9i" placeholder="Keterangan">
                                             </td>
                                         </tr>
                                         </tr>
@@ -636,7 +636,7 @@
                                                 <input type="number" onkeypress="return event.charCode >= 48" min="1" max="10" class="form-control" id="tD10" name="tD10" placeholder="1 - 10" required>
                                             </td>
                                             <td>
-                                                <input type="text" class="form-control" id="tD1j" name="tD1j" placeholder="Keterangan">
+                                                <input type="text" class="form-control" id="tD10j" name="tD10j" placeholder="Keterangan">
                                             </td>
                                         </tr>
                                     </table>
@@ -668,7 +668,7 @@
                                                 <input type="number" onkeypress="return event.charCode >= 48" min="1" max="10" class="form-control" id="tE2" name="tE2" placeholder="1 - 10" required>
                                             </td>
                                             <td>
-                                                <input type="text" class="form-control" id="tE1b" name="tE1b" placeholder="Keterangan">
+                                                <input type="text" class="form-control" id="tE2b" name="tE2b" placeholder="Keterangan">
                                             </td>
                                         </tr>
                                         </tr>
@@ -680,7 +680,7 @@
                                                 <input type="number" onkeypress="return event.charCode >= 48" min="1" max="10" class="form-control" id="tE3" name="tE3" placeholder="1 - 10" required>
                                             </td>
                                             <td>
-                                                <input type="text" class="form-control" id="tE1c" name="tE1c" placeholder="Keterangan">
+                                                <input type="text" class="form-control" id="tE3c" name="tE3c" placeholder="Keterangan">
                                             </td>
                                         </tr>
                                         </tr>
@@ -692,7 +692,7 @@
                                                 <input type="number" onkeypress="return event.charCode >= 48" min="1" max="10" class="form-control" id="tE4" name="tE4" placeholder="1 - 10" required>
                                             </td>
                                             <td>
-                                                <input type="text" class="form-control" id="tE1d" name="tE1d" placeholder="Keterangan">
+                                                <input type="text" class="form-control" id="tE4d" name="tE4d" placeholder="Keterangan">
                                             </td>
                                         </tr>
                                         </tr>
@@ -704,7 +704,7 @@
                                                 <input type="number" onkeypress="return event.charCode >= 48" min="1" max="10" class="form-control" id="tE5" name="tE5" placeholder="1 - 10" required>
                                             </td>
                                             <td>
-                                                <input type="text" class="form-control" id="tE1e" name="tE1e" placeholder="Keterangan">
+                                                <input type="text" class="form-control" id="tE5e" name="tE5e" placeholder="Keterangan">
                                             </td>
                                         </tr>
                                         </tr>
@@ -716,7 +716,7 @@
                                                 <input type="number" onkeypress="return event.charCode >= 48" min="1" max="10" class="form-control" id="tE6" name="tE6" placeholder="1 - 10" required>
                                             </td>
                                             <td>
-                                                <input type="text" class="form-control" id="tE1f" name="tE1f" placeholder="Keterangan">
+                                                <input type="text" class="form-control" id="tE6f" name="tE6f" placeholder="Keterangan">
                                             </td>
                                         </tr>
                                         </tr>
@@ -728,7 +728,7 @@
                                                 <input type="number" onkeypress="return event.charCode >= 48" min="1" max="10" class="form-control" id="tE7" name="tE7" placeholder="1 - 10" required>
                                             </td>
                                             <td>
-                                                <input type="text" class="form-control" id="tE1g" name="tE1g" placeholder="Keterangan">
+                                                <input type="text" class="form-control" id="tE7g" name="tE7g" placeholder="Keterangan">
                                             </td>
                                         </tr>
                                         </tr>
@@ -740,7 +740,7 @@
                                                 <input type="number" onkeypress="return event.charCode >= 48" min="1" max="10" class="form-control" id="tE8" name="tE8" placeholder="1 - 10" required>
                                             </td>
                                             <td>
-                                                <input type="text" class="form-control" id="tE1h" name="tE1h" placeholder="Keterangan">
+                                                <input type="text" class="form-control" id="tE8h" name="tE8h" placeholder="Keterangan">
                                             </td>
                                         </tr>
                                         </tr>
@@ -752,7 +752,7 @@
                                                 <input type="number" onkeypress="return event.charCode >= 48" min="1" max="10" class="form-control" id="tE9" name="tE9" placeholder="1 - 10" required>
                                             </td>
                                             <td>
-                                                <input type="text" class="form-control" id="tE1i" name="tE1i" placeholder="Keterangan">
+                                                <input type="text" class="form-control" id="tE9i" name="tE9i" placeholder="Keterangan">
                                             </td>
                                         </tr>
                                         </tr>

@@ -717,6 +717,8 @@ class LogController extends Controller {
         $errorMessage = '';
         $data_master = array(
             'id' => '',
+            'disetujui_oleh' => '',
+            'no_fuel_station' => '',
             'dibuat_oleh' => ''
         );
         $data_detail = array();
@@ -725,7 +727,9 @@ class LogController extends Controller {
             $data = DB::table($TABLE_MASTER)
                 ->select(
                     'id',
-                    'dibuat_oleh'
+                    'dibuat_oleh',
+                    'no_fuel_station',
+                    'disetujui_oleh'
                 )
                 ->where('id', $id)
                 ->first();
@@ -765,8 +769,10 @@ class LogController extends Controller {
                     ->first();
 
                 // Log::info("pendukungReason : ". json_encode($pendukung_reason));
-                $data_master['dibuat_oleh'] = $data_user->nik;
                 $data_master['id'] = $data->id;
+                $data_master['dibuat_oleh'] = $data_user->nik;
+                $data_master['disetujui_oleh'] = $data->disetujui_oleh;
+                $data_master['no_fuel_station'] = $data->no_fuel_station;
 
                 // Log::info("FormDetailByNoDoc : " .json_encode(array('data_master' => $data_master, 'data_detail' => $data_detail, 'data_user' => $data_user, 'pendukung_reason' => $pendukung_reason)));
                 $isError = false;
@@ -778,9 +784,8 @@ class LogController extends Controller {
             Log::error($ex->getMessage());
             $errorMessage = $ex->getMessage();
         }
-        // $is_user_sm = in_array($request->session()->get('user_id', ''), $this->user_sm);
 
-        return ['error' => $isError, 'errorMessage' => $errorMessage, 'data' => $data_master, 'detail' => $data_detail, 'pendukung_reason' => $pendukung_reason, 'nik_session' => $nik];
+        return ['error' => $isError, 'errorMessage' => $errorMessage, 'data' => $data_master, 'detail' => $data_detail, 'nik_session' => $nik];
     }
 
     function SolarDetailById(Request $request) {

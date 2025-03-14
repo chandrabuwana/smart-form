@@ -23,6 +23,46 @@
                 </div>
                 <div class="card-body my-1">
 
+                <div class="row card-header"
+                        style="margin : 10px;border-radius: 10px; background-color: rgba(209, 209, 209, 0.301); color:white !important;">
+                        <div class="row">
+                            <div class="col">
+                                <h6 class="card-title">Filter</h6>
+                                <hr class="horizontal dark my-sm-1">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="input-group select-div input-group-static my-2">
+                                            <label for="FILTERSTATUS" class="ms-0">Status </label>
+                                            <select class="form-control status" name="FILTERSTATUS" id="FILTERSTATUS">
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="input-group select-div input-group-static my-2">
+                                            <label for="FILTERNAMAVENDOR" class="ms-0">Nama Vendor </label>
+                                            <select class="form-control namavendor" name="FILTERNAMAVENDOR" id="FILTERNAMAVENDOR">
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="input-group select-div input-group-static my-2">
+                                            <label for="FILTERKOTA" class="ms-0">Kota </label>
+                                            <select class="form-control kota" name="FILTERKOTA" id="FILTERKOTA">
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-end">
+                                    <div class="col-sm-2">
+                                        <button class="btn btn-primary ms-auto uploadBtn"
+                                            onclick="dataListFormSupplierSearchGenerate(this);">
+                                            <i class="fa fa-filter"> Search</i> </button></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="d-flex align-items-center ms-3">
                         <a href="{{ route('bss-form.sm.form-registrasi-supplier') }}">
                             <button class="btn btn-primary ms-auto uploadBtn" id="coba">
@@ -32,19 +72,22 @@
                     </div>
 
                     <div class="table-responsive p-0">
-                        <table id="list-data" data-toggle="table" data-ajax="fetchFormsData"
-                            data-side-pagination="server"
+                        <table id="dataListFormRegisSupplier" data-toggle="table" data-ajax="fetchFormsData"
+                            data-side-pagination="server" data-query-params="dataListFormSupplierParamsGenerate"
                             data-page-list="[10, 25, 50, 100, all]" data-sortable="true"
                             data-content-type="application/json" data-data-type="json" data-pagination="true"
                             data-unique-id="id">
                             <thead>
                                 <tr>
+                                    <th data-field="id" data-align="left" data-halign="text-center" data-sortable="true">Unik ID</th>
                                     <th data-field="nama_vendor" data-align="left" data-halign="text-center" data-sortable="true">Nama Supplier</th>
-                                    <th data-field="status" data-align="left" data-halign="text-center" data-sortable="true">Status</th>
+                                    <th data-field="status" data-align="left" data-formatter="statusFormater" data-halign="text-center" data-sortable="true">Status</th>
                                     <th data-field="no_npwp" data-align="left" data-halign="text-center" data-sortable="true">No NPWP</th>
                                     <th data-field="bidang_usaha" data-align="left" data-halign="text-center" data-sortable="true">Bidang Usaha</th>
                                     <th data-field="kota" data-align="left" data-halign="text-center" data-sortable="true">Kota</th>
-                                    <th data-field="action" data-formatter="actionFormatter" >Actions</th>
+                                    <!-- <th data-field="action" data-formatter="actionFormatter" >Actions</th> -->
+                                    <th data-field="action" data-formatter="dataListFormSupplierActionFormater" >Actions</th>
+                                     
                                 </tr>
                             </thead>
                         </table>
@@ -88,17 +131,25 @@
                 timeout = setTimeout(later, wait);
             };
         };        
+        
+        function dataListFormSupplierParamsGenerate(params) {
 
-        function fetchFormsData(params) {
-            params.data = {...params.data, ...additonalQuery}
-            var url = '/bss-form/sm/list-supplier'
-            // console.log(params.data)
-            $.get(url + '?' + $.param(params.data)).then(function(res) {
-                params.success(res.data)
-            })
+            params.search = {
+                'FILTERSTATUS': $('#FILTERSTATUS').val(),
+                'FILTERNAMAVENDOR': $('#FILTERNAMAVENDOR').val(),
+                'FILTERKOTA': $('#FILTERKOTA').val()
+            };
+
+            if (params.sort == undefined) {
+                return {
+                    limit: params.limit,
+                    offset: params.offset,
+                    search: params.search
+                }
+            }
+            return params;
         }
 
-        
         function myFunction() {
             if(!confirm("Yakin ingin menghapus data ini?"))
             event.preventDefault();
@@ -112,5 +163,53 @@
             `;
         }
 
+        function dataListFormSupplierActionFormater(value, row, index) {
+            let data = `
+                    <button onclick="RedirectViewPica(this)"><a class="like"  title="Like">
+                        <i class="fa fa-eye"></i> View
+                    </a></button>
+                `
+            if (row.nik == $("#UserLoginNIK").val() && (row.approval != "approved")) {
+                data += `<button onclick="redirectToAddStepPica(this)"><a class="like" title="Like">
+                        <i class="fa fa-plus"></i> Step
+                    </a></button>`
+            }
+            return data;
+        }
+
+        function statusFormater(value, row, index) {
+            if (value == "STEP NOT SET") {
+                return `<button type="button" class="btn btn-primary btn-sm">Step Not Yet</button>`
+            } else if (value == 'NEED APPROVAL') {
+                return `<button type="button" class="btn btn-warning btn-sm">${value}</button>`
+            } else if (value == 'APPROVED') {
+                return `<button type="button" class="btn btn-danger btn-sm">${value}</button>`
+            } else if (value == 'REJECT') {
+                return `<button type="button" class="btn btn-danger btn-sm">${value}</button>`
+            } else {
+                return `<button type="button" class="btn btn-secondary btn-sm">???</button>`
+            }
+        }
+
+        function dataListFormRegisSupplierGenerateData(params) {
+            var url = '/helper/data-regis-supplier'
+            $.get(url + '?' + $.param(params.data)).then(function(res) {
+                params.success(res)
+            })
+        }
+
+        function fetchFormsData(params) {
+            params.data = {...params.data, ...additonalQuery}
+            var url = '/bss-form/sm/list-supplier'
+            // console.log(params.data)
+            $.get(url + '?' + $.param(params.data)).then(function(res) {
+                params.success(res.data)
+            })
+        }
+
+        function dataListFormSupplierSearchGenerate(obj) {
+            $('#dataListFormRegisSupplier').bootstrapTable('refresh');
+            $("#dataListFormRegisSupplier").bootstrapTable("uncheckAll");
+        }
     </script>
 @endsection
