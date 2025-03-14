@@ -57,6 +57,7 @@ use Modules\SmartForm\App\Http\Controllers\IT\DeviceFormController;
 use Modules\SmartForm\App\Http\Controllers\IT\RouterFormController;
 use Modules\SmartForm\App\Http\Controllers\PLANT\GeneralInspection\InspectionCmtController;
 use Modules\SmartForm\App\Http\Controllers\PLANT\GeneralInspection\InspectionDongfengController;
+use Modules\SmartForm\App\Http\Controllers\GS\InspeksiToiletMessKantorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -279,6 +280,15 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
                 Route::delete('/delete-mapping-vendor-day', [VendorController::class, 'DeleteMappingVendorDay'])->name('delete-mapping-vendor-day');
                 Route::post('toggle-mapping-day', [VendorController::class, 'toggleMappingDayStatus'])->name('toggle-mapping-day');
             });
+        });
+
+        Route::prefix('wc')->group(function () {
+            Route::get('/dashboard', [InspeksiToiletMessKantorController::class, 'Dashboard'])->name('dashboard-wc');
+            Route::get('/create-form', [InspeksiToiletMessKantorController::class, 'createForm'])->name('create-wc');
+            Route::post('/store-form', [InspeksiToiletMessKantorController::class, 'storeForm'])->name('store-wc');
+            Route::get('/list', [InspeksiToiletMessKantorController::class, 'list'])->name('list-wc');
+            Route::get('/export-inspeksi/{id}', [InspeksiToiletMessKantorController::class, 'exportPDF'])->name('export-inspeksi');
+
         });
 
         Route::prefix('it-ops')->group(function () {
