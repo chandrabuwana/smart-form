@@ -52,13 +52,7 @@
                                             <td>Pilih Atasan Langsung</td>
                                             <td>:</td>
                                             <td>
-                                                <select name="dApproved" id="dApproved" class="form-control text-center" required>
-                                                <option selected value="">-- Pilih Atasan Langsung --</option>
-                                                @foreach($approvalList as $user)
-                                                    <option value="{{ $user->nama }}">{{ $user->nama }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
+                                                
                                             </td>
                                         </tr>
                                     </table>
@@ -70,7 +64,7 @@
                                             <td>No. Fuel Station / Fuel Truck</td>
                                             <td>:</td>
                                             <td>
-                                                <input type="text" class="form-control" id="iFuel" name="iFuel" placeholder="Input no fuel station" required>
+                                                <input type="text" class="form-control" id="iFuel" name="iFuel" required>{{$data['no_fuel_station']}}
                                             </td>
                                         </tr>
                                         <tr>
@@ -282,10 +276,11 @@
             tglDoc: "",
             approval: "",
             jobSite: "",
-            fuel: "",
+            noFuelStation: "",
             shift: "",
             
-            item: [{}]
+            item: [{}],
+            nomornomor: ""
         }
 
         function getTodayDate() {
@@ -327,36 +322,6 @@
             })
         }
 
-        function submitRequestMaster(data) {
-            $.ajax({
-                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                type: "post",
-                url: "bss-form/log/add-pemakaian-solar",
-                data: data,
-                dataType: "json",
-                success: function(response) {
-                    if (response.code == 200) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Berhasil!',
-                            text: response.message,
-                        }).then((result) => {
-
-                        })
-                    }
-                },
-                error: function(xhr, ajaxOptions, thrownError) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'thrownError',
-                        html: errorMessage,
-                        confirmButtonText: 'OK'
-                    });
-                    console.log()
-                }
-            })
-        }
-
         $table.on('post-body.bs.table', function(data) {
             var mdf = 0;
             var totalliter = 0;
@@ -385,19 +350,38 @@
         }
 
         $(function() {
-            noDoc.text(generateNoDoc())
-            tglDoc.text(formatTgl() || "-")
+            if(isError.error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: isError.errorMessage,
+                }).then((result) => {
 
-            dataPemakaianSolar.approval = dApproved.val()
-            dataPemakaianSolar.lube = iFuel.val()
+                })
+            } else {
+                var detial = {{ Illuminate\Support\Js::from($detail) }}
+                console.log({{ Illuminate\Support\Js::from($data) }})
+                detial.forEach(element => {
+                    $table.bootstrapTable('append', element)
+                });
+                dApproved.val({{ Illuminate\Support\Js::from( $data['disetujui_oleh']) }})
+                iFuel.val({{ Illuminate\Support\Js::from( $data['no_fuel_station']) }})
 
-            iAkhir.change(function(e) {
-                iTotalLiter.text((iAkhir.val()) - (iAwal.val() ))
-            });
 
-            tStokAwal.change(function(e) {
-                tTotalAkhir.text((tStokAwal.val()) - (parseInt(tTotals.text())))
-            });
+                dataPemakaianSolar.approval = dApproved.val()
+                dataPemakaianSolar.noFuelStation = iFuel.val()
+
+                estimatedIdr.change(function(e) {
+                    totalPrice.text((estimatedIdr.val() * calculatedIdr.text()) + (estimatedUsd.val() * calculatedUsd.text()) + (estimatedCny.val() * calculatedCny.text()))
+                });
+                estimatedUsd.change(function(e) {
+
+                    totalPrice.text((estimatedIdr.val() * calculatedIdr.text()) + (estimatedUsd.val() * calculatedUsd.text()) + (estimatedCny.val() * calculatedCny.text()))
+                });
+                estimatedCny.change(function(e) {
+                    totalPrice.text((estimatedIdr.val() * calculatedIdr.text()) + (estimatedUsd.val() * calculatedUsd.text()) + (estimatedCny.val() * calculatedCny.text()))
+                });
+            }
 
             function validateItem() {
                 var errorValidate = []
