@@ -17,6 +17,7 @@ use Modules\SmartForm\App\Http\Controllers\PDF\HelperPdfMobilisasiFormController
 use Modules\SmartForm\App\Http\Controllers\PLANT\PlantTransmissionController;
 use Modules\SmartForm\App\Http\Controllers\PLANT\CompressorPompaController;
 use Modules\SmartForm\App\Http\Controllers\PLANT\PpmXcmg900dController;
+use Modules\SmartForm\App\Http\Controllers\PLANT\PpmXCMG3005TController;
 use Modules\SmartForm\App\Http\Controllers\PLANT\PlantWeldingController;
 use Modules\SmartForm\App\Http\Controllers\Production\FormCheckerController;
 use Modules\SmartForm\App\Http\Controllers\Production\KalibrasiCtController;
@@ -422,6 +423,13 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/store', [PpmXcmg900dController::class, 'Store'])->name('plant.ppm.900d.store');
             Route::get('/detail/{id}', [PpmXcmg900dController::class, 'detail'])->name('plant.ppm.900d.detail');
 
+        });
+        Route::prefix('ppm-3005T')->group(function(){
+            Route::get('/dashboard', [PpmXCMG3005TController::class, 'Dashboard'])->name('plant.ppm.3005.dashboard');
+            Route::get('/export/{id}', [PpmXCMG3005TController::class, 'Export'])->name('plant.ppm.3005.export');
+            Route::get('/add', [PpmXCMG3005TController::class, 'Add'])->name('plant.ppm.3005.form');
+            Route::post('/store', [PpmXCMG3005TController::class, 'Store'])->name('plant.ppm.3005.store');
+            Route::get('/detail/{id}', [PpmXCMG3005TController::class, 'detail'])->name('plant.ppm.3005.detail');
         });
 
     });

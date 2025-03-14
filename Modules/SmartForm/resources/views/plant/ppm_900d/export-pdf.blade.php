@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Form P2H Unit Compressor</title>
+    <title>Form PPM XCMG XE900D</title>
 
     <style>
         body {
@@ -106,7 +106,7 @@
         </tr>
         <tr>
             <th colspan="7" rowspan="2" style=" text-align: center;  font-size:8px;">
-                PPM (Program Pengecekan)
+                PPM (Program Pengecekan Mesin)
             </th>
 
             <th>Issued</th>
@@ -181,7 +181,7 @@
             <td style="border:none;"></td>
             <td>At Inspection</td>
             <td>Date</td>
-            <td colspan="3" style="border:none;"></td>
+            <td colspan="4" style="border:none;"></td>
 
         </tr>
         <tr>
@@ -190,7 +190,7 @@
             <td style="border:none;"></td>
             <td>{{ $data->at_inspection }}</td>
             <td>{{ $data->date }}</td>
-            <td colspan="3" style="border:none;"></td>
+            <td colspan="4" style="border:none;"></td>
         </tr>
         <tr>
             <td style="border:none;" colspan="11"></td>
@@ -431,9 +431,13 @@
                         <td></td>
                     @endif
 
-                    <td>{{ $data->fin_actual[$l] ?? '' }}</td>
-                    <td>{{ $data->fin_correction_made[$l] ?? '' }}</td>
-                    <td>{{ $data->fin_result[$l] ?? '' }}</td>
+
+                    <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">
+                        {{ $data->fin_actual[$l] === '1' ? '✓' : '' }}</td>
+                    <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">
+                        {{ $data->fin_correction_made[$l] === '1' ? '✓' : '' }}</td>
+                    <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">
+                        {{ $data->fin_result[$l] === '1' ? '✓' : '' }}</td>
                     <td>{{ $data->fin_pr[$l] ?? '' }}</td>
                     <td>{{ $data->fin_taggal[$l] ?? '' }}</td>
                     <td>{{ $data->fin_remark[$l] ?? '' }}</td>
@@ -445,17 +449,23 @@
         </tbody>
     </table>
     <div style="margin-top: 10px;">
-        <table>
+        <table style="width: 80%; border-collapse: collapse;">
             <tr>
-                <th colspan="2">Checked By</th>
-                <th colspan="2">Validated By</th>
-                <th colspan="2">Date</th>
-                <th colspan="5" style="border: none"></th>
+                <td colspan="2">Checked By</td>
+                <td colspan="2">Validated By</td>
+                <td colspan="2">Date</td>
+                <td colspan="5" style="border: none"></td>
             </tr>
             <tr>
-                <td colspan="2" style="height: 30px;">{{ $data->checked_by }}</td>
-                <td colspan="2" style="height: 30px;">{{ $data->validated_by }}</td>
-                <td colspan="2" style="height: 30px;">{{ $data->created_at }}</td>
+                <td colspan="2" style="height: 30px; border-bottom: none;"></td>
+                <td colspan="2" style="height: 30px; border-bottom: none;"></td>
+                <td colspan="2" style="height: 30px; border-bottom: none; width: 20%;">{{ $data->created_at }}</td>
+                <td colspan="5" style="border: none"></td>
+            </tr>
+            <tr>
+                <td colspan="2" style="border-top: none;">{{ $data->checked_by }}</td>
+                <td colspan="2" style="border-top: none;">{{ $data->validated_by }}</td>
+                <td colspan="2"style="border-top: none;"></td>
                 <td colspan="5" style="border: none"></td>
             </tr>
             <tr>

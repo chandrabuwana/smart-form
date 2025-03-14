@@ -258,6 +258,7 @@
 @endsection
 
 @section('custom-css')
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
     <style>
         .table> :not(caption)>*>* {
             padding: 0.5rem;
@@ -329,9 +330,15 @@
 @endsection
 
 @section('custom-js')
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <script>
+        $(document).ready(function() {
+            $('#dibuat_oleh').select2();
+            $('#diperiksa').select2();
+        });
         $(function() {
             var form = $("#formChecker");
             var submitBtn = form.find('button[type="submit"]');
