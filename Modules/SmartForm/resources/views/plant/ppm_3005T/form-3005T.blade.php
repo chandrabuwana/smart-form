@@ -24,11 +24,11 @@
 
                     <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                         <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                            <h6 class="text-white text-capitalize ps-3"> Form PPM XCMG 900D</h6>
+                            <h6 class="text-white text-capitalize ps-3"> Form PPM XCMG GT3005T SERIES</h6>
                         </div>
                     </div>
 
-                    <form id="formXCMG900" method="POST">
+                    <form id="formXCMG3005" method="POST">
                         @csrf
                         <div class="mx-3">
 
@@ -156,11 +156,14 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
+                                                    @php
+                                                        $index = 0;
+                                                    @endphp
                                                     @foreach ($list['ENGINE'] as $value)
                                                         <tr>
                                                             @if (isset($value['item']))
-                                                                @if ($value['item'] == 'Engine Speed')
-                                                                    <td class="align-middle" rowspan="8">
+                                                                @if ($value['item'] == 'Engine Speed' || $value['item'] == 'Lub Oil Press.')
+                                                                    <td class="align-middle" rowspan="2">
                                                                         {!! $value['item'] !!}</td>
                                                                 @else
                                                                     <td class="align-middle">
@@ -168,12 +171,17 @@
                                                                 @endif
                                                             @endif
                                                             @if (isset($value['condition']))
-                                                                <td class="align-middle">{!! $value['condition'] !!}
-                                                                </td>
+                                                                @if ($value['condition'] == 'T/C Stall')
+                                                                    <td class="align-middle" rowspan="6">
+                                                                        {!! $value['condition'] !!}</td>
+                                                                @else
+                                                                    <td class="align-middle">{!! $value['condition'] !!}
+                                                                    </td>
+                                                                @endif
                                                             @endif
                                                             @if (isset($value['unit']))
-                                                                @if ($value['unit'] == 'Rpm')
-                                                                    <td class="align-middle" rowspan="8">
+                                                                @if ($value['unit'] == 'Rpm' || $value['unit'] == 'Kg/cm2')
+                                                                    <td class="align-middle" rowspan="2">
                                                                         {!! $value['unit'] !!}</td>
                                                                 @else
                                                                     <td class="align-middle">
@@ -194,10 +202,17 @@
                                                                     name="eng_pr_no[]"></td>
                                                             <td><input type="date" class="form-control"
                                                                     name="eng_tanggal[]"></td>
-                                                            <td><input type="text" class="form-control"
-                                                                    name="eng_remarks[]"></td>
+                                                            @if ($index === 0)
+                                                                <td rowspan="13">
+                                                                    <textarea class="form-control" rows="30" name="eng_remarks"></textarea>
+                                                                </td>
+                                                            @endif
                                                         </tr>
+                                                        @php
+                                                            $index++;
+                                                        @endphp
                                                     @endforeach
+
 
 
                                                 </tbody>
@@ -205,9 +220,8 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="accordion-item">
-                                    <button type="button" class="accordion-header">HYDRAULIC PRESSURE</button>
+                                    <button type="button" class="accordion-header">TRANSMISSION</button>
                                     <div class="accordion-content">
                                         <div class="table-responsive">
                                             <table class="table table-bordered">
@@ -215,7 +229,8 @@
                                                     <tr>
                                                         <th rowspan="2" style="vertical-align: middle;">
                                                             ITEM</th>
-                                                        <th style="vertical-align: middle;" rowspan="2">
+                                                        <th colspan="2" style="vertical-align: middle;"
+                                                            rowspan="2">
                                                             CONDITION</th>
                                                         <th style="vertical-align: middle;" rowspan="2">UNIT
                                                         </th>
@@ -237,28 +252,104 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
+                                                    @php
+                                                        $i = 0;
+                                                    @endphp
+                                                    @foreach ($list['TRANSMISSION'] as $value)
+                                                        <tr>
+                                                            <td class="align-middle">{!! $value['item'] !!}
+                                                            </td>
+                                                            <td class="align-middle">
+                                                                {!! $value['condition0'] !!}</td>
+                                                            <td class="align-middle">
+                                                                {!! $value['condition1'] !!}</td>
+                                                            <td class="align-middle">
+                                                                {!! $value['unit'] !!}</td>
+                                                            <td class="align-middle">
+                                                                {!! $value['standard'] !!}</td>
+                                                            <td><input type="text" class="form-control"
+                                                                    name="wo_actual[]">
+                                                            </td>
+                                                            <td><input type="text" class="form-control"
+                                                                    name="wo_correct[]">
+                                                            </td>
+                                                            <td><input type="text" class="form-control"
+                                                                    name="wo_result[]">
+                                                            </td>
+                                                            <td><input type="text" class="form-control"
+                                                                    name="wo_pr_no[]">
+                                                            </td>
+                                                            <td><input type="date" class="form-control"
+                                                                    name="wo_tanggal[]">
+                                                            </td>
+                                                            @if ($i === 0)
+                                                                <td>
+                                                                    <textarea class="form-control" rows="2" name="wo_remarks"></textarea>
+                                                                </td>
+                                                            @endif
+
+                                                        </tr>
+                                                        @php
+                                                            $i++;
+                                                        @endphp
+                                                    @endforeach
+
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <button type="button" class="accordion-header">HYDRAULIC PRESSURE</button>
+                                    <div class="accordion-content">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th rowspan="2" style="vertical-align: middle;">
+                                                            ITEM</th>
+                                                        <th colspan="2" style="vertical-align: middle;"
+                                                            rowspan="2">
+                                                            CONDITION</th>
+                                                        <th style="vertical-align: middle;" rowspan="2">UNIT
+                                                        </th>
+                                                        <th style="vertical-align: middle;" rowspan="2">
+                                                            STANDARD STD/PMS</th>
+                                                        <th style="vertical-align: middle;"rowspan="2">ACTUAL</th>
+                                                        <th style="vertical-align: middle;" rowspan="2">
+                                                            CORRECTION MODE</th>
+                                                        <th style="vertical-align: middle;" rowspan="2">RESULT
+                                                        </th>
+                                                        <th style="vertical-align: middle;" colspan="2">
+                                                            RECOMENDED PARTS</th>
+                                                        <th style="vertical-align: middle;" rowspan="2">REMARKS
+                                                        </th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>PR.NO</th>
+                                                        <th>TANGGAL</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @php
+                                                        $p = 0;
+                                                    @endphp
                                                     @foreach ($list['HYDRAULIC'] as $value)
                                                         <tr>
                                                             @if (isset($value['item']))
-                                                                @if ($value['item'] == 'Engine Speed')
-                                                                    <td class="align-middle" rowspan="8">
-                                                                        {!! $value['item'] !!}</td>
-                                                                @else
-                                                                    <td class="align-middle">
-                                                                        {!! $value['item'] !!}</td>
-                                                                @endif
+                                                                <td class="align-middle">
+                                                                    {!! $value['item'] !!}</td>
                                                             @endif
-                                                            @if (isset($value['condition']))
-                                                                @if ($value['condition'] == '1800 rpm (10th gear)')
-                                                                    <td class="align-middle" rowspan="8">
-                                                                        {!! $value['condition'] !!}</td>
-                                                                @else
-                                                                    <td class="align-middle">
-                                                                        {!! $value['unit'] !!}</td>
-                                                                @endif
+                                                            @if (isset($value['condition0']))
+                                                                <td class="align-middle" rowspan="9">
+                                                                    {!! $value['condition0'] !!}</td>
+                                                                <td class="align-middle" rowspan="9">
+                                                                    {!! $value['condition1'] !!}</td>
                                                             @endif
+
                                                             @if (isset($value['unit']))
-                                                                @if ($value['unit'] == 'kg/cm³')
+                                                                @if ($value['unit'] == 'Kg/cm2')
                                                                     <td class="align-middle" rowspan="8">
                                                                         {!! $value['unit'] !!}</td>
                                                                 @else
@@ -271,106 +362,29 @@
                                                                 </td>
                                                             @endif
                                                             <td><input type="text" class="form-control"
-                                                                    name="hyd_actual[]"></td>
+                                                                    name="hyd_actual[]">
+                                                            </td>
                                                             <td><input type="text" class="form-control"
-                                                                    name="hyd_correct[]"></td>
+                                                                    name="hyd_correct[]">
+                                                            </td>
                                                             <td><input type="text" class="form-control"
-                                                                    name="hyd_result[]"></td>
+                                                                    name="hyd_result[]">
+                                                            </td>
                                                             <td><input type="text" class="form-control"
-                                                                    name="hyd_pr_no[]"></td>
+                                                                    name="hyd_pr_no[]">
+                                                            </td>
                                                             <td><input type="date" class="form-control"
-                                                                    name="hyd_tanggal[]"></td>
-                                                            <td><input type="text" class="form-control"
-                                                                    name="hyd_remarks[]"></td>
-                                                        </tr>
-                                                    @endforeach
-
-
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="accordion-item">
-                                    <button type="button" class="accordion-header">WORKING SPEED</button>
-                                    <div class="accordion-content">
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <th rowspan="2" style="vertical-align: middle;">
-                                                            ITEM</th>
-                                                        <th style="vertical-align: middle;" rowspan="2">
-                                                            CONDITION</th>
-                                                        <th style="vertical-align: middle;" rowspan="2">UNIT
-                                                        </th>
-                                                        <th style="vertical-align: middle;" rowspan="2">
-                                                            STANDARD STD/PMS</th>
-                                                        <th style="vertical-align: middle;"rowspan="2">ACTUAL</th>
-                                                        <th style="vertical-align: middle;" rowspan="2">
-                                                            CORRECTION MODE</th>
-                                                        <th style="vertical-align: middle;" rowspan="2">RESULT
-                                                        </th>
-                                                        <th style="vertical-align: middle;" colspan="2">
-                                                            RECOMENDED PARTS</th>
-                                                        <th style="vertical-align: middle;" rowspan="2">REMARKS
-                                                        </th>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>PR.NO</th>
-                                                        <th>TANGGAL</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach ($list['WORKING SPEED'] as $value)
-                                                        <tr>
-                                                            @if (isset($value['item']))
-                                                                <td class="align-middle">{!! $value['item'] !!}
+                                                                    name="hyd_tanggal[]">
+                                                            </td>
+                                                            @if ($p === 0)
+                                                                <td rowspan="9">
+                                                                    <textarea class="form-control" rows="20" name="hyd_remarks"></textarea>
                                                                 </td>
                                                             @endif
-                                                            @if (isset($value['condition']))
-                                                                @if ($value['condition'] == '1800 rpm (10th gear)')
-                                                                    <td class="align-middle" rowspan="10">
-                                                                        {!! $value['condition'] !!}</td>
-                                                                @else
-                                                                    <td class="align-middle">
-                                                                        {!! $value['condition'] !!}</td>
-                                                                @endif
-                                                            @endif
-                                                            @if (isset($value['unit']))
-                                                                @if ($value['unit'] == 'Sec')
-                                                                    <td class="align-middle" rowspan="10">
-                                                                        {!! $value['unit'] !!}</td>
-                                                                @else
-                                                                    <td class="align-middle">
-                                                                        {!! $value['unit'] !!}</td>
-                                                                @endif
-                                                            @endif
-                                                            @if (isset($value['standard']))
-                                                                @if ($value['standard'] == '28 ± 4 (3 round calculated after 1 round not calculated)')
-                                                                    <td class="align-middle" rowspan="2">
-                                                                        {!! $value['standard'] !!}</td>
-                                                                @else
-                                                                    <td class="align-middle">
-                                                                        {!! $value['standard'] !!}</td>
-                                                                @endif
-                                                            @endif
-
-
-                                                            <td><input type="text" class="form-control"
-                                                                    name="wo_actual[]"></td>
-                                                            <td><input type="text" class="form-control"
-                                                                    name="wo_correct[]"></td>
-                                                            <td><input type="text" class="form-control"
-                                                                    name="wo_result[]"></td>
-                                                            <td><input type="text" class="form-control"
-                                                                    name="wo_pr_no[]"></td>
-                                                            <td><input type="date" class="form-control"
-                                                                    name="wo_tanggal[]"></td>
-                                                            <td><input type="text" class="form-control"
-                                                                    name="wo_remarks[]"></td>
                                                         </tr>
+                                                        @php
+                                                            $p++;
+                                                        @endphp
                                                     @endforeach
 
 
@@ -379,6 +393,8 @@
                                         </div>
                                     </div>
                                 </div>
+
+
                                 <div class="accordion-item">
                                     <button type="button" class="btn-primary accordion-header">FINAL
                                         DRIVE</button>
@@ -411,49 +427,176 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    @php
-                                                        $inc = 0;
-                                                    @endphp
-                                                    @foreach ($list['Final'] as $value)
-                                                        <tr>
-                                                            @if (isset($value['item']))
-                                                                <td class="align-middle">{!! $value['item'] !!}
-                                                                </td>
-                                                            @endif
-                                                            @if (isset($value['condition']))
-                                                                @if ($value['condition'] == 'Visual Check (Eng. Stop)')
-                                                                    <td class="align-middle" rowspan="2">
-                                                                        {!! $value['condition'] !!}</td>
-                                                                @else
-                                                                    <td class="align-middle">
-                                                                        {!! $value['condition'] !!}</td>
-                                                                @endif
-                                                            @endif
-                                                            <td></td>
-                                                            @if (isset($value['standard']))
-                                                                <td class="align-middle">{!! $value['standard'] !!}
-                                                                </td>
-                                                            @else
-                                                                <td></td>
-                                                            @endif
 
-                                                            <td><input type="checkbox" class="custom-checkbox"
-                                                                    name="final_actual{{ $inc }}" value=1></td>
-                                                            <td><input type="checkbox" class="custom-checkbox"
-                                                                    name="final_correct{{ $inc }}" value=1></td>
-                                                            <td><input type="checkbox" class="custom-checkbox"
-                                                                    name="final_result{{ $inc }}" value=1></td>
-                                                            <td><input type="text" class="form-control"
-                                                                    name="final_pr_no[]"></td>
-                                                            <td><input type="date" class="form-control"
-                                                                    name="final_tanggal[]"></td>
-                                                            <td><input type="text" class="form-control"
-                                                                    name="final_remarks[]"></td>
-                                                        </tr>
-                                                        @php
-                                                            $inc++;
-                                                        @endphp
-                                                    @endforeach
+                                                    <tr>
+                                                        <td colspan="12"
+                                                            style="text-align: left; font-weight:bold; font-size:15px;">
+                                                            FINAL DRIVE
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="align-middle">Drain Plug</td>
+                                                        <td rowspan="2" class="align-middle">Visual Check (Eng. Stop)
+                                                        </td>
+                                                        <td rowspan="2" class="align-middle"></td>
+                                                        <td class="align-middle">No Excressive, Metalic Powder</td>
+                                                        <td><input type="checkbox" class="custom-checkbox"
+                                                                name="final_actual0" value=1></td>
+                                                        <td><input type="checkbox" class="custom-checkbox"
+                                                                name="final_correct0" value=1></td>
+                                                        <td><input type="checkbox" class="custom-checkbox"
+                                                                name="final_result0" value=1></td>
+                                                        <td><input type="text" class="form-control"
+                                                                name="final_pr_no[]"></td>
+                                                        <td><input type="date" class="form-control"
+                                                                name="final_tanggal[]"></td>
+                                                        <td rowspan="2">
+                                                            <textarea type="text" rows="4" class="form-control" name="final_remarks[]"></textarea>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="align-middle">Oil Leak</td>
+
+
+                                                        <td class="align-middle">No Excressive, Metalic Powder</td>
+                                                        <td><input type="checkbox" class="custom-checkbox"
+                                                                name="final_actual1" value=1></td>
+                                                        <td><input type="checkbox" class="custom-checkbox"
+                                                                name="final_correct1" value=1></td>
+                                                        <td><input type="checkbox" class="custom-checkbox"
+                                                                name="final_result1" value=1></td>
+                                                        <td><input type="text" class="form-control"
+                                                                name="final_pr_no[]"></td>
+                                                        <td><input type="date" class="form-control"
+                                                                name="final_tanggal[]"></td>
+
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="12"
+                                                            style="text-align: left; font-weight:bold; font-size:15px;">
+                                                            TANDEM
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td rowspan="2" class="align-middle">Drain Plug</td>
+                                                        <td rowspan="4" class="align-middle">Visual Check (Eng. Stop)
+                                                        </td>
+                                                        <td class="align-middle">RH</td>
+                                                        <td rowspan="2" class="align-middle">No Excressive, Metalic
+                                                            Powder</td>
+                                                        <td><input type="checkbox" class="custom-checkbox"
+                                                                name="final_actual2" value=1></td>
+                                                        <td><input type="checkbox" class="custom-checkbox"
+                                                                name="final_correct2" value=1></td>
+                                                        <td><input type="checkbox" class="custom-checkbox"
+                                                                name="final_result2" value=1></td>
+                                                        <td><input type="text" class="form-control"
+                                                                name="final_pr_no[]"></td>
+                                                        <td><input type="date" class="form-control"
+                                                                name="final_tanggal[]"></td>
+                                                        <td rowspan="2">
+                                                            <textarea type="text" rows="4" class="form-control" name="final_remarks[]"></textarea>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+
+                                                        <td>LH</td>
+                                                        <td><input type="checkbox" class="custom-checkbox"
+                                                                name="final_actual3" value=1></td>
+                                                        <td><input type="checkbox" class="custom-checkbox"
+                                                                name="final_correct3" value=1></td>
+                                                        <td><input type="checkbox" class="custom-checkbox"
+                                                                name="final_result3" value=1></td>
+                                                        <td><input type="text" class="form-control"
+                                                                name="final_pr_no[]"></td>
+                                                        <td><input type="date" class="form-control"
+                                                                name="final_tanggal[]"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td rowspan="2" class="align-middle">Oil Leak</td>
+                                                        <td class="align-middle">RH</td>
+                                                        <td class="align-middle">No Oil Leak</td>
+                                                        <td><input type="checkbox" class="custom-checkbox"
+                                                                name="final_actual4" value=1></td>
+                                                        <td><input type="checkbox" class="custom-checkbox"
+                                                                name="final_correct4" value=1></td>
+                                                        <td><input type="checkbox" class="custom-checkbox"
+                                                                name="final_result4" value=1></td>
+                                                        <td><input type="text" class="form-control"
+                                                                name="final_pr_no[]"></td>
+                                                        <td><input type="date" class="form-control"
+                                                                name="final_tanggal[]"></td>
+                                                        <td rowspan="2">
+                                                            <textarea type="text" rows="4" class="form-control" name="final_remarks[]"></textarea>
+                                                        </td>
+
+                                                    </tr>
+                                                    <tr>
+
+                                                        <td>LH</td>
+                                                        <td class="align-middle">No Oil Leak</td>
+                                                        <td><input type="checkbox" class="custom-checkbox"
+                                                                name="final_actual5" value=1></td>
+                                                        <td><input type="checkbox" class="custom-checkbox"
+                                                                name="final_correct5" value=1></td>
+                                                        <td><input type="checkbox" class="custom-checkbox"
+                                                                name="final_result5" value=1></td>
+                                                        <td><input type="text" class="form-control"
+                                                                name="final_pr_no[]"></td>
+                                                        <td><input type="date" class="form-control"
+                                                                name="final_tanggal[]"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="12"
+                                                            style="text-align: left; font-weight:bold; font-size:15px;">
+                                                            ELECTRICAL
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="align-middle">Electrical Function</td>
+                                                        <td class="align-middle">Function Check
+                                                        </td>
+                                                        <td class="align-middle"></td>
+                                                        <td class="align-middle">No DTC (Diagnostic Trouble Code) Detected
+                                                        </td>
+                                                        <td><input type="checkbox" class="custom-checkbox"
+                                                                name="final_actual6" value=1></td>
+                                                        <td><input type="checkbox" class="custom-checkbox"
+                                                                name="final_correct6" value=1></td>
+                                                        <td><input type="checkbox" class="custom-checkbox"
+                                                                name="final_result6" value=1></td>
+                                                        <td><input type="text" class="form-control"
+                                                                name="final_pr_no[]"></td>
+                                                        <td><input type="date" class="form-control"
+                                                                name="final_tanggal[]"></td>
+                                                        <td>
+                                                            <textarea type="text" rows="1" class="form-control" name="final_remarks[]"></textarea>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="12"
+                                                            style="text-align: left; font-weight:bold; font-size:15px;">
+                                                            OPTIONAL
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="align-middle">Attacthment Frame</td>
+                                                        <td colspan="3" class="align-middle">Crack Detection
+                                                        </td>
+                                                        <td><input type="checkbox" class="custom-checkbox"
+                                                                name="final_actual7" value=1></td>
+                                                        <td><input type="checkbox" class="custom-checkbox"
+                                                                name="final_correct7" value=1></td>
+                                                        <td><input type="checkbox" class="custom-checkbox"
+                                                                name="final_result7" value=1></td>
+                                                        <td><input type="text" class="form-control"
+                                                                name="final_pr_no[]"></td>
+                                                        <td><input type="date" class="form-control"
+                                                                name="final_tanggal[]"></td>
+                                                        <td>
+                                                            <textarea type="text" rows="1" class="form-control" name="final_remarks[]"></textarea>
+                                                        </td>
+                                                    </tr>
                                                 </tbody>
 
                                             </table>
@@ -470,7 +613,6 @@
                                             @foreach ($approvalList as $user)
                                                 <option value="{{ $user->nama }}">{{ $user->nama }}</option>
                                             @endforeach
-
                                         </select>
                                     </div>
                                 </div>
@@ -488,7 +630,7 @@
                                 <div class="row">
                                     <div class="col-12">
                                         <div class="form-actions">
-                                            <a href="{{ route('plant.ppm.900d.dashboard') }}"
+                                            <a href="{{ route('plant.ppm.3005.dashboard') }}"
                                                 class="btn btn-secondary">Cancel</a>
                                             <button type="submit" class="btn btn-primary">Submit</button>
                                         </div>
@@ -596,13 +738,15 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+
+
     <script>
         $(document).ready(function() {
             $('#dibuat_oleh').select2();
             $('#diperiksa').select2();
         });
         $(function() {
-            var form = $("#formXCMG900");
+            var form = $("#formXCMG3005");
             var submitBtn = form.find('button[type="submit"]');
 
             form.submit(function(e) {
@@ -612,7 +756,7 @@
                 var formData = new FormData(this);
                 console.log("Form data yang dikirim:", formData);
 
-                axios.post('{{ route('plant.ppm.900d.store') }}', formData)
+                axios.post('{{ route('plant.ppm.3005.store') }}', formData)
                     .then(function(response) {
                         console.log("Respons dari server:", response.data);
                         if (response.data.success) {
@@ -623,7 +767,7 @@
                             }).then((result) => {
                                 if (result.isConfirmed) {
                                     window.location.href =
-                                        '{{ route('plant.ppm.900d.dashboard') }}';
+                                        '{{ route('plant.ppm.3005.dashboard') }}';
                                 }
                             });
                         }

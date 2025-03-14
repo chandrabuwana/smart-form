@@ -1,0 +1,163 @@
+{
+    "ENGINE": [
+        {
+            "item": "Engine Speed",
+            "condition": "Low Idle",
+            "unit": "Rpm",
+            "standard": "700-750"
+        },
+        {
+            "condition": "High Idle",
+            "standard": "2400-2450"
+        },
+        {
+            "item": "Lub Oil Press.",
+            "condition": "Low Idling",
+            "unit": "Kg/cm2",
+            "standard": "Min 1,2/Min 0,7 (Repair)"
+        },
+        {
+            "condition": "High Idling",
+            "standard": "3,4 - 4,9/Min 2 (Repair)"
+        },
+        {
+            "item": "Coolant Temperature",
+            "condition": "Operational Temp",
+            "unit": "C",
+            "standard": "83-90"
+        },
+        {
+            "item": "Blow-by Pressure",
+            "condition": "Roted Output (1800 rpm)<br>coolant temp within operating range",
+            "unit": "mm Aq",
+            "standard": "Max 350/ max 700(Repair)"
+        },
+        {
+            "item": "Boost Press.",
+            "condition": "Rated Output (1800 rpm)",
+            "unit": "Kpa",
+            "standard": "Min.107/Min.93 (Repair)"
+        },
+        {
+            "item": "Exhaust Gas Temp (Cylinder 1)",
+            "condition": "T/C Stall",
+            "unit": "c",
+            "standard": "Max. 680/Max. 700(Repair)"
+        },
+        {
+            "item": "Exhaust Gas Temp (Cylinder 2)",
+            "unit": "c",
+            "standard": "Max. 680/Max. 700(Repair)"
+        },
+        {
+            "item": "Exhaust Gas Temp (Cylinder 3)",
+            "unit": "c",
+            "standard": "Max. 680/Max. 700(Repair)"
+        },
+        {
+            "item": "Exhaust Gas Temp (Cylinder 4)",
+            "unit": "c",
+            "standard": "Max. 680/Max. 700(Repair)"
+        },
+        {
+            "item": "Exhaust Gas Temp (Cylinder 5)",
+            "unit": "c",
+            "standard": "Max. 680/Max. 700(Repair)"
+        },
+        {
+            "item": "Exhaust Gas Temp (Cylinder 6)",
+            "unit": "c",
+            "standard": "Max. 680/Max. 700(Repair)"
+        }
+    ],
+    "TRANSMISSION": [
+        {
+            "item": "Converter Pressure",
+            "condition0": "Oil Temp 70-80 C",
+            "condition1": "Eng. Low Idle",
+            "unit": "Kg/cm2",
+            "standard": "15-18"
+        }
+    ],
+    "HYDRAULIC": [
+        {
+            "item": "Piston Pump Pressure",
+            "condition0": "Eng. High Idle <br>(Within Operating Coolant Temp. <br> Range 83 oC-90 oC)",
+            "condition1": "Hyd Oil Temp (70 oC-80 oC)",
+            "unit": "Kg/cm2",
+            "standard": "245 ± 5"
+        },
+        {
+            "item": "Steering Pressure",
+            "standard": "115 ± 10"
+        },
+        {
+            "item": "Fan Pump Pressure",
+            "standard": "200 ± 10"
+        },
+        {
+            "item": "Fan Motor Pressure",
+            "standard": "<2"
+        },
+        {
+            "item": "Service Brake Pressure",
+            "standard": "69 ± 5"
+        },
+        {
+            "item": "Park Brake Pressure",
+            "standard": "150 ± 10"
+        },
+        {
+            "item": "Park Brake Accumulator Pressure",
+            "standard": "150 ± 10"
+        },
+        {
+            "item": "Service Brake Accumulator Pressure",
+            "standard": "150 ± 10"
+        },
+        {
+            "item": "Fan Speed",
+            "unit": "rpm",
+            "standard": "400-1600"
+        }
+    ],
+    "Final": [
+        {
+            "item": "Drain Plug",
+            "condition": "Visual Check (Eng. Stop)",
+            "standard": "No Excressive, Metalic Powder"
+        },
+        {
+            "item": "Oil Leak",
+            "standard": "No Oil Leak"
+        },
+        {
+            "item": "Drain Plug",
+            "condition": "Visual Check (Eng. Stop)",
+            "unit": "LH",
+            "standard": "No Excressive, Metalic Powder"
+        },
+        {
+            "unit": "RH"
+        },
+        {
+            "item": "Oil Leak",
+            "unit": "LH",
+            "standard": "No Oil Leak"
+        },
+        {
+            "item": "Oil Leak",
+            "unit": "RH",
+            "standard": "No Oil Leak"
+        },
+        {
+            "item": "Electrical Function",
+            "condition": "Function Check",
+            "standard": "No DTC (Diagnostic Trouble Code) Detected"
+        },
+        {
+            "item": "Attacthment Frame",
+            "condition": "Crack Detection"
+        }
+    ]
+}

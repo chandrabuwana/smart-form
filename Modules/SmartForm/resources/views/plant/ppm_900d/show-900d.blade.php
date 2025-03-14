@@ -482,16 +482,22 @@
                                                                     <td></td>
                                                                 @endif
 
-                                                                <td><input type="text"
-                                                                        value="{{ $data->fin_actual[$k] ?? '' }}" disabled
-                                                                        class="form-control" name="final_actual[]"></td>
-                                                                <td><input type="text"
-                                                                        value="{{ $data->fin_correction_made[$k] ?? '' }}"
-                                                                        disabled class="form-control"
-                                                                        name="final_correct[]"></td>
-                                                                <td><input type="text"
-                                                                        value="{{ $data->fin_result[$k] ?? '' }}" disabled
-                                                                        class="form-control" name="final_result[]"></td>
+                                                                <td>
+                                                                    <input type="checkbox" disabled
+                                                                        class="custom-checkbox"
+                                                                        {{ isset($data->fin_actual[$k]) && (int) $data->fin_actual[$k] == 1 ? 'checked' : '' }}>
+                                                                </td>
+                                                                <td>
+                                                                    <input type="checkbox" disabled
+                                                                        class="custom-checkbox"
+                                                                        {{ isset($data->fin_correction_made[$k]) && (int) $data->fin_correction_made[$k] == 1 ? 'checked' : '' }}>
+                                                                </td>
+                                                                <td>
+                                                                    <input type="checkbox" disabled
+                                                                        class="custom-checkbox"
+                                                                        {{ isset($data->fin_result[$k]) && (int) $data->fin_result[$k] == 1 ? 'checked' : '' }}>
+                                                                </td>
+
                                                                 <td><input type="text"
                                                                         value="{{ $data->fin_pr[$k] ?? '' }}" disabled
                                                                         class="form-control" name="final_pr_no[]"></td>
@@ -533,7 +539,8 @@
                                             <div class="form-actions">
                                                 <a href="{{ route('plant.ppm.900d.dashboard') }}"
                                                     class="btn btn-secondary">Cancel</a>
-                                                <button type="submit" class="btn btn-primary">Submit</button>
+                                                <a href="{{ route('plant.ppm.900d.export', ['id' => $data->id]) }}"
+                                                    class="btn btn-primary">Export</a>
                                             </div>
                                         </div>
                                     </div>
@@ -636,8 +643,6 @@
 @section('custom-js')
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
-
-
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const headers = document.querySelectorAll(".accordion-header");
