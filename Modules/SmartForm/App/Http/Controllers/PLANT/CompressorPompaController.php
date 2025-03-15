@@ -64,7 +64,7 @@ class CompressorPompaController extends Controller {
             'date' => $request->date,
             'site' => $request->site
         ] ] );
-       
+
     } catch( \Exception $e ) {
         Log::error( 'Error in Dashboard: ' . $e->getMessage() );
         return redirect()->back()->with( 'error', 'Failed to load dashboard data: ' . $e->getMessage() );
@@ -219,7 +219,7 @@ public function AddFormCompressor( Request $request ) {
         }
     }
 
-    public function UpdateCompressor( Request $request, $id ) {
+    public function UpdateCompressor( Request $request ) {
         try {
 
             $data = [
@@ -291,8 +291,8 @@ public function AddFormCompressor( Request $request ) {
             $data[ 'question21' ] = json_encode( array_values( $question21 ) );
             $data[ 'question22' ] = json_encode( array_values( $question22 ) );
 
-            DB::table( 'prod_anak_asuh_monitoring' )
-            ->where( 'id', $id )
+            DB::table( 'plant_pompa_compressor' )
+            ->where( 'id', $request->id )
             ->update( $data );
 
             return response()->json( [
@@ -323,7 +323,6 @@ public function AddFormCompressor( Request $request ) {
                 ->with( 'error', 'Data tidak ditemukan' );
             }
 
-            // Helper function to safely decode JSON
             $safeJsonDecode = function( $value ) {
                 if ( is_string( $value ) ) {
                     return json_decode( $value );
@@ -373,10 +372,32 @@ public function AddFormCompressor( Request $request ) {
         }
     }
 
+    public function DeleteCompressor( $id ) {
+        try {
+            $id = request()->id;
+            DB::table( 'plant_pompa_compressor' )
+            ->where( 'id', $id )
+            ->delete();
+
+           
+            return response()->json( [
+                'success' => true,
+                'message' => 'Data berhasil dihapus'
+            ] );
+
+        } catch ( QueryException $e ) {
+            Log::error( 'Error in Delete: ' . $e->getMessage() );
+            return response()->json( [
+                'success' => false,
+                'message' => 'Failed to delete record: ' . $e->getMessage()
+            ], 500 );
+
+        }
+    }
+
     private function generateDocNumber() {
         $today = Carbon::now();
 
-        // Initialize count
         $count = DB::table( 'plant_pompa_compressor' )
         ->whereYear( 'created_at', $today->year )
         ->whereMonth( 'created_at', $today->month )

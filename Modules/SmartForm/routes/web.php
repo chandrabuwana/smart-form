@@ -372,7 +372,8 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/form-compressor/export/{id}', [CompressorPompaController::class, 'ExportForm'])->name('plant.compressor.export');
             Route::get('/form-compressor', [CompressorPompaController::class, 'AddFormCompressor'])->name('plant.compressor.form');
             Route::post('/store-compressor', [CompressorPompaController::class, 'StoreCompressor'])->name('plant.compressor.store');
-            Route::put('/form-compressor/{id}', [CompressorPompaController::class, 'UpdateCompressor'])->name('plant.compressor.update');
+            Route::POST('/update', [CompressorPompaController::class, 'UpdateCompressor'])->name('plant.compressor.update');
+            Route::delete('/delete/{id}', [CompressorPompaController::class, 'DeleteCompressor'])->name('plant.compressor.delete');
         });
 
         Route::prefix('plant-welding')->group(function(){
