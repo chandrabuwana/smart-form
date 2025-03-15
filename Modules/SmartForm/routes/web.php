@@ -40,6 +40,7 @@ use Modules\SmartForm\App\Http\Controllers\SM\AssetRequestController;
 use Modules\SmartForm\App\Http\Controllers\SM\RegistrasiSupplierController;
 use Modules\SmartForm\App\Http\Controllers\LOG\CheckOgcComController;
 use Modules\SmartForm\App\Http\Controllers\LOG\LogController;
+use Modules\SmartForm\App\Http\Controllers\LOG\PemakaianSolarController;
 use Modules\SmartForm\App\Http\Controllers\SmartFormController;
 use Modules\SmartForm\App\Http\Controllers\SmartPica\DashboarController;
 use Modules\SmartForm\App\Http\Controllers\SmartPica\HelperController;
@@ -107,6 +108,14 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/pdf-pengeluaran-oli/{id}', [LogController::class, 'PdfPengeluaranOli'])->name('bss-form.log.pdf-pengeluaran-oli');
 
             // PEMAKAIAN SOLAR
+            Route::get('/pemakaian-solar', [PemakaianSolarController::class, 'PemakaianSolarDashboard'])->name('bss-form.log.pemakaian-solar.dashboard');
+            Route::get('/list-pemakaian-solar', [PemakaianSolarController::class, 'GetListPemakaianSolar'])->name("bss-form.log.list-pemakaian-solar");
+            Route::get('/form-pemakaian-solar', [PemakaianSolarController::class, 'formPemakaianSolar'])->name('bss-form.log.form-pemakaian-solar');
+            Route::post('/add-pemakaian-solar', [PemakaianSolarController::class, 'SubmitFormPemakaianSolar'])->name("bss-form.log.add-pemakaian-solar");
+            Route::get('/edit-pemakaian-solar', [PemakaianSolarController::class, 'editPemakaianSolar'])->name('bss-form.log.edit-pemakaian-solar');
+            Route::get('/pdf-pemakaian-solar/{id}', [PemakaianSolarController::class, 'PdfPemakaianSolar'])->name('bss-form.log.pdf-pemakaian-solar');
+            Route::get('/get-pemakaian-solar-detail', [PemakaianSolarController::class, 'SolarDetailById'])->name("bss-form.log.form-detail-by-id");
+            Route::get('/get-pemakaian-solar-data', [PemakaianSolarController::class, 'GetPemakaianSolarData'])->name("bss-form.log.get-pemakaian-solar-data");
             Route::get('/pemakaian-solar', [LogController::class, 'PemakaianSolarDashboard'])->name('bss-form.log.pemakaian-solar.dashboard');
             Route::get('/list-pemakaian-solar', [LogController::class, 'GetListPemakaianSolar'])->name("bss-form.log.list-pemakaian-solar");
             Route::get('/form-pemakaian-solar', [LogController::class, 'formPemakaianSolar'])->name('bss-form.log.form-pemakaian-solar');
