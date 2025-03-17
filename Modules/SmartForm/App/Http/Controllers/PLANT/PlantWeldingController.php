@@ -205,6 +205,37 @@ class PlantWeldingController extends Controller
         }
     }
 
+    public function destroy($id)
+    {
+        try {
+            // Cari data berdasarkan ID
+            $record = DB::table('plant_welding')->where('id', $id)->first();
+
+            if (!$record) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Data tidak ditemukan'
+                ], 404);
+            }
+
+            // Hapus data
+            DB::table('plant_welding')->where('id', $id)->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data berhasil dihapus'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error in Delete: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menghapus data: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+
     public function UpdateWelding(Request $request, $id)
     {
         try {

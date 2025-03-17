@@ -66,7 +66,7 @@ class PpmXcmg900dController extends Controller {
         $json = file_get_contents( resource_path( 'data/ppm-900d/ppm-900.json' ) );
         $list = json_decode( $json, true );
 
-        // dd( $list );
+
         return view( 'smartform::plant.ppm_900d.form-900d', [ 'list' => $list,  'approvalList' => HrdHelper::getApprovalList() ] );
     }
 
@@ -108,12 +108,14 @@ class PpmXcmg900dController extends Controller {
         $data->fin_pr = json_decode( $detail->fin_pr );
         $data->fin_taggal = json_decode( $detail->fin_taggal );
         $data->fin_remark = json_decode( $detail->fin_remark );
-        // dd($data);
+
+     
 
         return view( 'smartform::plant.ppm_900d.show-900d', [ 'data' => $data, 'list' => $list   ] );
     }
 
     public function Store( Request $request ) {
+
         $data = [
             'doc_num' => $this->generateDocNumber(),
             'unit_model' => "XCMG 900D",
@@ -133,6 +135,12 @@ class PpmXcmg900dController extends Controller {
             'updated_at' => Carbon::now()
 
         ];
+        for ( $i = 0; $i <= 3; $i++ ) {
+            $final_actual[] = $request->input( "final_actual$i" ) ?? 0;
+            $final_correct[] = $request->input( "final_correct$i" ) ?? 0;
+            $final_result[] = $request->input( "final_result$i" ) ?? 0;
+        }
+
 
         $dataDetail = [
             'doc_num_id' => $data[ 'doc_num' ],
@@ -154,9 +162,9 @@ class PpmXcmg900dController extends Controller {
             'wo_pr' => json_encode( array_values( $request->wo_pr_no ) ) ,
             'wo_taggal' => json_encode( array_values( $request->wo_tanggal ) ),
             'wo_remark' =>json_encode( array_values( $request->wo_remarks ) ),
-            'fin_actual' => json_encode( array_values( $request->final_actual ) ),
-            'fin_correction_made' =>json_encode( array_values( $request->final_correct ) ),
-            'fin_result' => json_encode( array_values( $request->final_result ) ),
+            'fin_actual' => json_encode( array_values( $final_actual ) ),
+            'fin_correction_made' =>json_encode( array_values( $final_correct ) ),
+            'fin_result' => json_encode( array_values($final_result ) ),
             'fin_pr' => json_encode( array_values( $request->final_pr_no ) ) ,
             'fin_taggal' => json_encode( array_values( $request->final_tanggal ) ),
             'fin_remark' => json_encode( array_values( $request->final_remarks ) ),

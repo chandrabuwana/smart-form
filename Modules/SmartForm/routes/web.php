@@ -25,6 +25,7 @@ use Modules\SmartForm\App\Http\Controllers\Production\KalibrasiCtController;
 use Modules\SmartForm\App\Http\Controllers\Production\ProductionTimeSheetDashboarController;
 use Modules\SmartForm\App\Http\Controllers\Production\AnakAsuhController;
 use Modules\SmartForm\App\Http\Controllers\Production\CoalGettingController;
+use Modules\SmartForm\App\Http\Controllers\Production\A2bBaruController;
 use Modules\SmartForm\App\Http\Controllers\SHE\DashboardSHEFRM19BController;
 use Modules\SmartForm\App\Http\Controllers\SHE\TransactionSHEFRM19BController;
 use Modules\SmartForm\App\Http\Controllers\SHE\EyewashController;
@@ -41,6 +42,7 @@ use Modules\SmartForm\App\Http\Controllers\SM\AssetRequestController;
 use Modules\SmartForm\App\Http\Controllers\SM\RegistrasiSupplierController;
 use Modules\SmartForm\App\Http\Controllers\LOG\CheckOgcComController;
 use Modules\SmartForm\App\Http\Controllers\LOG\LogController;
+use Modules\SmartForm\App\Http\Controllers\LOG\PemakaianSolarController;
 use Modules\SmartForm\App\Http\Controllers\SmartFormController;
 use Modules\SmartForm\App\Http\Controllers\SmartPica\DashboarController;
 use Modules\SmartForm\App\Http\Controllers\SmartPica\HelperController;
@@ -63,7 +65,6 @@ use Modules\SmartForm\App\Http\Controllers\IT\CctvFormController;
 use Modules\SmartForm\App\Http\Controllers\IT\DeviceFormController;
 use Modules\SmartForm\App\Http\Controllers\IT\RouterFormController;
 use Modules\SmartForm\App\Http\Controllers\PLANT\GeneralInspection\InspectionCmtController;
-use Modules\SmartForm\App\Http\Controllers\PLANT\GeneralInspection\InspectionDongfengController;
 
 /*
 |--------------------------------------------------------------------------
@@ -115,13 +116,19 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/pdf-pengeluaran-oli/{id}', [LogController::class, 'PdfPengeluaranOli'])->name('bss-form.log.pdf-pengeluaran-oli');
 
             // PEMAKAIAN SOLAR
+            Route::get('/pemakaian-solar', [PemakaianSolarController::class, 'PemakaianSolarDashboard'])->name('bss-form.log.pemakaian-solar.dashboard');
+            Route::get('/list-pemakaian-solar', [PemakaianSolarController::class, 'GetListPemakaianSolar'])->name("bss-form.log.list-pemakaian-solar");
+            Route::get('/form-pemakaian-solar', [PemakaianSolarController::class, 'formPemakaianSolar'])->name('bss-form.log.form-pemakaian-solar');
+            Route::post('/add-pemakaian-solar', [PemakaianSolarController::class, 'SubmitFormPemakaianSolar'])->name("bss-form.log.add-pemakaian-solar");
+            Route::get('/edit-pemakaian-solar', [PemakaianSolarController::class, 'editPemakaianSolar'])->name('bss-form.log.edit-pemakaian-solar');
+            Route::get('/pdf-pemakaian-solar/{id}', [PemakaianSolarController::class, 'PdfPemakaianSolar'])->name('bss-form.log.pdf-pemakaian-solar');
+            Route::get('/get-pemakaian-solar-detail', [PemakaianSolarController::class, 'SolarDetailById'])->name("bss-form.log.form-detail-by-id");
+            Route::get('/get-pemakaian-solar-data', [PemakaianSolarController::class, 'GetPemakaianSolarData'])->name("bss-form.log.get-pemakaian-solar-data");
             Route::get('/pemakaian-solar', [LogController::class, 'PemakaianSolarDashboard'])->name('bss-form.log.pemakaian-solar.dashboard');
             Route::get('/list-pemakaian-solar', [LogController::class, 'GetListPemakaianSolar'])->name("bss-form.log.list-pemakaian-solar");
             Route::get('/form-pemakaian-solar', [LogController::class, 'formPemakaianSolar'])->name('bss-form.log.form-pemakaian-solar');
             Route::post('/add-pemakaian-solar', [LogController::class, 'SubmitFormPemakaianSolar'])->name("bss-form.log.add-pemakaian-solar");
-            Route::get('/edit-pemakaian-solar', [LogController::class, 'editPemakaianSolar'])->name('bss-form.log.edit-pemakaian-solar');
             Route::get('/pdf-pemakaian-solar/{id}', [LogController::class, 'PdfPemakaianSolar'])->name('bss-form.log.pdf-pemakaian-solar');
-            Route::get('/get-pemakaian-detail', [LogController::class, 'SolarDetailById'])->name("bss-form.log.form-detail-by-id");
 
             // CHECK OGC COMPLIANCE
             Route::get('/check-ogc-compliance', [CheckOgcComController::class, 'CheckOgcCompDashboard'])->name('bss-form.log.check-ogc-comp.dashboard');
@@ -399,20 +406,15 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/form-welding', [PlantWeldingController::class, 'AddFormWelding'])->name('plant.welding.form');
             Route::post('/store-welding', [PlantWeldingController::class, 'StoreWelding'])->name('plant.welding.store');
             Route::put('/form-welding/{id}', [PlantWeldingController::class, 'UpdateWelding'])->name('plant.welding.update');
+            Route::delete('/form-welding/{id}', [KalibrasiCtController::class, 'destroy'])->name('plant.welding.delete');
         });
         // PLANT
         Route::prefix('plant')->name('bss-form.plant.')->group(function () {
             // General Inspection
             Route::prefix('general-inspection')->name('general-inspection.')->group(function () {
-                // CMT
                 Route::get('cmt/{id}/print', [InspectionCmtController::class, 'print'])->name('cmt.print');
                 Route::get('cmt/get-data', [InspectionCmtController::class, 'getData'])->name('cmt.get-data');
                 Route::resource('cmt', InspectionCmtController::class);
-
-                // Dongfeng
-                Route::get('dongfeng/{id}/print', [InspectionDongfengController::class, 'print'])->name('dongfeng.print');
-                Route::get('dongfeng/get-data', [InspectionDongfengController::class, 'getData'])->name('dongfeng.get-data');
-                Route::resource('dongfeng', InspectionDongfengController::class);
             });
         });
 
@@ -432,16 +434,18 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/form-kalibrasi-ct', [KalibrasiCtController::class, 'AddFormKalibrasi'])->name('prod.kalibrasi-ct.form');
             Route::post('/store-kalibrasi-ct', [KalibrasiCtController::class, 'StoreKalibrasi'])->name('prod.kalibrasi-ct.store');
             Route::put('/form-kalibrasi-ct/{id}', [KalibrasiCtController::class, 'UpdateKalibrasi'])->name('prod.kalibrasi-ct.update');
+            Route::delete('/form-kalibrasi-ct/{id}', [KalibrasiCtController::class, 'destroy'])->name('prod.kalibrasi-ct.delete');
         });
 
-        Route::prefix('ppm-900d')->group(function(){
-            Route::get('/dashboard', [PpmXcmg900dController::class, 'Dashboard'])->name('plant.ppm.900d.dashboard');
-            Route::get('/export/{id}', [PpmXcmg900dController::class, 'Export'])->name('plant.ppm.900d.export');
-            Route::get('/add', [PpmXcmg900dController::class, 'Add'])->name('plant.ppm.900d.form');
-            Route::post('/store', [PpmXcmg900dController::class, 'Store'])->name('plant.ppm.900d.store');
-            Route::get('/detail/{id}', [PpmXcmg900dController::class, 'detail'])->name('plant.ppm.900d.detail');
-
+        Route::prefix('prod-a2b-baru')->group(function () {
+            Route::get('/dashboard', [A2bBaruController::class, 'Dashboard'])->name('prod.a2b-baru.dashboard');
+            Route::get('/form-a2b-baru/export/{id}', [A2bBaruController::class, 'ExportForm'])->name('prod.a2b-baru.export');
+            Route::get('/form-a2b-baru', [A2bBaruController::class, 'AddFormA2bBaru'])->name('prod.a2b-baru.form');
+            Route::post('/store-a2b-baru', [A2bBaruController::class, 'StoreA2bBaru'])->name('prod.a2b-baru.store');
+            Route::put('/form-a2b-baru/{id}', [A2bBaruController::class, 'UpdatA2bBaru'])->name('prod.a2b-baru.update');
+            Route::delete('/form-a2b-baru/{id}', [A2bBaruController::class, 'destroy'])->name('prod.a2b-baru.delete');
         });
+
 
     });
 
