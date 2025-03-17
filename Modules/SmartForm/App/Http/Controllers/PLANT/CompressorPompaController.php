@@ -291,6 +291,7 @@ public function AddFormCompressor( Request $request ) {
             $data[ 'question21' ] = json_encode( array_values( $question21 ) );
             $data[ 'question22' ] = json_encode( array_values( $question22 ) );
 
+
             DB::table( 'plant_pompa_compressor' )
             ->where( 'id', $request->id )
             ->update( $data );
@@ -379,7 +380,6 @@ public function AddFormCompressor( Request $request ) {
             ->where( 'id', $id )
             ->delete();
 
-           
             return response()->json( [
                 'success' => true,
                 'message' => 'Data berhasil dihapus'

@@ -133,19 +133,19 @@
                                         <select class="form-control" name="job_site" id="job_site">
                                             <option disabled selected>-- Select Site --</option>
                                             <option value="agm"
-                                                {{ old('site', $filters['job_site']  ?? '') == 'agm' ? 'selected' : '' }}>
+                                                {{ old('site', $filters['job_site'] ?? '') == 'agm' ? 'selected' : '' }}>
                                                 agm</option>
                                             <option value="mbl"
                                                 {{ old('site', $filters['job_site'] ?? '') == 'mbl' ? 'selected' : '' }}>
                                                 mbl</option>
                                             <option value="mme"
-                                                {{ old('site', $filters['job_site']  ?? '') == 'mme' ? 'selected' : '' }}>
+                                                {{ old('site', $filters['job_site'] ?? '') == 'mme' ? 'selected' : '' }}>
                                                 mme</option>
                                             <option value="mas"
-                                                {{ old('site', $filters['job_site']  ?? '') == 'mas' ? 'selected' : '' }}>
+                                                {{ old('site', $filters['job_site'] ?? '') == 'mas' ? 'selected' : '' }}>
                                                 mas</option>
                                             <option value="pmss"
-                                                {{ old('site', $filters['job_site']  ?? '') == 'pmss' ? 'selected' : '' }}>
+                                                {{ old('site', $filters['job_site'] ?? '') == 'pmss' ? 'selected' : '' }}>
                                                 pmss</option>
                                             <option value="taj"
                                                 {{ old('site', $filters['job_site'] ?? '') == 'taj' ? 'selected' : '' }}>
@@ -154,10 +154,10 @@
                                                 {{ old('site', $filters['job_site'] ?? '') == 'bssr' ? 'selected' : '' }}>
                                                 bssr</option>
                                             <option value="tdm"
-                                                {{ old('site', $filters['job_site']  ?? '') == 'tdm' ? 'selected' : '' }}>
+                                                {{ old('site', $filters['job_site'] ?? '') == 'tdm' ? 'selected' : '' }}>
                                                 tdm</option>
                                             <option value="msj"
-                                                {{ old('site', $filters['job_site']  ?? '') == 'msj' ? 'selected' : '' }}>
+                                                {{ old('site', $filters['job_site'] ?? '') == 'msj' ? 'selected' : '' }}>
                                                 msj</option>
                                         </select>
                                     </div>
@@ -234,12 +234,13 @@
                                                     class="btn btn-primary btn-sm">
                                                     <i class="fas fa-download"></i>
                                                 </a>
+                                                <button type="button" class="btn btn-danger btn-sm"
+                                                    onclick="deleteXcmg900('{{ $data->doc_num}}')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
                                             </td>
                                         </tr>
                                     @endforeach
-
-
-
 
                                 </tbody>
                             </table>
@@ -255,6 +256,7 @@
 @endsection
 
 @section('custom-js')
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <script>
         $(function() {
@@ -264,5 +266,52 @@
             });
 
         });
+
+        function deleteXcmg900(id) {
+            console.log('Delete ID:', id);
+            if (confirm('Are you sure you want to delete this data?')) {
+                axios.delete('{{ route('plant.ppm.900d.delete', ['id' => 'ID']) }}'.replace('ID', id))
+                    .then(function(response) {
+                        console.log('Response:', response);
+                        if (response.data.success) {
+
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: response.data.message
+                            }).then(() => {
+
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Failed to delete the compressor.'
+                            });
+                        }
+                    })
+                    .catch(function(error) {
+                        console.error(error);
+                        let errorMessage = 'Terjadi kesalahan pada sistem';
+                        if (error.response) {
+
+                            if (error.response.data.errors) {
+                                errorMessage = Object.values(error.response.data.errors).flat().join('\n');
+                            } else if (error.response.data.message) {
+                                errorMessage = error.response.data.message;
+                            }
+                        }
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: errorMessage
+                        });
+                    })
+                    .finally(function() {
+                        submitBtn.prop('disabled', false);
+                    });
+            }
+        }
     </script>
 @endsection

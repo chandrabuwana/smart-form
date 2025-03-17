@@ -422,7 +422,9 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/export/{id}', [PpmXcmg900dController::class, 'Export'])->name('plant.ppm.900d.export');
             Route::get('/add', [PpmXcmg900dController::class, 'Add'])->name('plant.ppm.900d.form');
             Route::post('/store', [PpmXcmg900dController::class, 'Store'])->name('plant.ppm.900d.store');
+            Route::post('/update',[PpmXcmg900dController::class, 'Update'])->name('plant.ppm.900d.update');
             Route::get('/detail/{id}', [PpmXcmg900dController::class, 'detail'])->name('plant.ppm.900d.detail');
+            Route::delete('/delete/{id}', [PpmXcmg900dController::class, 'Delete'])->name('plant.ppm.900d.delete');
 
         });
         Route::prefix('ppm-3005T')->group(function(){
@@ -430,7 +432,9 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/export/{id}', [PpmXCMG3005TController::class, 'Export'])->name('plant.ppm.3005.export');
             Route::get('/add', [PpmXCMG3005TController::class, 'Add'])->name('plant.ppm.3005.form');
             Route::post('/store', [PpmXCMG3005TController::class, 'Store'])->name('plant.ppm.3005.store');
+            Route::post('/update',[PpmXCMG3005TController::class, 'Update'])->name('plant.ppm.3005.update');
             Route::get('/detail/{id}', [PpmXCMG3005TController::class, 'detail'])->name('plant.ppm.3005.detail');
+            Route::delete('/delete/{id}', [PpmXCMG3005TController::class, 'Delete'])->name('plant.ppm.3005.delete');
         });
 
     });

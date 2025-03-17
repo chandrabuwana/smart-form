@@ -31,27 +31,27 @@
                     <form id="formXCMG3005" method="POST">
                         @csrf
                         <div class="mx-3">
-
+                            <input type="hidden" name="doc_num" value="{{ $data->doc_num }}">
                             <div class="row mb-3">
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="unit_model" class="ms-0">Unit Model</label>
                                         <input type="text" class="form-control" id="unit_model" name="unit_model"
-                                            value="{{ $data->unit_model }}" disabled>
+                                            value="{{ $data->unit_model }}"required>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="unit_sn" class="ms-0">Unit S/N</label>
                                         <input type="text" class="form-control" id="unit_sn" name="unit_sn"
-                                            value="{{ $data->unit_sn }}" disabled>
+                                            value="{{ $data->unit_sn }}">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="unit_cn" class="ms-0">Unit C/N</label>
                                         <input type="text" class="form-control" id="unit_cn" name="unit_cn"
-                                            value="{{ $data->unit_cn }}" disabled>
+                                            value="{{ $data->unit_cn }}">
                                     </div>
                                 </div>
 
@@ -61,21 +61,21 @@
                                     <div class="input-group input-group-static mb-3">
                                         <label for="engine_model" class="ms-0">Engine Model</label>
                                         <input type="text" class="form-control" id="engine_model" name="engine_model"
-                                            value="{{ $data->engine_model }}" disabled>
+                                            value="{{ $data->engine_model }}">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="engine_sn" class="ms-0">Engine S/N</label>
                                         <input type="text" class="form-control" id="engine_sn" name="engine_sn"
-                                            value="{{ $data->engine_sn }}" disabled>
+                                            value="{{ $data->engine_sn }}">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="att_front" class="ms-0">Attachment Front</label>
                                         <input type="text" class="form-control" id="att_front" name="att_front"
-                                            value="{{ $data->att_front }}" disabled>
+                                            value="{{ $data->att_front }}">
                                     </div>
                                 </div>
 
@@ -86,21 +86,61 @@
                                     <div class="input-group input-group-static mb-3">
                                         <label for="att_rear" class="ms-0">Attachment Rear</label>
                                         <input type="text" class="form-control" id="att_rear" name="att_rear"
-                                            value="{{ $data->att_rear }}" disabled>
+                                            value="{{ $data->att_rear }}">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="job_site" class="ms-0">Job Site</label>
-                                        <input type="text" class="form-control" id="job_site" name="job_site"
-                                            value="{{ $data->job_site }}" disabled>
+                                        <select class="form-control" name="job_site" id="job_site" required>
+                                            <option disabled selected>-- Select Site --</option>
+                                            <option value="agm"
+                                                {{ old('job_site', $data->job_site ?? '') == 'agm' ? 'selected' : '' }}>
+                                                agm</option>
+                                            <option value="mbl"
+                                                {{ old('job_site', $data->job_site ?? '') == 'mbl' ? 'selected' : '' }}>
+                                                mbl</option>
+                                            <option value="mme"
+                                                {{ old('job_site', $data->job_site ?? '') == 'mme' ? 'selected' : '' }}>
+                                                mme</option>
+                                            <option value="mas"
+                                                {{ old('job_site', $data->job_site ?? '') == 'mas' ? 'selected' : '' }}>
+                                                mas</option>
+                                            <option value="pmss"
+                                                {{ old('job_site', $data->job_site ?? '') == 'pmss' ? 'selected' : '' }}>
+                                                pmss</option>
+                                            <option value="taj"
+                                                {{ old('job_site', $data->job_site ?? '') == 'taj' ? 'selected' : '' }}>
+                                                taj</option>
+                                            <option value="bssr"
+                                                {{ old('job_site', $data->job_site ?? '') == 'bssr' ? 'selected' : '' }}>
+                                                bssr</option>
+                                            <option value="tdm"
+                                                {{ old('job_site', $data->job_site ?? '') == 'tdm' ? 'selected' : '' }}>
+                                                tdm</option>
+                                            <option value="msj"
+                                                {{ old('job_site', $data->job_site ?? '') == 'msj' ? 'selected' : '' }}>
+                                                msj</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="location" class="ms-0">Location</label>
-                                        <input type="text" class="form-control" id="location" name="location"
-                                            value="{{ $data->job_location }}" disabled>
+                                        <select class="form-control" name="location" id="location" required>
+                                            <option value="Workshop"
+                                                {{ old('location', $data->job_location ?? '') == 'Workshop' ? 'selected' : '' }}>
+                                                Workshop</option>
+                                            <option value="Pitstop"
+                                                {{ old('location', $data->job_location ?? '') == 'Pitstop' ? 'selected' : '' }}>
+                                                Pitstop</option>
+                                            <option value="Service"
+                                                {{ old('location', $data->job_location ?? '') == 'Service' ? 'selected' : '' }}>
+                                                Service</option>
+                                            <option value="Truck"
+                                                {{ old('location', $data->job_location ?? '') == 'Truck' ? 'selected' : '' }}>
+                                                Truck</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -109,14 +149,14 @@
                                     <div class="input-group input-group-static mb-3">
                                         <label for="at_inspec" class="ms-0">SMR / HM At Inspection</label>
                                         <input type="text" class="form-control" id="at_inspec" name="at_inspec"
-                                            value="{{ $data->at_inspection }}" disabled>
+                                            value="{{ $data->at_inspection }}">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="date" class="ms-0">SMR / HM Date</label>
                                         <input type="date" class="form-control" id="date" name="date"
-                                            value="{{ $data->date }}" disabled>
+                                            value="{{ $data->date }}">
                                     </div>
                                 </div>
 
@@ -191,19 +231,19 @@
                                                             @endif
                                                             <td><input type="text" class="form-control"
                                                                     name="eng_actual[]"
-                                                                    value="{{ $data->eng_actual[$index] }}" disabled></td>
+                                                                    value="{{ $data->eng_actual[$index] }}"></td>
                                                             <td><input type="text" class="form-control"
-                                                                    name="eng_correct[]"value="{{ $data->eng_correction_made[$index] }}"
-                                                                    disabled></td>
+                                                                    name="eng_correct[]"value="{{ $data->eng_correction_made[$index] }}">
+                                                            </td>
                                                             <td><input type="text" class="form-control"
-                                                                    name="eng_result[]"value="{{ $data->eng_result[$index] }}"
-                                                                    disabled></td>
+                                                                    name="eng_result[]"value="{{ $data->eng_result[$index] }}">
+                                                            </td>
                                                             <td><input type="text" class="form-control"
                                                                     name="eng_pr_no[]"
-                                                                    value="{{ $data->eng_pr[$index] }}" disabled></td>
+                                                                    value="{{ $data->eng_pr[$index] }}"></td>
                                                             <td><input type="date" class="form-control"
-                                                                    name="eng_tanggal[]"value="{{ $data->eng_taggal[$index] }}"
-                                                                    disabled></td>
+                                                                    name="eng_tanggal[]"value="{{ $data->eng_taggal[$index] }}">
+                                                            </td>
                                                             @if ($index === 0)
                                                                 <td rowspan="13">
                                                                     <textarea class="form-control" rows="30" name="eng_remarks">{{ $data->eng_remark }}</textarea>
@@ -270,23 +310,23 @@
                                                             <td class="align-middle">
                                                                 {!! $value['standard'] !!}</td>
                                                             <td><input type="text" class="form-control"
-                                                                    name="wo_actual[]" value="{{ $data->wo_actual[$i] }}"
-                                                                    disabled></td>
+                                                                    name="wo_actual[]"
+                                                                    value="{{ $data->wo_actual[$i] }}"></td>
                                                             <td><input type="text" class="form-control"
-                                                                    name="wo_correct[]"value="{{ $data->wo_correction_made[$i] }}"
-                                                                    disabled></td>
+                                                                    name="wo_correct[]"value="{{ $data->wo_correction_made[$i] }}">
+                                                            </td>
                                                             <td><input type="text" class="form-control"
-                                                                    name="wo_result[]"value="{{ $data->wo_result[$i] }}"
-                                                                    disabled></td>
+                                                                    name="wo_result[]"value="{{ $data->wo_result[$i] }}">
+                                                            </td>
                                                             <td><input type="text" class="form-control"
-                                                                    name="wo_pr_no[]" value="{{ $data->wo_pr[$i] }}"
-                                                                    disabled></td>
+                                                                    name="wo_pr_no[]" value="{{ $data->wo_pr[$i] }}">
+                                                            </td>
                                                             <td><input type="date" class="form-control"
-                                                                    name="wo_tanggal[]"value="{{ $data->wo_taggal[$i] }}"
-                                                                    disabled></td>
+                                                                    name="wo_tanggal[]"value="{{ $data->wo_taggal[$i] }}">
+                                                            </td>
                                                             @if ($i === 0)
                                                                 <td>
-                                                                    <textarea class="form-control" rows="1" name="eng_remarks">{{ $data->wo_remark }}</textarea>
+                                                                    <textarea class="form-control" rows="1" name="wo_remarks">{{ $data->wo_remark }}</textarea>
                                                                 </td>
                                                             @endif
 
@@ -364,22 +404,22 @@
                                                             @endif
                                                             <td><input type="text" class="form-control"
                                                                     name="hyd_actual[]"
-                                                                    value="{{ $data->hyd_actual[$p] }}" disabled></td>
+                                                                    value="{{ $data->hyd_actual[$p] }}"></td>
                                                             <td><input type="text" class="form-control"
-                                                                    name="hyd_correct[]"value="{{ $data->hyd_correction_made[$p] }}"
-                                                                    disabled></td>
+                                                                    name="hyd_correct[]"value="{{ $data->hyd_correction_made[$p] }}">
+                                                            </td>
                                                             <td><input type="text" class="form-control"
-                                                                    name="hyd_result[]"value="{{ $data->hyd_result[$p] }}"
-                                                                    disabled></td>
+                                                                    name="hyd_result[]"value="{{ $data->hyd_result[$p] }}">
+                                                            </td>
                                                             <td><input type="text" class="form-control"
-                                                                    name="hyd_pr_no[]" value="{{ $data->hyd_pr[$p] }}"
-                                                                    disabled></td>
+                                                                    name="hyd_pr_no[]" value="{{ $data->hyd_pr[$p] }}">
+                                                            </td>
                                                             <td><input type="date" class="form-control"
-                                                                    name="hyd_tanggal[]"value="{{ $data->hyd_taggal[$p] }}"
-                                                                    disabled></td>
+                                                                    name="hyd_tanggal[]"value="{{ $data->hyd_taggal[$p] }}">
+                                                            </td>
                                                             @if ($p === 0)
                                                                 <td rowspan="9">
-                                                                    <textarea class="form-control" rows="20" name="eng_remarks">{{ $data->hyd_remark }}</textarea>
+                                                                    <textarea class="form-control" rows="20" name="hyd_remarks">{{ $data->hyd_remark }}</textarea>
                                                                 </td>
                                                             @endif
                                                         </tr>
@@ -442,22 +482,26 @@
                                                         <td rowspan="2" class="align-middle"></td>
                                                         <td class="align-middle">No Excressive, Metalic Powder</td>
                                                         <td>
-                                                            <input type="checkbox" disabled class="custom-checkbox"
+                                                            <input type="checkbox" name="final_actual0"
+                                                                class="custom-checkbox" value=1
                                                                 {{ isset($data->fin_actual[0]) && $data->fin_actual[0] == 1 ? 'checked' : '' }}>
                                                         </td>
 
-                                                        <td><input type="checkbox" disabled class="custom-checkbox"
+                                                        <td><input type="checkbox" name="final_correct0"
+                                                                class="custom-checkbox" value=1
                                                                 {{ isset($data->fin_correction_made[0]) && $data->fin_correction_made[0] == 1 ? 'checked' : '' }}>
                                                         </td>
-                                                        <td><input type="checkbox" disabled class="custom-checkbox"
+                                                        <td><input type="checkbox" name="final_result0"
+                                                                class="custom-checkbox" value=1
                                                                 {{ isset($data->fin_result[0]) && $data->fin_result[0] == 1 ? 'checked' : '' }}>
                                                         </td>
-                                                        <td><input type="text" class="form-control"
-                                                                value="{{ $data->fin_pr[0] }}"disabled></td>
-                                                        <td><input type="date" class="form-control"
-                                                                value="{{ $data->fin_taggal[0] }}"disabled></td>
+                                                        <td><input type="text" name="final_pr_no[]"
+                                                                class="form-control" value="{{ $data->fin_pr[0] }}"></td>
+                                                        <td><input type="date" name="final_tanggal[]"
+                                                                class="form-control" value="{{ $data->fin_taggal[0] }}">
+                                                        </td>
                                                         <td rowspan="2">
-                                                            <textarea type="text" rows="2" class="form-control" disabled>{{ $data->fin_remark[0] }}</textarea>
+                                                            <textarea type="text" rows="2" name="final_remarks[]" class="form-control">{{ $data->fin_remark[0] }}</textarea>
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -466,20 +510,24 @@
 
                                                         <td class="align-middle">No Excressive, Metalic Powder</td>
                                                         <td>
-                                                            <input type="checkbox" disabled class="custom-checkbox"
+                                                            <input type="checkbox" name="final_actual1"
+                                                                class="custom-checkbox" value=1
                                                                 {{ isset($data->fin_actual[1]) && $data->fin_actual[1] == 1 ? 'checked' : '' }}>
                                                         </td>
 
-                                                        <td><input type="checkbox" disabled class="custom-checkbox"
+                                                        <td><input type="checkbox" name="final_correct1"
+                                                                class="custom-checkbox" value=1
                                                                 {{ isset($data->fin_correction_made[1]) && $data->fin_correction_made[1] == 1 ? 'checked' : '' }}>
                                                         </td>
-                                                        <td><input type="checkbox" disabled class="custom-checkbox"
+                                                        <td><input type="checkbox" name="final_result1"
+                                                                class="custom-checkbox" value=1
                                                                 {{ isset($data->fin_result[1]) && $data->fin_result[1] == 1 ? 'checked' : '' }}>
                                                         </td>
-                                                        <td><input type="text" class="form-control"
-                                                                value="{{ $data->fin_pr[1] }}" disabled></td>
-                                                        <td><input type="date" class="form-control"
-                                                                value="{{ $data->fin_taggal[1] }}" disabled></td>
+                                                        <td><input type="text" name="final_pr_no[]"
+                                                                class="form-control" value="{{ $data->fin_pr[1] }}"></td>
+                                                        <td><input type="date" name="final_tanggal[]"
+                                                                class="form-control" value="{{ $data->fin_taggal[1] }}">
+                                                        </td>
 
                                                     </tr>
                                                     <tr>
@@ -496,42 +544,50 @@
                                                         <td rowspan="2" class="align-middle">No Excressive, Metalic
                                                             Powder</td>
                                                         <td>
-                                                            <input type="checkbox" disabled class="custom-checkbox"
+                                                            <input type="checkbox" name="final_actual2"
+                                                                class="custom-checkbox" value=1
                                                                 {{ isset($data->fin_actual[2]) && $data->fin_actual[2] == 1 ? 'checked' : '' }}>
                                                         </td>
 
-                                                        <td><input type="checkbox" disabled class="custom-checkbox"
+                                                        <td><input type="checkbox" name="final_correct2"
+                                                                class="custom-checkbox" value=1
                                                                 {{ isset($data->fin_correction_made[2]) && $data->fin_correction_made[2] == 1 ? 'checked' : '' }}>
                                                         </td>
-                                                        <td><input type="checkbox" disabled class="custom-checkbox"
+                                                        <td><input type="checkbox"name="final_result2"
+                                                                class="custom-checkbox" value=1
                                                                 {{ isset($data->fin_result[2]) && $data->fin_result[2] == 1 ? 'checked' : '' }}>
                                                         </td>
-                                                        <td><input type="text" class="form-control"
-                                                                value="{{ $data->fin_pr[2] }}" disabled></td>
-                                                        <td><input type="date" class="form-control"
-                                                                value="{{ $data->fin_taggal[2] }}" disabled></td>
+                                                        <td><input type="text" name="final_pr_no[]"
+                                                                class="form-control" value="{{ $data->fin_pr[2] }}"></td>
+                                                        <td><input type="date" name="final_tanggal[]"
+                                                                class="form-control" value="{{ $data->fin_taggal[2] }}">
+                                                        </td>
                                                         <td rowspan="2">
-                                                            <textarea type="text" rows="2" class="form-control" disabled>{{ $data->fin_remark[1] }}</textarea>
+                                                            <textarea type="text" rows="2" name="final_remarks[]" class="form-control">{{ $data->fin_remark[1] }}</textarea>
                                                         </td>
                                                     </tr>
                                                     <tr>
 
                                                         <td>LH</td>
                                                         <td>
-                                                            <input type="checkbox" disabled class="custom-checkbox"
+                                                            <input type="checkbox" name="final_actual3"
+                                                                class="custom-checkbox" value=1
                                                                 {{ isset($data->fin_actual[3]) && $data->fin_actual[3] == 1 ? 'checked' : '' }}>
                                                         </td>
 
-                                                        <td><input type="checkbox" disabled class="custom-checkbox"
+                                                        <td><input type="checkbox" name="final_correct3"
+                                                                class="custom-checkbox" value=1
                                                                 {{ isset($data->fin_correction_made[3]) && $data->fin_correction_made[3] == 1 ? 'checked' : '' }}>
                                                         </td>
-                                                        <td><input type="checkbox" disabled class="custom-checkbox"
+                                                        <td><input type="checkbox" name="final_result3"
+                                                                class="custom-checkbox" value=1
                                                                 {{ isset($data->fin_result[3]) && $data->fin_result[3] == 1 ? 'checked' : '' }}>
                                                         </td>
-                                                        <td><input type="text" class="form-control"
-                                                                value="{{ $data->fin_pr[3] }}" disabled></td>
-                                                        <td><input type="date" class="form-control"
-                                                                value="{{ $data->fin_taggal[3] }}"disabled></td>
+                                                        <td><input type="text" name="final_pr_no[]"
+                                                                class="form-control" value="{{ $data->fin_pr[3] }}"></td>
+                                                        <td><input type="date" name="final_tanggal[]"
+                                                                class="form-control" value="{{ $data->fin_taggal[3] }}">
+                                                        </td>
 
                                                     </tr>
                                                     <tr>
@@ -539,22 +595,26 @@
                                                         <td class="align-middle">RH</td>
                                                         <td class="align-middle">No Oil Leak</td>
                                                         <td>
-                                                            <input type="checkbox" disabled class="custom-checkbox"
+                                                            <input type="checkbox" name="final_actual4"
+                                                                class="custom-checkbox" value=1
                                                                 {{ isset($data->fin_actual[4]) && $data->fin_actual[4] == 1 ? 'checked' : '' }}>
                                                         </td>
 
-                                                        <td><input type="checkbox" disabled class="custom-checkbox"
+                                                        <td><input type="checkbox" name="final_correct4"
+                                                                class="custom-checkbox" value=1
                                                                 {{ isset($data->fin_correction_made[4]) && $data->fin_correction_made[4] == 1 ? 'checked' : '' }}>
                                                         </td>
-                                                        <td><input type="checkbox" disabled class="custom-checkbox"
+                                                        <td><input type="checkbox" name="final_result4"
+                                                                class="custom-checkbox" value=1
                                                                 {{ isset($data->fin_result[4]) && $data->fin_result[4] == 1 ? 'checked' : '' }}>
                                                         </td>
-                                                        <td><input type="text" class="form-control"
-                                                                value="{{ $data->fin_pr[4] }}" disabled></td>
-                                                        <td><input type="date" class="form-control"
-                                                                value="{{ $data->fin_taggal[4] }}"disabled></td>
+                                                        <td><input type="text" name="final_pr_no[]"
+                                                                class="form-control" value="{{ $data->fin_pr[4] }}"></td>
+                                                        <td><input type="date" name="final_tanggal[]"
+                                                                class="form-control" value="{{ $data->fin_taggal[4] }}">
+                                                        </td>
                                                         <td rowspan="2">
-                                                            <textarea type="text" rows="2" class="form-control" disabled>{{ $data->fin_remark[2] }}</textarea>
+                                                            <textarea type="text" rows="2" name="final_remarks[]" class="form-control">{{ $data->fin_remark[2] }}</textarea>
                                                         </td>
 
                                                     </tr>
@@ -563,20 +623,24 @@
                                                         <td>LH</td>
                                                         <td class="align-middle">No Oil Leak</td>
                                                         <td>
-                                                            <input type="checkbox" disabled class="custom-checkbox"
+                                                            <input type="checkbox" name="final_actual5"
+                                                                class="custom-checkbox" value=1
                                                                 {{ isset($data->fin_actual[5]) && $data->fin_actual[5] == 1 ? 'checked' : '' }}>
                                                         </td>
 
-                                                        <td><input type="checkbox" disabled class="custom-checkbox"
+                                                        <td><input type="checkbox" name="final_correct5"
+                                                                class="custom-checkbox" value=1
                                                                 {{ isset($data->fin_correction_made[5]) && $data->fin_correction_made[5] == 1 ? 'checked' : '' }}>
                                                         </td>
-                                                        <td><input type="checkbox" disabled class="custom-checkbox"
+                                                        <td><input type="checkbox" name="final_result5"
+                                                                class="custom-checkbox" value=1
                                                                 {{ isset($data->fin_result[5]) && $data->fin_result[5] == 1 ? 'checked' : '' }}>
                                                         </td>
-                                                        <td><input type="text" class="form-control"
-                                                                value="{{ $data->fin_pr[5] }}" disabled></td>
-                                                        <td><input type="date" class="form-control"
-                                                                value="{{ $data->fin_taggal[5] }}" disabled></td>
+                                                        <td><input type="text" name="final_pr_no[]"
+                                                                class="form-control" value="{{ $data->fin_pr[5] }}"></td>
+                                                        <td><input type="date" name="final_tanggal[]"
+                                                                class="form-control" value="{{ $data->fin_taggal[5] }}">
+                                                        </td>
 
                                                     </tr>
                                                     <tr>
@@ -593,22 +657,26 @@
                                                         <td class="align-middle">No DTC (Diagnostic Trouble Code) Detected
                                                         </td>
                                                         <td>
-                                                            <input type="checkbox" disabled class="custom-checkbox"
+                                                            <input type="checkbox" name="final_actual6"
+                                                                class="custom-checkbox" value=1
                                                                 {{ isset($data->fin_actual[6]) && $data->fin_actual[6] == 1 ? 'checked' : '' }}>
                                                         </td>
 
-                                                        <td><input type="checkbox" disabled class="custom-checkbox"
+                                                        <td><input type="checkbox" name="final_correct6"
+                                                                class="custom-checkbox" value=1
                                                                 {{ isset($data->fin_correction_made[6]) && $data->fin_correction_made[6] == 1 ? 'checked' : '' }}>
                                                         </td>
-                                                        <td><input type="checkbox" disabled class="custom-checkbox"
+                                                        <td><input type="checkbox" name="final_result6"
+                                                                class="custom-checkbox" value=1
                                                                 {{ isset($data->fin_result[6]) && $data->fin_result[6] == 1 ? 'checked' : '' }}>
                                                         </td>
-                                                        <td><input type="text" class="form-control"
-                                                                value="{{ $data->fin_pr[6] }}" disabled></td>
-                                                        <td><input type="date" class="form-control"
-                                                                value="{{ $data->fin_taggal[6] }}" disabled></td>
+                                                        <td><input type="text" name="final_pr_no[]"
+                                                                class="form-control" value="{{ $data->fin_pr[6] }}"></td>
+                                                        <td><input type="date" name="final_tanggal[]"
+                                                                class="form-control" value="{{ $data->fin_taggal[6] }}">
+                                                        </td>
                                                         <td>
-                                                            <textarea type="text" rows="1" disabled class="form-control">{{ $data->fin_remark[3] }}</textarea>
+                                                            <textarea type="text" rows="1" name="final_remarks[]" class="form-control">{{ $data->fin_remark[3] }}</textarea>
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -622,22 +690,26 @@
                                                         <td colspan="3" class="align-middle">Crack Detection
                                                         </td>
                                                         <td>
-                                                            <input type="checkbox" disabled class="custom-checkbox"
+                                                            <input type="checkbox" name="final_actual7"
+                                                                class="custom-checkbox" value=1
                                                                 {{ isset($data->fin_actual[7]) && $data->fin_actual[7] == 1 ? 'checked' : '' }}>
                                                         </td>
 
-                                                        <td><input type="checkbox" disabled class="custom-checkbox"
+                                                        <td><input type="checkbox" name="final_correct7"
+                                                                class="custom-checkbox" value=1
                                                                 {{ isset($data->fin_correction_made[7]) && $data->fin_correction_made[7] == 1 ? 'checked' : '' }}>
                                                         </td>
-                                                        <td><input type="checkbox" disabled class="custom-checkbox"
+                                                        <td><input type="checkbox" name="final_result7"
+                                                                class="custom-checkbox" value=1
                                                                 {{ isset($data->fin_result[7]) && $data->fin_result[7] == 1 ? 'checked' : '' }}>
                                                         </td>
-                                                        <td><input type="text" class="form-control"
-                                                                value="{{ $data->fin_pr[7] }}" disabled></td>
-                                                        <td><input type="date" class="form-control"
-                                                                value="{{ $data->fin_taggal[7] }}" disabled></td>
+                                                        <td><input type="text" name="final_pr_no[]"
+                                                                class="form-control" value="{{ $data->fin_pr[7] }}"></td>
+                                                        <td><input type="date" name="final_tanggal[]"
+                                                                class="form-control" value="{{ $data->fin_taggal[7] }}">
+                                                        </td>
                                                         <td>
-                                                            <textarea type="text" class="form-control" disabled>{{ $data->fin_remark[4] }}</textarea>
+                                                            <textarea type="text" name="final_remarks[]" class="form-control">{{ $data->fin_remark[4] }}</textarea>
                                                         </td>
                                                     </tr>
                                                 </tbody>
@@ -651,15 +723,28 @@
                                 <div class="col-6 ">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="dibuat" class="ms-0">Checked By</label>
-                                        <input type="text" class="form-control" id="diperiksa" name="diperiksa"
-                                            value="{{ $data->checked_by }}" disabled required>
+                                        <select name="checked" id="dibuat_oleh" class="form-control" required>
+                                            <option disabled selected>-- Select Creator --</option>
+                                            @foreach ($approvalList as $user)
+                                                <option
+                                                    {{ old('checked', $data->checked_by ?? '') == $user->nama ? 'selected' : '' }}>
+                                                    {{ $user->nama }}</option>
+                                            @endforeach
+
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="diperiksa" class="ms-0">Validated By</label>
-                                        <input type="text" class="form-control" id="diperiksa" name="diperiksa"
-                                            value="{{ $data->validated_by }}" disabled required>
+                                        <select name="validated" id="diperiksa" class="form-control" required>
+                                            <option disabled selected>-- Select Approval --</option>
+                                            @foreach ($approvalList as $user)
+                                                <option
+                                                    {{ old('validated', $data->validated_by ?? '') == $user->nama ? 'selected' : '' }}>
+                                                    {{ $user->nama }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -667,8 +752,7 @@
                                         <div class="form-actions">
                                             <a href="{{ route('plant.ppm.3005.dashboard') }}"
                                                 class="btn btn-secondary">Cancel</a>
-                                            <a href="{{ route('plant.ppm.3005.export', ['id' => $data->id]) }}"
-                                                class="btn btn-primary">Export</a>
+                                            <button type='submit' class="btn btn-primary">Update</button>
                                         </div>
                                     </div>
                                 </div>
@@ -792,7 +876,7 @@
                 var formData = new FormData(this);
                 console.log("Form data yang dikirim:", formData);
 
-                axios.post('{{ route('plant.ppm.3005.store') }}', formData)
+                axios.post('{{ route('plant.ppm.3005.update') }}', formData)
                     .then(function(response) {
                         console.log("Respons dari server:", response.data);
                         if (response.data.success) {
