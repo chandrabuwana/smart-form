@@ -107,7 +107,8 @@ public function detail( $id ) {
     $data->fin_taggal = json_decode( $detail->fin_taggal );
     $data->fin_remark =  json_decode( $detail->fin_remark ) ;
 
-    return view( 'smartform::plant.ppm_3005T.show-3005T', [ 'data' => $data, 'list' => $list ] );
+   
+    return view( 'smartform::plant.ppm_3005T.show-3005T', [ 'data' => $data, 'list' => $list, 'approvalList' => HrdHelper::getApprovalList()] );
 }
 
 public function Store( Request $request ) {
@@ -175,6 +176,78 @@ public function Store( Request $request ) {
     ] );
 
 }
+public function Update( Request $request ) {
+
+    $data = [
+        'doc_num' => $request->doc_num,
+        'unit_model' => $request->unit_model,
+        'unit_sn' =>$request->unit_sn,
+        'unit_cn' => $request->unit_cn,
+        'engine_model' => $request->engine_model ,
+        'engine_sn' => $request->engine_sn,
+        'att_front' => $request->att_front,
+        'att_rear' => $request->att_rear,
+        'job_site' => $request->job_site,
+        'job_location' => $request->location,
+        'at_inspection' => $request->at_inspec,
+        'date' => $request->date,
+        'checked_by' => $request->checked,
+        'validated_by' =>$request->validated,
+        'created_at' => Carbon::now(),
+        'updated_at' => Carbon::now()
+
+    ];
+    for ( $i = 0; $i <= 7; $i++ ) {
+        $final_actual[] = $request->input( "final_actual$i" ) ?? 0;
+        $final_correct[] = $request->input( "final_correct$i" ) ?? 0;
+        $final_result[] = $request->input( "final_result$i" ) ?? 0;
+    }
+   
+
+    $dataDetail = [
+        'doc_num_id' => $data[ 'doc_num' ],
+        'eng_actual' =>json_encode( array_values( $request->eng_actual ) ),
+        'eng_correction_made' =>json_encode( array_values( $request->eng_correct ) ),
+        'eng_result' => json_encode( array_values( $request->eng_result ) ),
+        'eng_pr' =>json_encode( array_values( $request->eng_pr_no ) ),
+        'eng_taggal' =>json_encode( array_values( $request->eng_tanggal ) ),
+        'eng_remark' => $request->eng_remarks ?? '',
+        'hyd_actual' => json_encode( array_values( $request->hyd_actual ) ),
+        'hyd_correction_made' =>json_encode( array_values( $request->hyd_correct ) ),
+        'hyd_result' => json_encode( array_values( $request->hyd_result ) ),
+        'hyd_pr' => json_encode( array_values( $request->hyd_pr_no ) ) ,
+        'hyd_taggal' => json_encode( array_values( $request->hyd_tanggal ) ),
+        'hyd_remark' => $request->hyd_remarks ?? '',
+        'wo_actual' => json_encode( array_values( $request->wo_actual ) ),
+        'wo_correction_made' =>json_encode( array_values( $request->wo_correct ) ),
+        'wo_result' => json_encode( array_values( $request->wo_result ) ),
+        'wo_pr' => json_encode( array_values( $request->wo_pr_no ) ) ,
+        'wo_taggal' => json_encode( array_values( $request->wo_tanggal ) ),
+        'wo_remark' => $request->wo_remarks ?? '',
+        'fin_actual' => json_encode( array_values( $final_actual ) ),
+        'fin_correction_made' =>json_encode( array_values( $final_correct ) ),
+        'fin_result' => json_encode( array_values( $final_result ) ),
+        'fin_pr' => json_encode( array_values( $request->final_pr_no ) ) ,
+        'fin_taggal' => json_encode( array_values( $request->final_tanggal ) ),
+        'fin_remark' => json_encode( array_values( $request->final_remarks ) ),
+        'created_at' => Carbon::now(),
+        'updated_at' => Carbon::now()
+    ];
+
+   
+    DB::table( 'ppm_xcmg_3005_t' )
+            ->where( 'doc_num', $request->doc_num )
+            ->update( $data );
+
+    DB::table('detail_ppm_xcmg_3005_t')
+            ->where( 'doc_num_id', $request->doc_num )
+            ->update( $dataDetail  );
+    return response()->json( [
+        'success' => true,
+        'message' => 'Data berhasil diupdate'
+    ] );
+
+}
 
 public function Export( $id ) {
 
@@ -231,7 +304,32 @@ public function Export( $id ) {
         ->with( 'error', 'Failed to generate PDF: ' . $e->getMessage() );
     }
 }
+public function Delete( $id ) {
+    try {
+        $id = request()->id;
+        DB::table( 'ppm_xcmg_3005_t' )
+        ->where( 'doc_num', $id )
+        ->delete();
+        $id = request()->id;
+        DB::table( 'detail_ppm_xcmg_3005_t' )
+        ->where( 'doc_num_id', $id )
+        ->delete();
 
+
+        return response()->json( [
+            'success' => true,
+            'message' => 'Data berhasil dihapus'
+        ] );
+
+    } catch ( QueryException $e ) {
+        Log::error( 'Error in Delete: ' . $e->getMessage() );
+        return response()->json( [
+            'success' => false,
+            'message' => 'Failed to delete record: ' . $e->getMessage()
+        ], 500 );
+
+    }
+}
 
     private function generateDocNumber() {
         $today = Carbon::now();

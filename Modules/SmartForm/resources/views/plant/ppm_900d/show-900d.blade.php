@@ -28,30 +28,30 @@
                         </div>
                     </div>
 
-                    <form action="" method="POST">
+                    <form id="formXCMG900" method="POST">
                         @csrf
                         <div class="mx-3">
-
+                            <input type="hidden" name="doc_num" value="{{ $data->doc_num }}">
                             <div class="row mb-3">
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="unit_model" class="ms-0">Unit Model</label>
                                         <input type="text" class="form-control" id="unit_model" name="unit_model"
-                                            value="{{ $data->unit_model }}" disabled required>
+                                            value="{{ $data->unit_model }}" required>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="unit_sn" class="ms-0">Unit S/N</label>
                                         <input type="text" class="form-control" id="unit_sn" name="unit_sn"
-                                            value="{{ $data->unit_sn }}" disabled required>
+                                            value="{{ $data->unit_sn }}" required>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="unit_cn" class="ms-0">Unit C/N</label>
                                         <input type="text" class="form-control" id="unit_cn"
-                                            value="{{ $data->unit_cn }}" name="unit_cn" disabled required>
+                                            value="{{ $data->unit_cn }}" name="unit_cn" required>
                                     </div>
                                 </div>
 
@@ -61,20 +61,20 @@
                                     <div class="input-group input-group-static mb-3">
                                         <label for="engine_model" class="ms-0">Engine Model</label>
                                         <input type="text" class="form-control" id="engine_model" name="engine_model"
-                                            value="{{ $data->engine_model }}" disabled required>
+                                            value="{{ $data->engine_model }}" required>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="engine_sn" class="ms-0">Engine S/N</label>
                                         <input type="text" class="form-control" id="engine_sn" name="engine_sn"
-                                            value="{{ $data->engine_sn }}" disabled required>
+                                            value="{{ $data->engine_sn }}" required>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="att_front" class="ms-0">Attachment Front</label>
-                                        <input type="text" class="form-control" id="att_front" name="att_front" disabled
+                                        <input type="text" class="form-control" id="att_front" name="att_front"
                                             value="{{ $data->att_front }}" required>
                                     </div>
                                 </div>
@@ -84,21 +84,61 @@
                                         <div class="input-group input-group-static mb-3">
                                             <label for="att_rear" class="ms-0">Attachment Rear</label>
                                             <input type="text" class="form-control" id="att_rear" name="att_rear"
-                                                value="{{ $data->att_rear }}" disabled required>
+                                                value="{{ $data->att_rear }}" required>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="input-group input-group-static mb-3">
                                             <label for="job_site" class="ms-0">Job Site</label>
-                                            <input type="text" class="form-control" id="job_site" name="job_site"
-                                                value="{{ $data->job_site }}" disabled required>
+                                            <select class="form-control" name="job_site" id="job_site" required>
+                                                <option disabled selected>-- Select Site --</option>
+                                                <option value="agm"
+                                                    {{ old('job_site', $data->job_site ?? '') == 'agm' ? 'selected' : '' }}>
+                                                    agm</option>
+                                                <option value="mbl"
+                                                    {{ old('job_site', $data->job_site ?? '') == 'mbl' ? 'selected' : '' }}>
+                                                    mbl</option>
+                                                <option value="mme"
+                                                    {{ old('job_site', $data->job_site ?? '') == 'mme' ? 'selected' : '' }}>
+                                                    mme</option>
+                                                <option value="mas"
+                                                    {{ old('job_site', $data->job_site ?? '') == 'mas' ? 'selected' : '' }}>
+                                                    mas</option>
+                                                <option value="pmss"
+                                                    {{ old('job_site', $data->job_site ?? '') == 'pmss' ? 'selected' : '' }}>
+                                                    pmss</option>
+                                                <option value="taj"
+                                                    {{ old('job_site', $data->job_site ?? '') == 'taj' ? 'selected' : '' }}>
+                                                    taj</option>
+                                                <option value="bssr"
+                                                    {{ old('job_site', $data->job_site ?? '') == 'bssr' ? 'selected' : '' }}>
+                                                    bssr</option>
+                                                <option value="tdm"
+                                                    {{ old('job_site', $data->job_site ?? '') == 'tdm' ? 'selected' : '' }}>
+                                                    tdm</option>
+                                                <option value="msj"
+                                                    {{ old('job_site', $data->job_site ?? '') == 'msj' ? 'selected' : '' }}>
+                                                    msj</option>
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="input-group input-group-static mb-3">
                                             <label for="location" class="ms-0">Location</label>
-                                            <input type="text" class="form-control" id="location" name="location"
-                                                value="{{ $data->job_location }}" disabled required>
+                                            <select class="form-control" name="location" id="location" required>
+                                                <option value="Workshop"
+                                                    {{ old('location', $data->job_location ?? '') == 'Workshop' ? 'selected' : '' }}>
+                                                    Workshop</option>
+                                                <option value="Pitstop"
+                                                    {{ old('location', $data->job_location ?? '') == 'Pitstop' ? 'selected' : '' }}>
+                                                    Pitstop</option>
+                                                <option value="Service"
+                                                    {{ old('location', $data->job_location ?? '') == 'Service' ? 'selected' : '' }}>
+                                                    Service</option>
+                                                <option value="Truck"
+                                                    {{ old('location', $data->job_location ?? '') == 'Truck' ? 'selected' : '' }}>
+                                                    Truck</option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -107,14 +147,14 @@
                                         <div class="input-group input-group-static mb-3">
                                             <label for="at_inspec" class="ms-0">SMR / HM At Inspection</label>
                                             <input type="text" class="form-control" id="at_inspec" name="at_inspec"
-                                                value="{{ $data->at_inspection }}" disabled required>
+                                                value="{{ $data->at_inspection }}" required>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="input-group input-group-static mb-3">
                                             <label for="date" class="ms-0">SMR / HM Date</label>
                                             <input type="date" class="form-control" id="date" name="date"
-                                                value="{{ $data->date }}" disabled required>
+                                                value="{{ $data->date }}" required>
                                         </div>
                                     </div>
 
@@ -183,23 +223,22 @@
                                                                     </td>
                                                                 @endif
                                                                 <td><input type="text"
-                                                                        value="{{ $data->eng_actual[$h] ?? '' }}" disabled
+                                                                        value="{{ $data->eng_actual[$h] ?? '' }}"
                                                                         class="form-control" name="eng_actual[]"></td>
                                                                 <td><input type="text"
                                                                         value="{{ $data->eng_correction_made[$h] ?? '' }}"
-                                                                        disabled class="form-control"
-                                                                        name="eng_correct[]"></td>
+                                                                        class="form-control" name="eng_correct[]"></td>
                                                                 <td><input type="text" class="form-control"
-                                                                        value="{{ $data->eng_result[$h] ?? '' }}" disabled
+                                                                        value="{{ $data->eng_result[$h] ?? '' }}"
                                                                         name="eng_result[]"></td>
                                                                 <td><input type="text"
-                                                                        value="{{ $data->eng_pr[$h] ?? '' }}" disabled
+                                                                        value="{{ $data->eng_pr[$h] ?? '' }}"
                                                                         class="form-control" name="eng_pr_no[]"></td>
                                                                 <td><input type="date"
-                                                                        value="{{ $data->eng_taggal[$h] ?? '' }}" disabled
+                                                                        value="{{ $data->eng_taggal[$h] ?? '' }}"
                                                                         class="form-control" name="eng_tanggal[]"></td>
                                                                 <td><input value="{{ $data->eng_remark[$h] ?? '' }}"
-                                                                        disabled type="text" class="form-control"
+                                                                        type="text" class="form-control"
                                                                         name="eng_remarks[]"></td>
                                                             </tr>
                                                             @php
@@ -285,30 +324,27 @@
 
                                                                 <td><input type="text" class="form-control"
                                                                         name="hyd_actual[]"
-                                                                        value="{{ $data->hyd_actual[$i] ?? '' }}"
-                                                                        disabled>
+                                                                        value="{{ $data->hyd_actual[$i] ?? '' }}">
                                                                 </td>
                                                                 <td><input type="text" class="form-control"
                                                                         name="hyd_correct[]"
-                                                                        value="{{ $data->hyd_correction_made[$i] ?? '' }}"
-                                                                        disabled></td>
+                                                                        value="{{ $data->hyd_correction_made[$i] ?? '' }}">
+                                                                </td>
                                                                 <td><input type="text" class="form-control"
                                                                         name="hyd_result[]"
-                                                                        value="{{ $data->hyd_result[$i] ?? '' }}"
-                                                                        disabled>
+                                                                        value="{{ $data->hyd_result[$i] ?? '' }}">
                                                                 </td>
                                                                 <td><input type="text" class="form-control"
                                                                         name="hyd_pr_no[]"
-                                                                        value="{{ $data->hyd_pr[$i] ?? '' }}" disabled>
+                                                                        value="{{ $data->hyd_pr[$i] ?? '' }}">
                                                                 </td>
                                                                 <td><input type="date" class="form-control"
                                                                         name="hyd_tanggal[]"
-                                                                        value="{{ $data->hyd_taggal[$i] ?? '' }}"
-                                                                        disabled>
+                                                                        value="{{ $data->hyd_taggal[$i] ?? '' }}">
                                                                 </td>
                                                                 <td><input type="text" class="form-control"
                                                                         value="{{ $data->hyd_remark[$i] ?? '' }}"
-                                                                        name="hyd_remarks[]" disabled></td>
+                                                                        name="hyd_remarks[]"></td>
 
                                                             </tr>
                                                             @php
@@ -394,23 +430,23 @@
 
                                                                 <td><input type="text" class="form-control"
                                                                         name="wo_actual[]"
-                                                                        value="{{ $data->wo_actual[$j] ?? '' }}" disabled>
+                                                                        value="{{ $data->wo_actual[$j] ?? '' }}">
                                                                 </td>
                                                                 <td><input type="text"
                                                                         value="{{ $data->wo_correction_made[$j] ?? '' }}"
-                                                                        disabled class="form-control" name="wo_correct[]">
+                                                                        class="form-control" name="wo_correct[]">
                                                                 </td>
                                                                 <td><input value="{{ $data->wo_result[$j] ?? '' }}"
-                                                                        disabled type="text" class="form-control"
+                                                                        type="text" class="form-control"
                                                                         name="wo_result[]"></td>
-                                                                <td><input value="{{ $data->wo_pr[$j] ?? '' }}" disabled
+                                                                <td><input value="{{ $data->wo_pr[$j] ?? '' }}"
                                                                         type="text" class="form-control"
                                                                         name="wo_pr_no[]"></td>
                                                                 <td><input value="{{ $data->wo_taggal[$j] ?? '' }}"
-                                                                        disabled type="date" class="form-control"
+                                                                        type="date" class="form-control"
                                                                         name="wo_tanggal[]"></td>
                                                                 <td><input value="{{ $data->wo_remark[$j] ?? '' }}"
-                                                                        disabled type="text" class="form-control"
+                                                                        type="text" class="form-control"
                                                                         name="wo_remarks[]"></td>
                                                             </tr>
                                                             @php
@@ -483,29 +519,29 @@
                                                                 @endif
 
                                                                 <td>
-                                                                    <input type="checkbox" disabled
-                                                                        class="custom-checkbox"
+                                                                    <input type="checkbox" class="custom-checkbox"
+                                                                        name="final_actual{{ $k }}" value=1
                                                                         {{ isset($data->fin_actual[$k]) && (int) $data->fin_actual[$k] == 1 ? 'checked' : '' }}>
                                                                 </td>
                                                                 <td>
-                                                                    <input type="checkbox" disabled
-                                                                        class="custom-checkbox"
+                                                                    <input type="checkbox" class="custom-checkbox"
+                                                                        name="final_correct{{ $k }}" value=1
                                                                         {{ isset($data->fin_correction_made[$k]) && (int) $data->fin_correction_made[$k] == 1 ? 'checked' : '' }}>
                                                                 </td>
                                                                 <td>
-                                                                    <input type="checkbox" disabled
-                                                                        class="custom-checkbox"
+                                                                    <input type="checkbox" class="custom-checkbox"
+                                                                        name="final_result{{ $k }}" value=1
                                                                         {{ isset($data->fin_result[$k]) && (int) $data->fin_result[$k] == 1 ? 'checked' : '' }}>
                                                                 </td>
 
                                                                 <td><input type="text"
-                                                                        value="{{ $data->fin_pr[$k] ?? '' }}" disabled
+                                                                        value="{{ $data->fin_pr[$k] ?? '' }}"
                                                                         class="form-control" name="final_pr_no[]"></td>
                                                                 <td><input type="date"
-                                                                        value="{{ $data->fin_taggal[$k] ?? '' }}" disabled
+                                                                        value="{{ $data->fin_taggal[$k] ?? '' }}"
                                                                         class="form-control" name="final_tanggal[]"></td>
                                                                 <td><input type="text"
-                                                                        value="{{ $data->fin_remark[$k] ?? '' }}" disabled
+                                                                        value="{{ $data->fin_remark[$k] ?? '' }}"
                                                                         class="form-control" name="final_remarks[]"></td>
                                                             </tr>
                                                             @php
@@ -523,15 +559,28 @@
                                     <div class="col-6 ">
                                         <div class="input-group input-group-static mb-3">
                                             <label for="dibuat" class="ms-0">Checked By</label>
-                                            <input type="text" class="form-control" id="diperiksa" name="diperiksa"
-                                                value="{{ $data->checked_by }}" disabled required>
+                                            <select name="checked" id="dibuat_oleh" class="form-control" required>
+                                                <option disabled selected>-- Select Creator --</option>
+                                                @foreach ($approvalList as $user)
+                                                    <option
+                                                        {{ old('checked', $data->checked_by ?? '') == $user->nama ? 'selected' : '' }}>
+                                                        {{ $user->nama }}</option>
+                                                @endforeach
+
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-6">
                                         <div class="input-group input-group-static mb-3">
                                             <label for="diperiksa" class="ms-0">Validated By</label>
-                                            <input type="text" class="form-control" id="diperiksa" name="diperiksa"
-                                                value="{{ $data->validated_by }}" disabled required>
+                                            <select name="validated" id="diperiksa" class="form-control" required>
+                                                <option disabled selected>-- Select Approval --</option>
+                                                @foreach ($approvalList as $user)
+                                                    <option
+                                                        {{ old('validated', $data->validated_by ?? '') == $user->nama ? 'selected' : '' }}>
+                                                        {{ $user->nama }}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -539,8 +588,7 @@
                                             <div class="form-actions">
                                                 <a href="{{ route('plant.ppm.900d.dashboard') }}"
                                                     class="btn btn-secondary">Cancel</a>
-                                                <a href="{{ route('plant.ppm.900d.export', ['id' => $data->id]) }}"
-                                                    class="btn btn-primary">Export</a>
+                                                <button type='submit' class="btn btn-primary">Update</button>
                                             </div>
                                         </div>
                                     </div>
@@ -554,6 +602,7 @@
 @endsection
 
 @section('custom-css')
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
     <style>
         .accordion {
             width: 100%;
@@ -641,9 +690,15 @@
 @endsection
 
 @section('custom-js')
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <script>
+        $(document).ready(function() {
+            $('#dibuat_oleh').select2();
+            $('#diperiksa').select2();
+        });
         document.addEventListener("DOMContentLoaded", function() {
             const headers = document.querySelectorAll(".accordion-header");
 
@@ -668,6 +723,57 @@
                         content.style.display = "block";
                     }
                 });
+            });
+        });
+        $(function() {
+            var form = $("#formXCMG900");
+            var submitBtn = form.find('button[type="submit"]');
+
+            form.submit(function(e) {
+                e.preventDefault();
+                submitBtn.prop('disabled', true);
+
+                var formData = new FormData(this);
+                console.log("Form data yang dikirim:", formData);
+
+                axios.post('{{ route('plant.ppm.900d.update') }}', formData)
+                    .then(function(response) {
+                        console.log("Respons dari server:", response.data);
+                        if (response.data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: response.data.message
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href =
+                                        '{{ route('plant.ppm.900d.dashboard') }}';
+                                }
+                            });
+                        }
+                    })
+                    .catch(function(error) {
+                        let errorMessage = 'Terjadi kesalahan pada sistem';
+                        console.log("Error respons:", error.response);
+
+                        if (error.response) {
+                            if (error.response.data.errors) {
+                                errorMessage = Object.values(error.response.data.errors).flat().join(
+                                    '\n');
+                            } else if (error.response.data.message) {
+                                errorMessage = error.response.data.message;
+                            }
+                        }
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: errorMessage
+                        });
+                    })
+                    .finally(function() {
+                        submitBtn.prop('disabled', false);
+                    });
             });
         });
     </script>
