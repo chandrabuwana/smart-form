@@ -17,6 +17,8 @@ use Modules\SmartForm\App\Http\Controllers\PDF\HelperPdfMobilisasiFormController
 use Modules\SmartForm\App\Http\Controllers\PLANT\PlantTransmissionController;
 use Modules\SmartForm\App\Http\Controllers\PLANT\CompressorPompaController;
 use Modules\SmartForm\App\Http\Controllers\PLANT\PpmXcmg900dController;
+use Modules\SmartForm\App\Http\Controllers\PLANT\PpmXCMG700DController;
+use Modules\SmartForm\App\Http\Controllers\PLANT\PpmXCMG3005TController;
 use Modules\SmartForm\App\Http\Controllers\PLANT\PlantWeldingController;
 use Modules\SmartForm\App\Http\Controllers\Production\FormCheckerController;
 use Modules\SmartForm\App\Http\Controllers\Production\KalibrasiCtController;
@@ -447,7 +449,15 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/detail/{id}', [PpmXCMG3005TController::class, 'detail'])->name('plant.ppm.3005.detail');
             Route::delete('/delete/{id}', [PpmXCMG3005TController::class, 'Delete'])->name('plant.ppm.3005.delete');
         });
-
+        Route::prefix('ppm-700d')->group(function(){
+            Route::get('/dashboard', [PpmXCMG700DController::class, 'Dashboard'])->name('plant.ppm.700d.dashboard');
+            Route::get('/export/{id}', [PpmXCMG700DController::class, 'Export'])->name('plant.ppm.700d.export');
+            Route::get('/add', [PpmXCMG700DController::class, 'Add'])->name('plant.ppm.700d.form');
+            Route::post('/store', [PpmXCMG700DController::class, 'Store'])->name('plant.ppm.700d.store');
+            Route::post('/update',[PpmXCMG700DController::class, 'Update'])->name('plant.ppm.700d.update');
+            Route::get('/detail/{id}', [PpmXCMG700DController::class, 'detail'])->name('plant.ppm.700d.detail');
+            Route::delete('/delete/{id}', [PpmXCMG700DController::class, 'Delete'])->name('plant.ppm.700d.delete');
+        });
 
 
     });
