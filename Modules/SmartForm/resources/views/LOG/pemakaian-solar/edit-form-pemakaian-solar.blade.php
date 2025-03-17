@@ -6,9 +6,6 @@
     .text-right {
         text-align: right;
     }
-    .m-0 {
-        margin: 0;
-    }
 </style>
 @endsection
 
@@ -22,6 +19,17 @@
                     </div>
                 </div>
                 <div class="card-body my-1">
+
+                    <div class="row gx-4">
+                        <div class="col-auto my-auto ms-3">
+                            <div class="h-100">
+                                <p class="mb-0 fw-bold text-sm">
+                                    Dibuat Oleh : <span id="requestor">{{$data['dibuat_oleh']}}</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
                     <form action="">
                         <div class="row gx-4">
                             <div class="row">
@@ -35,7 +43,9 @@
                                         <tr>
                                             <td>Date</td>
                                             <td>:</td>
-                                            <td id="tglDoc"></td>
+                                            <td>
+                                                <input type="text" id="tTglDibuat" name="tTglDibuat" value="{{ $data['tgl_dibuat'] }}"  class="form-control" disabled>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td>Shift</td>
@@ -64,7 +74,7 @@
                                             <td>No. Fuel Station / Fuel Truck</td>
                                             <td>:</td>
                                             <td>
-                                                <input type="text" class="form-control" id="iFuel" name="iFuel" required>{{$data['no_fuel_station']}}
+                                                <input type="text" class="form-control" id="iFuel" name="iFuel" value="{{ $data['fuel'] }}" required>
                                             </td>
                                         </tr>
                                         <tr>
@@ -163,15 +173,15 @@
                                 <thead>
                                     <tr>
                                         <th data-formatter="indexFormatter" data-field="no">No</th>
-                                        <th data-field="kodeUnit">Kode Unit</th>
+                                        <th data-field="kode_unit">Kode Unit</th>
                                         <th data-field="jam">Jam</th>
                                         <th data-field="awal">Awal</th>
                                         <th data-field="akhir">Akhir</th>
-                                        <th data-field="totalLiter">Total (Liter)</th>
-                                        <th data-field="namaOperator">Nama Operator</th>
+                                        <th data-field="total_liter">Total (Liter)</th>
+                                        <th data-field="nama_operator">Nama Operator</th>
                                         <th data-field="km">KM</th>
                                         <th data-field="hm">HM</th>
-                                        <th data-field="ket">KET</th>
+                                        <th data-field="keterangan">KET</th>
                                         <th data-formatter="actionFormatter">Actions</th>
                                     </tr>
                                 </thead>
@@ -219,7 +229,7 @@
 
                     <div class="card-footer">
                         <div class="d-flex align-items-center">
-                            <button class="btn btn-primary ms-auto uploadBtn" id="btnSubmitPemakaianSolar">
+                            <button class="btn btn-primary ms-auto uploadBtn" id="btnSubmitAssetRequest">
                                 <i class="fas fa-save"></i>
                                 Submit Form
                             </button>
@@ -247,7 +257,7 @@
         // Variable form
         var tanggalSekarang = $("#tanggalSekarang")
         var noDoc = $("#noDoc");
-        var tglDoc = $("#tglDoc");
+        var tTglDibuat = $("#tTglDibuat");
         var iForeman = $("#iForeman")
         var dApproved = $("#dApproved")
         var iJobSite = $("#iJobSite")
@@ -276,11 +286,10 @@
             tglDoc: "",
             approval: "",
             jobSite: "",
-            noFuelStation: "",
+            fuel: "",
             shift: "",
             
-            item: [{}],
-            nomornomor: ""
+            item: [{}]
         }
 
         function getTodayDate() {
@@ -290,11 +299,13 @@
             const day = String(today.getDate()).padStart(2, '0');
             return `${year}-${month}-${day}`;
         }
-        
-        tanggalSekarang.attr('min', getTodayDate())
 
         function indexFormatter(value, row, index) {
             return index + 1;
+        }
+
+        function totalHarga(value, row, index) {
+            return row.qty * row.price;
         }
 
         function formatTgl() {
@@ -302,11 +313,17 @@
         }
 
         function generateNoDoc() {
-            return "_/BSS-FRM-LOG-037/" + months_romawi[tglNow.getMonth()] + "/" + tglNow.getFullYear();
+            return "_/BSS-AR/" + months_romawi[tglNow.getMonth()] + "/" + tglNow.getFullYear();
         }
 
         function validateInput() {
 
+        }
+
+        function calculateTotalPrice(e) {
+            var total = (estimatedIdr.val() * calculatedIdr.text()) + (estimatedUsd.val() * calculatedUsd.text()) + (estimatedCny.val() * calculatedCny.text());
+
+            return total
         }
 
         function actionFormatter(value, row, index) {
@@ -323,21 +340,36 @@
         }
 
         $table.on('post-body.bs.table', function(data) {
-            var mdf = 0;
-            var totalliter = 0;
+            var idr = 0;
+            var usd = 0;
+            var cny = 0;
             var items = [];
             data.sender.data.forEach(function (item, index, arr) {
                 // console.log(item)
-                mdf = mdf + parseInt(item.akhir) - item.awal
-                item.totalliter = mdf
+                if(item.currency == "IDR") {
+                    idr = idr + parseInt(item.price) * item.qty
+                }
+                if(item.currency == "USD") {
+                    usd = usd + parseInt(item.price) * item.qty
+                }
+                if(item.currency == "CNY") {
+                    cny = cny + parseInt(item.price) * item.qty
+                }
                 item.no = index;
                 items.push(item)
             })
-            dataPemakaianSolar.item = items
-            // tTotalPemakaian.text(iTotalLiter.text() + tTotalPemakaian.text())
-            tTotals.text(( mdf)|| "-")
-            tTotalPemakaian.text((parseInt(iTotalLiter.text()) * mdf)|| "-")
+            dataAssetRequest.item = items
+            calculatedIdr.text(idr)
+            calculatedUsd.text(usd)
+            calculatedCny.text(cny)
+            // console.log("estimatedIdr : ", estimatedIdr.val())
+            totalPrice.text((parseInt(estimatedIdr.val()) * idr) + (parseInt(estimatedUsd.val()) * usd) + (parseInt(estimatedCny.val()) * cny) || "-")
+            // console.log("IDR = ", idr)
         })
+        var isError = {
+            error: {{ Illuminate\Support\Js::from($error) }},
+            errorMessage: {{ Illuminate\Support\Js::from($errorMessage) }}
+        }
 
         function showLoading() {
             $("body").css("overflow-y", "hidden")
@@ -364,104 +396,118 @@
                 detial.forEach(element => {
                     $table.bootstrapTable('append', element)
                 });
-                dApproved.val({{ Illuminate\Support\Js::from( $data['disetujui_oleh']) }})
-                iFuel.val({{ Illuminate\Support\Js::from( $data['no_fuel_station']) }})
+                
+                iFuel.val({{ Illuminate\Support\Js::from( $data['fuel']) }})
+                tTglDibuat.val({{ Illuminate\Support\Js::from( $data['tgl_dibuat']) }})
 
+                dataPemakaianSolar.fuel = iFuel.val()
 
-                dataPemakaianSolar.approval = dApproved.val()
-                dataPemakaianSolar.noFuelStation = iFuel.val()
-
-                estimatedIdr.change(function(e) {
-                    totalPrice.text((estimatedIdr.val() * calculatedIdr.text()) + (estimatedUsd.val() * calculatedUsd.text()) + (estimatedCny.val() * calculatedCny.text()))
-                });
-                estimatedUsd.change(function(e) {
-
-                    totalPrice.text((estimatedIdr.val() * calculatedIdr.text()) + (estimatedUsd.val() * calculatedUsd.text()) + (estimatedCny.val() * calculatedCny.text()))
-                });
-                estimatedCny.change(function(e) {
-                    totalPrice.text((estimatedIdr.val() * calculatedIdr.text()) + (estimatedUsd.val() * calculatedUsd.text()) + (estimatedCny.val() * calculatedCny.text()))
-                });
             }
 
             function validateItem() {
                 var errorValidate = []
 
-                if(iKodeUnit.val() == "") {
+                if(inputType.val() == "") {
                     errorValidate.push({
-                        field: "Kolom Kode unit",
-                        message: "tidak boleh kosong"
+                        field: "Type",
+                        message: "Tidak boleh kosong"
                     })
                 }
-                if(iJam.val() == "") {
+                if(inputCondition.val() == "") {
                     errorValidate.push({
-                        field: "Kolom Jam",
-                        message: "Harus dipilih"
+                        field: "Condition",
+                        message: "Tidak boleh kosong"
                     })
                 }
-                if(iAwal.val() == "") {
+                if(inputQty.val() == "") {
                     errorValidate.push({
-                        field: "Kolom Flow Meter Awal",
-                        message: "Harus Diisi"
+                        field: "QTY",
+                        message: "Tidak boleh kosong"
                     })
                 }
-                if(iAkhir.val() == "") {
+                if(inputUom.val() == "") {
                     errorValidate.push({
-                        field: "Kolom Flow Meter Akhir",
-                        message: "Harus Diisi"
+                        field: "UOM",
+                        message: "Tidak boleh kosong"
                     })
                 }
-                if(iNamaOperator.val() == "") {
+                if(inputCurrency.val() == "") {
                     errorValidate.push({
-                        field: "Kolom Nama Operator",
-                        message: "Harus Diisi"
+                        field: "Currency",
+                        message: "Tidak boleh kosong"
                     })
                 }
-                if(iKm.val() == "") {
+                if(inputPrice.val() == "") {
                     errorValidate.push({
-                        field: "Kolom KM",
-                        message: "Harus Diisi"
+                        field: "Price",
+                        message: "Tidak boleh kosong"
                     })
                 }
-                if(iHm.val() == "") {
-                    errorValidate.push({
-                        field: "Kolom HM",
-                        message: "Harus Diisi"
-                    })
-                }
+
                 return errorValidate
             }
 
             function validateForm() {
                 var errorValidate = []
-                
-                if(iForeman.val() == ""){
+
+                if(!checkAdditional.checked && !checkReplacement.checked){
                     errorValidate.push({
-                        field: "Kolom Foreman",
-                        message: "Harus dipilih"
+                        field: "Replacement / Additional",
+                        message: "harus dipilih"
                     })
                 }
-                if(tStokAwal.val() == "") {
+                if(!checkBudgeted.checked && !checkNotBudgeted.checked){
                     errorValidate.push({
-                        field: "Kolom Stok Awal",
-                        message: "Harus Diisi"
+                        field: "Budgeted / Not Budgeted",
+                        message: "harus dipilih"
                     })
                 }
-                if(tMasuk.val() == "") {
+                if(checkNotBudgeted.checked && inputPendukungReason.files.length < 1) {
                     errorValidate.push({
-                        field: "Kolom Masuk",
-                        message: "Harus Diisi"
+                        field: "Dokumen Pendukung",
+                        message: "tidak boleh kosong jika Not Budgeted"
                     })
                 }
-                if(iFuel.val() == ""){
+                if(inputDepartment.val() == ""){
                     errorValidate.push({
-                        field: "Kolom Fuel",
-                        message: "Harus diisi"
+                        field: "Department Requestor",
+                        message: "tidak boleh kosong"
                     })
                 }
-                if(iShift.val() == ""){
+                if(inputProject.val() == ""){
                     errorValidate.push({
-                        field: "Kolom Shift",
-                        message: "Harus dipilih"
+                        field: "Project/Site Requestor",
+                        message: "tidak boleh kosong"
+                    })
+                }
+                if(inputDepartmentAllocation.val() == ""){
+                    errorValidate.push({
+                        field: "Department Allocation",
+                        message: "tidak boleh kosong"
+                    })
+                }
+                if(inputProjectAllocation.val() == ""){
+                    errorValidate.push({
+                        field: "Project/Site Allocation",
+                        message: "tidak boleh kosong"
+                    })
+                }
+                if(reasonpurchase.val() == ""){
+                    errorValidate.push({
+                        field: "Reason for Purchase",
+                        message: "tidak boleh kosong"
+                    })
+                }
+                if(estimatedReadyAtSite.val() == ""){
+                    errorValidate.push({
+                        field: "Estimated ready",
+                        message: "tidak boleh kosong"
+                    })
+                }
+                if(estimatedReadyAtSite.val() < getTodayDate()){
+                    errorValidate.push({
+                        field: "Estimated ready at site",
+                        message: "tidak boleh back date"
                     })
                 }
                 if($table.bootstrapTable('getData').length < 1) {
@@ -488,26 +534,25 @@
                         title: 'Gagal!',
                         html: msg,
                     }).then((result) => {
+                        // window.location.href = `/get-form-detail?no_doc=${response.data.data.no_doc}`;
                     })
                 } else {
                     $table.bootstrapTable('append', {
-                        kodeUnit: iKodeUnit.val(),
-                        jam: iJam.val(),
-                        awal: iAwal.val(),
-                        akhir: iAkhir.val(),
-                        totalLiter: iTotalLiter.text(),
-                        namaOperator: iNamaOperator.val(),
-                        km: iKm.val(),
-                        hm: iHm.val(),
-                        ket: iKet.val()
+                        type: inputType.val(),
+                        model: inputModel.val(),
+                        brand: inputBrand.val(),
+                        condition: inputCondition.val(),
+                        qty: inputQty.val(),
+                        uom: inputUom.val(),
+                        currency: inputCurrency.val(),
+                        price: inputPrice.val()
                     })
                     $table.bootstrapTable('scrollTo', 'bottom')
                 }
             })
 
-            btnSubmitPemakaianSolar.click(function(e) {
+            btnSubmitAssetRequest.click(function(e) {
                 e.preventDefault();
-
                 var errValidate = validateForm()
                 if(errValidate.length > 0) {
                     var msg = ""
@@ -519,57 +564,72 @@
                         title: 'Gagal!',
                         html: msg,
                     }).then((result) => {
+                        // window.location.href = `/get-form-detail?no_doc=${response.data.data.no_doc}`;
                     })
                 } else {
                     var dataReq = {
-                        formName: dataPemakaianSolar.formName,
+                        formName: dataAssetRequest.formName,
+                        // area: inputArea.val(),
                         noDoc: noDoc.text(),
-                        jobSite: iJobSite.val(),
                         tglDoc: formatTgl(),
-                        approval: dApproved.val(),
-                        shift: iShift.val(),
-                        total_pemakaian: tTotals.text(),
-                        stokAwal: tStokAwal.val(),
-                        stokAkhir: tTotalAkhir.text(),
-                        masuk: tMasuk.val(),
-                        fuel: iFuel.val()
+                        replacement: checkReplacement.checked,
+                        additional: checkAdditional.checked,
+                        budgeted: checkBudgeted.checked,
+                        notBudgeted: checkNotBudgeted.checked,
+                        department: inputDepartment.val(),
+                        project: inputProject.val(),
+                        departmentAllocation: inputDepartmentAllocation.val(),
+                        projectAllocation: inputProjectAllocation.val(),
+                        // area: inputArea.val(),
+                        reasonPurchase: reasonpurchase.val(),
+                        estimatedReadyAtSite: estimatedReadyAtSite.val(),
+                        estimatedIdr: estimatedIdr.val(),
+                        estimatedUsd: estimatedUsd.val(),
+                        estimatedCny: estimatedCny.val(),
+                        refDoc: refDoc.val(),
+                        requestedBy: requestornik.text(),
+                        // item: dataAssetRequest.item,
+                        totalPrice: totalPrice.text(),
+                        pendukungReason: []
                     }
                     let formData = new FormData();
-                    formData.append('item',JSON.stringify(dataPemakaianSolar.item));
+    
+                    for (let i = 0; i < inputPendukungReason.files.length; i++) {
+                        formData.append('pendukungReason[]', inputPendukungReason.files[i]);
+                    }
+                    formData.append('item',JSON.stringify(dataAssetRequest.item));
                     for (const key in dataReq) {
-                        if(key != "item") {
+                        if(key != "pendukungReason" || key != "item") {
                             formData.append(key, dataReq[key])
                         }
                     }
-                    console.log(dataReq)
-                    axios.post('/bss-form/log/add-pemakaian-solar', formData, {
+                    // TODO
+                    axios.post('/bss-form/sm/submit-edit-asset-request?no_doc='+noDoc.text(), formData, {
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
                             'Content-Type': 'multipart/form-data'
                         }
                     })
                     .then(function (response) {
-                        showLoading()
                         console.log(response.data)
+                        showLoading()
                         Swal.fire({
                                 icon: 'success',
-                                title: 'Pemakaian Solar berhasil direkam',
+                                title: 'Berhasil!',
                                 text: response.data.data.no_doc,
                             }).then((result) => {
-                                window.location.href = `/bss-form/log/pemakaian-solar`;
+                                window.location.href = `/get-form-detail?no_doc=${response.data.data.no_doc}`;
                             })
                     })
                     .catch(function (error) {
                         console.log(error);
-                        stopLoading()
                     })
                     .finally(function() {
                         stopLoading()
-                    });
+                    })
                 }
+                // submitAssetRequest(dataReq);
             })
         })
-
-
     </script>
 @endsection
