@@ -17,6 +17,7 @@ use Modules\SmartForm\App\Http\Controllers\PDF\HelperPdfMobilisasiFormController
 use Modules\SmartForm\App\Http\Controllers\PLANT\PlantTransmissionController;
 use Modules\SmartForm\App\Http\Controllers\PLANT\CompressorPompaController;
 use Modules\SmartForm\App\Http\Controllers\PLANT\PpmXcmg900dController;
+use Modules\SmartForm\App\Http\Controllers\PLANT\PpmXCMG3005TController;
 use Modules\SmartForm\App\Http\Controllers\PLANT\PlantWeldingController;
 use Modules\SmartForm\App\Http\Controllers\Production\FormCheckerController;
 use Modules\SmartForm\App\Http\Controllers\Production\KalibrasiCtController;
