@@ -173,7 +173,7 @@
             <td style="border:none;"></td>
             <td colspan="2">SMR / HM</td>
             <td colspan="3" style="border:none;"></td>
-            <td rowspan="2" style="border: none; background-color:bisque;">XCMG XE900D</td>
+            <td rowspan="2" style="border: none; font-weight: bold; background-color:bisque;">XCMG XE900D</td>
         </tr>
         <tr>
             <td>Job Site : </td>
@@ -225,6 +225,9 @@
                         @if ($value['item'] == 'Engine Speed')
                             <td class="align-middle" rowspan="8">
                                 {!! $value['item'] !!}</td>
+                        @elseif ($value['item'] == 'Lub Oil Pressure')
+                            <td class="align-middle" rowspan="2">
+                                {!! $value['item'] !!}</td>
                         @else
                             <td class="align-middle">
                                 {!! $value['item'] !!}</td>
@@ -237,6 +240,9 @@
                     @if (isset($value['unit']))
                         @if ($value['unit'] == 'Rpm')
                             <td class="align-middle" rowspan="8">
+                                {!! $value['unit'] !!}</td>
+                        @elseif ($value['unit'] == 'Kg/cm2')
+                            <td class="align-middle" rowspan="2">
                                 {!! $value['unit'] !!}</td>
                         @else
                             <td class="align-middle">
@@ -440,7 +446,15 @@
                         {{ $data->fin_result[$l] === '1' ? '✓' : '' }}</td>
                     <td>{{ $data->fin_pr[$l] ?? '' }}</td>
                     <td>{{ $data->fin_taggal[$l] ?? '' }}</td>
-                    <td>{{ $data->fin_remark[$l] ?? '' }}</td>
+                    @if (isset($value['condition']))
+                        @if ($value['condition'] == 'Visual Check (Eng. Stop)')
+                            <td rowspan="2">{{ $data->fin_remark[0] ?? '' }}</td>
+                        @elseif ($value['condition'] == 'Function Check')
+                            <td>{{ $data->fin_remark[1] ?? '' }}</td>
+                        @else
+                            <td>{{ $data->fin_remark[2] ?? '' }}</td>
+                        @endif
+                    @endif
                 </tr>
                 @php
                     $l++;
@@ -459,7 +473,8 @@
             <tr>
                 <td colspan="2" style="height: 30px; border-bottom: none;"></td>
                 <td colspan="2" style="height: 30px; border-bottom: none;"></td>
-                <td colspan="2" style="height: 30px; border-bottom: none; width: 20%;">{{ $data->created_at }}</td>
+                <td colspan="2" style="height: 30px; border-bottom: none; width: 20%;">{{ $data->created_at }}
+                </td>
                 <td colspan="5" style="border: none"></td>
             </tr>
             <tr>

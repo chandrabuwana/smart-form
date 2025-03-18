@@ -229,7 +229,7 @@ class PpmXcmg900dController extends Controller {
         ] );
         $pdf->setPaper('A4', 'landscape');
 
-        return $pdf->download( 'PPM XCMG 900D' . $data->doc_num .'.pdf' );
+        return $pdf->download( 'PPM XCMG 900D - ' . $data->doc_num .'.pdf' );
 
     } catch ( \Exception $e ) {
         Log::error( 'Error in ExportForm: ' . $e->getMessage() );

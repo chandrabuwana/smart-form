@@ -162,6 +162,9 @@
                                                                 @if ($value['item'] == 'Engine Speed')
                                                                     <td class="align-middle" rowspan="8">
                                                                         {!! $value['item'] !!}</td>
+                                                                @elseif ($value['item'] == 'Lub Oil Pressure')
+                                                                    <td class="align-middle" rowspan="2">
+                                                                        {!! $value['item'] !!}</td>
                                                                 @else
                                                                     <td class="align-middle">
                                                                         {!! $value['item'] !!}</td>
@@ -174,6 +177,9 @@
                                                             @if (isset($value['unit']))
                                                                 @if ($value['unit'] == 'Rpm')
                                                                     <td class="align-middle" rowspan="8">
+                                                                        {!! $value['unit'] !!}</td>
+                                                                @elseif ($value['unit'] == 'Kg/cm2')
+                                                                    <td class="align-middle" rowspan="2">
                                                                         {!! $value['unit'] !!}</td>
                                                                 @else
                                                                     <td class="align-middle">
@@ -447,8 +453,17 @@
                                                                     name="final_pr_no[]"></td>
                                                             <td><input type="date" class="form-control"
                                                                     name="final_tanggal[]"></td>
-                                                            <td><input type="text" class="form-control"
-                                                                    name="final_remarks[]"></td>
+                                                            @if (isset($value['condition']))
+                                                                @if ($value['condition'] == 'Visual Check (Eng. Stop)')
+                                                                    <td rowspan="2"> <input type="text"
+                                                                            class="form-control" name="final_remarks[]">
+                                                                    </td>
+                                                                @else
+                                                                    <td> <input type="text" class="form-control"
+                                                                            name="final_remarks[]"></td>
+                                                                @endif
+                                                            @endif
+
                                                         </tr>
                                                         @php
                                                             $inc++;

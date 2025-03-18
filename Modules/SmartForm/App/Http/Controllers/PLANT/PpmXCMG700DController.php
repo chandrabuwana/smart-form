@@ -108,10 +108,7 @@ class PpmXCMG700DController extends Controller {
         $data->fin_pr = json_decode( $detail->fin_pr );
         $data->fin_taggal = json_decode( $detail->fin_taggal );
         $data->fin_remark = json_decode( $detail->fin_remark );
-
-
-
-
+        
         return view( 'smartform::plant.ppm_700d.show-700d', [ 'data' => $data, 'list' => $list, 'approvalList' => HrdHelper::getApprovalList() ] );
     }
 
@@ -229,7 +226,7 @@ class PpmXCMG700DController extends Controller {
         ] );
         $pdf->setPaper('A4', 'landscape');
 
-        return $pdf->download( 'PPM XCMG XE700D' . $data->doc_num .'.pdf' );
+        return $pdf->download( 'PPM XCMG XE700D - ' . $data->doc_num .'.pdf' );
 
     } catch ( \Exception $e ) {
         Log::error( 'Error in ExportForm: ' . $e->getMessage() );
