@@ -539,7 +539,7 @@
                 } else {
                     var dataReq = {
                         formName: dataPemakaianSolar.formName,
-                        noDoc: noDoc.text(),
+                        noDoc: noDoc.val(),
                         jobSite: iJobSite.val(),
                         tglDoc: formatTgl(),
                         approval: dApproved.val(),

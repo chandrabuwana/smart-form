@@ -16,8 +16,8 @@ use Illuminate\Support\Facades\Storage;
 
 class PemakaianSolarController extends Controller {
 
-    private const TABLE_MASTER = 'FM_LOG_037_PEMAKAIAN_SOLAR';
-    private const TABLE_DETAIL = 'FM_LOG_037_PEMAKAIAN_SOLAR_DETAIL';
+    private const TABLE_MASTER = "FM_LOG_037_PEMAKAIAN_SOLAR";
+    private const TABLE_DETAIL = "FM_LOG_037_PEMAKAIAN_SOLAR_DETAIL";
     private $user_sm = ['1008491', '1008492', '1008493', '1008494', '1008526'];
     private const LIST_DEPT = [
         '' => '--- Pilih Departmen ---',
@@ -137,7 +137,10 @@ class PemakaianSolarController extends Controller {
             return abort(401, 'Unauthoried Request!');
         } else {
             $data['list_dept'] = self::LIST_DEPT;
-            return view("SmartForm::LOG/pemakaian-solar/edit-form-pemakaian-solar", $data);
+            return view("SmartForm::LOG/pemakaian-solar/edit-form-pemakaian-solar", 
+                $data,
+                ['approvalList' => HrdHelper::getApprovalList()] 
+            );
         }
     }
 
@@ -151,24 +154,36 @@ class PemakaianSolarController extends Controller {
             'fuel' => '',
             'no_doc' => '',
             'tgl_dibuat' => '',
+            'shift' => '',
+            'disetujui_oleh' => '',
+            'site' => '',
+            'stok_awal' => '',
+            'masuk' => '',
+            'total_pakai' => '',
+            'stok_akhir' => '',
             'dibuat_oleh' => ''
         );
         $data_detail = array();
-        $pendukung_reason = array();
         try {
             $data = DB::table($TABLE_MASTER)
                 ->select(
-                    'no_doc','dibuat_oleh','no_fuel_station as fuel','created_date as tgl_dibuat'
-
+                    'no_doc','dibuat_oleh','no_fuel_station as fuel','created_date as tgl_dibuat','shift','disetujui_oleh','job_site as site','stok_awal',
+                    'stok_akhir','masuk','total_pemakaian as total_pakai','stok_akhir'
                 )
                 ->where('no_doc', $no_doc)
                 ->first();
             if(!is_null($data)) {
-                Log::info("id : ". json_encode($data));
+                // Log::info("id : ". json_encode($data));
                 $data_detail = DB::table($TABLE_DETAIL)
-                    ->select('id_pemakai_solar','kode_unit','jam','awal','akhir','total_liter','nama_operator','km','hm','keterangan')
+                    ->select('kode_unit','jam','awal','akhir','total_liter','nama_operator','km','hm','keterangan')
                     ->where('id_pemakai_solar', $data->no_doc)
                     ->get();
+                $nomor = 1;
+                foreach($data_detail as $detail) {
+                    $detail->nomor = $nomor;
+                    
+                    $nomor++;
+                }
 
                 $data_user = DB::connection('sqlsrv2')
                     ->table("TKaryawan")
@@ -176,17 +191,22 @@ class PemakaianSolarController extends Controller {
                     ->where("nik", $data->dibuat_oleh)
                     ->first();
 
-                // Log::info("pendukungReason : ". json_encode($pendukung_reason));
                 $data_master['dibuat_oleh'] = $data_user->nik;
                 $data_master['no_doc'] = $data->no_doc;
                 $data_master['fuel'] = $data->fuel;
                 $data_master['tgl_dibuat'] = $data->tgl_dibuat;
+                $data_master['shift'] = $data->shift;
+                $data_master['disetujui_oleh'] = $data->disetujui_oleh;
+                $data_master['site'] = $data->site;
+                $data_master['stok_awal'] = $data->stok_awal;
+                $data_master['stok_akhir'] = $data->stok_akhir;
+                $data_master['masuk'] = $data->masuk;
+                $data_master['total_pakai'] = $data->total_pakai;
 
-                // Log::info("FormDetailByNoDoc : " .json_encode(array('data_master' => $data_master, 'data_detail' => $data_detail, 'data_user' => $data_user, 'pendukung_reason' => $pendukung_reason)));
                 $isError = false;
             } else {
                 $isError = true;
-                $errorMessage = "Data tidak ditemukan";
+                $errorMessage = "Data tidak ditemukan...";
             }
         } catch (Exception $ex) {
             Log::error($ex->getMessage());
@@ -274,6 +294,7 @@ class PemakaianSolarController extends Controller {
             'stok_akhir' => $data['stokAkhir'],
             'masuk' => $data['masuk'],
             'status' => "Draft",
+            'no_doc' => $data['noDoc'],
             'disetujui_oleh' => $data['approval']
         ];
         // $spliited_no_doc = explode("/", $data_insert['no_dok']);
@@ -299,11 +320,11 @@ class PemakaianSolarController extends Controller {
             }
 
             $spliited_no_doc[0] = $id;
-            // $updated_no_doc = implode("/", $spliited_no_doc);
+            $updated_no_doc = implode($spliited_no_doc);
 
-            // $affected = DB::table($TABLE_MASTER)
-            //   ->where('id', $id)
-            //   ->update(['no_dok' => $updated_no_doc]);
+            $affected = DB::table($TABLE_MASTER)
+              ->where('id', $id)
+              ->update(['no_doc' => $updated_no_doc]);
 
             Db::commit();
 
@@ -428,4 +449,109 @@ class PemakaianSolarController extends Controller {
         return $data;
     }
 
+    function SubmitEditPemakaianSolar(Request $req) {
+        $TABLE_MASTER = "FM_LOG_037_PEMAKAIAN_SOLAR";
+        $TABLE_DETAIL = "FM_LOG_037_PEMAKAIAN_SOLAR_DETAIL";
+        $tgl = now()->toDateTimeString();
+        $no_doc = $req->query('no_doc');
+        $response = array(
+            'message' => "",
+            'isSuccess' => false
+        );
+        $nik_session = $req->session()->get('user_id', '');
+        $data = $req->input();
+        $data_insert = [
+            'no_doc' => $data['no_doc'],
+            'no_fuel_station' => $data['fuel'],
+            'shift' => $data['shift'],
+            'disetujui_oleh' => $data['approval'],
+            'job_site' => $data['jobSite'],
+            'stok_awal' => $data['stokAwal'],
+            'stok_akhir' => $data['stokAkhir'],
+            'masuk' => $data['masuk'],
+            'total_pemakaian' => $data['total_pemakaian']
+        ];
+        $data_item = json_decode($data['item']);
+        Log::info($data_item);
+
+        try {
+            DB::beginTransaction();
+            $old_value_master = DB::table($TABLE_MASTER)
+                ->select('id','no_doc','no_fuel_station','shift','disetujui_oleh','job_site','stok_awal',
+                    'stok_akhir','masuk','total_pemakaian')
+                ->where('no_doc', $no_doc)
+                ->first();
+
+            $old_value_detail = DB::table($TABLE_DETAIL)
+                ->select('kode_unit','jam','awal','akhir','total_liter','nama_operator','km','hm','keterangan')
+                ->where('id_pemakai_solar', $old_value_master->id)
+                ->get();
+            $is_item_edit_item = $this->isArrayDifferent($old_value_detail, $data_item);
+
+            if($is_item_edit_item) {
+                $deleted = DB::table($TABLE_DETAIL)->where('id_pemakai_solar', $old_value_master->id)->delete();
+                foreach ($data_item as $data_item_detail) {
+                    DB::table($TABLE_DETAIL)->insert(array(
+                        'id_pemakai_solar' => $old_value_master->id,
+                        'kode_unit' => $data_item_detail->kode_unit,
+                        'jam' => $data_item_detail->jam,
+                        'awal' => $data_item_detail->awal,
+                        'akhir' => $data_item_detail->akhir,
+                        'total_liter' => $data_item_detail->total_liter,
+                        'nama_operator' => $data_item_detail->nama_operator,
+                        'km' => $data_item_detail->km,
+                        'hm' => $data_item_detail->hm,
+                        'keterangan' => $data_item_detail->keterangan
+                    ));
+                }
+                // $history_detail = $this->addHistory($old_value_master->no_doc, $tgl, $nik_session, 'PemakaianSolarEdit', $data_item, $old_value_detail);
+            }
+
+            Log::info($old_value_detail);
+            Log::info(json_encode($this->isArrayDifferent($old_value_detail, $data_item)));
+            $affected_rows = DB::table($TABLE_MASTER)
+                ->where('no_doc', $no_doc)
+                ->update($data_insert);
+            // $history_master = $this->addHistory($old_value_master->id, $tgl, $nik_session, 'PemakaianSolarEdit', $data_insert, $old_value_master);
+            DB::commit();
+            $response['message'] = "Ok";
+            $response['isSuccess'] = true;
+            $response['data'] = array(
+                'no_doc' => $no_doc
+            );
+
+        } catch (Exception $ex) {
+            // DB::rollBack();
+
+            Log::error($ex->getMessage());
+            Log::error($ex->getTraceAsString());
+            $response['message'] = $ex->getMessage();
+            $response['isSuccess'] = false;
+        }
+
+        return response()->json($response);
+    }
+
+    private function isArrayDifferent($array1, $array2) {
+        if (count($array1) !== count($array2)) {
+            return true;
+        }
+
+        foreach ($array1 as $key => $item1) {
+            if (!isset($array2[$key])) {
+                return true;
+            }
+
+            $item2 = $array2[$key];
+
+            // Membandingkan masing-masing properti dalam object
+            foreach ($item1 as $prop => $value1) {
+                if (!property_exists($item2, $prop) || $item2->$prop !== $value1) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 }

@@ -38,7 +38,7 @@
                                         <tr>
                                             <!-- <td>No. Doc</td>
                                             <td>:</td> -->
-                                            <td id="noDoc" hidden>No.Doc</td>
+                                            <td id="noDoc" hidden>{{$data['no_doc']}}</td>
                                         </tr>
                                         <tr>
                                             <td>Date</td>
@@ -52,7 +52,7 @@
                                             <td>:</td>
                                             <td>
                                                 <select class="form-select form-select-sm input-text" aria-label="Default select example" id="iShift" name="iShift" required>
-                                                    <option value="" selected>-- Pilih Shift --</option>    
+                                                    <option value="{{ $data['shift'] }}" selected>{{ $data['shift'] }}</option>    
                                                     <option value="DS">DS</option>
                                                     <option value="NS">NS</option>
                                                 </select> 
@@ -62,7 +62,13 @@
                                             <td>Pilih Atasan Langsung</td>
                                             <td>:</td>
                                             <td>
-                                                
+                                                <select name="dApproved" id="dApproved" class="form-control text-center" required>
+                                                <option selected value="{{ $data['disetujui_oleh'] }}">{{ $data['disetujui_oleh'] }}</option>
+                                                @foreach($approvalList as $user)
+                                                    <option value="{{ $user->nama }}">{{ $user->nama }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
                                             </td>
                                         </tr>
                                     </table>
@@ -74,7 +80,7 @@
                                             <td>No. Fuel Station / Fuel Truck</td>
                                             <td>:</td>
                                             <td>
-                                                <input type="text" class="form-control" id="iFuel" name="iFuel" value="{{ $data['fuel'] }}" required>
+                                                <input type="text" class="form-control" id="iFuel" name="iFuel" required>
                                             </td>
                                         </tr>
                                         <tr>
@@ -82,7 +88,7 @@
                                             <td>:</td>
                                             <td>
                                                 <select class="form-select form-select-sm input-text" id="iJobSite" name="iJobSite" required>
-                                                    <option selected value="">-- Pilih Job Site --</option>
+                                                    <option selected value="{{ $data['site'] }}">{{ $data['site'] }}</option>
                                                     <option value="AGM">AGM</option>
                                                     <option value="MBL">MBL</option>
                                                     <option value="MME">MME</option>
@@ -107,23 +113,23 @@
                                     <div class="col-md-4 col-lg-2">
                                         <div class="input-group input-group-static mb-4">
                                             <label for="iKodeUnit">Kode Unit</label>
-                                            <input type="text" class="form-control" id="iKodeUnit" name="iKodeUnit" required>
+                                            <input type="text" class="form-control" id="iKodeUnit" name="iKodeUnit">
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-lg-2">
                                         <label for="iJam">Jam</label>
-                                        <input type="time" class="form-control" id="iJam" name="iJam" required>
+                                        <input type="time" class="form-control" id="iJam" name="iJam">
                                     </div>
                                     <div class="col-md-4 col-lg-2">
                                         <div class="input-group input-group-static mb-4">
                                             <label for="iAwal">Flow Meter Awal</label>
-                                            <input type="number" onkeypress="return event.charCode >= 48" min="1" class="form-control" id="iAwal" name="iAwal" required>
+                                            <input type="number" onkeypress="return event.charCode >= 48" min="1" class="form-control" id="iAwal" name="iAwal">
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-lg-2">
                                         <div class="input-group input-group-static mb-4">
                                             <label for="iAkhir">Flow Meter Akhir</label>
-                                            <input type="number" onkeypress="return event.charCode >= 48" min="1" class="form-control" id="iAkhir" name="iAkhir" required>
+                                            <input type="number" onkeypress="return event.charCode >= 48" min="1" class="form-control" id="iAkhir" name="iAkhir">
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-lg-2">
@@ -136,19 +142,19 @@
                                     <div class="col-md-4 col-lg-2">
                                         <div class="input-group input-group-static mb-4">
                                             <label for="iNamaOperator">Nama Operator</label>
-                                            <input type="text" class="form-control" id="iNamaOperator" name="iNamaOperator" required>
+                                            <input type="text" class="form-control" id="iNamaOperator" name="iNamaOperator">
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-lg-2">
                                         <div class="input-group input-group-static mb-4">
                                             <label for="iKm">KM</label>
-                                            <input type="number" onkeypress="return event.charCode >= 48" min="1" class="form-control" id="iKm" name="iKm" required>
+                                            <input type="number" onkeypress="return event.charCode >= 48" min="1" class="form-control" id="iKm" name="iKm">
                                         </div>
                                     </div>                                    
                                     <div class="col-md-4 col-lg-2">
                                         <div class="input-group input-group-static mb-4">
                                             <label for="iHm">HM</label>
-                                            <input type="number" onkeypress="return event.charCode >= 48" min="1" class="form-control" id="iHm" name="iHm" required>
+                                            <input type="number" onkeypress="return event.charCode >= 48" min="1" class="form-control" id="iHm" name="iHm">
                                         </div>
                                     </div>                                    
                                     <div class="col-md-4 col-lg-2">
@@ -160,7 +166,7 @@
                                     
                                     <div class="col-md-4 col-lg-2">
                                         <div class="input-group input-group-static mb-4">
-                                            <button id="btn-add-item" class="btn btn-primary" onclick="ClearFields();">Tambah</button>                                            
+                                            <button id="btn-add-item" class="btn btn-primary">Tambah</button>                                            
                                         </div>
                                     </div>
                                 </div>
@@ -189,25 +195,27 @@
                             <table>
                               <tr>
                                 <td style="width:10%">Stok Awal</td>
-                                <td style="width:10%"><input type="number"  onkeypress="return event.charCode >= 48" min="1" class="form-control" id="tStokAwal" name="tStokAwal" placeholder=": ................." required>
+                                <td style="width:10%"><input type="number" value="{{ $data['stok_awal'] }}" onkeypress="return event.charCode >= 48" min="1" class="form-control" id="tStokAwal" name="tStokAwal" placeholder=": ................." required>
                                 </td>
                                 <td style="width:80%">Liter</td>
                               </tr>
                               <tr>
                                 <td>Masuk :</td>
-                                <td><input type="number" onkeypress="return event.charCode >= 48" min="1" class="form-control" id="tMasuk" placeholder=": ................." name="tMasuk" required>
+                                <td><input type="number" value="{{ $data['masuk'] }}" onkeypress="return event.charCode >= 48" min="1" class="form-control" id="tMasuk" name="tMasuk" required>
                                 </td>
                                 <td>Liter</td>
                               </tr>
                               <tr>
                                 <td>Keluar</td>
-                                <td><span id="tTotals">
+                                <td>
+                                    <input type="number" value="{{ $data['total_pakai'] }}" onkeypress="return event.charCode >= 48" min="1" class="form-control" id="tTotals" name="tTotals" disabled>
                                 </td>
                                 <td>Liter</td>
                               </tr>
                               <tr>
                                 <td>Stok Akhir</td>
-                                <td><span id="tTotalAkhir">
+                                <td>
+                                    <input type="number" value="{{ $data['stok_akhir'] }}" onkeypress="return event.charCode >= 48" min="1" class="form-control" id="tTotalAkhir" name="tTotalAkhir" disabled>
                                 </td>
                                 <td>Liter</td>
                               </tr>
@@ -229,10 +237,11 @@
 
                     <div class="card-footer">
                         <div class="d-flex align-items-center">
-                            <button class="btn btn-primary ms-auto uploadBtn" id="btnSubmitAssetRequest">
+                            <button class="btn btn-primary ms-auto uploadBtn" style="margin:5px" id="btnSubmitSolar">
                                 <i class="fas fa-save"></i>
                                 Submit Form
                             </button>
+                            <a href="{{url()->previous()}}" class="btn btn-success" style="margin:5px"><i class="fas fa-cancel"></i> Cancel</a>
                         </div>
                     </div>
 
@@ -276,18 +285,24 @@
         var tTotals = $("#tTotals")
         var tTotalAkhir = $("#tTotalAkhir")
         var iNamaOperator = $("#iNamaOperator")
+        var btnSubmitSolar = $("#btnSubmitSolar");
+        var btnCancel = $("#btnCancel");
         var iKm = $("#iKm")
         var iHm = $("#iHm")
         var iKet = $("#iKet")
 
         var dataPemakaianSolar = {
             formName: "Pemakaian Solar",
+            jobSite: "",
             noDoc: "",
             tglDoc: "",
             approval: "",
-            jobSite: "",
-            fuel: "",
             shift: "",
+            total_pemakaian: "",
+            stokAwal: "",
+            stokAkhir: "",
+            masuk: "",
+            fuel: "",
             
             item: [{}]
         }
@@ -345,26 +360,11 @@
             var cny = 0;
             var items = [];
             data.sender.data.forEach(function (item, index, arr) {
-                // console.log(item)
-                if(item.currency == "IDR") {
-                    idr = idr + parseInt(item.price) * item.qty
-                }
-                if(item.currency == "USD") {
-                    usd = usd + parseInt(item.price) * item.qty
-                }
-                if(item.currency == "CNY") {
-                    cny = cny + parseInt(item.price) * item.qty
-                }
+                console.log(item)
                 item.no = index;
                 items.push(item)
             })
-            dataAssetRequest.item = items
-            calculatedIdr.text(idr)
-            calculatedUsd.text(usd)
-            calculatedCny.text(cny)
-            // console.log("estimatedIdr : ", estimatedIdr.val())
-            totalPrice.text((parseInt(estimatedIdr.val()) * idr) + (parseInt(estimatedUsd.val()) * usd) + (parseInt(estimatedCny.val()) * cny) || "-")
-            // console.log("IDR = ", idr)
+            dataPemakaianSolar.item = items
         })
         var isError = {
             error: {{ Illuminate\Support\Js::from($error) }},
@@ -382,6 +382,15 @@
         }
 
         $(function() {
+
+            iAkhir.change(function(e) {
+                iTotalLiter.text((iAkhir.val()) - (iAwal.val() ))
+            });
+
+            tStokAwal.change(function(e) {
+                tTotalAkhir.text((tStokAwal.val()) - (parseInt(tTotals.text())))
+            });
+            
             if(isError.error) {
                 Swal.fire({
                     icon: 'error',
@@ -398,7 +407,6 @@
                 });
                 
                 iFuel.val({{ Illuminate\Support\Js::from( $data['fuel']) }})
-                tTglDibuat.val({{ Illuminate\Support\Js::from( $data['tgl_dibuat']) }})
 
                 dataPemakaianSolar.fuel = iFuel.val()
 
@@ -407,107 +415,82 @@
             function validateItem() {
                 var errorValidate = []
 
-                if(inputType.val() == "") {
+                if(iKodeUnit.val() == "") {
                     errorValidate.push({
-                        field: "Type",
-                        message: "Tidak boleh kosong"
+                        field: "Kolom Kode unit",
+                        message: "tidak boleh kosong"
                     })
                 }
-                if(inputCondition.val() == "") {
+                if(iJam.val() == "") {
                     errorValidate.push({
-                        field: "Condition",
-                        message: "Tidak boleh kosong"
+                        field: "Kolom Jam",
+                        message: "Harus dipilih"
                     })
                 }
-                if(inputQty.val() == "") {
+                if(iAwal.val() == "") {
                     errorValidate.push({
-                        field: "QTY",
-                        message: "Tidak boleh kosong"
+                        field: "Kolom Flow Meter Awal",
+                        message: "Harus Diisi"
                     })
                 }
-                if(inputUom.val() == "") {
+                if(iAkhir.val() == "") {
                     errorValidate.push({
-                        field: "UOM",
-                        message: "Tidak boleh kosong"
+                        field: "Kolom Flow Meter Akhir",
+                        message: "Harus Diisi"
                     })
                 }
-                if(inputCurrency.val() == "") {
+                if(iNamaOperator.val() == "") {
                     errorValidate.push({
-                        field: "Currency",
-                        message: "Tidak boleh kosong"
+                        field: "Kolom Nama Operator",
+                        message: "Harus Diisi"
                     })
                 }
-                if(inputPrice.val() == "") {
+                if(iKm.val() == "") {
                     errorValidate.push({
-                        field: "Price",
-                        message: "Tidak boleh kosong"
+                        field: "Kolom KM",
+                        message: "Harus Diisi"
                     })
                 }
-
+                if(iHm.val() == "") {
+                    errorValidate.push({
+                        field: "Kolom HM",
+                        message: "Harus Diisi"
+                    })
+                }
                 return errorValidate
             }
 
             function validateForm() {
                 var errorValidate = []
-
-                if(!checkAdditional.checked && !checkReplacement.checked){
+                
+                if(iForeman.val() == ""){
                     errorValidate.push({
-                        field: "Replacement / Additional",
-                        message: "harus dipilih"
+                        field: "Kolom Foreman",
+                        message: "Harus dipilih"
                     })
                 }
-                if(!checkBudgeted.checked && !checkNotBudgeted.checked){
+                if(tStokAwal.val() == "") {
                     errorValidate.push({
-                        field: "Budgeted / Not Budgeted",
-                        message: "harus dipilih"
+                        field: "Kolom Stok Awal",
+                        message: "Harus Diisi"
                     })
                 }
-                if(checkNotBudgeted.checked && inputPendukungReason.files.length < 1) {
+                if(tMasuk.val() == "") {
                     errorValidate.push({
-                        field: "Dokumen Pendukung",
-                        message: "tidak boleh kosong jika Not Budgeted"
+                        field: "Kolom Masuk",
+                        message: "Harus Diisi"
                     })
                 }
-                if(inputDepartment.val() == ""){
+                if(iFuel.val() == ""){
                     errorValidate.push({
-                        field: "Department Requestor",
-                        message: "tidak boleh kosong"
+                        field: "Kolom Fuel",
+                        message: "Harus diisi"
                     })
                 }
-                if(inputProject.val() == ""){
+                if(iShift.val() == ""){
                     errorValidate.push({
-                        field: "Project/Site Requestor",
-                        message: "tidak boleh kosong"
-                    })
-                }
-                if(inputDepartmentAllocation.val() == ""){
-                    errorValidate.push({
-                        field: "Department Allocation",
-                        message: "tidak boleh kosong"
-                    })
-                }
-                if(inputProjectAllocation.val() == ""){
-                    errorValidate.push({
-                        field: "Project/Site Allocation",
-                        message: "tidak boleh kosong"
-                    })
-                }
-                if(reasonpurchase.val() == ""){
-                    errorValidate.push({
-                        field: "Reason for Purchase",
-                        message: "tidak boleh kosong"
-                    })
-                }
-                if(estimatedReadyAtSite.val() == ""){
-                    errorValidate.push({
-                        field: "Estimated ready",
-                        message: "tidak boleh kosong"
-                    })
-                }
-                if(estimatedReadyAtSite.val() < getTodayDate()){
-                    errorValidate.push({
-                        field: "Estimated ready at site",
-                        message: "tidak boleh back date"
+                        field: "Kolom Shift",
+                        message: "Harus dipilih"
                     })
                 }
                 if($table.bootstrapTable('getData').length < 1) {
@@ -538,20 +521,21 @@
                     })
                 } else {
                     $table.bootstrapTable('append', {
-                        type: inputType.val(),
-                        model: inputModel.val(),
-                        brand: inputBrand.val(),
-                        condition: inputCondition.val(),
-                        qty: inputQty.val(),
-                        uom: inputUom.val(),
-                        currency: inputCurrency.val(),
-                        price: inputPrice.val()
+                        kode_unit: iKodeUnit.val(),
+                        jam: iJam.val(),
+                        awal: iAwal.val(),
+                        akhir: iAkhir.val(),
+                        total_liter: iTotalLiter.text(),
+                        nama_operator: iNamaOperator.val(),
+                        km: iKm.val(),
+                        hm: iHm.val(),
+                        keterangan: iKet.val()
                     })
                     $table.bootstrapTable('scrollTo', 'bottom')
                 }
             })
 
-            btnSubmitAssetRequest.click(function(e) {
+            btnSubmitSolar.click(function(e) {
                 e.preventDefault();
                 var errValidate = validateForm()
                 if(errValidate.length > 0) {
@@ -568,43 +552,28 @@
                     })
                 } else {
                     var dataReq = {
-                        formName: dataAssetRequest.formName,
-                        // area: inputArea.val(),
+                        formName: dataPemakaianSolar.formName,
+                        jobSite: iJobSite.val(),
                         noDoc: noDoc.text(),
                         tglDoc: formatTgl(),
-                        replacement: checkReplacement.checked,
-                        additional: checkAdditional.checked,
-                        budgeted: checkBudgeted.checked,
-                        notBudgeted: checkNotBudgeted.checked,
-                        department: inputDepartment.val(),
-                        project: inputProject.val(),
-                        departmentAllocation: inputDepartmentAllocation.val(),
-                        projectAllocation: inputProjectAllocation.val(),
-                        // area: inputArea.val(),
-                        reasonPurchase: reasonpurchase.val(),
-                        estimatedReadyAtSite: estimatedReadyAtSite.val(),
-                        estimatedIdr: estimatedIdr.val(),
-                        estimatedUsd: estimatedUsd.val(),
-                        estimatedCny: estimatedCny.val(),
-                        refDoc: refDoc.val(),
-                        requestedBy: requestornik.text(),
-                        // item: dataAssetRequest.item,
-                        totalPrice: totalPrice.text(),
-                        pendukungReason: []
+                        approval: dApproved.val(),
+                        shift: iShift.val(),
+                        total_pemakaian: tTotals.val(),
+                        stokAwal: tStokAwal.val(),
+                        stokAkhir: tTotalAkhir.text(),
+                        masuk: tMasuk.val(),
+                        fuel: iFuel.val()
                     }
                     let formData = new FormData();
-    
-                    for (let i = 0; i < inputPendukungReason.files.length; i++) {
-                        formData.append('pendukungReason[]', inputPendukungReason.files[i]);
-                    }
-                    formData.append('item',JSON.stringify(dataAssetRequest.item));
+
+                    formData.append('item',JSON.stringify(dataPemakaianSolar.item));
                     for (const key in dataReq) {
-                        if(key != "pendukungReason" || key != "item") {
+                        if(key != "item") {
                             formData.append(key, dataReq[key])
                         }
                     }
                     // TODO
-                    axios.post('/bss-form/sm/submit-edit-asset-request?no_doc='+noDoc.text(), formData, {
+                    axios.post('/bss-form/log/submit-edit-pemakaian-solar?no_doc='+noDoc.text(), formData, {
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
                             'Content-Type': 'multipart/form-data'
@@ -615,10 +584,10 @@
                         showLoading()
                         Swal.fire({
                                 icon: 'success',
-                                title: 'Berhasil!',
-                                text: response.data.data.no_doc,
+                                title: 'Data Berhasil Diperbarui!',
+                                // text: response.data.data,
                             }).then((result) => {
-                                window.location.href = `/get-form-detail?no_doc=${response.data.data.no_doc}`;
+                                window.location.href = `/bss-form/log/pemakaian-solar`;
                             })
                     })
                     .catch(function (error) {
