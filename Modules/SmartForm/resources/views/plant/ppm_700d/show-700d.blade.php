@@ -24,11 +24,11 @@
 
                     <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                         <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                            <h6 class="text-white text-capitalize ps-3"> Form PPM XCMG 900D</h6>
+                            <h6 class="text-white text-capitalize ps-3"> Form PPM XCMG XE700D</h6>
                         </div>
                     </div>
 
-                    <form id="formXCMG900" method="POST">
+                    <form id="formXCMG700" method="POST">
                         @csrf
                         <div class="mx-3">
                             <input type="hidden" name="doc_num" value="{{ $data->doc_num }}">
@@ -608,7 +608,7 @@
                                     <div class="row">
                                         <div class="col-12">
                                             <div class="form-actions">
-                                                <a href="{{ route('plant.ppm.900d.dashboard') }}"
+                                                <a href="{{ route('plant.ppm.700d.dashboard') }}"
                                                     class="btn btn-secondary">Cancel</a>
                                                 <button type='submit' class="btn btn-primary">Update</button>
                                             </div>
@@ -748,7 +748,7 @@
             });
         });
         $(function() {
-            var form = $("#formXCMG900");
+            var form = $("#formXCMG700");
             var submitBtn = form.find('button[type="submit"]');
 
             form.submit(function(e) {
@@ -758,7 +758,7 @@
                 var formData = new FormData(this);
                 console.log("Form data yang dikirim:", formData);
 
-                axios.post('{{ route('plant.ppm.900d.update') }}', formData)
+                axios.post('{{ route('plant.ppm.700d.update') }}', formData)
                     .then(function(response) {
                         console.log("Respons dari server:", response.data);
                         if (response.data.success) {
@@ -769,7 +769,7 @@
                             }).then((result) => {
                                 if (result.isConfirmed) {
                                     window.location.href =
-                                        '{{ route('plant.ppm.900d.dashboard') }}';
+                                        '{{ route('plant.ppm.700d.dashboard') }}';
                                 }
                             });
                         }
