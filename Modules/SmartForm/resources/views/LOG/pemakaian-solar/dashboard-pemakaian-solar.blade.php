@@ -75,9 +75,12 @@
                         <table id="list-form" data-toggle="table" data-ajax="fetchFormsData" data-side-pagination="server"
                             data-page-list="[10, 25, 50, 100, all]" data-sortable="true"
                             data-content-type="application/json" data-data-type="json" data-pagination="true"
-                            data-unique-id="id">
+                            data-unique-id="no_doc">
                             <thead>
                                 <tr>
+                                    <th data-field="no_doc" data-align="left" data-halign="text-center">
+                                        No. Document
+                                    </th>
                                     <th data-field="tgldibuat" data-align="center" data-halign="center">Date</th>
                                     <th data-field="dibuat_oleh" data-align="center" data-halign="center">Dibuat oleh</th>
                                     <th data-field="fuel" data-align="left" data-halign="center">No Fuel Station</th>

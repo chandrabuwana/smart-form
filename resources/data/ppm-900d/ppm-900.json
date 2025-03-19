@@ -41,9 +41,7 @@
             "standard": "Min 1,2/Min 0,8 (Repair)"
         },
         {
-            "item": "Lub Oil Pressure",
             "condition": "engine High Idle",
-            "unit": "Kg/cm2",
             "standard": "4,0 - 6,0/2,5 (Repair)"
         },
         {

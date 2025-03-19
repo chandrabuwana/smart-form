@@ -6,7 +6,6 @@
     <link rel="stylesheet" type="text/css"
         href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/extensions/filter-control/bootstrap-table-filter-control.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.24/dist/sweetalert2.min.css">
     <style>
         .stats-card {
             transition: all 0.3s;
@@ -30,7 +29,7 @@
             <div class="card my-4">
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                     <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                        <h6 class="text-white text-capitalize ps-3">Dashboard Compressor Pompa (Standard)</h6>
+                        <h6 class="text-white text-capitalize ps-3">Dashboard Form PPM XCMG XE700D</h6>
                     </div>
                 </div>
                 <!-- Statistics Cards -->
@@ -70,11 +69,11 @@
                             <div class="card-body p-3">
                                 <div class="d-flex justify-content-between">
                                     <div>
-                                        <i class="fas fa-solid fa-location-dot text-danger fa-2x"></i>
+                                        <i class="fas fa-tram fa-2x" style="color: #B197FC;"></i>
                                     </div>
                                     <div class="text-end pt-1">
-                                        <p class="text-sm mb-0 text-capitalize">Location</p>
-                                        <h4 class="mb-0">{{ $statistics->location }}</h4>
+                                        <p class="text-sm mb-0 text-capitalize">Engine Model</p>
+                                        <h4 class="mb-0">{{ $statistics->engine_model }}</h4>
                                     </div>
                                 </div>
                             </div>
@@ -85,11 +84,12 @@
                             <div class="card-body p-3">
                                 <div class="d-flex justify-content-between">
                                     <div>
-                                        <i class="fas fa-solid fa-code-branch fa-2x"></i>
+                                        <i class="fas fa-sitemap fa-2x" style="color: #74C0FC;"></i>
                                     </div>
                                     <div class="text-end pt-1">
-                                        <p class="text-sm mb-0 text-capitalize">Site</p>
-                                        <h4 class="mb-0">{{ $statistics->site }}</h4>
+                                        <p class="text-sm mb-0 text-capitalize">Job Site</p>
+                                        <h4 class="mb-0">{{ $statistics->job_site }}</h4>
+
                                     </div>
                                 </div>
                             </div>
@@ -100,7 +100,7 @@
                 <!-- Filters and Search -->
                 <div class="card-body px-0 pb-2">
                     <div class="d-flex align-items-center mx-3">
-                        <a href="{{ route('plant.compressor.form') }}">
+                        <a href="{{ route('plant.ppm.700d.form') }}">
                             <button class="btn btn-primary ms-auto uploadBtn">
                                 New Form
                             </button>
@@ -108,7 +108,7 @@
                     </div>
                     <h4 class="mx-3">Filter Data</h4>
                     <div class="mx-4 row">
-                        <form action="{{ route('plant.compressor.dashboard') }}" method="GET" id="filterForm">
+                        <form action="" method="GET" id="filterForm">
                             <div class="row align-items-center">
                                 <div class="col-md-2 mb-3">
                                     <div class="input-group input-group-static mb-4 position-relative">
@@ -121,67 +121,45 @@
                                 <div class="col-md-3
                                             mb-3">
                                     <div class="input-group input-group-static mb-4 position-relative">
-                                        <label for="location" class="ms-0">Location</label>
-                                        <select class="form-control" id="location" name="location">
-                                            <option selected disabled>-- Select Location --</option>
-                                            <option value="Workshop"
-                                                {{ isset($filters['location']) && $filters['location'] == 'Workshop' ? 'selected' : '' }}>
-                                                Workshop</option>
-                                            <option value="Pitstop"
-                                                {{ isset($filters['location']) && $filters['location'] == 'Pitstop' ? 'selected' : '' }}>
-                                                Pitstop</option>
-                                            <option value="Service"
-                                                {{ isset($filters['location']) && $filters['location'] == 'Service' ? 'selected' : '' }}>
-                                                Service</option>
-                                            <option value="Truck"
-                                                {{ isset($filters['location']) && $filters['location'] == 'Truck' ? 'selected' : '' }}>
-                                                Truck</option>
-                                        </select>
-
-                                    </div>
-                                </div>
-                                <div class="col-md-3
-                                            mb-3">
-                                    <div class="input-group input-group-static mb-4 position-relative">
-                                        <label for="location" class="ms-0">Site</label>
-                                        <select class="form-control" name="site" id="site">
-                                            <option disabled selected>-- Select Site --</option>
-                                            <option value="agm"
-                                                {{ isset($filters['site']) && $filters['site'] == 'agm' ? 'selected' : '' }}>
-                                                agm</option>
-                                            <option value="mbl"
-                                                {{ isset($filters['site']) && $filters['site'] == 'mbl' ? 'selected' : '' }}>
-                                                mbl</option>
-                                            <option value="mme"
-                                                {{ isset($filters['site']) && $filters['site'] == 'mme' ? 'selected' : '' }}>
-                                                mme</option>
-                                            <option value="mas"
-                                                {{ isset($filters['site']) && $filters['site'] == 'mas' ? 'selected' : '' }}>
-                                                mas</option>
-                                            <option value="pmss"
-                                                {{ isset($filters['site']) && $filters['site'] == 'pmss' ? 'selected' : '' }}>
-                                                pmss</option>
-                                            <option value="taj"
-                                                {{ isset($filters['site']) && $filters['site'] == 'taj' ? 'selected' : '' }}>
-                                                taj</option>
-                                            <option value="bssr"
-                                                {{ isset($filters['site']) && $filters['site'] == 'bssr' ? 'selected' : '' }}>
-                                                bssr</option>
-                                            <option value="tdm"
-                                                {{ isset($filters['site']) && $filters['site'] == 'tdm' ? 'selected' : '' }}>
-                                                tdm</option>
-                                            <option value="msj"
-                                                {{ isset($filters['site']) && $filters['site'] == 'msj' ? 'selected' : '' }}>
-                                                msj</option>
-                                        </select>
+                                        <label for="engine_model" class="ms-0">Engine Model</label>
+                                        <input type="text" class="form-control" id="engine_model" name="engine_model"
+                                            value="{{ $filters['engine_model'] ?? '' }}">
 
                                     </div>
                                 </div>
                                 <div class="col-md-3 mb-3">
                                     <div class="input-group input-group-static mb-4 position-relative">
-                                        <label for="date" class="ms-0">Date</label>
-                                        <input type="date" class="form-control" id="date" name="date"
-                                            value="{{ $filters['date'] ?? '' }}">
+                                        <label for="job" class="ms-0">Job Site</label>
+                                        <select class="form-control" name="job_site" id="job_site">
+                                            <option disabled selected>-- Select Site --</option>
+                                            <option value="agm"
+                                                {{ old('site', $filters['job_site'] ?? '') == 'agm' ? 'selected' : '' }}>
+                                                agm</option>
+                                            <option value="mbl"
+                                                {{ old('site', $filters['job_site'] ?? '') == 'mbl' ? 'selected' : '' }}>
+                                                mbl</option>
+                                            <option value="mme"
+                                                {{ old('site', $filters['job_site'] ?? '') == 'mme' ? 'selected' : '' }}>
+                                                mme</option>
+                                            <option value="mas"
+                                                {{ old('site', $filters['job_site'] ?? '') == 'mas' ? 'selected' : '' }}>
+                                                mas</option>
+                                            <option value="pmss"
+                                                {{ old('site', $filters['job_site'] ?? '') == 'pmss' ? 'selected' : '' }}>
+                                                pmss</option>
+                                            <option value="taj"
+                                                {{ old('site', $filters['job_site'] ?? '') == 'taj' ? 'selected' : '' }}>
+                                                taj</option>
+                                            <option value="bssr"
+                                                {{ old('site', $filters['job_site'] ?? '') == 'bssr' ? 'selected' : '' }}>
+                                                bssr</option>
+                                            <option value="tdm"
+                                                {{ old('site', $filters['job_site'] ?? '') == 'tdm' ? 'selected' : '' }}>
+                                                tdm</option>
+                                            <option value="msj"
+                                                {{ old('site', $filters['job_site'] ?? '') == 'msj' ? 'selected' : '' }}>
+                                                msj</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-md-12 mb-3 d-flex justify-content-start">
@@ -208,76 +186,66 @@
                                             Number</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Unit</th>
+                                            Engine Model</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Lokasi</th>
+                                            Unit Model</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Site</th>
+                                            Inspection</th>
+
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Generator Model</th>
-                                        <th
-                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Month</th>
+                                            Date</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($records as $record)
+                                    @foreach ($record as $data)
                                         <tr>
                                             <td>
                                                 <div class="d-flex px-2 py-1">
                                                     <div class="d-flex flex-column justify-content-center">
-                                                        <h6 class="mb-0 text-sm">{{ $record->doc_number }}</h6>
+                                                        <h6 class="mb-0 text-sm">{{ $data->doc_num }}</h6>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td>
-                                                <p class="text-xs font-weight-bold mb-0">{{ $record->unit_name }}</p>
+                                                <p class="text-xs font-weight-bold mb-0">{{ $data->engine_model }}</p>
                                             </td>
                                             <td>
-                                                <p class="text-xs font-weight-bold mb-0">{{ $record->location }}</p>
+                                                <p class="text-xs font-weight-bold mb-0">{{ $data->unit_model }}</p>
                                             </td>
                                             <td>
-                                                <p class="text-xs font-weight-bold mb-0">
-                                                    {{ $record->site }}
-                                                </p>
+                                                <p class="text-xs font-weight-bold mb-0">{{ $data->at_inspection }} </p>
+                                            </td>
+
+                                            <td>
+                                                <span class="text-xs font-weight-bold">{{ $data->date }}</span>
                                             </td>
                                             <td>
-                                                <p class="text-xs font-weight-bold mb-0">
-                                                    {{ $record->generator_model }}
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <span
-                                                    class="text-xs font-weight-bold">{{ \Carbon\Carbon::parse($record->month)->format('F') }}</span>
-                                            </td>
-                                            <td>
-                                                <a href="{{ route('plant.compressor.form', ['id' => $record->id]) }}"
+                                                <a href="{{ route('plant.ppm.700d.detail', ['id' => $data->id]) }}"
                                                     class="btn btn-info btn-sm">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
-                                                <a href="{{ route('plant.compressor.export', ['id' => $record->id]) }}"
+                                                <a href="{{ route('plant.ppm.700d.export', ['id' => $data->id]) }}"
                                                     class="btn btn-primary btn-sm">
                                                     <i class="fas fa-download"></i>
                                                 </a>
                                                 <button type="button" class="btn btn-danger btn-sm"
-                                                    onclick="deleteCompressor({{ $record->id }})">
+                                                    onclick="deleteXcmg700('{{ $data->doc_num }}')">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </td>
                                         </tr>
                                     @endforeach
 
-
                                 </tbody>
                             </table>
-                            <div class="d-flex justify-content-center mt-3">
-                                {{ $records->links('pagination::bootstrap-4') }}
+                            <div class="d-flex justify-content-left mt-3">
+                                {{ $record->links('pagination::bootstrap-4') }}
                             </div>
                         </div>
                     </div>
@@ -292,16 +260,17 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <script>
         $(function() {
-
+            // Clear filter button
             $('#btnClearFilter').click(function() {
-                window.location.href = '{{ route('plant.compressor.dashboard') }}';
+                window.location.href = '{{ route('plant.ppm.900d.dashboard') }}';
             });
 
         });
 
-        function deleteCompressor(id) {
-            if (confirm('Are you sure you want to delete this compressor?')) {
-                axios.delete('{{ route('plant.compressor.delete', ['id' => 'ID']) }}'.replace('ID', id))
+        function deleteXcmg700(id) {
+            console.log('Delete ID:', id);
+            if (confirm('Are you sure you want to delete this data?')) {
+                axios.delete('{{ route('plant.ppm.700d.delete', ['id' => 'ID']) }}'.replace('ID', id))
                     .then(function(response) {
                         console.log('Response:', response);
                         if (response.data.success) {

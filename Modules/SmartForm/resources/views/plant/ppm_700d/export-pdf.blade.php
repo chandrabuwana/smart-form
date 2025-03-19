@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Form PPM XCMG XE900D</title>
+    <title>Form PPM XCMG XE700D</title>
 
     <style>
         body {
@@ -88,7 +88,7 @@
 
 <body>
     <div class="top">
-        <p class="title">BSS-FRM-PLA-071 FORM PPM XCMG XE900D</p>
+        <p class="title">BSS-FRM-PLA-071 FORM PPM XCMG XE700D</p>
     </div>
     <table class="container">
         <tr>
@@ -101,7 +101,7 @@
         <tr>
             <th colspan="7" style=" text-align: center; font-weight: bold; font-size:8px;">Form</th>
             <th>No Document</th>
-            <th>FRM-PLA-04-071</th>
+            <th>FRM-PLA-04-072</th>
 
         </tr>
         <tr>
@@ -173,7 +173,7 @@
             <td style="border:none;"></td>
             <td colspan="2">SMR / HM</td>
             <td colspan="3" style="border:none;"></td>
-            <td rowspan="2" style="border: none; font-weight: bold; background-color:bisque;">XCMG XE900D</td>
+            <td rowspan="2" style="border: none; font-weight: bold;  background-color:bisque;">XCMG XE700D</td>
         </tr>
         <tr>
             <td>Job Site : </td>
@@ -208,8 +208,8 @@
             <th rowspan="2">REMARKS</th>
         </tr>
         <tr>
-            <td>PR. NO</td>
-            <td>Tanggal</td>
+            <th>PR. NO</th>
+            <th>Tanggal</th>
         </tr>
         </thead>
         <tbody>
@@ -314,6 +314,7 @@
                     </td>
                     <td>{{ $data->hyd_taggal[$j] ?? '' }}
                     </td>
+
                     <td>{{ $data->hyd_remark[$j] ?? '' }}</td>
                 </tr>
                 @php
@@ -387,8 +388,8 @@
                 <th rowspan="2">REMARKS</th>
             </tr>
             <tr>
-                <td>PR. NO</td>
-                <td>Tanggal</td>
+                <th>PR. NO</td>
+                <th>Tanggal</th>
             </tr>
 
             @php
