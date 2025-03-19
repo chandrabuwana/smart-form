@@ -62,6 +62,9 @@ use Modules\SmartForm\App\Http\Controllers\IT\CctvFormController;
 use Modules\SmartForm\App\Http\Controllers\IT\DeviceFormController;
 use Modules\SmartForm\App\Http\Controllers\IT\RouterFormController;
 use Modules\SmartForm\App\Http\Controllers\PLANT\GeneralInspection\InspectionCmtController;
+use Modules\SmartForm\App\Http\Controllers\PLANT\GeneralInspection\InspectionDongfengController;
+use Modules\SmartForm\App\Http\Controllers\GS\InspeksiToiletMessKantorController;
+use Modules\SmartForm\App\Http\Controllers\PLANT\PpmShantuiDH24Controller;
 
 /*
 |--------------------------------------------------------------------------
@@ -488,6 +491,13 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/reset-ppu-xe1250/{id}', [PpuXE1250Controller::class, 'Reset'])->name("plant.ppu.xe1250.reset");
         });
 
+
+        Route::prefix('ppm-dh24')->group(function(){
+            Route::get('/dashboard', [PpmShantuiDH24Controller::class, 'Dashboard'])->name('dashboard-dh24');
+            Route::get('/add', [PpmShantuiDH24Controller::class, 'Add'])->name('form-create-dh24');
+            Route::post('/store', [PpmShantuiDH24Controller::class, 'Store'])->name('store-dh24');
+            Route::get('/export/{id}', [PpmShantuiDH24Controller::class, 'ExportPDF'])->name('export-pdf-dh24');
+        });
 
     });
 

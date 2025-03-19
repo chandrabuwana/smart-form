@@ -1,0 +1,150 @@
+{
+    "ENGINE": [
+        {
+            "item": "Engine Speed",
+            "condition": "Low Idle",
+            "unit": "Rpm",
+            "standard": "700-800"
+        },
+        {
+            "condition": "High Idle",
+            "standard": "2100"
+        },
+        {
+            "item": "Lub Oil Press.",
+            "condition": "Low Idling",
+            "unit": "Kg/cm2",
+            "standard": "1,2 - 2,5 / Min 0,7 (Repair)"
+        },
+        {
+            "condition": "High Idling",
+            "standard": "3,5 - 5,5/Min 2 (Repair)"
+        },
+        {
+            "item": "Coolant Temperature",
+            "condition": "Operational Temp",
+            "unit": "C",
+            "standard": "83-90"
+        },
+        {
+            "item": "Blow-by Pressure",
+            "condition": "Roted Output (1800 rpm)<br>coolant temp within operating range",
+            "unit": "mm Aq",
+            "standard": "Max 350/ max 700 (Repair)"
+        },
+        {
+            "item": "Boost Press.",
+            "condition": "Rated Output (1800 rpm)",
+            "unit": "Kpa",
+            "standard": "Min.133/Min.117 (Repair)"
+        },
+        {
+            "item": "Exhaust Gas Temp. (Cylinder 1)",
+            "condition": "Rated Output (1800 rpm)",
+            "unit": "C",
+            "standard": "Max. 680/Max. 700 (Repair)"
+        },
+        {
+            "item": "Exhaust Gas Temp. (Cylinder 2)",
+            "unit": "C",
+            "standard": "Max. 680/Max. 700 (Repair)"
+        },
+        {
+            "item": "Exhaust Gas Temp. (Cylinder 3)",
+            "unit": "C",
+            "standard": "Max. 680/Max. 700 (Repair)"
+        },
+        {
+            "item": "Exhaust Gas Temp. (Cylinder 4)",
+            "unit": "C",
+            "standard": "Max. 680/Max. 700 (Repair)"
+        },
+        {
+            "item": "Exhaust Gas Temp. (Cylinder 5)",
+            "unit": "C",
+            "standard": "Max. 680/Max. 700 (Repair)"
+        },
+        {
+            "item": "Exhaust Gas Temp. (Cylinder 6)",
+            "unit": "C",
+            "standard": "Max. 680/Max. 700 (Repair)"
+        }
+    ],
+    "WORK_EQUIPMENT_HYDRAULIC_OIL_PRESSURE": [
+        {
+            "item": "Blade Left Tilt Pressure",
+            "condition0": "- Hydraulic oil temperature: 45-55 oC </br> - Operate the handle to the corresponding position",
+            "condition1": "Eng. Low Idle",
+            "unit": "Kg/cm2",
+            "standard": "210 ± 14"
+        },
+        {
+            "condition1": "Eng. High Idle",
+            "standard": "210 ± 14"
+        },
+        {
+            "item": "Blade Right Tilt Pressure",
+            "standard": "210 ± 14",
+            "condition1": "Eng. Low Idle"
+        },
+        {
+            "condition1": "Eng. High Idle",
+            "standard": "210 ± 14"
+        },
+        {
+            "item": "Pilot Pressure",
+            "condition0": "- Hydraulic oil temperature: 45-55 oC </br> - Work tool handle is in the neutral position",
+            "condition1": "Eng. High Idle",
+            "standard": "30"
+        }
+    ],
+    "WORK_TRAVEL_SYSTEM" : [
+        {
+            "item": "BR (Brake Release) Pressure",
+            "condition0": "Hydraulic oil temperature (45-55 oC)",
+            "condition1": "Eng. Low Idle",
+            "unit": "Kg/cm2",
+            "standard": "23 ± 3"
+        },
+        {
+            "condition1": "Eng. High Idle",
+            "standard": "26 ± 3"
+        },
+        {
+            "item": "Left Pump inlet oil pressure (Ms1)",
+            "condition1": "Eng. Low Idle",
+            "standard": "23"
+        },
+        {
+            "condition1": "Eng. High Idle",
+            "standard": "465"
+        },
+        {
+            "item": "Left Pump outlet oil pressure (Mp1)",
+            "condition1": "Eng. Low Idle",
+            "standard": "23"
+        },
+        {
+            "condition1": "Eng. High Idle",
+            "standard": "465"
+        },
+        {
+            "item": "Left Pump inlet oil pressure (Ms2)",
+            "condition1": "Eng. Low Idle",
+            "standard": "23"
+        },
+        {
+            "condition1": "Eng. High Idle",
+            "standard": "465"
+        },
+        {
+            "item": "Left Pump outlet oil pressure (Mp2)",
+            "condition1": "Eng. Low Idle",
+            "standard": "23"
+        },
+        {
+            "condition1": "Eng. High Idle",
+            "standard": "465"
+        }
+    ]
+}
