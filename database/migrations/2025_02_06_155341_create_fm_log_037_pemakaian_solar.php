@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('tanggal');
             $table->string('halaman');
             $table->string('job_site');
-            $table->string('no_doc');
+            $table->string('no_doc')->nullable();
             $table->string('no_fuel_station');
 			$table->integer('total_pemakaian');
             $table->string('shift');
