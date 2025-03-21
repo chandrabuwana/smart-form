@@ -293,7 +293,7 @@ class PemakaianSolarController extends Controller {
             'stok_awal' => $data['stokAwal'],
             'stok_akhir' => $data['stokAkhir'],
             'masuk' => $data['masuk'],
-            'status' => "Draft",
+            'status' => "Need Approval",
             'no_doc' => $data['noDoc'],
             'disetujui_oleh' => $data['approval']
         ];
@@ -394,16 +394,16 @@ class PemakaianSolarController extends Controller {
         return $pdf->download('BSS-FRM-LOG-037.pdf');
     }
 
-    function SolarDetailById(Request $request) {
-        $id = $request->query('id');
+    function SolarDetailByNoDoc(Request $request) {
+        $no_doc = $request->query('no_doc');
         $nik_session = $request->session()->get('user_id', '');
-        $data = $this->getDetail($request, $id, $nik_session);
-        $history_edit = $this->getHistory($data['data']['id']);
-        $data_approval = $this->getApprovalStatus($no_doc, $data['data']['acknowledge_by_1_nik'], $data['data']['acknowledge_by_2_nik'], $data['data']['approved_by_1_nik'], $data['data']['approved_by_2_nik']);
-        $data = array_merge($data, $history_edit, $data_approval);
+        $data = $this->getDetail($request, $no_doc, $nik_session);
+        // $history_edit = $this->getHistory($data['data']['id']);
+        // $data_approval = $this->getApprovalStatus($no_doc, $data['data']['acknowledge_by_1_nik'], $data['data']['acknowledge_by_2_nik'], $data['data']['approved_by_1_nik'], $data['data']['approved_by_2_nik']);
+        // $data = array_merge($data, $history_edit, $data_approval);
         $data['list_dept'] = self::LIST_DEPT;
 
-        return view('SmartForm::LOG/pemakaian-solar/detail-form-pemakaian-solar', $data);
+        return view('SmartForm::LOG/pemakaian-solar/lihat-detail-form-pemakaian-solar', $data);
     }
 
     private function getApprovalStatus(string $no_doc, $ack1, $ack2, $approve1, $approve2) {
@@ -513,6 +513,52 @@ class PemakaianSolarController extends Controller {
                 ->where('no_doc', $no_doc)
                 ->update($data_insert);
             // $history_master = $this->addHistory($old_value_master->id, $tgl, $nik_session, 'PemakaianSolarEdit', $data_insert, $old_value_master);
+            DB::commit();
+            $response['message'] = "Ok";
+            $response['isSuccess'] = true;
+            $response['data'] = array(
+                'no_doc' => $no_doc
+            );
+
+        } catch (Exception $ex) {
+            // DB::rollBack();
+
+            Log::error($ex->getMessage());
+            Log::error($ex->getTraceAsString());
+            $response['message'] = $ex->getMessage();
+            $response['isSuccess'] = false;
+        }
+
+        return response()->json($response);
+    }
+
+    function SubmitApprovePemakaianSolar(Request $req) {
+        $TABLE_MASTER = "FM_LOG_037_PEMAKAIAN_SOLAR";
+        $no_doc = $req->query('no_doc');
+        $response = array(
+            'message' => "",
+            'isSuccess' => false
+        );
+        $nik_session = $req->session()->get('user_id', '');
+        $data = $req->input();
+        $data_insert = [
+            'no_doc' => $data['no_doc'],
+            'status' => $data['status']
+        ];
+        $data_item = json_decode($data['item']);
+        Log::info($data_item);
+
+        try {
+            DB::beginTransaction();
+            $old_value_master = DB::table($TABLE_MASTER)
+                ->select('id','no_doc','status')
+                ->where('no_doc', $no_doc)
+                ->first();
+
+            $affected_rows = DB::table($TABLE_MASTER)
+                ->where('no_doc', $no_doc)
+                ->update($data_insert);
+
             DB::commit();
             $response['message'] = "Ok";
             $response['isSuccess'] = true;
