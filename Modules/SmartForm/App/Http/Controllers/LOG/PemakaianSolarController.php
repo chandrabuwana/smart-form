@@ -468,6 +468,7 @@ class PemakaianSolarController extends Controller {
             'job_site' => $data['jobSite'],
             'stok_awal' => $data['stokAwal'],
             'stok_akhir' => $data['stokAkhir'],
+            'status' => $data['status'],
             'masuk' => $data['masuk'],
             'total_pemakaian' => $data['total_pemakaian']
         ];
@@ -478,7 +479,7 @@ class PemakaianSolarController extends Controller {
             DB::beginTransaction();
             $old_value_master = DB::table($TABLE_MASTER)
                 ->select('id','no_doc','no_fuel_station','shift','disetujui_oleh','job_site','stok_awal',
-                    'stok_akhir','masuk','total_pemakaian')
+                    'stok_akhir','masuk','total_pemakaian','status')
                 ->where('no_doc', $no_doc)
                 ->first();
 
