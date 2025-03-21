@@ -119,7 +119,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/pdf-pemakaian-solar/{id}', [PemakaianSolarController::class, 'PdfPemakaianSolar'])->name('bss-form.log.pdf-pemakaian-solar');
             Route::get('/get-pemakaian-solar-detail', [PemakaianSolarController::class, 'SolarDetailById'])->name("bss-form.log.form-detail-by-id");
             Route::get('/get-pemakaian-solar-data', [PemakaianSolarController::class, 'GetPemakaianSolarData'])->name("bss-form.log.get-pemakaian-solar-data");
-        
+
             // Route::get('/pemakaian-solar', [LogController::class, 'PemakaianSolarDashboard'])->name('bss-form.log.pemakaian-solar.dashboard');
             // Route::get('/list-pemakaian-solar', [LogController::class, 'GetListPemakaianSolar'])->name("bss-form.log.list-pemakaian-solar");
             // Route::get('/form-pemakaian-solar', [LogController::class, 'formPemakaianSolar'])->name('bss-form.log.form-pemakaian-solar');
@@ -459,6 +459,15 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/update',[PpmXCMG700DController::class, 'Update'])->name('plant.ppm.700d.update');
             Route::get('/detail/{id}', [PpmXCMG700DController::class, 'detail'])->name('plant.ppm.700d.detail');
             Route::delete('/delete/{id}', [PpmXCMG700DController::class, 'Delete'])->name('plant.ppm.700d.delete');
+        });
+        Route::prefix('ppu-xe1250')->group(function(){
+            Route::get('/dashboard', [PpmXCMG700DController::class, 'Dashboard'])->name('plant.ppu.xe1250.dashboard');
+            Route::get('/export/{id}', [PpmXCMG700DController::class, 'Export'])->name('plant.ppu.xe1250.export');
+            Route::get('/add', [PpmXCMG700DController::class, 'Add'])->name('plant.ppu.xe1250.form');
+            Route::post('/store', [PpmXCMG700DController::class, 'Store'])->name('plant.ppu.xe1250.store');
+            Route::post('/update',[PpmXCMG700DController::class, 'Update'])->name('plant.ppu.xe1250.update');
+            Route::get('/detail/{id}', [PpmXCMG700DController::class, 'detail'])->name('plant.ppu.xe1250.detail');
+            Route::delete('/delete/{id}', [PpmXCMG700DController::class, 'Delete'])->name('plant.ppu.xe1250.delete');
         });
 
 
