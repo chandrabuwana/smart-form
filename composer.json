@@ -18,11 +18,8 @@
         "mpdf/mpdf": "^8.2",
         "nwidart/laravel-modules": "^10.0",
         "phpoffice/phpspreadsheet": "^3.3",
-<<<<<<< HEAD
         "smalot/pdfparser": "^2.11",
-=======
         "twbs/bootstrap-icons": "*",
->>>>>>> 23c23431fc241ba87781a29c23ca4635dfc24e7f
         "tymon/jwt-auth": "^2.1"
     },
     "require-dev": {

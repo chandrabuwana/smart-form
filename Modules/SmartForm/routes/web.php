@@ -479,8 +479,6 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/detail/{id}', [PpmXCMG700DController::class, 'detail'])->name('plant.ppm.700d.detail');
             Route::delete('/delete/{id}', [PpmXCMG700DController::class, 'Delete'])->name('plant.ppm.700d.delete');
         });
-
-
     });
 
     Route::get('/dashboard-menu', [AdminController::class, 'index'])->name('dashboard-menu');
