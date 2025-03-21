@@ -19,6 +19,7 @@ use Modules\SmartForm\App\Http\Controllers\PLANT\CompressorPompaController;
 use Modules\SmartForm\App\Http\Controllers\PLANT\PpmXcmg900dController;
 use Modules\SmartForm\App\Http\Controllers\PLANT\PpmXCMG700DController;
 use Modules\SmartForm\App\Http\Controllers\PLANT\PpmXCMG3005TController;
+use Modules\SmartForm\App\Http\Controllers\PLANT\PpuXE1250Controller;
 use Modules\SmartForm\App\Http\Controllers\PLANT\PlantWeldingController;
 use Modules\SmartForm\App\Http\Controllers\Production\FormCheckerController;
 use Modules\SmartForm\App\Http\Controllers\Production\KalibrasiCtController;
@@ -462,13 +463,13 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::delete('/delete/{id}', [PpmXCMG700DController::class, 'Delete'])->name('plant.ppm.700d.delete');
         });
         Route::prefix('ppu-xe1250')->group(function(){
-            Route::get('/dashboard', [PpmXCMG700DController::class, 'Dashboard'])->name('plant.ppu.xe1250.dashboard');
-            Route::get('/export/{id}', [PpmXCMG700DController::class, 'Export'])->name('plant.ppu.xe1250.export');
-            Route::get('/add', [PpmXCMG700DController::class, 'Add'])->name('plant.ppu.xe1250.form');
-            Route::post('/store', [PpmXCMG700DController::class, 'Store'])->name('plant.ppu.xe1250.store');
-            Route::post('/update',[PpmXCMG700DController::class, 'Update'])->name('plant.ppu.xe1250.update');
-            Route::get('/detail/{id}', [PpmXCMG700DController::class, 'detail'])->name('plant.ppu.xe1250.detail');
-            Route::delete('/delete/{id}', [PpmXCMG700DController::class, 'Delete'])->name('plant.ppu.xe1250.delete');
+            Route::get('/dashboard', [PpuXE1250Controller::class, 'Dashboard'])->name('plant.ppu.xe1250.dashboard');
+            Route::get('/export/{id}', [PpuXE1250Controller::class, 'Export'])->name('plant.ppu.xe1250.export');
+            Route::get('/add', [PpuXE1250Controller::class, 'Add'])->name('plant.ppu.xe1250.form');
+            Route::post('/store', [PpuXE1250Controller::class, 'Store'])->name('plant.ppu.xe1250.store');
+            Route::post('/update',[PpuXE1250Controller::class, 'Update'])->name('plant.ppu.xe1250.update');
+            Route::get('/detail/{id}', [PpuXE1250Controller::class, 'detail'])->name('plant.ppu.xe1250.detail');
+            Route::delete('/delete/{id}', [PpuXE1250Controller::class, 'Delete'])->name('plant.ppu.xe1250.delete');
         });
 
 
