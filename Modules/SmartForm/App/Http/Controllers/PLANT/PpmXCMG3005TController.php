@@ -107,7 +107,7 @@ public function detail( $id ) {
     $data->fin_taggal = json_decode( $detail->fin_taggal );
     $data->fin_remark =  json_decode( $detail->fin_remark ) ;
 
-   
+
     return view( 'smartform::plant.ppm_3005T.show-3005T', [ 'data' => $data, 'list' => $list, 'approvalList' => HrdHelper::getApprovalList()] );
 }
 
@@ -202,7 +202,7 @@ public function Update( Request $request ) {
         $final_correct[] = $request->input( "final_correct$i" ) ?? 0;
         $final_result[] = $request->input( "final_result$i" ) ?? 0;
     }
-   
+
 
     $dataDetail = [
         'doc_num_id' => $data[ 'doc_num' ],
@@ -234,7 +234,7 @@ public function Update( Request $request ) {
         'updated_at' => Carbon::now()
     ];
 
-   
+
     DB::table( 'ppm_xcmg_3005_t' )
             ->where( 'doc_num', $request->doc_num )
             ->update( $data );
@@ -300,7 +300,7 @@ public function Export( $id ) {
     } catch ( \Exception $e ) {
         Log::error( 'Error in ExportForm: ' . $e->getMessage() );
         return redirect()
-        ->route( 'prod.form.checker.dashboard' )
+        ->route( 'plant.ppm.3005.dashboard' )
         ->with( 'error', 'Failed to generate PDF: ' . $e->getMessage() );
     }
 }
