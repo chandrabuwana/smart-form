@@ -234,7 +234,7 @@ class PpmXcmg900dController extends Controller {
     } catch ( \Exception $e ) {
         Log::error( 'Error in ExportForm: ' . $e->getMessage() );
         return redirect()
-        ->route( 'prod.form.checker.dashboard' )
+        ->route( 'plant.ppm.900d.dashboard' )
         ->with( 'error', 'Failed to generate PDF: ' . $e->getMessage() );
     }
     }

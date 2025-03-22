@@ -313,11 +313,11 @@
                                     </tr>
                                     <tr>
                                         <th>Component</th>
-                                        <th colspan="19">Depth Gauge</th>
+                                        <th colspan="19">Track Troller</th>
                                     </tr>
                                     <tr>
                                         <th>Tools</th>
-                                        <th colspan="19">Outside Caliper</th>
+                                        <th colspan="19">Depth Gauge</th>
                                     </tr>
                                     <tr>
                                         <th>STD-LIMIT</th>

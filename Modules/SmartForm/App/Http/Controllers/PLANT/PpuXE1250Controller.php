@@ -54,65 +54,99 @@ class PpuXE1250Controller extends Controller {
         return redirect()->back()->with( 'error', 'Failed to load dashboard data: ' . $e->getMessage() );
     }
 
-    }
+}
 
-    public function Add() {
+public function Add() {
 
-        return view( 'smartform::plant.ppu_xe1250.form-ppu1250', [ 'approvalList' => HrdHelper::getApprovalList() ] );
-    }
+    return view( 'smartform::plant.ppu_xe1250.form-ppu1250', [ 'approvalList' => HrdHelper::getApprovalList() ] );
+}
 
-    public function Store( Request $request ) {
+public function Store( Request $request ) {
 
-        $data = [
-            'doc_number' => $this->generateDocNumber(),
-            'unit_model' => 'XCMG XE1250',
-            'inspection_date' =>$request->ins_date,
-            'sn_unit' => $request->unit_sn,
-            'smr_hm' => $request->smr ,
-            'work_operation' => $request->work_op,
-            'ground_condition' => $request->ground_condition,
-            'condition_area' => $request->condition_area,
-            'content_summary' => $request->summary,
-            'checked_1' => $request->checked1,
-            'checked_2' => $request->validated,
-            'validated' => $request->checked2,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now()
+    $data = [
+        'doc_number' => $this->generateDocNumber(),
+        'unit_model' => 'XCMG XE1250',
+        'inspection_date' =>$request->ins_date,
+        'sn_unit' => $request->unit_sn,
+        'smr_hm' => $request->smr ,
+        'work_operation' => $request->work_op,
+        'ground_condition' => $request->ground_condition,
+        'condition_area' => $request->condition_area,
+        'content_summary' => $request->summary,
+        'checked_1' => $request->checked1,
+        'checked_2' => $request->validated,
+        'validated' => $request->checked2,
+        'created_at' => Carbon::now(),
+        'updated_at' => Carbon::now()
 
-        ];
+    ];
 
-        $detail = [
-            'doc_number_id' => $this->generateDocNumber(),
-            'link_pitch' =>json_encode( array_values( $request->link_pitch ) ),
-            'link_height' =>json_encode( array_values( $request->link_Height ) ),
-            'link_bushing' =>json_encode( array_values( $request->link_bushing ) ),
-            'grouser_height' =>json_encode( array_values( $request->grouser_height ) ),
-            'idler' => json_encode( array_values( $request->idler ) ),
-            'sprocket' =>json_encode( array_values( $request->sprocket ) ),
-            'carrier_roller1' =>json_encode( array_values( $request->carrier_roller1 ) ),
-            'carrier_roller2' =>json_encode( array_values( $request->carrier_roller2 ) ),
-            'carrier_roller3' =>json_encode( array_values( $request->carrier_roller3 ) ),
-            'track_roller' => json_encode( array_values( $request->track_roller ) ),
-            'tem_link_pitch' =>json_encode( array_values( $request->tem_link_pitch ) ),
-            'tem_link_height' =>json_encode( array_values( $request->tem_link_height ) ),
-            'tem_link_bushing' =>json_encode( array_values( $request->tem_link_bushing ) ),
-            'tem_grouser_height' =>json_encode( array_values( $request->tem_grouser_height ) ),
-            'tem_idler' =>json_encode( array_values( $request->tem_idler ) ),
-            'tem_sprocket' =>json_encode( array_values( $request->tem_sprocket ) ),
-            'tem_carrier_roller' =>json_encode( array_values( $request->tem_carrier_roller ) ),
-            'tem_track_roller' =>json_encode( array_values( $request->tem_track_roller ) ),
-        ];
+    $detail = [
+        'doc_number_id' => $this->generateDocNumber(),
+        'link_pitch' =>json_encode( array_values( $request->link_pitch ) ),
+        'link_height' =>json_encode( array_values( $request->link_Height ) ),
+        'link_bushing' =>json_encode( array_values( $request->link_bushing ) ),
+        'grouser_height' =>json_encode( array_values( $request->grouser_height ) ),
+        'idler' => json_encode( array_values( $request->idler ) ),
+        'sprocket' =>json_encode( array_values( $request->sprocket ) ),
+        'carrier_roller1' =>json_encode( array_values( $request->carrier_roller1 ) ),
+        'carrier_roller2' =>json_encode( array_values( $request->carrier_roller2 ) ),
+        'carrier_roller3' =>json_encode( array_values( $request->carrier_roller3 ) ),
+        'track_roller' => json_encode( array_values( $request->track_roller ) ),
+        'tem_link_pitch' =>json_encode( array_values( $request->tem_link_pitch ) ),
+        'tem_link_height' =>json_encode( array_values( $request->tem_link_height ) ),
+        'tem_link_bushing' =>json_encode( array_values( $request->tem_link_bushing ) ),
+        'tem_grouser_height' =>json_encode( array_values( $request->tem_grouser_height ) ),
+        'tem_idler' =>json_encode( array_values( $request->tem_idler ) ),
+        'tem_sprocket' =>json_encode( array_values( $request->tem_sprocket ) ),
+        'tem_carrier_roller' =>json_encode( array_values( $request->tem_carrier_roller ) ),
+        'tem_track_roller' =>json_encode( array_values( $request->tem_track_roller ) ),
+    ];
 
-        DB::table( 'ppu_xe1250' )->insert( $data );
-        DB::table( 'detail_ppu_xe1250' )->insert( $detail );
-        return response()->json( [
-            'success' => true,
-            'message' => 'Data berhasil disimpan'
-        ] );
+    DB::table( 'ppu_xe1250' )->insert( $data );
+    DB::table( 'detail_ppu_xe1250' )->insert( $detail );
+    return response()->json( [
+        'success' => true,
+        'message' => 'Data berhasil disimpan'
+    ] );
 
-    }
+}
 
-    public function detail( $id ) {
+public function detail( $id ) {
+    $data = DB::table( 'ppu_xe1250' )
+    ->where( 'id', $id )
+    ->first();
+
+    $detail = DB::table( 'detail_ppu_xe1250' )
+    ->where( 'doc_number_id', $data->doc_number )
+    ->first();
+
+    $data->link_pitch = json_decode( $detail->link_pitch );
+    $data->link_height = json_decode( $detail->link_height );
+    $data->link_bushing = json_decode( $detail->link_bushing );
+    $data->grouser_height = json_decode( $detail->grouser_height );
+    $data->idler = json_decode( $detail->idler );
+    $data->sprocket = json_decode( $detail->sprocket );
+
+    $data->carrier_roller1 = json_decode( $detail->carrier_roller1 );
+    $data->carrier_roller2 = json_decode( $detail->carrier_roller2 );
+    $data->carrier_roller3 = json_decode( $detail->carrier_roller3 );
+    $data->track_roller = json_decode( $detail->track_roller );
+    $data->tem_link_pitch = json_decode( $detail->tem_link_pitch );
+    $data->tem_link_height = json_decode( $detail->tem_link_height );
+
+    $data->tem_link_bushing = json_decode( $detail->tem_link_bushing );
+    $data->tem_grouser_height = json_decode( $detail->tem_grouser_height );
+    $data->tem_idler = json_decode( $detail->tem_idler );
+    $data->tem_sprocket = json_decode( $detail->tem_sprocket );
+    $data->tem_carrier_roller = json_decode( $detail->tem_carrier_roller );
+    $data->tem_track_roller = json_decode( $detail->tem_track_roller );
+    return view( 'smartform::plant.ppu_xe1250.show-ppu1250', [ 'data' => $data,  'approvalList' => HrdHelper::getApprovalList() ] );
+}
+
+public function Export( $id ) {
+
+    try {
         $data = DB::table( 'ppu_xe1250' )
         ->where( 'id', $id )
         ->first();
@@ -126,12 +160,12 @@ class PpuXE1250Controller extends Controller {
         $data->link_bushing = json_decode( $detail->link_bushing );
         $data->grouser_height = json_decode( $detail->grouser_height );
         $data->idler = json_decode( $detail->idler );
-        $data->sprocket = json_decode( $detail->sprocket);
+        $data->sprocket = json_decode( $detail->sprocket );
 
         $data->carrier_roller1 = json_decode( $detail->carrier_roller1 );
         $data->carrier_roller2 = json_decode( $detail->carrier_roller2 );
         $data->carrier_roller3 = json_decode( $detail->carrier_roller3 );
-        $data->track_roller = json_decode( $detail->track_roller);
+        $data->track_roller = json_decode( $detail->track_roller );
         $data->tem_link_pitch = json_decode( $detail->tem_link_pitch );
         $data->tem_link_height = json_decode( $detail->tem_link_height );
 
@@ -141,60 +175,16 @@ class PpuXE1250Controller extends Controller {
         $data->tem_sprocket = json_decode( $detail->tem_sprocket );
         $data->tem_carrier_roller = json_decode( $detail->tem_carrier_roller );
         $data->tem_track_roller = json_decode( $detail->tem_track_roller );
-        return view( 'smartform::plant.ppu_xe1250.show-ppu1250', [ 'data' => $data,  'approvalList' => HrdHelper::getApprovalList() ] );
-    }
-
-    public function Export( $id ) {
-
-        try {
-            $data = DB::table( 'ppu_xe1250' )
-            ->where( 'id', $id )
-            ->first();
-
-            $detail = DB::table( 'detail_ppu_xe1250' )
-            ->where( 'doc_number_id', $data->doc_number )
-            ->first();
-           
-
-            $data->eng_actual = json_decode( $detail->eng_actual );
-            $data->eng_correction_made = json_decode( $detail->eng_correction_made );
-            $data->eng_result = json_decode( $detail->eng_result );
-            $data->eng_pr = json_decode( $detail->eng_pr );
-            $data->eng_taggal = json_decode( $detail->eng_taggal );
-            $data->eng_remark = json_decode( $detail->eng_remark );
-
-            $data->hyd_actual = json_decode( $detail->hyd_actual );
-            $data->hyd_correction_made = json_decode( $detail->hyd_correction_made );
-            $data->hyd_result = json_decode( $detail->hyd_result );
-            $data->hyd_pr = json_decode( $detail->hyd_pr );
-            $data->hyd_taggal = json_decode( $detail->hyd_taggal );
-            $data->hyd_remark = json_decode( $detail->hyd_remark );
-
-            $data->wo_actual = json_decode( $detail->wo_actual );
-            $data->wo_correction_made = json_decode( $detail->wo_correction_made );
-            $data->wo_result = json_decode( $detail->wo_result );
-            $data->wo_pr = json_decode( $detail->wo_pr );
-            $data->wo_taggal = json_decode( $detail->wo_taggal );
-            $data->wo_remark = json_decode( $detail->wo_remark );
-
-            $data->fin_actual = json_decode( $detail->fin_actual );
-            $data->fin_correction_made = json_decode( $detail->fin_correction_made );
-            $data->fin_result = json_decode( $detail->fin_result );
-            $data->fin_pr = json_decode( $detail->fin_pr );
-            $data->fin_taggal = json_decode( $detail->fin_taggal );
-            $data->fin_remark = json_decode( $detail->fin_remark );
-            $pdf = PDF::loadView( 'smartform::plant.ppu_xe1250.export-pdf', [
-                'data' => $data, 'list' => $list,
-
-            ] );
+        $pdf = PDF::loadView( 'smartform::plant.ppu_xe1250.export-pdf', [
+            'data' => $data, ] );
             $pdf->setPaper( 'A4', 'landscape' );
 
-            return $pdf->download( 'PPM XCMG XE700D - ' . $data->doc_num .'.pdf' );
+            return $pdf->download( 'PPU XE1250 - ' . $data->doc_number .'.pdf' );
 
         } catch ( \Exception $e ) {
             Log::error( 'Error in ExportForm: ' . $e->getMessage() );
             return redirect()
-            ->route( 'prod.form.checker.dashboard' )
+            ->route( 'plant.ppu.xe1250.dashboard' )
             ->with( 'error', 'Failed to generate PDF: ' . $e->getMessage() );
         }
     }
@@ -217,8 +207,6 @@ class PpuXE1250Controller extends Controller {
             'updated_at' => Carbon::now()
 
         ];
-
-       
 
         $detail = [
             'doc_number_id' =>$request->doc_number,

@@ -108,7 +108,7 @@ class PpmXCMG700DController extends Controller {
         $data->fin_pr = json_decode( $detail->fin_pr );
         $data->fin_taggal = json_decode( $detail->fin_taggal );
         $data->fin_remark = json_decode( $detail->fin_remark );
-        
+
         return view( 'smartform::plant.ppm_700d.show-700d', [ 'data' => $data, 'list' => $list, 'approvalList' => HrdHelper::getApprovalList() ] );
     }
 
@@ -231,7 +231,7 @@ class PpmXCMG700DController extends Controller {
     } catch ( \Exception $e ) {
         Log::error( 'Error in ExportForm: ' . $e->getMessage() );
         return redirect()
-        ->route( 'prod.form.checker.dashboard' )
+        ->route( 'plant.ppm.700d.dashboard' )
         ->with( 'error', 'Failed to generate PDF: ' . $e->getMessage() );
     }
     }
