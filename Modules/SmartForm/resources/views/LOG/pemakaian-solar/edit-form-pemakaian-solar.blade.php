@@ -561,6 +561,7 @@
                         total_pemakaian: tTotals.val(),
                         stokAwal: tStokAwal.val(),
                         stokAkhir: tTotalAkhir.text(),
+                        status: "Need Approval",
                         masuk: tMasuk.val(),
                         fuel: iFuel.val()
                     }

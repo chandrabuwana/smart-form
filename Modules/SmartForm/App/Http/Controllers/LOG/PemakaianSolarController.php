@@ -468,6 +468,7 @@ class PemakaianSolarController extends Controller {
             'job_site' => $data['jobSite'],
             'stok_awal' => $data['stokAwal'],
             'stok_akhir' => $data['stokAkhir'],
+            'status' => $data['status'],
             'masuk' => $data['masuk'],
             'total_pemakaian' => $data['total_pemakaian']
         ];
@@ -478,7 +479,7 @@ class PemakaianSolarController extends Controller {
             DB::beginTransaction();
             $old_value_master = DB::table($TABLE_MASTER)
                 ->select('id','no_doc','no_fuel_station','shift','disetujui_oleh','job_site','stok_awal',
-                    'stok_akhir','masuk','total_pemakaian')
+                    'stok_akhir','masuk','total_pemakaian','status')
                 ->where('no_doc', $no_doc)
                 ->first();
 
@@ -533,6 +534,52 @@ class PemakaianSolarController extends Controller {
     }
 
     function SubmitApprovePemakaianSolar(Request $req) {
+        $TABLE_MASTER = "FM_LOG_037_PEMAKAIAN_SOLAR";
+        $no_doc = $req->query('no_doc');
+        $response = array(
+            'message' => "",
+            'isSuccess' => false
+        );
+        $nik_session = $req->session()->get('user_id', '');
+        $data = $req->input();
+        $data_insert = [
+            'no_doc' => $data['no_doc'],
+            'status' => $data['status']
+        ];
+        $data_item = json_decode($data['item']);
+        Log::info($data_item);
+
+        try {
+            DB::beginTransaction();
+            $old_value_master = DB::table($TABLE_MASTER)
+                ->select('id','no_doc','status')
+                ->where('no_doc', $no_doc)
+                ->first();
+
+            $affected_rows = DB::table($TABLE_MASTER)
+                ->where('no_doc', $no_doc)
+                ->update($data_insert);
+
+            DB::commit();
+            $response['message'] = "Ok";
+            $response['isSuccess'] = true;
+            $response['data'] = array(
+                'no_doc' => $no_doc
+            );
+
+        } catch (Exception $ex) {
+            // DB::rollBack();
+
+            Log::error($ex->getMessage());
+            Log::error($ex->getTraceAsString());
+            $response['message'] = $ex->getMessage();
+            $response['isSuccess'] = false;
+        }
+
+        return response()->json($response);
+    }
+
+    function SubmitRejectPemakaianSolar(Request $req) {
         $TABLE_MASTER = "FM_LOG_037_PEMAKAIAN_SOLAR";
         $no_doc = $req->query('no_doc');
         $response = array(

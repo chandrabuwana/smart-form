@@ -115,9 +115,6 @@
         $('#filterStatus').on("select2:select", function (e) {
             filter.status = e.params.data.id
         });
-        $('#filterDepartment').on("select2:select", function (e) { 
-            filter.department = e.params.data.id
-        });
 
         $('#filterNik').select2({
             minimumInputLength: 3,
@@ -161,16 +158,10 @@
             placeholder: '--- Pilih Status ---',
             data: [
                 {"id": "", "text": "--- Pilih Status ---"},
-                {"id": 0, "text": "Draft"},
-                {"id": 1, "text": "Validated"},
-                {"id": 2, "text": "Done"},
-                {"id": -1, "text": "Rejected"},
+                {"id": "Need Approval", "text": "Need Approval"},
+                {"id": "Approved", "text": "Approved"},
+                {"id": "Rejected", "text": "Rejected"},
             ]
-        });
-        $('#filterDepartment').select2({
-            theme: 'bootstrap-5', // Menggunakan tema Bootstrap 5
-            dropdownParent: $('#filterDepartment').closest('.input-group'),
-            placeholder: '--- Pilih Department ---'
         });
 
         function applyFilter(e) {
