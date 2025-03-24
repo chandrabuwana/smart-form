@@ -270,7 +270,7 @@
                                             <td>
                                                 <div class="d-flex px-2 py-1">
                                                     <div class="d-flex flex-column justify-content-center">
-                                                        <h6 class="mb-0 text-sm">{{ $data->doc_num }}</h6>
+                                                        <p class="text-xs font-weight-bold mb-0">{{ $data->doc_num }}</p>
                                                     </div>
                                                 </div>
                                             </td>
@@ -331,21 +331,21 @@
                                             <td>
                                                 @if ($session == $data->creator)
                                                     <a href="{{ route('plant.ppm.700d.detail', ['id' => $data->id]) }}"
-                                                        class="btn btn-warning btn-sm">
+                                                        class="btn btn-warning btn-sm mt-3">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
-                                                    <button type="button" class="btn btn-danger btn-sm"
+                                                    <button type="button" class="btn btn-danger btn-sm mt-3"
                                                         onclick="deleteXcmg700('{{ $data->doc_num }}')">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
                                                 @endif
                                                 <a href="{{ route('plant.ppm.700d.show', ['id' => $data->id]) }}"
-                                                    class="btn btn-info btn-sm">
+                                                    class="btn btn-info btn-sm mt-3">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
                                                 @if (collect($status)->every(fn($s) => $s === 'approved'))
                                                     <a href="{{ route('plant.ppm.700d.export', ['id' => $data->id]) }}"
-                                                        class="btn btn-primary btn-sm">
+                                                        class="btn btn-primary btn-sm mt-3">
                                                         <i class="fas fa-download"></i>
                                                     </a>
                                                 @endif

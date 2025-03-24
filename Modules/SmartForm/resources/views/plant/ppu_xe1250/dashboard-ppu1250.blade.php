@@ -283,22 +283,22 @@
                                             <td>
                                                 @if ($session == $data->creator)
                                                     <a href="{{ route('plant.ppu.xe1250.detail', ['id' => $data->id]) }}"
-                                                        class="btn btn-warning btn-sm">
+                                                        class="btn btn-warning btn-sm mt-3">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
-                                                    <button type="button" class="btn btn-danger btn-sm"
+                                                    <button type="button" class="btn btn-danger btn-sm mt-3"
                                                         onclick="deleteXE1250('{{ $data->doc_number }}')">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
                                                 @endif
 
                                                 <a href="{{ route('plant.ppu.xe1250.show', ['id' => $data->id]) }}"
-                                                    class="btn btn-info btn-sm">
+                                                    class="btn btn-info btn-sm mt-3">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
                                                 @if (collect($status)->every(fn($s) => $s === 'approved'))
                                                     <a href="{{ route('plant.ppu.xe1250.export', ['id' => $data->id]) }}"
-                                                        class="btn btn-primary btn-sm">
+                                                        class="btn btn-primary btn-sm mt-3">
                                                         <i class="fas fa-download"></i>
                                                     </a>
                                                 @endif
