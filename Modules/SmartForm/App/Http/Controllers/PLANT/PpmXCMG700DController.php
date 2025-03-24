@@ -45,7 +45,7 @@ class PpmXCMG700DController extends Controller {
         }
         $statistics = ( object )[
             'total_records' => DB::table( 'ppm_xcmg_xe700d' )->count(),
-            'total_this_month' => DB::table( 'ppu_xe1250' )
+            'total_this_month' => DB::table( 'ppm_xcmg_xe700d' )
             ->whereMonth( 'created_at', now()->month )
             ->whereYear( 'created_at', now()->year )
             ->count(),
