@@ -16,7 +16,9 @@ use Modules\SmartForm\helpers\HrdHelper;
 class PpuXE1250Controller extends Controller {
 
     public function dashboard( Request $request ) {
+
         try {
+            $nik_session = $request->session()->get( 'user_id', '' );
             $query = DB::table( 'ppu_xe1250' )
             ->select( '*' )
             ->orderBy( 'created_at', 'desc' );
@@ -35,6 +37,10 @@ class PpuXE1250Controller extends Controller {
         if ( $request->has( 'sn_unit' ) && $request->sn_unit ) {
             $query->where( 'sn_unit', $request->sn_unit );
         }
+        if ( $request->has( 'approval' ) && $request->approval ) {
+            $query->where( 'checked_1', $request->approval )->orwhere( 'checked_2', $request->approval )->orwhere( 'validated', $request->approval );
+            ;
+        }
 
         $statistics = ( object )[
             'total_records' => DB::table( 'ppu_xe1250' )->count(),
@@ -45,10 +51,12 @@ class PpuXE1250Controller extends Controller {
         ];
 
         $records = $query->paginate( 5 );
-        return view( 'smartform::plant.ppu_xe1250.dashboard-ppu1250', [ 'record' => $records, 'statistics'=>$statistics, 'filters' => [
+
+        return view( 'smartform::plant.ppu_xe1250.dashboard-ppu1250', [ 'record' => $records, 'statistics'=>$statistics, 'session'=>$nik_session, 'user'=> HrdHelper::getApprovalList(), 'filters' => [
             'search' => $request->search,
             'sn_unit' => $request->sn_unit,
-        ] ] );
+            'approval' => $request->approval
+        ], ] );
     } catch( \Exception $e ) {
         Log::error( 'Error in Dashboard: ' . $e->getMessage() );
         return redirect()->back()->with( 'error', 'Failed to load dashboard data: ' . $e->getMessage() );
@@ -74,8 +82,10 @@ public function Store( Request $request ) {
         'condition_area' => $request->condition_area,
         'content_summary' => $request->summary,
         'checked_1' => $request->checked1,
-        'checked_2' => $request->validated,
-        'validated' => $request->checked2,
+        'checked_2' => $request->checked2,
+        'validated' => $request->validated,
+        'creator' => $request->session()->get( 'user_id', '' ),
+        'status' => json_encode( array_values( [ null, null, null ] ) ),
         'created_at' => Carbon::now(),
         'updated_at' => Carbon::now()
 
@@ -101,6 +111,8 @@ public function Store( Request $request ) {
         'tem_sprocket' =>json_encode( array_values( $request->tem_sprocket ) ),
         'tem_carrier_roller' =>json_encode( array_values( $request->tem_carrier_roller ) ),
         'tem_track_roller' =>json_encode( array_values( $request->tem_track_roller ) ),
+        'created_at' => Carbon::now(),
+        'updated_at' => Carbon::now()
     ];
 
     DB::table( 'ppu_xe1250' )->insert( $data );
@@ -144,6 +156,106 @@ public function detail( $id ) {
     return view( 'smartform::plant.ppu_xe1250.show-ppu1250', [ 'data' => $data,  'approvalList' => HrdHelper::getApprovalList() ] );
 }
 
+public function Approve( Request $request ) {
+    $data = [
+        'status' => json_encode( array_values( [
+            $request->checked1,
+            $request->validated,
+            $request->checked2
+        ] ) ),
+        'updated_at' => Carbon::now()
+    ];
+
+    DB::table( 'ppu_xe1250' )
+    ->where( 'doc_number', $request->doc_number )
+    ->update( $data );
+
+    return response()->json( [
+        'success' => true,
+        'message' => 'Data berhasil diapprove'
+    ] );
+
+}
+
+public function Reset( $id ) {
+
+    $data = [
+        'status' => json_encode( array_values( [
+            null,
+            null,
+            null
+        ] ) ),
+        'updated_at' => Carbon::now()
+    ];
+
+    DB::table( 'ppu_xe1250' )
+    ->where( 'doc_number', $id )
+    ->update( $data );
+
+    return response()->json( [
+        'success' => true,
+        'message' => 'Data berhasil direset'
+    ] );
+
+}
+
+public function Reject( Request $request ) {
+    $data = [
+        'status' => json_encode( array_values( [
+            $request->checked1,
+            $request->validated,
+            $request->checked2
+        ] ) ),
+        'updated_at' => Carbon::now()
+    ];
+    ;
+
+    DB::table( 'ppu_xe1250' )
+    ->where( 'doc_number', $request->doc_number )
+    ->update( $data );
+
+    return response()->json( [
+        'success' => true,
+        'message' => 'Data berhasil direject'
+    ] );
+}
+
+public function show( Request $request, $id ) {
+    $nik_session = $request->session()->get( 'user_id', '' );
+
+    $data = DB::table( 'ppu_xe1250' )
+    ->where( 'id', $id )
+    ->first();
+
+    $detail = DB::table( 'detail_ppu_xe1250' )
+    ->where( 'doc_number_id', $data->doc_number )
+    ->first();
+
+    $data->status = json_decode( $data->status );
+    $data->link_pitch = json_decode( $detail->link_pitch );
+    $data->link_height = json_decode( $detail->link_height );
+    $data->link_bushing = json_decode( $detail->link_bushing );
+    $data->grouser_height = json_decode( $detail->grouser_height );
+    $data->idler = json_decode( $detail->idler );
+    $data->sprocket = json_decode( $detail->sprocket );
+
+    $data->carrier_roller1 = json_decode( $detail->carrier_roller1 );
+    $data->carrier_roller2 = json_decode( $detail->carrier_roller2 );
+    $data->carrier_roller3 = json_decode( $detail->carrier_roller3 );
+    $data->track_roller = json_decode( $detail->track_roller );
+    $data->tem_link_pitch = json_decode( $detail->tem_link_pitch );
+    $data->tem_link_height = json_decode( $detail->tem_link_height );
+
+    $data->tem_link_bushing = json_decode( $detail->tem_link_bushing );
+    $data->tem_grouser_height = json_decode( $detail->tem_grouser_height );
+    $data->tem_idler = json_decode( $detail->tem_idler );
+    $data->tem_sprocket = json_decode( $detail->tem_sprocket );
+    $data->tem_carrier_roller = json_decode( $detail->tem_carrier_roller );
+    $data->tem_track_roller = json_decode( $detail->tem_track_roller );
+
+    return view( 'smartform::plant.ppu_xe1250.detail-ppu1250', [ 'data' => $data, 'nik' =>$nik_session,  'approvalList' => HrdHelper::getApprovalList() ] );
+}
+
 public function Export( $id ) {
 
     try {
@@ -176,7 +288,7 @@ public function Export( $id ) {
         $data->tem_carrier_roller = json_decode( $detail->tem_carrier_roller );
         $data->tem_track_roller = json_decode( $detail->tem_track_roller );
         $pdf = PDF::loadView( 'smartform::plant.ppu_xe1250.export-pdf', [
-            'data' => $data, ] );
+            'data' => $data, 'approvalList' => HrdHelper::getApprovalList() ] );
             $pdf->setPaper( 'A4', 'landscape' );
 
             return $pdf->download( 'PPU XE1250 - ' . $data->doc_number .'.pdf' );
@@ -201,9 +313,8 @@ public function Export( $id ) {
             'condition_area' => $request->condition_area,
             'content_summary' => $request->summary,
             'checked_1' => $request->checked1,
-            'checked_2' => $request->validated,
-            'validated' => $request->checked2,
-            'created_at' => Carbon::now(),
+            'validated' => $request->validated,
+            'checked_2' => $request->checked2,
             'updated_at' => Carbon::now()
 
         ];

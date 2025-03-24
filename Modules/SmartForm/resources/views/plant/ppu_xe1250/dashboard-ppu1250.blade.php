@@ -20,6 +20,32 @@
             width: auto;
             margin-right: 8px;
         }
+
+        .status {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
+
+        .box {
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+            border-radius: 4px;
+        }
+
+        .red {
+            background-color: #F44335;
+        }
+
+        .green {
+            background-color: #4CAF50;
+        }
+
+        .blue {
+            background-color: #0000FF;
+        }
     </style>
 @endsection
 
@@ -98,13 +124,44 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-12 mb-3 d-flex justify-content-start">
+                                <div class="col-md-3
+                                mb-3">
+                                    <div class="input-group input-group-static mb-4 position-relative">
+                                        <label for="approval" class="ms-0">Approval</label>
+                                        <select name="approval" id="approval" class="form-control">
+                                            <option disabled selected>-- Select Approval --</option>
+                                            @foreach ($user as $appUser)
+                                                <option value="{{ $appUser->nik }}"
+                                                    {{ $appUser->nik == $filters['approval'] ? 'selected' : '' }}>
+                                                    {{ $appUser->nama }}
+                                                </option>
+                                            @endforeach
+
+                                        </select>
+
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12 mb-3 t">
                                     <button type="submit" class="btn btn-primary filter-btn" id="btnFilterSubmit">
                                         Filter
                                     </button>
                                     <button type="button" class="btn btn-secondary filter-btn" id="btnClearFilter">
                                         Clear Filter
                                     </button>
+
+                                </div>
+                                <div class="col-md-12 d-flex justify-content-end">
+
+                                    <div class="status me-2">
+                                        <span class="box red"></span> Rejected
+                                    </div>
+                                    <div class="status me-2">
+                                        <span class="box green"></span> Approved
+                                    </div>
+                                    <div class="status me-2">
+                                        <span class="box blue"></span> Draft
+                                    </div>
                                 </div>
                             </div>
                         </form>
@@ -123,16 +180,25 @@
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             SN_Unit</th>
-                                        <th
-                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            SMR HM</th>
-                                        <th
-                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Work Operation</th>
 
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Inspection Date</th>
+                                        <th
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            Checker 1</th>
+                                        <th
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            Checker 2</th>
+
+                                        <th
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            Validate</th>
+                                        <th
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            Status</th>
+
+
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Actions</th>
@@ -144,36 +210,99 @@
                                             <td>
                                                 <div class="d-flex px-2 py-1">
                                                     <div class="d-flex flex-column justify-content-center">
-                                                        <h6 class="mb-0 text-sm">{{ $data->doc_number }}</h6>
+                                                        <p class="text-xs font-weight-bold mb-0">{{ $data->doc_number }}</p>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td>
                                                 <p class="text-xs font-weight-bold mb-0">{{ $data->sn_unit }}</p>
                                             </td>
-                                            <td>
-                                                <p class="text-xs font-weight-bold mb-0">{{ $data->smr_hm }}</p>
-                                            </td>
-                                            <td>
-                                                <p class="text-xs font-weight-bold mb-0">{{ $data->work_operation }} </p>
-                                            </td>
 
                                             <td>
                                                 <span class="text-xs font-weight-bold">{{ $data->inspection_date }}</span>
                                             </td>
+                                            @php
+                                                $status = json_decode($data->status, true);
+                                            @endphp
                                             <td>
-                                                <a href="{{ route('plant.ppu.xe1250.detail', ['id' => $data->id]) }}"
+
+
+                                                @if ($status[0] === 'approved')
+                                                    <span
+                                                        class="badge bg-success">{{ optional(collect($user)->firstWhere('nik', $data->checked_1))->nama ?? '' }}</span>
+                                                @elseif ($status[0] === 'rejected')
+                                                    <span
+                                                        class="badge bg-danger">{{ optional(collect($user)->firstWhere('nik', $data->checked_1))->nama ?? '' }}</span>
+                                                @elseif ($status[0] === null)
+                                                    <span
+                                                        class="badge bg-info">{{ optional(collect($user)->firstWhere('nik', $data->checked_1))->nama ?? '' }}</span>
+                                                @endif
+
+                                            </td>
+                                            <td>
+                                                <span class="text-xs font-weight-bold">
+                                                    @if ($status[2] === 'approved')
+                                                        <span
+                                                            class="badge bg-success">{{ optional(collect($user)->firstWhere('nik', $data->checked_2))->nama ?? '' }}</span>
+                                                    @elseif ($status[2] === 'rejected')
+                                                        <span
+                                                            class="badge bg-danger">{{ optional(collect($user)->firstWhere('nik', $data->checked_2))->nama ?? '' }}</span>
+                                                    @elseif ($status[2] == null)
+                                                        <span
+                                                            class="badge bg-info">{{ optional(collect($user)->firstWhere('nik', $data->checked_2))->nama ?? '' }}</span>
+                                                    @endif
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="text-xs font-weight-bold">
+                                                    @if ($status[1] === 'approved')
+                                                        <span
+                                                            class="badge bg-success">{{ optional(collect($user)->firstWhere('nik', $data->validated))->nama ?? '' }}</span>
+                                                    @elseif ($status[1] === 'rejected')
+                                                        <span
+                                                            class="badge bg-danger">{{ optional(collect($user)->firstWhere('nik', $data->validated))->nama ?? '' }}</span>
+                                                    @elseif ($status[1] == null)
+                                                        <span
+                                                            class="badge bg-info">{{ optional(collect($user)->firstWhere('nik', $data->validated))->nama ?? '' }}</span>
+                                                    @endif
+                                                </span>
+                                            </td>
+
+
+                                            <td>
+                                                <span class="text-xs font-weight-bold">
+                                                    @if (collect($status)->every(fn($s) => $s === 'approved'))
+                                                        <span class="badge bg-success">Approved</span>
+                                                    @elseif (collect($status)->contains(fn($s) => $s === 'rejected'))
+                                                        <span class="badge bg-danger">Rejected</span>
+                                                    @elseif (collect($status)->contains(fn($s) => $s === null))
+                                                        <span class="badge bg-info">Draf</span>
+                                                    @endif
+                                                </span>
+                                            </td>
+                                            <td>
+                                                @if ($session == $data->creator)
+                                                    <a href="{{ route('plant.ppu.xe1250.detail', ['id' => $data->id]) }}"
+                                                        class="btn btn-warning btn-sm">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <button type="button" class="btn btn-danger btn-sm"
+                                                        onclick="deleteXE1250('{{ $data->doc_number }}')">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                @endif
+
+                                                <a href="{{ route('plant.ppu.xe1250.show', ['id' => $data->id]) }}"
                                                     class="btn btn-info btn-sm">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
-                                                <a href="{{ route('plant.ppu.xe1250.export', ['id' => $data->id]) }}"
-                                                    class="btn btn-primary btn-sm">
-                                                    <i class="fas fa-download"></i>
-                                                </a>
-                                                <button type="button" class="btn btn-danger btn-sm"
-                                                    onclick="deleteXE1250('{{ $data->doc_number }}')">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
+                                                @if (collect($status)->every(fn($s) => $s === 'approved'))
+                                                    <a href="{{ route('plant.ppu.xe1250.export', ['id' => $data->id]) }}"
+                                                        class="btn btn-primary btn-sm">
+                                                        <i class="fas fa-download"></i>
+                                                    </a>
+                                                @endif
+
                                             </td>
                                         </tr>
                                     @endforeach
@@ -192,8 +321,12 @@
 
 @section('custom-js')
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <script>
+        $(document).ready(function() {
+            $('#approval').select2();
+        });
         $(function() {
             // Clear filter button
             $('#btnClearFilter').click(function() {

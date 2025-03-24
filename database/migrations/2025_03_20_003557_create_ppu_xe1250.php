@@ -22,6 +22,8 @@ return new class extends Migration
         $table->string('ground_condition');
         $table->string('condition_area');
         $table->string('content_summary');
+        $table->string('status');
+        $table->string('creator');
         $table->string('checked_1');
         $table->string('checked_2');
         $table->string('validated');

@@ -548,9 +548,9 @@
                 <td colspan="10" style="border: none"></td>
             </tr>
             <tr>
-                <td colspan="3" style="border-top: none;">{{ $data->checked_1 }}</td>
-                <td colspan="3" style="border-top: none;">{{ $data->validated }}</td>
-                <td colspan="3"style="border-top: none;">{{ $data->checked_2 }}</td>
+                <td colspan="3" style="border-top: none;">{{ optional(collect($approvalList)->firstWhere('nik', $data->checked_1))->nama ?? '' }}</td>
+                <td colspan="3" style="border-top: none;">{{ optional(collect($approvalList)->firstWhere('nik', $data->validated))->nama ?? '' }}</td>
+                <td colspan="3"style="border-top: none;">{{ optional(collect($approvalList)->firstWhere('nik', $data->checked_2))->nama ?? '' }}</td>
                 <td colspan="10" style="border: none"></td>
             </tr>
             <tr>

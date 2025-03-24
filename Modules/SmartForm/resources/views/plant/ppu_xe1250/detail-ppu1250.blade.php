@@ -23,15 +23,20 @@
                 <div class="card">
 
                     <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                        <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                            <h6 class="text-white text-capitalize ps-3"> Form PPU XE 1250</h6>
+                        <div
+                            class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3 px-3 d-flex justify-content-between align-items-center">
+                            <h6 class="text-white text-capitalize m-0">Form PPU XE 1250</h6>
+                            <h6 class="text-white text-capitalize m-0">
+                                Creator :
+                                {{ optional(collect($approvalList)->firstWhere('nik', $data->creator))->nama ?? '' }}
+                            </h6>
                         </div>
                     </div>
 
-                    <form id="formXE1250" method="POST">
+                    <form>
                         @csrf
                         <div class="mx-3">
-                            <input type="hidden" name="doc_number" value="{{ $data->doc_number }}">
+                            <input type="hidden" name="doc_number" value="{{ $data->doc_number }}" disabled>
                             <div class="row mb-3">
                                 <div class="col-md-6 mt-1">
                                     <img src="{{ asset('img/form-ppu-xe1250/ppu-125-1.png') }}"
@@ -40,7 +45,7 @@
                                 <div class="col-md-6">
                                     <div class="input-group input-group-static mb-3 mt-1">
                                         <label for="summary" class="ms-0">Content And Summary</label>
-                                        <textarea name="summary" id="summary" class="form-control" rows="8">{{ $data->content_summary }}</textarea>
+                                        <textarea name="summary" id="summary" class="form-control" rows="8" disabled>{{ $data->content_summary }}</textarea>
                                     </div>
                                 </div>
                             </div>
@@ -49,28 +54,28 @@
                                     <div class="input-group input-group-static mb-3">
                                         <label for="unit_model" class="ms-0">Engine Model</label>
                                         <input type="text" class="form-control" id="unit_model" name="unit_model"
-                                            value="{{ $data->unit_model }}" required>
+                                            value="{{ $data->unit_model }}" disabled>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="ins_date" class="ms-0">Inspection Date</label>
                                         <input type="Date" class="form-control" id="ins_date" name="ins_date"
-                                            value="{{ $data->inspection_date }}" required>
+                                            value="{{ $data->inspection_date }}" disabled>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="unit_sn" class="ms-0">S/N Unit</label>
                                         <input type="text" class="form-control" id="unit_sn" name="unit_sn"
-                                            value="{{ $data->sn_unit }}" required>
+                                            value="{{ $data->sn_unit }}" disabled>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="smr" class="ms-0">SMR HM</label>
                                         <input type="text" class="form-control" id="smr"
-                                            value="{{ $data->smr_hm }}" name="smr" required>
+                                            value="{{ $data->smr_hm }}" name="smr" disabled>
                                     </div>
                                 </div>
                             </div>
@@ -79,21 +84,21 @@
                                     <div class="input-group input-group-static mb-3">
                                         <label for="work_op" class="ms-0">Work Operation</label>
                                         <input type="text" class="form-control" id="work_op" name="work_op"
-                                            value="{{ $data->work_operation }}" required>
+                                            value="{{ $data->work_operation }}" disabled>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="ground_condition" class="ms-0">Ground Condition</label>
                                         <input type="text" class="form-control" id="ground_condition"
-                                            name="ground_condition" value="{{ $data->ground_condition }}" required>
+                                            name="ground_condition" value="{{ $data->ground_condition }}" disabled>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="condition_area" class="ms-0">Condition Area Frame</label>
                                         <input type="text" class="form-control" id="condition_area"
-                                            value="{{ $data->condition_area }}" name="condition_area" required>
+                                            value="{{ $data->condition_area }}" name="condition_area" disabled>
                                     </div>
                                 </div>
                             </div>
@@ -142,25 +147,25 @@
                                         <th>Right Side</th>
                                         <td colspan="2"><input type="text"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="link_pitch[]" value="{{ $data->link_pitch[0] }}"></td>
+                                                name="link_pitch[]" disabled value="{{ $data->link_pitch[0] }}"></td>
                                         <td colspan="2"><input type="text"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="link_Height[]" value="{{ $data->link_height[0] }}"></td>
+                                                name="link_Height[]" disabled value="{{ $data->link_height[0] }}"></td>
                                         <td colspan="2"><input type="text"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="link_bushing[]" value="{{ $data->link_bushing[0] }}"></td>
+                                                name="link_bushing[]" disabled value="{{ $data->link_bushing[0] }}"></td>
                                     </tr>
                                     <tr>
                                         <th>Left Side</th>
                                         <td colspan="2"><input type="text"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="link_pitch[]" value="{{ $data->link_pitch[1] }}"></td>
+                                                name="link_pitch[]" disabled value="{{ $data->link_pitch[1] }}"></td>
                                         <td colspan="2"><input type="text"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="link_Height[]" value="{{ $data->link_height[1] }}"></td>
+                                                name="link_Height[]" disabled value="{{ $data->link_height[1] }}"></td>
                                         <td colspan="2"><input type="text"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="link_bushing[]" value="{{ $data->link_bushing[1] }}"></td>
+                                                name="link_bushing[]" disabled value="{{ $data->link_bushing[1] }}"></td>
                                     </tr>
                                 </table>
                             </div>
@@ -207,28 +212,30 @@
                                         <th>Right Side</th>
                                         <td colspan="2"><input type="text"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="grouser_height[]" value="{{ $data->grouser_height[0] }}"></td>
-                                        <td colspan="2"><input type="text"
-                                                style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="idler[]" value="{{ $data->idler[0] }}">
+                                                name="grouser_height[]" disabled value="{{ $data->grouser_height[0] }}">
                                         </td>
                                         <td colspan="2"><input type="text"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="sprocket[]" value="{{ $data->sprocket[0] }}">
+                                                name="idler[]" disabled value="{{ $data->idler[0] }}">
+                                        </td>
+                                        <td colspan="2"><input type="text"
+                                                style="background-color: #c3bdbf;text-align: center;" class="form-control"
+                                                name="sprocket[]" disabled value="{{ $data->sprocket[0] }}">
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>Left Side</th>
                                         <td colspan="2"><input type="text"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="grouser_height[]" value="{{ $data->grouser_height[1] }}"></td>
-                                        <td colspan="2"><input type="text"
-                                                style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="idler[]" value="{{ $data->idler[1] }}">
+                                                name="grouser_height[]" disabled value="{{ $data->grouser_height[1] }}">
                                         </td>
                                         <td colspan="2"><input type="text"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="sprocket[]" value="{{ $data->sprocket[1] }}">
+                                                name="idler[]" disabled value="{{ $data->idler[1] }}">
+                                        </td>
+                                        <td colspan="2"><input type="text"
+                                                style="background-color: #c3bdbf;text-align: center;" class="form-control"
+                                                name="sprocket[]" disabled value="{{ $data->sprocket[1] }}">
                                         </td>
                                     </tr>
                                 </table>
@@ -276,28 +283,34 @@
                                         <th>Right Side</th>
                                         <td colspan="2"><input type="text"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="carrier_roller1[]" value="{{ $data->carrier_roller1[0] }}"></td>
+                                                name="carrier_roller1[]" disabled
+                                                value="{{ $data->carrier_roller1[0] }}"></td>
                                         <td colspan="2"><input type="text"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="carrier_roller2[]" value="{{ $data->carrier_roller2[0] }}">
+                                                name="carrier_roller2[]" disabled
+                                                value="{{ $data->carrier_roller2[0] }}">
                                         </td>
                                         <td colspan="2"><input type="text"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="carrier_roller3[]"value="{{ $data->carrier_roller3[0] }}">
+                                                name="carrier_roller3[]" disabled
+                                                value="{{ $data->carrier_roller3[0] }}">
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>Left Side</th>
                                         <td colspan="2"><input type="text"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="carrier_roller1[]" value="{{ $data->carrier_roller1[1] }}"></td>
+                                                name="carrier_roller1[]" disabled
+                                                value="{{ $data->carrier_roller1[1] }}"></td>
                                         <td colspan="2"><input type="text"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="carrier_roller2[]" value="{{ $data->carrier_roller2[1] }}">
+                                                name="carrier_roller2[]" disabled
+                                                value="{{ $data->carrier_roller2[1] }}">
                                         </td>
                                         <td colspan="2"><input type="text"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="carrier_roller3[]" value="{{ $data->carrier_roller3[1] }}">
+                                                name="carrier_roller3[]" disabled
+                                                value="{{ $data->carrier_roller3[1] }}">
                                         </td>
                                     </tr>
                                 </table>
@@ -345,7 +358,7 @@
                                         @for ($i = 0; $i < 9; $i++)
                                             <td colspan="2"><input type="text"
                                                     style="background-color: #c3bdbf;text-align: center;"
-                                                    class="form-control" name="track_roller[]"
+                                                    class="form-control" name="track_roller[]" disabled
                                                     value="{{ $data->track_roller[$i] }}"></td>
                                         @endfor
 
@@ -355,7 +368,7 @@
                                         @for ($i = 1; $i < 10; $i++)
                                             <td colspan="2"><input type="text"
                                                     style="background-color: #c3bdbf;text-align: center;"
-                                                    class="form-control" name="track_roller[]"
+                                                    class="form-control" name="track_roller[]" disabled
                                                     value="{{ $data->track_roller[8 + $i] }}"></td>
                                         @endfor
 
@@ -373,26 +386,26 @@
                                             <tr>
                                                 <th rowspan="2">Burshing Link</th>
                                                 <td colspan="2">
-                                                    <textarea name="tem_link_bushing[]" class="form-control" placeholder="Right:" id="tem_link_bushing" rows="1">{{ $data->tem_link_bushing[0] }}</textarea>
+                                                    <textarea name="tem_link_bushing[]" class="form-control" id="tem_link_bushing1" disabled rows="1">Right: {{ $data->tem_link_bushing[0] }}</textarea>
                                                 </td>
 
                                             </tr>
                                             <tr>
                                                 <td colspan="2">
-                                                    <textarea name="tem_link_bushing[]" class="form-control" placeholder="Left:" id="tem_link_bushing" rows="1">{{ $data->tem_link_bushing[1] }}</textarea>
+                                                    <textarea name="tem_link_bushing[]" class="form-control"id="tem_link_bushing" disabled rows="1">Left: {{ $data->tem_link_bushing[1] }}</textarea>
                                                 </td>
 
                                             </tr>
                                             <tr>
                                                 <th rowspan="2">Link Height</th>
                                                 <td colspan="2">
-                                                    <textarea name="tem_link_height[]" class="form-control" placeholder="Right:" id="tem_link_height" rows="1">{{ $data->tem_link_height[0] }}</textarea>
+                                                    <textarea name="tem_link_height[]" class="form-control" id="tem_link_height1" disabled rows="1">Right: {{ $data->tem_link_height[0] }}</textarea>
                                                 </td>
 
                                             </tr>
                                             <tr>
                                                 <td colspan="2">
-                                                    <textarea name="tem_link_height[]" class="form-control" placeholder="Left:" id="tem_link_height" rows="1">{{ $data->tem_link_height[1] }}</textarea>
+                                                    <textarea name="tem_link_height[]" class="form-control" id="tem_link_height" disabled rows="1">Left: {{ $data->tem_link_height[1] }}</textarea>
                                                 </td>
 
                                             </tr>
@@ -400,28 +413,26 @@
                                             <tr>
                                                 <th rowspan="2">Link Pitch</th>
                                                 <td colspan="2">
-                                                    <textarea name="tem_link_pitch[]" class="form-control" placeholder="Right:" id="tem_link_pitch" rows="1">{{ $data->tem_link_pitch[0] }}</textarea>
+                                                    <textarea name="tem_link_pitch[]" class="form-control" id="tem_link_pitch1" disabled rows="1">Right: {{ $data->tem_link_pitch[0] }}</textarea>
                                                 </td>
 
                                             </tr>
                                             <tr>
                                                 <td colspan="2">
-                                                    <textarea name="tem_link_pitch[]" class="form-control" placeholder="Left:" id="tem_link_pitch" rows="1">{{ $data->tem_link_pitch[1] }}</textarea>
+                                                    <textarea name="tem_link_pitch[]" class="form-control" id="tem_link_pitch" disabled rows="1">Left: {{ $data->tem_link_pitch[1] }}</textarea>
                                                 </td>
 
                                             </tr>
                                             <tr>
                                                 <th rowspan="2">Grouser Height</th>
                                                 <td colspan="2">
-                                                    <textarea name="tem_grouser_height[]" class="form-control" placeholder="Right:" id="tem_grouser_height"
-                                                        rows="1">{{ $data->tem_grouser_height[0] }}</textarea>
+                                                    <textarea name="tem_grouser_height[]" class="form-control" disabled id="tem_grouser_height1" rows="1">Right: {{ $data->tem_grouser_height[0] }}</textarea>
                                                 </td>
 
                                             </tr>
                                             <tr>
                                                 <td colspan="2">
-                                                    <textarea name="tem_grouser_height[]" class="form-control" placeholder="Left:" id="tem_grouser_height"
-                                                        rows="1">{{ $data->tem_grouser_height[1] }}</textarea>
+                                                    <textarea name="tem_grouser_height[]" class="form-control" disabled id="tem_grouser_height" rows="1">Left: {{ $data->tem_grouser_height[1] }}</textarea>
                                                 </td>
 
                                             </tr>
@@ -429,28 +440,26 @@
                                             <tr>
                                                 <th rowspan="2">Idler</th>
                                                 <td colspan="2">
-                                                    <textarea name="tem_idler[]" class="form-control" placeholder="Right:" id="tem_idler" rows="1">{{ $data->tem_idler[0] }}</textarea>
+                                                    <textarea name="tem_idler[]" class="form-control" disabled id="tem_idler1" rows="1">Right: {{ $data->tem_idler[0] }}</textarea>
                                                 </td>
 
                                             </tr>
                                             <tr>
                                                 <td colspan="2">
-                                                    <textarea name="tem_idler[]" class="form-control" placeholder="Left:" id="tem_idler" rows="1">{{ $data->tem_idler[1] }}</textarea>
+                                                    <textarea name="tem_idler[]" class="form-control" disabled id="tem_idler" rows="1">Left: {{ $data->tem_idler[1] }}</textarea>
                                                 </td>
 
                                             </tr>
                                             <tr>
                                                 <th rowspan="2">Carrier Roller</th>
                                                 <td colspan="2">
-                                                    <textarea name="tem_carrier_roller[]" class="form-control" placeholder="Right:" id="tem_carrier_roller"
-                                                        rows="1">{{ $data->tem_carrier_roller[0] }}</textarea>
+                                                    <textarea name="tem_carrier_roller[]" class="form-control" disabled id="tem_carrier_roller1" rows="1">Right: {{ $data->tem_carrier_roller[0] }}</textarea>
                                                 </td>
 
                                             </tr>
                                             <tr>
                                                 <td colspan="2">
-                                                    <textarea name="tem_carrier_roller[]" class="form-control" placeholder="Left:" id="tem_carrier_roller"
-                                                        rows="1">{{ $data->tem_carrier_roller[1] }}</textarea>
+                                                    <textarea name="tem_carrier_roller[]" class="form-control" disabled id="tem_carrier_roller" rows="1">Left: {{ $data->tem_carrier_roller[1] }}</textarea>
                                                 </td>
 
                                             </tr>
@@ -458,13 +467,13 @@
                                             <tr>
                                                 <th rowspan="2">Segment / Sprocket</th>
                                                 <td colspan="2">
-                                                    <textarea name="tem_sprocket[]" class="form-control" placeholder="Right:" id="tem_sprocket" rows="1">{{ $data->tem_sprocket[0] }} </textarea>
+                                                    <textarea name="tem_sprocket[]" class="form-control" disabled id="tem_sprocket1" rows="1">Right: {{ $data->tem_sprocket[0] }} </textarea>
                                                 </td>
 
                                             </tr>
                                             <tr>
                                                 <td colspan="2">
-                                                    <textarea name="tem_sprocket[]" class="form-control" placeholder="Left:" id="tem_sprocket" rows="1">{{ $data->tem_sprocket[1] }} </textarea>
+                                                    <textarea name="tem_sprocket[]" class="form-control" disabled id="tem_sprocket" rows="1">Left: {{ $data->tem_sprocket[1] }} </textarea>
                                                 </td>
 
                                             </tr>
@@ -472,13 +481,13 @@
                                             <tr>
                                                 <th rowspan="2">Truck Roller</th>
                                                 <td colspan="2">
-                                                    <textarea name="tem_track_roller[]" class="form-control" placeholder="Right:" id="tem_track_roller" rows="1">{{ $data->tem_track_roller[0] }} </textarea>
+                                                    <textarea name="tem_track_roller[]" class="form-control" disabled id="tem_track_roller1" rows="1">Right: {{ $data->tem_track_roller[0] }} </textarea>
                                                 </td>
 
                                             </tr>
                                             <tr>
                                                 <td colspan="2">
-                                                    <textarea name="tem_track_roller[]" class="form-control" placeholder="Left:" id="tem_track_roller" rows="1">{{ $data->tem_track_roller[1] }}</textarea>
+                                                    <textarea name="tem_track_roller[]" class="form-control" disabled id="tem_track_roller" rows="1">Left : {{ $data->tem_track_roller[1] }}</textarea>
                                                 </td>
 
                                             </tr>
@@ -664,10 +673,10 @@
                                 <div class="col-4 ">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="dibuat" class="ms-0">Checked By</label>
-                                        <select name="checked1" id="dibuat_oleh" class="form-control" required>
+                                        <select name="checked1" id="dibuat_oleh" class="form-control" disabled>
                                             <option disabled selected>-- Select Creator --</option>
                                             @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nik }}"
+                                                <option
                                                     {{ old('checked1', $data->checked_1 ?? '') == $user->nik ? 'selected' : '' }}>
                                                     {{ $user->nama }}</option>
                                             @endforeach
@@ -678,13 +687,12 @@
                                 <div class="col-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="diperiksa" class="ms-0">Validated By</label>
-                                        <select name="validated" id="diperiksa" class="form-control" required>
+                                        <select name="validated" id="diperiksa" class="form-control" disabled>
                                             <option disabled selected>-- Select Approval --</option>
                                             @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nik }}"
+                                                <option
                                                     {{ old('validated', $data->validated ?? '') == $user->nik ? 'selected' : '' }}>
-                                                    {{ $user->nama }}
-                                                </option>
+                                                    {{ $user->nama }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -692,7 +700,7 @@
                                 <div class="col-4 ">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="dibuat" class="ms-0">Checked By</label>
-                                        <select name="checked2" id="dibuat_oleh2" class="form-control" required>
+                                        <select name="checked2" id="dibuat_oleh2" class="form-control" disabled>
                                             <option disabled selected>-- Select Creator --</option>
                                             @foreach ($approvalList as $user)
                                                 <option value="{{ $user->nik }}"
@@ -704,12 +712,76 @@
                                     </div>
                                 </div>
                                 <div class="row">
+                                    @for ($i = 0; $i < 3; $i++)
+                                        @if ($i == 0 || $i == 2)
+                                            @if ($data->status[$i] == 'rejected')
+                                                <div class="col-4 ty">
+                                                    <img src="{{ asset('img/rejected.png') }}" class="img-app"
+                                                        alt="">
+                                                </div>
+                                            @elseif ($data->status[$i] == 'approved')
+                                                <div class="col-4 ty">
+                                                    <img src="{{ asset('img/checked.png') }}" class="img-app"
+                                                        alt="">
+                                                </div>
+                                            @elseif ($data->status[$i] == null)
+                                                <div class="col-4 ty">
+
+                                                </div>
+                                            @endif
+                                        @else
+                                            @if ($data->status[$i] == 'rejected')
+                                                <div class="col-4 ty">
+                                                    <img src="{{ asset('img/rejected.png') }}" class="img-app"
+                                                        alt="">
+                                                </div>
+                                            @elseif ($data->status[$i] == 'approved')
+                                                <div class="col-4 ty">
+                                                    <img src="{{ asset('img/validated.png') }}" class="img-app"
+                                                        alt="">
+                                                </div>
+                                            @elseif ($data->status[$i] == null)
+                                                <div class="col-4 ty">
+
+                                                </div>
+                                            @endif
+                                        @endif
+                                    @endfor
+
+                                </div>
+
+                                <div class="row">
                                     <div class="col-12">
                                         <div class="form-actions">
+                                            @if ($nik == $data->checked_1 || $nik == $data->checked_2 || $nik == $data->validated)
+                                                <button class="btn btn-primary btn-sm uploadBtn" id="btnApprove"
+                                                    data-doc="{{ $data->doc_number }}"
+                                                    data-status='@json($data->status)'
+                                                    data-nik="{{ $nik }}">
+                                                    <i class="fas fa-check"></i> Approve
+                                                </button>
+
+                                                <button class="btn btn-warning btn-sm uploadBtn" id="btnReject"
+                                                    data-doc="{{ $data->doc_number }}"
+                                                    data-status='@json($data->status)'
+                                                    data-nik="{{ $nik }}">
+                                                    <i class="fas fa-close"></i> Reject
+                                                </button>
+                                            @endif
+
+                                            @if (collect($data->status)->contains(fn($s) => $s === 'rejected'))
+                                                @if ($nik == $data->creator)
+                                                    <button type="button" class="btn btn-primary btn-sm"
+                                                        onclick="resetApproval('{{ $data->doc_number }}')">
+                                                        <i class="fas fa-undo"></i> Reset
+                                                    </button>
+                                                @endif
+                                            @endif
+
                                             <a href="{{ route('plant.ppu.xe1250.dashboard') }}"
-                                                class="btn btn-secondary">Cancel</a>
-                                            <button type="submit" class="btn btn-primary">Update</button>
+                                                class="btn btn-secondary btn-sm">Cancel</a>
                                         </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -728,6 +800,18 @@
             width: 100%;
 
             margin: auto;
+        }
+
+        .ty {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .img-app {
+            width: 100px;
+            height: 40px;
+            align-items: center;
         }
 
         .accordion-item {
@@ -846,20 +930,23 @@
                 });
             });
         });
-        $(function() {
-            var form = $("#formXE1250");
-            var submitBtn = form.find('button[type="submit"]');
+        document.addEventListener("DOMContentLoaded", function() {
 
-            form.submit(function(e) {
-                e.preventDefault();
-                submitBtn.prop('disabled', true);
+            document.getElementById("btnApprove").addEventListener("click", function() {
+                let docNumber = this.getAttribute("data-doc");
+                let status = JSON.parse(this.getAttribute('data-status'));
+                console.log(status);
+                let nik = this.getAttribute("data-nik");
 
-                var formData = new FormData(this);
-                console.log("Form data yang dikirim:", formData);
+                axios.post("{{ route('plant.ppu.xe1250.approve') }}", {
+                        _token: "{{ csrf_token() }}",
+                        doc_number: docNumber,
 
-                axios.post('{{ route('plant.ppu.xe1250.update') }}', formData)
-                    .then(function(response) {
-                        console.log("Respons dari server:", response.data);
+                        checked1: nik == "{{ $data->checked_1 }}" ? 'approved' : status[0],
+                        validated: nik == "{{ $data->validated }}" ? 'approved' : status[1],
+                        checked2: nik == "{{ $data->checked_2 }}" ? 'approved' : status[2]
+                    })
+                    .then(response => {
                         if (response.data.success) {
                             Swal.fire({
                                 icon: 'success',
@@ -873,7 +960,7 @@
                             });
                         }
                     })
-                    .catch(function(error) {
+                    .catch(error => {
                         let errorMessage = 'Terjadi kesalahan pada sistem';
                         console.log("Error respons:", error.response);
 
@@ -891,11 +978,98 @@
                             title: 'Error',
                             text: errorMessage
                         });
-                    })
-                    .finally(function() {
-                        submitBtn.prop('disabled', false);
                     });
             });
+
+
+            document.getElementById("btnReject").addEventListener("click", function() {
+                let docNumber = this.getAttribute("data-doc");
+                let status = JSON.parse(this.getAttribute('data-status'));
+                let nik = this.getAttribute("data-nik");
+
+                axios.post("{{ route('plant.ppu.xe1250.reject') }}", {
+                        _token: "{{ csrf_token() }}",
+                        doc_number: docNumber,
+                        checked1: nik == "{{ $data->checked_1 }}" ? 'rejected' : status[0],
+                        validated: nik == "{{ $data->validated }}" ? 'rejected' : status[1],
+                        checked2: nik == "{{ $data->checked_2 }}" ? 'rejected' : status[2]
+                    })
+                    .then(response => {
+                        if (response.data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: response.data.message
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href =
+                                        '{{ route('plant.ppu.xe1250.dashboard') }}';
+                                }
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        let errorMessage = 'Terjadi kesalahan pada sistem';
+                        console.log("Error respons:", error.response);
+
+                        if (error.response) {
+                            if (error.response.data.errors) {
+                                errorMessage = Object.values(error.response.data.errors).flat().join(
+                                    '\n');
+                            } else if (error.response.data.message) {
+                                errorMessage = error.response.data.message;
+                            }
+                        }
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: errorMessage
+                        });
+                    });
+            });
+
+
         });
+
+        function resetApproval(id) {
+            if (confirm('Are you sure you want to reset this Approval?')) {
+                axios.post('{{ route('plant.ppu.xe1250.reset', ['id' => 'ID']) }}'.replace('ID', id))
+                    .then(function(response) {
+                        console.log('Response:', response);
+                        if (response.data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: response.data.message
+                            }).then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Failed to reset the approval.'
+                            });
+                        }
+                    })
+                    .catch(function(error) {
+                        console.error('Error:', error);
+                        let errorMessage = 'Terjadi kesalahan pada sistem';
+                        if (error.response) {
+                            if (error.response.data.errors) {
+                                errorMessage = Object.values(error.response.data.errors).flat().join('\n');
+                            } else if (error.response.data.message) {
+                                errorMessage = error.response.data.message;
+                            }
+                        }
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: errorMessage
+                        });
+                    });
+            }
+        }
     </script>
 @endsection
