@@ -17,6 +17,7 @@ class PpmXCMG700DController extends Controller {
 
     public function dashboard(Request $request) {
         try {
+            $nik_session = $request->session()->get( 'user_id', '' );
             $query = DB::table( 'ppm_xcmg_xe700d' )
             ->select( '*' )
             ->orderBy( 'created_at', 'desc' );
@@ -38,7 +39,10 @@ class PpmXCMG700DController extends Controller {
         if ( $request->has( 'job_site' ) && $request->job_site ) {
             $query->where( 'job_site',  $request->job_site );
         }
-
+        if ( $request->has( 'approval' ) && $request->approval ) {
+            $query->where( 'checked_by', $request->approval )->orwhere( 'validated_by', $request->approval );
+            ;
+        }
         $statistics = ( object )[
             'total_records' => DB::table( 'ppm_xcmg_xe700d' )->count(),
             'total_this_month' => DB::table( 'ppm_xcmg_xe700d' )
@@ -50,10 +54,11 @@ class PpmXCMG700DController extends Controller {
         ];
 
             $records = $query->paginate( 5 );
-            return view( 'smartform::plant.ppm_700d.dashboard-700d', [ 'record' => $records, 'statistics'=>$statistics, 'filters' => [
+            return view( 'smartform::plant.ppm_700d.dashboard-700d', [ 'record' => $records,'session'=>$nik_session, 'user'=> HrdHelper::getApprovalList(),  'statistics'=>$statistics, 'filters' => [
             'search' => $request->search,
             'engine_model' => $request->engine_model,
             'job_site' => $request->job_site,
+            'approval' => $request->approval
         ] ] );
         } catch( \Exception $e ) {
             Log::error( 'Error in Dashboard: ' . $e->getMessage() );
@@ -111,6 +116,50 @@ class PpmXCMG700DController extends Controller {
 
         return view( 'smartform::plant.ppm_700d.show-700d', [ 'data' => $data, 'list' => $list, 'approvalList' => HrdHelper::getApprovalList() ] );
     }
+    public function show( Request $request,$id){
+        $nik_session = $request->session()->get( 'user_id', '' );
+
+        $data = DB::table( 'ppm_xcmg_xe700d' )
+        ->where( 'id', $id )
+        ->first();
+
+        $detail = DB::table( 'detail_ppm_xcmg_xe700d' )
+        ->where( 'doc_num_id', $data->doc_num )
+        ->first();
+        $json = file_get_contents( resource_path( 'data/xe700d/ppm-700.json' ) );
+        $list = json_decode( $json, true );
+
+        $data->status = json_decode( $data->status );
+        $data->eng_actual = json_decode( $detail->eng_actual );
+        $data->eng_correction_made = json_decode( $detail->eng_correction_made );
+        $data->eng_result = json_decode( $detail->eng_result );
+        $data->eng_pr = json_decode( $detail->eng_pr );
+        $data->eng_taggal = json_decode( $detail->eng_taggal );
+        $data->eng_remark = json_decode( $detail->eng_remark );
+
+        $data->hyd_actual = json_decode( $detail->hyd_actual );
+        $data->hyd_correction_made = json_decode( $detail->hyd_correction_made );
+        $data->hyd_result = json_decode( $detail->hyd_result );
+        $data->hyd_pr = json_decode( $detail->hyd_pr );
+        $data->hyd_taggal = json_decode( $detail->hyd_taggal );
+        $data->hyd_remark = json_decode( $detail->hyd_remark );
+
+        $data->wo_actual = json_decode( $detail->wo_actual );
+        $data->wo_correction_made = json_decode( $detail->wo_correction_made );
+        $data->wo_result = json_decode( $detail->wo_result );
+        $data->wo_pr = json_decode( $detail->wo_pr );
+        $data->wo_taggal = json_decode( $detail->wo_taggal );
+        $data->wo_remark = json_decode( $detail->wo_remark );
+
+        $data->fin_actual = json_decode( $detail->fin_actual );
+        $data->fin_correction_made = json_decode( $detail->fin_correction_made );
+        $data->fin_result = json_decode( $detail->fin_result );
+        $data->fin_pr = json_decode( $detail->fin_pr );
+        $data->fin_taggal = json_decode( $detail->fin_taggal );
+        $data->fin_remark = json_decode( $detail->fin_remark );
+
+        return view( 'smartform::plant.ppm_700d.detail-700d', [ 'data' => $data, 'nik' =>$nik_session, 'list' => $list, 'approvalList' => HrdHelper::getApprovalList() ] );
+    }
 
     public function Store( Request $request ) {
 
@@ -127,6 +176,8 @@ class PpmXCMG700DController extends Controller {
             'job_location' => $request->location,
             'at_inspection' => $request->at_inspec,
             'date' => $request->date,
+            'creator' => $request->session()->get( 'user_id', '' ),
+            'status' => json_encode( array_values( [ null, null] ) ),
             'checked_by' => $request->checked,
             'validated_by' =>$request->validated,
             'created_at' => Carbon::now(),
@@ -221,7 +272,7 @@ class PpmXCMG700DController extends Controller {
         $data->fin_taggal = json_decode( $detail->fin_taggal );
         $data->fin_remark = json_decode( $detail->fin_remark );
         $pdf = PDF::loadView( 'smartform::plant.ppm_700d.export-pdf', [
-            'data' => $data, 'list' => $list,
+            'data' => $data, 'list' => $list,'approvalList' => HrdHelper::getApprovalList()
 
         ] );
         $pdf->setPaper('A4', 'landscape');
@@ -236,6 +287,68 @@ class PpmXCMG700DController extends Controller {
     }
     }
 
+    public function Approve( Request $request ) {
+
+        $data = [
+            'status' => json_encode( array_values( [
+                $request->checked,
+                $request->validated,
+            ] ) ),
+            'updated_at' => Carbon::now()
+        ];
+
+        DB::table( 'ppm_xcmg_xe700d' )
+        ->where( 'doc_num', $request->doc_num )
+        ->update( $data );
+
+        return response()->json( [
+            'success' => true,
+            'message' => 'Data berhasil di Approve'
+        ] );
+
+    }
+
+    public function Reset( $id ) {
+
+        $data = [
+            'status' => json_encode( array_values( [
+                null,
+                null
+            ] ) ),
+            'updated_at' => Carbon::now()
+        ];
+
+        DB::table( 'ppm_xcmg_xe700d' )
+        ->where( 'doc_num', $id )
+        ->update( $data );
+
+        return response()->json( [
+            'success' => true,
+            'message' => 'Data berhasil di Reset'
+        ] );
+
+    }
+
+    public function Reject( Request $request ) {
+        $data = [
+            'status' => json_encode( array_values( [
+                $request->checked,
+                $request->validated,
+
+            ] ) ),
+            'updated_at' => Carbon::now()
+        ];
+        ;
+
+        DB::table( 'ppm_xcmg_xe700d' )
+        ->where( 'doc_num', $request->doc_num )
+        ->update( $data );
+
+        return response()->json( [
+            'success' => true,
+            'message' => 'Data berhasil di Reject'
+        ] );
+    }
     public function Update (Request $request){
         $data = [
             'doc_num' => $request->doc_num,
