@@ -459,6 +459,10 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/update',[PpmXCMG700DController::class, 'Update'])->name('plant.ppm.700d.update');
             Route::get('/detail/{id}', [PpmXCMG700DController::class, 'detail'])->name('plant.ppm.700d.detail');
             Route::delete('/delete/{id}', [PpmXCMG700DController::class, 'Delete'])->name('plant.ppm.700d.delete');
+            Route::get('/show/{id}', [PpmXCMG700DController::class, 'show'])->name('plant.ppm.700d.show');
+            Route::post('/approve-ppm.700d', [PpmXCMG700DController::class, 'Approve'])->name("plant.ppm.700d.approve");
+            Route::post('/reject-ppm.700d', [PpmXCMG700DController::class, 'Reject'])->name("plant.ppm.700d.reject");
+            Route::post('/reset-ppm.700d/{id}', [PpmXCMG700DController::class, 'Reset'])->name("plant.ppm.700d.reset");
         });
         Route::prefix('ppu-xe1250')->group(function(){
             Route::get('/dashboard', [PpuXE1250Controller::class, 'Dashboard'])->name('plant.ppu.xe1250.dashboard');
