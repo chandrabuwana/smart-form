@@ -44,6 +44,7 @@ use Modules\SmartForm\App\Http\Controllers\SM\RegistrasiSupplierController;
 use Modules\SmartForm\App\Http\Controllers\LOG\CheckOgcComController;
 use Modules\SmartForm\App\Http\Controllers\LOG\LogController;
 use Modules\SmartForm\App\Http\Controllers\LOG\PemakaianSolarController;
+use Modules\SmartForm\App\Http\Controllers\LOG\FuelController;
 use Modules\SmartForm\App\Http\Controllers\SmartFormController;
 use Modules\SmartForm\App\Http\Controllers\SmartPica\DashboarController;
 use Modules\SmartForm\App\Http\Controllers\SmartPica\HelperController;
@@ -94,14 +95,15 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/pdf-req-master/{id}', [LogController::class, 'PdfReqMaster'])->name('bss-form.log.pdf-req-master');
 
             // PERMINTAAN PENGISIAN FUEL
-            Route::get('/request-fuel', [LogController::class, 'FuelDashboard'])->name('bss-form.log.fuel.dashboard');
-            Route::get('/list-fuel', [LogController::class, 'GetListRequestFuel'])->name("bss-form.log.list-fuel");
-            Route::get('/form-fuel', [LogController::class, 'FormFuel'])->name('bss-form.log.form-fuel');
-            Route::post('/create-fuel', [LogController::class, 'CreateReqFuel'])->name('bss-form.log.create-req-fuel');
-            Route::get('/edit-fuel/{id}', [LogController::class, 'editReqFuel'])->name('bss-form.log.edit-req-fuel');
-            Route::post('/update-fuel/{id}', [LogController::class, 'updateReqFuel'])->name('bss-form.log.update-req-fuel');
-            Route::get('/delete-fuel/{id}', [LogController::class, 'DeleteReqFuel'])->name('bss-form.log.delete-fuel');
-            Route::get('/pdf-fuel/{id}', [LogController::class, 'PdfReqFuel'])->name('bss-form.log.pdf-fuel');
+            Route::get('/request-fuel', [FuelController::class, 'FuelDashboard'])->name('bss-form.log.fuel.dashboard');
+            Route::get('/list-fuel', [FuelController::class, 'GetListRequestFuel'])->name("bss-form.log.list-fuel");
+            Route::get('/form-fuel', [FuelController::class, 'FormFuel'])->name('bss-form.log.form-fuel');
+            Route::post('/create-fuel', [FuelController::class, 'CreateReqFuel'])->name('bss-form.log.create-req-fuel');
+            Route::get('/edit-fuel', [FuelController::class, 'editReqFuel'])->name('bss-form.log.edit-req-fuel');
+            Route::post('/update-fuel/{id}', [FuelController::class, 'updateReqFuel'])->name('bss-form.log.update-req-fuel');
+            Route::get('/delete-fuel/{id}', [FuelController::class, 'DeleteReqFuel'])->name('bss-form.log.delete-fuel');
+            Route::get('/pdf-fuel/{id}', [FuelController::class, 'PdfReqFuel'])->name('bss-form.log.pdf-fuel');
+            Route::get('/get-req-fuel-detail', [FuelController::class, 'FuelDetailById'])->name("bss-form.log.form-detail-by-id");
 
             // PENGELUARAN OIL, GREASE & COOLANT MENU
             Route::get('/pengeluaran-oli', [LogController::class, 'PengeluaranOliDashboard'])->name('bss-form.log.pengeluaran-oli.dashboard');
@@ -121,11 +123,6 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/get-pemakaian-solar-detail', [PemakaianSolarController::class, 'SolarDetailByNoDoc'])->name("bss-form.log.form-detail-by-id");
             Route::get('/get-pemakaian-solar-data', [PemakaianSolarController::class, 'GetPemakaianSolarData'])->name("bss-form.log.get-pemakaian-solar-data");
 
-            // Route::get('/pemakaian-solar', [LogController::class, 'PemakaianSolarDashboard'])->name('bss-form.log.pemakaian-solar.dashboard');
-            // Route::get('/list-pemakaian-solar', [LogController::class, 'GetListPemakaianSolar'])->name("bss-form.log.list-pemakaian-solar");
-            // Route::get('/form-pemakaian-solar', [LogController::class, 'formPemakaianSolar'])->name('bss-form.log.form-pemakaian-solar');
-            // Route::post('/add-pemakaian-solar', [LogController::class, 'SubmitFormPemakaianSolar'])->name("bss-form.log.add-pemakaian-solar");
-            // Route::get('/pdf-pemakaian-solar/{id}', [LogController::class, 'PdfPemakaianSolar'])->name('bss-form.log.pdf-pemakaian-solar');
             Route::post('/submit-approve-pemakaian-solar', [PemakaianSolarController::class, 'SubmitApprovePemakaianSolar'])->name("bss-form.log.submit-approve-pemakaian-solar");
             Route::post('/submit-reject-pemakaian-solar', [PemakaianSolarController::class, 'SubmitRejectPemakaianSolar'])->name("bss-form.log.submit-reject-pemakaian-solar");
 

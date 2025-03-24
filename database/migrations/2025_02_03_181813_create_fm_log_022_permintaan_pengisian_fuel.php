@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('no_dok')->nullable();
             $table->string('nama');
             $table->string('jabatan');
-            $table->string('nik');
+            $table->string('dibuat_oleh');
             $table->string('departemen');
             $table->date('tanggal');
             $table->string('no_lambung');

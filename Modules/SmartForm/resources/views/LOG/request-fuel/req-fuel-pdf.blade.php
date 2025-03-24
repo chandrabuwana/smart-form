@@ -124,7 +124,7 @@ div.nodok {
                     </tr>
                     <tr>
                         <td class="w-seperempat">NIK</td>
-                        <div>: {{$data->nik}}</div>
+                        <div>: {{$data->dibuat_oleh}}</div>
                     </tr>
                 </table>
                 <td class="w-half">

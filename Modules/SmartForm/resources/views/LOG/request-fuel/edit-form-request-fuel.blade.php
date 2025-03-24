@@ -175,6 +175,36 @@
                             </div>
                         </div>
 
+                    <table style="width:100%" >
+                          <tr>
+                            <td>Diisi Oleh/Filled by,</td>
+                            <td>: {{ session('username') }} {{ session('user_id') }}
+                            </td>
+                            <td>Diterima Oleh/Received by, :</td>
+                            <td> 
+                                <select name="dDiterima" class="form-control text-center" required>
+                                    <option value="">-- Pilih Penerima --</option>
+                                    @foreach($approvalList as $user)
+                                        <option value="{{ $user->nama }}">
+                                            {{ $user->nama }} ({{ $user->nik }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </td>
+                            <td>Disetujui Oleh/Approved by, :</td>
+                            <td>
+                                <select name="dApproved" class="form-control text-center" required>
+                                    <option value="">-- Pilih Approver --</option>
+                                    @foreach($approvalList as $user)
+                                        <option value="{{ $user->nama }}">
+                                            {{ $user->nama }} ({{ $user->nik }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </td>
+                          </tr>
+                    </table>
+
                     <div class="card-footer">
                         <div class="d-flex align-items-center">
                             <button class="btn btn-primary ms-auto uploadBtn" id="btnSubmitFormRequestFuel">
