@@ -453,6 +453,10 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/update',[PpmXcmg900dController::class, 'Update'])->name('plant.ppm.900d.update');
             Route::get('/detail/{id}', [PpmXcmg900dController::class, 'detail'])->name('plant.ppm.900d.detail');
             Route::delete('/delete/{id}', [PpmXcmg900dController::class, 'Delete'])->name('plant.ppm.900d.delete');
+            Route::get('/show/{id}', [PpmXcmg900dController::class, 'show'])->name('plant.ppm.900d.show');
+            Route::post('/approve-ppm.900d', [PpmXcmg900dController::class, 'Approve'])->name("plant.ppm.900d.approve");
+            Route::post('/reject-ppm.900d', [PpmXcmg900dController::class, 'Reject'])->name("plant.ppm.900d.reject");
+            Route::post('/reset-ppm.900d/{id}', [PpmXcmg900dController::class, 'Reset'])->name("plant.ppm.900d.reset");
 
         });
         Route::prefix('ppm-3005T')->group(function(){
@@ -463,6 +467,10 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/update',[PpmXCMG3005TController::class, 'Update'])->name('plant.ppm.3005.update');
             Route::get('/detail/{id}', [PpmXCMG3005TController::class, 'detail'])->name('plant.ppm.3005.detail');
             Route::delete('/delete/{id}', [PpmXCMG3005TController::class, 'Delete'])->name('plant.ppm.3005.delete');
+            Route::get('/show/{id}', [PpmXCMG3005TController::class, 'show'])->name('plant.ppm.3005.show');
+            Route::post('/approve-ppm.3005', [PpmXCMG3005TController::class, 'Approve'])->name("plant.ppm.3005.approve");
+            Route::post('/reject-ppm.3005', [PpmXCMG3005TController::class, 'Reject'])->name("plant.ppm.3005.reject");
+            Route::post('/reset-ppm.3005/{id}', [PpmXCMG3005TController::class, 'Reset'])->name("plant.ppm.3005.reset");
         });
         Route::prefix('ppm-700d')->group(function(){
             Route::get('/dashboard', [PpmXCMG700DController::class, 'Dashboard'])->name('plant.ppm.700d.dashboard');

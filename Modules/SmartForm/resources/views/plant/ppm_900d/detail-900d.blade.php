@@ -23,12 +23,16 @@
                 <div class="card">
 
                     <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                        <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                            <h6 class="text-white text-capitalize ps-3"> Form PPM XCMG 900D</h6>
+                        <div
+                            class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3 px-3 d-flex justify-content-between align-items-center">
+                            <h6 class="text-white text-capitalize m-0">Form PPM XCMG 900D</h6>
+                            <h6 class="text-white text-capitalize m-0">
+                                Creator :
+                                {{ optional(collect($approvalList)->firstWhere('nik', $data->creator))->nama ?? '' }}
+                            </h6>
                         </div>
                     </div>
-
-                    <form id="formXCMG900" method="POST">
+                    <form>
                         @csrf
                         <div class="mx-3">
                             <input type="hidden" name="doc_num" value="{{ $data->doc_num }}">
@@ -37,21 +41,21 @@
                                     <div class="input-group input-group-static mb-3">
                                         <label for="unit_model" class="ms-0">Unit Model</label>
                                         <input type="text" class="form-control" id="unit_model" name="unit_model"
-                                            value="{{ $data->unit_model }}" required>
+                                            value="{{ $data->unit_model }}" disabled required>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="unit_sn" class="ms-0">Unit S/N</label>
                                         <input type="text" class="form-control" id="unit_sn" name="unit_sn"
-                                            value="{{ $data->unit_sn }}" required>
+                                            value="{{ $data->unit_sn }}" disabled required>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="unit_cn" class="ms-0">Unit C/N</label>
                                         <input type="text" class="form-control" id="unit_cn"
-                                            value="{{ $data->unit_cn }}" name="unit_cn" required>
+                                            value="{{ $data->unit_cn }}" name="unit_cn" disabled required>
                                     </div>
                                 </div>
 
@@ -61,21 +65,21 @@
                                     <div class="input-group input-group-static mb-3">
                                         <label for="engine_model" class="ms-0">Engine Model</label>
                                         <input type="text" class="form-control" id="engine_model" name="engine_model"
-                                            value="{{ $data->engine_model }}" required>
+                                            value="{{ $data->engine_model }}" disabled required>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="engine_sn" class="ms-0">Engine S/N</label>
                                         <input type="text" class="form-control" id="engine_sn" name="engine_sn"
-                                            value="{{ $data->engine_sn }}" required>
+                                            value="{{ $data->engine_sn }}" disabled required>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="att_front" class="ms-0">Attachment Front</label>
                                         <input type="text" class="form-control" id="att_front" name="att_front"
-                                            value="{{ $data->att_front }}" required>
+                                            value="{{ $data->att_front }}" disabled required>
                                     </div>
                                 </div>
 
@@ -84,13 +88,14 @@
                                         <div class="input-group input-group-static mb-3">
                                             <label for="att_rear" class="ms-0">Attachment Rear</label>
                                             <input type="text" class="form-control" id="att_rear" name="att_rear"
-                                                value="{{ $data->att_rear }}" required>
+                                                value="{{ $data->att_rear }}" disabled required>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="input-group input-group-static mb-3">
                                             <label for="job_site" class="ms-0">Job Site</label>
-                                            <select class="form-control" name="job_site" id="job_site" required>
+                                            <select class="form-control" name="job_site" id="job_site" disabled
+                                                required>
                                                 <option disabled selected>-- Select Site --</option>
                                                 <option value="agm"
                                                     {{ old('job_site', $data->job_site ?? '') == 'agm' ? 'selected' : '' }}>
@@ -125,7 +130,8 @@
                                     <div class="col-md-4">
                                         <div class="input-group input-group-static mb-3">
                                             <label for="location" class="ms-0">Location</label>
-                                            <select class="form-control" name="location" id="location" required>
+                                            <select class="form-control" name="location" id="location" disabled
+                                                required>
                                                 <option value="Workshop"
                                                     {{ old('location', $data->job_location ?? '') == 'Workshop' ? 'selected' : '' }}>
                                                     Workshop</option>
@@ -147,14 +153,14 @@
                                         <div class="input-group input-group-static mb-3">
                                             <label for="at_inspec" class="ms-0">SMR / HM At Inspection</label>
                                             <input type="text" class="form-control" id="at_inspec" name="at_inspec"
-                                                value="{{ $data->at_inspection }}" required>
+                                                value="{{ $data->at_inspection }}" disabled required>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="input-group input-group-static mb-3">
                                             <label for="date" class="ms-0">SMR / HM Date</label>
                                             <input type="date" class="form-control" id="date" name="date"
-                                                value="{{ $data->date }}" required>
+                                                value="{{ $data->date }}" disabled required>
                                         </div>
                                     </div>
 
@@ -230,22 +236,26 @@
                                                                 @endif
                                                                 <td><input type="text"
                                                                         value="{{ $data->eng_actual[$h] ?? '' }}"
-                                                                        class="form-control" name="eng_actual[]"></td>
+                                                                        class="form-control" name="eng_actual[]" disabled>
+                                                                </td>
                                                                 <td><input type="text"
                                                                         value="{{ $data->eng_correction_made[$h] ?? '' }}"
-                                                                        class="form-control" name="eng_correct[]"></td>
+                                                                        class="form-control" name="eng_correct[]"
+                                                                        disabled></td>
                                                                 <td><input type="text" class="form-control"
                                                                         value="{{ $data->eng_result[$h] ?? '' }}"
-                                                                        name="eng_result[]"></td>
+                                                                        name="eng_result[]" disabled></td>
                                                                 <td><input type="text"
                                                                         value="{{ $data->eng_pr[$h] ?? '' }}"
-                                                                        class="form-control" name="eng_pr_no[]"></td>
+                                                                        class="form-control" name="eng_pr_no[]" disabled>
+                                                                </td>
                                                                 <td><input type="date"
                                                                         value="{{ $data->eng_taggal[$h] ?? '' }}"
-                                                                        class="form-control" name="eng_tanggal[]"></td>
+                                                                        class="form-control" name="eng_tanggal[]"
+                                                                        disabled></td>
                                                                 <td><input value="{{ $data->eng_remark[$h] ?? '' }}"
                                                                         type="text" class="form-control"
-                                                                        name="eng_remarks[]"></td>
+                                                                        name="eng_remarks[]" disabled></td>
                                                             </tr>
                                                             @php
                                                                 $h++;
@@ -330,27 +340,27 @@
 
                                                                 <td><input type="text" class="form-control"
                                                                         name="hyd_actual[]"
-                                                                        value="{{ $data->hyd_actual[$i] ?? '' }}">
+                                                                        value="{{ $data->hyd_actual[$i] ?? '' }}"disabled>
                                                                 </td>
                                                                 <td><input type="text" class="form-control"
                                                                         name="hyd_correct[]"
-                                                                        value="{{ $data->hyd_correction_made[$i] ?? '' }}">
+                                                                        value="{{ $data->hyd_correction_made[$i] ?? '' }}"disabled>
                                                                 </td>
                                                                 <td><input type="text" class="form-control"
                                                                         name="hyd_result[]"
-                                                                        value="{{ $data->hyd_result[$i] ?? '' }}">
+                                                                        value="{{ $data->hyd_result[$i] ?? '' }}"disabled>
                                                                 </td>
                                                                 <td><input type="text" class="form-control"
                                                                         name="hyd_pr_no[]"
-                                                                        value="{{ $data->hyd_pr[$i] ?? '' }}">
+                                                                        value="{{ $data->hyd_pr[$i] ?? '' }}" disabled>
                                                                 </td>
                                                                 <td><input type="date" class="form-control"
                                                                         name="hyd_tanggal[]"
-                                                                        value="{{ $data->hyd_taggal[$i] ?? '' }}">
+                                                                        value="{{ $data->hyd_taggal[$i] ?? '' }}"disabled>
                                                                 </td>
                                                                 <td><input type="text" class="form-control"
                                                                         value="{{ $data->hyd_remark[$i] ?? '' }}"
-                                                                        name="hyd_remarks[]"></td>
+                                                                        name="hyd_remarks[]" disabled></td>
 
                                                             </tr>
                                                             @php
@@ -436,24 +446,24 @@
 
                                                                 <td><input type="text" class="form-control"
                                                                         name="wo_actual[]"
-                                                                        value="{{ $data->wo_actual[$j] ?? '' }}">
+                                                                        value="{{ $data->wo_actual[$j] ?? '' }}" disabled>
                                                                 </td>
                                                                 <td><input type="text"
                                                                         value="{{ $data->wo_correction_made[$j] ?? '' }}"
-                                                                        class="form-control" name="wo_correct[]">
+                                                                        class="form-control" name="wo_correct[]" disabled>
                                                                 </td>
                                                                 <td><input value="{{ $data->wo_result[$j] ?? '' }}"
                                                                         type="text" class="form-control"
-                                                                        name="wo_result[]"></td>
+                                                                        name="wo_result[]" disabled></td>
                                                                 <td><input value="{{ $data->wo_pr[$j] ?? '' }}"
                                                                         type="text" class="form-control"
-                                                                        name="wo_pr_no[]"></td>
+                                                                        name="wo_pr_no[]" disabled></td>
                                                                 <td><input value="{{ $data->wo_taggal[$j] ?? '' }}"
                                                                         type="date" class="form-control"
-                                                                        name="wo_tanggal[]"></td>
+                                                                        name="wo_tanggal[]" disabled></td>
                                                                 <td><input value="{{ $data->wo_remark[$j] ?? '' }}"
                                                                         type="text" class="form-control"
-                                                                        name="wo_remarks[]"></td>
+                                                                        name="wo_remarks[]" disabled></td>
                                                             </tr>
                                                             @php
                                                                 $j++;
@@ -527,41 +537,46 @@
                                                                 <td>
                                                                     <input type="checkbox" class="custom-checkbox"
                                                                         name="final_actual{{ $k }}" value=1
-                                                                        {{ isset($data->fin_actual[$k]) && (int) $data->fin_actual[$k] == 1 ? 'checked' : '' }}>
+                                                                        {{ isset($data->fin_actual[$k]) && (int) $data->fin_actual[$k] == 1 ? 'checked' : '' }}
+                                                                        disabled>
                                                                 </td>
                                                                 <td>
                                                                     <input type="checkbox" class="custom-checkbox"
                                                                         name="final_correct{{ $k }}" value=1
-                                                                        {{ isset($data->fin_correction_made[$k]) && (int) $data->fin_correction_made[$k] == 1 ? 'checked' : '' }}>
+                                                                        {{ isset($data->fin_correction_made[$k]) && (int) $data->fin_correction_made[$k] == 1 ? 'checked' : '' }}
+                                                                        disabled>
                                                                 </td>
                                                                 <td>
                                                                     <input type="checkbox" class="custom-checkbox"
                                                                         name="final_result{{ $k }}" value=1
-                                                                        {{ isset($data->fin_result[$k]) && (int) $data->fin_result[$k] == 1 ? 'checked' : '' }}>
+                                                                        {{ isset($data->fin_result[$k]) && (int) $data->fin_result[$k] == 1 ? 'checked' : '' }}
+                                                                        disabled>
                                                                 </td>
 
                                                                 <td><input type="text"
                                                                         value="{{ $data->fin_pr[$k] ?? '' }}"
-                                                                        class="form-control" name="final_pr_no[]"></td>
+                                                                        class="form-control" name="final_pr_no[]"
+                                                                        disabled></td>
                                                                 <td><input type="date"
                                                                         value="{{ $data->fin_taggal[$k] ?? '' }}"
-                                                                        class="form-control" name="final_tanggal[]"></td>
+                                                                        class="form-control" name="final_tanggal[]"
+                                                                        disabled></td>
                                                                 @if (isset($value['condition']))
                                                                     @if ($value['condition'] == 'Visual Check (Eng. Stop)')
                                                                         <td rowspan="2"><input type="text"
                                                                                 value="{{ $data->fin_remark[0] ?? '' }}"
                                                                                 class="form-control"
-                                                                                name="final_remarks[]"></td>
+                                                                                name="final_remarks[]" disabled></td>
                                                                     @elseif ($value['condition'] == 'Function Check')
                                                                         <td><input type="text"
                                                                                 value="{{ $data->fin_remark[1] ?? '' }}"
                                                                                 class="form-control"
-                                                                                name="final_remarks[]"></td>
+                                                                                name="final_remarks[]" disabled></td>
                                                                     @else
                                                                         <td><input type="text"
                                                                                 value="{{ $data->fin_remark[2] ?? '' }}"
                                                                                 class="form-control"
-                                                                                name="final_remarks[]"></td>
+                                                                                name="final_remarks[]" disabled></td>
                                                                     @endif
                                                                 @endif
 
@@ -581,8 +596,9 @@
                                     <div class="col-6 ">
                                         <div class="input-group input-group-static mb-3">
                                             <label for="dibuat" class="ms-0">Checked By</label>
-                                            <select name="checked" id="dibuat_oleh" class="form-control" required>
-                                                <option disabled selected>-- Select Checked --</option>
+                                            <select name="checked" id="dibuat_oleh" class="form-control" disabled
+                                                required>
+                                                <option disabled selected>-- Select Creator --</option>
                                                 @foreach ($approvalList as $user)
                                                     <option value="{{ $user->nik }}"
                                                         {{ old('checked', $data->checked_by ?? '') == $user->nik ? 'selected' : '' }}>
@@ -595,23 +611,87 @@
                                     <div class="col-6">
                                         <div class="input-group input-group-static mb-3">
                                             <label for="diperiksa" class="ms-0">Validated By</label>
-                                            <select name="validated" id="diperiksa" class="form-control" required>
+                                            <select name="validated" id="diperiksa" class="form-control" disabled
+                                                required>
                                                 <option disabled selected>-- Select Approval --</option>
                                                 @foreach ($approvalList as $user)
                                                     <option value="{{ $user->nik }}"
-                                                        {{ old('validated', $data->validated_by ?? '') == $user->nik ? 'selected' : '' }}>
+                                                        {{ old('checked', $data->validated_by ?? '') == $user->nik ? 'selected' : '' }}>
                                                         {{ $user->nama }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
                                     </div>
                                     <div class="row">
+                                        @for ($i = 0; $i < 2; $i++)
+                                            @if ($i == 0)
+                                                @if ($data->status[$i] == 'rejected')
+                                                    <div class="col-6 ty">
+                                                        <img src="{{ asset('img/rejected.png') }}" class="img-app"
+                                                            alt="">
+                                                    </div>
+                                                @elseif ($data->status[$i] == 'approved')
+                                                    <div class="col-6 ty">
+                                                        <img src="{{ asset('img/checked.png') }}" class="img-app"
+                                                            alt="">
+                                                    </div>
+                                                @elseif ($data->status[$i] == null)
+                                                    <div class="col-6 ty">
+
+                                                    </div>
+                                                @endif
+                                            @else
+                                                @if ($data->status[$i] == 'rejected')
+                                                    <div class="col-6 ty">
+                                                        <img src="{{ asset('img/rejected.png') }}" class="img-app"
+                                                            alt="">
+                                                    </div>
+                                                @elseif ($data->status[$i] == 'approved')
+                                                    <div class="col-6 ty">
+                                                        <img src="{{ asset('img/validated.png') }}" class="img-app"
+                                                            alt="">
+                                                    </div>
+                                                @elseif ($data->status[$i] == null)
+                                                    <div class="col-6 ty">
+
+                                                    </div>
+                                                @endif
+                                            @endif
+                                        @endfor
+
+                                    </div>
+                                    <div class="row">
                                         <div class="col-12">
                                             <div class="form-actions">
+                                                @if ($nik == $data->checked_by || $nik == $data->validated_by)
+                                                    <button class="btn btn-primary btn-sm" id="btn900Approve"
+                                                        data-doc="{{ $data->doc_num }}"
+                                                        data-status='@json($data->status)'
+                                                        data-nik="{{ $nik }}">
+                                                        <i class="fas fa-check"></i> Approve
+                                                    </button>
+
+                                                    <button class="btn btn-warning btn-sm" id="btn900Reject"
+                                                        data-doc="{{ $data->doc_num }}"
+                                                        data-status='@json($data->status)'
+                                                        data-nik="{{ $nik }}">
+                                                        <i class="fas fa-close"></i> Reject
+                                                    </button>
+                                                @endif
+
+                                                @if (collect($data->status)->contains(fn($s) => $s === 'rejected'))
+                                                    @if ($nik == $data->creator)
+                                                        <button type="button" class="btn btn-primary btn-sm"
+                                                            onclick="resetApproval('{{ $data->doc_num }}')">
+                                                            <i class="fas fa-undo"></i> Reset
+                                                        </button>
+                                                    @endif
+                                                @endif
+
                                                 <a href="{{ route('plant.ppm.900d.dashboard') }}"
-                                                    class="btn btn-secondary">Cancel</a>
-                                                <button type='submit' class="btn btn-primary">Update</button>
+                                                    class="btn btn-secondary btn-sm">Cancel</a>
                                             </div>
+
                                         </div>
                                     </div>
                                 </div>
@@ -630,6 +710,18 @@
             width: 100%;
 
             margin: auto;
+        }
+
+        .ty {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .img-app {
+            width: 100px;
+            height: 40px;
+            align-items: center;
         }
 
         .accordion-item {
@@ -747,20 +839,23 @@
                 });
             });
         });
-        $(function() {
-            var form = $("#formXCMG900");
-            var submitBtn = form.find('button[type="submit"]');
+        document.addEventListener("DOMContentLoaded", function() {
 
-            form.submit(function(e) {
-                e.preventDefault();
-                submitBtn.prop('disabled', true);
+            document.getElementById("btn900Approve").addEventListener("click", function() {
+                let docNumber = this.getAttribute("data-doc");
+                let status = JSON.parse(this.getAttribute('data-status'));
 
-                var formData = new FormData(this);
-                console.log("Form data yang dikirim:", formData);
+                let nik = this.getAttribute("data-nik");
 
-                axios.post('{{ route('plant.ppm.900d.update') }}', formData)
-                    .then(function(response) {
-                        console.log("Respons dari server:", response.data);
+                axios.post("{{ route('plant.ppm.900d.approve') }}", {
+                        _token: "{{ csrf_token() }}",
+                        doc_num: docNumber,
+
+                        checked: nik == "{{ $data->checked_by }}" ? 'approved' : status[0],
+                        validated: nik == "{{ $data->validated_by }}" ? 'approved' : status[1],
+
+                    })
+                    .then(response => {
                         if (response.data.success) {
                             Swal.fire({
                                 icon: 'success',
@@ -774,7 +869,7 @@
                             });
                         }
                     })
-                    .catch(function(error) {
+                    .catch(error => {
                         let errorMessage = 'Terjadi kesalahan pada sistem';
                         console.log("Error respons:", error.response);
 
@@ -792,11 +887,97 @@
                             title: 'Error',
                             text: errorMessage
                         });
-                    })
-                    .finally(function() {
-                        submitBtn.prop('disabled', false);
                     });
             });
+
+
+            document.getElementById("btn900Reject").addEventListener("click", function() {
+                let docNumber = this.getAttribute("data-doc");
+                let status = JSON.parse(this.getAttribute('data-status'));
+                let nik = this.getAttribute("data-nik");
+
+                axios.post("{{ route('plant.ppm.900d.reject') }}", {
+                        _token: "{{ csrf_token() }}",
+                        doc_num: docNumber,
+                        checked: nik == "{{ $data->checked_by }}" ? 'rejected' : status[0],
+                        validated: nik == "{{ $data->validated_by }}" ? 'rejected' : status[1],
+                    })
+                    .then(response => {
+                        if (response.data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: response.data.message
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href =
+                                        '{{ route('plant.ppm.900d.dashboard') }}';
+                                }
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        let errorMessage = 'Terjadi kesalahan pada sistem';
+                        console.log("Error respons:", error.response);
+
+                        if (error.response) {
+                            if (error.response.data.errors) {
+                                errorMessage = Object.values(error.response.data.errors).flat().join(
+                                    '\n');
+                            } else if (error.response.data.message) {
+                                errorMessage = error.response.data.message;
+                            }
+                        }
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: errorMessage
+                        });
+                    });
+            });
+
+
         });
+
+        function resetApproval(id) {
+            if (confirm('Are you sure you want to reset this Approval?')) {
+                axios.post('{{ route('plant.ppm.900d.reset', ['id' => 'ID']) }}'.replace('ID', id))
+                    .then(function(response) {
+                        console.log('Response:', response);
+                        if (response.data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: response.data.message
+                            }).then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Failed to reset the approval.'
+                            });
+                        }
+                    })
+                    .catch(function(error) {
+                        console.error('Error:', error);
+                        let errorMessage = 'Terjadi kesalahan pada sistem';
+                        if (error.response) {
+                            if (error.response.data.errors) {
+                                errorMessage = Object.values(error.response.data.errors).flat().join('\n');
+                            } else if (error.response.data.message) {
+                                errorMessage = error.response.data.message;
+                            }
+                        }
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: errorMessage
+                        });
+                    });
+            }
+        }
     </script>
 @endsection

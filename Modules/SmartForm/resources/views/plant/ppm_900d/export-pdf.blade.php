@@ -360,15 +360,15 @@
                                 {!! $value['standard'] !!}</td>
                         @endif
                     @endif
-                    <td>{{ $data->hyd_actual[$k] ?? '' }}</td>
-                    <td>{{ $data->hyd_correction_made[$k] ?? '' }}</td>
-                    <td>{{ $data->hyd_result[$k] ?? '' }}
+                    <td>{{ $data->wo_actual[$k] ?? '' }}</td>
+                    <td>{{ $data->wo_correction_made[$k] ?? '' }}</td>
+                    <td>{{ $data->wo_result[$k] ?? '' }}
                     </td>
-                    <td>{{ $data->hyd_pr[$k] ?? '' }}
+                    <td>{{ $data->wo_pr[$k] ?? '' }}
                     </td>
-                    <td>{{ $data->hyd_taggal[$k] ?? '' }}
+                    <td>{{ $data->wo_taggal[$k] ?? '' }}
                     </td>
-                    <td>{{ $data->hyd_remark[$k] ?? '' }}</td>
+                    <td>{{ $data->wo_remark[$k] ?? '' }}</td>
                 </tr>
                 @php
                     $k++;
@@ -478,8 +478,10 @@
                 <td colspan="5" style="border: none"></td>
             </tr>
             <tr>
-                <td colspan="2" style="border-top: none;">{{ $data->checked_by }}</td>
-                <td colspan="2" style="border-top: none;">{{ $data->validated_by }}</td>
+                <td colspan="2" style="border-top: none;">
+                    {{ optional(collect($approvalList)->firstWhere('nik', $data->checked_by))->nama ?? '' }}</td>
+                <td colspan="2" style="border-top: none;">
+                    {{ optional(collect($approvalList)->firstWhere('nik', $data->validated_by))->nama ?? '' }}</td>
                 <td colspan="2"style="border-top: none;"></td>
                 <td colspan="5" style="border: none"></td>
             </tr>

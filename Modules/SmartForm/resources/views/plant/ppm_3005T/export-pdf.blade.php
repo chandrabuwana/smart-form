@@ -539,8 +539,10 @@
                 <td colspan="8" style="border: none;"></td>
             </tr>
             <tr>
-                <td colspan="2" style="border-top: none;">{{ $data->checked_by }}</td>
-                <td colspan="2" style="border-top: none;">{{ $data->validated_by }}</td>
+                <td colspan="2" style="border-top: none;">
+                    {{ optional(collect($approvalList)->firstWhere('nik', $data->checked_by))->nama ?? '' }}</td>
+                <td colspan="2" style="border-top: none;">
+                    {{ optional(collect($approvalList)->firstWhere('nik', $data->validated_by))->nama ?? '' }}</td>
                 <td style="border-top: none;"></td>
                 <td colspan="8" style="border: none;"></td>
             </tr>

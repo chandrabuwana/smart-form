@@ -294,7 +294,7 @@
 
                                                 <a href="{{ route('plant.ppu.xe1250.show', ['id' => $data->id]) }}"
                                                     class="btn btn-info btn-sm mt-3">
-                                                    <i class="fas fa-eye"></i>
+                                                    <i class="far fa-check-circle" style="font-size:12px;"></i>
                                                 </a>
                                                 @if (collect($status)->every(fn($s) => $s === 'approved'))
                                                     <a href="{{ route('plant.ppu.xe1250.export', ['id' => $data->id]) }}"

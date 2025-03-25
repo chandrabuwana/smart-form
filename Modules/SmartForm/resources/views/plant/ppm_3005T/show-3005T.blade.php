@@ -726,8 +726,8 @@
                                         <select name="checked" id="dibuat_oleh" class="form-control" required>
                                             <option disabled selected>-- Select Creator --</option>
                                             @foreach ($approvalList as $user)
-                                                <option
-                                                    {{ old('checked', $data->checked_by ?? '') == $user->nama ? 'selected' : '' }}>
+                                                <option value="{{ $user->nik }}"
+                                                    {{ old('checked', $data->checked_by ?? '') == $user->nik ? 'selected' : '' }}>
                                                     {{ $user->nama }}</option>
                                             @endforeach
 
@@ -740,8 +740,8 @@
                                         <select name="validated" id="diperiksa" class="form-control" required>
                                             <option disabled selected>-- Select Approval --</option>
                                             @foreach ($approvalList as $user)
-                                                <option
-                                                    {{ old('validated', $data->validated_by ?? '') == $user->nama ? 'selected' : '' }}>
+                                                <option value="{{ $user->nik }}"
+                                                    {{ old('validated', $data->validated_by ?? '') == $user->nik ? 'selected' : '' }}>
                                                     {{ $user->nama }}</option>
                                             @endforeach
                                         </select>
