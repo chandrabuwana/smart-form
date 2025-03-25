@@ -304,6 +304,15 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             });
         });
 
+        Route::prefix('wc')->group(function () {
+            Route::get('/dashboard', [InspeksiToiletMessKantorController::class, 'Dashboard'])->name('dashboard-wc');
+            Route::get('/create-form', [InspeksiToiletMessKantorController::class, 'createForm'])->name('create-wc');
+            Route::post('/store-form', [InspeksiToiletMessKantorController::class, 'storeForm'])->name('store-wc');
+            Route::get('/list', [InspeksiToiletMessKantorController::class, 'list'])->name('list-wc');
+            Route::get('/export-inspeksi/{id}', [InspeksiToiletMessKantorController::class, 'exportPDF'])->name('export-inspeksi');
+
+        });
+
         Route::prefix('it-ops')->group(function () {
             // PRINTER
             Route::get('/dashboard-printer', [PrinterFormController::class, 'IndexPrinterForm'])->name('it-ops.dashboard-printer');
