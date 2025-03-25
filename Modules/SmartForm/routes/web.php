@@ -391,8 +391,9 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/form-welding/export/{id}',[PlantWeldingController::class, 'ExportForm'])->name('plant.welding.export');
             Route::get('/form-welding', [PlantWeldingController::class, 'AddFormWelding'])->name('plant.welding.form');
             Route::post('/store-welding', [PlantWeldingController::class, 'StoreWelding'])->name('plant.welding.store');
-            Route::put('/form-welding/{id}', [PlantWeldingController::class, 'UpdateWelding'])->name('plant.welding.update');
-            Route::delete('/form-welding/{id}', [KalibrasiCtController::class, 'destroy'])->name('plant.welding.delete');
+            Route::get('/edit-welding/{id}', [PlantWeldingController::class, 'EditWelding'])->name('plant.welding.edit');
+            Route::post('/update-welding/{id}', [PlantWeldingController::class, 'UpdateWelding'])->name('plant.welding.update');
+            Route::delete('/form-welding/{id}', [PlantWeldingController::class, 'destroy'])->name('plant.welding.delete');
         });
         // PLANT
         Route::prefix('plant')->name('bss-form.plant.')->group(function () {

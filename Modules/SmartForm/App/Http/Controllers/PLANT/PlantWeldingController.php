@@ -214,16 +214,16 @@ class PlantWeldingController extends Controller
             if (!$record) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Data tidak ditemukan'
+                    'message' => 'Data tidak ditemukan.'
                 ], 404);
             }
 
-            // Hapus data
+            // Hapus data berdasarkan ID
             DB::table('plant_welding')->where('id', $id)->delete();
 
             return response()->json([
                 'success' => true,
-                'message' => 'Data berhasil dihapus'
+                'message' => 'Data berhasil dihapus.'
             ]);
         } catch (\Exception $e) {
             Log::error('Error in Delete: ' . $e->getMessage());
@@ -235,13 +235,43 @@ class PlantWeldingController extends Controller
         }
     }
 
+    public function EditWelding($id)
+    {
+        $record = DB::table('plant_welding')
+            ->where('id', $id)
+            ->first();
+
+        $record->question1 = json_decode($record->question1);
+        $record->question2 = json_decode($record->question2);
+        $record->question3 = json_decode($record->question3);
+        $record->question4 = json_decode($record->question4);
+        $record->question5 = json_decode($record->question5);
+        $record->question6 = json_decode($record->question6);
+        $record->question7 = json_decode($record->question7);
+        $record->question8 = json_decode($record->question8);
+        $record->question9 = json_decode($record->question9);
+        $record->question10 = json_decode($record->question10);
+        $record->question11 = json_decode($record->question11);
+        $record->question12 = json_decode($record->question12);
+        $record->question13 = json_decode($record->question13);
+        $record->question14 = json_decode($record->question14);
+        $record->question15 = json_decode($record->question15);
+        $record->question16 = json_decode($record->question16);
+        $record->question17 = json_decode($record->question17);
+        $record->question18 = json_decode($record->question18);
+        $record->question19 = json_decode($record->question19);
+        $record->question20 = json_decode($record->question20);
+
+        return view('smartform::plant.welding.edit-welding', compact('record'));
+    }
 
     public function UpdateWelding(Request $request, $id)
     {
         try {
 
+            $existingRecord = DB::table('plant_welding')->where('id', $id)->first();
             $data = [
-                'doc_number' => $this->generateDocNumber(),
+                'doc_number' => $request->doc_number ?? $existingRecord->doc_number,
                 'site_name' => $request->site_name,
                 'location' => $request->location,
                 'month' => $request->month,
@@ -252,8 +282,6 @@ class PlantWeldingController extends Controller
                 'atasan' => $request->atasan,
                 'catatan1' => $request->catatan1 ?? '',
                 'catatan2' => $request->catatan2 ?? '',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
             ];
 
             $item = [];
