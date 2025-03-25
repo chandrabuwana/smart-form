@@ -430,7 +430,8 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/form-a2b-baru/export/{id}', [A2bBaruController::class, 'ExportForm'])->name('prod.a2b-baru.export');
             Route::get('/form-a2b-baru', [A2bBaruController::class, 'AddFormA2bBaru'])->name('prod.a2b-baru.form');
             Route::post('/store-a2b-baru', [A2bBaruController::class, 'StoreA2bBaru'])->name('prod.a2b-baru.store');
-            Route::put('/form-a2b-baru/{id}', [A2bBaruController::class, 'UpdatA2bBaru'])->name('prod.a2b-baru.update');
+            Route::get('/edit-a2b-baru/{id}', [A2bBaruController::class, 'EditA2bBaru'])->name('prod.a2b-baru.edit');
+            Route::post('/form-a2b-baru/{id}', [A2bBaruController::class, 'UpdateA2bBaru'])->name('prod.a2b-baru.update');
             Route::delete('/form-a2b-baru/{id}', [A2bBaruController::class, 'destroy'])->name('prod.a2b-baru.delete');
         });
 
