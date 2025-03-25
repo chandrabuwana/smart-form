@@ -420,7 +420,8 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/form-kalibrasi-ct/export/{id}', [KalibrasiCtController::class, 'ExportForm'])->name('prod.kalibrasi-ct.export');
             Route::get('/form-kalibrasi-ct', [KalibrasiCtController::class, 'AddFormKalibrasi'])->name('prod.kalibrasi-ct.form');
             Route::post('/store-kalibrasi-ct', [KalibrasiCtController::class, 'StoreKalibrasi'])->name('prod.kalibrasi-ct.store');
-            Route::put('/form-kalibrasi-ct/{id}', [KalibrasiCtController::class, 'UpdateKalibrasi'])->name('prod.kalibrasi-ct.update');
+            Route::get('/edit-kalibrasi-ct/{id}', [KalibrasiCtController::class, 'EditKalibrasi'])->name('prod.kalibrasi-ct.edit');
+            Route::post('/form-kalibrasi-ct/{id}', [KalibrasiCtController::class, 'UpdateKalibrasi'])->name('prod.kalibrasi-ct.update');
             Route::delete('/form-kalibrasi-ct/{id}', [KalibrasiCtController::class, 'destroy'])->name('prod.kalibrasi-ct.delete');
         });
 

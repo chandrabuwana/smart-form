@@ -70,7 +70,6 @@
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Nama Operator Hauler</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Nama Operator Loader</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Nama Operator Dozer</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Date</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Actions</th>
                                 </tr>
                             </thead>
@@ -94,14 +93,19 @@
                                         <p class="text-xs font-weight-bold mb-0">{{ $record->nama_operator_dozer }}</p>
                                     </td>
                                     <td>
-                                        <span class="text-xs font-weight-bold">{{ \Carbon\Carbon::parse($record->created_at)->format('d/m/Y') }}</span>
-                                    </td>
-                                    <td>
                                         <a href="{{ route('prod.kalibrasi-ct.form', ['id' => $record->id]) }}" class="btn btn-info btn-sm">
                                             <i class="fas fa-eye"></i>
                                         </a>
                                         <a href="{{ route('prod.kalibrasi-ct.export', ['id' => $record->id]) }}" class="btn btn-primary btn-sm">
                                             <i class="fas fa-download"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-danger btn-sm"
+                                                onclick="deleteKalibrasi('{{ $record->id }}')">
+                                                <i class="fas fa-trash"></i>
+                                        </button>
+                                        <a href="{{ route('prod.kalibrasi-ct.edit', ['id' => $record->id]) }}"
+                                                class="btn btn-warning btn-sm">
+                                                <i class="fas fa-edit"></i>
                                         </a>
                                     </td>
                                 </tr>
@@ -120,7 +124,9 @@
 @endsection
 
 @section('custom-js')
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
 <script>
 $(function() {
     // Clear filter button
@@ -142,5 +148,52 @@ $(function() {
         });
     }
 });
+
+function deleteKalibrasi(id) {
+            console.log('Delete ID:', id);
+            if (confirm('Are you sure you want to delete this data?')) {
+                axios.delete('{{ route('prod.kalibrasi-ct.delete', ['id' => 'ID']) }}'.replace('ID', id))
+                    .then(function(response) {
+                        console.log('Response:', response);
+                        if (response.data.success) {
+
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: response.data.message
+                            }).then(() => {
+
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Failed to delete the compressor.'
+                            });
+                        }
+                    })
+                    .catch(function(error) {
+                        console.error(error);
+                        let errorMessage = 'Terjadi kesalahan pada sistem';
+                        if (error.response) {
+
+                            if (error.response.data.errors) {
+                                errorMessage = Object.values(error.response.data.errors).flat().join('\n');
+                            } else if (error.response.data.message) {
+                                errorMessage = error.response.data.message;
+                            }
+                        }
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: errorMessage
+                        });
+                    })
+                    .finally(function() {
+                        submitBtn.prop('disabled', false);
+                    });
+            }
+        }
 </script>
 @endsection

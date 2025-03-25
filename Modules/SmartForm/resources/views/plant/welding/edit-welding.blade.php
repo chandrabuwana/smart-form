@@ -423,15 +423,11 @@
 
                                     </tbody>
                                 </table>
-
-                            
-
-
                             </div>
                                     <div class="form-actions">
                                         <a href="{{ route('plant.welding.dashboard') }}"
                                             class="btn btn-secondary">Cancel</a>
-                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                        <button type="submit" class="btn btn-primary">Update</button>
                                     </div>
                     </form>
 
