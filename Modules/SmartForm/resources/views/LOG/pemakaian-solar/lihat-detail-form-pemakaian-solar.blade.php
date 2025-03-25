@@ -149,15 +149,19 @@
 
                     <div class="card-footer">
                         <div class="d align-items-center">
-                            <button class="btn btn-primary ms-auto uploadBtn" style="margin:5px" id="btnApprove">
-                                <i class="fas fa-check"></i>
-                                Approve
-                            </button>
-                            <button class="btn btn-warning ms-auto uploadBtn" style="margin:5px" id="btnReject">
-                                <i class="fas fa-close"></i>
-                                Reject
-                            </button>
-                            <a href="{{url()->previous()}}" class="btn btn-success" style="margin:5px"><i class="fas fa-cancel"></i> Cancel</a>
+                            @if (session('username')==($data['disetujui_oleh']))
+                                <button class="btn btn-primary ms-auto uploadBtn" style="margin:5px" id="btnApprove">
+                                    <i class="fas fa-check"></i>
+                                    Approve
+                                </button>
+                                <button class="btn btn-warning ms-auto uploadBtn" style="margin:5px" id="btnReject">
+                                    <i class="fas fa-close"></i>
+                                    Reject
+                                </button>
+                                <a href="{{url()->previous()}}" class="btn btn-success" style="margin:5px"><i class="fas fa-cancel"></i> Cancel</a>
+                            @else
+                                <a href="{{url()->previous()}}" class="btn btn-success" style="margin:5px"><i class="fas fa-cancel"></i> Cancel</a>
+                            @endif
                         </div>
                     </div>
 
@@ -202,6 +206,7 @@
         var tTotalAkhir = $("#tTotalAkhir")
         var iNamaOperator = $("#iNamaOperator")
         var btnApprove = $("#btnApprove");
+        var btnReject = $("#btnReject");
         var btnCancel = $("#btnCancel");
         var iKm = $("#iKm")
         var iHm = $("#iHm")
@@ -355,7 +360,49 @@
                         showLoading()
                         Swal.fire({
                                 icon: 'success',
-                                title: 'Berhasil diApprove!',
+                                title: 'Berhasil di Approve!',
+                                // text: response.data.data,
+                            }).then((result) => {
+                                window.location.href = `/bss-form/log/pemakaian-solar`;
+                            })
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    })
+                    .finally(function() {
+                        stopLoading()
+                    })
+                // submitAssetRequest(dataReq);
+            })
+
+            btnReject.click(function(e) {
+                e.preventDefault();
+                
+                    var dataReq = {
+                        noDoc: noDoc.text(),
+                        status: "Approved"
+                    }
+                    let formData = new FormData();
+
+                    formData.append('item',JSON.stringify(dataPemakaianSolar.item));
+                    for (const key in dataReq) {
+                        if(key != "item") {
+                            formData.append(key, dataReq[key])
+                        }
+                    }
+                    // TODO
+                    axios.post('/bss-form/log/submit-reject-pemakaian-solar?no_doc='+noDoc.text(), formData, {
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    })
+                    .then(function (response) {
+                        console.log(response.data)
+                        showLoading()
+                        Swal.fire({
+                                icon: 'success',
+                                title: 'Rejected!',
                                 // text: response.data.data,
                             }).then((result) => {
                                 window.location.href = `/bss-form/log/pemakaian-solar`;

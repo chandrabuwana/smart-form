@@ -21,6 +21,7 @@ use Modules\SmartForm\App\Http\Controllers\PLANT\CompressorPompaController;
 use Modules\SmartForm\App\Http\Controllers\PLANT\PpmXcmg900dController;
 use Modules\SmartForm\App\Http\Controllers\PLANT\PpmXCMG700DController;
 use Modules\SmartForm\App\Http\Controllers\PLANT\PpmXCMG3005TController;
+use Modules\SmartForm\App\Http\Controllers\PLANT\PpuXE1250Controller;
 use Modules\SmartForm\App\Http\Controllers\PLANT\PlantWeldingController;
 use Modules\SmartForm\App\Http\Controllers\Production\FormCheckerController;
 use Modules\SmartForm\App\Http\Controllers\Production\KalibrasiCtController;
@@ -45,6 +46,7 @@ use Modules\SmartForm\App\Http\Controllers\SM\RegistrasiSupplierController;
 use Modules\SmartForm\App\Http\Controllers\LOG\CheckOgcComController;
 use Modules\SmartForm\App\Http\Controllers\LOG\LogController;
 use Modules\SmartForm\App\Http\Controllers\LOG\PemakaianSolarController;
+use Modules\SmartForm\App\Http\Controllers\LOG\FuelController;
 use Modules\SmartForm\App\Http\Controllers\SmartFormController;
 use Modules\SmartForm\App\Http\Controllers\SmartPica\DashboarController;
 use Modules\SmartForm\App\Http\Controllers\SmartPica\HelperController;
@@ -101,14 +103,15 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/pdf-req-master/{id}', [LogController::class, 'PdfReqMaster'])->name('bss-form.log.pdf-req-master');
 
             // PERMINTAAN PENGISIAN FUEL
-            Route::get('/request-fuel', [LogController::class, 'FuelDashboard'])->name('bss-form.log.fuel.dashboard');
-            Route::get('/list-fuel', [LogController::class, 'GetListRequestFuel'])->name("bss-form.log.list-fuel");
-            Route::get('/form-fuel', [LogController::class, 'FormFuel'])->name('bss-form.log.form-fuel');
-            Route::post('/create-fuel', [LogController::class, 'CreateReqFuel'])->name('bss-form.log.create-req-fuel');
-            Route::get('/edit-fuel/{id}', [LogController::class, 'editReqFuel'])->name('bss-form.log.edit-req-fuel');
-            Route::post('/update-fuel/{id}', [LogController::class, 'updateReqFuel'])->name('bss-form.log.update-req-fuel');
-            Route::get('/delete-fuel/{id}', [LogController::class, 'DeleteReqFuel'])->name('bss-form.log.delete-fuel');
-            Route::get('/pdf-fuel/{id}', [LogController::class, 'PdfReqFuel'])->name('bss-form.log.pdf-fuel');
+            Route::get('/request-fuel', [FuelController::class, 'FuelDashboard'])->name('bss-form.log.fuel.dashboard');
+            Route::get('/list-fuel', [FuelController::class, 'GetListRequestFuel'])->name("bss-form.log.list-fuel");
+            Route::get('/form-fuel', [FuelController::class, 'FormFuel'])->name('bss-form.log.form-fuel');
+            Route::post('/create-fuel', [FuelController::class, 'CreateReqFuel'])->name('bss-form.log.create-req-fuel');
+            Route::get('/edit-fuel', [FuelController::class, 'editReqFuel'])->name('bss-form.log.edit-req-fuel');
+            Route::post('/update-fuel/{id}', [FuelController::class, 'updateReqFuel'])->name('bss-form.log.update-req-fuel');
+            Route::get('/delete-fuel/{id}', [FuelController::class, 'DeleteReqFuel'])->name('bss-form.log.delete-fuel');
+            Route::get('/pdf-fuel/{id}', [FuelController::class, 'PdfReqFuel'])->name('bss-form.log.pdf-fuel');
+            Route::get('/get-req-fuel-detail', [FuelController::class, 'FuelDetailById'])->name("bss-form.log.form-detail-by-id");
 
             // PENGELUARAN OIL, GREASE & COOLANT MENU
             Route::get('/pengeluaran-oli', [LogController::class, 'PengeluaranOliDashboard'])->name('bss-form.log.pengeluaran-oli.dashboard');
@@ -127,7 +130,9 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/pdf-pemakaian-solar/{id}', [PemakaianSolarController::class, 'PdfPemakaianSolar'])->name('bss-form.log.pdf-pemakaian-solar');
             Route::get('/get-pemakaian-solar-detail', [PemakaianSolarController::class, 'SolarDetailByNoDoc'])->name("bss-form.log.form-detail-by-id");
             Route::get('/get-pemakaian-solar-data', [PemakaianSolarController::class, 'GetPemakaianSolarData'])->name("bss-form.log.get-pemakaian-solar-data");
+
             Route::post('/submit-approve-pemakaian-solar', [PemakaianSolarController::class, 'SubmitApprovePemakaianSolar'])->name("bss-form.log.submit-approve-pemakaian-solar");
+            Route::post('/submit-reject-pemakaian-solar', [PemakaianSolarController::class, 'SubmitRejectPemakaianSolar'])->name("bss-form.log.submit-reject-pemakaian-solar");
 
             // CHECK OGC COMPLIANCE
             Route::get('/check-ogc-compliance', [CheckOgcComController::class, 'CheckOgcCompDashboard'])->name('bss-form.log.check-ogc-comp.dashboard');
@@ -473,6 +478,23 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/update',[PpmXCMG700DController::class, 'Update'])->name('plant.ppm.700d.update');
             Route::get('/detail/{id}', [PpmXCMG700DController::class, 'detail'])->name('plant.ppm.700d.detail');
             Route::delete('/delete/{id}', [PpmXCMG700DController::class, 'Delete'])->name('plant.ppm.700d.delete');
+            Route::get('/show/{id}', [PpmXCMG700DController::class, 'show'])->name('plant.ppm.700d.show');
+            Route::post('/approve-ppm.700d', [PpmXCMG700DController::class, 'Approve'])->name("plant.ppm.700d.approve");
+            Route::post('/reject-ppm.700d', [PpmXCMG700DController::class, 'Reject'])->name("plant.ppm.700d.reject");
+            Route::post('/reset-ppm.700d/{id}', [PpmXCMG700DController::class, 'Reset'])->name("plant.ppm.700d.reset");
+        });
+        Route::prefix('ppu-xe1250')->group(function(){
+            Route::get('/dashboard', [PpuXE1250Controller::class, 'Dashboard'])->name('plant.ppu.xe1250.dashboard');
+            Route::get('/export/{id}', [PpuXE1250Controller::class, 'Export'])->name('plant.ppu.xe1250.export');
+            Route::get('/add', [PpuXE1250Controller::class, 'Add'])->name('plant.ppu.xe1250.form');
+            Route::post('/store', [PpuXE1250Controller::class, 'Store'])->name('plant.ppu.xe1250.store');
+            Route::post('/update',[PpuXE1250Controller::class, 'Update'])->name('plant.ppu.xe1250.update');
+            Route::get('/detail/{id}', [PpuXE1250Controller::class, 'detail'])->name('plant.ppu.xe1250.detail');
+            Route::get('/show/{id}', [PpuXE1250Controller::class, 'show'])->name('plant.ppu.xe1250.show');
+            Route::delete('/delete/{id}', [PpuXE1250Controller::class, 'Delete'])->name('plant.ppu.xe1250.delete');
+            Route::post('/approve-ppu-xe1250', [PpuXE1250Controller::class, 'Approve'])->name("plant.ppu.xe1250.approve");
+            Route::post('/reject-ppu-xe1250', [PpuXE1250Controller::class, 'Reject'])->name("plant.ppu.xe1250.reject");
+            Route::post('/reset-ppu-xe1250/{id}', [PpuXE1250Controller::class, 'Reset'])->name("plant.ppu.xe1250.reset");
         });
     });
 

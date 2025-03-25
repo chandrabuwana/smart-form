@@ -55,7 +55,7 @@
             <div class="card my-4">
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                     <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                        <h6 class="text-white text-capitalize ps-3">Dashboard Form PPM XCMG XE700D</h6>
+                        <h6 class="text-white text-capitalize ps-3">Dashboard Form PPU XE 1250</h6>
                     </div>
                 </div>
                 <!-- Statistics Cards -->
@@ -90,43 +90,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="card stats-card">
-                            <div class="card-body p-3">
-                                <div class="d-flex justify-content-between">
-                                    <div>
-                                        <i class="fas fa-tram fa-2x" style="color: #B197FC;"></i>
-                                    </div>
-                                    <div class="text-end pt-1">
-                                        <p class="text-sm mb-0 text-capitalize">Engine Model</p>
-                                        <h4 class="mb-0">{{ $statistics->engine_model }}</h4>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="card stats-card">
-                            <div class="card-body p-3">
-                                <div class="d-flex justify-content-between">
-                                    <div>
-                                        <i class="fas fa-sitemap fa-2x" style="color: #74C0FC;"></i>
-                                    </div>
-                                    <div class="text-end pt-1">
-                                        <p class="text-sm mb-0 text-capitalize">Job Site</p>
-                                        <h4 class="mb-0">{{ $statistics->job_site }}</h4>
 
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
                 <!-- Filters and Search -->
                 <div class="card-body px-0 pb-2">
                     <div class="d-flex align-items-center mx-3">
-                        <a href="{{ route('plant.ppm.700d.form') }}">
+                        <a href="{{ route('plant.ppu.xe1250.form') }}">
                             <button class="btn btn-primary ms-auto uploadBtn">
                                 New Form
                             </button>
@@ -147,47 +117,13 @@
                                 <div class="col-md-3
                                             mb-3">
                                     <div class="input-group input-group-static mb-4 position-relative">
-                                        <label for="engine_model" class="ms-0">Engine Model</label>
-                                        <input type="text" class="form-control" id="engine_model" name="engine_model"
-                                            value="{{ $filters['engine_model'] ?? '' }}">
+                                        <label for="sn_unit" class="ms-0">SN Unit</label>
+                                        <input type="text" class="form-control" id="sn_unit" name="sn_unit"
+                                            value="{{ $filters['sn_unit'] ?? '' }}">
 
                                     </div>
                                 </div>
-                                <div class="col-md-3 mb-3">
-                                    <div class="input-group input-group-static mb-4 position-relative">
-                                        <label for="job" class="ms-0">Job Site</label>
-                                        <select class="form-control" name="job_site" id="job_site">
-                                            <option disabled selected>-- Select Site --</option>
-                                            <option value="agm"
-                                                {{ old('site', $filters['job_site'] ?? '') == 'agm' ? 'selected' : '' }}>
-                                                agm</option>
-                                            <option value="mbl"
-                                                {{ old('site', $filters['job_site'] ?? '') == 'mbl' ? 'selected' : '' }}>
-                                                mbl</option>
-                                            <option value="mme"
-                                                {{ old('site', $filters['job_site'] ?? '') == 'mme' ? 'selected' : '' }}>
-                                                mme</option>
-                                            <option value="mas"
-                                                {{ old('site', $filters['job_site'] ?? '') == 'mas' ? 'selected' : '' }}>
-                                                mas</option>
-                                            <option value="pmss"
-                                                {{ old('site', $filters['job_site'] ?? '') == 'pmss' ? 'selected' : '' }}>
-                                                pmss</option>
-                                            <option value="taj"
-                                                {{ old('site', $filters['job_site'] ?? '') == 'taj' ? 'selected' : '' }}>
-                                                taj</option>
-                                            <option value="bssr"
-                                                {{ old('site', $filters['job_site'] ?? '') == 'bssr' ? 'selected' : '' }}>
-                                                bssr</option>
-                                            <option value="tdm"
-                                                {{ old('site', $filters['job_site'] ?? '') == 'tdm' ? 'selected' : '' }}>
-                                                tdm</option>
-                                            <option value="msj"
-                                                {{ old('site', $filters['job_site'] ?? '') == 'msj' ? 'selected' : '' }}>
-                                                msj</option>
-                                        </select>
-                                    </div>
-                                </div>
+
                                 <div class="col-md-3
                                 mb-3">
                                     <div class="input-group input-group-static mb-4 position-relative">
@@ -205,13 +141,15 @@
 
                                     </div>
                                 </div>
-                                <div class="col-md-12 mb-3 d-flex justify-content-start">
+
+                                <div class="col-md-12 mb-3 t">
                                     <button type="submit" class="btn btn-primary filter-btn" id="btnFilterSubmit">
                                         Filter
                                     </button>
                                     <button type="button" class="btn btn-secondary filter-btn" id="btnClearFilter">
                                         Clear Filter
                                     </button>
+
                                 </div>
                                 <div class="col-md-12 d-flex justify-content-end">
 
@@ -241,17 +179,17 @@
                                             Number</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Unit Model</th>
-                                        <th
-                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Inspection</th>
+                                            SN_Unit</th>
 
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Date</th>
+                                            Inspection Date</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Checker</th>
+                                            Checker 1</th>
+                                        <th
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            Checker 2</th>
 
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
@@ -259,6 +197,8 @@
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Status</th>
+
+
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Actions</th>
@@ -270,20 +210,16 @@
                                             <td>
                                                 <div class="d-flex px-2 py-1">
                                                     <div class="d-flex flex-column justify-content-center">
-                                                        <p class="text-xs font-weight-bold mb-0">{{ $data->doc_num }}</p>
+                                                        <p class="text-xs font-weight-bold mb-0">{{ $data->doc_number }}</p>
                                                     </div>
                                                 </div>
                                             </td>
-
                                             <td>
-                                                <p class="text-xs font-weight-bold mb-0">{{ $data->unit_model }}</p>
-                                            </td>
-                                            <td>
-                                                <p class="text-xs font-weight-bold mb-0">{{ $data->at_inspection }} </p>
+                                                <p class="text-xs font-weight-bold mb-0">{{ $data->sn_unit }}</p>
                                             </td>
 
                                             <td>
-                                                <span class="text-xs font-weight-bold">{{ $data->date }}</span>
+                                                <span class="text-xs font-weight-bold">{{ $data->inspection_date }}</span>
                                             </td>
                                             @php
                                                 $status = json_decode($data->status, true);
@@ -293,30 +229,46 @@
 
                                                 @if ($status[0] === 'approved')
                                                     <span
-                                                        class="badge bg-success">{{ optional(collect($user)->firstWhere('nik', $data->checked_by))->nama ?? '' }}</span>
+                                                        class="badge bg-success">{{ optional(collect($user)->firstWhere('nik', $data->checked_1))->nama ?? '' }}</span>
                                                 @elseif ($status[0] === 'rejected')
                                                     <span
-                                                        class="badge bg-danger">{{ optional(collect($user)->firstWhere('nik', $data->checked_by))->nama ?? '' }}</span>
+                                                        class="badge bg-danger">{{ optional(collect($user)->firstWhere('nik', $data->checked_1))->nama ?? '' }}</span>
                                                 @elseif ($status[0] === null)
                                                     <span
-                                                        class="badge bg-info">{{ optional(collect($user)->firstWhere('nik', $data->checked_by))->nama ?? '' }}</span>
+                                                        class="badge bg-info">{{ optional(collect($user)->firstWhere('nik', $data->checked_1))->nama ?? '' }}</span>
                                                 @endif
 
                                             </td>
                                             <td>
                                                 <span class="text-xs font-weight-bold">
-                                                    @if ($status[1] === 'approved')
+                                                    @if ($status[2] === 'approved')
                                                         <span
-                                                            class="badge bg-success">{{ optional(collect($user)->firstWhere('nik', $data->validated_by))->nama ?? '' }}</span>
-                                                    @elseif ($status[1] === 'rejected')
+                                                            class="badge bg-success">{{ optional(collect($user)->firstWhere('nik', $data->checked_2))->nama ?? '' }}</span>
+                                                    @elseif ($status[2] === 'rejected')
                                                         <span
-                                                            class="badge bg-danger">{{ optional(collect($user)->firstWhere('nik', $data->validated_by))->nama ?? '' }}</span>
-                                                    @elseif ($status[1] == null)
+                                                            class="badge bg-danger">{{ optional(collect($user)->firstWhere('nik', $data->checked_2))->nama ?? '' }}</span>
+                                                    @elseif ($status[2] == null)
                                                         <span
-                                                            class="badge bg-info">{{ optional(collect($user)->firstWhere('nik', $data->validated_by))->nama ?? '' }}</span>
+                                                            class="badge bg-info">{{ optional(collect($user)->firstWhere('nik', $data->checked_2))->nama ?? '' }}</span>
                                                     @endif
                                                 </span>
                                             </td>
+                                            <td>
+                                                <span class="text-xs font-weight-bold">
+                                                    @if ($status[1] === 'approved')
+                                                        <span
+                                                            class="badge bg-success">{{ optional(collect($user)->firstWhere('nik', $data->validated))->nama ?? '' }}</span>
+                                                    @elseif ($status[1] === 'rejected')
+                                                        <span
+                                                            class="badge bg-danger">{{ optional(collect($user)->firstWhere('nik', $data->validated))->nama ?? '' }}</span>
+                                                    @elseif ($status[1] == null)
+                                                        <span
+                                                            class="badge bg-info">{{ optional(collect($user)->firstWhere('nik', $data->validated))->nama ?? '' }}</span>
+                                                    @endif
+                                                </span>
+                                            </td>
+
+
                                             <td>
                                                 <span class="text-xs font-weight-bold">
                                                     @if (collect($status)->every(fn($s) => $s === 'approved'))
@@ -330,29 +282,30 @@
                                             </td>
                                             <td>
                                                 @if ($session == $data->creator)
-                                                    <a href="{{ route('plant.ppm.700d.detail', ['id' => $data->id]) }}"
+                                                    <a href="{{ route('plant.ppu.xe1250.detail', ['id' => $data->id]) }}"
                                                         class="btn btn-warning btn-sm mt-3">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
                                                     <button type="button" class="btn btn-danger btn-sm mt-3"
-                                                        onclick="deleteXcmg700('{{ $data->doc_num }}')">
+                                                        onclick="deleteXE1250('{{ $data->doc_number }}')">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
                                                 @endif
-                                                <a href="{{ route('plant.ppm.700d.show', ['id' => $data->id]) }}"
+
+                                                <a href="{{ route('plant.ppu.xe1250.show', ['id' => $data->id]) }}"
                                                     class="btn btn-info btn-sm mt-3">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
                                                 @if (collect($status)->every(fn($s) => $s === 'approved'))
-                                                    <a href="{{ route('plant.ppm.700d.export', ['id' => $data->id]) }}"
+                                                    <a href="{{ route('plant.ppu.xe1250.export', ['id' => $data->id]) }}"
                                                         class="btn btn-primary btn-sm mt-3">
                                                         <i class="fas fa-download"></i>
                                                     </a>
                                                 @endif
+
                                             </td>
                                         </tr>
                                     @endforeach
-
                                 </tbody>
                             </table>
                             <div class="d-flex justify-content-left mt-3">
@@ -367,8 +320,8 @@
 @endsection
 
 @section('custom-js')
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <script>
         $(document).ready(function() {
@@ -377,15 +330,15 @@
         $(function() {
             // Clear filter button
             $('#btnClearFilter').click(function() {
-                window.location.href = '{{ route('plant.ppm.700d.dashboard') }}';
+                window.location.href = '{{ route('plant.ppu.xe1250.dashboard') }}';
             });
 
         });
 
-        function deleteXcmg700(id) {
+        function deleteXE1250(id) {
             console.log('Delete ID:', id);
             if (confirm('Are you sure you want to delete this data?')) {
-                axios.delete('{{ route('plant.ppm.700d.delete', ['id' => 'ID']) }}'.replace('ID', id))
+                axios.delete('{{ route('plant.ppu.xe1250.delete', ['id' => 'ID']) }}'.replace('ID', id))
                     .then(function(response) {
                         console.log('Response:', response);
                         if (response.data.success) {
