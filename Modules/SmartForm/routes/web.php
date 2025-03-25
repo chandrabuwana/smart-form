@@ -45,6 +45,7 @@ use Modules\SmartForm\App\Http\Controllers\LOG\CheckOgcComController;
 use Modules\SmartForm\App\Http\Controllers\LOG\LogController;
 use Modules\SmartForm\App\Http\Controllers\LOG\PemakaianSolarController;
 use Modules\SmartForm\App\Http\Controllers\LOG\FuelController;
+use Modules\SmartForm\App\Http\Controllers\LOG\Pengajuan003SapController;
 use Modules\SmartForm\App\Http\Controllers\SmartFormController;
 use Modules\SmartForm\App\Http\Controllers\SmartPica\DashboarController;
 use Modules\SmartForm\App\Http\Controllers\SmartPica\HelperController;
@@ -130,6 +131,15 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/check-ogc-compliance', [CheckOgcComController::class, 'CheckOgcCompDashboard'])->name('bss-form.log.check-ogc-comp.dashboard');
             Route::get('/list-check-ogc', [CheckOgcComController::class, 'GetListCheckOgc'])->name("bss-form.log.list-check-ogc");
             Route::get('/form-check-ogc', [CheckOgcComController::class, 'formCheckOgc'])->name('bss-form.log.form-check-ogc');
+
+            // 003 PENGAJUAN PR SAP
+            Route::prefix('003-sap')->group(function () {
+                Route::get('/dashboard', [Pengajuan003SapController::class, 'dashboard'])->name('dashboard-003-sap');
+                Route::get('/create-form', [Pengajuan003SapController::class, 'createForm'])->name('create-003-sap');
+                Route::post('/store-form', [Pengajuan003SapController::class, 'storeForm'])->name('store-003-sap');
+                Route::get('/export-pdf/{id}', [Pengajuan003SapController::class, 'exportPDF'])->name('export-003-sap');
+            });
+
         });
 
         Route::prefix('under-carriage')->group(function () {
