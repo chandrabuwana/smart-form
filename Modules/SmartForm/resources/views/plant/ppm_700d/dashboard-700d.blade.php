@@ -341,7 +341,7 @@
                                                 @endif
                                                 <a href="{{ route('plant.ppm.700d.show', ['id' => $data->id]) }}"
                                                     class="btn btn-info btn-sm mt-3">
-                                                    <i class="fas fa-eye"></i>
+                                                    <i class="far fa-check-circle" style="font-size:12px;"></i>
                                                 </a>
                                                 @if (collect($status)->every(fn($s) => $s === 'approved'))
                                                     <a href="{{ route('plant.ppm.700d.export', ['id' => $data->id]) }}"

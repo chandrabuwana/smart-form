@@ -481,9 +481,9 @@
                                     <div class="input-group input-group-static mb-3">
                                         <label for="dibuat" class="ms-0">Checked By</label>
                                         <select name="checked" id="dibuat_oleh" class="form-control" required>
-                                            <option disabled selected>-- Select Creator --</option>
+                                            <option disabled selected>-- Select checker --</option>
                                             @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nama }}">{{ $user->nama }}</option>
+                                                <option value="{{ $user->nik }}">{{ $user->nama }}</option>
                                             @endforeach
 
                                         </select>
@@ -495,7 +495,7 @@
                                         <select name="validated" id="diperiksa" class="form-control" required>
                                             <option disabled selected>-- Select Approval --</option>
                                             @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nama }}">{{ $user->nama }}</option>
+                                                <option value="{{ $user->nik }}">{{ $user->nama }}</option>
                                             @endforeach
                                         </select>
                                     </div>

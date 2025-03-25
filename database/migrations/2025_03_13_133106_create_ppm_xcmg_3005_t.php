@@ -25,6 +25,8 @@ return new class extends Migration
             $table->string('job_location');
             $table->string('at_inspection');
             $table->string('date');
+            $table->string('status');
+            $table->string('creator');
             $table->string('checked_by');
             $table->string('validated_by');
             $table->timestamps();
