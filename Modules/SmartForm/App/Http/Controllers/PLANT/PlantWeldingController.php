@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
+use Modules\SmartForm\helpers\HrdHelper;
 
 class PlantWeldingController extends Controller
 {
@@ -54,7 +55,7 @@ class PlantWeldingController extends Controller
                 'location' => DB::table('plant_welding')->distinct()->count('location'),
             ];
             $records = $query->paginate(10);
-            return view('smartform::plant.welding.dashboard-welding', ['records' => $records, 'statistics' => $statistics, 'filters' => [
+            return view('smartform::plant.welding.dashboard-welding', ['records' => $records, 'statistics' => $statistics, 'user' => HrdHelper::getApprovalList(), 'filters' => [
                 'search' => $request->search,
                 'location' => $request->location,
                 'site_name' => $request->site_name,
@@ -108,12 +109,14 @@ class PlantWeldingController extends Controller
                 return view('smartform::plant.welding.form-welding', [
                     'record' => $record,
                     'isShowDetail' => true,
-
+                    'approvalList' => HrdHelper::getApprovalList(), // Tambahkan di array yang sama
                 ]);
             }
 
             return view('smartform::plant.welding.form-welding', [
+                'record' => $record ?? null, // Gunakan null jika $record tidak ada
                 'isShowDetail' => false,
+                'approvalList' => HrdHelper::getApprovalList(),
             ]);
         } catch (\Exception $e) {
             Log::error('Error in AddForm: ' . $e->getMessage());
@@ -138,6 +141,8 @@ class PlantWeldingController extends Controller
                 'atasan' => $request->atasan,
                 'catatan1' => $request->catatan1 ?? '',
                 'catatan2' => $request->catatan2 ?? '',
+                'status_pemeriksa' => $request->status ?? 'Pending',
+                'status_atasan' => $request->status ?? 'Pending',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ];
@@ -214,16 +219,16 @@ class PlantWeldingController extends Controller
             if (!$record) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Data tidak ditemukan'
+                    'message' => 'Data tidak ditemukan.'
                 ], 404);
             }
 
-            // Hapus data
+            // Hapus data berdasarkan ID
             DB::table('plant_welding')->where('id', $id)->delete();
 
             return response()->json([
                 'success' => true,
-                'message' => 'Data berhasil dihapus'
+                'message' => 'Data berhasil dihapus.'
             ]);
         } catch (\Exception $e) {
             Log::error('Error in Delete: ' . $e->getMessage());
@@ -235,13 +240,47 @@ class PlantWeldingController extends Controller
         }
     }
 
+    public function EditWelding($id)
+    {
+        $record = DB::table('plant_welding')
+            ->where('id', $id)
+            ->first();
+
+        $record->question1 = json_decode($record->question1);
+        $record->question2 = json_decode($record->question2);
+        $record->question3 = json_decode($record->question3);
+        $record->question4 = json_decode($record->question4);
+        $record->question5 = json_decode($record->question5);
+        $record->question6 = json_decode($record->question6);
+        $record->question7 = json_decode($record->question7);
+        $record->question8 = json_decode($record->question8);
+        $record->question9 = json_decode($record->question9);
+        $record->question10 = json_decode($record->question10);
+        $record->question11 = json_decode($record->question11);
+        $record->question12 = json_decode($record->question12);
+        $record->question13 = json_decode($record->question13);
+        $record->question14 = json_decode($record->question14);
+        $record->question15 = json_decode($record->question15);
+        $record->question16 = json_decode($record->question16);
+        $record->question17 = json_decode($record->question17);
+        $record->question18 = json_decode($record->question18);
+        $record->question19 = json_decode($record->question19);
+        $record->question20 = json_decode($record->question20);
+
+        return view('smartform::plant.welding.edit-welding', compact('record'), [
+            'record' => $record,
+            'isShowDetail' => false,
+            'approvalList' => HrdHelper::getApprovalList(),
+        ]);
+        
+    }
 
     public function UpdateWelding(Request $request, $id)
     {
         try {
-
+            $existingRecord = DB::table('plant_welding')->where('id', $id)->first();
             $data = [
-                'doc_number' => $this->generateDocNumber(),
+                'doc_number' => $request->doc_number ?? $existingRecord->doc_number,
                 'site_name' => $request->site_name,
                 'location' => $request->location,
                 'month' => $request->month,
@@ -250,10 +289,10 @@ class PlantWeldingController extends Controller
                 'jabatan' => $request->jabatan,
                 'nrp' => $request->nrp,
                 'atasan' => $request->atasan,
+                'status_pemeriksa' => $request->status ?? 'Pending',
+                'status_atasan' => $request->status ?? 'Pending',
                 'catatan1' => $request->catatan1 ?? '',
                 'catatan2' => $request->catatan2 ?? '',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
             ];
 
             $item = [];
@@ -321,6 +360,140 @@ class PlantWeldingController extends Controller
         }
     }
 
+    public function ApprovalWelding($id)
+    {
+        $record = DB::table('plant_welding')
+            ->where('id', $id)
+            ->first();
+
+        $record->question1 = json_decode($record->question1);
+        $record->question2 = json_decode($record->question2);
+        $record->question3 = json_decode($record->question3);
+        $record->question4 = json_decode($record->question4);
+        $record->question5 = json_decode($record->question5);
+        $record->question6 = json_decode($record->question6);
+        $record->question7 = json_decode($record->question7);
+        $record->question8 = json_decode($record->question8);
+        $record->question9 = json_decode($record->question9);
+        $record->question10 = json_decode($record->question10);
+        $record->question11 = json_decode($record->question11);
+        $record->question12 = json_decode($record->question12);
+        $record->question13 = json_decode($record->question13);
+        $record->question14 = json_decode($record->question14);
+        $record->question15 = json_decode($record->question15);
+        $record->question16 = json_decode($record->question16);
+        $record->question17 = json_decode($record->question17);
+        $record->question18 = json_decode($record->question18);
+        $record->question19 = json_decode($record->question19);
+        $record->question20 = json_decode($record->question20);
+
+        return view('smartform::plant.welding.approval-welding', compact('record'), [
+            'record' => $record,
+            'isShowDetail' => true,
+            'approvalList' => HrdHelper::getApprovalList(),
+        ]);
+    }
+
+    public function ApproveWelding($id)
+    {
+        try {
+            // Ambil data dari database berdasarkan ID
+            $record = DB::table('plant_welding')->where('id', $id)->first();
+
+            // Ambil user_id dari session
+            $loggedInUserId = session('user_id');
+
+            if ($record) {
+                // Cek apakah user adalah pemeriksa
+                if ($record->pemeriksa == $loggedInUserId) {
+                    DB::table('plant_welding')
+                        ->where('id', $id)
+                        ->update(['status_pemeriksa' => 'Approve']);
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Status pemeriksa berhasil diubah menjadi Approve'
+                    ]);
+                }
+
+                // Cek apakah user adalah atasan
+                if ($record->atasan == $loggedInUserId) {
+                    DB::table('plant_welding')
+                        ->where('id', $id)
+                        ->update(['status_atasan' => 'Approve']);
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Status atasan berhasil diubah menjadi Approve'
+                    ]);
+                }
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda tidak berhak melakukan approve untuk data ini'
+            ], 403);
+        } catch (\Exception $e) {
+            Log::error('Error in ApproveWelding: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function RejectWelding($id)
+    {
+        try {
+            // Ambil data dari database berdasarkan ID
+            $record = DB::table('plant_welding')->where('id', $id)->first();
+
+            // Ambil user_id dari session
+            $loggedInUserId = session('user_id');
+
+            if ($record) {
+                // Cek apakah user adalah pemeriksa
+                if ($record->pemeriksa == $loggedInUserId) {
+                    DB::table('plant_welding')
+                        ->where('id', $id)
+                        ->update(['status_pemeriksa' => 'Reject']);
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Status pemeriksa berhasil diubah menjadi Reject'
+                    ]);
+                }
+
+                // Cek apakah user adalah atasan
+                if ($record->atasan == $loggedInUserId) {
+                    DB::table('plant_welding')
+                        ->where('id', $id)
+                        ->update(['status_atasan' => 'Reject']);
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Status atasan berhasil diubah menjadi Reject'
+                    ]);
+                }
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda tidak berhak melakukan reject untuk data ini'
+            ], 403);
+        } catch (\Exception $e) {
+            Log::error('Error in RejectWelding: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+
+
+
     public function ExportForm($id)
     {
 
@@ -368,7 +541,10 @@ class PlantWeldingController extends Controller
             $record->question19 = $safeJsonDecode($record->question19);
             $record->question20 = $safeJsonDecode($record->question20);
 
-            $pdf = PDF::loadView('smartform::plant.welding.export-pdf', compact('record'));
+            $pdf = PDF::loadView('smartform::plant.welding.export-pdf', [
+                'record' => $record,
+                'approvalList' => HrdHelper::getApprovalList() // Pastikan ini ditambahkan
+            ]);
             $pdf->setPaper('A4', 'potrait');
 
             return $pdf->download('Welding_Standard' . $record->doc_number . '.pdf');

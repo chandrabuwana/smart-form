@@ -37,12 +37,13 @@
             <div class="card">
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                     <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                        <h6 class="text-white text-capitalize ps-3">{{$isShowDetail ? 'Detail' : 'New'}} Checklist Coal Getting (Zero Contamination)</h6>
+                        <h6 class="text-white text-capitalize ps-3">Edit Checklist Coal Getting (Zero Contamination)</h6>
                     </div>
                 </div>
                 <div class="card-body px-0 pb-2">
-                    <form method="POST" id="inspectionForm" action="{{ route('prod.coal.store') }}">
+                    <form method="POST" id="inspectionForm" action="{{ route('prod.coal.form.update', ['id' => $record->id]) }}">
                         @csrf
+                        @method('PUT')
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                         <div class="mx-3">
                             <!-- Basic Information -->
@@ -51,24 +52,21 @@
                                     <div class="input-group input-group-static">
                                         <label>Tanggal</label>
                                         <input type="date" name="inspection_date" class="form-control" required
-                                            value="{{ $isShowDetail ? $record->inspection_date : now()->format('Y-m-d') }}"
-                                            {{ $isShowDetail ? 'disabled' : '' }}>
+                                            value="{{ $record->inspection_date }}">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static">
                                         <label>Lokasi</label>
                                         <input type="text" name="location" class="form-control" required
-                                            value="{{ $isShowDetail ? $record->location : '' }}"
-                                            {{ $isShowDetail ? 'disabled' : '' }}>
+                                            value="{{ $record->location }}">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static">
                                         <label>Penanggung jawab area</label>
                                         <input type="text" name="area_pic" class="form-control" required
-                                            value="{{ $isShowDetail ? $record->area_pic : session('username') }}"
-                                            {{ $isShowDetail ? 'disabled' : '' }}>
+                                            value="{{ $record->area_pic }}">
                                     </div>
                                 </div>
                             </div>
@@ -107,21 +105,18 @@
                                                         <td class="text-center">
                                                             <div class="form-check d-flex justify-content-center">
                                                                 <input class="form-check-input" type="radio" name="checklist[{{ $index }}][{{ $subIndex }}]" value="1" 
-                                                                    {{ isset($record->checklist_items[$index][$subIndex]['value']) && $record->checklist_items[$index][$subIndex]['value'] == '1' ? 'checked' : '' }}
-                                                                    {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                    {{ isset($record->checklist_items[$index][$subIndex]['value']) && $record->checklist_items[$index][$subIndex]['value'] == '1' ? 'checked' : '' }}>
                                                             </div>
                                                         </td>
                                                         <td class="text-center">
                                                             <div class="form-check d-flex justify-content-center">
                                                                 <input class="form-check-input" type="radio" name="checklist[{{ $index }}][{{ $subIndex }}]" value="0"
-                                                                    {{ isset($record->checklist_items[$index][$subIndex]['value']) && $record->checklist_items[$index][$subIndex]['value'] == '0' ? 'checked' : '' }}
-                                                                    {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                    {{ isset($record->checklist_items[$index][$subIndex]['value']) && $record->checklist_items[$index][$subIndex]['value'] == '0' ? 'checked' : '' }}>
                                                             </div>
                                                         </td>
                                                         <td>
                                                             <input type="text" class="form-control" name="notes[{{ $index }}][{{ $subIndex }}]" 
-                                                                value="{{ isset($record->checklist_items[$index][$subIndex]['notes']) ? $record->checklist_items[$index][$subIndex]['notes'] : '' }}"
-                                                                {{ $isShowDetail ? 'readonly' : '' }}>
+                                                                value="{{ isset($record->checklist_items[$index][$subIndex]['notes']) ? $record->checklist_items[$index][$subIndex]['notes'] : '' }}">
                                                         </td>
                                                     </tr>
                                                 @endforeach
@@ -133,21 +128,18 @@
                                                     <td class="text-center">
                                                         <div class="form-check d-flex justify-content-center">
                                                             <input class="form-check-input" type="radio" name="checklist[{{ $index }}]" value="1"
-                                                                {{ isset($record->checklist_items[$index]['value']) && $record->checklist_items[$index]['value'] == '1' ? 'checked' : '' }}
-                                                                {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                {{ isset($record->checklist_items[$index]['value']) && $record->checklist_items[$index]['value'] == '1' ? 'checked' : '' }}>
                                                         </div>
                                                     </td>
                                                     <td class="text-center">
                                                         <div class="form-check d-flex justify-content-center">
                                                             <input class="form-check-input" type="radio" name="checklist[{{ $index }}]" value="0"
-                                                                {{ isset($record->checklist_items[$index]['value']) && $record->checklist_items[$index]['value'] == '0' ? 'checked' : '' }}
-                                                                {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                {{ isset($record->checklist_items[$index]['value']) && $record->checklist_items[$index]['value'] == '0' ? 'checked' : '' }}>
                                                         </div>
                                                     </td>
                                                     <td>
-                                                        <input type="text" class="form-control" name="notes[{{ $index }}]" 
-                                                            value="{{ isset($record->checklist_items[$index]['notes']) ? $record->checklist_items[$index]['notes'] : '' }}"
-                                                            {{ $isShowDetail ? 'readonly' : '' }}>
+                                                        <input type="text" class="form-control" name="notes[{{ $index }}]"
+                                                            value="{{ isset($record->checklist_items[$index]['notes']) ? $record->checklist_items[$index]['notes'] : '' }}">
                                                     </td>
                                                 </tr>
                                             @endif
@@ -156,58 +148,41 @@
                                 </table>
                             </div>
 
-                            <!-- Signatures -->
+                            <!-- Signature Section -->
                             <div class="row mt-4">
                                 <div class="col-md-6">
-                                    <h6>Dibuat oleh</h6>
-                                    
-                                    <div class="mb-3">
-                                        <input type="text" name="created_by_name" class="form-control" 
-                                            placeholder="Nama Lengkap"
-                                            value="{{ $isShowDetail ? $record->created_by_name : session('username') }}"
-                                            {{ $isShowDetail ? 'disabled' : '' }} required>
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h6>Dibuat oleh</h6>
+                                            <div class="mb-3">
+                                                <input type="text" class="form-control" name="created_by_name" value="{{ $record->created_by_name }}" readonly>
+                                                <input type="hidden" name="created_by_nik" value="{{ $record->created_by_nik }}">
+                                            </div>
+                                            <p class="mb-1">Pengawas Lapangan</p>
+                                        </div>
                                     </div>
-                                    <input type="hidden" name="created_by_nik" value="{{ $isShowDetail ? $record->created_by_nik : session('user_id') }}" required>
-                                    <p class="mb-1">Production Foreman</p>
                                 </div>
                                 <div class="col-md-6">
-                                    <h6>Diketahui oleh</h6>
-                                    
-                                    <div class="mb-3">
-                                        <select name="acknowledged_by_name" class="form-control text-left" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
-                                            <option value="">-- Pilih Pengawas --</option>
-                                            @foreach($approvalList as $user)
-                                                <option value="{{ $user->nama }}" {{ $isShowDetail && $record->acknowledged_by_name == $user->nama ? 'selected' : '' }}>
-                                                    {{ $user->nama }} ({{ $user->nik }})
-                                                </option>
-                                            @endforeach
-                                        </select>
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h6>Diketahui oleh</h6>
+                                            
+                                            <div class="mb-3">
+                                                <input type="text" class="form-control" value="{{ $record->acknowledged_by_name }}" readonly>
+                                                <input type="hidden" name="acknowledged_by_name" value="{{ $record->acknowledged_by_name }}">
+                                                <input type="hidden" name="acknowledged_by_nik" value="{{ $record->acknowledged_by_nik }}">
+                                            </div>
+                                            <p class="mb-1">Production Supervisor</p>
+                                        </div>
                                     </div>
-                                    <input type="hidden" name="acknowledged_by_nik" value="">
-                                    <p class="mb-1">Production Supervisor</p>
                                 </div>
                             </div>
 
-                            <!-- Submit/Back Buttons -->
-                            <div class="row">
-                                <div class="col-12 text-end">
-                                    @if($isShowDetail)
-                                        <a href="{{ route('prod.coal.dashboard') }}" class="btn btn-secondary">Back</a>
-                                        <a href="{{ route('prod.coal.export', ['id' => $record->id]) }}" class="btn btn-primary">
-                                            <i class="fas fa-file-export"></i> Export
-                                        </a>
-                                    @else
-                                    <div class="row mt-4">
-                                        <div class="col-12 d-flex justify-content-between align-items-center">
-                                            <div>
-                                                <a href="{{ route('prod.coal.dashboard') }}" class="btn btn-secondary">Back</a>
-                                            </div>
-                                            <div>
-                                                <button type="submit" class="btn btn-primary">Submit</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    @endif
+                            <!-- Submit Button -->
+                            <div class="row mt-4">
+                                <div class="col-12 text-center">
+                                    <a href="{{ route('prod.coal.dashboard') }}" class="btn btn-secondary">Kembali</a>
+                                    <button type="button" id="submitBtn" class="btn btn-primary">Simpan</button>
                                 </div>
                             </div>
                         </div>
@@ -221,93 +196,77 @@
 
 @section('custom-css')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css">
-<style>
-    .form-check-input {
-        cursor: pointer;
-    }
-    .table > :not(caption) > * > * {
-        padding: 0.5rem;
-    }
-</style>
 @endsection
 
 @section('custom-js')
-    <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <script>
     $(function() {
-        // Handle supervisor selection
-        $('select[name="acknowledged_by_name"]').change(function() {
-            var selectedText = $(this).find('option:selected').text();
-            var match = selectedText.match(/\(([^)]+)\)/);
-            var nik = match ? match[1] : '';
-            $('input[name="acknowledged_by_nik"]').val(nik);
-        });
-
-        // Trigger change on load if there's a value
-        if ($('select[name="acknowledged_by_name"]').val()) {
-            $('select[name="acknowledged_by_name"]').trigger('change');
-        }
-
         // Form submission
-        var form = $("#inspectionForm");
-        var submitBtn = form.find('button[type="submit"]');
-
-        form.submit(function(e) {
-            e.preventDefault();
-            submitBtn.prop('disabled', true);
-
+        $('#submitBtn').click(function() {
+            // Disable button to prevent multiple submissions
+            $(this).prop('disabled', true);
+            
+            // Show loading indicator
             Swal.fire({
-                title: 'Submit Form?',
-                text: 'Do you want to submit this form?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, Submit',
-                cancelButtonText: 'Cancel'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    var formData = new FormData(this);
-                    
-                    axios.post(form.attr('action'), formData)
-                        .then(function(response) {
-                            if (response.data.success) {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Success',
-                                    text: response.data.message
-                                }).then(() => {
-                                    window.location.href = '{{ route("prod.coal.dashboard") }}';
-                                });
-                            } else {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Error',
-                                    text: response.data.message || 'Something went wrong'
-                                });
-                            }
-                        })
-                        .catch(function(error) {
-                            let errorMessage = 'Terjadi kesalahan pada sistem';
-                            
-                            if (error.response) {
-                                if (error.response.data.errors) {
-                                    errorMessage = Object.values(error.response.data.errors).flat().join('\n');
-                                } else if (error.response.data.message) {
-                                    errorMessage = error.response.data.message;
-                                }
-                            }
-
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: errorMessage
-                            });
-                        })
-                        .finally(function() {
-                            submitBtn.prop('disabled', false);
+                title: 'Processing...',
+                text: 'Please wait while we update your data.',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            
+            // Get form data
+            var formData = $('#inspectionForm').serialize();
+            
+            // Send AJAX request
+            $.ajax({
+                url: $('#inspectionForm').attr('action'),
+                type: 'POST',
+                data: formData,
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: response.message,
+                            confirmButtonText: 'OK'
+                        }).then((result) => {
+                            // Redirect to dashboard
+                            window.location.href = "{{ route('prod.coal.dashboard') }}";
                         });
-                } else {
-                    submitBtn.prop('disabled', false);
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: response.message,
+                            confirmButtonText: 'OK'
+                        });
+                        $('#submitBtn').prop('disabled', false);
+                    }
+                },
+                error: function(xhr) {
+                    var errorMessage = 'An error occurred. Please try again.';
+                    
+                    if (xhr.responseJSON && xhr.responseJSON.errors) {
+                        errorMessage = '';
+                        $.each(xhr.responseJSON.errors, function(key, value) {
+                            errorMessage += value[0] + '<br>';
+                        });
+                    } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    }
+                    
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Validation Error',
+                        html: errorMessage,
+                        confirmButtonText: 'OK'
+                    });
+                    $('#submitBtn').prop('disabled', false);
                 }
             });
         });

@@ -24,24 +24,21 @@
                     <!-- Card Header -->
                     <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                         <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                            <h6 class="text-white text-capitalize ps-3">{{ $isShowDetail ? 'Detail' : 'New' }} Form P2H
+                            <h6 class="text-white text-capitalize ps-3">Edit Form P2H
                                 Welding (Standard)</h6>
                         </div>
                     </div>
 
                     <form action="" id="weldingForm" method="POST">
                         @csrf
-                        @if ($isShowDetail && $record)
                             <input type="hidden" name="id" value="{{ $record->id }}">
-                        @endif
                         <div class="mx-3">
                             <!-- Basic Information -->
                             <div class="row mb-3">
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="site_name" class="ms-0">Site Name</label>
-                                        <select class="form-control" name="site_name" id="site_name" required
-                                            {{ $isShowDetail ? 'disabled' : '' }}>
+                                        <select class="form-control" name="site_name" id="site_name" required>
                                             <option value="agm"
                                                 {{ old('site_name', $record->site_name ?? '') == 'agm' ? 'selected' : '' }}>
                                                 Agm</option>
@@ -77,7 +74,7 @@
                                     <div class="input-group input-group-static mb-3">
                                         <label for="jenis_instalasi" class="ms-0">Jenis Instalasi</label>
                                         <select class="form-control" name="jenis_instalasi" id="jenis_instalasi" required
-                                            {{ $isShowDetail ? 'disabled' : '' }}>
+                                            >
                                             <option value="Instalasi Tetap"
                                                 {{ old('jenis_instalasi', $record->jenis_instalasi ?? '') == 'Instalasi Tetap' ? 'selected' : '' }}>
                                                 Instalasi Tetap</option>
@@ -92,7 +89,7 @@
                                     <div class="input-group input-group-static mb-3">
                                         <label for="lokasi" class="ms-0">Lokasi</label>
                                         <select class="form-control" name="location" id="location" required
-                                            {{ $isShowDetail ? 'disabled' : '' }}>
+                                            >
 
                                             <option value="Workshop"
                                                 {{ old('location', $record->location ?? '') == 'Workshop' ? 'selected' : '' }}>
@@ -117,7 +114,7 @@
                                         <label for="month" class="ms-0">Bulan</label>
                                         <input type="month" class="form-control" id="month" name="month" required
                                             value="{{ old('month', $record->month ?? '') }}"
-                                            {{ $isShowDetail ? 'disabled' : '' }}>
+                                            >
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -125,7 +122,7 @@
                                         <label for="nrp" class="ms-0">NRP</label>
                                         <input type="number" class="form-control" id="nrp" name="nrp" required
                                             value="{{ old('nrp', $record->nrp ?? '') }}" required
-                                            {{ $isShowDetail ? 'disabled' : '' }}>
+                                            >
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -133,7 +130,7 @@
                                         <label for="jabatan" class="ms-0">Jabatan</label>
                                         <input type="text" class="form-control" id="jabatan" name="jabatan" required
                                             value="{{ old('jabatan', $record->jabatan ?? '') }}" required
-                                            {{ $isShowDetail ? 'disabled' : '' }}>
+                                            >
                                     </div>
                                 </div>
                             </div>
@@ -150,14 +147,12 @@
                                                     </option>
                                                 @endforeach
                                             </select>
-                                            @if($isShowDetail)
-                                                <span class="
-                                                    {{ $record->status_pemeriksa == 'Approve' ? 'text-success' : '' }}
-                                                    {{ $record->status_pemeriksa == 'Pending' ? 'text-warning' : '' }}
-                                                    {{ $record->status_pemeriksa == 'Reject' ? 'text-danger' : '' }}">
-                                                    {{ ucfirst($record->status_pemeriksa) }}
-                                                </span>
-                                            @endif
+                                            <span class="
+                                                {{ $record->status_pemeriksa == 'Approve' ? 'text-success' : '' }}
+                                                {{ $record->status_pemeriksa == 'Pending' ? 'text-warning' : '' }}
+                                                {{ $record->status_pemeriksa == 'Reject' ? 'text-danger' : '' }}">
+                                                {{ ucfirst($record->status_pemeriksa) }}
+                                            </span>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -171,14 +166,12 @@
                                                     </option>
                                                 @endforeach
                                             </select>
-                                            @if($isShowDetail)
-                                                <span class="
-                                                    {{ $record->status_atasan == 'Approve' ? 'text-success' : '' }}
-                                                    {{ $record->status_atasan == 'Pending' ? 'text-warning' : '' }}
-                                                    {{ $record->status_atasan == 'Reject' ? 'text-danger' : '' }}">
-                                                    {{ ucfirst($record->status_atasan) }}
-                                                </span>
-                                            @endif
+                                            <span class="
+                                                {{ $record->status_atasan == 'Approve' ? 'text-success' : '' }}
+                                                {{ $record->status_atasan == 'Pending' ? 'text-warning' : '' }}
+                                                {{ $record->status_atasan == 'Reject' ? 'text-danger' : '' }}">
+                                                {{ ucfirst($record->status_atasan) }}
+                                            </span>
                                     </div>
                                 </div>
                             </div>
@@ -217,7 +210,7 @@
                                                 <td> <input type="checkbox" class="custom-checkbox"
                                                         name="before-1-{{ $i }}" value=1
                                                         {{ old('before-1-' . $i, isset($record->question1[$i - 1]) ? $record->question1[$i - 1] : '') == 1 ? 'checked' : '' }}
-                                                        {{ $isShowDetail ? 'disabled' : '' }}>
+                                                        >
                                                 </td>
                                             @endfor
                                         </tr>
@@ -228,7 +221,7 @@
                                                 <td> <input type="checkbox" class="custom-checkbox"
                                                         name="before-2-{{ $i }}" value=1
                                                         {{ old('before-2-' . $i, isset($record->question2[$i - 1]) ? $record->question2[$i - 1] : '') == 1 ? 'checked' : '' }}
-                                                        {{ $isShowDetail ? 'disabled' : '' }}></td>
+                                                        ></td>
                                             @endfor
                                         </tr>
                                         <tr>
@@ -238,7 +231,7 @@
                                                 <td> <input type="checkbox" class="custom-checkbox"
                                                         name="before-3-{{ $i }}" value=1
                                                         {{ old('before-3-' . $i, isset($record->question3[$i - 1]) ? $record->question3[$i - 1] : '') == 1 ? 'checked' : '' }}
-                                                        {{ $isShowDetail ? 'disabled' : '' }}></td>
+                                                        ></td>
                                             @endfor
                                         </tr>
                                         <tr>
@@ -248,7 +241,7 @@
                                                 <td> <input type="checkbox" class="custom-checkbox"
                                                         name="before-4-{{ $i }}" value=1
                                                         {{ old('before-4-' . $i, isset($record->question4[$i - 1]) ? $record->question4[$i - 1] : '') == 1 ? 'checked' : '' }}
-                                                        {{ $isShowDetail ? 'disabled' : '' }}></td>
+                                                        ></td>
                                             @endfor
                                         </tr>
                                         <tr>
@@ -258,7 +251,7 @@
                                                 <td> <input type="checkbox" class="custom-checkbox"
                                                         name="before-5-{{ $i }}" value=1
                                                         {{ old('before-5-' . $i, isset($record->question5[$i - 1]) ? $record->question5[$i - 1] : '') == 1 ? 'checked' : '' }}
-                                                        {{ $isShowDetail ? 'disabled' : '' }}></td>
+                                                        ></td>
                                             @endfor
                                         </tr>
                                         <tr>
@@ -268,7 +261,7 @@
                                                 <td> <input type="checkbox" class="custom-checkbox"
                                                         name="before-6-{{ $i }}" value=1
                                                         {{ old('before-6-' . $i, isset($record->question6[$i - 1]) ? $record->question6[$i - 1] : '') == 1 ? 'checked' : '' }}
-                                                        {{ $isShowDetail ? 'disabled' : '' }}></td>
+                                                        ></td>
                                             @endfor
                                         </tr>
                                         <tr>
@@ -278,7 +271,7 @@
                                                 <td> <input type="checkbox" class="custom-checkbox"
                                                         name="before-7-{{ $i }}" value=1
                                                         {{ old('before-7-' . $i, isset($record->question7[$i - 1]) ? $record->question7[$i - 1] : '') == 1 ? 'checked' : '' }}
-                                                        {{ $isShowDetail ? 'disabled' : '' }}></td>
+                                                        ></td>
                                             @endfor
                                         </tr>
                                         <tr>
@@ -288,7 +281,7 @@
                                                 <td> <input type="checkbox" class="custom-checkbox"
                                                         name="before-8-{{ $i }}" value=1
                                                         {{ old('before-8-' . $i, isset($record->question8[$i - 1]) ? $record->question8[$i - 1] : '') == 1 ? 'checked' : '' }}
-                                                        {{ $isShowDetail ? 'disabled' : '' }}></td>
+                                                        ></td>
                                             @endfor
                                         </tr>
                                         <tr>
@@ -298,7 +291,7 @@
                                                 <td> <input type="checkbox" class="custom-checkbox"
                                                         name="before-9-{{ $i }}" value=1
                                                         {{ old('before-9-' . $i, isset($record->question9[$i - 1]) ? $record->question9[$i - 1] : '') == 1 ? 'checked' : '' }}
-                                                        {{ $isShowDetail ? 'disabled' : '' }}></td>
+                                                        ></td>
                                             @endfor
                                         </tr>
                                         <tr>
@@ -308,7 +301,7 @@
                                                 <td> <input type="checkbox" class="custom-checkbox"
                                                         name="before-10-{{ $i }}" value=1
                                                         {{ old('before-10-' . $i, isset($record->question10[$i - 1]) ? $record->question10[$i - 1] : '') == 1 ? 'checked' : '' }}
-                                                        {{ $isShowDetail ? 'disabled' : '' }}></td>
+                                                        ></td>
                                             @endfor
                                         </tr>
                                         <tr>
@@ -318,7 +311,7 @@
                                                 <td> <input type="checkbox" class="custom-checkbox"
                                                         name="before-11-{{ $i }}" value=1
                                                         {{ old('before-11-' . $i, isset($record->question11[$i - 1]) ? $record->question11[$i - 1] : '') == 1 ? 'checked' : '' }}
-                                                        {{ $isShowDetail ? 'disabled' : '' }}></td>
+                                                        ></td>
                                             @endfor
                                         </tr>
                                         <tr>
@@ -328,7 +321,7 @@
                                                 <td> <input type="checkbox" class="custom-checkbox"
                                                         name="before-12-{{ $i }}" value=1
                                                         {{ old('before-12-' . $i, isset($record->question12[$i - 1]) ? $record->question12[$i - 1] : '') == 1 ? 'checked' : '' }}
-                                                        {{ $isShowDetail ? 'disabled' : '' }}></td>
+                                                        ></td>
                                             @endfor
                                         </tr>
                                         <tr>
@@ -338,7 +331,7 @@
                                                 <td> <input type="checkbox" class="custom-checkbox"
                                                         name="before-13-{{ $i }}" value=1
                                                         {{ old('before-13-' . $i, isset($record->question13[$i - 1]) ? $record->question13[$i - 1] : '') == 1 ? 'checked' : '' }}
-                                                        {{ $isShowDetail ? 'disabled' : '' }}></td>
+                                                        ></td>
                                             @endfor
                                         </tr>
 
@@ -348,7 +341,7 @@
                                             <div class="input-group input-group-static mb-3">
                                                 <div class="input-group input-group-static mb-3">
                                                     <label>Catatan</label>
-                                                    <textarea class="form-control" name="catatan1" rows="4" {{ $isShowDetail ? 'disabled' : '' }}>{{ $isShowDetail ? $record->catatan1 : '' }}</textarea>
+                                                    <textarea class="form-control" name="catatan1" rows="4">{{$record->catatan1}}</textarea>
                                             </div>
                                         </div>
                                         </td>    
@@ -369,7 +362,7 @@
                                                 <td> <input type="checkbox" class="custom-checkbox"
                                                         name="before-14-{{ $i }}" value=1
                                                         {{ old('before-14-' . $i, isset($record->question14[$i - 1]) ? $record->question14[$i - 1] : '') == 1 ? 'checked' : '' }}
-                                                        {{ $isShowDetail ? 'disabled' : '' }}></td>
+                                                        ></td>
                                             @endfor
                                         </tr>
                                         <tr>
@@ -379,7 +372,7 @@
                                                 <td> <input type="checkbox" class="custom-checkbox"
                                                         name="before-15-{{ $i }}" value=1
                                                         {{ old('before-15-' . $i, isset($record->question15[$i - 1]) ? $record->question15[$i - 1] : '') == 1 ? 'checked' : '' }}
-                                                        {{ $isShowDetail ? 'disabled' : '' }}></td>
+                                                    ></td>
                                             @endfor
                                         </tr>
                                         <tr>
@@ -389,7 +382,7 @@
                                                 <td> <input type="checkbox" class="custom-checkbox"
                                                         name="before-16-{{ $i }}" value=1
                                                         {{ old('before-16-' . $i, isset($record->question16[$i - 1]) ? $record->question16[$i - 1] : '') == 1 ? 'checked' : '' }}
-                                                        {{ $isShowDetail ? 'disabled' : '' }}></td>
+                                                        ></td>
                                             @endfor
                                         </tr>
 
@@ -400,7 +393,7 @@
                                                 <td> <input type="checkbox" class="custom-checkbox"
                                                         name="after-1-{{ $i }}" value=1
                                                         {{ old('after-1-' . $i, isset($record->question17[$i - 1]) ? $record->question17[$i - 1] : '') == 1 ? 'checked' : '' }}
-                                                        {{ $isShowDetail ? 'disabled' : '' }}></td>
+                                                        ></td>
                                             @endfor
                                         </tr>
                                         <tr>
@@ -410,7 +403,7 @@
                                                 <td> <input type="checkbox" class="custom-checkbox"
                                                         name="after-2-{{ $i }}" value=1
                                                         {{ old('after-2-' . $i, isset($record->question18[$i - 1]) ? $record->question18[$i - 1] : '') == 1 ? 'checked' : '' }}
-                                                        {{ $isShowDetail ? 'disabled' : '' }}></td>
+                                                        ></td>
                                             @endfor
                                         </tr>
                                         <tr>
@@ -420,7 +413,7 @@
                                                 <td> <input type="checkbox" class="custom-checkbox"
                                                         name="after-3-{{ $i }}" value=1
                                                         {{ old('after-3-' . $i, isset($record->question19[$i - 1]) ? $record->question19[$i - 1] : '') == 1 ? 'checked' : '' }}
-                                                        {{ $isShowDetail ? 'disabled' : '' }}></td>
+                                                        ></td>
                                             @endfor
                                         </tr>
                                         <tr>
@@ -430,7 +423,7 @@
                                                 <td> <input type="checkbox" class="custom-checkbox"
                                                         name="after-4-{{ $i }}" value=1
                                                         {{ old('after-4-' . $i, isset($record->question20[$i - 1]) ? $record->question20[$i - 1] : '') == 1 ? 'checked' : '' }}
-                                                        {{ $isShowDetail ? 'disabled' : '' }}></td>
+                                                        ></td>
                                             @endfor
                                         </tr>
 
@@ -440,7 +433,7 @@
                                                 <div class="input-group input-group-static mb-3">
                                                     <div class="input-group input-group-static mb-3">
                                                         <label>Catatan 2</label>
-                                                        <textarea class="form-control" name="catatan2" rows="4" {{ $isShowDetail ? 'disabled' : '' }}>{{ $isShowDetail ? $record->catatan2 : '' }}</textarea>
+                                                        <textarea class="form-control" name="catatan2" rows="4" >{{$record->catatan2}}</textarea>
                                                     </div>
                                                 </div>
                                             </div>
@@ -453,20 +446,11 @@
                                     </tbody>
                                 </table>
                             </div>
-                                @if ($isShowDetail)
                                     <div class="form-actions">
                                         <a href="{{ route('plant.welding.dashboard') }}"
                                             class="btn btn-secondary">Cancel</a>
-                                        <a href="{{ route('plant.welding.export', ['id' => $record->id]) }}"
-                                            class="btn btn-primary">Export</a>
+                                        <button type="submit" class="btn btn-primary">Update</button>
                                     </div>
-                                @else
-                                    <div class="form-actions">
-                                        <a href="{{ route('plant.welding.dashboard') }}"
-                                            class="btn btn-secondary">Cancel</a>
-                                        <button type="submit" class="btn btn-primary">Submit</button>
-                                    </div>
-                                @endif
                     </form>
 
                 </div>
@@ -551,9 +535,8 @@
                 e.preventDefault();
                 submitBtn.prop('disabled', true);
 
-                var formData = new FormData(this);
-
-                axios.post('{{ route('plant.welding.store') }}', formData)
+                var formData = new FormData(this); 
+                axios.post(`{{ route('plant.welding.update', ['id' => $record->id]) }}`, formData)
                     .then(function(response) {
                         if (response.data.success) {
                             Swal.fire({

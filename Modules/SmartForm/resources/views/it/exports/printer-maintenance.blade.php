@@ -156,6 +156,12 @@
             <td>{{ $record->print_test ? 'Ya' : 'Tidak' }}</td>
         </tr>
         <tr>
+            <td>Kabel Power</td>
+            <td>{{ ucfirst($record->kabel_power_condition) }}</td>
+            <td>Level Tinta</td> 
+            <td>{{ $record->toner_level ? 'Ya' : 'Tidak' }}</td>
+        </tr>
+        <tr>
             <td>Paper Tray</td>
             <td>{{ ucfirst($record->paper_tray_condition) }}</td>
             <td>Scan Test</td> 
@@ -179,12 +185,7 @@
             <td>Cable Test</td> 
             <td>{{ $record->cable_test ? 'Ya' : 'Tidak' }}</td>
         </tr>
-        <tr>
-            <td>Kabel Power</td>
-            <td>{{ ucfirst($record->kabel_power_condition) }}</td>
-            <td>Level Tinta</td> 
-            <td>{{ $record->toner_level ? 'Ya' : 'Tidak' }}</td>
-        </tr>
+       
         <tr>
             <td>Touchscreen*</td>
             <td>{{ ucfirst($record->touchscreen_condition) }}</td>

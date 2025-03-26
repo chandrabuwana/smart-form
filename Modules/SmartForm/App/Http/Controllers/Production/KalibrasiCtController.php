@@ -363,12 +363,56 @@ class KalibrasiCtController extends Controller
         }
     }
 
+    public function EditKalibrasi($id)
+    {
+        $record = DB::table('prod_kalibrasi_ct')
+            ->where('id', $id)
+            ->first();
+
+        $record->ket_front_hauler = json_decode($record->ket_front_hauler);
+        $record->ket_jalan_hauler = json_decode($record->ket_jalan_hauler);
+        $record->ket_grade_hauler = json_decode($record->ket_grade_hauler);
+        $record->ket_disposal_hauler = json_decode($record->ket_disposal_hauler);
+        $record->no_loader_hauler = json_decode($record->no_loader_hauler);
+        $record->nomor_dtht_hauler = json_decode($record->nomor_dtht_hauler);
+        $record->nama_operator_hauler = json_decode($record->nama_operator_hauler);
+        $record->jarak_hauling_hauler = json_decode($record->jarak_hauling_hauler);
+        $record->waktu_antri_hauler = json_decode($record->waktu_antri_hauler);
+        $record->meninggalkan_front_hauler = json_decode($record->meninggalkan_front_hauler);
+        $record->cycle_timer_hauler = json_decode($record->cycle_timer_hauler);
+        $record->jumlah_bucket_hauler = json_decode($record->jumlah_bucket_hauler);
+
+        $record->no_loader = json_decode($record->no_loader);
+        $record->jenis_material_loader = json_decode($record->jenis_material_loader);
+        $record->nomor_cmtdt_loader = json_decode($record->nomor_cmtdt_loader);
+        $record->digging_loader = json_decode($record->digging_loader);
+        $record->swing_isi_loader = json_decode($record->swing_isi_loader);
+        $record->load_loader = json_decode($record->load_loader);
+        $record->swing_kosong_loader = json_decode($record->swing_kosong_loader);
+        $record->total_pengisian_loader = json_decode($record->total_pengisian_loader);
+        $record->durasi_loader = json_decode($record->durasi_loader);
+        $record->reason_loader = json_decode($record->reason_loader);
+
+        $record->no_dozer = json_decode($record->no_dozer);
+        $record->dozing_dozer = json_decode($record->dozing_dozer);
+        $record->reverse_dozer = json_decode($record->reverse_dozer);
+        $record->gear_shifting_dozer = json_decode($record->gear_shifting_dozer);
+        $record->total_dozer = json_decode($record->total_dozer);
+        $record->cm_dozer = json_decode($record->cm_dozer);
+        $record->jarak_dozer = json_decode($record->jarak_dozer);
+        $record->durasi_dozer = json_decode($record->durasi_dozer);
+        $record->reason_dozer = json_decode($record->reason_dozer);
+
+        return view('smartform::production.kalibrasi_ct.edit-kalibrasi-ct', compact('record'));
+    }
+
 
     public function UpdateKalibrasi(Request $request, $id)
     {
         try {
+            $existingRecord = DB::table('prod_kalibrasi_ct')->where('id', $id)->first();
             $data = [
-                'doc_number' => $this->generateDocNumber(),
+                'doc_number' => $request->doc_number ?? $existingRecord->doc_number,
                 'nama_operator_loader_hauler' => $request->nama_operator_loader_hauler,
                 'nomor_exca_hauler' => $request->nomor_exca_hauler,
                 'nama_disposal_hauler' => $request->nama_disposal_hauler,

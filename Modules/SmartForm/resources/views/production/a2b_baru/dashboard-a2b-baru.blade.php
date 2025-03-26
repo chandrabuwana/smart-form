@@ -33,17 +33,6 @@
             <div class="row g-3 mb-4">
                 <div class="col-md-3">
                     <div class="card stats-card">
-                        <div class="card-body p-3">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <i class="fas fa-file text-primary fa-2x"></i>
-                                </div>
-                                <div class="text-end pt-1">
-                                    <p class="text-sm mb-0 text-capitalize">Total Records</p>
-                                    {{-- <h4 class="mb-0">{{ $statistics->total_records }}</h4> --}}
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -90,7 +79,7 @@
                                         <p class="text-xs font-weight-bold mb-0">{{ $record->nrp }}</p>
                                     </td>
                                     <td>
-                                        <span class="text-xs font-weight-bold">{{ \Carbon\Carbon::parse($record->created_at)->format('d/m/Y') }}</span>
+                                        <span class="text-xs font-weight-bold">{{ $record->tanggal }}</span>
                                     </td>
                                     <td>
                                         <a href="{{ route('prod.a2b-baru.form', ['id' => $record->id]) }}" class="btn btn-info btn-sm">
@@ -98,6 +87,14 @@
                                         </a>
                                         <a href="{{ route('prod.a2b-baru.export', ['id' => $record->id]) }}" class="btn btn-primary btn-sm">
                                             <i class="fas fa-download"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-danger btn-sm"
+                                            onclick="deleteA2bBaru('{{ $record->id }}')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                        <a href="{{ route('prod.a2b-baru.edit', ['id' => $record->id]) }}"
+                                                class="btn btn-warning btn-sm">
+                                                <i class="fas fa-edit"></i>
                                         </a>
                                     </td>
                                 </tr>
@@ -116,7 +113,9 @@
 @endsection
 
 @section('custom-js')
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
 <script>
 $(function() {
     // Clear filter button
@@ -138,5 +137,51 @@ $(function() {
         });
     }
 });
+function deleteA2bBaru(id) {
+            console.log('Delete ID:', id);
+            if (confirm('Are you sure you want to delete this data?')) {
+                axios.delete('{{ route('prod.a2b-baru.delete', ['id' => 'ID']) }}'.replace('ID', id))
+                    .then(function(response) {
+                        console.log('Response:', response);
+                        if (response.data.success) {
+
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: response.data.message
+                            }).then(() => {
+
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Failed to delete the compressor.'
+                            });
+                        }
+                    })
+                    .catch(function(error) {
+                        console.error(error);
+                        let errorMessage = 'Terjadi kesalahan pada sistem';
+                        if (error.response) {
+
+                            if (error.response.data.errors) {
+                                errorMessage = Object.values(error.response.data.errors).flat().join('\n');
+                            } else if (error.response.data.message) {
+                                errorMessage = error.response.data.message;
+                            }
+                        }
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: errorMessage
+                        });
+                    })
+                    .finally(function() {
+                        submitBtn.prop('disabled', false);
+                    });
+            }
+        }
 </script>
 @endsection 

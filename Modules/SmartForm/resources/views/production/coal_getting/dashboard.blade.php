@@ -166,6 +166,7 @@
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Area PIC</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Created By</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Inspection Date</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Status</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Actions</th>
                                 </tr>
                             </thead>
@@ -183,7 +184,7 @@
                                                 <p class="text-xs font-weight-bold mb-0">{{ $record->area_pic }}</p>
                                             </td>
                                             <td>
-                                                <p class="text-xs font-weight-bold mb-0">{{ $record->created_by }}</p>
+                                                <p class="text-xs font-weight-bold mb-0">{{ $record->created_by_name }}</p>
                                             </td>
                                             <td>
                                                 <p class="text-xs font-weight-bold mb-0">
@@ -197,16 +198,37 @@
                                                     @endphp
                                                 </p>
                                             </td>
+                                            <td>
+                                                <span class="badge badge-sm bg-{{ $record->approval_status === 'need approval' ? 'warning' : ($record->approval_status === 'approved' ? 'info' : 'danger') }}">
+                                                    {{ $record->approval_status }}
+                                                </span>
+                                            </td>
                                             <td class="align-middle">
-                                                <a href="{{ route('prod.coal.form', ['id' => $record->id]) }}" class="btn btn-primary btn-action text-white">
+                                                <a href="{{ route('prod.coal.form', ['id' => $record->id]) }}" class="btn btn-primary btn-action text-white btn-sm">
                                                     <i class="fas fa-eye"></i> Detail
                                                 </a>
+                                                @php
+                                                    $user = Auth::user();
+                                                @endphp
+                                                @if($record->approval_status === 'need approval' && trim($record->acknowledged_by_nik) === trim($user->userid))
+                                                    <button type="button" class="btn btn-success btn-sm" onclick="updateStatus({{ $record->id }}, 'approved')">
+                                                        <i class="fas fa-check"></i> Approve
+                                                    </button>
+                                                    <button type="button" class="btn btn-danger btn-sm" onclick="updateStatus({{ $record->id }}, 'reject')">
+                                                        <i class="fas fa-times"></i> Reject
+                                                    </button>
+                                                @endif
+                                                @if($record->approval_status === 'reject' && trim($record->created_by_nik) === trim($user->userid))
+                                                    <a href="{{ route('prod.coal.form.edit', ['id' => $record->id]) }}" class="btn btn-info btn-sm">
+                                                        <i class="fas fa-edit"></i> Edit
+                                                    </a>
+                                                @endif
                                             </td>
                                         </tr>
                                     @endforeach
                                 @else
                                     <tr>
-                                        <td colspan="6" class="text-center">No records found</td>
+                                        <td colspan="7" class="text-center">No records found</td>
                                     </tr>
                                 @endif
                             </tbody>
@@ -220,6 +242,7 @@
 @endsection
 
 @section('custom-js')
+<script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
 <script>
 $(document).ready(function() {
@@ -236,5 +259,36 @@ $(document).ready(function() {
         dateFormat: "Y-m-d"
     });
 });
+
+function updateStatus(id, status) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: `Do you want to ${status} this document?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'No'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            axios.put("{{ route('prod.coal.update-status') }}", {
+                id: id,
+                status: status
+            })
+            .then(function (response) {
+                if (response.data.success) {
+                    Swal.fire('Success!', response.data.message, 'success')
+                    .then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    Swal.fire('Error!', response.data.message, 'error');
+                }
+            })
+            .catch(function (error) {
+                Swal.fire('Error!', error.response.data.message || 'Something went wrong', 'error');
+            });
+        }
+    });
+}
 </script>
 @endsection
