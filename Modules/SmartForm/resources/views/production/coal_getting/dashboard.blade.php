@@ -219,7 +219,7 @@
                                                     </button>
                                                 @endif
                                                 @if($record->approval_status === 'reject' && trim($record->created_by_nik) === trim($user->userid))
-                                                    <a href="{{ route('prod.coal.form.update', ['id' => $record->id]) }}" class="btn btn-info btn-sm">
+                                                    <a href="{{ route('prod.coal.form.edit', ['id' => $record->id]) }}" class="btn btn-info btn-sm">
                                                         <i class="fas fa-edit"></i> Edit
                                                     </a>
                                                 @endif

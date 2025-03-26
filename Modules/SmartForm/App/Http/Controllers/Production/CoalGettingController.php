@@ -142,6 +142,44 @@ class CoalGettingController extends Controller
         }
     }
 
+    public function EditForm(Request $request, $id)
+    {
+        try {
+            $record = DB::table('she_coal_getting')->where('id', $id)->first();
+
+            if (!$record) {
+                Log::error('Coal Getting record not found for ID: ' . $id);
+                return redirect()->route('prod.coal.dashboard')
+                    ->with('error', 'Record not found');
+            }
+
+            try {
+                // Remove the :AM/:PM format and convert to standard format
+                $dateStr = preg_replace('/:([AP]M)/', ' $1', $record->inspection_date);
+                $record->inspection_date = Carbon::createFromFormat('M d Y h:i:s A', $dateStr)->format('Y-m-d');
+            } catch (\Exception $e) {
+                Log::error('Date parsing error: ' . $e->getMessage());
+                // Fallback to current date if parsing fails
+                $record->inspection_date = now()->format('Y-m-d');
+            }
+
+            // Decode checklist items
+            $record->checklist_items = json_decode($record->checklist_items, true);
+
+            return view('smartform::production/coal_getting/form_edit', [
+                'isShowDetail' => false,
+                'isEdit' => true,
+                'record' => $record,
+                'checklistItems' => $this->getChecklistItems(),
+                'approvalList' => HrdHelper::getApprovalList(),
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error in EditForm: ' . $e->getMessage());
+            return redirect()->route('prod.coal.dashboard')
+                ->with('error', 'Failed to load edit form: ' . $e->getMessage());
+        }
+    }
+
     public function Store(Request $request)
     {
         try {
@@ -202,6 +240,74 @@ class CoalGettingController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to submit form: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function Update(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'inspection_date' => 'required|date',
+                'location' => 'required|string',
+                'area_pic' => 'required|string',
+                'created_by_name' => 'required|string',
+                'created_by_nik' => 'required|string',
+                'checklist' => 'required|array',
+                'checklist.*' => 'required',
+            ]);
+
+            DB::beginTransaction();
+
+            try {
+                // Transform checklist items
+                $checklistItems = [];
+                foreach ($request->checklist as $key => $value) {
+                    $checklistItems[] = [
+                        'item' => $key,
+                        'value' => $value
+                    ];
+                }
+
+                // Update record
+                DB::table('she_coal_getting')->where('id', $id)->update([
+                    'inspection_date' => $request->inspection_date,
+                    'location' => $request->location,
+                    'area_pic' => $request->area_pic,
+                    'checklist_items' => json_encode($checklistItems),
+                    'created_by_name' => $request->created_by_name,
+                    'created_by_nik' => $request->created_by_nik,
+                    'acknowledged_by_name' => $request->acknowledged_by_name,
+                    'acknowledged_by_nik' => $request->acknowledged_by_nik,
+                    'approval_status' => 'need approval', // Reset approval status
+                    'updated_at' => now(),
+                ]);
+
+                DB::commit();
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Coal Getting record updated successfully'
+                ]);
+            } catch (\Exception $e) {
+                DB::rollBack();
+                Log::error('Transaction error in Update: ' . $e->getMessage());
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to update record: ' . $e->getMessage()
+                ], 500);
+            }
+        } catch (ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            Log::error('Error in Update: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update record: ' . $e->getMessage()
             ], 500);
         }
     }
@@ -274,68 +380,6 @@ class CoalGettingController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to update status: ' . $e->getMessage()
-            ], 500);
-        }
-    }
-
-    public function edit(Request $request, $id)
-    {
-        try {
-            $request->validate([
-                'inspection_date' => 'required|date',
-                'location' => 'required|string',
-                'area_pic' => 'required|string',
-                'created_by_name' => 'required|string',
-                'created_by_nik' => 'required|string',
-                'checklist' => 'required|array',
-                'checklist.*' => 'required',
-            ]);
-
-            DB::beginTransaction();
-
-            try {
-                // Transform checklist items
-                $checklistItems = [];
-                foreach ($request->checklist as $key => $value) {
-                    $checklistItems[] = [
-                        'item' => $key,
-                        'value' => $value
-                    ];
-                }
-
-                // Update record
-                DB::table('she_coal_getting')
-                    ->where('id', $id)
-                    ->update([
-                        'inspection_date' => $request->inspection_date,
-                        'location' => $request->location,
-                        'area_pic' => $request->area_pic,
-                        'checklist_items' => json_encode($checklistItems),
-                        'created_by_name' => $request->created_by_name,
-                        'created_by_nik' => $request->created_by_nik,
-                        'acknowledged_by_name' => $request->acknowledged_by_name,
-                        'acknowledged_by_nik' => $request->acknowledged_by_nik,
-                        'approval_status' => 'need approval', // Reset to need approval when edited
-                        'updated_at' => now(),
-                        // Don't update created_at
-                    ]);
-
-                DB::commit();
-
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Form updated successfully'
-                ]);
-
-            } catch (\Exception $e) {
-                DB::rollback();
-                throw $e;
-            }
-        } catch (\Exception $e) {
-            Log::error('Error in edit: ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to update form: ' . $e->getMessage()
             ], 500);
         }
     }
