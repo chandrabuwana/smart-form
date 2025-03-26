@@ -24,8 +24,7 @@
                     <!-- Card Header -->
                     <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                         <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                            <h6 class="text-white text-capitalize ps-3">{{ $isShowDetail ? 'Detail' : 'New' }} Form P2H
-                                Welding (Standard)</h6>
+                            <h6 class="text-white text-capitalize ps-3">Approval Form P2H Welding (Standard)</h6>
                         </div>
                     </div>
 
@@ -150,15 +149,24 @@
                                                     </option>
                                                 @endforeach
                                             </select>
-                                            @if($isShowDetail)
-                                                <span class="
-                                                    {{ $record->status_pemeriksa == 'Approve' ? 'text-success' : '' }}
-                                                    {{ $record->status_pemeriksa == 'Pending' ? 'text-warning' : '' }}
-                                                    {{ $record->status_pemeriksa == 'Reject' ? 'text-danger' : '' }}">
-                                                    {{ ucfirst($record->status_pemeriksa) }}
-                                                </span>
-                                            @endif
+                                            <span class="
+                                                {{ $record->status_pemeriksa == 'Approve' ? 'text-success' : '' }}
+                                                {{ $record->status_pemeriksa == 'Pending' ? 'text-warning' : '' }}
+                                                {{ $record->status_pemeriksa == 'Reject' ? 'text-danger' : '' }}">
+                                                {{ ucfirst($record->status_pemeriksa) }}
+                                            </span>
+
                                     </div>
+                                        @php
+                                            $loggedInUserId = session('user_id');
+                                        @endphp
+
+                                        @if(optional($record)->pemeriksa == $loggedInUserId)
+                                            <div>
+                                                <button id="btnApprove" data-id="{{ $record->id }}" class="btn btn-info btn-sm">Approve</button>
+                                                <button id="btnReject" data-id="{{ $record->id }}" class="btn btn-danger btn-sm">Reject</button>
+                                            </div>
+                                        @endif
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
@@ -171,15 +179,23 @@
                                                     </option>
                                                 @endforeach
                                             </select>
-                                            @if($isShowDetail)
-                                                <span class="
-                                                    {{ $record->status_atasan == 'Approve' ? 'text-success' : '' }}
-                                                    {{ $record->status_atasan == 'Pending' ? 'text-warning' : '' }}
-                                                    {{ $record->status_atasan == 'Reject' ? 'text-danger' : '' }}">
-                                                    {{ ucfirst($record->status_atasan) }}
-                                                </span>
-                                            @endif
+                                            <span class="
+                                                {{ $record->status_atasan == 'Approve' ? 'text-success' : '' }}
+                                                {{ $record->status_atasan == 'Pending' ? 'text-warning' : '' }}
+                                                {{ $record->status_atasan == 'Reject' ? 'text-danger' : '' }}">
+                                                {{ ucfirst($record->status_atasan) }}
+                                            </span>
                                     </div>
+                                        @php
+                                            $loggedInUserId = session('user_id');
+                                        @endphp
+
+                                        @if(optional($record)->atasan == $loggedInUserId)
+                                            <div>
+                                                <button id="btnApprove" data-id="{{ $record->id }}" class="btn btn-info btn-sm">Approve</button>
+                                                <button id="btnReject" data-id="{{ $record->id }}" class="btn btn-danger btn-sm">Reject</button>
+                                            </div>
+                                        @endif
                                 </div>
                             </div>
 
@@ -453,20 +469,13 @@
                                     </tbody>
                                 </table>
                             </div>
-                                @if ($isShowDetail)
                                     <div class="form-actions">
                                         <a href="{{ route('plant.welding.dashboard') }}"
                                             class="btn btn-secondary">Cancel</a>
                                         <a href="{{ route('plant.welding.export', ['id' => $record->id]) }}"
                                             class="btn btn-primary">Export</a>
                                     </div>
-                                @else
-                                    <div class="form-actions">
-                                        <a href="{{ route('plant.welding.dashboard') }}"
-                                            class="btn btn-secondary">Cancel</a>
-                                        <button type="submit" class="btn btn-primary">Submit</button>
-                                    </div>
-                                @endif
+                                
                     </form>
 
                 </div>
@@ -542,54 +551,154 @@
 @section('custom-js')
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+
     <script>
-        $(function() {
-            var form = $("#weldingForm");
-            var submitBtn = form.find('button[type="submit"]');
+    $(function() {
+        // Tombol Approve
+        $("#btnApprove").on("click", function(e) {
+            e.preventDefault();
+            const recordId = $(this).data("id"); // Ambil ID dari atribut data-id
+            const url = `{{ route('plant.welding.approve', ['id' => ':id']) }}`.replace(":id", recordId);
 
-            form.submit(function(e) {
-                e.preventDefault();
-                submitBtn.prop('disabled', true);
+            axios.post(url, {
+                _token: '{{ csrf_token() }}'
+            }).then(function(response) {
+                if (response.data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: response.data.message
+                    }).then(() => {
+                        window.location.href = '{{ route('plant.welding.dashboard') }}';
+                    });
+                }
+            }).catch(function(error) {
+                let errorMessage = 'Terjadi kesalahan pada sistem';
 
-                var formData = new FormData(this);
+                if (error.response) {
+                    if (error.response.data.errors) {
+                        errorMessage = Object.values(error.response.data.errors).flat().join('\n');
+                    } else if (error.response.data.message) {
+                        errorMessage = error.response.data.message;
+                    }
+                }
 
-                axios.post('{{ route('plant.welding.store') }}', formData)
-                    .then(function(response) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: errorMessage
+                });
+            });
+        });
+
+        // Tombol Reject
+        $("#btnReject").on("click", function(e) {
+            e.preventDefault();
+            const recordId = $(this).data("id"); // Ambil ID dari atribut data-id
+            const url = `{{ route('plant.welding.reject', ['id' => ':id']) }}`.replace(":id", recordId);
+
+            axios.post(url, {
+                _token: '{{ csrf_token() }}'
+            }).then(function(response) {
+                if (response.data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: response.data.message
+                    }).then(() => {
+                        window.location.href = '{{ route('plant.welding.dashboard') }}';
+                    });
+                }
+            }).catch(function(error) {
+                let errorMessage = 'Terjadi kesalahan pada sistem';
+
+                if (error.response) {
+                    if (error.response.data.errors) {
+                        errorMessage = Object.values(error.response.data.errors).flat().join('\n');
+                    } else if (error.response.data.message) {
+                        errorMessage = error.response.data.message;
+                    }
+                }
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: errorMessage
+                });
+            });
+        });
+    });
+</script>
+
+
+    {{-- <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const csrfToken = document.querySelector('input[name="_token"]').value;
+            const recordId = document.querySelector('input[name="id"]').value;
+
+            // Tombol Approve
+            document.getElementById("btnApprove").addEventListener("click", function () {
+                axios
+                    .post(`/bss-form/plant-welding/approve-welding/${recordId}`, {
+                        _token: csrfToken,
+                    })
+                    .then((response) => {
                         if (response.data.success) {
                             Swal.fire({
-                                icon: 'success',
-                                title: 'Success',
-                                text: response.data.message
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    window.location.href =
-                                        '{{ route('plant.welding.dashboard') }}';
-                                }
+                                icon: "success",
+                                title: "Success",
+                                text: response.data.message,
+                            }).then(() => {
+                                window.location.href = "{{ route('plant.welding.dashboard') }}";
                             });
                         }
                     })
-                    .catch(function(error) {
-                        let errorMessage = 'Terjadi kesalahan pada sistem';
-
-                        if (error.response) {
-                            if (error.response.data.errors) {
-                                errorMessage = Object.values(error.response.data.errors).flat().join(
-                                    '\n');
-                            } else if (error.response.data.message) {
-                                errorMessage = error.response.data.message;
-                            }
-                        }
-
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: errorMessage
-                        });
-                    })
-                    .finally(function() {
-                        submitBtn.prop('disabled', false);
+                    .catch((error) => {
+                        handleError(error);
                     });
             });
+
+            // Tombol Reject
+            document.getElementById("btnReject").addEventListener("click", function () {
+                axios
+                    .post(`/bss-form/plant-welding/reject-welding/${recordId}`, {
+                        _token: csrfToken,
+                    })
+                    .then((response) => {
+                        if (response.data.success) {
+                            Swal.fire({
+                                icon: "success",
+                                title: "Success",
+                                text: response.data.message,
+                            }).then(() => {
+                                window.location.href = "{{ route('plant.welding.dashboard') }}";
+                            });
+                        }
+                    })
+                    .catch((error) => {
+                        handleError(error);
+                    });
+            });
+
+            // Fungsi untuk menangani error
+            function handleError(error) {
+                let errorMessage = "Terjadi kesalahan pada sistem";
+                if (error.response) {
+                    if (error.response.data.errors) {
+                        errorMessage = Object.values(error.response.data.errors).flat().join("\n");
+                    } else if (error.response.data.message) {
+                        errorMessage = error.response.data.message;
+                    }
+                }
+
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: errorMessage,
+                });
+            }
         });
-    </script>
+
+
+    </script> --}}
 @endsection

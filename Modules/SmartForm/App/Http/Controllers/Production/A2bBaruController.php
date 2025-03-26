@@ -231,11 +231,35 @@ class A2bBaruController extends Controller
         }
     }
 
-    public function UpdateKalibrasi(Request $request, $id)
+    public function EditA2bBaru($id)
+    {
+        $record = DB::table('prod_a2b_baru')
+            ->where('id', $id)
+            ->first();
+
+        $record->question1 = json_decode($record->question1);
+        $record->question2 = json_decode($record->question2);
+        $record->question3 = json_decode($record->question3);
+        $record->question4 = json_decode($record->question4);
+        $record->question5 = json_decode($record->question5);
+        $record->question6 = json_decode($record->question6);
+        $record->question7 = json_decode($record->question7);
+        $record->question8 = json_decode($record->question8);
+        $record->question9 = json_decode($record->question9);
+        $record->question10 = json_decode($record->question10);
+        $record->question11 = json_decode($record->question11);
+        $record->question12 = json_decode($record->question12);
+        $record->deskripsi  = json_decode($record->deskripsi);
+
+        return view('smartform::production.a2b_baru.edit-a2b-baru', compact('record'));
+    }
+
+    public function UpdateA2bBaru(Request $request, $id)
     {
         try {
+            $existingRecord = DB::table('prod_a2b_baru')->where('id', $id)->first();
             $data = [
-                'doc_number' => $this->generateDocNumber(),
+                'doc_number' => $request->doc_number ?? $existingRecord->doc_number,
                 'nama_operator' => $request->nama_operator,
                 'nrp' => $request->nrp,
                 'tanggal' => $request->tanggal,

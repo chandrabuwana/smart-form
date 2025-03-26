@@ -413,8 +413,12 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/form-welding/export/{id}',[PlantWeldingController::class, 'ExportForm'])->name('plant.welding.export');
             Route::get('/form-welding', [PlantWeldingController::class, 'AddFormWelding'])->name('plant.welding.form');
             Route::post('/store-welding', [PlantWeldingController::class, 'StoreWelding'])->name('plant.welding.store');
-            Route::put('/form-welding/{id}', [PlantWeldingController::class, 'UpdateWelding'])->name('plant.welding.update');
-            Route::delete('/form-welding/{id}', [KalibrasiCtController::class, 'destroy'])->name('plant.welding.delete');
+            Route::get('/edit-welding/{id}', [PlantWeldingController::class, 'EditWelding'])->name('plant.welding.edit');
+            Route::post('/update-welding/{id}', [PlantWeldingController::class, 'UpdateWelding'])->name('plant.welding.update');
+            Route::delete('/form-welding/{id}', [PlantWeldingController::class, 'destroy'])->name('plant.welding.delete');
+            Route::get('/approval-welding/{id}', [PlantWeldingController::class, 'ApprovalWelding'])->name('plant.welding.approval');
+            Route::post('/approve-welding/{id}', [PlantWeldingController::class, 'ApproveWelding'])->name('plant.welding.approve');
+            Route::post('/reject-welding/{id}', [PlantWeldingController::class, 'RejectWelding'])->name('plant.welding.reject');
         });
         // PLANT
         Route::prefix('plant')->name('bss-form.plant.')->group(function () {
@@ -441,7 +445,8 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/form-kalibrasi-ct/export/{id}', [KalibrasiCtController::class, 'ExportForm'])->name('prod.kalibrasi-ct.export');
             Route::get('/form-kalibrasi-ct', [KalibrasiCtController::class, 'AddFormKalibrasi'])->name('prod.kalibrasi-ct.form');
             Route::post('/store-kalibrasi-ct', [KalibrasiCtController::class, 'StoreKalibrasi'])->name('prod.kalibrasi-ct.store');
-            Route::put('/form-kalibrasi-ct/{id}', [KalibrasiCtController::class, 'UpdateKalibrasi'])->name('prod.kalibrasi-ct.update');
+            Route::get('/edit-kalibrasi-ct/{id}', [KalibrasiCtController::class, 'EditKalibrasi'])->name('prod.kalibrasi-ct.edit');
+            Route::post('/form-kalibrasi-ct/{id}', [KalibrasiCtController::class, 'UpdateKalibrasi'])->name('prod.kalibrasi-ct.update');
             Route::delete('/form-kalibrasi-ct/{id}', [KalibrasiCtController::class, 'destroy'])->name('prod.kalibrasi-ct.delete');
         });
 
@@ -450,7 +455,8 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/form-a2b-baru/export/{id}', [A2bBaruController::class, 'ExportForm'])->name('prod.a2b-baru.export');
             Route::get('/form-a2b-baru', [A2bBaruController::class, 'AddFormA2bBaru'])->name('prod.a2b-baru.form');
             Route::post('/store-a2b-baru', [A2bBaruController::class, 'StoreA2bBaru'])->name('prod.a2b-baru.store');
-            Route::put('/form-a2b-baru/{id}', [A2bBaruController::class, 'UpdatA2bBaru'])->name('prod.a2b-baru.update');
+            Route::get('/edit-a2b-baru/{id}', [A2bBaruController::class, 'EditA2bBaru'])->name('prod.a2b-baru.edit');
+            Route::post('/form-a2b-baru/{id}', [A2bBaruController::class, 'UpdateA2bBaru'])->name('prod.a2b-baru.update');
             Route::delete('/form-a2b-baru/{id}', [A2bBaruController::class, 'destroy'])->name('prod.a2b-baru.delete');
         });
 
