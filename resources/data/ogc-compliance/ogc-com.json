@@ -1,0 +1,63 @@
+{
+    "Lube Station": [
+        {
+            "question": "Apakah Lube Gun / Fast Fill sudah tersedia dan secara fungsi masih layak digunakan?"
+        },
+        {
+            "question": "Apakah Flow Meter tersedia dan sudah dilakukan kalibrasi rutin sesuai jadwal periodik?"
+        },
+        {
+            "question": "Apakah assesoris perlengkapan K3LH sudah terpenuhi semua seperti APAR 15 Kg, Hydrant, Safety Cone, Kotak P3K, Spill Kit, Kabel Grounding dan Eye Wash?"
+        },
+        {
+            "question": "Apakah assesoris perlengkapan penerimaan lube seperti Gelas Ukur, Hose Lube In, Tabel Tera Tangki, Stik Sonding dan Area Pembongkaran sudah tersedia?"
+        },
+        {
+            "question": "Apakah tersedia kelengkapan media informasi seperti alat komunikasi (radio), rambu larangan merokok, papan informasi dan dokumen SOP?"
+        },
+        { "question": "Apakah sudah tersedia instalasi lube?" },
+        { "question": "Apakah area bandwall maintank dalam kondisi baik?" },
+        {
+            "question": "Apakah tersedia komputer sebagai alat pendataan transaksi penerimaan maupun pemakaian lube?"
+        },
+        {
+            "question": "Apakah tersedia kelengkapan keamanan terhadap tindakan pencurian seperti CCTV dan pagar pembatas maintank di area lube station?"
+        },
+        {
+            "question": "Apakah instalasi pipa dan maintank lube station dalam kondisi baik dan tidak ada retakan atau berkarat?"
+        },
+        {
+            "question": "Apakah tersedia lembar log sheet sebagai pencatatan ketika proses penerimaan, pemakaian dan transfer lube?"
+        }
+    ],
+
+    "Lube Truck": [
+        {
+            "question": "Apakah Lube Gun / Fast Fill sudah tersedia dan secara fungsi masih layak digunakan?"
+        },
+        {
+            "question": "Apakah Flow Meter tersedia dan sudah dilakukan kalibrasi rutin sesuai jadwal periodik?"
+        },
+        {
+            "question": "Apakah assesoris perlengkapan K3LH sudah terpenuhi semua seperti APAR 9Kg, Safety Cone, Lampu Rotasi, Spill Kit, Ganjal Ban dan Kotak P3K?"
+        },
+        {
+            "question": "Apakah assesoris perlengkapan pengeluaran lube seperti PTO (Power Take Off) dan Hose Reel (Lube Out) tersedia?"
+        },
+        {
+            "question": "Apakah tersedia kelengkapan media informasi seperti alat komunikasi (radio) dan rambu larangan merokok?"
+        },
+        {
+            "question": "Apakah tersedia Stik Sonding sebagai alat ukur pada saat pelaksanaan aktivitas daily sonding?"
+        },
+        {
+            "question": "Apakah kondisi tangki lube truck dalam kondisi baik tanpa ada retakan dan berkarat?"
+        },
+        {
+            "question": "Apakah tersedia lembar log sheet sebagai pencatatan ketika proses transfer dan pemakaian lube?"
+        },
+        {
+            "question": "Apakah tangga dan handrail lube truck dalam kondisi baik dan tidak ada retakan?"
+        }
+    ]
+}
