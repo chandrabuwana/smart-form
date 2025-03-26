@@ -20,6 +20,7 @@ use Modules\SmartForm\App\Http\Controllers\PLANT\PpmXcmg900dController;
 use Modules\SmartForm\App\Http\Controllers\PLANT\PpmXCMG700DController;
 use Modules\SmartForm\App\Http\Controllers\PLANT\PpmXCMG3005TController;
 use Modules\SmartForm\App\Http\Controllers\PLANT\PpuXE1250Controller;
+use Modules\SmartForm\App\Http\Controllers\LOG\OgcComplianceController;
 use Modules\SmartForm\App\Http\Controllers\PLANT\PlantWeldingController;
 use Modules\SmartForm\App\Http\Controllers\Production\FormCheckerController;
 use Modules\SmartForm\App\Http\Controllers\Production\KalibrasiCtController;
@@ -522,6 +523,23 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/add', [PpmShantuiDH24Controller::class, 'Add'])->name('form-create-dh24');
             Route::post('/store', [PpmShantuiDH24Controller::class, 'Store'])->name('store-dh24');
             Route::get('/export/{id}', [PpmShantuiDH24Controller::class, 'ExportPDF'])->name('export-pdf-dh24');
+        });
+
+        Route::prefix('ogc-compliance')->group(function(){
+            Route::get('/dashboard', [OgcComplianceController::class, 'Dashboard'])->name('log.ogc.dashboard');
+            Route::get('/export/{id}', [OgcComplianceController::class, 'Export'])->name('log.ogc.export');
+            Route::get('/add', [OgcComplianceController::class, 'Add'])->name('log.ogc.form');
+            Route::post('/store', [OgcComplianceController::class, 'Store'])->name('log.ogc.store');
+            Route::post('/update',[OgcComplianceController::class, 'Update'])->name('log.ogc.update');
+            Route::get('/detail/{id}', [OgcComplianceController::class, 'detail'])->name('log.ogc.detail');
+            Route::get('modal/{id}/{doc_num}', [OgcComplianceController::class, 'modal'])->name('log.ogc.modal');
+            Route::get('/show/{id}', [OgcComplianceController::class, 'show'])->name('log.ogc.show');
+            Route::delete('/delete/{id}', [OgcComplianceController::class, 'Delete'])->name('log.ogc.delete');
+            Route::delete('/delete-week/{id}', [OgcComplianceController::class, 'DeleteWeek'])->name('log.ogc.deleteWeek');
+            Route::post('/approve-log.ogc', [OgcComplianceController::class, 'Approve'])->name('log.ogc.approve');
+            Route::post('/reject-log.ogc', [OgcComplianceController::class, 'Reject'])->name('log.ogc.reject');
+            Route::post('/reset-log.ogc/{id}', [OgcComplianceController::class, 'Reset'])->name('log.ogc.reset');
+            
         });
 
     });
