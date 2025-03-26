@@ -22,11 +22,16 @@ return new class extends Migration
             $table->json('checklist_items')->nullable();
             
             // Signatures
-            $table->string('created_by')->nullable();
+            $table->string('created_by_name')->nullable();
+            $table->string('created_by_nik')->nullable();
             $table->string('created_signature')->nullable();
-            $table->string('acknowledged_by')->nullable();
+            $table->string('acknowledged_by_name')->nullable();
+            $table->string('acknowledged_by_nik')->nullable();
             $table->string('acknowledged_signature')->nullable();
             $table->timestamp('acknowledged_at')->nullable();
+
+            // Approval Status
+            $table->enum('approval_status', ['need approval', 'approved', 'reject'])->default('need approval');
             
             $table->timestamps();
             $table->softDeletes();

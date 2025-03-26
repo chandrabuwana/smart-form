@@ -41,7 +41,7 @@
                     </div>
                 </div>
                 <div class="card-body px-0 pb-2">
-                    <form method="POST" id="inspectionForm">
+                    <form method="POST" id="inspectionForm" action="{{ route('prod.coal.store') }}">
                         @csrf
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                         <div class="mx-3">
@@ -67,7 +67,7 @@
                                     <div class="input-group input-group-static">
                                         <label>Penanggung jawab area</label>
                                         <input type="text" name="area_pic" class="form-control" required
-                                            value="{{ $isShowDetail ? $record->area_pic : '' }}"
+                                            value="{{ $isShowDetail ? $record->area_pic : session('username') }}"
                                             {{ $isShowDetail ? 'disabled' : '' }}>
                                     </div>
                                 </div>
@@ -159,29 +159,31 @@
                             <!-- Signatures -->
                             <div class="row mt-4">
                                 <div class="col-md-6">
-                                    <h6>Dibuat oleh,</h6>
+                                    <h6>Dibuat oleh</h6>
                                     
                                     <div class="mb-3">
-                                        <input type="text" name="created_by" class="form-control" 
+                                        <input type="text" name="created_by_name" class="form-control" 
                                             placeholder="Nama Lengkap"
-                                            value="{{ $isShowDetail ? $record->created_by : '' }}"
+                                            value="{{ $isShowDetail ? $record->created_by_name : session('username') }}"
                                             {{ $isShowDetail ? 'disabled' : '' }} required>
                                     </div>
+                                    <input type="hidden" name="created_by_nik" value="{{ $isShowDetail ? $record->created_by_nik : session('user_id') }}" required>
                                     <p class="mb-1">Production Foreman</p>
                                 </div>
                                 <div class="col-md-6">
-                                    <h6>Diketahui oleh,</h6>
+                                    <h6>Diketahui oleh</h6>
                                     
                                     <div class="mb-3">
-                                        <select name="acknowledged_by" class="form-control text-left" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                        <select name="acknowledged_by_name" class="form-control text-left" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
                                             <option value="">-- Pilih Pengawas --</option>
                                             @foreach($approvalList as $user)
-                                                <option value="{{ $user->nama }}" {{ $isShowDetail && $record->acknowledged_by == $user->nama ? 'selected' : '' }}>
+                                                <option value="{{ $user->nama }}" {{ $isShowDetail && $record->acknowledged_by_name == $user->nama ? 'selected' : '' }}>
                                                     {{ $user->nama }} ({{ $user->nik }})
                                                 </option>
                                             @endforeach
                                         </select>
                                     </div>
+                                    <input type="hidden" name="acknowledged_by_nik" value="">
                                     <p class="mb-1">Production Supervisor</p>
                                 </div>
                             </div>
@@ -234,49 +236,80 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <script>
     $(function() {
-        var form = $("form");
+        // Handle supervisor selection
+        $('select[name="acknowledged_by"]').change(function() {
+            var selectedText = $(this).find('option:selected').text();
+            var match = selectedText.match(/\(([^)]+)\)/);
+            var nik = match ? match[1] : '';
+            $('input[name="acknowledged_by_nik"]').val(nik);
+        });
+
+        // Trigger change on load if there's a value
+        if ($('select[name="acknowledged_by"]').val()) {
+            $('select[name="acknowledged_by"]').trigger('change');
+        }
+
+        // Form submission
+        var form = $("#inspectionForm");
         var submitBtn = form.find('button[type="submit"]');
 
         form.submit(function(e) {
             e.preventDefault();
             submitBtn.prop('disabled', true);
 
-            var formData = new FormData(this);
-            
-            axios.post('{{ route("prod.coal.store") }}', formData)
-                .then(function(response) {
-                    if (response.data.success) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Success',
-                            text: response.data.message
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                window.location.href = '{{ route("prod.coal.dashboard") }}';
-                            }
-                        });
-                    }
-                })
-                .catch(function(error) {
-                    let errorMessage = 'Terjadi kesalahan pada sistem';
+            Swal.fire({
+                title: 'Submit Form?',
+                text: 'Do you want to submit this form?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Submit',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var formData = new FormData(this);
                     
-                    if (error.response) {
-                        if (error.response.data.errors) {
-                            errorMessage = Object.values(error.response.data.errors).flat().join('\n');
-                        } else if (error.response.data.message) {
-                            errorMessage = error.response.data.message;
-                        }
-                    }
+                    axios.post(form.attr('action'), formData)
+                        .then(function(response) {
+                            if (response.data.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success',
+                                    text: response.data.message
+                                }).then(() => {
+                                    window.location.href = '{{ route("prod.coal.dashboard") }}';
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: response.data.message || 'Something went wrong'
+                                });
+                            }
+                        })
+                        .catch(function(error) {
+                            let errorMessage = 'Terjadi kesalahan pada sistem';
+                            
+                            if (error.response) {
+                                if (error.response.data.errors) {
+                                    errorMessage = Object.values(error.response.data.errors).flat().join('\n');
+                                } else if (error.response.data.message) {
+                                    errorMessage = error.response.data.message;
+                                }
+                            }
 
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: errorMessage
-                    });
-                })
-                .finally(function() {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: errorMessage
+                            });
+                        })
+                        .finally(function() {
+                            submitBtn.prop('disabled', false);
+                        });
+                } else {
                     submitBtn.prop('disabled', false);
-                });
+                }
+            });
         });
     });
     </script>
