@@ -340,7 +340,9 @@
             </tr>
             <tr>
                 <td colspan="2">Nama Pemeriksa/Pengecek</td>
-                <td colspan="32" style="text-align: left">{{ $record->pemeriksa }}</td>
+                <td colspan="32" style="text-align: left">
+                    {{ collect($approvalList)->firstWhere('nik', $record->pemeriksa)?->nama ?? 'N/A' }}
+                </td>
             </tr>
             <tr>
                 <td colspan="2">Jabatan</td>
@@ -352,7 +354,9 @@
             </tr>
             <tr>
                 <td colspan="2">Nama Atasan Langsung</td>
-                <td colspan="32" style="text-align: left">{{ $record->atasan }}</td>
+                <td colspan="32" style="text-align: left">
+                    {{ collect($approvalList)->firstWhere('nik', $record->atasan)?->nama ?? 'N/A' }}
+                </td>
             </tr>
             <tr>
                 <td colspan="34">&nbsp;</td>

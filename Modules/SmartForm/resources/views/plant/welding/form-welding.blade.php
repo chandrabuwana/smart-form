@@ -122,9 +122,9 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
-                                        <label for="pemeriksa" class="ms-0">Nama Pemeriksa</label>
-                                        <input type="text" class="form-control" id="pemeriksa" name="pemeriksa" required
-                                            value="{{ old('pemeriksa', $record->pemeriksa ?? '') }}" required
+                                        <label for="nrp" class="ms-0">NRP</label>
+                                        <input type="number" class="form-control" id="nrp" name="nrp" required
+                                            value="{{ old('nrp', $record->nrp ?? '') }}" required
                                             {{ $isShowDetail ? 'disabled' : '' }}>
                                     </div>
                                 </div>
@@ -141,18 +141,44 @@
                             <div class="row mb-3">
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
-                                        <label for="nrp" class="ms-0">NRP</label>
-                                        <input type="number" class="form-control" id="nrp" name="nrp" required
-                                            value="{{ old('nrp', $record->nrp ?? '') }}" required
-                                            {{ $isShowDetail ? 'disabled' : '' }}>
+                                        <label for="pemeriksa" class="ms-0">Nama Pemeriksa</label>
+                                            <select name="pemeriksa" id="pemeriksa" class="form-control" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                                <option disabled {{ optional($record)->pemeriksa == '' ? 'selected' : '' }}>-- Select Pemeriksa --</option>
+                                                @foreach ($approvalList as $user)
+                                                    <option value="{{ $user->nik }}" {{ optional($record)->pemeriksa == $user->nik ? 'selected' : '' }}>
+                                                        {{ $user->nama }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            @if($isShowDetail)
+                                                <span class="
+                                                    {{ $record->status_pemeriksa == 'Approve' ? 'text-success' : '' }}
+                                                    {{ $record->status_pemeriksa == 'Pending' ? 'text-warning' : '' }}
+                                                    {{ $record->status_pemeriksa == 'Reject' ? 'text-danger' : '' }}">
+                                                    {{ ucfirst($record->status_pemeriksa) }}
+                                                </span>
+                                            @endif
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="atasan" class="ms-0">Nama Atasan Langsung</label>
-                                        <input type="text" class="form-control" id="atasan" name="atasan" required
-                                            value="{{ old('atasan', $record->atasan ?? '') }}" required
-                                            {{ $isShowDetail ? 'disabled' : '' }}>
+                                        <select name="atasan" id="atasan" class="form-control" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                                <option disabled {{ optional($record)->atasan == '' ? 'selected' : '' }}>-- Select Atasan --</option>
+                                                @foreach ($approvalList as $user)
+                                                    <option value="{{ $user->nik }}" {{ optional($record)->atasan == $user->nik ? 'selected' : '' }}>
+                                                        {{ $user->nama }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            @if($isShowDetail)
+                                                <span class="
+                                                    {{ $record->status_atasan == 'Approve' ? 'text-success' : '' }}
+                                                    {{ $record->status_atasan == 'Pending' ? 'text-warning' : '' }}
+                                                    {{ $record->status_atasan == 'Reject' ? 'text-danger' : '' }}">
+                                                    {{ ucfirst($record->status_atasan) }}
+                                                </span>
+                                            @endif
                                     </div>
                                 </div>
                             </div>
@@ -426,10 +452,6 @@
 
                                     </tbody>
                                 </table>
-
-                            
-
-
                             </div>
                                 @if ($isShowDetail)
                                     <div class="form-actions">

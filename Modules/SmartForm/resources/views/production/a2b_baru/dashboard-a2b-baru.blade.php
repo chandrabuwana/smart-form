@@ -33,17 +33,6 @@
             <div class="row g-3 mb-4">
                 <div class="col-md-3">
                     <div class="card stats-card">
-                        <div class="card-body p-3">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <i class="fas fa-file text-primary fa-2x"></i>
-                                </div>
-                                <div class="text-end pt-1">
-                                    <p class="text-sm mb-0 text-capitalize">Total Records</p>
-                                    {{-- <h4 class="mb-0">{{ $statistics->total_records }}</h4> --}}
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>

@@ -22,6 +22,8 @@ return new class extends Migration
             $table->string('jabatan');
             $table->string('nrp');
             $table->string('atasan');
+            $table->string('status_pemeriksa');
+            $table->string('status_atasan');
             $table->string('question1');
             $table->string('question2');
             $table->string('question3');

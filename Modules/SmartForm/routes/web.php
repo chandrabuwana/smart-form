@@ -394,6 +394,9 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/edit-welding/{id}', [PlantWeldingController::class, 'EditWelding'])->name('plant.welding.edit');
             Route::post('/update-welding/{id}', [PlantWeldingController::class, 'UpdateWelding'])->name('plant.welding.update');
             Route::delete('/form-welding/{id}', [PlantWeldingController::class, 'destroy'])->name('plant.welding.delete');
+            Route::get('/approval-welding/{id}', [PlantWeldingController::class, 'ApprovalWelding'])->name('plant.welding.approval');
+            Route::post('/approve-welding/{id}', [PlantWeldingController::class, 'ApproveWelding'])->name('plant.welding.approve');
+            Route::post('/reject-welding/{id}', [PlantWeldingController::class, 'RejectWelding'])->name('plant.welding.reject');
         });
         // PLANT
         Route::prefix('plant')->name('bss-form.plant.')->group(function () {

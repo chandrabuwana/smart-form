@@ -154,19 +154,19 @@
                                             Number</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Site</th>
+                                            NRP</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Location</th>
+                                            Jabatan</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Jenis Instalasi</th>
+                                            Atasan Langsung</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Pemeriksa</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Month</th>
+                                            Status</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Actions</th>
@@ -183,14 +183,14 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <p class="text-xs font-weight-bold mb-0">{{ $record->site_name }}</p>
+                                                <p class="text-xs font-weight-bold mb-0">{{ $record->nrp }}</p>
                                             </td>
                                             <td>
-                                                <p class="text-xs font-weight-bold mb-0">{{ $record->location }}</p>
+                                                <p class="text-xs font-weight-bold mb-0">{{ $record->jabatan }}</p>
                                             </td>
                                             <td>
                                                 <p class="text-xs font-weight-bold mb-0">
-                                                    {{ $record->jenis_instalasi }}
+                                                    {{ $record->atasan }}
                                                 </p>
                                             </td>
                                             <td>
@@ -199,8 +199,22 @@
                                                 </p>
                                             </td>
                                             <td>
-                                                <span
-                                                    class="text-xs font-weight-bold">{{ \Carbon\Carbon::parse($record->month)->format('F') }}</span>
+                                                <span class="text-xs font-weight-bold">
+                                                    @if ($record->status_pemeriksa === 'Approve' && $record->status_atasan === 'Approve')
+                                                        Approved
+                                                    @elseif ($record->status_pemeriksa === 'Reject' && $record->status_atasan === 'Reject')
+                                                        Rejected
+                                                    @elseif ($record->status_pemeriksa === 'Pending' && $record->status_atasan === 'Pending')
+                                                        Pending
+                                                    @elseif ($record->status_pemeriksa === 'Pending' || $record->status_atasan === 'Pending')
+                                                        Pending
+                                                    @elseif (
+                                                        ($record->status_pemeriksa === 'Approve' && $record->status_atasan === 'Reject') || 
+                                                        ($record->status_pemeriksa === 'Reject' && $record->status_atasan === 'Approve')
+                                                    )
+                                                        Rejected
+                                                    @endif
+                                                </span>
                                             </td>
                                             <td>
                                                 <a href="{{ route('plant.welding.form', ['id' => $record->id]) }}"
@@ -218,6 +232,10 @@
                                                 <a href="{{ route('plant.welding.edit', ['id' => $record->id]) }}"
                                                         class="btn btn-warning btn-sm">
                                                         <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a href="{{ route('plant.welding.approval', ['id' => $record->id]) }}"
+                                                        class="btn btn-info btn-sm">
+                                                        <i class="fas fa-user-check"></i>
                                                 </a>
 
                                             </td>
