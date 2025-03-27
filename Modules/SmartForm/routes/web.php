@@ -339,6 +339,9 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/form-router', [RouterFormController::class, 'CreateRouterForm'])->name('it-ops.form-router');
             Route::post('/submit-router', [RouterFormController::class, 'SubmitRouterForm'])->name('it-ops.submit-router');
             Route::get('/form-router/{id}/export-pdf', [RouterFormController::class, 'ExportRouter'])->name('it-ops.form-router.export');
+            Route::get('/edit-router', [RouterFormController::class, 'EditRouterForm'])->name('it-ops.edit-router');
+            Route::post('/update-router', [RouterFormController::class, 'UpdateRouterForm'])->name('it-ops.update-router');
+            Route::post('/delete-router', [RouterFormController::class, 'DeleteRouterForm'])->name('it-ops.delete-router');
         });
 
         Route::prefix('she-inspeksi')->group(function () {
