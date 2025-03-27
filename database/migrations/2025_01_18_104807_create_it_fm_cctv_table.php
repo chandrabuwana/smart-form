@@ -17,6 +17,9 @@ return new class extends Migration
             $table->string('doc_number')->nullable();
             $table->integer('revision')->default(0);
             $table->date('doc_date')->nullable();
+
+            // status
+            $table->boolean('isActive')->default(true);
             
             // Teknisi Information
             $table->string('nama');

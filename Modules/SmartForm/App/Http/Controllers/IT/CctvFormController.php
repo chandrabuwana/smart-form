@@ -27,9 +27,10 @@ class CCTVFormController extends Controller
                     ELSE 0 END +
                     CASE WHEN cable_condition = \'rusak\' THEN 1 
                     ELSE 0 END +
-                    CASE WHEN storage_cctv_condition = \'rusak\' THEN 1 
+                    CASE WHEN storage_cctv_condition = \'rusak\' THEN 1
                     ELSE 0 END) as broken_components')
-            ]);
+            ])
+            ->where('isActive', true); // Only show active records (not soft deleted)
 
         // Apply search filter if provided
         if ($request->has('search')) {
@@ -65,12 +66,13 @@ class CCTVFormController extends Controller
             ->paginate(10);
 
         // Calculate statistics
-        $totalRecords = DB::table('it_fm_cctv')->count();
+        $totalRecords = DB::table('it_fm_cctv')->where('isActive', true)->count();
         $brokenComponents = DB::table('it_fm_cctv')
             ->where('camera_condition', 'rusak')
             ->orWhere('lens_condition', 'rusak')
             ->orWhere('cable_condition', 'rusak')
             ->orWhere('storage_cctv_condition', 'rusak')
+            ->where('isActive', true)
             ->count();
 
         $currentMonth = now()->month;
@@ -78,6 +80,7 @@ class CCTVFormController extends Controller
         $maintenanceThisMonth = DB::table('it_fm_cctv')
             ->whereMonth('created_at', $currentMonth)
             ->whereYear('created_at', $currentYear)
+            ->where('isActive', true)
             ->count();
 
         $completedTasks = DB::table('it_fm_cctv')
@@ -86,6 +89,7 @@ class CCTVFormController extends Controller
                        SUM(CAST(sound_quality AS INT)) + 
                        SUM(CAST(remote_view_nvr AS INT)) + 
                        SUM(CAST(remote_playback AS INT)) as total_completed')
+            ->where('isActive', true)
             ->first();
 
         $totalCompleted = $completedTasks->total_completed ?? 0;
@@ -203,6 +207,7 @@ class CCTVFormController extends Controller
               'sound_quality' => $validated['sound_quality'] ?? false,
               'remote_view_nvr' => $validated['remote_view_nvr'] ?? false,
               'remote_playback' => $validated['remote_playback'] ?? false,
+              'isActive' => true, // Explicitly set to true for new records
               'created_at' => now(),
               'updated_at' => now()
           ]);
@@ -252,22 +257,190 @@ class CCTVFormController extends Controller
                 ->first();
 
             if (!$maintenanceRecord) {
-                Log::error('CCTV maintenance record not found for ID: ' . $id);
                 return redirect()->route('it-ops.dashboard-cctv')
                     ->with('error', 'CCTV maintenance record not found');
             }
 
-            $pdf = PDF::loadView('SmartForm::it/exports/cctv-maintenance', [
+            $pdf = PDF::loadView('SmartForm::it.exports.cctv-maintenance', [
                 'record' => $maintenanceRecord
             ]);
-            $filename = 'form-cctv-' . str_replace('/', '-', $maintenanceRecord->doc_number) . '.pdf';
 
-            return $pdf->download($filename);
+            return $pdf->stream('cctv-maintenance-' . $maintenanceRecord->doc_number . '.pdf');
+        } catch (\Exception $e) {
+            Log::error('Error in ExportCctv: ' . $e->getMessage());
+            return redirect()->route('it-ops.dashboard-cctv')
+                ->with('error', 'An error occurred while generating the PDF');
+        }
+    }
+
+    /**
+     * Show the form for editing a CCTV maintenance record
+     * 
+     * @param Request $request
+     * @return \Illuminate\View\View
+     */
+    public function EditCctvForm(Request $request)
+    {
+        try {
+            if (!$request->has('id')) {
+                return redirect()->route('it-ops.dashboard-cctv')
+                    ->with('error', 'No record ID provided');
+            }
+
+            $maintenanceRecord = DB::table('it_fm_cctv')
+                ->where('id', $request->id)
+                ->first();
+
+            if (!$maintenanceRecord) {
+                Log::error('CCTV maintenance record not found for ID: ' . $request->id);
+                return redirect()->route('it-ops.dashboard-cctv')
+                    ->with('error', 'CCTV maintenance record not found');
+            }
+
+            return view("SmartForm::it.form-cctv", [
+                'isShowDetail' => false,
+                'isEdit' => true,
+                'maintenanceRecord' => $maintenanceRecord
+            ]);
 
         } catch (\Exception $e) {
-            Log::error('Error in ExportCCTV: ' . $e->getMessage());
+            Log::error('Error in EditCctvForm: ' . $e->getMessage());
             return redirect()->route('it-ops.dashboard-cctv')
-                ->with('error', 'An error occurred while exporting the record');
+                ->with('error', 'An error occurred while loading the edit form');
+        }
+    }
+
+    /**
+     * Update an existing CCTV maintenance record
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function UpdateCctvForm(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                // Teknisi Information
+                'id' => 'required|exists:it_fm_cctv,id',
+                'nama' => 'required|string',
+                'nik' => 'required|string',
+                'dept' => 'required|string',
+                'site' => 'required|string',
+
+                // Asset Information
+                'no_asset' => 'required|string',
+                'jenis_aset' => 'required|string',
+                'merk' => 'required|string',
+                'model' => 'required|string',
+                'area_cctv' => 'required|string',
+
+                // Hardware Conditions
+                'camera_condition' => 'required|in:baik,rusak',
+                'lens_condition' => 'required|in:baik,rusak',
+                'cable_condition' => 'required|in:baik,rusak',
+                'storage_cctv_condition' => 'required|in:baik,rusak',
+
+                // Maintenance Tasks
+                'cover_area' => 'nullable|boolean',
+                'video_quality' => 'nullable|boolean',
+                'sound_quality' => 'nullable|boolean',
+                'remote_view_nvr' => 'nullable|boolean',
+                'remote_playback' => 'nullable|boolean',
+            ]);
+
+            DB::beginTransaction();
+            
+            DB::table('it_fm_cctv')
+                ->where('id', $validated['id'])
+                ->update([
+                    'nama' => $validated['nama'],
+                    'nik' => $validated['nik'],
+                    'dept' => $validated['dept'],
+                    'site' => $validated['site'],
+                    'no_asset' => $validated['no_asset'],
+                    'jenis_aset' => $validated['jenis_aset'],
+                    'merk' => $validated['merk'],
+                    'model' => $validated['model'],
+                    'area_cctv' => $validated['area_cctv'],
+                    'camera_condition' => $validated['camera_condition'],
+                    'lens_condition' => $validated['lens_condition'],
+                    'cable_condition' => $validated['cable_condition'],
+                    'storage_cctv_condition' => $validated['storage_cctv_condition'],
+                    'cover_area' => $validated['cover_area'] ?? false,
+                    'video_quality' => $validated['video_quality'] ?? false,
+                    'sound_quality' => $validated['sound_quality'] ?? false,
+                    'remote_view_nvr' => $validated['remote_view_nvr'] ?? false,
+                    'remote_playback' => $validated['remote_playback'] ?? false,
+                    'updated_at' => now()
+                ]);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'CCTV maintenance record has been updated successfully',
+            ]);
+
+        } catch (ValidationException $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while updating the CCTV maintenance record',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Soft delete a CCTV maintenance record by setting isActive to false
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function DeleteCctvForm(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'id' => 'required|exists:it_fm_cctv,id',
+            ]);
+
+            DB::beginTransaction();
+            
+            DB::table('it_fm_cctv')
+                ->where('id', $validated['id'])
+                ->update([
+                    'isActive' => false, // Set to false to mark as deleted
+                    'updated_at' => now()
+                ]);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'CCTV maintenance record has been deleted successfully',
+            ]);
+
+        } catch (ValidationException $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while deleting the CCTV maintenance record',
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 
@@ -281,10 +454,10 @@ class CCTVFormController extends Controller
             $lastRecord = DB::table('it_fm_cctv')
                 ->whereDate('created_at', now())
                 ->orderBy('created_at', 'desc')
-                ->value('doc_number');
+                ->first();
 
             $sequence = 1;
-            if ($lastRecord && preg_match('/-(\d+)$/', $lastRecord->doc_number, $matches)) {
+            if ($lastRecord && isset($lastRecord->doc_number) && preg_match('/-(\d+)$/', $lastRecord->doc_number, $matches)) {
                 $sequence = intval($matches[1]) + 1;
             }
 

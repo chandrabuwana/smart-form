@@ -203,6 +203,12 @@
                                             <a href="{{ route('it-ops.form-cctv', ['id' => $record->id]) }}" class="btn btn-primary btn-action text-white">
                                                 <i class="fas fa-eye"></i> Detail
                                             </a>
+                                            <a href="{{ route('it-ops.edit-cctv', ['id' => $record->id]) }}" class="btn btn-info btn-action text-white">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </a>
+                                            <button type="button" class="btn btn-danger btn-action text-white btn-delete" data-id="{{ $record->id }}">
+                                                <i class="fas fa-trash"></i> Delete
+                                            </button>
                                         </td>
                                     </tr>
                                 @empty
@@ -230,6 +236,7 @@
     <script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.29.0/libs/jsPDF/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.23.2/dist/extensions/export/bootstrap-table-export.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', function() {
             const filterForm = document.getElementById('filterForm');
@@ -264,6 +271,57 @@
             // Auto-submit on site change
             filterInputs.site.addEventListener('change', function() {
                 btnFilterSubmit.click();
+            });
+
+            // Handle delete button click
+            $('.btn-delete').on('click', function() {
+                const recordId = $(this).data('id');
+                
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "This record will be marked as inactive.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Send delete request
+                        axios.post('{{ route("it-ops.delete-cctv") }}', {
+                            id: recordId
+                        })
+                        .then(function(response) {
+                            if (response.data.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Deleted!',
+                                    text: response.data.message
+                                }).then(() => {
+                                    // Reload the page to reflect changes
+                                    window.location.reload();
+                                });
+                            }
+                        })
+                        .catch(function(error) {
+                            let errorMessage = 'An error occurred while deleting the record';
+                            
+                            if (error.response) {
+                                if (error.response.data.errors) {
+                                    errorMessage = Object.values(error.response.data.errors).flat().join('\n');
+                                } else if (error.response.data.message) {
+                                    errorMessage = error.response.data.message;
+                                }
+                            }
+
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: errorMessage
+                            });
+                        });
+                    }
+                });
             });
         });
     </script>

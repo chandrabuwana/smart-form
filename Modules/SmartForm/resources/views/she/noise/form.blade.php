@@ -84,6 +84,7 @@
                                         <label>Jumlah Inspektor</label>
                                         <input type="number" name="inspector_count" class="form-control" 
                                             value="{{ $isShowDetail ? $maintenanceRecord->inspector_count : ($defaultValues['inspector_count'] ?? 1) }}" 
+                                            min="1" step="1"
                                             required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
                                     </div>
                                 </div>
@@ -302,13 +303,8 @@
                                             placeholder="Nama Lengkap"
                                             value="{{ $isShowDetail ? $maintenanceRecord->inspected_by_name : session('username') }}"
                                             {{ $isShowDetail ? 'disabled' : '' }} required>
-                                    </div>
-                                    <div class="input-group input-group-static mb-3">
-                                        <label>NIK Inspektor</label>
-                                        <input type="text" name="inspected_by_nik" class="form-control" 
-                                            placeholder="NIK"
-                                            value="{{ $isShowDetail ? $maintenanceRecord->inspected_by_nik : session('nik') }}"
-                                            {{ $isShowDetail ? 'disabled' : '' }} required>
+
+                                        <input type="hidden" name="inspected_by_nik" value="{{ $isShowDetail ? $maintenanceRecord->inspected_by_nik : session('user_id') }}" required>
                                     </div>
                                     <div class="input-group input-group-static mb-3">
                                         <label>Tanggal Inspeksi</label>
@@ -320,17 +316,17 @@
                                 <div class="col-md-6">
                                     <div class="input-group input-group-static mb-3">
                                         <label>Mengetahui</label>
-                                        <input type="text" name="acknowledged_by_name" class="form-control" 
-                                            placeholder="Nama Lengkap"
-                                            value="{{ $isShowDetail ? $maintenanceRecord->acknowledged_by_name : '' }}"
-                                            {{ $isShowDetail ? 'disabled' : '' }} required>
-                                    </div>
-                                    <div class="input-group input-group-static mb-3">
-                                        <label>NIK Mengetahui</label>
-                                        <input type="text" name="acknowledged_by_nik" class="form-control" 
-                                            placeholder="NIK"
-                                            value="{{ $isShowDetail ? $maintenanceRecord->acknowledged_by_nik : '' }}"
-                                            {{ $isShowDetail ? 'disabled' : '' }} required>
+                                        <select name="acknowledged_by_name" id="acknowledged_by_select" class="form-control text-left" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                            <option value="">-- Pilih Pengawas --</option>
+                                            @foreach($approvalList as $user)
+                                                <option value="{{ $user->nama }}" 
+                                                    data-nik="{{ $user->nik }}"
+                                                    {{ $isShowDetail && $maintenanceRecord->acknowledged_by_name == $user->nama ? 'selected' : '' }}>
+                                                    {{ $user->nama }} ({{ $user->nik }})
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        <input type="hidden" name="acknowledged_by_nik" id="acknowledged_by_nik" value="{{ $isShowDetail ? $maintenanceRecord->acknowledged_by_nik : '' }}" required>
                                     </div>
                                     <div class="input-group input-group-static mb-3">
                                         <label>Tanggal Mengetahui</label>
@@ -370,6 +366,33 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle acknowledged_by_nik population when supervisor is selected
+        const supervisorSelect = document.getElementById('acknowledged_by_select');
+        const nikField = document.getElementById('acknowledged_by_nik');
+        
+        if (supervisorSelect && nikField) {
+            // Set initial value if a supervisor is already selected
+            if (supervisorSelect.selectedIndex > 0) {
+                const selectedOption = supervisorSelect.options[supervisorSelect.selectedIndex];
+                nikField.value = selectedOption.getAttribute('data-nik');
+            }
+            
+            // Update NIK when supervisor selection changes
+            supervisorSelect.addEventListener('change', function() {
+                if (this.selectedIndex > 0) {
+                    const selectedOption = this.options[this.selectedIndex];
+                    nikField.value = selectedOption.getAttribute('data-nik');
+                } else {
+                    nikField.value = '';
+                }
+            });
+        }
+    });
+</script>
+
 @endsection
 
 @section('custom-css')

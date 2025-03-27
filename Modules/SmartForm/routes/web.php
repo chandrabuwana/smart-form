@@ -326,6 +326,9 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/form-cctv', [CctvFormController::class, 'CreateCctvForm'])->name('it-ops.form-cctv');
             Route::post('/submit-cctv', [CctvFormController::class, 'SubmitCctvForm'])->name('it-ops.submit-cctv');
             Route::get('/form-cctv/{id}/export-pdf', [CctvFormController::class, 'ExportCctv'])->name('it-ops.form-cctv.export');
+            Route::get('/edit-cctv', [CctvFormController::class, 'EditCctvForm'])->name('it-ops.edit-cctv');
+            Route::post('/update-cctv', [CctvFormController::class, 'UpdateCctvForm'])->name('it-ops.update-cctv');
+            Route::post('/delete-cctv', [CctvFormController::class, 'DeleteCctvForm'])->name('it-ops.delete-cctv');
             // DEVICE
             Route::get('/dashboard-device', [DeviceFormController::class, 'IndexDeviceForm'])->name('it-ops.dashboard-device');
             Route::get('/form-device', [DeviceFormController::class, 'CreateDeviceForm'])->name('it-ops.form-device');
