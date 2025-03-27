@@ -5,15 +5,15 @@
     <title>BSS-FORM-IT-016</title>
     <style>
         @page {
-            margin: 30px;
+            margin: 15px;
             padding: 0;
         }
         body {
             font-family: 'DejaVu Sans', sans-serif;
             margin: 0;
             padding: 0;
-            font-size: 12px;
-            line-height: 1.5;
+            font-size: 10px;
+            line-height: 1.3;
             color: #000;
         }
         table {
@@ -23,14 +23,14 @@
             padding: 0;
         }
         .header-table {
-            margin-bottom: 15px;
+            margin-bottom: 8px;
         }
         .header-table td {
-            padding: 6px;
+            padding: 4px;
             vertical-align: middle;
         }
         .logo {
-            width: 100px;
+            width: 80px;
             height: auto;
         }
         .title-section {
@@ -40,52 +40,43 @@
         }
         .system-title {
             text-align: center;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: bold;
             display: block;
             border-bottom: 1px solid #000;
         }
         .form-title {
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
-            margin: 10px 0;
+            margin: 6px 0;
         }
         .info-table {
-            margin-bottom: 15px;
+            margin-bottom: 8px;
         }
         .info-table td {
-            padding: 4px 8px;
+            padding: 2px 4px;
             vertical-align: middle;
         }
         .info-label {
-            width: 100px;
+            width: 80px;
             font-weight: bold;
         }
         .info-colon {
-            width: 20px;
+            width: 10px;
             text-align: center;
         }
         .main-table {
-            margin-bottom: 25px;
+            margin-bottom: 10px;
         }
         .main-table th, .main-table td {
             border: 1px solid #000;
-            padding: 8px;
+            padding: 3px;
             text-align: center;
             vertical-align: middle;
         }
         .main-table th {
             background-color: #f5f5f5;
             font-weight: bold;
-        }
-        .warning-text {
-            text-align: center;
-            font-weight: bold;
-            margin: 25px 0;
-            text-transform: uppercase;
-            border: 2px solid #000;
-            padding: 10px;
-            background-color: #f5f5f5;
         }
     </style>
 </head>
@@ -96,56 +87,72 @@
                 <img src="{{ public_path('img/logo-ct-dark.png') }}" class="logo">
             </td>
             <td width="55%" style="text-align: center;">
-                <div style="font-size: 14px; font-weight: bold;">INTEGRATED BSS EXCELLENT SYSTEM</div>
-                <div style="font-size: 16px; font-weight: bold; margin: 10px 0;">Checklist Maintenance Asset</div>
+                <div style="font-size: 12px; font-weight: bold;">INTEGRATED BSS EXCELLENT SYSTEM</div>
+                <div style="font-size: 14px; font-weight: bold; margin: 5px 0;">Checklist Maintenance Asset</div>
             </td>
-            <td width="30%" style="font-size: 10px; border: 1px solid #000;">
-                <div style="border-bottom: 1px solid #000; padding: 2px;">No Dok : BSS-FRM-IT-016</div>
-                <div style="border-bottom: 1px solid #000; padding: 2px;">Revisi : 00</div>
-                <div style="border-bottom: 1px solid #000; padding: 2px;">Tanggal : 27 Februari 2024</div>
-                <div style="padding: 2px;">Halaman : 1 dari 1</div>
+            <td width="30%" style="font-size: 8px; border: 1px solid #000;">
+                <div style="border-bottom: 1px solid #000; padding: 1px;">No Dok : BSS-FRM-IT-016</div>
+                <div style="border-bottom: 1px solid #000; padding: 1px;">Revisi : 00</div>
+                <div style="border-bottom: 1px solid #000; padding: 1px;">Tanggal : 27 Februari 2024</div>
+                <div style="padding: 1px;">Halaman : 1 dari 1</div>
             </td>
         </tr>
     </table>
 
-    <table class="info-table">
+    <table style="width: 100%;">
         <tr>
-            <td class="info-label">Nama</td>
-            <td class="info-colon">:</td>
-            <td>{{ $record->nama }}</td>
-            <td class="info-label">Departemen</td>
-            <td class="info-colon">:</td>
-            <td>{{ $record->dept }}</td>
-        </tr>
-        <tr>
-            <td class="info-label">NIK</td>
-            <td class="info-colon">:</td>
-            <td>{{ $record->nik }}</td>
-            <td class="info-label">No. Asset</td>
-            <td class="info-colon">:</td>
-            <td>{{ $record->user_no_asset }}</td>
-        </tr>
-        <tr>
-            <td class="info-label">Site</td>
-            <td class="info-colon">:</td>
-            <td>{{ strtoupper($record->site) }}</td>
-            <td class="info-label">Jenis Asset</td>
-            <td class="info-colon">:</td>
-            <td>{{ $record->jenis_aset }}</td>
+            <td style="width: 50%; vertical-align: top; padding-right: 5px;">
+                <table class="info-table" style="width: 100%;">
+                    <tr>
+                        <td class="info-label">Nama</td>
+                        <td class="info-colon">:</td>
+                        <td>{{ $record->nama }}</td>
+                    </tr>
+                    <tr>
+                        <td class="info-label">NIK</td>
+                        <td class="info-colon">:</td>
+                        <td>{{ $record->nik }}</td>
+                    </tr>
+                    <tr>
+                        <td class="info-label">Site</td>
+                        <td class="info-colon">:</td>
+                        <td>{{ strtoupper($record->site) }}</td>
+                    </tr>
+                </table>
+            </td>
+            <td style="width: 50%; vertical-align: top; padding-left: 5px;">
+                <table class="info-table" style="width: 100%;">
+                    <tr>
+                        <td class="info-label">Departemen</td>
+                        <td class="info-colon">:</td>
+                        <td>{{ $record->dept }}</td>
+                    </tr>
+                    <tr>
+                        <td class="info-label">No. Asset</td>
+                        <td class="info-colon">:</td>
+                        <td>{{ $record->user_no_asset }}</td>
+                    </tr>
+                    <tr>
+                        <td class="info-label">Jenis Asset</td>
+                        <td class="info-colon">:</td>
+                        <td>{{ $record->jenis_aset }}</td>
+                    </tr>
+                </table>
+            </td>
         </tr>
     </table>
 
-    <table class="info-table">
+    <table class="info-table" style="margin-top: 5px;">
         <tr>
-            <td colspan="6" style="font-weight: bold; padding: 10px 8px; background-color: #f5f5f5; border: 1px solid #000;">Spesifikasi Asset</td>
+            <td colspan="6" style="font-weight: bold; padding: 3px; background-color: #f5f5f5; border: 1px solid #000;">Spesifikasi Asset</td>
         </tr>
         <tr>
-            <td class="info-label">Jenis Asset</td>
+            <td style="width: 15%;" class="info-label">Jenis Asset</td>
             <td class="info-colon">:</td>
-            <td>{{ $record->jenis_aset }}</td>
-            <td class="info-label">Tipe Asset</td>
+            <td style="width: 30%;">{{ $record->jenis_aset }}</td>
+            <td style="width: 15%;" class="info-label">Tipe Asset</td>
             <td class="info-colon">:</td>
-            <td>{{ $record->tipe_aset }}</td>
+            <td style="width: 30%;">{{ $record->tipe_aset }}</td>
         </tr>
         <tr>
             <td class="info-label">Merk</td>
@@ -206,12 +213,12 @@
                 'has_ccleaner' => 'CCleaner',
                 'has_zoom' => 'Zoom',
                 'has_sap' => 'SAP',
-                'has_microsoft_office' => 'Microsoft Office',
+                'has_microsoft_office' => 'MS Office',
                 'has_anydesk' => 'Anydesk',
-                'has_sisoft' => 'SiSoft Sandra',
+                'has_sisoft' => 'SiSoft',
                 'has_erp' => 'ERP',
                 'has_vnc_remote' => 'VNC Remote',
-                'has_minning_software' => 'Minning Software',
+                'has_minning_software' => 'Mining SW',
                 'has_pdf_viewer' => 'PDF Viewer',
                 'has_wepresent' => 'WePresent',
             ];
@@ -219,14 +226,14 @@
             $maintenance_tasks = [
                 'disk_defragment' => 'Disk Defragment',
                 'driver_printer' => 'Driver Printer',
-                'clean_temp_file' => 'Clean Temporary File',
-                'unused_app' => 'Cek Aplikasi Tidak Digunakan',
-                'scan_antivirus' => 'Quick Scan Antivirus',
-                'cleaning_fan_internal' => 'Pembersihan Fan Internal',
-                'clean_junk_file' => 'Pembersihan File Junk',
-                'brightness_level' => 'Test Brightness Display',
+                'clean_temp_file' => 'Clean Temp Files',
+                'unused_app' => 'Cek App Unused',
+                'scan_antivirus' => 'Scan Antivirus',
+                'cleaning_fan_internal' => 'Clean Fan',
+                'clean_junk_file' => 'Clean Junk Files',
+                'brightness_level' => 'Test Brightness',
                 'speaker' => 'Test Speaker',
-                'wifi_connection' => 'Test Connection WiFi',
+                'wifi_connection' => 'Test WiFi',
                 'hdmi' => 'Test HDMI',
             ];
 
@@ -272,9 +279,5 @@
             </tr>
         @endfor
     </table>
-
-    <div class="warning-text">
-        !!! PASTIKAN DEVICE DALAM KONDISI BAIK !!!
-    </div>
 </body>
 </html>

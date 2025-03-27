@@ -112,6 +112,52 @@ class NoiseController extends Controller
                 $record->activities = json_decode($record->activities ?? '[]', true);
                 $record->work_areas = json_decode($record->work_areas ?? '[]', true);
 
+                // Format dates from SQL Server for form inputs
+                $formatSqlServerDate = function($dateString) {
+                    if (empty($dateString)) {
+                        return null;
+                    }
+                    
+                    // Handle SQL Server date format (e.g., "Mar 9 2025 12:00:00:AM")
+                    if (preg_match('/([A-Za-z]+)\s+(\d+)\s+(\d{4})/', $dateString, $matches)) {
+                        $month = $matches[1];
+                        $day = (int)$matches[2];
+                        $year = $matches[3];
+                        
+                        // Convert month name to month number
+                        $months = [
+                            'Jan' => '01', 'Feb' => '02', 'Mar' => '03', 'Apr' => '04',
+                            'May' => '05', 'Jun' => '06', 'Jul' => '07', 'Aug' => '08',
+                            'Sep' => '09', 'Oct' => '10', 'Nov' => '11', 'Dec' => '12'
+                        ];
+                        
+                        if (isset($months[$month])) {
+                            // Format as Y-m-d for HTML date inputs
+                            return $year . '-' . $months[$month] . '-' . str_pad($day, 2, '0', STR_PAD_LEFT);
+                        }
+                    }
+                    
+                    // Try Carbon parsing as fallback
+                    try {
+                        return \Carbon\Carbon::parse($dateString)->format('Y-m-d');
+                    } catch (\Exception $e) {
+                        \Log::warning('Failed to parse date in AddForm: ' . $dateString);
+                        return null;
+                    }
+                };
+
+                // Format the dates for HTML date inputs
+                $record->inspection_date = $formatSqlServerDate($record->inspection_date);
+                $record->acknowledgment_date = $formatSqlServerDate($record->acknowledgment_date);
+                $record->survey_date = $formatSqlServerDate($record->survey_date);
+
+                // Log the formatted dates
+                \Log::info('Formatted dates for form:', [
+                    'inspection_date' => $record->inspection_date,
+                    'acknowledgment_date' => $record->acknowledgment_date,
+                    'survey_date' => $record->survey_date
+                ]);
+
                 // Add default values for fields that might be missing
                 $defaultValues = [
                     'site_name' => 'BSS',
@@ -214,10 +260,10 @@ class NoiseController extends Controller
                 'inspector_count' => 'required|integer',
                 'inspection_date' => 'required|date',
                 'acknowledgment_date' => 'required|date',
-                'inspected_by' => 'required|string',
-                'acknowledged_by' => 'required|string',
-                'inspected_signature' => 'required|boolean',
-                'acknowledged_signature' => 'required|boolean',
+                'inspected_by_name' => 'required|string',
+                'inspected_by_nik' => 'required|string',
+                'acknowledged_by_name' => 'required|string',
+                'acknowledged_by_nik' => 'required|string',
                 'work_location' => 'required|string',
                 'risk_level' => 'nullable|string',
                 'activities' => 'required|array',
@@ -267,10 +313,10 @@ class NoiseController extends Controller
                 'inspector_count' => $request->inspector_count,
                 'inspection_date' => \Carbon\Carbon::parse($request->inspection_date)->format('Y-m-d'),
                 'acknowledgment_date' => \Carbon\Carbon::parse($request->acknowledgment_date)->format('Y-m-d'),
-                'inspected_by' => $request->inspected_by,
-                'acknowledged_by' => $request->acknowledged_by,
-                'inspected_signature' => (bool) $request->input('inspected_signature', false),
-                'acknowledged_signature' => (bool) $request->input('acknowledged_signature', false),
+                'inspected_by_name' => $request->inspected_by_name,
+                'inspected_by_nik' => $request->inspected_by_nik,
+                'acknowledged_by_name' => $request->acknowledged_by_name,
+                'acknowledged_by_nik' => $request->acknowledged_by_nik,
                 'work_location' => $request->work_location,
                 'risk_level' => $request->risk_level,
                 'findings_description' => $request->findings_description,
@@ -306,24 +352,92 @@ class NoiseController extends Controller
             $record->activities = is_string($record->activities) ? json_decode($record->activities, true) : $record->activities;
             $record->work_areas = is_string($record->work_areas) ? json_decode($record->work_areas, true) : $record->work_areas;
 
-            // Debug the dates
-            \Log::info('Raw dates:', [
-                'inspection_date' => $record->inspection_date,
-                'acknowledgment_date' => $record->acknowledgment_date,
-                'survey_date' => $record->survey_date
-            ]);
-
-            // Format dates for display using Carbon
+            // Format dates from SQL Server for display
             try {
-                $record->formatted_inspection_date = $record->inspection_date ? \Carbon\Carbon::createFromFormat('Y-m-d', $record->inspection_date)->format('d/m/Y') : '';
-                $record->formatted_acknowledgment_date = $record->acknowledgment_date ? \Carbon\Carbon::createFromFormat('Y-m-d', $record->acknowledgment_date)->format('d/m/Y') : '';
-                $record->formatted_survey_date = $record->survey_date ? \Carbon\Carbon::createFromFormat('Y-m-d', $record->survey_date)->format('d/m/Y') : '';
+                // Log raw dates for debugging
+                \Log::info('Raw dates from SQL Server:', [
+                    'inspection_date' => $record->inspection_date,
+                    'acknowledgment_date' => $record->acknowledgment_date,
+                    'survey_date' => $record->survey_date
+                ]);
+
+                // Helper function to format SQL Server dates
+                $formatSqlServerDate = function($dateString) {
+                    if (empty($dateString)) {
+                        return '';
+                    }
+                    
+                    // Handle SQL Server date format (e.g., "Mar 9 2025 12:00:00:AM")
+                    if (preg_match('/([A-Za-z]+)\s+(\d+)\s+(\d{4})/', $dateString, $matches)) {
+                        $month = $matches[1];
+                        $day = (int)$matches[2];
+                        $year = $matches[3];
+                        
+                        // Convert month name to month number
+                        $months = [
+                            'Jan' => '01', 'Feb' => '02', 'Mar' => '03', 'Apr' => '04',
+                            'May' => '05', 'Jun' => '06', 'Jul' => '07', 'Aug' => '08',
+                            'Sep' => '09', 'Oct' => '10', 'Nov' => '11', 'Dec' => '12'
+                        ];
+                        
+                        if (isset($months[$month])) {
+                            // Format as Y-m-d for database operations
+                            $formattedDate = $year . '-' . $months[$month] . '-' . str_pad($day, 2, '0', STR_PAD_LEFT);
+                            
+                            // Format as d/m/Y for display
+                            $displayDate = str_pad($day, 2, '0', STR_PAD_LEFT) . '/' . $months[$month] . '/' . $year;
+                            
+                            return [
+                                'database' => $formattedDate,
+                                'display' => $displayDate
+                            ];
+                        }
+                    }
+                    
+                    // Fallback for other date formats
+                    try {
+                        $carbon = \Carbon\Carbon::parse($dateString);
+                        return [
+                            'database' => $carbon->format('Y-m-d'),
+                            'display' => $carbon->format('d/m/Y')
+                        ];
+                    } catch (\Exception $e) {
+                        \Log::warning('Failed to parse date: ' . $dateString . ' - ' . $e->getMessage());
+                        return [
+                            'database' => $dateString,
+                            'display' => $dateString
+                        ];
+                    }
+                };
+                
+                // Process each date field
+                $inspectionDate = $formatSqlServerDate($record->inspection_date);
+                $acknowledgmentDate = $formatSqlServerDate($record->acknowledgment_date);
+                $surveyDate = $formatSqlServerDate($record->survey_date);
+                
+                // Store both formats
+                $record->inspection_date = $inspectionDate['database'];
+                $record->formatted_inspection_date = $inspectionDate['display'];
+                
+                $record->acknowledgment_date = $acknowledgmentDate['database'];
+                $record->formatted_acknowledgment_date = $acknowledgmentDate['display'];
+                
+                $record->survey_date = $surveyDate['database'];
+                $record->formatted_survey_date = $surveyDate['display'];
+                
+                \Log::info('Formatted dates:', [
+                    'inspection_date' => $record->inspection_date,
+                    'acknowledgment_date' => $record->acknowledgment_date,
+                    'survey_date' => $record->survey_date
+                ]);
+                
             } catch (\Exception $e) {
-                Log::error('Date formatting error: ' . $e->getMessage());
-                // Use fallback date formatting if createFromFormat fails
-                $record->formatted_inspection_date = $record->inspection_date ? date('d/m/Y', strtotime($record->inspection_date)) : '';
-                $record->formatted_acknowledgment_date = $record->acknowledgment_date ? date('d/m/Y', strtotime($record->acknowledgment_date)) : '';
-                $record->formatted_survey_date = $record->survey_date ? date('d/m/Y', strtotime($record->survey_date)) : '';
+                \Log::error('Date formatting error: ' . $e->getMessage());
+                
+                // Keep original values if formatting fails
+                $record->formatted_inspection_date = $record->inspection_date;
+                $record->formatted_acknowledgment_date = $record->acknowledgment_date;
+                $record->formatted_survey_date = $record->survey_date;
             }
 
             $pdf = PDF::loadView('SmartForm::she/noise/export-pdf', [

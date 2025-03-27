@@ -116,21 +116,11 @@
                                     </div>
                                     <div class="mb-0 d-flex align-items-center">
                                         <label class="form-label me-2 w-25" for="dept">Dept</label>
-                                        <input type="text" class="form-control input-text" id="dept" name="dept" required
-                                        {{ $isShowDetail ? 'disabled' : '' }}
-                                        value="{{ $isShowDetail ? $maintenanceRecord->dept : (session('kode_department') ?? '') }}">
+                                        {!! \Modules\SmartForm\helpers\DepartmentHelper::renderDepartmentSelect('dept', $isShowDetail ? $maintenanceRecord->dept : null, $isShowDetail) !!}
                                     </div>
                                     <div class="mb-0 d-flex align-items-center">
                                         <label class="form-label me-2 w-25" for="site">Site</label>
-                                        <select class="form-select input-text" id="site" name="site" required
-                                        {{ $isShowDetail ? 'disabled' : '' }}>
-                                        <option value="">-- Pilih Site --</option>
-                                            @foreach(['agm', 'mbl', 'mme', 'mas', 'pmss', 'taj', 'bssr', 'tdm', 'msj'] as $site)
-                                                <option value="{{ $site }}" {{ $isShowDetail && strtolower($maintenanceRecord->site) == $site ? 'selected' : '' }}>
-                                                    {{ strtoupper($site) }}
-                                                </option>
-                                            @endforeach
-                                        </select>
+                                        {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('site', $isShowDetail ? strtolower($maintenanceRecord->site) : null, $isShowDetail) !!}
                                     </div>
                                 </div>
                             </div>
@@ -195,9 +185,9 @@
                                                 'cable_condition' => 'Kabel Power',
                                                
                                             ] as $field => $label)
-                                            <tr>
-                                                    <td>{{ $label }}</td>
-                                                    <td class="text-center">
+                                            <tr class="border">
+                                                    <td class="border">{{ $label }}</td>
+                                                    <td class="text-center border">
                                                         <input type="radio" 
                                                             name="{{ $field }}" 
                                                             value="baik"
@@ -241,9 +231,9 @@
                                                 'restart_router_check' => 'Restart Router',
                                                 'port_check' => 'Port LAN/WAN'
                                             ] as $field => $label)
-                                                <tr>
-                                                    <td>{{ $label }}</td>
-                                                    <td class="text-center">
+                                                <tr class="border">
+                                                    <td class="border">{{ $label }}</td>
+                                                    <td class="text-center border">
                                                         <input type="checkbox" 
                                                             name="{{ $field }}" 
                                                             value="1"

@@ -116,21 +116,11 @@
                                     </div>
                                     <div class="mb-0 d-flex align-items-center">
                                         <label class="form-label me-2 w-25" for="dept">Dept</label>
-                                        <input type="text" class="form-control input-text" id="dept" name="dept" required
-                                            {{ $isShowDetail ? 'disabled' : '' }}
-                                            value="{{ $isShowDetail ? $maintenanceRecord->dept : (session('kode_department') ?? '') }}">
+                                        {!! \Modules\SmartForm\helpers\DepartmentHelper::renderDepartmentSelect('dept', $isShowDetail ? $maintenanceRecord->dept : null, $isShowDetail) !!}
                                     </div>
                                     <div class="mb-0 d-flex align-items-center">
                                         <label class="form-label me-2 w-25" for="site">Site</label>
-                                        <select class="form-select input-text" id="site" name="site" required
-                                            {{ $isShowDetail ? 'disabled' : '' }}>
-                                            <option value="">-- Pilih Site --</option>
-                                            @foreach(['agm', 'mbl', 'mme', 'mas', 'pmss', 'taj', 'bssr', 'tdm', 'msj'] as $site)
-                                                <option value="{{ $site }}" {{ $isShowDetail && strtolower($maintenanceRecord->site) == $site ? 'selected' : '' }}>
-                                                    {{ strtoupper($site) }}
-                                                </option>
-                                            @endforeach
-                                        </select>
+                                        {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('site', $isShowDetail ? strtolower($maintenanceRecord->site) : null, $isShowDetail) !!}
                                     </div>
                                 </div>
                             </div>
@@ -163,15 +153,7 @@
                                     </div>
                                     <div class="mb-0 d-flex align-items-center">
                                         <label class="form-label me-2 w-25" for="user_site">Site</label>
-                                        <select class="form-select input-text" id="user_site" name="user_site" required
-                                        {{ $isShowDetail ? 'disabled' : '' }}>
-                                            <option value="">-- Pilih Site --</option>
-                                            @foreach(['agm', 'mbl', 'mme', 'mas', 'pmss', 'taj', 'bssr', 'tdm', 'msj'] as $site)
-                                                <option value="{{ $site }}" {{ $isShowDetail && strtolower($maintenanceRecord->user_site) == $site ? 'selected' : '' }}>
-                                                    {{ strtoupper($site) }}
-                                                </option>
-                                            @endforeach
-                                        </select>
+                                        {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('user_site', $isShowDetail ? strtolower($maintenanceRecord->user_site) : null, $isShowDetail) !!}
                                     </div>
                                     <div class="mb-0 d-flex align-items-center">
                                         <label class="form-label me-2 w-25" for="user_no_asset">No. Asset</label>
@@ -278,9 +260,9 @@
                                                 'wifi_connection' => 'Test Connection WiFi',
                                                 'hdmi' => 'Test HDMI',
                                             ] as $field => $label)
-                                                <tr>
-                                                    <td>{{ $label }}</td>
-                                                    <td class="text-center">
+                                                <tr class="border">
+                                                    <td class="border"> {{ $label }}</td>
+                                                    <td class="text-center border">
                                                         <input type="checkbox" 
                                                             name="{{ $field }}" 
                                                             value="1"
@@ -328,9 +310,9 @@
                                                 'mic_condition' => 'Microphone',
                                                 'battery_condition' => 'Baterai',
                                             ] as $field => $label)
-                                            <tr>
-                                                    <td>{{ $label }}</td>
-                                                    <td class="text-center">
+                                            <tr class="border">
+                                                    <td class="border">{{ $label }}</td>
+                                                    <td class="text-center border">
                                                         <input type="radio" 
                                                             name="{{ $field }}" 
                                                             value="baik"
@@ -338,7 +320,7 @@
                                                             {{ $isShowDetail ? 'disabled' : '' }}
                                                             required>
                                                     </td>
-                                                    <td class="text-center">
+                                                    <td class="text-center border">
                                                         <input type="radio" 
                                                             name="{{ $field }}" 
                                                             value="rusak"
@@ -384,9 +366,9 @@
                                                 'has_pdf_viewer' => 'PDF Viewer',
                                                 'has_wepresent' => 'WePresent',
                                             ] as $field => $label)
-                                            <tr>
-                                                    <td>{{ $label }}</td>
-                                                    <td class="text-center">
+                                            <tr class="border">
+                                                    <td class="border">{{ $label }}</td>
+                                                    <td class="text-center border">
                                                         <input type="radio" 
                                                             name="{{ $field }}" 
                                                             value="ada"
@@ -394,7 +376,7 @@
                                                             {{ $isShowDetail ? 'disabled' : '' }}
                                                             required>
                                                     </td>
-                                                    <td class="text-center">
+                                                    <td class="text-center border">
                                                         <input type="radio" 
                                                             name="{{ $field }}" 
                                                             value="tidak"

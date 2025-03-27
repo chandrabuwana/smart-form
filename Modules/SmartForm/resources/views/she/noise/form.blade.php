@@ -59,9 +59,11 @@
                                 <div class="col-md-3">
                                     <div class="input-group input-group-static mb-3">
                                         <label>Shift</label>
-                                        <input type="text" name="shift" class="form-control" 
-                                            value="{{ $isShowDetail ? $maintenanceRecord->shift : ($defaultValues['shift'] ?? 'DS') }}" 
-                                            readonly>
+                                        <select class="form-control" name="shift" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                            <option value="">-- Pilih Shift --</option>    
+                                            <option value="DS" {{ $isShowDetail && $maintenanceRecord->shift == 'DS' ? 'selected' : (!$isShowDetail && isset($defaultValues['shift']) && $defaultValues['shift'] == 'DS' ? 'selected' : '') }}>DS</option>
+                                            <option value="NS" {{ $isShowDetail && $maintenanceRecord->shift == 'NS' ? 'selected' : (!$isShowDetail && isset($defaultValues['shift']) && $defaultValues['shift'] == 'NS' ? 'selected' : '') }}>NS</option>
+                                        </select> 
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -291,14 +293,17 @@
                                 <div class="col-md-6">
                                     <div class="input-group input-group-static mb-3">
                                         <label>Diinspeksi Oleh</label>
-                                        <select name="inspected_by" class="form-control text-left" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
-                                            <option value="">-- Pilih Inspektor --</option>
-                                            @foreach($approvalList as $user)
-                                                <option value="{{ $user->nama }}" {{ $isShowDetail && $maintenanceRecord->inspected_by == $user->nama ? 'selected' : '' }}>
-                                                    {{ $user->nama }} ({{ $user->nik }})
-                                                </option>
-                                            @endforeach
-                                        </select>
+                                        <input type="text" name="inspected_by_name" class="form-control" 
+                                            placeholder="Nama Lengkap"
+                                            value="{{ $isShowDetail ? $maintenanceRecord->inspected_by_name : session('username') }}"
+                                            {{ $isShowDetail ? 'disabled' : '' }} required>
+                                    </div>
+                                    <div class="input-group input-group-static mb-3">
+                                        <label>NIK Inspektor</label>
+                                        <input type="text" name="inspected_by_nik" class="form-control" 
+                                            placeholder="NIK"
+                                            value="{{ $isShowDetail ? $maintenanceRecord->inspected_by_nik : session('nik') }}"
+                                            {{ $isShowDetail ? 'disabled' : '' }} required>
                                     </div>
                                     <div class="input-group input-group-static mb-3">
                                         <label>Tanggal Inspeksi</label>
@@ -306,40 +311,27 @@
                                             value="{{ $isShowDetail ? $maintenanceRecord->inspection_date : now()->format('Y-m-d') }}" 
                                             required {{ $isShowDetail ? 'disabled' : '' }}>
                                     </div>
-                                    <div class="form-check mb-3 ps-0">
-                                        <input class="form-check-input" type="checkbox" name="inspected_signature" value="1"
-                                            {{ $isShowDetail ? ($maintenanceRecord->inspected_signature ? 'checked' : '') : '' }}
-                                            {{ $isShowDetail ? 'disabled' : '' }} required>
-                                        <label class="form-check-label">
-                                            Signed by Inspector
-                                        </label>
-                                    </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="input-group input-group-static mb-3">
                                         <label>Mengetahui</label>
-                                        <select name="acknowledged_by" class="form-control text-left" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
-                                            <option value="">-- Pilih Acknowledged --</option>
-                                            @foreach($approvalList as $user)
-                                                <option value="{{ $user->nama }}" {{ $isShowDetail && $maintenanceRecord->acknowledged_by == $user->nama ? 'selected' : '' }}>
-                                                    {{ $user->nama }} ({{ $user->nik }})
-                                                </option>
-                                            @endforeach
-                                        </select>
+                                        <input type="text" name="acknowledged_by_name" class="form-control" 
+                                            placeholder="Nama Lengkap"
+                                            value="{{ $isShowDetail ? $maintenanceRecord->acknowledged_by_name : '' }}"
+                                            {{ $isShowDetail ? 'disabled' : '' }} required>
+                                    </div>
+                                    <div class="input-group input-group-static mb-3">
+                                        <label>NIK Mengetahui</label>
+                                        <input type="text" name="acknowledged_by_nik" class="form-control" 
+                                            placeholder="NIK"
+                                            value="{{ $isShowDetail ? $maintenanceRecord->acknowledged_by_nik : '' }}"
+                                            {{ $isShowDetail ? 'disabled' : '' }} required>
                                     </div>
                                     <div class="input-group input-group-static mb-3">
                                         <label>Tanggal Mengetahui</label>
                                         <input type="date" name="acknowledgment_date" class="form-control" 
                                             value="{{ $isShowDetail ? $maintenanceRecord->acknowledgment_date : now()->format('Y-m-d') }}" 
                                             required {{ $isShowDetail ? 'disabled' : '' }}>
-                                    </div>
-                                    <div class="form-check mb-3 ps-0">
-                                        <input class="form-check-input" type="checkbox" name="acknowledged_signature" value="1"
-                                            {{ $isShowDetail ? ($maintenanceRecord->acknowledged_signature ? 'checked' : '') : '' }}
-                                            {{ $isShowDetail ? 'disabled' : '' }} required>
-                                        <label class="form-check-label">
-                                            Signed by Acknowledger
-                                        </label>
                                     </div>
                                 </div>
                             </div>
