@@ -337,6 +337,9 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/form-device', [DeviceFormController::class, 'CreateDeviceForm'])->name('it-ops.form-device');
             Route::post('/submit-device', [DeviceFormController::class, 'SubmitDeviceForm'])->name('it-ops.submit-device');
             Route::get('/form-device/{id}/export-pdf', [DeviceFormController::class, 'ExportDevice'])->name('it-ops.form-device.export');
+            Route::get('/edit-device', [DeviceFormController::class, 'EditDeviceForm'])->name('it-ops.edit-device');
+            Route::post('/update-device', [DeviceFormController::class, 'UpdateDeviceForm'])->name('it-ops.update-device');
+            Route::post('/delete-device', [DeviceFormController::class, 'DeleteDeviceForm'])->name('it-ops.delete-device');
             // ROUTER
             Route::get('/dashboard-router', [RouterFormController::class, 'Dashboard'])->name('it-ops.dashboard-router');
             Route::get('/form-router', [RouterFormController::class, 'CreateRouterForm'])->name('it-ops.form-router');

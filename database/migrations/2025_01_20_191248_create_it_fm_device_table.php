@@ -31,6 +31,8 @@ return new class extends Migration
             $table->enum('user_site', ['agm', 'mbl', 'mme', 'mas', 'pmss', 'taj', 'bssr', 'tdm', 'msj']);
             $table->string('user_no_asset')->nullable();
             
+            // status
+            $table->boolean('isActive')->default(true);
 
             // Asset Information
             $table->string('jenis_aset');

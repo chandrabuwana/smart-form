@@ -87,13 +87,16 @@
         <div class="card">
             <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                 <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                    <h6 class="text-white text-capitalize ps-3">{{$isShowDetail ? 'Detail' : 'New'}} Maintenance Device</h6>
+                    <h6 class="text-white text-capitalize ps-3">{{$isShowDetail ? 'Detail' : (isset($isEdit) && $isEdit ? 'Edit' : 'New')}} Maintenance Device</h6>
                 </div>
             </div>
             
             <div class="card-body my-1">
-                <form id="maintenanceForm" method="POST" action="{{ route('it-ops.submit-device') }}" class="form">
+                <form id="maintenanceForm" method="POST" action="{{ isset($isEdit) && $isEdit ? route('it-ops.update-device') : route('it-ops.submit-device') }}" class="form">
                     @csrf
+                    @if(isset($isEdit) && $isEdit)
+                        <input type="hidden" name="id" value="{{ $maintenanceRecord->id }}">
+                    @endif
                     <div class="row mb-4">
                         <!-- Teknisi Information -->
                         <div class="col-md-6">
@@ -104,23 +107,23 @@
                                 <div class="card-body">
                                     <div class="mb-0 d-flex align-items-center">
                                         <label class="form-label me-2 w-25" for="nama">Nama</label>
-                                        <input type="text" class="form-control input-text" id="nama" name="nama"
-                                            {{ $isShowDetail ? 'disabled' : '' }}
-                                            value="{{ $isShowDetail ? $maintenanceRecord->nama : (session('username') ?? '') }}" required>
+                                        <input type="text" class="form-control input-text" id="nama" name="nama" required
+                                        {{ $isShowDetail ? 'disabled' : '' }}
+                                        value="{{ $isShowDetail || (isset($isEdit) && $isEdit) ? $maintenanceRecord->nama : (session('username') ?? '') }}">
                                     </div>
                                     <div class="mb-0 d-flex align-items-center">
                                         <label class="form-label me-2 w-25" for="nik">NIK</label>
                                         <input type="text" class="form-control input-text" id="nik" name="nik" required
                                         {{ $isShowDetail ? 'disabled' : '' }}
-                                        value="{{ $isShowDetail ? $maintenanceRecord->nik :  (session('user_id') ?? '') }}">
+                                        value="{{ $isShowDetail || (isset($isEdit) && $isEdit) ? $maintenanceRecord->nik :  (session('user_id') ?? '') }}">
                                     </div>
                                     <div class="mb-0 d-flex align-items-center">
                                         <label class="form-label me-2 w-25" for="dept">Dept</label>
-                                        {!! \Modules\SmartForm\helpers\DepartmentHelper::renderDepartmentSelect('dept', $isShowDetail ? $maintenanceRecord->dept : null, $isShowDetail) !!}
+                                        {!! \Modules\SmartForm\helpers\DepartmentHelper::renderDepartmentSelect('dept', ($isShowDetail || (isset($isEdit) && $isEdit)) ? $maintenanceRecord->dept : null, $isShowDetail) !!}
                                     </div>
                                     <div class="mb-0 d-flex align-items-center">
                                         <label class="form-label me-2 w-25" for="site">Site</label>
-                                        {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('site', $isShowDetail ? strtolower($maintenanceRecord->site) : null, $isShowDetail) !!}
+                                        {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('site', ($isShowDetail || (isset($isEdit) && $isEdit)) ? strtolower($maintenanceRecord->site) : null, $isShowDetail) !!}
                                     </div>
                                 </div>
                             </div>
@@ -137,29 +140,27 @@
                                         <label class="form-label me-2 w-25" for="user_name">Nama</label>
                                         <input type="text" class="form-control input-text" id="user_name" name="user_name" 
                                             {{ $isShowDetail ? 'disabled' : '' }}
-                                            value="{{ $isShowDetail ? $maintenanceRecord->user_name : '' }}" required>
+                                            value="{{ $isShowDetail || (isset($isEdit) && $isEdit) ? $maintenanceRecord->user_name : '' }}" required>
                                     </div>
                                     <div class="mb-0 d-flex align-items-center">
                                         <label class="form-label me-2 w-25" for="user_nik">NIK</label>
-                                        <input type="text" class="form-control input-text" id="user_nik" name="user_nik"
-                                            {{ $isShowDetail ? 'disabled' : '' }} 
-                                            value="{{ $isShowDetail ? $maintenanceRecord->user_nik : '' }}" required>
+                                        <input type="text" class="form-control input-text" id="user_nik" name="user_nik" 
+                                            {{ $isShowDetail ? 'disabled' : '' }}
+                                            value="{{ $isShowDetail || (isset($isEdit) && $isEdit) ? $maintenanceRecord->user_nik : '' }}" required>
                                     </div>
                                     <div class="mb-0 d-flex align-items-center">
                                         <label class="form-label me-2 w-25" for="user_dept">Dept</label>
-                                        <input type="text" class="form-control input-text" id="user_dept" name="user_dept" 
-                                            {{ $isShowDetail ? 'disabled' : '' }}
-                                            value="{{ $isShowDetail ? $maintenanceRecord->user_dept : '' }}" required>
+                                        {!! \Modules\SmartForm\helpers\DepartmentHelper::renderDepartmentSelect('user_dept', ($isShowDetail || (isset($isEdit) && $isEdit)) ? $maintenanceRecord->user_dept : null, $isShowDetail) !!}
                                     </div>
                                     <div class="mb-0 d-flex align-items-center">
                                         <label class="form-label me-2 w-25" for="user_site">Site</label>
-                                        {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('user_site', $isShowDetail ? strtolower($maintenanceRecord->user_site) : null, $isShowDetail) !!}
+                                        {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('user_site', ($isShowDetail || (isset($isEdit) && $isEdit)) ? strtolower($maintenanceRecord->user_site) : null, $isShowDetail) !!}
                                     </div>
                                     <div class="mb-0 d-flex align-items-center">
-                                        <label class="form-label me-2 w-25" for="user_no_asset">No. Asset</label>
+                                        <label class="form-label me-2 w-25" for="user_no_asset">No Asset</label>
                                         <input type="text" class="form-control input-text" id="user_no_asset" name="user_no_asset" 
                                             {{ $isShowDetail ? 'disabled' : '' }}
-                                            value="{{ $isShowDetail ? $maintenanceRecord->user_no_asset : '' }}" required>
+                                            value="{{ $isShowDetail || (isset($isEdit) && $isEdit) ? $maintenanceRecord->user_no_asset : '' }}">
                                     </div>
                                 </div>
                             </div>
@@ -177,56 +178,56 @@
                                     <div class="mb-0 d-flex align-items-center">
                                         <label class="form-label me-2 w-25" for="jenis_aset">Jenis Asset</label>
                                         <input type="text" class="form-control input-text" id="jenis_aset" name="jenis_aset" 
-                                            value="{{ $isShowDetail ? $maintenanceRecord->jenis_aset : '' }}" required
-                                            {{ $isShowDetail ? 'disabled' : '' }}>
+                                            {{ $isShowDetail ? 'disabled' : '' }}
+                                            value="{{ $isShowDetail || (isset($isEdit) && $isEdit) ? $maintenanceRecord->jenis_aset : '' }}" required>
                                     </div>
                                     <div class="mb-0 d-flex align-items-center">
                                         <label class="form-label me-2 w-25" for="tipe_aset">Tipe Asset</label>
                                         <input type="text" class="form-control input-text" id="tipe_aset" name="tipe_aset" 
-                                            value="{{ $isShowDetail ? $maintenanceRecord->tipe_aset : '' }}" required
-                                            {{ $isShowDetail ? 'disabled' : '' }}>
+                                            {{ $isShowDetail ? 'disabled' : '' }}
+                                            value="{{ $isShowDetail || (isset($isEdit) && $isEdit) ? $maintenanceRecord->tipe_aset : '' }}" required>
                                     </div>
                                     <div class="mb-0 d-flex align-items-center">
                                         <label class="form-label me-2 w-25" for="merk">Merk</label>
                                         <input type="text" class="form-control input-text" id="merk" name="merk" 
-                                            value="{{ $isShowDetail ? $maintenanceRecord->merk : '' }}" required
-                                            {{ $isShowDetail ? 'disabled' : '' }}>
+                                            {{ $isShowDetail ? 'disabled' : '' }}
+                                            value="{{ $isShowDetail || (isset($isEdit) && $isEdit) ? $maintenanceRecord->merk : '' }}" required>
                                     </div>
                                     <div class="mb-0 d-flex align-items-center">
                                         <label class="form-label me-2 w-25" for="model">Model</label>
                                         <input type="text" class="form-control input-text" id="model" name="model" 
-                                            value="{{ $isShowDetail ? $maintenanceRecord->model : '' }}" required
-                                            {{ $isShowDetail ? 'disabled' : '' }}>
+                                            {{ $isShowDetail ? 'disabled' : '' }}
+                                            value="{{ $isShowDetail || (isset($isEdit) && $isEdit) ? $maintenanceRecord->model : '' }}" required>
                                     </div>
                                     <div class="mb-0 d-flex align-items-center">
                                         <label class="form-label me-2 w-25" for="processor">Processor</label>
                                         <input type="text" class="form-control input-text" id="processor" name="processor" 
-                                            value="{{ $isShowDetail ? $maintenanceRecord->processor : '' }}" required
-                                            {{ $isShowDetail ? 'disabled' : '' }}>
+                                            {{ $isShowDetail ? 'disabled' : '' }}
+                                            value="{{ $isShowDetail || (isset($isEdit) && $isEdit) ? $maintenanceRecord->processor : '' }}" required>
                                     </div>
                                     <div class="mb-0 d-flex align-items-center">
                                         <label class="form-label me-2 w-25" for="ram">RAM</label>
                                         <input type="text" class="form-control input-text" id="ram" name="ram" 
-                                            value="{{ $isShowDetail ? $maintenanceRecord->ram : '' }}" required
-                                            {{ $isShowDetail ? 'disabled' : '' }}>
+                                            {{ $isShowDetail ? 'disabled' : '' }}
+                                            value="{{ $isShowDetail || (isset($isEdit) && $isEdit) ? $maintenanceRecord->ram : '' }}" required>
                                     </div>
                                     <div class="mb-0 d-flex align-items-center">
                                         <label class="form-label me-2 w-25" for="hdd">HDD</label>
                                         <input type="text" class="form-control input-text" id="hdd" name="hdd" 
-                                            value="{{ $isShowDetail ? $maintenanceRecord->hdd : '' }}" required
-                                            {{ $isShowDetail ? 'disabled' : '' }}>
+                                            {{ $isShowDetail ? 'disabled' : '' }}
+                                            value="{{ $isShowDetail || (isset($isEdit) && $isEdit) ? $maintenanceRecord->hdd : '' }}" required>
                                     </div>
                                     <div class="mb-0 d-flex align-items-center">
                                         <label class="form-label me-2 w-25" for="vga">VGA</label>
                                         <input type="text" class="form-control input-text" id="vga" name="vga" 
-                                            value="{{ $isShowDetail ? $maintenanceRecord->vga : '' }}" required
-                                            {{ $isShowDetail ? 'disabled' : '' }}>
+                                            {{ $isShowDetail ? 'disabled' : '' }}
+                                            value="{{ $isShowDetail || (isset($isEdit) && $isEdit) ? $maintenanceRecord->vga : '' }}" required>
                                     </div>
                                     <div class="mb-0 d-flex align-items-center">
                                         <label class="form-label me-2 w-25" for="os">OS</label>
                                         <input type="text" class="form-control input-text" id="os" name="os" 
-                                            value="{{ $isShowDetail ? $maintenanceRecord->os : '' }}" required
-                                            {{ $isShowDetail ? 'disabled' : '' }}>
+                                            {{ $isShowDetail ? 'disabled' : '' }}
+                                            value="{{ $isShowDetail || (isset($isEdit) && $isEdit) ? $maintenanceRecord->os : '' }}" required>
                                     </div>
                                 </div>
                             </div>
@@ -266,7 +267,7 @@
                                                         <input type="checkbox" 
                                                             name="{{ $field }}" 
                                                             value="1"
-                                                            {{ $isShowDetail && isset($maintenanceRecord->$field) && $maintenanceRecord->$field ? 'checked' : '' }}
+                                                            {{ ($isShowDetail || (isset($isEdit) && $isEdit)) && isset($maintenanceRecord->$field) && $maintenanceRecord->$field ? 'checked' : '' }}
                                                             {{ $isShowDetail ? 'disabled' : '' }}>
                                                     </td>
                                                 </tr>
@@ -316,7 +317,7 @@
                                                         <input type="radio" 
                                                             name="{{ $field }}" 
                                                             value="baik"
-                                                            {{ $isShowDetail && isset($maintenanceRecord->$field) && $maintenanceRecord->$field === 'baik' ? 'checked' : '' }}
+                                                            {{ ($isShowDetail || (isset($isEdit) && $isEdit)) && isset($maintenanceRecord->$field) && $maintenanceRecord->$field === 'baik' ? 'checked' : '' }}
                                                             {{ $isShowDetail ? 'disabled' : '' }}
                                                             required>
                                                     </td>
@@ -324,7 +325,7 @@
                                                         <input type="radio" 
                                                             name="{{ $field }}" 
                                                             value="rusak"
-                                                            {{ $isShowDetail && isset($maintenanceRecord->$field) && $maintenanceRecord->$field === 'rusak' ? 'checked' : '' }}
+                                                            {{ ($isShowDetail || (isset($isEdit) && $isEdit)) && isset($maintenanceRecord->$field) && $maintenanceRecord->$field === 'rusak' ? 'checked' : '' }}
                                                             {{ $isShowDetail ? 'disabled' : '' }}
                                                             required>
                                                     </td>
@@ -372,7 +373,7 @@
                                                         <input type="radio" 
                                                             name="{{ $field }}" 
                                                             value="ada"
-                                                            {{ $isShowDetail && isset($maintenanceRecord->$field) && $maintenanceRecord->$field == 'ada' ? 'checked' : '' }}
+                                                            {{ ($isShowDetail || (isset($isEdit) && $isEdit)) && isset($maintenanceRecord->$field) && $maintenanceRecord->$field == 'ada' ? 'checked' : '' }}
                                                             {{ $isShowDetail ? 'disabled' : '' }}
                                                             required>
                                                     </td>
@@ -380,7 +381,7 @@
                                                         <input type="radio" 
                                                             name="{{ $field }}" 
                                                             value="tidak"
-                                                            {{ $isShowDetail && isset($maintenanceRecord->$field) && $maintenanceRecord->$field == 'tidak' ? 'checked' : '' }}
+                                                            {{ ($isShowDetail || (isset($isEdit) && $isEdit)) && isset($maintenanceRecord->$field) && $maintenanceRecord->$field == 'tidak' ? 'checked' : '' }}
                                                             {{ $isShowDetail ? 'disabled' : '' }}
                                                             required>
                                                     </td>
@@ -393,37 +394,22 @@
                         </div>
                     </div>
 
-                    @if(!$isShowDetail)
-                        <div class="row mt-4">
-                            <div class="col-12 d-flex justify-content-between align-items-center">
-                                <div>
-                                    <a href="{{ route('it-ops.dashboard-device') }}" class="btn btn-secondary">Back</a>
-                                </div>
-                                <div>
-                                    <button type="submit" class="btn btn-primary">Submit</button>
-                                    <button type="reset" class="btn btn-secondary">Reset</button>
-                                </div>
-                            </div>
-                        </div>
-                    @else
-                        <div class="row mt-4">
-                            <div class="col-12 d-flex justify-content-between align-items-center">
-                                <div>
-                                    <a href="{{ route('it-ops.dashboard-device') }}" class="btn btn-secondary">Back</a>
-                                </div>
-                                <div>
-                                    <a href="{{ route('it-ops.form-device.export', ['id' => $maintenanceRecord->id]) }}" class="btn btn-primary">
-                                        <i class="fas fa-file-export"></i> Export
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    @endif
+                    <div class="card-footer text-center">
+                        @if(!$isShowDetail)
+                            <button type="submit" id="btnSubmitForm" class="btn btn-primary">{{ (isset($isEdit) && $isEdit) ? 'Update' : 'Submit' }}</button>
+                        @endif
+                        @if($isShowDetail && isset($maintenanceRecord->id))
+                            <a href="{{ route('it-ops.form-device.export', ['id' => $maintenanceRecord->id]) }}" class="btn btn-success">
+                                <i class="fas fa-file-pdf"></i> Export PDF
+                            </a>
+                        @endif
+                        <a href="{{ route('it-ops.dashboard-device') }}" class="btn btn-secondary">Back</a>
+                    </div>
                 </form>
             </div>
         </div>
     </div>
-@endsection
+</div>
 
 @section('custom-js')
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
@@ -439,7 +425,13 @@
 
             var formData = new FormData(this);
             
-            axios.post('{{ route("it-ops.submit-device") }}', formData)
+            @if(isset($isEdit) && $isEdit)
+                var url = '{{ route("it-ops.update-device") }}';
+            @else
+                var url = '{{ route("it-ops.submit-device") }}';
+            @endif
+
+            axios.post(url, formData)
                 .then(function(response) {
                     if (response.data.success) {
                         Swal.fire({
@@ -476,4 +468,8 @@
         });
     });
     </script>
+@endsection
+
+@push('scripts')
+@endpush
 @endsection
