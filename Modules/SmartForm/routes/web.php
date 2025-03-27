@@ -436,6 +436,9 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/edit-a2b-baru/{id}', [A2bBaruController::class, 'EditA2bBaru'])->name('prod.a2b-baru.edit');
             Route::post('/form-a2b-baru/{id}', [A2bBaruController::class, 'UpdateA2bBaru'])->name('prod.a2b-baru.update');
             Route::delete('/form-a2b-baru/{id}', [A2bBaruController::class, 'destroy'])->name('prod.a2b-baru.delete');
+            Route::get('/approval-a2b-baru/{id}', [A2bBaruController::class, 'ApprovalA2bBaru'])->name('prod.a2b-baru.approval');
+            Route::post('/approve-a2b-baru/{id}', [A2bBaruController::class, 'ApproveA2bBaru'])->name('prod.a2b-baru.approve');
+            Route::post('/reject-a2b-baru/{id}', [A2bBaruController::class, 'RejectA2bBaru'])->name('prod.a2b-baru.reject');
         });
 
         Route::prefix('ppm-900d')->group(function(){

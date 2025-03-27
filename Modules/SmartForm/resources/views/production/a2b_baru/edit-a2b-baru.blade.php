@@ -146,6 +146,51 @@
                             </div>
 
                             <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label for="hmawal2" class="ms-0">Operator</label>
+                                            <select name="operator" id="operator" class="form-control">
+                                                <option disabled {{ optional($record)->operator == '' ? 'selected' : '' }}>-- Select Operator --</option>
+                                                @foreach ($approvalList as $user)
+                                                    <option value="{{ $user->nik }}" {{ optional($record)->operator == $user->nik ? 'selected' : '' }}>
+                                                        {{ $user->nama }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            @if($isShowDetail)
+                                                <span class="
+                                                    {{ $record->status_operator == 'Approve' ? 'text-success' : '' }}
+                                                    {{ $record->status_operator == 'Pending' ? 'text-warning' : '' }}
+                                                    {{ $record->status_operator == 'Reject' ? 'text-danger' : '' }}">
+                                                    {{ ucfirst($record->status_operator) }}
+                                                </span>
+                                            @endif
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label for="hmakhir2" class="ms-0">Pengawas</label>
+                                            <select name="pengawas" id="pengawas" class="form-control">
+                                                <option disabled {{ optional($record)->pengawas == '' ? 'selected' : '' }}>-- Select Pengawas --</option>
+                                                @foreach ($approvalList as $user)
+                                                    <option value="{{ $user->nik }}" {{ optional($record)->pengawas == $user->nik ? 'selected' : '' }}>
+                                                        {{ $user->nama }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            @if($isShowDetail)
+                                                <span class="
+                                                    {{ $record->status_pengawas == 'Approve' ? 'text-success' : '' }}
+                                                    {{ $record->status_pengawas == 'Pending' ? 'text-warning' : '' }}
+                                                    {{ $record->status_pengawas == 'Reject' ? 'text-danger' : '' }}">
+                                                    {{ ucfirst($record->status_pengawas) }}
+                                                </span>
+                                            @endif
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
                                 <h5>Kondisi Android Sistem & Kondisi Unit</h5>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">

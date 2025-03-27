@@ -141,8 +141,8 @@ class PlantWeldingController extends Controller
                 'atasan' => $request->atasan,
                 'catatan1' => $request->catatan1 ?? '',
                 'catatan2' => $request->catatan2 ?? '',
-                'status_pemeriksa' => $request->status ?? 'Pending',
-                'status_atasan' => $request->status ?? 'Pending',
+                'status_pemeriksa' => $request->status_pemeriksa ?? 'Pending',
+                'status_atasan' => $request->status_atasan ?? 'Pending',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ];
@@ -289,8 +289,8 @@ class PlantWeldingController extends Controller
                 'jabatan' => $request->jabatan,
                 'nrp' => $request->nrp,
                 'atasan' => $request->atasan,
-                'status_pemeriksa' => $request->status ?? 'Pending',
-                'status_atasan' => $request->status ?? 'Pending',
+                'status_pemeriksa' => $request->status_pemeriksa ?? 'Pending',
+                'status_atasan' => $request->status_atasan ?? 'Pending',
                 'catatan1' => $request->catatan1 ?? '',
                 'catatan2' => $request->catatan2 ?? '',
             ];
