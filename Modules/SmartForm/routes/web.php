@@ -390,14 +390,13 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::put('form/{id}', [SheMessController::class, 'Update'])->name('she.mess.form.update');
         });
 
-        Route::prefix('prod-coal')->group(function () {
+        Route::prefix('prod-coal')->group(function(){
             Route::get('dashboard', [CoalGettingController::class, 'Dashboard'])->name('prod.coal.dashboard');
             Route::get('form/export/{id}', [CoalGettingController::class, 'ExportForm'])->name('prod.coal.export');
             Route::get('form', [CoalGettingController::class, 'AddForm'])->name('prod.coal.form');
             Route::get('form/edit/{id}', [CoalGettingController::class, 'EditForm'])->name('prod.coal.form.edit');
             Route::post('store', [CoalGettingController::class, 'Store'])->name('prod.coal.store');
             Route::put('form/{id}', [CoalGettingController::class, 'Update'])->name('prod.coal.form.update');
-            Route::put('update-status', [CoalGettingController::class, 'UpdateStatus'])->name('prod.coal.update-status');
             Route::post('delete', [CoalGettingController::class, 'Delete'])->name('prod.coal.delete');
         });
         Route::prefix('she-ergonomi')->group(function () {
@@ -412,8 +411,10 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/dashboard', [AnakAsuhController::class, 'Dashboard'])->name('prod.anak-asuh.dashboard');
             Route::get('/form/export/{id}', [AnakAsuhController::class, 'ExportForm'])->name('prod.anak-asuh.export');
             Route::get('/form', [AnakAsuhController::class, 'AddForm'])->name('prod.anak-asuh.form');
+            Route::get('/form/edit/{id}', [AnakAsuhController::class, 'EditForm'])->name('prod.anak-asuh.form.edit');
             Route::post('/store', [AnakAsuhController::class, 'Store'])->name('prod.anak-asuh.store');
-            Route::put('/form/{id}', [AnakAsuhController::class, 'Update'])->name('prod.anak-asuh.form.update');
+            Route::post('/update', [AnakAsuhController::class, 'UpdateAnakAsuh'])->name('prod.anak-asuh.update');
+            Route::post('/delete', [AnakAsuhController::class, 'Delete'])->name('prod.anak-asuh.delete');
         });
 
         Route::prefix('plant-compressor')->group(function(){

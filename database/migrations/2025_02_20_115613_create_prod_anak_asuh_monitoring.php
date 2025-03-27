@@ -19,6 +19,9 @@ return new class extends Migration
             $table->string('jabatan');
             $table->string('departemen');
             $table->string('created_by');
+            // status
+            $table->boolean('isActive')->default(true);
+            
             // $table->string('acknowledged_by');
             $table->text('tanggal_items');
             $table->text('attendance_items');

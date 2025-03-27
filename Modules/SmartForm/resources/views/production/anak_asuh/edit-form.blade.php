@@ -24,36 +24,28 @@
                 <!-- Card Header -->
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                     <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                        <h6 class="text-white text-capitalize ps-3">
-                            @if($isShowDetail)
-                                Detail
-                            @elseif(isset($isEdit) && $isEdit)
-                                Edit
-                            @else
-                                New
-                            @endif
-                            Form Monitoring Control Disiplin, Skill & Attitude Anak Asuh
-                        </h6>
+                        <h6 class="text-white text-capitalize ps-3">Edit Form Monitoring Control Disiplin, Skill & Attitude Anak Asuh</h6>
                     </div>
                 </div>
 
                 <div class="card-body px-0 pb-2">
-                    <form method="POST" id="anakAsuhForm" action="{{ route('prod.anak-asuh.store') }}">
+                    <form method="POST" id="anakAsuhEditForm" action="{{ route('prod.anak-asuh.update') }}">
                         @csrf
+                        <input type="hidden" name="id" value="{{ $record->id }}">
                         <div class="mx-3">
                             <!-- Basic Information -->
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="name" class="ms-0">Nama</label>
-                                        <input type="text" class="form-control" id="name" name="name" value="{{ old('name', $record->name ?? session('username')) }}" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                        <input type="text" class="form-control" id="name" name="name" value="{{ old('name', $record->name) }}" required>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="departemen" class="ms-0">Departemen</label>
                                         <div class="form-control p-0">
-                                            {!! \Modules\SmartForm\helpers\DepartmentHelper::renderDepartmentSelect('departemen', old('departemen', $record->departemen ?? ''), $isShowDetail, true, 'departemen', 'form-control border-0') !!}
+                                            {!! \Modules\SmartForm\helpers\DepartmentHelper::renderDepartmentSelect('departemen', old('departemen', $record->departemen), false, true, 'departemen', 'form-control border-0') !!}
                                         </div>
                                     </div>
                                 </div>
@@ -63,13 +55,13 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="nik" class="ms-0">NIK</label>
-                                        <input type="text" class="form-control" id="nik" name="nik" value="{{ old('nik', $record->nik ?? session('user_id')) }}" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                        <input type="text" class="form-control" id="nik" name="nik" value="{{ old('nik', $record->nik) }}" required>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="jabatan" class="ms-0">Jabatan</label>
-                                        <input type="text" class="form-control" id="jabatan" name="jabatan" value="{{ old('jabatan', $record->jabatan ?? '') }}" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                        <input type="text" class="form-control" id="jabatan" name="jabatan" value="{{ old('jabatan', $record->jabatan) }}" required>
                                     </div>
                                 </div>
                             </div>
@@ -103,10 +95,10 @@
                                         @for($i = 1; $i <= 10; $i++)
                                         <tr>
                                             <td>
-                                                <input type="date" class="form-control" name="tanggal_{{ $i }}" value="{{ old('tanggal_'.$i, isset($record->tanggal_items[$i-1]) ? $record->tanggal_items[$i-1] : '') }}" {{ $isShowDetail ? 'disabled' : '' }}>
+                                                <input type="date" class="form-control" name="tanggal_{{ $i }}" value="{{ old('tanggal_'.$i, isset($record->tanggal_items[$i-1]) ? $record->tanggal_items[$i-1] : '') }}">
                                             </td>
                                             <td>
-                                                <select class="form-control" name="shift_{{ $i }}" {{ $isShowDetail ? 'disabled' : '' }}>
+                                                <select class="form-control" name="shift_{{ $i }}">
                                                     <option value="">-- Pilih Shift --</option>
                                                     @foreach(['DS', 'NS'] as $shift)
                                                         <option value="{{ $shift }}" {{ (old('shift_'.$i, isset($record->shift_items[$i-1]) ? $record->shift_items[$i-1] : '') == $shift) ? 'selected' : '' }}>{{ $shift }}</option>
@@ -115,58 +107,58 @@
                                             </td>
                                             <td>{{ $i }}</td>
                                             <td>
-                                                <input type="text" class="form-control" name="nama_anak_asuh_{{ $i }}" value="{{ old('nama_anak_asuh_'.$i, isset($record->nama_anak_asuh_items[$i-1]) ? $record->nama_anak_asuh_items[$i-1] : '') }}" {{ $isShowDetail ? 'disabled' : '' }}>
+                                                <input type="text" class="form-control" name="nama_anak_asuh_{{ $i }}" value="{{ old('nama_anak_asuh_'.$i, isset($record->nama_anak_asuh_items[$i-1]) ? $record->nama_anak_asuh_items[$i-1] : '') }}">
                                             </td>
                                             <td class="checkbox-cell">
                                                 <div class="checkbox-wrapper">
                                                     <div class="form-check">
-                                                        <input class="form-check-input" type="radio" name="attendance_{{ $i }}" value="hadir" {{ old('attendance_'.$i, isset($record->attendance_items[$i-1]) && $record->attendance_items[$i-1] == 'hadir' ? 'checked' : '') }} {{ $isShowDetail ? 'disabled' : '' }}>
+                                                        <input class="form-check-input" type="radio" name="attendance_{{ $i }}" value="hadir" {{ old('attendance_'.$i, isset($record->attendance_items[$i-1]) && $record->attendance_items[$i-1] == 'hadir' ? 'checked' : '') }}>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td class="checkbox-cell">
                                                 <div class="checkbox-wrapper">
                                                     <div class="form-check">
-                                                        <input class="form-check-input" type="radio" name="attendance_{{ $i }}" value="izin" {{ old('attendance_'.$i, isset($record->attendance_items[$i-1]) && $record->attendance_items[$i-1] == 'izin' ? 'checked' : '') }} {{ $isShowDetail ? 'disabled' : '' }}>
+                                                        <input class="form-check-input" type="radio" name="attendance_{{ $i }}" value="izin" {{ old('attendance_'.$i, isset($record->attendance_items[$i-1]) && $record->attendance_items[$i-1] == 'izin' ? 'checked' : '') }}>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td class="checkbox-cell">
                                                 <div class="checkbox-wrapper">
                                                     <div class="form-check">
-                                                        <input class="form-check-input" type="radio" name="attendance_{{ $i }}" value="sakit" {{ old('attendance_'.$i, isset($record->attendance_items[$i-1]) && $record->attendance_items[$i-1] == 'sakit' ? 'checked' : '') }} {{ $isShowDetail ? 'disabled' : '' }}>
+                                                        <input class="form-check-input" type="radio" name="attendance_{{ $i }}" value="sakit" {{ old('attendance_'.$i, isset($record->attendance_items[$i-1]) && $record->attendance_items[$i-1] == 'sakit' ? 'checked' : '') }}>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td class="checkbox-cell">
                                                 <div class="checkbox-wrapper">
                                                     <div class="form-check">
-                                                        <input class="form-check-input" type="radio" name="attendance_{{ $i }}" value="alfa" {{ old('attendance_'.$i, isset($record->attendance_items[$i-1]) && $record->attendance_items[$i-1] == 'alfa' ? 'checked' : '') }} {{ $isShowDetail ? 'disabled' : '' }}>
+                                                        <input class="form-check-input" type="radio" name="attendance_{{ $i }}" value="alfa" {{ old('attendance_'.$i, isset($record->attendance_items[$i-1]) && $record->attendance_items[$i-1] == 'alfa' ? 'checked' : '') }}>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td>
-                                                <textarea class="form-control" name="review_temuan_{{ $i }}" rows="2" {{ $isShowDetail ? 'disabled' : '' }}>{{ old('review_temuan_'.$i, isset($record->review_temuan_items[$i-1]) ? $record->review_temuan_items[$i-1] : '') }}</textarea>
+                                                <textarea class="form-control" name="review_temuan_{{ $i }}" rows="2">{{ old('review_temuan_'.$i, isset($record->review_temuan_items[$i-1]) ? $record->review_temuan_items[$i-1] : '') }}</textarea>
                                             </td>
                                             <td>
-                                                <select class="form-control" name="disiplin_score_{{ $i }}" {{ $isShowDetail ? 'disabled' : '' }}>
-                                                    <option value="">--</option>
+                                                <select class="form-control" name="disiplin_score_{{ $i }}">
+                                                    <option value="">-- Pilih --</option>
                                                     @foreach(range(1, 4) as $score)
                                                         <option value="{{ $score }}" {{ (old('disiplin_score_'.$i, isset($record->disiplin_score_items[$i-1]) ? $record->disiplin_score_items[$i-1] : '') == $score) ? 'selected' : '' }}>{{ $score }}</option>
                                                     @endforeach
                                                 </select>
                                             </td>
                                             <td>
-                                                <select class="form-control" name="skill_score_{{ $i }}" {{ $isShowDetail ? 'disabled' : '' }}>
-                                                    <option value="">--</option>
+                                                <select class="form-control" name="skill_score_{{ $i }}">
+                                                    <option value="">-- Pilih --</option>
                                                     @foreach(range(1, 4) as $score)
                                                         <option value="{{ $score }}" {{ (old('skill_score_'.$i, isset($record->skill_score_items[$i-1]) ? $record->skill_score_items[$i-1] : '') == $score) ? 'selected' : '' }}>{{ $score }}</option>
                                                     @endforeach
                                                 </select>
                                             </td>
                                             <td>
-                                                <select class="form-control" name="attitude_score_{{ $i }}" {{ $isShowDetail ? 'disabled' : '' }}>
-                                                    <option value="">--</option>
+                                                <select class="form-control" name="attitude_score_{{ $i }}">
+                                                    <option value="">-- Pilih --</option>
                                                     @foreach(range(1, 4) as $score)
                                                         <option value="{{ $score }}" {{ (old('attitude_score_'.$i, isset($record->attitude_score_items[$i-1]) ? $record->attitude_score_items[$i-1] : '') == $score) ? 'selected' : '' }}>{{ $score }}</option>
                                                     @endforeach
@@ -179,10 +171,10 @@
                             </div>
 
                             <!-- Score Legend -->
-                            <div class="mt-4">
-                                <h6>Penilaian Kategori (Disiplin/Skill/Attitude)</h6>
-                                <div class="table-responsive">
-                                    <table class="table table-bordered" style="max-width: 300px;">
+                            <div class="row mt-4">
+                                <div class="col-md-6">
+                                    <h6>Keterangan Score:</h6>
+                                    <table class="table table-bordered">
                                         <tr class="bg-danger text-white">
                                             <td>1</td>
                                             <td>Kurang</td>
@@ -208,7 +200,7 @@
                                 <div class="col-md-6">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="created_by" class="ms-0">Dibuat Oleh</label>
-                                        <input type="text" class="form-control" id="created_by" name="created_by" value="{{ old('created_by', $record->created_by ?? session('username')) }}" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                        <input type="text" class="form-control" id="created_by" name="created_by" value="{{ old('created_by', $record->created_by) }}" required>
                                     </div>
                                 </div>
                             </div>
@@ -216,18 +208,8 @@
                             <!-- Action Buttons -->
                             <div class="row">
                                 <div class="col-12 text-end">
-                                    @if($isShowDetail)
-                                        <a href="{{ route('prod.anak-asuh.dashboard') }}" class="btn btn-secondary">Back</a>
-                                        <a href="{{ route('prod.anak-asuh.export', ['id' => $record->id]) }}" class="btn btn-primary">
-                                            <i class="material-icons">download</i> Export PDF
-                                        </a>
-                                    @elseif(isset($isEdit) && $isEdit)
-                                        <a href="{{ route('prod.anak-asuh.dashboard') }}" class="btn btn-secondary">Cancel</a>
-                                        <button type="submit" class="btn btn-primary">Update</button>
-                                    @else
-                                        <a href="{{ route('prod.anak-asuh.dashboard') }}" class="btn btn-secondary">Cancel</a>
-                                        <button type="submit" class="btn btn-primary">Submit</button>
-                                    @endif
+                                    <a href="{{ route('prod.anak-asuh.dashboard') }}" class="btn btn-secondary">Cancel</a>
+                                    <button type="submit" class="btn btn-primary">Update</button>
                                 </div>
                             </div>
                         </div>
@@ -237,114 +219,4 @@
         </div>
     </div>
 </div>
-@endsection
-
-@section('custom-css')
-<style>
-    .table > :not(caption) > * > * {
-        padding: 0.5rem;
-    }
-    .bg-success {
-        background-color: #00a65a !important;
-    }
-    /* Center all content in tbody */
-    .table tbody td {
-        text-align: center;
-        vertical-align: middle;
-        height: 60px;
-    }
-    .table tbody td input.form-control,
-    .table tbody td select.form-control,
-    .table tbody td textarea.form-control {
-        text-align: center;
-    }
-    /* Override text alignment for review/temuan textarea */
-    .table tbody td textarea.form-control {
-        text-align: left;
-    }
-    /* Center radio buttons */
-    .checkbox-cell {
-        padding: 0 !important;
-        position: relative;
-        min-width: 50px;
-    }
-    .checkbox-wrapper {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .form-check {
-        margin: 0;
-        padding: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .form-check-input[type="radio"] {
-        margin: 0;
-        width: 20px;
-        height: 20px;
-        cursor: pointer;
-        position: relative;
-        top: 0;
-    }
-</style>
-@endsection
-
-@section('custom-js')
-<script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
-<script>
-$(function() {
-    var form = $("#anakAsuhForm");
-    var submitBtn = form.find('button[type="submit"]');
-
-    form.submit(function(e) {
-        e.preventDefault();
-        submitBtn.prop('disabled', true);
-
-        var formData = new FormData(this);
-        
-        axios.post('{{ route("prod.anak-asuh.store") }}', formData)
-            .then(function(response) {
-                if (response.data.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success',
-                        text: response.data.message
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            window.location.href = '{{ route("prod.anak-asuh.dashboard") }}';
-                        }
-                    });
-                }
-            })
-            .catch(function(error) {
-                let errorMessage = 'Terjadi kesalahan pada sistem';
-                
-                if (error.response) {
-                    if (error.response.data.errors) {
-                        errorMessage = Object.values(error.response.data.errors).flat().join('\n');
-                    } else if (error.response.data.message) {
-                        errorMessage = error.response.data.message;
-                    }
-                }
-
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: errorMessage
-                });
-            })
-            .finally(function() {
-                submitBtn.prop('disabled', false);
-            });
-    });
-});
-</script>
 @endsection

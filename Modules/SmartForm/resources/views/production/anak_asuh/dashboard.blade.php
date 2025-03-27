@@ -206,12 +206,15 @@
                                         <span class="text-xs font-weight-bold">{{ \Carbon\Carbon::parse($record->created_at)->format('d/m/Y') }}</span>
                                     </td>
                                     <td>
-                                        <a href="{{ route('prod.anak-asuh.form', ['id' => $record->id]) }}" class="btn btn-info btn-sm">
-                                            <i class="fas fa-eye"></i>
+                                        <a href="{{ route('prod.anak-asuh.form', ['id' => $record->id]) }}" class="btn btn-primary btn-sm d-inline-flex align-items-center justify-content-center">
+                                            <i class="fas fa-eye me-1"></i> Detail
                                         </a>
-                                        <a href="{{ route('prod.anak-asuh.export', ['id' => $record->id]) }}" class="btn btn-primary btn-sm">
-                                            <i class="fas fa-download"></i>
+                                        <a href="{{ route('prod.anak-asuh.form.edit', ['id' => $record->id]) }}" class="btn btn-info btn-sm d-inline-flex align-items-center justify-content-center">
+                                            <i class="fas fa-edit me-1"></i> Edit
                                         </a>
+                                        <button type="button" class="btn btn-danger btn-sm d-inline-flex align-items-center justify-content-center btn-delete" data-id="{{ $record->id }}">
+                                            <i class="fas fa-trash me-1"></i> Delete
+                                        </button>
                                     </td>
                                 </tr>
                                 @endforeach
@@ -230,11 +233,63 @@
 
 @section('custom-js')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
 <script>
 $(function() {
     // Clear filter button
     $('#btnClearFilter').click(function() {
         window.location.href = '{{ route("prod.anak-asuh.dashboard") }}';
+    });
+
+    // Handle delete button click
+    $('.btn-delete').on('click', function() {
+        const recordId = $(this).data('id');
+        
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This record will be marked as inactive.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Send delete request
+                axios.post('{{ route("prod.anak-asuh.delete") }}', {
+                    id: recordId
+                })
+                .then(function(response) {
+                    if (response.data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Deleted!',
+                            text: response.data.message
+                        }).then(() => {
+                            // Reload the page to reflect changes
+                            window.location.reload();
+                        });
+                    }
+                })
+                .catch(function(error) {
+                    let errorMessage = 'An error occurred while deleting the record';
+                    
+                    if (error.response) {
+                        if (error.response.data.errors) {
+                            errorMessage = Object.values(error.response.data.errors).flat().join('\n');
+                        } else if (error.response.data.message) {
+                            errorMessage = error.response.data.message;
+                        }
+                    }
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: errorMessage
+                    });
+                });
+            }
+        });
     });
 
     // Date range picker initialization
