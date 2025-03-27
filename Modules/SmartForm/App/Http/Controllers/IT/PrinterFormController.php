@@ -341,11 +341,13 @@ class PrinterFormController extends Controller
             $lastRecord = DB::table('it_fm_printer')
                 ->whereDate('created_at', now())
                 ->orderBy('created_at', 'desc')
-                ->value('doc_number');
+                ->first();
 
             $sequence = 1;
-            if ($lastRecord && preg_match('/-(\d+)$/', $lastRecord->doc_number, $matches)) {
-                $sequence = intval($matches[1]) + 1;
+            if ($lastRecord) {
+                if (preg_match('/-(\d+)$/', $lastRecord->doc_number, $matches)) {
+                    $sequence = intval($matches[1]) + 1;
+                }
             }
 
             return sprintf("%s-%s-%03d", $prefix, $date, $sequence);

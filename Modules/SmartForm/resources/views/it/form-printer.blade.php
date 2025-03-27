@@ -116,21 +116,11 @@
                                     </div>
                                     <div class="mb-0 d-flex align-items-center">
                                         <label class="form-label me-2 w-25" for="dept">Dept</label>
-                                        <input type="text" class="form-control input-text" id="dept" name="dept" required
-                                            {{ $isShowDetail ? 'disabled' : '' }}
-                                            value="{{ $isShowDetail ? $maintenanceRecord->dept : (session('kode_department') ?? '') }}">
+                                        {!! \Modules\SmartForm\helpers\DepartmentHelper::renderDepartmentSelect('dept', $isShowDetail ? $maintenanceRecord->dept : null, $isShowDetail) !!}
                                     </div>
                                     <div class="mb-0 d-flex align-items-center">
                                         <label class="form-label me-2 w-25" for="site">Site</label>
-                                        <select class="form-select input-text" id="site" name="site" required
-                                            {{ $isShowDetail ? 'disabled' : '' }}>
-                                            <option value="">-- Pilih Site --</option>
-                                            @foreach(['agm', 'mbl', 'mme', 'mas', 'pmss', 'taj', 'bssr', 'tdm', 'msj'] as $site)
-                                                <option value="{{ $site }}" {{ $isShowDetail && strtolower($maintenanceRecord->site) == $site ? 'selected' : '' }}>
-                                                    {{ strtoupper($site) }}
-                                                </option>
-                                            @endforeach
-                                        </select>
+                                        {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('site', $isShowDetail ? strtolower($maintenanceRecord->site) : null, $isShowDetail) !!}
                                     </div>
                                 </div>
                             </div>
@@ -180,48 +170,50 @@
                                     <h5 class="mb-0">Hardware Conditions</h5>
                                 </div>
                                 <div class="card-body">
-                                    <table class="table table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th>Kondisi</th>
-                                                <th class="text-center th-baik">Baik</th>
-                                                <th class="text-center th-rusak">Rusak</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach([
-                                                'case_casing_condition' => 'Case/Casing',
-                                                'adaptor_condition' => 'Adaptor',
-                                                'kabel_power_condition' => 'Kabel Power',
-                                                'paper_tray_condition' => 'Paper Tray',
-                                                'ink_condition' => 'Tinta',
-                                                'cartridge_condition' => 'Cartridge',
-                                                'lamp_indicator_condition' => 'Lampu Indikator',
-                                                'touchscreen_condition' => 'Touchscreen'
-                                            ] as $field => $label)
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered">
+                                            <thead>
                                                 <tr>
-                                                    <td>{{ $label }}</td>
-                                                    <td class="text-center">
-                                                        <input type="radio" 
-                                                            name="{{ $field }}" 
-                                                            value="baik"
-                                                            {{ $isShowDetail && isset($maintenanceRecord->$field) && $maintenanceRecord->$field === 'baik' ? 'checked' : '' }}
-                                                            {{ $isShowDetail ? 'disabled' : '' }}
-                                                            required>
-                                                    </td>
-                                                    <td class="text-center">
-                                                        <input type="radio" 
-                                                            name="{{ $field }}" 
-                                                            value="rusak"
-                                                            {{ $isShowDetail && isset($maintenanceRecord->$field) && $maintenanceRecord->$field === 'rusak' ? 'checked' : '' }}
-                                                            {{ $isShowDetail ? 'disabled' : '' }}
-                                                            required>
-                                                    </td>
+                                                    <th>Kondisi</th>
+                                                    <th class="text-center th-baik">Baik</th>
+                                                    <th class="text-center th-rusak">Rusak</th>
                                                 </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                    <small class="text-muted">* Jika ada</small>
+                                            </thead>
+                                            <tbody>
+                                                @foreach([
+                                                    'case_casing_condition' => 'Case/Casing',
+                                                    'adaptor_condition' => 'Adaptor',
+                                                    'kabel_power_condition' => 'Kabel Power',
+                                                    'paper_tray_condition' => 'Paper Tray',
+                                                    'ink_condition' => 'Tinta',
+                                                    'cartridge_condition' => 'Cartridge',
+                                                    'lamp_indicator_condition' => 'Lampu Indikator',
+                                                    'touchscreen_condition' => 'Touchscreen'
+                                                ] as $field => $label)
+                                                    <tr class="border">
+                                                        <td class="border">{{ $label }}</td>
+                                                        <td class="text-center border">
+                                                            <input type="radio" 
+                                                                name="{{ $field }}" 
+                                                                value="baik"
+                                                                {{ $isShowDetail && isset($maintenanceRecord->$field) && $maintenanceRecord->$field === 'baik' ? 'checked' : '' }}
+                                                                {{ $isShowDetail ? 'disabled' : '' }}
+                                                                required>
+                                                        </td>
+                                                        <td class="text-center border">
+                                                            <input type="radio" 
+                                                                name="{{ $field }}" 
+                                                                value="rusak"
+                                                                {{ $isShowDetail && isset($maintenanceRecord->$field) && $maintenanceRecord->$field === 'rusak' ? 'checked' : '' }}
+                                                                {{ $isShowDetail ? 'disabled' : '' }}
+                                                                required>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                        <small class="text-muted">* Jika ada</small>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -236,7 +228,7 @@
                                     <table class="table table-bordered">
                                         <thead>
                                             <tr>
-                                                <th>Task</th>
+                                                <th></th>
                                                 <th class="text-center">Check</th>
                                             </tr>
                                         </thead>
@@ -250,12 +242,12 @@
                                                 'cable_test' => 'Cable Test',
                                                 'toner_level' => 'Level Tinta'
                                             ] as $field => $label)
-                                                <tr>
-                                                    <td>{{ $label }}</td>
-                                                    <td class="text-center">
-                                                        <input type="checkbox" 
-                                                            name="{{ $field }}" 
-                                                            value="1"
+                                            <tr class="border">
+                                                <td class="border">{{ $label }}</td>
+                                                <td class="text-center border">
+                                                    <input type="checkbox" 
+                                                        name="{{ $field }}" 
+                                                        value="1"
                                                             {{ $isShowDetail && isset($maintenanceRecord->$field) && $maintenanceRecord->$field ? 'checked' : '' }}
                                                             {{ $isShowDetail ? 'disabled' : '' }}>
                                                     </td>
