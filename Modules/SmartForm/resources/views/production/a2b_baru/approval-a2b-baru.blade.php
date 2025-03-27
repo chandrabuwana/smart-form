@@ -168,6 +168,16 @@
                                                 </span>
                                             @endif
                                     </div>
+                                        @php
+                                            $loggedInUserId = session('user_id');
+                                        @endphp
+
+                                        @if(optional($record)->operator == $loggedInUserId)
+                                            <div>
+                                                <button id="btnApprove" data-id="{{ $record->id }}" class="btn btn-info btn-sm">Approve</button>
+                                                <button id="btnReject" data-id="{{ $record->id }}" class="btn btn-danger btn-sm">Reject</button>
+                                            </div>
+                                        @endif
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
@@ -189,6 +199,16 @@
                                                 </span>
                                             @endif
                                     </div>
+                                        @php
+                                            $loggedInUserId = session('user_id');
+                                        @endphp
+
+                                        @if(optional($record)->pengawas == $loggedInUserId)
+                                            <div>
+                                                <button id="btnApprove" data-id="{{ $record->id }}" class="btn btn-info btn-sm">Approve</button>
+                                                <button id="btnReject" data-id="{{ $record->id }}" class="btn btn-danger btn-sm">Reject</button>
+                                            </div>
+                                        @endif
                                 </div>
                             </div>
 
@@ -1150,21 +1170,12 @@
                                 </table>
 
                             </div>
-
-                                @if ($isShowDetail)
                                     <div class="form-actions">
                                         <a href="{{ route('prod.a2b-baru.dashboard') }}"
                                             class="btn btn-secondary">Cancel</a>
                                         <a href="{{ route('prod.a2b-baru.export', ['id' => $record->id]) }}"
                                             class="btn btn-primary">Export</a>
                                     </div>
-                                @else
-                                    <div class="form-actions">
-                                        <a href="{{ route('prod.a2b-baru.dashboard') }}"
-                                            class="btn btn-secondary">Cancel</a>
-                                        <button type="submit" class="btn btn-primary">Submit</button>
-                                    </div>
-                                @endif
                     </form>
 
                 </div>
@@ -1325,53 +1336,80 @@
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <script>
-        $(function() {
-            var form = $("#a2bbaruForm");
-            var submitBtn = form.find('button[type="submit"]');
+    $(function() {
+        // Tombol Approve
+        $("#btnApprove").on("click", function(e) {
+            e.preventDefault();
+            const recordId = $(this).data("id"); // Ambil ID dari atribut data-id
+            const url = `{{ route('prod.a2b-baru.approve', ['id' => ':id']) }}`.replace(":id", recordId);
 
-            form.submit(function(e) {
-                e.preventDefault();
-                submitBtn.prop('disabled', true);
-
-                var formData = new FormData(this);
-
-                axios.post('{{ route('prod.a2b-baru.store') }}', formData)
-                    .then(function(response) {
-                        if (response.data.success) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Success',
-                                text: response.data.message
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    window.location.href =
-                                        '{{ route('prod.a2b-baru.dashboard') }}';
-                                }
-                            });
-                        }
-                    })
-                    .catch(function(error) {
-                        let errorMessage = 'Terjadi kesalahan pada sistem';
-
-                        if (error.response) {
-                            if (error.response.data.errors) {
-                                errorMessage = Object.values(error.response.data.errors).flat().join(
-                                    '\n');
-                            } else if (error.response.data.message) {
-                                errorMessage = error.response.data.message;
-                            }
-                        }
-
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: errorMessage
-                        });
-                    })
-                    .finally(function() {
-                        submitBtn.prop('disabled', false);
+            axios.post(url, {
+                _token: '{{ csrf_token() }}'
+            }).then(function(response) {
+                if (response.data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: response.data.message
+                    }).then(() => {
+                        window.location.href = '{{ route('prod.a2b-baru.dashboard') }}';
                     });
+                }
+            }).catch(function(error) {
+                let errorMessage = 'Terjadi kesalahan pada sistem';
+
+                if (error.response) {
+                    if (error.response.data.errors) {
+                        errorMessage = Object.values(error.response.data.errors).flat().join('\n');
+                    } else if (error.response.data.message) {
+                        errorMessage = error.response.data.message;
+                    }
+                }
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: errorMessage
+                });
             });
         });
-    </script>
+
+        // Tombol Reject
+        $("#btnReject").on("click", function(e) {
+            e.preventDefault();
+            const recordId = $(this).data("id"); // Ambil ID dari atribut data-id
+            const url = `{{ route('prod.a2b-baru.reject', ['id' => ':id']) }}`.replace(":id", recordId);
+
+            axios.post(url, {
+                _token: '{{ csrf_token() }}'
+            }).then(function(response) {
+                if (response.data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: response.data.message
+                    }).then(() => {
+                        window.location.href = '{{ route('prod.a2b-baru.dashboard') }}';
+                    });
+                }
+            }).catch(function(error) {
+                let errorMessage = 'Terjadi kesalahan pada sistem';
+
+                if (error.response) {
+                    if (error.response.data.errors) {
+                        errorMessage = Object.values(error.response.data.errors).flat().join('\n');
+                    } else if (error.response.data.message) {
+                        errorMessage = error.response.data.message;
+                    }
+                }
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: errorMessage
+                });
+            });
+        });
+    });
+</script>
 @endsection

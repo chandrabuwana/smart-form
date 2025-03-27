@@ -26,7 +26,7 @@
         <div class="card my-4">
             <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                 <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                    <h6 class="text-white text-capitalize ps-3">Dashboard Kalibrasi CT</h6>
+                    <h6 class="text-white text-capitalize ps-3">Dashboard Form A2B Baru</h6>
                 </div>
             </div>
             <!-- Statistics Cards -->
@@ -59,6 +59,7 @@
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Nama Operator</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Nrp</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Date</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Status</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Actions</th>
                                 </tr>
                             </thead>
@@ -82,6 +83,24 @@
                                         <span class="text-xs font-weight-bold">{{ $record->tanggal }}</span>
                                     </td>
                                     <td>
+                                        <span class="text-xs font-weight-bold">
+                                            @if ($record->status_operator === 'Approve' && $record->status_pengawas === 'Approve')
+                                                Approved
+                                            @elseif ($record->status_operator === 'Reject' && $record->status_pengawas === 'Reject')
+                                                Rejected
+                                            @elseif ($record->status_operator === 'Pending' && $record->status_pengawas === 'Pending')
+                                                Pending
+                                            @elseif ($record->status_operator === 'Pending' || $record->status_pengawas === 'Pending')
+                                                Pending
+                                            @elseif (
+                                                ($record->status_operator === 'Approve' && $record->status_pengawas === 'Reject') || 
+                                                ($record->status_operator === 'Reject' && $record->status_pengawas === 'Approve')
+                                            )
+                                                Rejected
+                                            @endif
+                                        </span>
+                                    </td>
+                                    <td>
                                         <a href="{{ route('prod.a2b-baru.form', ['id' => $record->id]) }}" class="btn btn-info btn-sm">
                                             <i class="fas fa-eye"></i>
                                         </a>
@@ -95,6 +114,10 @@
                                         <a href="{{ route('prod.a2b-baru.edit', ['id' => $record->id]) }}"
                                                 class="btn btn-warning btn-sm">
                                                 <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a href="{{ route('prod.a2b-baru.approval', ['id' => $record->id]) }}"
+                                                class="btn btn-info btn-sm">
+                                                <i class="fas fa-user-check"></i>
                                         </a>
                                     </td>
                                 </tr>
