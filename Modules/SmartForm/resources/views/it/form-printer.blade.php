@@ -87,13 +87,16 @@
         <div class="card">
             <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                 <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                    <h6 class="text-white text-capitalize ps-3">{{$isShowDetail ? 'Detail' : 'New'}} Maintenance Printer</h6>
+                    <h6 class="text-white text-capitalize ps-3">{{$isShowDetail ? 'Detail' : ($isEdit ? 'Edit' : 'New')}} Maintenance Printer</h6>
                 </div>
             </div>
             
             <div class="card-body my-1">
-                <form id="maintenanceForm" method="POST" action="{{ route('it-ops.submit-printer') }}" class="form">
+                <form id="maintenanceForm" method="POST" action="{{ $isEdit ? route('it-ops.update-printer') : route('it-ops.submit-printer') }}" class="form">
                     @csrf
+                    @if($isEdit)
+                        <input type="hidden" name="id" value="{{ $maintenanceRecord->id }}">
+                    @endif
                     <div class="row mb-4">
                         <!-- Teknisi Information -->
                         <div class="col-md-6">
@@ -106,21 +109,21 @@
                                         <label class="form-label me-2 w-25" for="nama">Nama</label>
                                         <input type="text" class="form-control input-text" id="nama" name="nama" required
                                             {{ $isShowDetail ? 'disabled' : '' }}
-                                            value="{{ $isShowDetail ? $maintenanceRecord->nama : (session('username') ?? '') }}">
+                                            value="{{ $isShowDetail || $isEdit ? $maintenanceRecord->nama : (session('username') ?? '') }}">
                                     </div>
                                     <div class="mb-0 d-flex align-items-center">
                                         <label class="form-label me-2 w-25" for="nik">NIK</label>
                                         <input type="text" class="form-control input-text" id="nik" name="nik" required
                                             {{ $isShowDetail ? 'disabled' : '' }}
-                                            value="{{ $isShowDetail ? $maintenanceRecord->nik : (session('user_id') ?? '') }}">
+                                            value="{{ $isShowDetail || $isEdit ? $maintenanceRecord->nik : (session('user_id') ?? '') }}">
                                     </div>
                                     <div class="mb-0 d-flex align-items-center">
                                         <label class="form-label me-2 w-25" for="dept">Dept</label>
-                                        {!! \Modules\SmartForm\helpers\DepartmentHelper::renderDepartmentSelect('dept', $isShowDetail ? $maintenanceRecord->dept : null, $isShowDetail) !!}
+                                        {!! \Modules\SmartForm\helpers\DepartmentHelper::renderDepartmentSelect('dept', ($isShowDetail || $isEdit) ? $maintenanceRecord->dept : null, $isShowDetail) !!}
                                     </div>
                                     <div class="mb-0 d-flex align-items-center">
                                         <label class="form-label me-2 w-25" for="site">Site</label>
-                                        {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('site', $isShowDetail ? strtolower($maintenanceRecord->site) : null, $isShowDetail) !!}
+                                        {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('site', ($isShowDetail || $isEdit) ? strtolower($maintenanceRecord->site) : null, $isShowDetail) !!}
                                     </div>
                                 </div>
                             </div>
@@ -137,25 +140,25 @@
                                         <label class="form-label me-2 w-25" for="no_asset">No Asset</label>
                                         <input type="text" class="form-control input-text" id="no_asset" name="no_asset" required
                                             {{ $isShowDetail ? 'disabled' : '' }}
-                                            value="{{ $isShowDetail ? $maintenanceRecord->no_asset : '' }}">
+                                            value="{{ $isShowDetail || $isEdit ? $maintenanceRecord->no_asset : '' }}">
                                     </div>
                                     <div class="mb-0 d-flex align-items-center">
                                         <label class="form-label me-2 w-25" for="jenis_aset">Jenis Asset</label>
                                         <input type="text" class="form-control input-text" id="jenis_aset" name="jenis_aset" required
                                             {{ $isShowDetail ? 'disabled' : '' }}
-                                            value="{{ $isShowDetail ? $maintenanceRecord->jenis_aset : '' }}">
+                                            value="{{ $isShowDetail || $isEdit ? $maintenanceRecord->jenis_aset : '' }}">
                                     </div>
                                     <div class="mb-0 d-flex align-items-center">
                                         <label class="form-label me-2 w-25" for="merk">Merk</label>
                                         <input type="text" class="form-control input-text" id="merk" name="merk" required
                                             {{ $isShowDetail ? 'disabled' : '' }}
-                                            value="{{ $isShowDetail ? $maintenanceRecord->merk : '' }}">
+                                            value="{{ $isShowDetail || $isEdit ? $maintenanceRecord->merk : '' }}">
                                     </div>
                                     <div class="mb-0 d-flex align-items-center">
                                         <label class="form-label me-2 w-25" for="model">Model</label>
                                         <input type="text" class="form-control input-text" id="model" name="model" required
                                             {{ $isShowDetail ? 'disabled' : '' }}
-                                            value="{{ $isShowDetail ? $maintenanceRecord->model : '' }}">
+                                            value="{{ $isShowDetail || $isEdit ? $maintenanceRecord->model : '' }}">
                                     </div>
                                 </div>
                             </div>
@@ -196,7 +199,7 @@
                                                             <input type="radio" 
                                                                 name="{{ $field }}" 
                                                                 value="baik"
-                                                                {{ $isShowDetail && isset($maintenanceRecord->$field) && $maintenanceRecord->$field === 'baik' ? 'checked' : '' }}
+                                                                {{ ($isShowDetail || $isEdit) && isset($maintenanceRecord->$field) && $maintenanceRecord->$field === 'baik' ? 'checked' : '' }}
                                                                 {{ $isShowDetail ? 'disabled' : '' }}
                                                                 required>
                                                         </td>
@@ -204,7 +207,7 @@
                                                             <input type="radio" 
                                                                 name="{{ $field }}" 
                                                                 value="rusak"
-                                                                {{ $isShowDetail && isset($maintenanceRecord->$field) && $maintenanceRecord->$field === 'rusak' ? 'checked' : '' }}
+                                                                {{ ($isShowDetail || $isEdit) && isset($maintenanceRecord->$field) && $maintenanceRecord->$field === 'rusak' ? 'checked' : '' }}
                                                                 {{ $isShowDetail ? 'disabled' : '' }}
                                                                 required>
                                                         </td>
@@ -248,10 +251,10 @@
                                                     <input type="checkbox" 
                                                         name="{{ $field }}" 
                                                         value="1"
-                                                            {{ $isShowDetail && isset($maintenanceRecord->$field) && $maintenanceRecord->$field ? 'checked' : '' }}
-                                                            {{ $isShowDetail ? 'disabled' : '' }}>
-                                                    </td>
-                                                </tr>
+                                                        {{ ($isShowDetail || $isEdit) && isset($maintenanceRecord->$field) && $maintenanceRecord->$field ? 'checked' : '' }}
+                                                        {{ $isShowDetail ? 'disabled' : '' }}>
+                                                </td>
+                                            </tr>
                                             @endforeach
                                         </tbody>
                                     </table>
@@ -267,7 +270,7 @@
                                     <a href="{{ route('it-ops.dashboard-printer') }}" class="btn btn-secondary">Back</a>
                                 </div>
                                 <div>
-                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                    <button type="submit" class="btn btn-primary">{{ $isEdit ? 'Update' : 'Submit' }}</button>
                                     <button type="reset" class="btn btn-secondary">Reset</button>
                                 </div>
                             </div>

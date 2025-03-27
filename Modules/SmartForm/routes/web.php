@@ -321,6 +321,9 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/form-printer/{id}/export-pdf', [PrinterFormController::class, 'ExportPrinter'])->name('it-ops.form-printer.export');
             Route::post('/submit-printer', [PrinterFormController::class, 'SubmitPrinterForm'])->name('it-ops.submit-printer');
             Route::get('/form-printer', [PrinterFormController::class, 'CreatePrinterForm'])->name('it-ops.form-printer');
+            Route::get('/edit-printer', [PrinterFormController::class, 'EditPrinterForm'])->name('it-ops.edit-printer');
+            Route::post('/update-printer', [PrinterFormController::class, 'UpdatePrinterForm'])->name('it-ops.update-printer');
+            Route::post('/delete-printer', [PrinterFormController::class, 'DeletePrinterForm'])->name('it-ops.delete-printer');
             // CCTV
             Route::get('/dashboard-cctv', [CctvFormController::class, 'IndexCctvForm'])->name('it-ops.dashboard-cctv');
             Route::get('/form-cctv', [CctvFormController::class, 'CreateCctvForm'])->name('it-ops.form-cctv');
