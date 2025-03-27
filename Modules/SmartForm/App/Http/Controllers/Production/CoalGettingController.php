@@ -21,7 +21,8 @@ class CoalGettingController extends Controller
                 ->select([
                     'she_coal_getting.*',
                     DB::raw('FORMAT(inspection_date, \'yyyy-MM-dd\') as formatted_date')
-                ]);
+                ])
+                ->where('isActive', true); // Only show active records
 
             // Search functionality
             if ($request->has('search')) {
@@ -380,6 +381,53 @@ class CoalGettingController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to update status: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Soft delete a coal getting record by setting isActive to false
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function Delete(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'id' => 'required|exists:she_coal_getting,id',
+            ]);
+
+            DB::beginTransaction();
+            
+            DB::table('she_coal_getting')
+                ->where('id', $validated['id'])
+                ->update([
+                    'isActive' => false, // Set to false to mark as deleted
+                    'updated_at' => now()
+                ]);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Coal Getting record has been deleted successfully',
+            ]);
+
+        } catch (ValidationException $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error deleting Coal Getting record: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while deleting the record',
+                'error' => $e->getMessage()
             ], 500);
         }
     }

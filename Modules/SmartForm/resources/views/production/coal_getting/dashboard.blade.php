@@ -204,18 +204,21 @@
                                                 </span>
                                             </td>
                                             <td class="align-middle">
-                                                <a href="{{ route('prod.coal.form', ['id' => $record->id]) }}" class="btn btn-primary btn-action text-white btn-sm">
-                                                    <i class="fas fa-eye"></i> Detail
+                                                <a href="{{ route('prod.coal.form', ['id' => $record->id]) }}" class="btn btn-primary btn-sm d-inline-flex align-items-center justify-content-center">
+                                                    <i class="fas fa-eye me-1"></i> Detail
                                                 </a>
+                                                <button type="button" class="btn btn-danger btn-sm d-inline-flex align-items-center justify-content-center btn-delete" data-id="{{ $record->id }}">
+                                                    <i class="fas fa-trash me-1"></i> Delete
+                                                </button>
                                                 @php
                                                     $user = Auth::user();
                                                 @endphp
                                                 @if($record->approval_status === 'need approval' && trim($record->acknowledged_by_nik) === trim($user->userid))
-                                                    <button type="button" class="btn btn-success btn-sm" onclick="updateStatus({{ $record->id }}, 'approved')">
-                                                        <i class="fas fa-check"></i> Approve
+                                                    <button type="button" class="btn btn-success btn-sm d-inline-flex align-items-center justify-content-center" onclick="updateStatus({{ $record->id }}, 'approved')">
+                                                        <i class="fas fa-check me-1"></i> Approve
                                                     </button>
-                                                    <button type="button" class="btn btn-danger btn-sm" onclick="updateStatus({{ $record->id }}, 'reject')">
-                                                        <i class="fas fa-times"></i> Reject
+                                                    <button type="button" class="btn btn-danger btn-sm d-inline-flex align-items-center justify-content-center" onclick="updateStatus({{ $record->id }}, 'reject')">
+                                                        <i class="fas fa-times me-1"></i> Reject
                                                     </button>
                                                 @endif
                                                 @if($record->approval_status === 'reject' && trim($record->created_by_nik) === trim($user->userid))
@@ -242,8 +245,8 @@
 @endsection
 
 @section('custom-js')
-<script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
 <script>
 $(document).ready(function() {
     // Clear filter button
@@ -290,5 +293,58 @@ function updateStatus(id, status) {
         }
     });
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle delete button click
+    $('.btn-delete').on('click', function() {
+        const recordId = $(this).data('id');
+        
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This record will be marked as inactive.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Send delete request
+                axios.post('{{ route("prod.coal.delete") }}', {
+                    id: recordId
+                })
+                .then(function(response) {
+                    if (response.data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Deleted!',
+                            text: response.data.message
+                        }).then(() => {
+                            // Reload the page to reflect changes
+                            window.location.reload();
+                        });
+                    }
+                })
+                .catch(function(error) {
+                    let errorMessage = 'An error occurred while deleting the record';
+                    
+                    if (error.response) {
+                        if (error.response.data.errors) {
+                            errorMessage = Object.values(error.response.data.errors).flat().join('\n');
+                        } else if (error.response.data.message) {
+                            errorMessage = error.response.data.message;
+                        }
+                    }
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: errorMessage
+                    });
+                });
+            }
+        });
+    });
+});
 </script>
 @endsection

@@ -398,6 +398,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('store', [CoalGettingController::class, 'Store'])->name('prod.coal.store');
             Route::put('form/{id}', [CoalGettingController::class, 'Update'])->name('prod.coal.form.update');
             Route::put('update-status', [CoalGettingController::class, 'UpdateStatus'])->name('prod.coal.update-status');
+            Route::post('delete', [CoalGettingController::class, 'Delete'])->name('prod.coal.delete');
         });
         Route::prefix('she-ergonomi')->group(function () {
             Route::get('dashboard', [ErgonomiController::class, 'Dashboard'])->name('she.ergonomi.dashboard');
