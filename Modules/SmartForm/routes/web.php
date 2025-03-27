@@ -66,6 +66,7 @@ use Modules\SmartForm\App\Http\Controllers\PLANT\GeneralInspection\InspectionCmt
 use Modules\SmartForm\App\Http\Controllers\PLANT\GeneralInspection\InspectionDongfengController;
 use Modules\SmartForm\App\Http\Controllers\GS\InspeksiToiletMessKantorController;
 use Modules\SmartForm\App\Http\Controllers\PLANT\PpmShantuiDH24Controller;
+use Modules\SmartForm\App\Http\Controllers\PLANT\PpmXcmgXE1250Controller;
 
 /*
 |--------------------------------------------------------------------------
@@ -532,6 +533,20 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/export/{id}', [PpmShantuiDH24Controller::class, 'ExportPDF'])->name('export-pdf-dh24');
         });
 
+        Route::prefix('ppm-xe1250')->group(function(){
+            Route::get('/dashboard', [PpmXcmgXE1250Controller::class, 'Dashboard'])->name('plant.ppm.xe1250.dashboard');
+            Route::get('/export/{id}', [PpmXcmgXE1250Controller::class, 'Export'])->name('plant.ppm.xe1250.export');
+            Route::get('/add', [PpmXcmgXE1250Controller::class, 'Add'])->name('plant.ppm.xe1250.form');
+            Route::post('/store', [PpmXcmgXE1250Controller::class, 'Store'])->name('plant.ppm.xe1250.store');
+            Route::post('/update',[PpmXcmgXE1250Controller::class, 'Update'])->name('plant.ppm.xe1250.update');
+            Route::get('/detail/{id}', [PpmXcmgXE1250Controller::class, 'detail'])->name('plant.ppm.xe1250.detail');
+            Route::delete('/delete/{id}', [PpmXcmgXE1250Controller::class, 'Delete'])->name('plant.ppm.xe1250.delete');
+            Route::get('/show/{id}', [PpmXcmgXE1250Controller::class, 'show'])->name('plant.ppm.xe1250.show');
+            Route::post('/approve-ppm.xe1250', [PpmXcmgXE1250Controller::class, 'Approve'])->name("plant.ppm.xe1250.approve");
+            Route::post('/reject-ppm.xe1250', [PpmXcmgXE1250Controller::class, 'Reject'])->name("plant.ppm.xe1250.reject");
+            Route::post('/reset-ppm.xe1250/{id}', [PpmXcmgXE1250Controller::class, 'Reset'])->name("plant.ppm.xe1250.reset");
+        });
+
         Route::prefix('ogc-compliance')->group(function(){
             Route::get('/dashboard', [OgcComplianceController::class, 'Dashboard'])->name('log.ogc.dashboard');
             Route::get('/export/{id}', [OgcComplianceController::class, 'Export'])->name('log.ogc.export');
@@ -546,7 +561,6 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/approve-log.ogc', [OgcComplianceController::class, 'Approve'])->name('log.ogc.approve');
             Route::post('/reject-log.ogc', [OgcComplianceController::class, 'Reject'])->name('log.ogc.reject');
             Route::post('/reset-log.ogc/{id}', [OgcComplianceController::class, 'Reset'])->name('log.ogc.reset');
-            
         });
 
     });
