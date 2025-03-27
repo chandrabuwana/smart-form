@@ -14,6 +14,25 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Modules\SmartForm\helpers\HrdHelper;
 
 class FuelController extends Controller {
+    private const LIST_DEPT = [
+        '' => '--- Pilih Departmen ---',
+        'ENG' => 'ENGINEERING',
+        'SHE' => 'SHE',
+        'PRD' => 'PRODUKSI',
+        'SM' => 'SM',
+        'IC' => 'IC',
+        'GS' => 'GS',
+        'RM' => 'PLANT',
+        'BDV' => 'BUSDEV',
+        'FIN' => 'FINANCE',
+        'ATA' => 'Accounting & Tax',
+        'DTC' => 'DATA CENTER',
+        'MM' => 'LOGISTIK',
+        'OPR' => 'OPERATION',
+        'LEG' => 'LEGAL',
+        'OD' => 'ORGANIZATION DEVELOPMENT',
+        'CIVIL' => 'CIVIL'
+    ];
     public function FuelDashboard(Request $req)
     {
         $nik_session = $req->session()->get('user_id', '');
@@ -160,7 +179,7 @@ class FuelController extends Controller {
             return abort(401, 'Unauthoried Request!');
         } else {
             $data['list_dept'] = self::LIST_DEPT;
-            return view("SmartForm::bss-form/LOG/request-fuel/edit-form-request-fuel", 
+            return view( 'SmartForm::LOG/request-fuel/edit-form-req-fuel', 
                 $data,
                 ['approvalList' => HrdHelper::getApprovalList()] 
             );
@@ -171,25 +190,37 @@ class FuelController extends Controller {
         $TABLE_MASTER = "FM_LOG_022_PERMINTAAN_PENGISIAN_FUEL";
         $isError = true;
         $errorMessage = '';
-        $this->user_sm = $this->getUserSM();
+        // $this->user_sm = $this->getUserSM();
         $data_master = array(
             'id' => '',
             'no' => '',
             'nama' => '',
             'jabatan' => '',
-            'nik' => '',
+            'tanggal' => '',
+            'departemen' => '',
+            'no_lambung' => '',
+            'jenis_kendaraan' => '',
+            'jam' => '',
+            'shift' => '',
+            'hm' => '',
+            'km' => '',
+            'awal' => '',
+            'akhir' => '',
+            'total_liter' => '',
+            'diserahkan_oleh' => '',
+            'diterima_oleh' => '',
             'dibuat_oleh' => ''
         );
-        $data_detail = array();
         try {
             $data = DB::table($TABLE_MASTER)
                 ->select(
-                    'id','no','nama','jabatan','nik','dibuat_oleh'
+                    'id','no','nama','jabatan','dibuat_oleh','tanggal','departemen','no_lambung','jenis_kendaraan','jam',
+                    'shift','hm','km','awal','akhir','total_liter','diserahkan_oleh','diterima_oleh'
                 )
                 ->where('id', $id)
                 ->first();
             if(!is_null($data)) {
-                // Log::info("id : ". json_encode($data));
+                Log::info("id : ". json_encode($data));
 
                 $data_user = DB::connection('sqlsrv2')
                     ->table("TKaryawan")
@@ -200,6 +231,21 @@ class FuelController extends Controller {
                 $data_master['dibuat_oleh'] = $data_user->nik;
                 $data_master['no'] = $data->no;
                 $data_master['nama'] = $data->nama;
+                $data_master['id'] = $data->id;
+                $data_master['jabatan'] = $data->jabatan;
+                $data_master['tanggal'] = $data->tanggal;
+                $data_master['departemen'] = $data->departemen;
+                $data_master['no_lambung'] = $data->no_lambung;
+                $data_master['jenis_kendaraan'] = $data->jenis_kendaraan;
+                $data_master['jam'] = $data->jam;
+                $data_master['shift'] = $data->shift;
+                $data_master['hm'] = $data->hm;
+                $data_master['km'] = $data->km;
+                $data_master['awal'] = $data->awal;
+                $data_master['akhir'] = $data->akhir;
+                $data_master['total_liter'] = $data->total_liter;
+                $data_master['diserahkan_oleh'] = $data->diserahkan_oleh;
+                $data_master['diterima_oleh'] = $data->diterima_oleh;
 
                 $isError = false;
             } else {
@@ -210,9 +256,9 @@ class FuelController extends Controller {
             Log::error($ex->getMessage());
             $errorMessage = $ex->getMessage();
         }
-        $is_user_sm = in_array($request->session()->get('user_id', ''), $this->user_sm);
+        // $is_user_sm = in_array($request->session()->get('user_id', ''), $this->user_sm);
 
-        return ['error' => $isError, 'errorMessage' => $errorMessage, 'data' => $data_master, 'is_user_sm' => $is_user_sm, 'nik_session' => $nik];
+        return ['error' => $isError, 'errorMessage' => $errorMessage, 'data' => $data_master, 'nik_session' => $nik];
     }
 
     function FuelDetailById(Request $request) {
@@ -241,4 +287,62 @@ class FuelController extends Controller {
         return $pdf->download('BSS-FRM-LOG-022.pdf');
     }
 
+    function updateReqFuel( Request $req ) {
+        $TABLE_MASTER = "FM_LOG_022_PERMINTAAN_PENGISIAN_FUEL";
+        $tgl = now()->toDateTimeString();
+        $id = $req->query( 'id' );
+        $response = array(
+            'message' => '',
+            'isSuccess' => false
+        );
+        $nik_session = $req->session()->get( 'user_id', '' );
+        $data = $req->input();
+        $data_insert = [
+            'id' => $data[ 'id' ],
+            'no_fuel_station' => $data[ 'fuel' ],
+            'shift' => $data[ 'shift' ],
+            'disetujui_oleh' => $data[ 'approval' ],
+            'job_site' => $data[ 'jobSite' ],
+            'stok_awal' => $data[ 'stokAwal' ],
+            'stok_akhir' => $data[ 'stokAkhir' ],
+            'status' => $data[ 'status' ],
+            'masuk' => $data[ 'masuk' ],
+            'total_pemakaian' => $data[ 'total_pemakaian' ]
+        ];
+        $data_item = json_decode( $data[ 'item' ] );
+        Log::info( $data_item );
+
+        try {
+            DB::beginTransaction();
+            $old_value_master = DB::table( $TABLE_MASTER )
+            ->select( 'id', 'no_doc', 'no_fuel_station', 'shift', 'disetujui_oleh', 'job_site', 'stok_awal',
+            'stok_akhir', 'masuk', 'total_pemakaian', 'status' )
+            ->where( 'id', $id )
+            ->first();
+
+            // Log::info( $old_value_detail );
+            // Log::info( json_encode( $this->isArrayDifferent( $old_value_detail, $data_item ) ) );
+            $affected_rows = DB::table( $TABLE_MASTER )
+            ->where( 'id', $id )
+
+            ->update( $data_insert );
+            // $history_master = $this->addHistory( $old_value_master->id, $tgl, $nik_session, 'PemakaianSolarEdit', $data_insert, $old_value_master );
+            DB::commit();
+            $response[ 'message' ] = 'Ok';
+            $response[ 'isSuccess' ] = true;
+            $response[ 'data' ] = array(
+                'no_doc' => $no_doc
+            );
+
+        } catch ( Exception $ex ) {
+            // DB::rollBack();
+
+            Log::error( $ex->getMessage() );
+            Log::error( $ex->getTraceAsString() );
+            $response[ 'message' ] = $ex->getMessage();
+            $response[ 'isSuccess' ] = false;
+        }
+
+        return response()->json( $response );
+    }
 }
