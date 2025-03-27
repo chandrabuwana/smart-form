@@ -197,6 +197,10 @@
                                                     class="btn btn-primary btn-sm">
                                                     <i class="fas fa-download"></i>
                                                 </a>
+                                                <button type="button" class="btn btn-danger btn-sm"
+                                                    onclick="deleteChecker('{{ $data->doc_num }}')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -217,6 +221,7 @@
 @endsection
 
 @section('custom-js')
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <script>
         $(function() {
@@ -226,5 +231,52 @@
             });
 
         });
+
+        function deleteChecker(id) {
+            console.log('Delete ID:', id);
+            if (confirm('Are you sure you want to delete this data?')) {
+                axios.delete('{{ route('prod.form.checker.delete', ['id' => 'ID']) }}'.replace('ID', id))
+                    .then(function(response) {
+                        console.log('Response:', response);
+                        if (response.data.success) {
+
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: response.data.message
+                            }).then(() => {
+
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Failed to delete the compressor.'
+                            });
+                        }
+                    })
+                    .catch(function(error) {
+                        console.error(error);
+                        let errorMessage = 'Terjadi kesalahan pada sistem';
+                        if (error.response) {
+
+                            if (error.response.data.errors) {
+                                errorMessage = Object.values(error.response.data.errors).flat().join('\n');
+                            } else if (error.response.data.message) {
+                                errorMessage = error.response.data.message;
+                            }
+                        }
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: errorMessage
+                        });
+                    })
+                    .finally(function() {
+                        submitBtn.prop('disabled', false);
+                    });
+            }
+        }
     </script>
 @endsection

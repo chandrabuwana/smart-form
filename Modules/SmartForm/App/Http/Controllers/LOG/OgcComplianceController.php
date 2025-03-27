@@ -17,39 +17,29 @@ class OgcComplianceController extends Controller {
     public function dashboard( Request $request ) {
             try {
                 $nik_session = $request->session()->get( 'user_id', '' );
-                // $query = DB::table('log_ogc_compliance as log')
-                // ->join('detail_log_ogc_compliance as detail', function ($join) {
-                //     $join->on('log.doc_num', '=', 'detail.doc_num_id')
-                //          ->whereRaw('detail.created_at = (
-                //              SELECT MAX(d.created_at) 
-                //              FROM detail_log_ogc_compliance d 
-                //              WHERE d.doc_num_id = log.doc_num
-                //          )');
-                // })
-                // ->select('log.id', 'log.doc_num',  'log.created_at','log.creator', 'detail.status') 
-                // ->orderBy('log.created_at', 'desc');
-     
+               
+
                 $query = DB::table('log_ogc_compliance as log')
                 ->join(
-                    DB::raw("(SELECT doc_num_id, 
-                                     (SELECT status 
-                                      FROM detail_log_ogc_compliance 
-                                      WHERE doc_num_id = d.doc_num_id 
-                                      FOR JSON PATH) AS combined_status 
-                              FROM detail_log_ogc_compliance d 
-                              GROUP BY doc_num_id) AS detail"), 
+                    DB::raw("(SELECT doc_num_id,
+                                     (SELECT status
+                                      FROM detail_log_ogc_compliance
+                                      WHERE doc_num_id = d.doc_num_id
+                                      FOR JSON PATH) AS combined_status
+                              FROM detail_log_ogc_compliance d
+                              GROUP BY doc_num_id) AS detail"),
                     'log.doc_num', '=', 'detail.doc_num_id'
                 )
                 ->select(
-                    'log.id', 
-                    'log.doc_num',  
-                    'log.created_at', 
-                    'log.creator', 
+                    'log.id',
+                    'log.doc_num',
+                    'log.created_at',
+                    'log.creator',
                     'detail.combined_status'
                 )
                 ->groupBy('log.id', 'log.doc_num', 'log.created_at', 'log.creator', 'detail.combined_status')
-                ->orderBy('log.created_at', 'desc');        
-              
+                ->orderBy('log.created_at', 'desc');
+
                 if ( $request->has( 'search' ) ) {
                     $searchTerm = $request->search;
                     $query->where( function( $q ) use ( $searchTerm ) {
@@ -109,7 +99,7 @@ class OgcComplianceController extends Controller {
             $data = [
                 'doc_num' => $this->generateDocNumber(),
                 'creator' => $request->session()->get( 'user_id', '' ),
-               
+
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
 
@@ -259,7 +249,7 @@ class OgcComplianceController extends Controller {
             ];
         });
 
-       
+
 
         return view( 'smartform::LOG.ogc-compliance.detail-ogc', [ 'data' => $data, 'nik'=>$nik_session,  'detail' =>$detail, 'list' => $list, 'approvalList' => HrdHelper::getApprovalList() ] );
 
@@ -274,18 +264,18 @@ class OgcComplianceController extends Controller {
             ] ) ),
             'updated_at' => Carbon::now()
         ];
-     
-    
+
+
         DB::table( 'detail_log_ogc_compliance' )
         ->where( 'doc_num_id', $request->doc_num )
         ->where( 'week', $request->week )
         ->update( $data );
-    
+
         return response()->json( [
             'success' => true,
             'message' => 'Data berhasil di Approve'
         ] );
-    
+
     }
     public function Reset( $id) {
 
@@ -296,34 +286,34 @@ class OgcComplianceController extends Controller {
             ] ) ),
             'updated_at' => Carbon::now()
         ];
-    
+
         DB::table( 'detail_log_ogc_compliance' )
         ->where( 'doc_num_id', $id )
         ->update( $data );
-    
+
         return response()->json( [
             'success' => true,
             'message' => 'Data berhasil di Reset'
         ] );
-    
+
     }
-    
+
     public function Reject( Request $request ) {
         $data = [
             'status' => json_encode( array_values( [
                 $request->checked,
                 $request->validated,
-    
+
             ] ) ),
             'updated_at' => Carbon::now()
         ];
         ;
-    
+
         DB::table( 'detail_log_ogc_compliance' )
         ->where( 'doc_num_id', $request->doc_num )
         ->where( 'week', $request->week )
         ->update( $data );
-    
+
         return response()->json( [
             'success' => true,
             'message' => 'Data berhasil di Reject'
@@ -354,17 +344,17 @@ class OgcComplianceController extends Controller {
             $data = DB::table('log_ogc_compliance')
             ->where('id', $id)
             ->first();
-    
-    
+
+
             $detail = DB::table('detail_log_ogc_compliance')
             ->where('doc_num_id', $data->doc_num)
             ->whereIn('week', ['week 1', 'week 2', 'week 3', 'week 4', 'week 5'])
             ->get()
-            ->groupBy('week'); 
-    
+            ->groupBy('week');
+
             $json = file_get_contents( resource_path( 'data/ogc-compliance/ogc-com.json' ) );
             $list = json_decode( $json, true );
-    
+
             $details = $detail->mapWithKeys(fn($items, $week) => [
                 $week => $items->map(fn($detail) => (object) [
                     'lube_station' => json_decode($detail->lube_station, true),
@@ -380,12 +370,12 @@ class OgcComplianceController extends Controller {
             ]);
             $pdf = PDF::loadView( 'smartform::LOG.ogc-compliance.export-pdf', [
                 'detail' =>$details, 'list' => $list, 'approvalList' => HrdHelper::getApprovalList()
-    
+
             ] );
             $pdf->setPaper( 'A4', 'landscape' );
-    
+
             return $pdf->download( 'CHECKLIST OGC COMPLIANCE' . $data->doc_num .'.pdf' );
-           
+
         } catch ( \Exception $e ) {
             Log::error( 'Error in ExportForm: ' . $e->getMessage() );
             return redirect()

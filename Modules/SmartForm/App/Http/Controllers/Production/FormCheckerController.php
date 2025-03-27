@@ -272,6 +272,28 @@ class FormCheckerController extends Controller {
         }
 
     }
+    
+    public function Delete( $id ) {
+        try {
+            $id = request()->id;
+            DB::table( 'prod_checker_form' )
+            ->where( 'doc_num', $id )
+            ->delete();
+            return response()->json( [
+                'success' => true,
+                'message' => 'Data berhasil dihapus'
+            ] );
+
+        } catch ( QueryException $e ) {
+            Log::error( 'Error in Delete: ' . $e->getMessage() );
+            return response()->json( [
+                'success' => false,
+                'message' => 'Failed to delete record: ' . $e->getMessage()
+            ], 500 );
+
+        }
+    }
+
     public function ExportForm( $id ) {
         $dataDS = [
             '06-00 sd 07.00',
