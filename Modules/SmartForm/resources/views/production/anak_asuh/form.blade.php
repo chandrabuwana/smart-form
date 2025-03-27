@@ -182,22 +182,22 @@
                             <div class="mt-4">
                                 <h6>Penilaian Kategori (Disiplin/Skill/Attitude)</h6>
                                 <div class="table-responsive">
-                                    <table class="table table-bordered" style="max-width: 300px;">
+                                    <table class="table" style="max-width: 300px; border-radius: 8px; overflow: hidden;">
                                         <tr class="bg-danger text-white">
-                                            <td>1</td>
-                                            <td>Kurang</td>
+                                            <td style="width: 50px; text-align: center; border: 1px solid #dee2e6;">1</td>
+                                            <td style="border: 1px solid #dee2e6;">Kurang</td>
                                         </tr>
                                         <tr class="bg-warning">
-                                            <td>2</td>
-                                            <td>Cukup</td>
+                                            <td style="width: 50px; text-align: center; border: 1px solid #dee2e6;">2</td>
+                                            <td style="border: 1px solid #dee2e6;">Cukup</td>
                                         </tr>
                                         <tr class="bg-info text-white">
-                                            <td>3</td>
-                                            <td>Baik</td>
+                                            <td style="width: 50px; text-align: center; border: 1px solid #dee2e6;">3</td>
+                                            <td style="border: 1px solid #dee2e6;">Baik</td>
                                         </tr>
                                         <tr class="bg-success text-white">
-                                            <td>4</td>
-                                            <td>Sangat Baik</td>
+                                            <td style="width: 50px; text-align: center; border: 1px solid #dee2e6;">4</td>
+                                            <td style="border: 1px solid #dee2e6;">Sangat Baik</td>
                                         </tr>
                                     </table>
                                 </div>
