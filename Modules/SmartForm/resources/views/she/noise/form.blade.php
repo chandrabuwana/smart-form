@@ -38,32 +38,37 @@
                                     <div class="input-group input-group-static mb-3">
                                         <label>Site Name</label>
                                         <select class="form-control" id="site_name" name="site_name" required {{ $isShowDetail ? 'disabled' : '' }}>
-                                            @foreach(['bss', 'agm', 'mbl', 'mme', 'mas', 'pmss', 'taj', 'bssr', 'tdm', 'msj'] as $site)
-                                                <option value="{{ strtoupper($site) }}" 
-                                                    {{ $isShowDetail && strtolower($maintenanceRecord->site_name) == strtolower($site) ? 'selected' : 
-                                                    (!$isShowDetail && isset($defaultValues['site_name']) && strtolower($defaultValues['site_name']) == strtolower($site) ? 'selected' : '') }}>
-                                                    {{ strtoupper($site) }}
+                                            <option value="">-- Pilih Site --</option>
+                                            @foreach(\Modules\SmartForm\helpers\SiteHelper::getAllSites() as $code => $name)
+                                                <option value="{{ strtoupper($code) }}" 
+                                                    {{ $isShowDetail && strtolower($maintenanceRecord->site_name) == strtolower($code) ? 'selected' : 
+                                                    (!$isShowDetail && isset($defaultValues['site_name']) && strtolower($defaultValues['site_name']) == strtolower($code) ? 'selected' : '') }}>
+                                                    {{ $name }}
                                                 </option>
                                             @endforeach
+                                            <option value="BSS" 
+                                                {{ $isShowDetail && strtolower($maintenanceRecord->site_name) == 'bss' ? 'selected' : 
+                                                (!$isShowDetail && isset($defaultValues['site_name']) && strtolower($defaultValues['site_name']) == 'bss' ? 'selected' : '') }}>
+                                                BSS
+                                            </option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="input-group input-group-static mb-3">
                                         <label>Department</label>
-                                        <input type="text" name="department" class="form-control" 
-                                            value="{{ $isShowDetail ? $maintenanceRecord->department : ($defaultValues['department'] ?? '') }}" 
-                                            >
+                                        <select class="form-control" name="department" id="department" {{ $isShowDetail ? 'disabled' : '' }} required>
+                                            <option value="">-- Pilih Departemen --</option>
+                                            @foreach(\Modules\SmartForm\helpers\DepartmentHelper::getAllDepartments() as $code => $name)
+                                                <option value="{{ $code }}" {{ $isShowDetail && $maintenanceRecord->department == $code ? 'selected' : '' }}>{{ $name }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="input-group input-group-static mb-3">
                                         <label>Shift</label>
-                                        <select class="form-control" name="shift" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
-                                            <option value="">-- Pilih Shift --</option>    
-                                            <option value="DS" {{ $isShowDetail && $maintenanceRecord->shift == 'DS' ? 'selected' : (!$isShowDetail && isset($defaultValues['shift']) && $defaultValues['shift'] == 'DS' ? 'selected' : '') }}>DS</option>
-                                            <option value="NS" {{ $isShowDetail && $maintenanceRecord->shift == 'NS' ? 'selected' : (!$isShowDetail && isset($defaultValues['shift']) && $defaultValues['shift'] == 'NS' ? 'selected' : '') }}>NS</option>
-                                        </select> 
+                                        {!! \Modules\SmartForm\helpers\ShiftHelper::renderShiftSelect('shift', $isShowDetail ? $maintenanceRecord->shift : (isset($defaultValues['shift']) ? $defaultValues['shift'] : null), isset($isShowDetail) && $isShowDetail) !!}
                                     </div>
                                 </div>
                                 <div class="col-md-3">
