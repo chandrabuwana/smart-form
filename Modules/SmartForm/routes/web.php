@@ -423,13 +423,20 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/approve-welding/{id}', [PlantWeldingController::class, 'ApproveWelding'])->name('plant.welding.approve');
             Route::post('/reject-welding/{id}', [PlantWeldingController::class, 'RejectWelding'])->name('plant.welding.reject');
         });
+
         // PLANT
         Route::prefix('plant')->name('bss-form.plant.')->group(function () {
             // General Inspection
             Route::prefix('general-inspection')->name('general-inspection.')->group(function () {
+                // CMT
                 Route::get('cmt/{id}/print', [InspectionCmtController::class, 'print'])->name('cmt.print');
                 Route::get('cmt/get-data', [InspectionCmtController::class, 'getData'])->name('cmt.get-data');
                 Route::resource('cmt', InspectionCmtController::class);
+
+                // Dongfeng
+                Route::get('dongfeng/{id}/print', [InspectionDongfengController::class, 'print'])->name('dongfeng.print');
+                Route::get('dongfeng/get-data', [InspectionDongfengController::class, 'getData'])->name('dongfeng.get-data');
+                Route::resource('dongfeng', InspectionDongfengController::class);
             });
         });
 
