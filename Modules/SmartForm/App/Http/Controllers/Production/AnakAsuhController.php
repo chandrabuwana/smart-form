@@ -383,7 +383,8 @@ class AnakAsuhController extends Controller
             $record->attitude_score_items = $safeJsonDecode($record->attitude_score_items);
             $record->shift_items = $safeJsonDecode($record->shift_items);
 
-            $pdf = PDF::loadView('smartform::production.anak_asuh.export-pdf', compact('record'));
+            // Use Barryvdh\DomPDF\Facade\Pdf instead of PDF alias
+            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('smartform::production.anak_asuh.export-pdf', compact('record'));
             $pdf->setPaper('a4', 'portrait');
             
             return $pdf->download('Anak_Asuh_Monitoring_' . $record->doc_number . '.pdf');
