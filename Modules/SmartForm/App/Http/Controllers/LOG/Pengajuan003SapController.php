@@ -43,7 +43,7 @@ class Pengajuan003SapController extends Controller {
     public function storeForm(Request $request) {
         try {
             $request->validate([
-                // 'job_site' => 'required',
+                // 'plant' => 'required',
                 // 'date' => 'required|date',
                 // 'dibuat_oleh' => 'required',
                 // 'validated' => 'required',
@@ -52,7 +52,7 @@ class Pengajuan003SapController extends Controller {
             ]);
 
             $headerData = [
-                'job_site' => $request->input('job_site'),
+                'plant' => $request->input('plant'),
                 'tanggal' => $request->input('date'),
                 'dibuat_oleh' => $request->input('dibuat_oleh'),
                 'diperiksa_oleh' => $request->input('validated'),

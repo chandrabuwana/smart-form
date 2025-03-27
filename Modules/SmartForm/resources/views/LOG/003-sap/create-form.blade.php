@@ -35,8 +35,8 @@
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <div class="input-group input-group-static mb-3">
-                                        <label for="job_site" class="ms-0">PLANT</label>
-                                        <select class="form-control" name="job_site" id="job_site" required>
+                                        <label for="plant" class="ms-0">PLANT</label>
+                                        <select class="form-control" name="plant" id="plant" required>
                                             <option disabled selected>-- Select Site --</option>
                                             <option value="agm">agm</option>
                                             <option value="mbl">mbl</option>
