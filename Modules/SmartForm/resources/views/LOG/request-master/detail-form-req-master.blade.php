@@ -16,6 +16,16 @@
 
 $master = $data['master'];
 $detail = $data['detail'];
+$sites = $data['sites'];
+$users = $data['users'];
+$plants = $data['plants'];
+$uoms = $data['uoms'];
+$materialTypes = $data['materialTypes'];
+$materialGroups = $data['materialGroups'];
+$vulationClass = $data['vulationClass'];
+$purchasingGroups = $data['purchasingGroups'];
+$serialNumbers = $data['serialNumbers'];
+
 @endphp
 
 @section('content')
@@ -32,54 +42,119 @@ $detail = $data['detail'];
                     <form action="">
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="card">
+                                <div class="card"  style="height: 100%;">
                                     <div class="card-body">
                                         <table class="w-100">
                                             <tr>
-                                                <td class="fw-bold">No. Doc</td>
-                                                <td >{{$master->no_dok}}</td>
+                                                <td class="fw-bold" style="width: 10rem">No. Doc</td>
+                                                <td >{{$master->no_dok ?? '-'}}</td>
                                             </tr>
                                             <tr>
                                                 <td class="fw-bold">Created By</td>
-                                                <td id="requestor">{{$master->created_by}}</td>
+                                                <td id="requestor">{{$master->created_by ?? '-'}}</td>
                                             </tr>
                                             <tr>
                                                 <td class="fw-bold">Created  Date</td>
-                                                <td>{{$master->created_at}}</td>
+                                                <td>{{$master->created_at ?? '-'}}</td>
                                             </tr>
                                             <tr>
                                                 <td class="fw-bold">Updated By</td>
-                                                <td id="requestor">{{$master->updated_by}}</td>
+                                                <td id="requestor">{{$master->updated_by ?? '-'}}</td>
                                             </tr>
                                             <tr>
                                                 <td class="fw-bold">Updated Date</td>
-                                                <td id="requestor">{{$master->updated_at}}</td>
+                                                <td id="requestor">{{$master->updated_at ?? '-'}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold">Status</td>
+                                                <td id="requestor">{{$master->status_req ?? '-'}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold">Approve/Reject Notes</td>
+                                                <td id="requestor">{{$master->remark ?? '-'}}</td>
                                             </tr>
                                         </table>
                                     </div>
                                 </div>
                             </div>
 
+
                             <div class="col-md-6">
-                                <div class="card h-100">
+                                <div class="card" style="height: 100%;">
                                     <div class="card-body">
-                                    <table class="w-100">
-                                        <tr>
-                                            <td class="fw-bold">Pilih Approval</td>
-                                            <td> {{ $master->disetujui_oleh }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="fw-bold">Site</td>
-                                            <td>{{ $master->site}}</td>
-                                        </tr>
-                                    </table>
+                                        <table class="w-100">
+                                            <tr>
+                                                <td class="fw-bold">Request Cataloging</td>
+                                                <td>
+                                                    <select class="form-select form-select-sm input-text" id="idCataloging" name="idCataloging" disabled>
+                                                        
+                                                        <option value="">-- select user --</option>
+                                                        @forelse($users as $catalog)
+                                                            <option value="{{ $catalog->IDCard ?? '' }}" {{ $master->cataloging_id == $catalog->IDCard ? 'selected' : '' }}>
+                                                                {{ $catalog->nama ?? 'Nama tidak tersedia' }}
+                                                            </option>
+                                                        @empty
+                                                            <option>Data karyawan tidak ditemukan</option>
+                                                        @endforelse
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td  class="fw-bold">Request Approval</td>
+                                                <td>
+                                                    <select class="form-select form-select-sm input-text" id="iApproval" name="iApproval" disabled>
+                                                        
+                                                        <option value="">-- select user --</option>
+                                                        @forelse($users as $approved)
+                                                            <option value="{{ $approved->IDCard ?? '' }}" {{ $master->disetujui_oleh == $approved->IDCard ? 'selected' : '' }}>
+                                                                {{ $approved->nama ?? 'Nama tidak tersedia' }}
+                                                            </option>
+                                                        @empty
+                                                            <option>Data karyawan tidak ditemukan</option>
+                                                        @endforelse
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td  class="fw-bold">Site</td>
+                                                <td>
+                                                    <select class="form-select form-select-sm input-text" id="iSite" name="iSite" disabled>
+                                                      
+                                                        <option value="">-- select site --</option>
+                                                        @forelse($sites as $site)
+                                                            <option value="{{ $site->KodeST ?? '' }}" {{ $master->site == $site->KodeST ? 'selected' : '' }}>
+                                                                {{ $site->KodeST ?? 'Site tidak tersedia' }}
+                                                            </option>
+                                                        @empty
+                                                            <option>Data site tidak ditemukan</option>
+                                                        @endforelse
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold">Kode Plant</td>
+                                                <td>
+                                                    <select class="form-select form-select-sm input-text" id="iPlant" name="iPlant" disabled>
+                                                        <option value="">-- select kode plant --</option>
+                                                        @forelse($plants as $code => $value)
+                                                            <option value="{{ $code }}" {{ $master->kode_plant == $code ? 'selected' : '' }}>
+                                                                {{ $value }}
+                                                            </option>
+                                                        @empty
+                                                            <option>Data kode plan tidak ditemukan</option>
+                                                        @endforelse
+        
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                        </table>
                                     </div>
-                                    
                                 </div>
                             </div>
                         </div>
 
-                        <div class="table-responsive mt-5">
+
+                        <div class="table-responsive mt-4">
                             <table id="item-master" class="display" data-toggle="table">
                                 <thead>
                                     <tr>
@@ -98,44 +173,29 @@ $detail = $data['detail'];
                                         <th data-field="scrap">SCRAP</th>
                                         <th data-field="matType">Material Type</th>
                                         <th data-field="matGroup">Material Group</th>
-                                        <th data-field="valuationStatus">Valuation Class</th>
-                                        <th data-field="req">REQ</th>
-                                        <th data-field="date">DATE</th>
-                                        <th data-field="site">SITE</th>
+                                        <th data-field="valuationStatus">Valuation Status</th>
+                                        <th data-field="purchasingGroup">Purchasing Group</th>
+                                        <th data-field="serialNumber">Serial Number</th>
                                     </tr>
                                 </thead>
                             </table>
                         </div>
                     </form>
 
-                    {{-- <div class="card-footer" style="padding-right: 0px;">
-                        <div class="d-flex">
-                            <button class="btn btn-primary ms-auto" style="margin:5px"  id="btnApproveRequestMaster">
-                                <i class="fas fa-check"></i> 
-                                Approve
-                            </button>
-                            <button class="btn btn-warning ms-auto" style="margin:5px"  id="btnRejectRequestMaster">
-                                <i class="fas fa-time"></i> 
-                                Reject
-                            </button>
-                            <a href="{{url()->previous()}}" class="btn btn-success" style="margin:5px"><i class="fas fa-cancel"></i> Cancel</a>
-                        </div>
-                    </div> --}}
-
                     <div class="card-footer">
                         <div class="d align-items-center">
-                            @if (session('username')==($master->disetujui_oleh))
+                            @if ( session('user_id') == $master->disetujui_oleh && ($master->status_req == 'OPEN' || $master->status_req == 'CLOSE') )
                                 <button class="btn btn-primary ms-auto uploadBtn" style="margin:5px" id="btnApprove">
-                                    <i class="fas fa-check"></i>
+                                    <i class="fas fa-check"></i> &nbsp;
                                     Approve
                                 </button>
                                 <button class="btn btn-warning ms-auto uploadBtn" style="margin:5px" id="btnReject">
-                                    <i class="fas fa-close"></i>
+                                    <i class="fas fa-close"></i> &nbsp;
                                     Reject
                                 </button>
-                                <a href="{{url()->previous()}}" class="btn btn-success" style="margin:5px"><i class="fas fa-cancel"></i> Cancel</a>
+                                <a href="{{url()->previous()}}" class="btn btn-success" style="margin:5px"><i class="fas fa-cancel"></i> &nbsp; Cancel</a>
                             @else
-                                <a href="{{url()->previous()}}" class="btn btn-success" style="margin:5px"><i class="fas fa-cancel"></i> Cancel</a>
+                                <a href="{{url()->previous()}}" class="btn btn-success" style="margin:5px"><i class="fas fa-cancel"></i> &nbsp; Cancel</a>
                             @endif
                         </div>
                     </div>
@@ -146,6 +206,7 @@ $detail = $data['detail'];
     </div>
 @endsection
 
+
 @section('custom-js')
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
@@ -154,9 +215,10 @@ $detail = $data['detail'];
         var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         var months_romawi = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
 
-        var btnApproveRequestMaster = $("#btnApproveRequestMaster");
+        var btnUpdateRequestMaster = $("#btnUpdateRequestMaster");
         var $table = $("#item-master");
-        var $buttonTambah = $("#btn-add-item")
+        var $btnApprove = $("#btnApprove")
+        var $btnReject = $("#btnReject")
         
         // Variable form
         var tanggalSekarang = $("#tanggalSekarang")
@@ -164,6 +226,8 @@ $detail = $data['detail'];
         var tglDoc = $("#tglDoc");
         var iApproval = $("#iApproval")
         var iSite = $("#iSite")
+        var idCataloging = $("#idCataloging")
+        var iPlant = $("#iPlant")
         
         // Variable items
         var iKodeMaster = $("#iKodeMaster")
@@ -181,10 +245,8 @@ $detail = $data['detail'];
         var iMatType = $("#iMatType")
         var iMatGroup = $("#iMatGroup")
         var iVal = $("#iVal")
-        var iMatGroup = $("#iMatGroup")
-        var req = $("#req")
-        var date = $("#date")
-        var site = $("#site")
+        var iPG = $("#iPG")
+        var iSerialNum = $("#iSerialNum")
 
         var dataRequestMaster = {
             formName: "Request Master",
@@ -192,7 +254,8 @@ $detail = $data['detail'];
             tglDoc: "",
             site: "",
             approval: "",
-            
+            cataloging: "",
+            kodePlant: "",
             item: [{}]
         }
 
@@ -223,9 +286,17 @@ $detail = $data['detail'];
         }
 
         function actionFormatter(value, row, index) {
-            return `
-                <a class="btn btn-danger btn-sm" onclick="deleteRow(${index})">Delete</a>
-            `;
+            if (row.kodeMaster != "") {
+                // return `
+                //     <a class="btn btn-danger btn-sm disabled">Delete</a>
+                // `;
+                return '';
+            } else {
+                return `
+                    <a class="btn btn-danger btn-sm" onclick="deleteRow(${index})">Delete</a>
+                `;
+                
+            }
         }
 
         function deleteRow(id) {
@@ -235,36 +306,7 @@ $detail = $data['detail'];
             })
         }
 
-        function submitRequestMaster(data) {
-            $.ajax({
-                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                type: "post",
-                url: "bss-form/log/add-request-master",
-                data: data,
-                dataType: "json",
-                success: function(response) {
-                    if (response.code == 200) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Berhasil!',
-                            text: response.message,
-                        }).then((result) => {
-
-                        })
-                    }
-                },
-                error: function(xhr, ajaxOptions, thrownError) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'thrownError',
-                        html: errorMessage,
-                        confirmButtonText: 'OK'
-                    });
-                    console.log()
-                }
-            })
-        }
-
+       
         $table.on('post-body.bs.table', function(data) {
             var items = [];
             data.sender.data.forEach(function (item, index, arr) {
@@ -310,12 +352,6 @@ $detail = $data['detail'];
             function validateItem() {
                 var errorValidate = []
 
-                if(iKodeMaster.val() == "") {
-                    errorValidate.push({
-                        field: "Kode Master",
-                        message: "tidak boleh kosong"
-                    })
-                }
                 if(iPartName.val() == "") {
                     errorValidate.push({
                         field: "Part Name",
@@ -396,25 +432,19 @@ $detail = $data['detail'];
                 }
                 if(iVal.val() == "") {
                     errorValidate.push({
-                        field: "Valuation class",
+                        field: "Valuation status",
                         message: "tidak boleh kosong"
                     })
                 }
-                if(req.val() == "") {
+                if(iPG.val() == "") {
                     errorValidate.push({
-                        field: "REQ",
+                        field: "Purchasing Group",
                         message: "tidak boleh kosong"
                     })
                 }
-                if(date.val() == "") {
+                if(iSerialNum.val() == "") {
                     errorValidate.push({
-                        field: "DATE",
-                        message: "tidak boleh kosong"
-                    })
-                }
-                if(site.val() == "") {
-                    errorValidate.push({
-                        field: "SITE",
+                        field: "Serial Number",
                         message: "tidak boleh kosong"
                     })
                 }
@@ -446,104 +476,158 @@ $detail = $data['detail'];
                 return errorValidate
             }
 
-            $buttonTambah.click(function (e) {
-                e.preventDefault()
-                var errorValidate = validateItem()
-                
-                var msg = "";
-                if(errorValidate.length > 0) {
-                    for (var listErr of errorValidate) {
-                        msg = msg + "<p class='m-0'>" + listErr.field + " " + listErr.message +  "</p>"
-                    }
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Validasi item',
-                        html: msg,
-                    }).then((result) => {
-                    })
-                } else {
-                    $table.bootstrapTable('append', {
-                        kodeMaster: iKodeMaster.val(),
-                        partName: iPartName.val(),
-                        uom: iUom.val(),
-                        partNumber: iPartNumber.val(),
-                        brand: iBrand.val(),
-                        gen: iGen.val(),
-                        model: iModel.val(),
-                        compartement: iCompartemen.val(),
-                        fffC: iFff.val(),
-                        planMatStatus: iPlanMat.val(),
-                        mrpType: iMrp.val(),
-                        scrap: iScrap.val(),
-                        matType: iMatType.val(),
-                        matGroup: iMatGroup.val(),
-                        valuationStatus: iVal.val(),
-                        req: req.val(),
-                        date: date.val(),
-                        site: site.val()
-                    })
-                    $table.bootstrapTable('scrollTo', 'bottom')
-                }
+            
+            $btnApprove.click(function(e) {
+                e.preventDefault();
+                showApprovalDialog('approve');
             })
 
-            btnApproveRequestMaster.click(function(e) {
+            $btnReject.click(function(e) {
                 e.preventDefault();
+                showApprovalDialog('reject');
+            })
+        
+            // function showApprovalDialog(action) {
+            //     const isApprove = action === 'approve';
+            //     const title = isApprove ? 'Approve Document' : 'Reject Document';
+            //     const confirmButtonColor = isApprove ? '#e91e63' : '#fb8c00';
+            //     const confirmButtonText = isApprove ? 'Approve' : 'Reject';
+                
+            //     Swal.fire({
+            //         title: title,
+            //         html: `
+            //             <div class="form-group">
+            //                 <label for="swal-remark">${isApprove ? 'Optional remarks' : 'Reason for rejection (required)'}</label>
+            //                 <textarea id="swal-remark" class=" form-control" style="height: 8rem !important;"
+            //                     placeholder="${isApprove ? 'Add any comments...' : 'Please specify the reason...'}"
+            //                     ${!isApprove ? 'required' : ''}></textarea>
+            //             </div>
+            //         `,
+            //         icon: 'question',
+            //         showCancelButton: true,
+            //         confirmButtonColor: confirmButtonColor,
+            //         cancelButtonColor: '#6c757d',
+            //         confirmButtonText: confirmButtonText,
+            //         cancelButtonText: 'Cancel',
+            //         focusConfirm: false,
+            //         preConfirm: () => {
+            //             const remark = document.getElementById('swal-remark').value;
+            //             if (!isApprove && !remark.trim()) {
+            //                 Swal.showValidationMessage('Please provide a reason for rejection');
+            //                 return false;
+            //             }
+            //             return remark;
+            //         }
+            //     }).then((result) => {
+            //         if (result.isConfirmed) {
+            //             submitApprovalAction(action, result.value);
+            //         }
+            //     });
+            // }
 
-                var errValidate = validateForm()
-                if(errValidate.length > 0) {
-                    var msg = ""
-                    for (var listErr of errValidate) {
-                        msg = msg + "<p class='m-0'>" + listErr.field + " " + listErr.message +  "</p>"
+            function showApprovalDialog(action) {
+                const isApprove = action === 'approve';
+                const title = isApprove ? 'Approve Document' : 'Reject Document';
+                const confirmButtonColor = isApprove ? '#e91e63' : '#fb8c00';
+                const confirmButtonText = isApprove ? 'Approve' : 'Reject';
+                
+                Swal.fire({
+                    title: title,
+                    html: `
+                        <div class="form-group">
+                            <label for="swal-remark">${isApprove ? 'Optional remarks' : 'Reason for rejection (required)'}</label>
+                            <textarea id="swal-remark" class="form-control" style="height: 8rem !important;"
+                                placeholder="${isApprove ? 'Add any comments (max 200 characters)...' : 'Please specify the reason (max 200 characters)...'}"
+                                ${!isApprove ? 'required' : ''}></textarea>
+                            <small id="swal-remark-counter" style="font-size:small" class="text-muted float-right">0/200</small>
+                        </div>
+                    `,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: confirmButtonColor,
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: confirmButtonText,
+                    cancelButtonText: 'Cancel',
+                    focusConfirm: false,
+                    didOpen: () => {
+                        const remarkInput = document.getElementById('swal-remark');
+                        const counter = document.getElementById('swal-remark-counter');
+                        
+                        remarkInput.addEventListener('input', (e) => {
+                            if (e.target.value.length > 500) {
+                                e.target.value = e.target.value.substring(0, 500);
+                            }
+                            counter.textContent = `${e.target.value.length}/500`;
+                        });
+                        
+                        // Initialize counter
+                        counter.textContent = `${remarkInput.value.length}/500`;
+                    },
+                    preConfirm: () => {
+                        const remark = document.getElementById('swal-remark').value.trim();
+                        
+                        if (!isApprove && !remark) {
+                            Swal.showValidationMessage('Please provide a reason for rejection');
+                            return false;
+                        }
+                        
+                        return remark;
                     }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        submitApprovalAction(action, result.value);
+                    }
+                });
+            }
+            
+            
+            function submitApprovalAction(action, remark) {
+                showLoading();
+                
+                var dataReq = {
+                    id: "{{$master->id}}",
+                    noDoc: "{{ $master->no_dok }}",
+                    disetujuiOleh: "{{ session('user_id') }}",
+                    action: action,
+                    remark: remark || null
+                };
+
+                let formData = new FormData();
+                formData.append('item', JSON.stringify(dataRequestMaster.item));
+                for (const key in dataReq) {
+                    if(key != "item") {
+                        formData.append(key, dataReq[key]);
+                    }
+                }
+
+                axios.post('/bss-form/log/approve-reject-request-master', formData, {
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                        'Content-Type': 'multipart/form-data'
+                    }
+                })
+                .then(function(response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: response.data.message,
+                    }).then((result) => {
+                        window.location.href = `/bss-form/log/request-master`;
+                    });
+                })
+                .catch(function(error) {
+                    console.error(error);
+                    let errorMessage = error.response?.data?.message || 'An error occurred';
                     Swal.fire({
                         icon: 'error',
-                        title: 'Gagal!',
-                        html: msg,
-                    }).then((result) => {
-                    })
-                } else {
-                    var dataReq = {
-                        id: "{{$master->id}}",
-                        formName: dataRequestMaster.formName,
-                        noDoc: "{{$master->no_dok}}",
-                        tglDoc: formatTgl(),
-                        site: iSite.val(),
-                        disetujuiOleh: iApproval.val()
-                    }
-                    let formData = new FormData();
-                    formData.append('item',JSON.stringify(dataRequestMaster.item));
-                    for (const key in dataReq) {
-                        if(key != "item") {
-                            formData.append(key, dataReq[key])
-                        }
-                    }
-                    axios.post('/bss-form/log/update-request-master', formData, {
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-                            'Content-Type': 'multipart/form-data'
-                        }
-                    })
-                    .then(function (response) {
-                        showLoading()
-                        console.log(response.data)
-                        Swal.fire({
-                                icon: 'success',
-                                title: 'Form update',
-                                text: 'Document '+ response.data.data.no_doc +' sukses di update',
-                            }).then((result) => {
-                                window.location.href = `/bss-form/log/request-master`;
-                            })
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                        stopLoading()
-                    })
-                    .finally(function() {
-                        stopLoading()
+                        title: 'Error',
+                        text: errorMessage,
                     });
-                }
-                
-            })
+                })
+                .finally(function() {
+                    stopLoading();
+                });
+            }
         })
     </script>
 @endsection

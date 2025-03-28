@@ -329,7 +329,7 @@
                                 <i class="fas fa-save"></i> &nbsp;
                                 Submit Form
                             </button>
-                            <a href="{{url()->previous()}}" class="btn btn-success" style="margin:5px"><i class="fas fa-cancel"></i> Cancel</a>
+                            <a href="{{url()->previous()}}" class="btn btn-success" style="margin:5px"><i class="fas fa-cancel"></i> &nbsp; Cancel</a>
                         </div>
                     </div>
 
@@ -646,7 +646,7 @@
                     }
                     Swal.fire({
                         icon: 'warning',
-                        title: 'Validasi',
+                        title: 'Validasi item',
                         html: msg,
                     }).then((result) => {
                     })
@@ -726,7 +726,7 @@
                             formData.append(key, dataReq[key])
                         }
                     }
-                    console.log(dataReq)
+                    showLoading();
                     axios.post('/bss-form/log/add-request-master', formData, {
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
@@ -738,7 +738,7 @@
                         console.log(response.data)
                         Swal.fire({
                                 icon: 'success',
-                                title: 'Request sukses direkam dgn no dokumen:',
+                                title: 'Request sukses direkam dengan no dokumen:',
                                 text: response.data.data.no_doc,
                             }).then((result) => {
                                 window.location.href = `/bss-form/log/request-master`;

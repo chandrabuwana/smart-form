@@ -16,6 +16,16 @@
 
 $master = $data['master'];
 $detail = $data['detail'];
+$sites = $data['sites'];
+$users = $data['users'];
+$plants = $data['plants'];
+$uoms = $data['uoms'];
+$materialTypes = $data['materialTypes'];
+$materialGroups = $data['materialGroups'];
+$vulationClass = $data['vulationClass'];
+$purchasingGroups = $data['purchasingGroups'];
+$serialNumbers = $data['serialNumbers'];
+
 @endphp
 
 @section('content')
@@ -32,65 +42,113 @@ $detail = $data['detail'];
                     <form action="">
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="card">
+                                <div class="card" style="height: 100%;">
                                     <div class="card-body">
                                         <table class="w-100">
                                             <tr>
-                                                <td class="fw-bold">No. Doc</td>
-                                                <td >{{$master->no_dok}}</td>
+                                                <td class="fw-bold" style="width: 10rem">No. Doc</td>
+                                                <td >{{$master->no_dok ?? '-'}}</td>
                                             </tr>
                                             <tr>
                                                 <td class="fw-bold">Created By</td>
-                                                <td id="requestor">{{$master->created_by}}</td>
+                                                <td id="requestor">{{$master->created_by ?? '-'}}</td>
                                             </tr>
                                             <tr>
                                                 <td class="fw-bold">Created  Date</td>
-                                                <td>{{$master->created_at}}</td>
+                                                <td>{{$master->created_at ?? '-'}}</td>
                                             </tr>
                                             <tr>
                                                 <td class="fw-bold">Updated By</td>
-                                                <td id="requestor">{{$master->updated_by}}</td>
+                                                <td id="requestor">{{$master->updated_by ?? '-'}}</td>
                                             </tr>
                                             <tr>
                                                 <td class="fw-bold">Updated Date</td>
-                                                <td id="requestor">{{$master->updated_at}}</td>
+                                                <td id="requestor">{{$master->updated_at ?? '-'}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold">Status</td>
+                                                <td id="requestor">{{$master->status_req ?? '-'}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold">Approve/Reject Notes</td>
+                                                <td id="requestor">{{$master->remark ?? '-'}}</td>
                                             </tr>
                                         </table>
                                     </div>
                                 </div>
                             </div>
 
+
                             <div class="col-md-6">
-                                <div class="card h-100">
+                                <div class="card" style="height: 100%;">
                                     <div class="card-body">
-                                    <table class="w-100">
-                                        <tr>
-                                            <td class="fw-bold">Pilih Approval</td>
-                                            <td>
-                                                <select class="form-select form-select-sm input-text" id="iApproval" name="iApproval">
-                                                    @foreach($approvals as $approval => $name)
-                                                        <option value="{{ $approval }}" {{ $master->disetujui_oleh == $approval ? 'selected' : '' }}>
-                                                            {{ $name }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="fw-bold">Site</td>
-                                            <td>
-                                                <select class="form-select form-select-sm input-text" id="iSite" name="iSite">
-                                                    @foreach($sites as $code => $name)
-                                                        <option value="{{ $code }}" {{ $master->site == $code ? 'selected' : '' }}>
-                                                            {{ $name }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </td>
-                                        </tr>
-                                    </table>
+                                        <table class="w-100">
+                                            <tr>
+                                                <td class="fw-bold">Request Cataloging</td>
+                                                <td>
+                                                    <select class="form-select form-select-sm input-text" id="idCataloging" name="idCataloging" disabled>
+                                                        
+                                                        <option value="">-- select user --</option>
+                                                        @forelse($users as $catalog)
+                                                            <option value="{{ $catalog->IDCard ?? '' }}" {{ $master->cataloging_id == $catalog->IDCard ? 'selected' : '' }}>
+                                                                {{ $catalog->nama ?? 'Nama tidak tersedia' }}
+                                                            </option>
+                                                        @empty
+                                                            <option>Data karyawan tidak ditemukan</option>
+                                                        @endforelse
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td  class="fw-bold">Request Approval</td>
+                                                <td>
+                                                    <select class="form-select form-select-sm input-text" id="iApproval" name="iApproval" disabled>
+                                                        
+                                                        <option value="">-- select user --</option>
+                                                        @forelse($users as $approved)
+                                                            <option value="{{ $approved->IDCard ?? '' }}" {{ $master->disetujui_oleh == $approved->IDCard ? 'selected' : '' }}>
+                                                                {{ $approved->nama ?? 'Nama tidak tersedia' }}
+                                                            </option>
+                                                        @empty
+                                                            <option>Data karyawan tidak ditemukan</option>
+                                                        @endforelse
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td  class="fw-bold">Site</td>
+                                                <td>
+                                                    <select class="form-select form-select-sm input-text" id="iSite" name="iSite">
+                                                      
+                                                        <option value="">-- select site --</option>
+                                                        @forelse($sites as $site)
+                                                            <option value="{{ $site->KodeST ?? '' }}" {{ $master->site == $site->KodeST ? 'selected' : '' }}>
+                                                                {{ $site->KodeST ?? 'Site tidak tersedia' }}
+                                                            </option>
+                                                        @empty
+                                                            <option>Data site tidak ditemukan</option>
+                                                        @endforelse
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold">Kode Plant</td>
+                                                <td>
+                                                    <select class="form-select form-select-sm input-text" id="iPlant" name="iPlant">
+                                                        <option value="">-- select kode plant --</option>
+                                                        @forelse($plants as $code => $value)
+                                                            <option value="{{ $code }}" {{ $master->kode_plant == $code ? 'selected' : '' }}>
+                                                                {{ $value }}
+                                                            </option>
+                                                        @empty
+                                                            <option>Data kode plan tidak ditemukan</option>
+                                                        @endforelse
+        
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                        </table>
                                     </div>
-                                    
                                 </div>
                             </div>
                         </div>
@@ -98,11 +156,13 @@ $detail = $data['detail'];
                         <div class="my-3">
                             <div class="mb-1">
                                 <h4 class="h4 mb-3">Item</h4>
+                                <hr class="border-bottom">
                                 <div class="row mb-2">
                                     <div class="col-md-4 col-lg-2">
                                         <div class="input-group input-group-static mb-4">
                                             <label for="iKodeMaster">Kode Master</label>
-                                            <input type="text" class="form-control" id="iKodeMaster" name="iKodeMaster">
+                                            <input type="text" class="form-control" id="iKodeMaster" name="iKodeMaster" disabled>
+                                            <small class="text-muted">kode master akan di isi oleh cataloging</small>
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-lg-2">
@@ -114,7 +174,15 @@ $detail = $data['detail'];
                                     <div class="col-md-4 col-lg-2">
                                         <div class="input-group input-group-static mb-4">
                                             <label for="iUom">UoM</label>
-                                            <input type="text" class="form-control" id="iUom" name="iUom">
+                                            <select class="form-control form-select" id="iUom" name="iUom">
+                                                @forelse($uoms as $code => $value)
+                                                    <option value="{{ $code }}">
+                                                        {{ $value }}
+                                                    </option>
+                                                @empty
+                                                    <option>Data UoM tidak ditemukan</option>
+                                                @endforelse
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-lg-2">
@@ -132,7 +200,10 @@ $detail = $data['detail'];
                                     <div class="col-md-4 col-lg-2">
                                         <div class="input-group input-group-static mb-4">
                                             <label for="iGen">Gen/ITC</label>
-                                            <input type="text" class="form-control" id="iGen" name="iGen">
+                                            <select class="form-control form-select" id="iGen" name="iGen">
+                                                <option value="Yes">Yes</option>
+                                                <option value="Yes">No</option>
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-lg-2">
@@ -174,42 +245,77 @@ $detail = $data['detail'];
                                     <div class="col-md-4 col-lg-2">
                                         <div class="input-group input-group-static mb-4">
                                             <label for="iMatType">Material Type</label>
-                                            <input type="text" class="form-control" id="iMatType" name="iMatType">
+                                            <select class="form-control form-select" id="iMatType" name="iMatType">
+                                                @forelse($materialTypes as $code => $value)
+                                                    <option value="{{ $code }}">
+                                                        {{ $value }}
+                                                    </option>
+                                                @empty
+                                                    <option>Data Material Type tidak ditemukan</option>
+                                                @endforelse
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-lg-2">
                                         <div class="input-group input-group-static mb-4">
                                             <label for="iMatGroup">Material Group</label>
-                                            <input type="text" class="form-control" id="iMatGroup" name="iMatGroup">
+                                            <select class="form-control form-select" id="iMatGroup" name="iMatGroup">
+                                                @forelse($materialGroups as $code => $value)
+                                                    <option value="{{ $code }}">
+                                                        {{ $value }}
+                                                    </option>
+                                                @empty
+                                                    <option>Data Material Group tidak ditemukan</option>
+                                                @endforelse
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-lg-2">
                                         <div class="input-group input-group-static mb-4">
                                             <label for="iVal">Valuation Class</label>
-                                            <input type="text" class="form-control" id="iVal" name="iVal">
+                                            <select class="form-control form-select" id="iVal" name="iVal">
+                                                @forelse($vulationClass as $code => $value)
+                                                    <option value="{{ $code }}">
+                                                        {{ $value }}
+                                                    </option>
+                                                @empty
+                                                    <option>Data Vulation class tidak ditemukan</option>
+                                                @endforelse
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-lg-2">
                                         <div class="input-group input-group-static mb-4">
-                                            <label for="req">REQ</label>
-                                            <input type="text" class="form-control" id="req" name="req">
+                                            <label for="iPG">Purchasing Group</label>
+                                            <select class="form-control form-select" id="iPG" name="iPG">
+                                                @forelse($purchasingGroups as $code => $value)
+                                                    <option value="{{ $code }}">
+                                                        {{ $value }}
+                                                    </option>
+                                                @empty
+                                                    <option>Data Purchasing Group tidak ditemukan</option>
+                                                @endforelse
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-lg-2">
                                         <div class="input-group input-group-static mb-4">
-                                            <label for="date">DATE</label>
-                                            <input type="date" class="form-control" id="date" name="date">
+                                            <label for="iSerialNum">Serial Number</label>
+                                            <select class="form-control form-select" id="iSerialNum" name="iSerialNum">
+                                                @forelse($serialNumbers as $code => $value)
+                                                    <option value="{{ $code }}">
+                                                        {{ $value }}
+                                                    </option>
+                                                @empty
+                                                    <option>Data Serial Number tidak ditemukan</option>
+                                                @endforelse
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-lg-2">
-                                        <div class="input-group input-group-static mb-4">
-                                            <label for="site">SITE</label>
-                                            <input type="text" class="form-control" id="site" name="site">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 col-lg-2">
-                                        <div class="input-group input-group-static mb-4">
-                                            <button id="btn-add-item" class="btn btn-primary">Tambah</button>                                            
+                                        <div class="input-group-static mb-4">
+                                            <button id="btn-add-item" class="btn btn-primary">Tambah</button> 
+                                            <button id="btn-reset-item" style="margin-left:2px" class="btn btn-secondary">Reset</button>                                            
                                         </div>
                                     </div>
                                 </div>
@@ -236,10 +342,9 @@ $detail = $data['detail'];
                                         <th data-field="scrap">SCRAP</th>
                                         <th data-field="matType">Material Type</th>
                                         <th data-field="matGroup">Material Group</th>
-                                        <th data-field="valuationStatus">Valuation Class</th>
-                                        <th data-field="req">REQ</th>
-                                        <th data-field="date">DATE</th>
-                                        <th data-field="site">SITE</th>
+                                        <th data-field="valuationStatus">Valuation Status</th>
+                                        <th data-field="purchasingGroup">Purchasing Group</th>
+                                        <th data-field="serialNumber">Serial Number</th>
                                         <th data-formatter="actionFormatter">Actions</th>
                                     </tr>
                                 </thead>
@@ -250,9 +355,10 @@ $detail = $data['detail'];
                     <div class="card-footer" style="padding-right: 0px;">
                         <div class="d-flex align-items-center">
                             <button class="btn btn-primary ms-auto uploadBtn" style="margin:5px"  id="btnUpdateRequestMaster">
+                                <i class="fas fa-save"></i> &nbsp;
                                 Update Form
                             </button>
-                            <a href="{{url()->previous()}}" class="btn btn-success" style="margin:5px"><i class="fas fa-cancel"></i> Cancel</a>
+                            <a href="{{url()->previous()}}" class="btn btn-success" style="margin:5px"><i class="fas fa-cancel"></i> &nbsp; Cancel</a>
                         </div>
                     </div>
 
@@ -273,6 +379,7 @@ $detail = $data['detail'];
         var btnUpdateRequestMaster = $("#btnUpdateRequestMaster");
         var $table = $("#item-master");
         var $buttonTambah = $("#btn-add-item")
+        var $buttonReset = $("#btn-reset-item")
         
         // Variable form
         var tanggalSekarang = $("#tanggalSekarang")
@@ -280,6 +387,8 @@ $detail = $data['detail'];
         var tglDoc = $("#tglDoc");
         var iApproval = $("#iApproval")
         var iSite = $("#iSite")
+        var idCataloging = $("#idCataloging")
+        var iPlant = $("#iPlant")
         
         // Variable items
         var iKodeMaster = $("#iKodeMaster")
@@ -297,10 +406,8 @@ $detail = $data['detail'];
         var iMatType = $("#iMatType")
         var iMatGroup = $("#iMatGroup")
         var iVal = $("#iVal")
-        var iMatGroup = $("#iMatGroup")
-        var req = $("#req")
-        var date = $("#date")
-        var site = $("#site")
+        var iPG = $("#iPG")
+        var iSerialNum = $("#iSerialNum")
 
         var dataRequestMaster = {
             formName: "Request Master",
@@ -308,7 +415,8 @@ $detail = $data['detail'];
             tglDoc: "",
             site: "",
             approval: "",
-            
+            cataloging: "",
+            kodePlant: "",
             item: [{}]
         }
 
@@ -339,9 +447,17 @@ $detail = $data['detail'];
         }
 
         function actionFormatter(value, row, index) {
-            return `
-                <a class="btn btn-danger btn-sm" onclick="deleteRow(${index})">Delete</a>
-            `;
+            if (row.kodeMaster != "") {
+                // return `
+                //     <a class="btn btn-danger btn-sm disabled">Delete</a>
+                // `;
+                return '';
+            } else {
+                return `
+                    <a class="btn btn-danger btn-sm" onclick="deleteRow(${index})">Delete</a>
+                `;
+                
+            }
         }
 
         function deleteRow(id) {
@@ -351,36 +467,7 @@ $detail = $data['detail'];
             })
         }
 
-        function submitRequestMaster(data) {
-            $.ajax({
-                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                type: "post",
-                url: "bss-form/log/add-request-master",
-                data: data,
-                dataType: "json",
-                success: function(response) {
-                    if (response.code == 200) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Berhasil!',
-                            text: response.message,
-                        }).then((result) => {
-
-                        })
-                    }
-                },
-                error: function(xhr, ajaxOptions, thrownError) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'thrownError',
-                        html: errorMessage,
-                        confirmButtonText: 'OK'
-                    });
-                    console.log()
-                }
-            })
-        }
-
+       
         $table.on('post-body.bs.table', function(data) {
             var items = [];
             data.sender.data.forEach(function (item, index, arr) {
@@ -426,12 +513,6 @@ $detail = $data['detail'];
             function validateItem() {
                 var errorValidate = []
 
-                if(iKodeMaster.val() == "") {
-                    errorValidate.push({
-                        field: "Kode Master",
-                        message: "tidak boleh kosong"
-                    })
-                }
                 if(iPartName.val() == "") {
                     errorValidate.push({
                         field: "Part Name",
@@ -512,25 +593,19 @@ $detail = $data['detail'];
                 }
                 if(iVal.val() == "") {
                     errorValidate.push({
-                        field: "Valuation class",
+                        field: "Valuation status",
                         message: "tidak boleh kosong"
                     })
                 }
-                if(req.val() == "") {
+                if(iPG.val() == "") {
                     errorValidate.push({
-                        field: "REQ",
+                        field: "Purchasing Group",
                         message: "tidak boleh kosong"
                     })
                 }
-                if(date.val() == "") {
+                if(iSerialNum.val() == "") {
                     errorValidate.push({
-                        field: "DATE",
-                        message: "tidak boleh kosong"
-                    })
-                }
-                if(site.val() == "") {
-                    errorValidate.push({
-                        field: "SITE",
+                        field: "Serial Number",
                         message: "tidak boleh kosong"
                     })
                 }
@@ -594,13 +669,32 @@ $detail = $data['detail'];
                         matType: iMatType.val(),
                         matGroup: iMatGroup.val(),
                         valuationStatus: iVal.val(),
-                        req: req.val(),
-                        date: date.val(),
-                        site: site.val()
+                        purchasingGroup: iPG.val(),
+                        serialNumber: iSerialNum.val()
                     })
                     $table.bootstrapTable('scrollTo', 'bottom')
                 }
             })
+
+            $buttonReset.click(function (e) {
+                e.preventDefault()
+                iPartName.val("")
+                iUom.val("")
+                iPartNumber.val("")
+                iBrand.val("")
+                iGen.val("")
+                iModel.val("")
+                iCompartemen.val("")
+                iFff.val("")
+                iPlanMat.val("")
+                iMrp.val("")
+                iScrap.val("")
+                iMatType.val("")
+                iMatGroup.val("")
+                iVal.val("")
+                iPG.val("")
+                iSerialNum.val("")
+            });
 
             btnUpdateRequestMaster.click(function(e) {
                 e.preventDefault();
@@ -612,8 +706,8 @@ $detail = $data['detail'];
                         msg = msg + "<p class='m-0'>" + listErr.field + " " + listErr.message +  "</p>"
                     }
                     Swal.fire({
-                        icon: 'error',
-                        title: 'Gagal!',
+                        icon: 'warning',
+                        title: 'Validasi',
                         html: msg,
                     }).then((result) => {
                     })
@@ -621,10 +715,12 @@ $detail = $data['detail'];
                     var dataReq = {
                         id: "{{$master->id}}",
                         formName: dataRequestMaster.formName,
-                        noDoc: "{{$master->no_dok}}",
+                        noDoc: "{{ $master->no_dok }}",
                         tglDoc: formatTgl(),
                         site: iSite.val(),
-                        disetujuiOleh: iApproval.val()
+                        disetujuiOleh: iApproval.val(),
+                        cataloging: idCataloging.val(),
+                        kodePlant: iPlant.val(),
                     }
                     let formData = new FormData();
                     formData.append('item',JSON.stringify(dataRequestMaster.item));
@@ -633,6 +729,7 @@ $detail = $data['detail'];
                             formData.append(key, dataReq[key])
                         }
                     }
+                    showLoading();
                     axios.post('/bss-form/log/update-request-master', formData, {
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),

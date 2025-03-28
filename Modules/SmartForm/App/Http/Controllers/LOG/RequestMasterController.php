@@ -416,13 +416,40 @@ class RequestMasterController extends Controller {
         );
 
         try {
+            $sites = DB::connection('sqlsrv2')->table(self::TABLE_SITES)->select('KodeST')->get();
+            $users = DB::connection('sqlsrv2')->table(self::TABLE_KARYAWAN)->select('IDCard', 'nama')->get();
+            $plants = Self::LIST_KODE_PLANTS;
+            $uoms = Self::LIST_UOMS;
+            $materialTypes = self::LIST_MATERIAL_TYPE;
+            $materialGroups = self::LIST_MATERIAL_GROUP;
+            $vulationClass = self::LIST_VALUATION_CLASS;
+            $purchasingGroups = self::LIST_PURCHASING_GROUP;
+            $serialNumbers = self::LIST_SERIAL_NUMBERS;
+
+
             $master = DB::table($TABLE_MASTER)
-                ->select('id', 'no_dok', 'site', 'created_by', 'created_at','disetujui_oleh','diproses_oleh','diketahui_oleh','updated_by','updated_at')
+                ->select(
+                    $TABLE_MASTER.'.id', 
+                    $TABLE_MASTER.'.no_dok', 
+                    $TABLE_MASTER.'.site', 
+                    DB::raw('(SELECT Nama FROM HRD.dbo.TKaryawan WHERE IDCard = '.$TABLE_MASTER.'.created_by) as created_by'),
+                    $TABLE_MASTER.'.created_at',
+                    $TABLE_MASTER.'.disetujui_oleh',
+                    $TABLE_MASTER.'.diproses_oleh',
+                    $TABLE_MASTER.'.diketahui_oleh',
+                    DB::raw('(SELECT Nama FROM HRD.dbo.TKaryawan WHERE IDCard = '.$TABLE_MASTER.'.updated_by) as updated_by'),
+                    $TABLE_MASTER.'.updated_at',
+                    $TABLE_MASTER.'.cataloging_id',
+                    $TABLE_MASTER.'.cataloging_update',
+                    $TABLE_MASTER.'.status_req',
+                    $TABLE_MASTER.'.kode_plant',
+                    $TABLE_MASTER.'.remark',
+                )
                 ->where('id', $id)
                 ->first();
             
             $detail = DB::table($TABLE_DETAIL)
-                ->select('kode_master as kodeMaster','part_name as partName','uom', 'part_number as partNumber','brand','gen_itc as gen','model','compartement','fff_class as fffC','plan_material_status as planMatStatus','mrp_type as mrpType','scrap','material_type as matType','material_group as matGroup','valuation_class as valuationStatus','req','date','site')
+                ->select('kode_master as kodeMaster','part_name as partName','uom', 'part_number as partNumber','brand','gen_itc as gen','model','compartement','fff_class as fffC','plan_material_status as planMatStatus','mrp_type as mrpType','scrap','material_type as matType','material_group as matGroup','valuation_class as valuationStatus','req','date','site','serial_number as serialNumber','purchasing_group as purchasingGroup')
                 ->where('id_req_master', $master->id)
                 ->get();
 
@@ -430,7 +457,16 @@ class RequestMasterController extends Controller {
             $response['isSuccess'] = true;
             $response['data'] = [
                 'master' => $master,
-                'detail' => $detail
+                'detail' => $detail,
+                'sites' => $sites,
+                'users' => $users,
+                'plants' => $plants,
+                'uoms' => $uoms,
+                'materialTypes' => $materialTypes,
+                'materialGroups' => $materialGroups,
+                'vulationClass' => $vulationClass,
+                'purchasingGroups' => $purchasingGroups,
+                'serialNumbers' => $serialNumbers
             ];
 
 
@@ -457,10 +493,6 @@ class RequestMasterController extends Controller {
 
         Log::debug('response edit: '. json_encode($responseData, JSON_PRETTY_PRINT));
 
-      
-
-        $responseData['sites'] = self::LIST_SITES;
-        $responseData['approvals'] = self::LIST_APPROVALS;
         return view('SmartForm::LOG/request-master/edit-form-req-master', $responseData);
     }
 
@@ -476,15 +508,31 @@ class RequestMasterController extends Controller {
         $requested_by = $req->session()->get('user_id');
         $data = $req->input();
         
+
+        $data_item = json_decode($data['item']);
+        
         $data_update = [
             'site' => $data['site'],
             'no_dok' => $data['noDoc'],
-            'disetujui_oleh' => $data['disetujuiOleh'],
+            //'disetujui_oleh' => $data['disetujuiOleh'],
             'updated_by' => $requested_by,
-            'updated_at' => now()->toDateTimeString()
+            'updated_at' => now()->toDateTimeString(),
+            //'cataloging_id' => $data['cataloging'],
+            'kode_plant' => $data['kodePlant'],
+            'status_req' => STATUS::OPEN,
         ];
-        
-        $data_item = json_decode($data['item']);
+
+        // Check if any kode_master is null in data_item
+        $hasNullKodeMaster = false;
+        foreach ($data_item as $item) {
+            if (empty($item->kodeMaster)) {
+                $hasNullKodeMaster = true;
+                break;
+            }
+        }
+       // Update status based on kode_master values
+        $data_update['status_req'] = $hasNullKodeMaster ? STATUS::OPEN : STATUS::CLOSE;
+
         $id = $data['id']; 
         
         try {
@@ -519,9 +567,8 @@ class RequestMasterController extends Controller {
                     'material_type' => $data_item_detail->matType,
                     'material_group' => $data_item_detail->matGroup,
                     'valuation_class' => $data_item_detail->valuationStatus,
-                    'req' => $data_item_detail->req,
-                    'date' => $data_item_detail->date,
-                    'site' => $data_item_detail->site
+                    'purchasing_group' => $data_item_detail->purchasingGroup,
+                    'serial_number' => $data_item_detail->serialNumber,
                 ));
             }
     
@@ -554,11 +601,70 @@ class RequestMasterController extends Controller {
 
         Log::debug('response detail: '. json_encode($responseData, JSON_PRETTY_PRINT));
 
-      
-
-        $responseData['sites'] = self::LIST_SITES;
-        $responseData['approvals'] = self::LIST_APPROVALS;
         return view('SmartForm::LOG/request-master/detail-form-req-master', $responseData);
+    }
+
+    public function ApproveRejectRequestMaster(Request $request)
+    {
+        $TABLE_MASTER = self::TABLE_MASTER;
+
+        try {
+            $request->validate([
+                'id' => 'required|integer',
+                'noDoc' => 'required|string',
+                'disetujuiOleh' => 'required|integer',
+                'action' => 'required|string|in:approve,reject',
+                'remark' => 'nullable|string'
+            ]);
+
+            // Using DB::table() with where()->first() instead of findOrFail()
+            $requestMaster = DB::table($TABLE_MASTER)->where('id', $request->id)->first();
+            
+            if (!$requestMaster) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Document not found'
+                ], 404);
+            }
+
+            // Authorization check
+            if (session('user_id') != $requestMaster->disetujui_oleh) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'You are not authorized to perform this action'
+                ], 403);
+            }
+
+            // Update status based on action
+            $updateData = [
+                'status_req' => $request->action === 'approve' ? STATUS::APPROVED : STATUS::REJECTED,
+                'updated_at' => now(),
+                'updated_by' => session('user_id'),
+                'remark' => $request->remark
+            ];
+
+            DB::table($TABLE_MASTER)
+                ->where('id', $request->id)
+                ->update($updateData);
+
+            $message = 'Document ' . $request->noDoc . ' ' . $request->action . 'ed successfully';
+
+            // If you need the updated record, fetch it again
+            $updatedRecord = DB::table($TABLE_MASTER)->find($request->id);
+
+            return response()->json([
+                'success' => true,
+                'data' => $updatedRecord,
+                'message' => $message
+            ]);
+
+        } catch (Exception $e) {
+            Log::error($e->getTraceAsString());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
 }
