@@ -173,6 +173,7 @@
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Risk Level</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Status</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Date</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Status Approval</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Actions</th>
                                 </tr>
                             </thead>
@@ -190,7 +191,7 @@
                                         <p class="text-xs font-weight-bold mb-0">{{ $record->work_location }}</p>
                                     </td>
                                     <td>
-                                        <p class="text-xs font-weight-bold mb-0">{{ $record->inspected_by }}</p>
+                                        <p class="text-xs font-weight-bold mb-0">{{ $record->inspected_by_name }}</p>
                                     </td>
                                     <td>
                                         <p class="text-xs font-weight-bold mb-0">{{ $record->risk_level ?? 'N/A' }}</p>
@@ -213,10 +214,36 @@
                                     <td>
                                         <p class="text-xs font-weight-bold mb-0">{{ $record->formatted_date }}</p>
                                     </td>
+                                    <td>
+                                        <span class="badge badge-sm bg-{{ $record->approval_status === 'need approval' ? 'warning' : ($record->approval_status === 'approved' ? 'info' : 'danger') }}">
+                                            {{ $record->approval_status }}
+                                        </span>
+                                    </td>
                                     <td class="align-middle">
-                                        <a href="{{ route('she.noise.form', ['id' => $record->id]) }}" class="btn btn-primary btn-action text-white">
-                                            <i class="fas fa-eye"></i> Detail
+                                        <a href="{{ route('she.noise.view', ['id' => $record->id]) }}" class="btn btn-primary btn-sm d-inline-flex align-items-center justify-content-center">
+                                            <i class="fas fa-eye me-1"></i> Detail
                                         </a>
+                                        @php
+                                            $user = Auth::user();
+                                        @endphp
+                                        @if($record->approval_status === 'need approval' && trim($record->acknowledged_by_nik) === trim($user->userid))
+                                            <button type="button" class="btn btn-success btn-sm d-inline-flex align-items-center justify-content-center" onclick="updateStatus({{ $record->id }}, 'approved')">
+                                                <i class="fas fa-check me-1"></i> Approve
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-sm d-inline-flex align-items-center justify-content-center" onclick="updateStatus({{ $record->id }}, 'reject')">
+                                                <i class="fas fa-times me-1"></i> Reject
+                                            </button>
+                                        @endif
+                                        @if($record->approval_status === 'reject' && trim($record->inspected_by_nik) === trim($user->userid))
+                                            <a href="{{ route('she.noise.edit', ['id' => $record->id]) }}" class="btn btn-info btn-sm d-inline-flex align-items-center justify-content-center">
+                                                <i class="fas fa-edit me-1"></i> Edit
+                                            </a> 
+                                        @endif
+                                        @if(trim($record->inspected_by_nik) === trim($user->userid))
+                                        <button type="button" class="btn btn-danger btn-sm d-inline-flex align-items-center justify-content-center btn-delete" data-id="{{ $record->id }}">
+                                                <i class="fas fa-trash me-1"></i> Delete
+                                            </button>  
+                                        @endif
                                     </td>
                                 </tr>
                                 @endforeach
@@ -253,6 +280,118 @@ $(document).ready(function() {
             $(this).val('');
         }
     });
+    
+    // Delete button click handler
+    $('.btn-delete').click(function() {
+        var recordId = $(this).data('id');
+        
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This record will be deleted and cannot be recovered!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Send delete request
+                $.ajax({
+                    url: '{{ route("she.noise.delete", ["id" => ":id"]) }}'.replace(':id', recordId),
+                    type: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            Swal.fire({
+                                title: 'Deleted!',
+                                text: response.message,
+                                icon: 'success'
+                            }).then(() => {
+                                // Reload the page to refresh the table
+                                window.location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Error!',
+                                text: response.message || 'Failed to delete record',
+                                icon: 'error'
+                            });
+                        }
+                    },
+                    error: function(xhr) {
+                        var message = 'An error occurred while deleting the record.';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            message = xhr.responseJSON.message;
+                        }
+                        Swal.fire({
+                            title: 'Error!',
+                            text: message,
+                            icon: 'error'
+                        });
+                    }
+                });
+            }
+        });
+    });
 });
+
+// Function to update approval status
+function updateStatus(id, status) {
+    const statusText = status === 'approved' ? 'approve' : 'reject';
+    
+    Swal.fire({
+        title: 'Are you sure?',
+        text: `Do you want to ${statusText} this record?`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: status === 'approved' ? '#28a745' : '#d33',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: `Yes, ${statusText} it!`
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: '{{ route("she.noise.update.status") }}',
+                type: 'POST',
+                data: {
+                    id: id,
+                    status: status
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    if (response.success) {
+                        Swal.fire({
+                            title: 'Success!',
+                            text: response.message,
+                            icon: 'success'
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: response.message || `Failed to ${statusText} record`,
+                            icon: 'error'
+                        });
+                    }
+                },
+                error: function(xhr) {
+                    var message = `An error occurred while updating the record.`;
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        message = xhr.responseJSON.message;
+                    }
+                    Swal.fire({
+                        title: 'Error!',
+                        text: message,
+                        icon: 'error'
+                    });
+                }
+            });
+        }
+    });
+}
 </script>
 @endsection

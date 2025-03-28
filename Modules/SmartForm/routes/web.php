@@ -380,6 +380,10 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/form', [NoiseController::class, 'AddForm'])->name('she.noise.form');
             Route::post('/store', [NoiseController::class, 'Store'])->name('she.noise.store');
             Route::put('/form/{id}', [NoiseController::class, 'Update'])->name('she.noise.form.update');
+            Route::get('/edit/{id}', [NoiseController::class, 'EditForm'])->name('she.noise.edit');
+            Route::get('/view/{id}', [NoiseController::class, 'ViewForm'])->name('she.noise.view');
+            Route::delete('/delete/{id}', [NoiseController::class, 'Delete'])->name('she.noise.delete');
+            Route::post('/update-status', [NoiseController::class, 'UpdateStatus'])->name('she.noise.update.status');
         });
 
         Route::prefix('she-mess')->group(function () {
