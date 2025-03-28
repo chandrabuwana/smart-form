@@ -42,8 +42,13 @@
                                 <tr>
                                     <th data-field="no_dok" data-align="left" data-halign="text-center" data-sortable="true">No. Document</th>
                                     <th data-field="site" data-align="left" data-halign="text-center" data-sortable="true">Site</th>
-                                    <th data-field="created_by" data-align="left" data-halign="text-center" data-sortable="true">Dibuat oleh</th>
-                                    <th data-field="disetujui_oleh" data-align="left" data-halign="text-center" data-sortable="true">Status</th>
+                                    <th data-field="request_by" data-align="left" data-halign="text-center" data-sortable="true">Requeste by</th>
+                                    <th data-field="cataloging_by" data-align="left" data-halign="text-center" data-sortable="true">Cataloging by</th>
+                                    <th data-field="cataloging_update" data-align="left" data-halign="text-center" data-sortable="true">Cataloging Record</th>
+                                    <th data-field="approval_by" data-align="left" data-halign="text-center" data-sortable="true">Approval by</th>
+                                    <th data-field="status_req" data-align="left" data-halign="text-center" data-sortable="true">Status</th>
+                                    <th data-field="created_at" data-align="left" data-halign="text-center" data-sortable="true">Created Date</th>
+                                    <th data-field="updated_at" data-align="left" data-halign="text-center" data-sortable="true">Updated Date</th>
                                     <th data-field="action" data-formatter="actionFormatter" >Actions</th>
                                 </tr>
                             </thead>

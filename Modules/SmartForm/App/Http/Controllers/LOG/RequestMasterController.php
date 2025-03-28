@@ -19,22 +19,189 @@ class RequestMasterController extends Controller {
     private const TABLE_MASTER = 'FM_LOG_002_REQUESTER_MASTER';
     private const TABLE_DETAIL = 'FM_LOG_002_REQUESTER_MASTER_DETAIL';
 
-    private const LIST_SITES = [
-        '' => '--- Pilih Site ---',
-        'AGM' => 'AGM',
-        'MBL' => 'MBL',
-        'MME' => 'MME',
-        'MAS' => 'MAS',
-        'PMSS' => 'PMSS',
-        'TAJ' => 'TAJ',
-        'BSSR' => 'BSSR',
-        'TDM' => 'TDM',
-        'MSJ' => 'MSJ',
+    private const TABLE_SITES = 'tsite';
+    private const TABLE_KARYAWAN = 'TKaryawan';
+
+    private const LIST_KODE_PLANTS = [
+        '' => '',
+        'PL1' => 'PL1',
+        'PL2' => 'PL2',
+        'PL3' => 'PL3',
+        'PL4' => 'PL4',
+        'PL5' => 'PL5',
+        'PL6' => 'PL6',
+        'PL7' => 'PL7',
+        'PL8' => 'PL8',
+        'PL9' => 'PL9',
+        'PL10' => 'PL10',
+        'PL11' => 'PL11',
+        'PL12' => 'PL12',
+        'PL13' => 'PL13',
+        'PL14' => 'PL14',
+        'PL15' => 'PL15',
+        'PL16' => 'PL16',
+        'PL17' => 'PL17',
+        'PL18' => 'PL18',
+        'PL19' => 'PL19',
+        'PL20' => 'PL20',
+        'PL21' => 'PL21',
+        'PL22' => 'PL22',
+        'PL23' => 'PL23',
+        'PL24' => 'PL24',
+        'PL25' => 'PL25',
+        'PL26' => 'PL26',
+        'PL27' => 'PL27',
+    ];
+    private const LIST_UOMS = [
+        '' => '',
+        "BTG" => "BTG", 
+        "BUK" => "BUK", 
+        "PC" => "PC", 
+        "SET" => "SET", 
+        "KG" => "KG",
+        "LBR" => "LBR", 
+        "CM" => "CM", 
+        "M" => "M", 
+        "KLG" => "KLG", 
+        "BOX" => "BOX",
+        "DUS" => "DUS", 
+        "BT" => "BT", 
+        "AU" => "AU", 
+        "PAC" => "PAC", 
+        "STRIP" => "STRIP",
+        "UN" => "UN", 
+        "L" => "L", 
+        "ROL" => "ROL", 
+        "CAR" => "CAR",
+        "M3" => "M3",
+        "PL" => "PL", 
+        "TBC" => "TBC", 
+        "PAA" => "PAA", 
+        "RIM" => "RIM", 
+        "TAB" => "TAB",
+        "PKT" => "PKT", 
+        "EA" => "EA", 
+        "SAK" => "SAK", 
+        "KRG" => "KRG", 
+        "DER" => "DER",
+        "HM" => "HM", 
+        "TUB" => "TUB", 
+        "GAL" => "GAL", 
+        "PRS" => "PRS"
     ];
 
-    private const LIST_APPROVALS = [
-        '' => '--- Pilih Approval ---',
-        'Planner HO' => 'Planner HO',
+    private const LIST_MATERIAL_TYPE = [
+        '' => '',
+        'SPRT' => 'SPRT',
+        'FOGC' => 'FOGC',
+        'TIRE' => 'TIRE',
+        'CONS' => 'CONS',
+        'GENS' => 'GENS',
+        'ASET' => 'ASET',
+        'SEJA' => 'SEJA',
+        'MDLE' => 'MDLE',
+        'BOMM' => 'BOMM',
+        'FFF' => 'FFF'
+    ];
+
+    private const LIST_MATERIAL_GROUP = [
+        '' => '',
+        'S001' => 'S001',
+        'S002' => 'S002',
+        'S003' => 'S003',
+        'S004' => 'S004',
+        'S005' => 'S005',
+        'S006' => 'S006',
+        'F001' => 'F001',
+        'F002' => 'F002',
+        'F003' => 'F003',
+        'F004' => 'F004',
+        'T001' => 'T001',
+        'G001' => 'G001',
+        'G002' => 'G002',
+        'C001' => 'C001',
+        'C002' => 'C002',
+        'C003' => 'C003',
+        'C004' => 'C004',
+        'C005' => 'C005',
+        'C006' => 'C006',
+        'C007' => 'C007',
+        'A001' => 'A001',
+        'A002' => 'A002',
+        'A003' => 'A003',
+        'A004' => 'A004',
+        'A005' => 'A005',
+        'A006' => 'A006',
+        'J001' => 'J001',
+        'J002' => 'J002',
+        'J003' => 'J003',
+        'J004' => 'J004',
+        'J005' => 'J005',
+        'J006' => 'J006',
+        'J007' => 'J007',
+        'J008' => 'J008',
+        'J009' => 'J009',
+        'J010' => 'J010',
+        'J011' => 'J011',
+        'J012' => 'J012',
+        'J013' => 'J013',
+        'J014' => 'J014',
+        'M001' => 'M001'
+    ];
+
+    private const LIST_VALUATION_CLASS = [
+        '' => '',
+        'V001' => 'V001',
+        'V002' => 'V002',
+        'V003' => 'V003',
+        'V004' => 'V004',
+        'V005' => 'V005',
+        'V006' => 'V006',
+        'V007' => 'V007',
+        'V008' => 'V008',
+        'V009' => 'V009',
+        'V010' => 'V010',
+        'V011' => 'V011',
+        'V012' => 'V012',
+        'V013' => 'V013',
+        'V014' => 'V014',
+        'V015' => 'V015',
+        'V016' => 'V016',
+        'V017' => 'V017',
+        'V018' => 'V018',
+        'V019' => 'V019',
+        'V020' => 'V020',
+        'V021' => 'V021',
+        'V022' => 'V022',
+        'V023' => 'V023',
+        'V024' => 'V024',
+        'V025' => 'V025',
+        'V026' => 'V026',
+        'V027' => 'V027',
+        'V028' => 'V028',
+        'V029' => 'V029',
+        'V030' => 'V030',
+        'V032' => 'V032',
+        'V033' => 'V033',
+        'V034' => 'V034'
+    ];
+
+    private const LIST_PURCHASING_GROUP = [
+        '' => '',
+        'G01' => 'G01',
+        'G02' => 'G02',
+        'G03' => 'G03',
+        'G04' => 'G04',
+        'G05' => 'G05',
+        'G06' => 'G06',
+        'G07' => 'G07',
+    ];
+
+    private const LIST_SERIAL_NUMBERS = [
+        '' => '',
+        'SNI1' => 'SNI1',
+        'SNI2' => 'SNI2',
+        'SNI3' => 'SNI3',
     ];
 
     public function download() {
@@ -61,9 +228,25 @@ class RequestMasterController extends Controller {
         $limit = $request->query('limit', null); // Default limit
         $filter = $request->query('filter', null); // Default limit
         try {
-            $master = DB::table($TABLE_REQUEST_MASTER)
-                ->select('id', 'no_dok', 'site', 'created_by');
+            // $master = DB::table($TABLE_REQUEST_MASTER)
+            //     ->select('id', 'no_dok', 'site', 'created_by');
             
+
+            $master = DB::table($TABLE_REQUEST_MASTER)
+            ->select(
+                $TABLE_REQUEST_MASTER.'.id', 
+                $TABLE_REQUEST_MASTER.'.no_dok', 
+                $TABLE_REQUEST_MASTER.'.site', 
+                $TABLE_REQUEST_MASTER.'.created_by',
+                DB::raw('(SELECT Nama FROM HRD.dbo.TKaryawan WHERE IDCard = '.$TABLE_REQUEST_MASTER.'.created_by) as request_by'),
+                DB::raw('(SELECT Nama FROM HRD.dbo.TKaryawan WHERE IDCard = '.$TABLE_REQUEST_MASTER.'.cataloging_id) as cataloging_by'),
+                $TABLE_REQUEST_MASTER.'.cataloging_update',
+                DB::raw('(SELECT Nama FROM HRD.dbo.TKaryawan WHERE IDCard = '.$TABLE_REQUEST_MASTER.'.disetujui_oleh) as approval_by'),
+                $TABLE_REQUEST_MASTER.'.status_req',
+                $TABLE_REQUEST_MASTER.'.created_at',
+                $TABLE_REQUEST_MASTER.'.updated_at',
+            );
+
             $master->orderBy($sort, $order);
             $jml = $master->count();            
             $document = $master->get();
@@ -88,7 +271,18 @@ class RequestMasterController extends Controller {
     }
     
     public function formReqMaster() {
-        return view("SmartForm::LOG/request-master/form-request-master");
+        $sites = DB::connection('sqlsrv2')->table(self::TABLE_SITES)->select('KodeST')->get();
+        $users = DB::connection('sqlsrv2')->table(self::TABLE_KARYAWAN)->select('IDCard', 'nama')->get();
+        $plants = Self::LIST_KODE_PLANTS;
+        $uoms = Self::LIST_UOMS;
+        $materialTypes = self::LIST_MATERIAL_TYPE;
+        $materialGroups = self::LIST_MATERIAL_GROUP;
+        $vulationClass = self::LIST_VALUATION_CLASS;
+        $purchasingGroups = self::LIST_PURCHASING_GROUP;
+        $serialNumbers = self::LIST_SERIAL_NUMBERS;
+
+        return view("SmartForm::LOG.request-master.form-request-master", 
+        compact('sites', 'users','plants','uoms','materialTypes','materialGroups','vulationClass','purchasingGroups','serialNumbers'));
     }
 
     public function SubmitFormRequestMaster(Request $req) {
@@ -108,7 +302,10 @@ class RequestMasterController extends Controller {
             'site' => $data['site'],
             'no_dok' => $data['noDoc'],
             'created_at' => $data['tglDoc'],
-            'disetujui_oleh' => $data['disetujuiOleh']
+            'disetujui_oleh' => $data['disetujuiOleh'],
+            'cataloging_id' => $data['cataloging'],
+            'kode_plant' => $data['kodePlant'],
+            'status_req' => STATUS::OPEN,
         ];
         $spliited_no_doc = explode("/", $data_insert['no_dok']);
         $data_item = json_decode($data['item']);
@@ -121,9 +318,9 @@ class RequestMasterController extends Controller {
                 DB::table($TABLE_DETAIL)->insert(array(
                     'id_req_master' => $id,
                     'kode_master' => $data_item_detail->kodeMaster,
-                    'part_name' => $data_item_detail->kodeMaster,
-                    'uom' => $data_item_detail->partName,
-                    'part_number' => $data_item_detail->uom,
+                    'part_name' => $data_item_detail->partName,
+                    'uom' => $data_item_detail->uom,
+                    'part_number' => $data_item_detail->partNumber,
                     'brand' => $data_item_detail->brand,
                     'gen_itc' => $data_item_detail->gen,
                     'model' => $data_item_detail->model,
@@ -135,9 +332,11 @@ class RequestMasterController extends Controller {
                     'material_type' => $data_item_detail->matType,
                     'material_group' => $data_item_detail->matGroup,
                     'valuation_class' => $data_item_detail->valuationStatus,
-                    'req' => $data_item_detail->req,
-                    'date' => $data_item_detail->date,
-                    'site' => $data_item_detail->site
+                    'purchasing_group' => $data_item_detail->purchasingGroup,
+                    'serial_number' => $data_item_detail->serialNumber,
+                    // 'req' => $data_item_detail->requested_by,
+                    // 'date' => $data_item_detail->date,
+                    // 'site' => $data_item_detail->site
                 ));
             }
 
@@ -362,4 +561,11 @@ class RequestMasterController extends Controller {
         return view('SmartForm::LOG/request-master/detail-form-req-master', $responseData);
     }
 
+}
+
+class STATUS {
+    const OPEN = 'OPEN';
+    const CLOSE = 'CLOSE';
+    const APPROVED = 'APPROVED';
+    const REJECTED = 'REJECTED';
 }

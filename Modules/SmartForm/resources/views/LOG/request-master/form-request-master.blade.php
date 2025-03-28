@@ -1,5 +1,6 @@
 @extends('master.master_page')
 
+
 @section('custom-css')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.css">
 <style>
@@ -24,63 +25,115 @@
                 <div class="card-body my-1">
                     <form action="">
                         <div class="row gx-4">
-                            <div class="row">
-                                <div class="card col-md-6">
-                                    <table class="w-full">
-                                        <tr>
-                                            <td>No. Doc</td>
-                                            <td>:</td>
-                                            <td id="noDoc">No.Doc</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Date</td>
-                                            <td>:</td>
-                                            <td id="tglDoc"></td>
-                                        </tr>
-                                    </table>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <table class="w-100">
+                                            <tr>
+                                                <td class="fw-bold">No. Doc</td>
+                                                <td id="noDoc">No.Doc</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold">Created  By</td>
+                                                <td>{{ session('username') }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold">Created  Date</td>
+                                                <td id="tglDoc"></td>
+                                            </tr>
+                                        </table>
+                                    </div>
                                 </div>
-                                
-                                <div class="card col-md-6">
-                                    <table class="w-full">
-                                        <tr>
-                                            <td>Pilih Approval</td>
-                                            <td>
-                                                <select class="form-select form-select-sm input-text" id="iApproval" name="iApproval">
-                                                    <option value="" selected>-- Pilih Approval --</option>
-                                                    <option value="Planner HO">Planner HO</option>
-                                                </select>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Site</td>
-                                            <td>
-                                                <select class="form-select form-select-sm input-text" id="iSite" name="iSite">
-                                                    <option selected value="">-- Pilih Site --</option>
-                                                    <option value="AGM">AGM</option>
-                                                    <option value="MBL">MBL</option>
-                                                    <option value="MME">MME</option>
-                                                    <option value="MAS">MAS</option>
-                                                    <option value="PMSS">PMSS</option>
-                                                    <option value="TAJ">TAJ</option>
-                                                    <option value="BSSR">BSSR</option>
-                                                    <option value="TDM">TDM</option>
-                                                    <option value="MSJ">MSJ</option>
-                                                </select>
-                                            </td>
-                                        </tr>
-                                    </table>
+                            </div>
+                          
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <table class="w-100">
+                                            <tr>
+                                                <td class="fw-bold">Request Cataloging</td>
+                                                <td>
+                                                    <select class="form-select form-select-sm input-text" id="idCataloging" name="idCataloging">
+                                                        
+                                                        <option value="">-- select user --</option>
+                                                        @forelse($users as $catalog)
+                                                            <option value="{{ $catalog->IDCard ?? '' }}">
+                                                                {{ $catalog->nama ?? 'Nama tidak tersedia' }}
+                                                            </option>
+                                                        @empty
+                                                            <option>Data karyawan tidak ditemukan</option>
+                                                        @endforelse
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td  class="fw-bold">Request Approval</td>
+                                                <td>
+                                                    <select class="form-select form-select-sm input-text" id="iApproval" name="iApproval">
+                                                        
+                                                        <option value="">-- select user --</option>
+                                                        @forelse($users as $approved)
+                                                            <option value="{{ $approved->IDCard ?? '' }}">
+                                                                {{ $approved->nama ?? 'Nama tidak tersedia' }}
+                                                            </option>
+                                                        @empty
+                                                            <option>Data karyawan tidak ditemukan</option>
+                                                        @endforelse
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td  class="fw-bold">Site</td>
+                                                <td>
+                                                    <select class="form-select form-select-sm input-text" id="iSite" name="iSite">
+                                                      
+                                                        <option value="">-- select site --</option>
+                                                        @forelse($sites as $site)
+                                                            <option value="{{ $site->KodeST ?? '' }}">
+                                                                {{ $site->KodeST ?? 'Site tidak tersedia' }}
+                                                            </option>
+                                                        @empty
+                                                            <option>Data site tidak ditemukan</option>
+                                                        @endforelse
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold">Kode Plant</td>
+                                                <td>
+                                                    <select class="form-select form-select-sm input-text" id="iPlant" name="iPlant">
+                                                        <option value="">-- select kode plant --</option>
+                                                        @forelse($plants as $code => $value)
+                                                            <option value="{{ $code }}">
+                                                                {{ $value }}
+                                                            </option>
+                                                        @empty
+                                                            <option>Data kode plan tidak ditemukan</option>
+                                                        @endforelse
+        
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                   
                                     
                                 </div>
+                            </div>
+                        
+                               
                         </div>
 
                         <div class="my-3">
                             <div class="mb-1">
-                                <label class="form-label">ITEM</label>
+                                <h4 class="h4 mb-3">Item</h4>
+                                <hr class="border-bottom">
                                 <div class="row mb-2">
                                     <div class="col-md-4 col-lg-2">
                                         <div class="input-group input-group-static mb-4">
                                             <label for="iKodeMaster">Kode Master</label>
-                                            <input type="text" class="form-control" id="iKodeMaster" name="iKodeMaster">
+                                            <input type="text" class="form-control" id="iKodeMaster" name="iKodeMaster" disabled>
+                                            <small class="text-muted">kode master akan di isi oleh cataloging</small>
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-lg-2">
@@ -92,7 +145,15 @@
                                     <div class="col-md-4 col-lg-2">
                                         <div class="input-group input-group-static mb-4">
                                             <label for="iUom">UoM</label>
-                                            <input type="text" class="form-control" id="iUom" name="iUom">
+                                            <select class="form-control form-select" id="iUom" name="iUom">
+                                                @forelse($uoms as $code => $value)
+                                                    <option value="{{ $code }}">
+                                                        {{ $value }}
+                                                    </option>
+                                                @empty
+                                                    <option>Data UoM tidak ditemukan</option>
+                                                @endforelse
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-lg-2">
@@ -110,7 +171,10 @@
                                     <div class="col-md-4 col-lg-2">
                                         <div class="input-group input-group-static mb-4">
                                             <label for="iGen">Gen/ITC</label>
-                                            <input type="text" class="form-control" id="iGen" name="iGen">
+                                            <select class="form-control form-select" id="iGen" name="iGen">
+                                                <option value="Yes">Yes</option>
+                                                <option value="Yes">No</option>
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-lg-2">
@@ -152,24 +216,77 @@
                                     <div class="col-md-4 col-lg-2">
                                         <div class="input-group input-group-static mb-4">
                                             <label for="iMatType">Material Type</label>
-                                            <input type="text" class="form-control" id="iMatType" name="iMatType">
+                                            <select class="form-control form-select" id="iMatType" name="iMatType">
+                                                @forelse($materialTypes as $code => $value)
+                                                    <option value="{{ $code }}">
+                                                        {{ $value }}
+                                                    </option>
+                                                @empty
+                                                    <option>Data Material Type tidak ditemukan</option>
+                                                @endforelse
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-lg-2">
                                         <div class="input-group input-group-static mb-4">
                                             <label for="iMatGroup">Material Group</label>
-                                            <input type="text" class="form-control" id="iMatGroup" name="iMatGroup">
+                                            <select class="form-control form-select" id="iMatGroup" name="iMatGroup">
+                                                @forelse($materialGroups as $code => $value)
+                                                    <option value="{{ $code }}">
+                                                        {{ $value }}
+                                                    </option>
+                                                @empty
+                                                    <option>Data Material Group tidak ditemukan</option>
+                                                @endforelse
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-lg-2">
                                         <div class="input-group input-group-static mb-4">
                                             <label for="iVal">Valuation Class</label>
-                                            <input type="text" class="form-control" id="iVal" name="iVal">
+                                            <select class="form-control form-select" id="iVal" name="iVal">
+                                                @forelse($vulationClass as $code => $value)
+                                                    <option value="{{ $code }}">
+                                                        {{ $value }}
+                                                    </option>
+                                                @empty
+                                                    <option>Data Vulation class tidak ditemukan</option>
+                                                @endforelse
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-lg-2">
                                         <div class="input-group input-group-static mb-4">
-                                            <button id="btn-add-item" class="btn btn-primary">Tambah</button>                                            
+                                            <label for="iPG">Purchasing Group</label>
+                                            <select class="form-control form-select" id="iPG" name="iPG">
+                                                @forelse($purchasingGroups as $code => $value)
+                                                    <option value="{{ $code }}">
+                                                        {{ $value }}
+                                                    </option>
+                                                @empty
+                                                    <option>Data Purchasing Group tidak ditemukan</option>
+                                                @endforelse
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-lg-2">
+                                        <div class="input-group input-group-static mb-4">
+                                            <label for="iSerialNum">Serial Number</label>
+                                            <select class="form-control form-select" id="iSerialNum" name="iSerialNum">
+                                                @forelse($serialNumbers as $code => $value)
+                                                    <option value="{{ $code }}">
+                                                        {{ $value }}
+                                                    </option>
+                                                @empty
+                                                    <option>Data Serial Number tidak ditemukan</option>
+                                                @endforelse
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-lg-2">
+                                        <div class="input-group-static mb-4">
+                                            <button id="btn-add-item" class="btn btn-primary">Tambah</button> 
+                                            <button id="btn-reset-item" style="margin-left:2px" class="btn btn-secondary">Reset</button>                                            
                                         </div>
                                     </div>
                                 </div>
@@ -197,6 +314,8 @@
                                         <th data-field="matType">Material Type</th>
                                         <th data-field="matGroup">Material Group</th>
                                         <th data-field="valuationStatus">Valuation Status</th>
+                                        <th data-field="purchasingGroup">Purchasing Group</th>
+                                        <th data-field="serialNumber">Serial Number</th>
                                         <th data-formatter="actionFormatter">Actions</th>
                                     </tr>
                                 </thead>
@@ -206,10 +325,11 @@
 
                     <div class="card-footer">
                         <div class="d-flex align-items-center">
-                            <button class="btn btn-primary ms-auto uploadBtn" id="btnSubmitRequestMaster">
-                                <i class="fas fa-save"></i>
+                            <button class="btn btn-primary ms-auto uploadBtn" id="btnSubmitRequestMaster" style="margin:5px">
+                                <i class="fas fa-save"></i> &nbsp;
                                 Submit Form
                             </button>
+                            <a href="{{url()->previous()}}" class="btn btn-success" style="margin:5px"><i class="fas fa-cancel"></i> Cancel</a>
                         </div>
                     </div>
 
@@ -230,6 +350,7 @@
         var btnSubmitRequestMaster = $("#btnSubmitRequestMaster");
         var $table = $("#item-master");
         var $buttonTambah = $("#btn-add-item")
+        var $buttonReset = $("#btn-reset-item")
         
         // Variable form
         var tanggalSekarang = $("#tanggalSekarang")
@@ -237,6 +358,8 @@
         var tglDoc = $("#tglDoc");
         var iApproval = $("#iApproval")
         var iSite = $("#iSite")
+        var idCataloging = $("#idCataloging")
+        var iPlant = $("#iPlant")
         
         // Variable items
         var iKodeMaster = $("#iKodeMaster")
@@ -254,6 +377,8 @@
         var iMatType = $("#iMatType")
         var iMatGroup = $("#iMatGroup")
         var iVal = $("#iVal")
+        var iPG = $("#iPG")
+        var iSerialNum = $("#iSerialNum")
 
         var dataRequestMaster = {
             formName: "Request Master",
@@ -261,7 +386,8 @@
             tglDoc: "",
             site: "",
             approval: "",
-            
+            cataloging: "",
+            kodePlant: "",
             item: [{}]
         }
 
@@ -373,12 +499,6 @@
             function validateItem() {
                 var errorValidate = []
 
-                if(iKodeMaster.val() == "") {
-                    errorValidate.push({
-                        field: "Kode Master",
-                        message: "tidak boleh kosong"
-                    })
-                }
                 if(iPartName.val() == "") {
                     errorValidate.push({
                         field: "Part Name",
@@ -463,12 +583,30 @@
                         message: "tidak boleh kosong"
                     })
                 }
+                if(iPG.val() == "") {
+                    errorValidate.push({
+                        field: "Purchasing Group",
+                        message: "tidak boleh kosong"
+                    })
+                }
+                if(iSerialNum.val() == "") {
+                    errorValidate.push({
+                        field: "Serial Number",
+                        message: "tidak boleh kosong"
+                    })
+                }
                 return errorValidate
             }
 
             function validateForm() {
                 var errorValidate = []
                 
+                if(idCataloging.val() == ""){
+                    errorValidate.push({
+                        field: "Request cataloging",
+                        message: "Harus dipilih"
+                    })
+                }
                 if(iApproval.val() == ""){
                     errorValidate.push({
                         field: "Request approval",
@@ -478,6 +616,12 @@
                 if(iSite.val() == ""){
                     errorValidate.push({
                         field: "Site",
+                        message: "Harus dipilih"
+                    })
+                }
+                if(iPlant.val() == ""){
+                    errorValidate.push({
+                        field: "Kode Plants",
                         message: "Harus dipilih"
                     })
                 }
@@ -501,8 +645,8 @@
                         msg = msg + "<p class='m-0'>" + listErr.field + " " + listErr.message +  "</p>"
                     }
                     Swal.fire({
-                        icon: 'error',
-                        title: 'Gagal!',
+                        icon: 'warning',
+                        title: 'Validasi',
                         html: msg,
                     }).then((result) => {
                     })
@@ -522,11 +666,33 @@
                         scrap: iScrap.val(),
                         matType: iMatType.val(),
                         matGroup: iMatGroup.val(),
-                        valuationStatus: iVal.val()
+                        valuationStatus: iVal.val(),
+                        purchasingGroup: iPG.val(),
+                        serialNumber: iSerialNum.val()
                     })
                     $table.bootstrapTable('scrollTo', 'bottom')
                 }
             })
+
+            $buttonReset.click(function (e) {
+                e.preventDefault()
+                iPartName.val("")
+                iUom.val("")
+                iPartNumber.val("")
+                iBrand.val("")
+                iGen.val("")
+                iModel.val("")
+                iCompartemen.val("")
+                iFff.val("")
+                iPlanMat.val("")
+                iMrp.val("")
+                iScrap.val("")
+                iMatType.val("")
+                iMatGroup.val("")
+                iVal.val("")
+                iPG.val("")
+                iSerialNum.val("")
+            });
 
             btnSubmitRequestMaster.click(function(e) {
                 e.preventDefault();
@@ -538,8 +704,8 @@
                         msg = msg + "<p class='m-0'>" + listErr.field + " " + listErr.message +  "</p>"
                     }
                     Swal.fire({
-                        icon: 'error',
-                        title: 'Gagal!',
+                        icon: 'warning',
+                        title: 'Validasi',
                         html: msg,
                     }).then((result) => {
                     })
@@ -549,7 +715,9 @@
                         noDoc: noDoc.text(),
                         tglDoc: formatTgl(),
                         site: iSite.val(),
-                        disetujuiOleh: iApproval.val()
+                        disetujuiOleh: iApproval.val(),
+                        cataloging: idCataloging.val(),
+                        kodePlant: iPlant.val(),
                     }
                     let formData = new FormData();
                     formData.append('item',JSON.stringify(dataRequestMaster.item));
