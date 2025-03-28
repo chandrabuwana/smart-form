@@ -202,7 +202,7 @@
             } else if (value == 2) {
                 return `<button type="button" class="btn btn-secondary btn-sm" disabled>Deleted</button>`
             } else {
-                return `<button type="button" class="btn btn-info btn-sm" disabled>Yes</button>`
+                return `<button type="button" class="btn btn-success btn-sm" disabled>Yes</button>`
             }
         }
 
