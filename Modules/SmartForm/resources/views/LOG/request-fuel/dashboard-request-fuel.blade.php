@@ -45,16 +45,96 @@
                         <h6 class="text-white text-capitalize ps-3">Dashboard Form Request Fuel</h6>
                     </div>
                 </div>
-                <div class="card-body my-1">
 
-                    <div class="d-flex align-items-center ms-3">
-                        <a href="{{ route('bss-form.log.form-fuel') }}">
-                            <button class="btn btn-primary ms-auto uploadBtn" id="coba">
-                                New Form
-                            </button>
-                        </a>
-                    </div>
+                    <!-- <div class="row px-3 mb-3">
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <div class="card border">
+                                        <div class="card-body p-3">
+                                            <div class="row align-items-center">
+                                                <div class="col-md-8">
+                                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Step Not Net ACC
+                                                    </p>
+                                                    
+                                                </div>
+                                                <div class="col-md-4 text-end">
+                                                    <div
+                                                        class="icon icon-shape bg-gradient-info shadow-info text-center rounded-circle">
+                                                        <i class="fas fa-calendar-alt text-lg opacity-10"
+                                                            aria-hidden="true"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
+                                <div class="col-md-6 mb-3">
+                                    <div class="card border">
+                                        <div class="card-body p-3">
+                                            <div class="row align-items-center">
+                                                <div class="col-md-8">
+                                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Reject By PIC
+                                                    </p>
+                                                    
+                                                </div>
+                                                <div class="col-md-4 text-end">
+                                                    <div
+                                                        class="icon icon-shape bg-gradient-danger shadow-danger text-center rounded-circle">
+                                                        <i class="fas fa-times-circle text-lg opacity-10"
+                                                            aria-hidden="true"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <div class="card border">
+                                        <div class="card-body p-3">
+                                            <div class="row align-items-center">
+                                                <div class="col-md-8">
+                                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">On Progress</p>
+                                                    
+                                                </div>
+                                                <div class="col-md-4 text-end">
+                                                    <div
+                                                        class="icon icon-shape bg-gradient-warning shadow-warning text-center rounded-circle">
+                                                        <i class="fas fa-clock text-lg opacity-10" aria-hidden="true"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <div class="card border">
+                                        <div class="card-body p-3">
+                                            <div class="row align-items-center">
+                                                <div class="col-md-8">
+                                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Closed</p>
+                                                    
+                                                </div>
+                                                <div class="col-md-4 text-end">
+                                                    <div
+                                                        class="icon icon-shape bg-gradient-success shadow-success text-center rounded-circle">
+                                                        <i class="fas fa-check-circle text-lg opacity-10"
+                                                            aria-hidden="true"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
+
+
+                <div class="row card-header" style="margin : 10px;border-radius: 10px; background-color: rgba(209, 209, 209, 0.301); color:black !important;">
                     <h4 class="mx-3">Filter Data</h4>
                     <div class="mx-4 row">
                         <div class="col-6 col-md-3">
@@ -83,6 +163,17 @@
                                 Clear Filter
                             </button>
                         </div>
+                    </div>
+                </div>
+
+                    <div class="d-flex align-items-center ms-3">
+                        <a href="{{ route('bss-form.log.form-fuel') }}">
+                            <button class="btn btn-primary ms-auto uploadBtn" id="coba">
+                                New Form
+                            </button>
+                        </a>
+                    </div>
+                
                         <div class="col-md-12 d-flex justify-content-end">
                             <div class="status me-2">
                                 <label>Status data :</label>
@@ -94,7 +185,6 @@
                                 <span class="box grey"></span> Deleted
                             </div>
                         </div>
-                    </div>
 
                     <div class="table-responsive p-0">
                         <table id="list-form" data-toggle="table" data-ajax="fetchFormsData"
@@ -104,8 +194,8 @@
                             data-unique-id="id">
                             <thead>
                                 <tr>
-                                    <th data-field="no" data-align="left" data-halign="text-center" data-sortable="true">No Kupon</th>
                                     <th data-field="id" data-align="left" data-halign="text-center" data-sortable="true">ID</th>
+                                    <th data-field="no" data-align="left" data-halign="text-center" data-sortable="true">No Kupon</th>
                                     <th data-field="nama" data-align="left" data-halign="text-center" data-sortable="true">Nama</th>
                                     <th data-field="dibuat_oleh" data-align="left" data-halign="text-center" data-sortable="true">NIK</th>
                                     <!-- <th data-field="jabatan" data-align="left" data-halign="text-center" data-sortable="true">Jabatan</th> -->
