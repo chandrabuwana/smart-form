@@ -20,6 +20,9 @@ return new class extends Migration
             
             // Checklist items as JSON
             $table->json('checklist_items')->nullable();
+
+            // status
+            $table->boolean('isActive')->default(true);
             
             // Signatures
             $table->string('created_by_name')->nullable();

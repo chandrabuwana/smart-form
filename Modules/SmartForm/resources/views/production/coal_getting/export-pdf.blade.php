@@ -152,8 +152,8 @@
             <td style="border: none; width: 50%;" class="text-center">Diketahui oleh</td>
         </tr>
         <tr style="padding: 10px 0;">
-            <td style="border: none; text-align: center; font-weight: bold;">{{ $record->created_by }}</td>
-            <td style="border: none; text-align: center; font-weight: bold;">{{ $record->acknowledged_by }}</td>
+            <td style="border: none; text-align: center; font-weight: bold;">{{ $record->created_by_name }}</td>
+            <td style="border: none; text-align: center; font-weight: bold;">{{ $record->acknowledged_by_name }}</td>
         </tr>
         <tr>
             <td style="border: none;" class="text-center">Production Foreman</td>

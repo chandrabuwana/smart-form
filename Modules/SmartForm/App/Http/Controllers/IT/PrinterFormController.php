@@ -48,7 +48,8 @@ class PrinterFormController extends Controller
                     ELSE 0 END +
                     CASE WHEN touchscreen_condition = \'rusak\' THEN 1 
                     ELSE 0 END) as broken_components')
-            ]);
+            ])
+            ->where('isActive', true); 
 
         // Apply search filter if provided
         if ($request->has('search')) {
@@ -75,6 +76,7 @@ class PrinterFormController extends Controller
             ->select('site')
             ->distinct()
             ->whereNotNull('site')
+            ->where('isActive', true)
             ->pluck('site');
 
         // Get the paginated results
@@ -84,7 +86,9 @@ class PrinterFormController extends Controller
             ->paginate(10);
 
         // Calculate statistics
-        $totalRecords = DB::table('it_fm_printer')->count();
+        $totalRecords = DB::table('it_fm_printer')
+            ->where('isActive', true)
+            ->count();
         $brokenComponents = DB::table('it_fm_printer')
             ->where('case_casing_condition', 'rusak')
             ->orWhere('adaptor_condition', 'rusak')
@@ -94,6 +98,7 @@ class PrinterFormController extends Controller
             ->orWhere('cartridge_condition', 'rusak')
             ->orWhere('lamp_indicator_condition', 'rusak')
             ->orWhere('touchscreen_condition', 'rusak')
+            ->where('isActive', true)
             ->count();
 
         $currentMonth = now()->month;
@@ -101,6 +106,7 @@ class PrinterFormController extends Controller
         $maintenanceThisMonth = DB::table('it_fm_printer')
             ->whereMonth('created_at', $currentMonth)
             ->whereYear('created_at', $currentYear)
+            ->where('isActive', true)
             ->count();
 
         $completedTasks = DB::table('it_fm_printer')
@@ -111,6 +117,7 @@ class PrinterFormController extends Controller
                        SUM(CAST(bluetooth_test AS INT)) + 
                        SUM(CAST(cable_test AS INT)) + 
                        SUM(CAST(toner_level AS INT)) as total_completed')
+            ->where('isActive', true)
             ->first();
 
         $totalCompleted = $completedTasks->total_completed ?? 0;
@@ -141,6 +148,10 @@ class PrinterFormController extends Controller
     public function CreatePrinterForm(Request $request)
     {
         try {
+            $isShowDetail = false;
+            $isEdit = false;
+            $maintenanceRecord = null;
+            
             // If ID is provided, get maintenance data
             if ($request->has('id')) {
                 $maintenanceRecord = DB::table('it_fm_printer')
@@ -165,6 +176,7 @@ class PrinterFormController extends Controller
                             ELSE 0 END) as broken_components')
                     ])
                     ->where('id', $request->id)
+                    ->where('isActive', true)
                     ->first();
 
                 if (!$maintenanceRecord) {
@@ -172,16 +184,20 @@ class PrinterFormController extends Controller
                         ->with('error', 'Printer maintenance record not found');
                 }
 
+                $isShowDetail = true;
+
                 return view("SmartForm::it/form-printer", [
-                    'isShowDetail' => true,
+                    'isShowDetail' => $isShowDetail,
+                    'isEdit' => $isEdit,
                     'maintenanceRecord' => $maintenanceRecord
                 ]);
             }
 
             // If no ID, show empty form
             return view("SmartForm::it/form-printer", [
-                'isShowDetail' => false,
-                'maintenanceRecord' => null
+                'isShowDetail' => $isShowDetail,
+                'isEdit' => $isEdit,
+                'maintenanceRecord' => $maintenanceRecord
             ]);
 
         } catch (\Exception $e) {
@@ -256,7 +272,8 @@ class PrinterFormController extends Controller
                 'cable_test' => $validated['cable_test'] ?? false,
                 'toner_level' => $validated['toner_level'] ?? false,
                 'created_at' => now(),
-                'updated_at' => now()
+                'updated_at' => now(),
+                'isActive' => true
             ]);
 
             DB::commit();
@@ -309,6 +326,7 @@ class PrinterFormController extends Controller
                         ELSE 0 END) as broken_components')
                 ])
                 ->where('id', $id)
+                ->where('isActive', true)
                 ->first();
 
             if (!$maintenanceRecord) {
@@ -331,6 +349,193 @@ class PrinterFormController extends Controller
         }
     }
 
+    /**
+     * Display the edit form for a printer maintenance record
+     * 
+     * @param Request $request
+     * @return \Illuminate\View\View
+     */
+    public function EditPrinterForm(Request $request)
+    {
+        try {
+            // Validate the request
+            if (!$request->has('id')) {
+                return redirect()->route('it-ops.dashboard-printer')
+                    ->with('error', 'Printer maintenance record ID is required');
+            }
+
+            // Get the printer maintenance record
+            $maintenanceRecord = DB::table('it_fm_printer')
+                ->where('id', $request->id)
+                ->where('isActive', true)
+                ->first();
+
+            if (!$maintenanceRecord) {
+                return redirect()->route('it-ops.dashboard-printer')
+                    ->with('error', 'Printer maintenance record not found');
+            }
+
+            // Return the edit form view
+            return view('SmartForm::it.form-printer', [
+                'isShowDetail' => false,
+                'isEdit' => true,
+                'maintenanceRecord' => $maintenanceRecord
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error in EditPrinterForm: ' . $e->getMessage());
+            return redirect()->route('it-ops.dashboard-printer')
+                ->with('error', 'An error occurred while loading the edit form');
+        }
+    }
+
+    /**
+     * Update a printer maintenance record
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function UpdatePrinterForm(Request $request)
+    {
+        try {
+            // Validate the request
+            $validated = $request->validate([
+                'id' => 'required|exists:it_fm_printer,id',
+                // Teknisi Information
+                'nama' => 'required|string',
+                'nik' => 'required|string',
+                'dept' => 'required|string',
+                'site' => 'required|string',
+                
+                // Asset Information
+                'no_asset' => 'required|string',
+                'jenis_aset' => 'required|string',
+                'merk' => 'required|string',
+                'model' => 'required|string',
+                
+                // Hardware Conditions
+                'case_casing_condition' => 'required|in:baik,rusak',
+                'adaptor_condition' => 'required|in:baik,rusak',
+                'kabel_power_condition' => 'required|in:baik,rusak',
+                'paper_tray_condition' => 'required|in:baik,rusak',
+                'ink_condition' => 'required|in:baik,rusak',
+                'cartridge_condition' => 'required|in:baik,rusak',
+                'lamp_indicator_condition' => 'required|in:baik,rusak',
+                'touchscreen_condition' => 'required|in:baik,rusak',
+                
+                // Maintenance Tasks
+                'software_update' => 'nullable|boolean',
+                'print_test' => 'nullable|boolean',
+                'scan_test' => 'nullable|boolean',
+                'network_test' => 'nullable|boolean',
+                'bluetooth_test' => 'nullable|boolean',
+                'cable_test' => 'nullable|boolean',
+                'toner_level' => 'nullable|boolean',
+            ]);
+
+            DB::beginTransaction();
+
+            // Update the printer maintenance record
+            DB::table('it_fm_printer')
+                ->where('id', $validated['id'])
+                ->update([
+                    'nama' => $validated['nama'],
+                    'nik' => $validated['nik'],
+                    'dept' => $validated['dept'],
+                    'site' => $validated['site'],
+                    'no_asset' => $validated['no_asset'],
+                    'jenis_aset' => $validated['jenis_aset'],
+                    'merk' => $validated['merk'],
+                    'model' => $validated['model'],
+                    'case_casing_condition' => $validated['case_casing_condition'],
+                    'adaptor_condition' => $validated['adaptor_condition'],
+                    'kabel_power_condition' => $validated['kabel_power_condition'],
+                    'paper_tray_condition' => $validated['paper_tray_condition'],
+                    'ink_condition' => $validated['ink_condition'],
+                    'cartridge_condition' => $validated['cartridge_condition'],
+                    'lamp_indicator_condition' => $validated['lamp_indicator_condition'],
+                    'touchscreen_condition' => $validated['touchscreen_condition'],
+                    'software_update' => $validated['software_update'] ?? false,
+                    'print_test' => $validated['print_test'] ?? false,
+                    'scan_test' => $validated['scan_test'] ?? false,
+                    'network_test' => $validated['network_test'] ?? false,
+                    'bluetooth_test' => $validated['bluetooth_test'] ?? false,
+                    'cable_test' => $validated['cable_test'] ?? false,
+                    'toner_level' => $validated['toner_level'] ?? false,
+                    'updated_at' => now()
+                ]);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Printer maintenance record has been updated successfully'
+            ]);
+
+        } catch (ValidationException $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error updating printer maintenance record: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while updating the printer maintenance record',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Soft delete a printer maintenance record by setting isActive to false
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function DeletePrinterForm(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'id' => 'required|exists:it_fm_printer,id',
+            ]);
+
+            DB::beginTransaction();
+            
+            DB::table('it_fm_printer')
+                ->where('id', $validated['id'])
+                ->update([
+                    'isActive' => false, // Set to false to mark as deleted
+                    'updated_at' => now()
+                ]);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Printer maintenance record has been deleted successfully',
+            ]);
+
+        } catch (ValidationException $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while deleting the printer maintenance record',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     private function generateDocNumber()
     {
         try {
@@ -340,12 +545,15 @@ class PrinterFormController extends Controller
             // Get the latest sequence number for the current month
             $lastRecord = DB::table('it_fm_printer')
                 ->whereDate('created_at', now())
+                ->where('isActive', true)
                 ->orderBy('created_at', 'desc')
-                ->value('doc_number');
+                ->first();
 
             $sequence = 1;
-            if ($lastRecord && preg_match('/-(\d+)$/', $lastRecord->doc_number, $matches)) {
-                $sequence = intval($matches[1]) + 1;
+            if ($lastRecord) {
+                if (preg_match('/-(\d+)$/', $lastRecord->doc_number, $matches)) {
+                    $sequence = intval($matches[1]) + 1;
+                }
             }
 
             return sprintf("%s-%s-%03d", $prefix, $date, $sequence);

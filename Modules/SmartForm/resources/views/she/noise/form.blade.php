@@ -38,30 +38,37 @@
                                     <div class="input-group input-group-static mb-3">
                                         <label>Site Name</label>
                                         <select class="form-control" id="site_name" name="site_name" required {{ $isShowDetail ? 'disabled' : '' }}>
-                                            @foreach(['bss', 'agm', 'mbl', 'mme', 'mas', 'pmss', 'taj', 'bssr', 'tdm', 'msj'] as $site)
-                                                <option value="{{ strtoupper($site) }}" 
-                                                    {{ $isShowDetail && strtolower($maintenanceRecord->site_name) == strtolower($site) ? 'selected' : 
-                                                    (!$isShowDetail && isset($defaultValues['site_name']) && strtolower($defaultValues['site_name']) == strtolower($site) ? 'selected' : '') }}>
-                                                    {{ strtoupper($site) }}
+                                            <option value="">-- Pilih Site --</option>
+                                            @foreach(\Modules\SmartForm\helpers\SiteHelper::getAllSites() as $code => $name)
+                                                <option value="{{ strtoupper($code) }}" 
+                                                    {{ $isShowDetail && strtolower($maintenanceRecord->site_name) == strtolower($code) ? 'selected' : 
+                                                    (!$isShowDetail && isset($defaultValues['site_name']) && strtolower($defaultValues['site_name']) == strtolower($code) ? 'selected' : '') }}>
+                                                    {{ $name }}
                                                 </option>
                                             @endforeach
+                                            <option value="BSS" 
+                                                {{ $isShowDetail && strtolower($maintenanceRecord->site_name) == 'bss' ? 'selected' : 
+                                                (!$isShowDetail && isset($defaultValues['site_name']) && strtolower($defaultValues['site_name']) == 'bss' ? 'selected' : '') }}>
+                                                BSS
+                                            </option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="input-group input-group-static mb-3">
                                         <label>Department</label>
-                                        <input type="text" name="department" class="form-control" 
-                                            value="{{ $isShowDetail ? $maintenanceRecord->department : ($defaultValues['department'] ?? '') }}" 
-                                            >
+                                        <select class="form-control" name="department" id="department" {{ $isShowDetail ? 'disabled' : '' }} required>
+                                            <option value="">-- Pilih Departemen --</option>
+                                            @foreach(\Modules\SmartForm\helpers\DepartmentHelper::getAllDepartments() as $code => $name)
+                                                <option value="{{ $code }}" {{ $isShowDetail && $maintenanceRecord->department == $code ? 'selected' : '' }}>{{ $name }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="input-group input-group-static mb-3">
                                         <label>Shift</label>
-                                        <input type="text" name="shift" class="form-control" 
-                                            value="{{ $isShowDetail ? $maintenanceRecord->shift : ($defaultValues['shift'] ?? 'DS') }}" 
-                                            readonly>
+                                        {!! \Modules\SmartForm\helpers\ShiftHelper::renderShiftSelect('shift', $isShowDetail ? $maintenanceRecord->shift : (isset($defaultValues['shift']) ? $defaultValues['shift'] : null), isset($isShowDetail) && $isShowDetail) !!}
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -77,6 +84,7 @@
                                         <label>Jumlah Inspektor</label>
                                         <input type="number" name="inspector_count" class="form-control" 
                                             value="{{ $isShowDetail ? $maintenanceRecord->inspector_count : ($defaultValues['inspector_count'] ?? 1) }}" 
+                                            min="1" step="1"
                                             required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
                                     </div>
                                 </div>
@@ -291,14 +299,12 @@
                                 <div class="col-md-6">
                                     <div class="input-group input-group-static mb-3">
                                         <label>Diinspeksi Oleh</label>
-                                        <select name="inspected_by" class="form-control text-left" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
-                                            <option value="">-- Pilih Inspektor --</option>
-                                            @foreach($approvalList as $user)
-                                                <option value="{{ $user->nama }}" {{ $isShowDetail && $maintenanceRecord->inspected_by == $user->nama ? 'selected' : '' }}>
-                                                    {{ $user->nama }} ({{ $user->nik }})
-                                                </option>
-                                            @endforeach
-                                        </select>
+                                        <input type="text" name="inspected_by_name" class="form-control" 
+                                            placeholder="Nama Lengkap"
+                                            value="{{ $isShowDetail ? $maintenanceRecord->inspected_by_name : session('username') }}"
+                                            {{ $isShowDetail ? 'disabled' : '' }} required>
+
+                                        <input type="hidden" name="inspected_by_nik" value="{{ $isShowDetail ? $maintenanceRecord->inspected_by_nik : session('user_id') }}" required>
                                     </div>
                                     <div class="input-group input-group-static mb-3">
                                         <label>Tanggal Inspeksi</label>
@@ -306,40 +312,27 @@
                                             value="{{ $isShowDetail ? $maintenanceRecord->inspection_date : now()->format('Y-m-d') }}" 
                                             required {{ $isShowDetail ? 'disabled' : '' }}>
                                     </div>
-                                    <div class="form-check mb-3 ps-0">
-                                        <input class="form-check-input" type="checkbox" name="inspected_signature" value="1"
-                                            {{ $isShowDetail ? ($maintenanceRecord->inspected_signature ? 'checked' : '') : '' }}
-                                            {{ $isShowDetail ? 'disabled' : '' }} required>
-                                        <label class="form-check-label">
-                                            Signed by Inspector
-                                        </label>
-                                    </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="input-group input-group-static mb-3">
                                         <label>Mengetahui</label>
-                                        <select name="acknowledged_by" class="form-control text-left" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
-                                            <option value="">-- Pilih Acknowledged --</option>
+                                        <select name="acknowledged_by_name" id="acknowledged_by_select" class="form-control text-left" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                            <option value="">-- Pilih Pengawas --</option>
                                             @foreach($approvalList as $user)
-                                                <option value="{{ $user->nama }}" {{ $isShowDetail && $maintenanceRecord->acknowledged_by == $user->nama ? 'selected' : '' }}>
+                                                <option value="{{ $user->nama }}" 
+                                                    data-nik="{{ $user->nik }}"
+                                                    {{ $isShowDetail && $maintenanceRecord->acknowledged_by_name == $user->nama ? 'selected' : '' }}>
                                                     {{ $user->nama }} ({{ $user->nik }})
                                                 </option>
                                             @endforeach
                                         </select>
+                                        <input type="hidden" name="acknowledged_by_nik" id="acknowledged_by_nik" value="{{ $isShowDetail ? $maintenanceRecord->acknowledged_by_nik : '' }}" required>
                                     </div>
                                     <div class="input-group input-group-static mb-3">
                                         <label>Tanggal Mengetahui</label>
                                         <input type="date" name="acknowledgment_date" class="form-control" 
                                             value="{{ $isShowDetail ? $maintenanceRecord->acknowledgment_date : now()->format('Y-m-d') }}" 
                                             required {{ $isShowDetail ? 'disabled' : '' }}>
-                                    </div>
-                                    <div class="form-check mb-3 ps-0">
-                                        <input class="form-check-input" type="checkbox" name="acknowledged_signature" value="1"
-                                            {{ $isShowDetail ? ($maintenanceRecord->acknowledged_signature ? 'checked' : '') : '' }}
-                                            {{ $isShowDetail ? 'disabled' : '' }} required>
-                                        <label class="form-check-label">
-                                            Signed by Acknowledger
-                                        </label>
                                     </div>
                                 </div>
                             </div>
@@ -373,6 +366,33 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle acknowledged_by_nik population when supervisor is selected
+        const supervisorSelect = document.getElementById('acknowledged_by_select');
+        const nikField = document.getElementById('acknowledged_by_nik');
+        
+        if (supervisorSelect && nikField) {
+            // Set initial value if a supervisor is already selected
+            if (supervisorSelect.selectedIndex > 0) {
+                const selectedOption = supervisorSelect.options[supervisorSelect.selectedIndex];
+                nikField.value = selectedOption.getAttribute('data-nik');
+            }
+            
+            // Update NIK when supervisor selection changes
+            supervisorSelect.addEventListener('change', function() {
+                if (this.selectedIndex > 0) {
+                    const selectedOption = this.options[this.selectedIndex];
+                    nikField.value = selectedOption.getAttribute('data-nik');
+                } else {
+                    nikField.value = '';
+                }
+            });
+        }
+    });
+</script>
+
 @endsection
 
 @section('custom-css')

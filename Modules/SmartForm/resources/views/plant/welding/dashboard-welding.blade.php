@@ -49,36 +49,6 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="card stats-card">
-                            <div class="card-body p-3">
-                                <div class="d-flex justify-content-between">
-                                    <div>
-                                        <i class="fas fa-calendar text-success fa-2x"></i>
-                                    </div>
-                                    <div class="text-end pt-1">
-                                        <p class="text-sm mb-0 text-capitalize">This Month</p>
-                                        <h4 class="mb-0">{{ $statistics->total_this_month }}</h4>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="card stats-card">
-                            <div class="card-body p-3">
-                                <div class="d-flex justify-content-between">
-                                    <div>
-                                        <i class="fas fa-calendar text-success fa-2x"></i>
-                                    </div>
-                                    <div class="text-end pt-1">
-                                        <p class="text-sm mb-0 text-capitalize">Location</p>
-                                        <h4 class="mb-0">{{ $statistics->location }}</h4>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
                 <!-- Filters and Search -->

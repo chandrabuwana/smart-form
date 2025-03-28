@@ -26,6 +26,7 @@ class RouterFormController extends Controller
     // Build query
     $query = DB::table('it_fm_router')
       ->select('*')
+      ->where('isActive', true) // Only show active records (not soft deleted)
       ->orderBy('created_at', 'desc');
 
     // Apply filters
@@ -177,6 +178,7 @@ class RouterFormController extends Controller
         'dust_cleaner_check' => $validated['dust_cleaner_check'] ?? false,
         'restart_router_check' => $validated['restart_router_check'] ?? false,
         'port_check' => $validated['port_check'] ?? false,
+        'isActive' => true, // Set to true by default
         'created_at' => now(),
         'updated_at' => now()
       ]);
@@ -204,6 +206,175 @@ class RouterFormController extends Controller
       return response()->json([
         'success' => false,
         'message' => 'An error occurred while creating the router maintenance record'
+      ], 500);
+    }
+  }
+
+  /**
+   * Display the edit form for a router maintenance record
+   * 
+   * @param Request $request
+   * @return \Illuminate\View\View
+   */
+  public function EditRouterForm(Request $request)
+  {
+    try {
+      // Validate the request
+      if (!$request->has('id')) {
+        return redirect()->route('it-ops.dashboard-router')
+          ->with('error', 'Router maintenance record ID is required');
+      }
+
+      // Get the router maintenance record
+      $maintenanceRecord = DB::table('it_fm_router')
+        ->where('id', $request->id)
+        ->where('isActive', true)
+        ->first();
+
+      if (!$maintenanceRecord) {
+        return redirect()->route('it-ops.dashboard-router')
+          ->with('error', 'Router maintenance record not found');
+      }
+
+      // Return the edit form view
+      return view('SmartForm::it.form-router', [
+        'isShowDetail' => false,
+        'isEdit' => true,
+        'maintenanceRecord' => $maintenanceRecord
+      ]);
+
+    } catch (\Exception $e) {
+      Log::error('Error in EditRouterForm: ' . $e->getMessage());
+      return redirect()->route('it-ops.dashboard-router')
+        ->with('error', 'An error occurred while loading the edit form');
+    }
+  }
+
+  /**
+   * Update a router maintenance record
+   * 
+   * @param Request $request
+   * @return \Illuminate\Http\JsonResponse
+   */
+  public function UpdateRouterForm(Request $request)
+  {
+    try {
+      // Validate the request
+      $validated = $request->validate([
+        'id' => 'required|exists:it_fm_router,id',
+        // Teknisi Information
+        'nama' => 'required|string',
+        'nik' => 'required|string',
+        'dept' => 'required|string',
+        'site' => 'required|string',
+ 
+        // Asset Information
+        'no_asset' => 'required|string',
+        'jenis_aset' => 'required|string',
+        'merk' => 'required|string',
+        'model' => 'required|string',
+ 
+        // Hardware Conditions
+        'router_condition' => 'required|in:baik,rusak',
+        'antena_condition' => 'required|in:baik,rusak',
+        'cable_condition' => 'required|in:baik,rusak',
+ 
+        // Maintenance Tasks
+        'dust_cleaner_check' => 'nullable|boolean',
+        'restart_router_check' => 'nullable|boolean',
+        'port_check' => 'nullable|boolean',
+      ]);
+
+      DB::beginTransaction();
+
+      // Update the router maintenance record
+      DB::table('it_fm_router')
+        ->where('id', $validated['id'])
+        ->update([
+          'nama' => $validated['nama'],
+          'nik' => $validated['nik'],
+          'dept' => $validated['dept'],
+          'site' => $validated['site'],
+          'no_asset' => $validated['no_asset'],
+          'jenis_aset' => $validated['jenis_aset'],
+          'merk' => $validated['merk'],
+          'model' => $validated['model'],
+          'router_condition' => $validated['router_condition'],
+          'antena_condition' => $validated['antena_condition'],
+          'cable_condition' => $validated['cable_condition'],
+          'dust_cleaner_check' => $validated['dust_cleaner_check'] ?? false,
+          'restart_router_check' => $validated['restart_router_check'] ?? false,
+          'port_check' => $validated['port_check'] ?? false,
+          'updated_at' => now()
+        ]);
+
+      DB::commit();
+
+      return response()->json([
+        'success' => true,
+        'message' => 'Router maintenance record has been updated successfully'
+      ]);
+
+    } catch (ValidationException $e) {
+      DB::rollBack();
+      return response()->json([
+        'success' => false,
+        'message' => 'Validation failed',
+        'errors' => $e->errors()
+      ], 422);
+    } catch (\Exception $e) {
+      DB::rollBack();
+      Log::error('Error updating router maintenance record: ' . $e->getMessage());
+      return response()->json([
+        'success' => false,
+        'message' => 'An error occurred while updating the router maintenance record',
+        'error' => $e->getMessage()
+      ], 500);
+    }
+  }
+
+  /**
+   * Soft delete a router maintenance record by setting isActive to false
+   * 
+   * @param Request $request
+   * @return \Illuminate\Http\JsonResponse
+   */
+  public function DeleteRouterForm(Request $request)
+  {
+    try {
+      $validated = $request->validate([
+        'id' => 'required|exists:it_fm_router,id',
+      ]);
+
+      DB::beginTransaction();
+      
+      DB::table('it_fm_router')
+        ->where('id', $validated['id'])
+        ->update([
+          'isActive' => false, // Set to false to mark as deleted
+          'updated_at' => now()
+        ]);
+
+      DB::commit();
+
+      return response()->json([
+        'success' => true,
+        'message' => 'Router maintenance record has been deleted successfully',
+      ]);
+
+    } catch (ValidationException $e) {
+      DB::rollBack();
+      return response()->json([
+        'success' => false,
+        'message' => 'Validation error',
+        'errors' => $e->errors()
+      ], 422);
+    } catch (\Exception $e) {
+      DB::rollBack();
+      return response()->json([
+        'success' => false,
+        'message' => 'An error occurred while deleting the router maintenance record',
+        'error' => $e->getMessage()
       ], 500);
     }
   }

@@ -62,7 +62,7 @@
 
     <div class="row">
         <div class="col-12">
-            <form class="card my-4" method="POST" id="formRequestFuel">
+            <form class="card my-4" id="formRequestFuel">
                 <div class="card my-4">
                     <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                         <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
@@ -79,19 +79,22 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <table class="w-full">
-                                        <td><input type="text" class="input-text w-full" id="iKupon" name="iKupon" hidden></td>
+                                    <input type="text" class="input-text w-full" id="tglDoc" name="tglDoc" value="{{$data['id']}}" hidden>
                                     <tr>
                                         <td>Date</td>
-                                        <td><input type="text" class="input-text w-full" id="tglDoc" name="tglDoc"></td>
+                                        <td>
+                                            <input type="text" class="input-text w-full" id="tglDoc" name="tglDoc" value="{{$data['tanggal']}}">
+                                        </td>
                                     </tr>
-                                    
                                     <tr>
                                         <td>Jabatan</td>
-                                        <td><input type="text" class="input-text w-full" id="i_jabatan" name="i_jabatan"></td>
+                                        <td>
+                                            <input type="text" class="input-text w-full" id="i_jabatan" name="i_jabatan" value="{{$data['jabatan']}}">
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>NIK</td>
-                                        <td><input type="text" class="input-text w-full" id="i_nik" value="{{ session('user_id') }}" disabled></td>
+                                        <td><input type="text" class="input-text w-full" id="i_nik" value="{{$data['dibuat_oleh']}}" disabled></td>
                                     </tr>
                                 </table>
                             </div>
@@ -101,7 +104,7 @@
                                         <td>Departemen</td>
                                         <td>
                                             <select class="form-select form-select-sm input-text" aria-label="Default select example" id="i_departemen" name="i_departemen">
-                                            <option value="" selected>-- Pilih Departemen --</option>    
+                                            <option value="{{$data['departemen']}}" selected>{{$data['departemen']}}</option>    
                                                 <option value="ENG">ENGINEERING</option>
                                                 <option value="SHE">SHE</option>
                                                 <option value="PRD">PRODUKSI</option>
@@ -127,27 +130,27 @@
                                     </tr>
                                     <tr>
                                         <td>Nama</td>
-                                        <td><input type="text" class="input-text w-full" id="i_nama" value="{{ session('username') }}" disabled></td>
+                                        <td><input type="text" class="input-text w-full" id="i_nama" value="{{$data['nama']}}" disabled></td>
                                     </tr>
                                     <tr>
                                         <td>No Lambung</td>
-                                        <td><input type="text" class="input-text w-full" id="i_no_lambung" name="i_no_lambung"></td>
+                                        <td><input type="text" class="input-text w-full" id="i_no_lambung" name="i_no_lambung" value="{{$data['no_lambung']}}"></td>
                                     </tr>
                                     <tr>
                                         <td>Jenis Kendaraan</td>
-                                        <td><input type="text" class="input-text w-full" id="i_jenis_kendaraan" name="i_jenis_kendaraan"></td>
+                                        <td><input type="text" class="input-text w-full" id="i_jenis_kendaraan" name="i_jenis_kendaraan" value="{{$data['jenis_kendaraan']}}"></td>
                                     </tr>
                                 </table>
                             </div>
                             <!-- ====================================== -->
                             <div class="w-1/2 md:w-1/6">
                                 <span>Jam</span>
-                                    <input  type="time" class="input-text w-full" id="iJam" name="iJam">
+                                    <input  type="time" class="input-text w-full" id="iJam" name="iJam" value="{{$data['jam']}}">
                             </div>
                             <div class="w-1/2 md:w-1/6">
                                 <span>Shift</span>
                                 <select class="form-select form-select-sm input-text" aria-label="Default select example" id="i_shift" name="i_shift">
-                                    <option value="" selected>-- Pilih Shift --</option>    
+                                    <option value="{{$data['shift']}}"selected>{{$data['shift']}}</option>    
                                     <option value="I">I</option>
                                     <option value="II">II</option>
                                     <option value="III">III</option>
@@ -155,23 +158,23 @@
                             </div>
                             <div class="w-1/2 md:w-1/6">
                                 <span>HM</span>
-                                    <input type="number" onkeypress="return event.charCode >= 48" min="1" class="input-text w-full" id="i_hm" name="i_hm">
+                                    <input type="number" onkeypress="return event.charCode >= 48" min="1" class="input-text w-full" id="i_hm" name="i_hm" value="{{$data['hm']}}">
                             </div>
                             <div class="w-1/2 md:w-1/6">
                                 <span>KM</span>
-                                    <input  type="number" onkeypress="return event.charCode >= 48" min="1" class="input-text w-full" id="i_km" name="i_km">
+                                    <input  type="number" onkeypress="return event.charCode >= 48" min="1" class="input-text w-full" id="i_km" name="i_km" value="{{$data['km']}}">
                             </div>
                             <div class="w-1/2 md:w-1/6">
                                 <span>Flow Meter Awal</span>
-                                    <input  type="number" onkeypress="return event.charCode >= 48" min="1" class="input-text w-full" id="i_awal" name="i_awal">
+                                    <input  type="number" onkeypress="return event.charCode >= 48" min="1" class="input-text w-full" id="i_awal" name="i_awal" value="{{$data['awal']}}">
                             </div>
                             <div class="w-1/2 md:w-1/6">
                                 <span>Flow Meter Akhir</span>
-                                    <input  type="number" onkeypress="return event.charCode >= 48" min="1" class="input-text w-full" id="i_akhir" name="i_akhir">
+                                    <input  type="number" onkeypress="return event.charCode >= 48" min="1" class="input-text w-full" id="i_akhir" name="i_akhir" value="{{$data['akhir']}}">
                             </div>
                             <div class="w-1/2 md:w-1/6">
                                 <span>Total Liter</span>
-                                    <input  type="number" onkeypress="return event.charCode >= 48" min="1" class="input-text w-full" id="i_total_liter" name="i_total_liter">
+                                    <input  type="number" onkeypress="return event.charCode >= 48" min="1" class="input-text w-full" id="i_total_liter" name="i_total_liter" value="{{$data['total_liter']}}">
                             </div>
                         </div>
 
@@ -180,10 +183,10 @@
                             <td>Diisi Oleh/Filled by,</td>
                             <td>: {{ session('username') }} {{ session('user_id') }}
                             </td>
-                            <td>Diterima Oleh/Received by, :</td>
+                            <td>Diserahkan Oleh, :</td>
                             <td> 
                                 <select name="dDiterima" class="form-control text-center" required>
-                                    <option value="">-- Pilih Penerima --</option>
+                                    <option value="{{$data['diserahkan_oleh']}}">{{$data['diserahkan_oleh']}}</option>
                                     @foreach($approvalList as $user)
                                         <option value="{{ $user->nama }}">
                                             {{ $user->nama }} ({{ $user->nik }})
@@ -191,10 +194,10 @@
                                     @endforeach
                                 </select>
                             </td>
-                            <td>Disetujui Oleh/Approved by, :</td>
+                            <td>Diterima Oleh, :</td>
                             <td>
                                 <select name="dApproved" class="form-control text-center" required>
-                                    <option value="">-- Pilih Approver --</option>
+                                    <option value="{{$data['diterima_oleh']}}">{{$data['diterima_oleh']}}</option>
                                     @foreach($approvalList as $user)
                                         <option value="{{ $user->nama }}">
                                             {{ $user->nama }} ({{ $user->nik }})
@@ -233,56 +236,13 @@
         var iKupon = $("#iKupon");
         var tglDoc = $("#tglDoc");
 
-        //  START MEMBUAT NO KUPON URUT FORMAT YYMMDD000x
-        function getMonth(mudof) {
-            //get the month
-            var month = mudof.getMonth();
-
-            //increment month by 1 since it is 0 indexed
-            //converts month to a string
-            //if month is 1-9 pad right with a 0 for two digits
-            month = (month + 1).toString().padStart(2, '0');
-
-            return month;
+        var dataForm = {
+            formName: "Data Form",
+            id: "",
+            dibuat_oleh: "",
+            tanggal: ""
         }
 
-        // function getDay with 1 parameter expecting date
-        // This function returns a string of type dd (example: 09 = The 9th day of the month)
-        function getDay(mudof) {
-            //get the day
-            //convert day to string
-            //if day is between 1-9 pad right with a 0 for two digits
-            var day = mudof.getDate().toString().padStart(2, '0');;
-
-            return day;
-        }
-
-        function getYear(tglNow) {
-            //get the year
-            var year = mudof.getFullYear();
-
-            //pull the last two digits of the year
-            year = year.toString().substr(-2);
-
-            return year;
-        }
-        //A function for formatting a date to yyMMDD
-        function formatNomor(mudof)
-        {
-            //return the string "yyMMDD"
-            return getYear(mudof) + getMonth(mudof);
-        }
-        
-        function getTodayDate() {
-            const today = new Date();
-            const year = today.getYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const day = String(today.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
-        }
-        function generateNoDoc() {
-            return (formatNomor(mudof) + ( (Math.random()*100000).toFixed()));
-        }
         //  END MEMBUAT NO KUPON URUT FORMAT YYMM000x
 
         tanggalSekarang.attr('min', getTodayDate())
@@ -290,38 +250,130 @@
         function formatTgl() {
             return tglNow.getDate() + "-" + months[tglNow.getMonth()] + "-" + tglNow.getFullYear();
         }
-        $(function() {
-            document.getElementById("iKupon").value=(generateNoDoc());
-            document.getElementById("tglDoc").value=(formatTgl() || "-");
-        })
         
-        $('#btnSubmitFormRequestFuel').click( function(e) {
-            e.preventDefault();
-            const formData = $('#formRequestFuel').serialize();
+        $(function() {
 
-            axios.post(`{{ isset($formRequestFuel) ? route('bss-form.log.edit-req-fuel', ['id' => $formRequestFuel->id]) : route('bss-form.log.create-req-fuel') }}`, formData, {
-                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
-            })
-            .then(function (response) {
-                console.log(response.data)
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: 'Form Request Fuel Berhasil di Simpan!',
+            iAkhir.change(function(e) {
+                iTotalLiter.text((iAkhir.val()) - (iAwal.val() ))
+            });
 
-                }).then((result) => {
-                    window.location.href = `{{ route('bss-form.log.fuel.dashboard') }}`;
-                });
-            })
-            .catch(function (error) {
-                console.error(error);
+            tStokAwal.change(function(e) {
+                tTotalAkhir.text((tStokAwal.val()) - (parseInt(tTotals.text())))
+            });
+            
+            if(isError.error) {
                 Swal.fire({
                     icon: 'error',
-                    title: 'Oops!',
-                    text: 'Gagal menyimpan Form Permintaan Fuel'
-                });
-            });
-        });
-        
+                    title: 'Error!',
+                    text: isError.errorMessage,
+                }).then((result) => {
+
+                })
+            } else {
+                console.log({{ Illuminate\Support\Js::from($data) }})
+                
+                tglDoc.val({{ Illuminate\Support\Js::from( $data['tanggal']) }})
+
+                dataForm.tanggal = tglDoc.val()
+
+            }
+
+            function validateForm() {
+                var errorValidate = []
+                
+                if(iForeman.val() == ""){
+                    errorValidate.push({
+                        field: "Kolom Foreman",
+                        message: "Harus dipilih"
+                    })
+                }
+                if(tStokAwal.val() == "") {
+                    errorValidate.push({
+                        field: "Kolom Stok Awal",
+                        message: "Harus Diisi"
+                    })
+                }
+                if(tMasuk.val() == "") {
+                    errorValidate.push({
+                        field: "Kolom Masuk",
+                        message: "Harus Diisi"
+                    })
+                }
+                if(iFuel.val() == ""){
+                    errorValidate.push({
+                        field: "Kolom Fuel",
+                        message: "Harus diisi"
+                    })
+                }
+                if(iShift.val() == ""){
+                    errorValidate.push({
+                        field: "Kolom Shift",
+                        message: "Harus dipilih"
+                    })
+                }
+
+                return errorValidate
+            }
+
+            btnSubmitSolar.click(function(e) {
+                e.preventDefault();
+                var errValidate = validateForm()
+                if(errValidate.length > 0) {
+                    var msg = ""
+                    for (var listErr of errValidate) {
+                        msg = msg + "<p class='m-0'>" + listErr.field + " " + listErr.message +  "</p>"
+                    }
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        html: msg,
+                    }).then((result) => {
+                        // window.location.href = `/get-form-detail?no_doc=${response.data.data.no_doc}`;
+                    })
+                } else {
+                    var dataReq = {
+                        formName: dataPemakaianSolar.formName,
+                        id: tglDoc.val(),
+                        jobSite: iJobSite.val(),
+                        noDoc: noDoc.text(),
+                        tglDoc: formatTgl(),
+                        approval: dApproved.val(),
+                        shift: iShift.val(),
+                        total_pemakaian: tTotals.val(),
+                        stokAwal: tStokAwal.val(),
+                        stokAkhir: tTotalAkhir.text(),
+                        status: "Need Approval",
+                        masuk: tMasuk.val(),
+                        fuel: iFuel.val()
+                    }
+                    
+                    // TODO
+                    axios.post('/bss-form/log/update-req-fuel?id='+id.text(), formData, {
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    })
+                    .then(function (response) {
+                        console.log(response.data)
+                        showLoading()
+                        Swal.fire({
+                                icon: 'success',
+                                title: 'Data Berhasil Diperbarui!',
+                                // text: response.data.data,
+                            }).then((result) => {
+                                window.location.href = `/bss-form/log/request-fuel/dashboard-request-fuel`;
+                            })
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    })
+                    .finally(function() {
+                        stopLoading()
+                    })
+                }
+                // submitAssetRequest(dataReq);
+            })
+        })
     </script>
 @endsection

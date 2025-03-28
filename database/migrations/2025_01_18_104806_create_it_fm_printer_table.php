@@ -21,6 +21,9 @@ return new class extends Migration
             $table->string('dept');
             $table->enum('site', ['agm', 'mbl', 'mme', 'mas', 'pmss', 'taj', 'bssr', 'tdm', 'msj']);
 
+            // status
+            $table->boolean('isActive')->default(true);
+
             // Asset Information
             $table->string('no_asset')->nullable();
             $table->string('jenis_aset');

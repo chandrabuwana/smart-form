@@ -105,7 +105,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/list-fuel', [FuelController::class, 'GetListRequestFuel'])->name("bss-form.log.list-fuel");
             Route::get('/form-fuel', [FuelController::class, 'FormFuel'])->name('bss-form.log.form-fuel');
             Route::post('/create-fuel', [FuelController::class, 'CreateReqFuel'])->name('bss-form.log.create-req-fuel');
-            Route::get('/edit-fuel', [FuelController::class, 'editReqFuel'])->name('bss-form.log.edit-req-fuel');
+            Route::get('/edit-req-fuel', [FuelController::class, 'editReqFuel'])->name('bss-form.log.edit-req-fuel');
             Route::post('/update-fuel/{id}', [FuelController::class, 'updateReqFuel'])->name('bss-form.log.update-req-fuel');
             Route::get('/delete-fuel/{id}', [FuelController::class, 'DeleteReqFuel'])->name('bss-form.log.delete-fuel');
             Route::get('/pdf-fuel/{id}', [FuelController::class, 'PdfReqFuel'])->name('bss-form.log.pdf-fuel');
@@ -321,21 +321,33 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/form-printer/{id}/export-pdf', [PrinterFormController::class, 'ExportPrinter'])->name('it-ops.form-printer.export');
             Route::post('/submit-printer', [PrinterFormController::class, 'SubmitPrinterForm'])->name('it-ops.submit-printer');
             Route::get('/form-printer', [PrinterFormController::class, 'CreatePrinterForm'])->name('it-ops.form-printer');
+            Route::get('/edit-printer', [PrinterFormController::class, 'EditPrinterForm'])->name('it-ops.edit-printer');
+            Route::post('/update-printer', [PrinterFormController::class, 'UpdatePrinterForm'])->name('it-ops.update-printer');
+            Route::post('/delete-printer', [PrinterFormController::class, 'DeletePrinterForm'])->name('it-ops.delete-printer');
             // CCTV
             Route::get('/dashboard-cctv', [CctvFormController::class, 'IndexCctvForm'])->name('it-ops.dashboard-cctv');
             Route::get('/form-cctv', [CctvFormController::class, 'CreateCctvForm'])->name('it-ops.form-cctv');
             Route::post('/submit-cctv', [CctvFormController::class, 'SubmitCctvForm'])->name('it-ops.submit-cctv');
             Route::get('/form-cctv/{id}/export-pdf', [CctvFormController::class, 'ExportCctv'])->name('it-ops.form-cctv.export');
+            Route::get('/edit-cctv', [CctvFormController::class, 'EditCctvForm'])->name('it-ops.edit-cctv');
+            Route::post('/update-cctv', [CctvFormController::class, 'UpdateCctvForm'])->name('it-ops.update-cctv');
+            Route::post('/delete-cctv', [CctvFormController::class, 'DeleteCctvForm'])->name('it-ops.delete-cctv');
             // DEVICE
             Route::get('/dashboard-device', [DeviceFormController::class, 'IndexDeviceForm'])->name('it-ops.dashboard-device');
             Route::get('/form-device', [DeviceFormController::class, 'CreateDeviceForm'])->name('it-ops.form-device');
             Route::post('/submit-device', [DeviceFormController::class, 'SubmitDeviceForm'])->name('it-ops.submit-device');
             Route::get('/form-device/{id}/export-pdf', [DeviceFormController::class, 'ExportDevice'])->name('it-ops.form-device.export');
+            Route::get('/edit-device', [DeviceFormController::class, 'EditDeviceForm'])->name('it-ops.edit-device');
+            Route::post('/update-device', [DeviceFormController::class, 'UpdateDeviceForm'])->name('it-ops.update-device');
+            Route::post('/delete-device', [DeviceFormController::class, 'DeleteDeviceForm'])->name('it-ops.delete-device');
             // ROUTER
             Route::get('/dashboard-router', [RouterFormController::class, 'Dashboard'])->name('it-ops.dashboard-router');
             Route::get('/form-router', [RouterFormController::class, 'CreateRouterForm'])->name('it-ops.form-router');
             Route::post('/submit-router', [RouterFormController::class, 'SubmitRouterForm'])->name('it-ops.submit-router');
             Route::get('/form-router/{id}/export-pdf', [RouterFormController::class, 'ExportRouter'])->name('it-ops.form-router.export');
+            Route::get('/edit-router', [RouterFormController::class, 'EditRouterForm'])->name('it-ops.edit-router');
+            Route::post('/update-router', [RouterFormController::class, 'UpdateRouterForm'])->name('it-ops.update-router');
+            Route::post('/delete-router', [RouterFormController::class, 'DeleteRouterForm'])->name('it-ops.delete-router');
         });
 
         Route::prefix('she-inspeksi')->group(function () {
@@ -378,14 +390,14 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::put('form/{id}', [SheMessController::class, 'Update'])->name('she.mess.form.update');
         });
 
-        Route::prefix('prod-coal')->group(function () {
+        Route::prefix('prod-coal')->group(function(){
             Route::get('dashboard', [CoalGettingController::class, 'Dashboard'])->name('prod.coal.dashboard');
             Route::get('form/export/{id}', [CoalGettingController::class, 'ExportForm'])->name('prod.coal.export');
             Route::get('form', [CoalGettingController::class, 'AddForm'])->name('prod.coal.form');
             Route::get('form/edit/{id}', [CoalGettingController::class, 'EditForm'])->name('prod.coal.form.edit');
             Route::post('store', [CoalGettingController::class, 'Store'])->name('prod.coal.store');
             Route::put('form/{id}', [CoalGettingController::class, 'Update'])->name('prod.coal.form.update');
-            Route::put('update-status', [CoalGettingController::class, 'UpdateStatus'])->name('prod.coal.update-status');
+            Route::post('delete', [CoalGettingController::class, 'Delete'])->name('prod.coal.delete');
         });
         Route::prefix('she-ergonomi')->group(function () {
             Route::get('dashboard', [ErgonomiController::class, 'Dashboard'])->name('she.ergonomi.dashboard');
@@ -399,8 +411,10 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/dashboard', [AnakAsuhController::class, 'Dashboard'])->name('prod.anak-asuh.dashboard');
             Route::get('/form/export/{id}', [AnakAsuhController::class, 'ExportForm'])->name('prod.anak-asuh.export');
             Route::get('/form', [AnakAsuhController::class, 'AddForm'])->name('prod.anak-asuh.form');
+            Route::get('/form/edit/{id}', [AnakAsuhController::class, 'EditForm'])->name('prod.anak-asuh.form.edit');
             Route::post('/store', [AnakAsuhController::class, 'Store'])->name('prod.anak-asuh.store');
-            Route::put('/form/{id}', [AnakAsuhController::class, 'Update'])->name('prod.anak-asuh.form.update');
+            Route::post('/update', [AnakAsuhController::class, 'UpdateAnakAsuh'])->name('prod.anak-asuh.update');
+            Route::post('/delete', [AnakAsuhController::class, 'Delete'])->name('prod.anak-asuh.delete');
         });
 
         Route::prefix('plant-compressor')->group(function(){
@@ -475,6 +489,9 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/edit-a2b-baru/{id}', [A2bBaruController::class, 'EditA2bBaru'])->name('prod.a2b-baru.edit');
             Route::post('/form-a2b-baru/{id}', [A2bBaruController::class, 'UpdateA2bBaru'])->name('prod.a2b-baru.update');
             Route::delete('/form-a2b-baru/{id}', [A2bBaruController::class, 'destroy'])->name('prod.a2b-baru.delete');
+            Route::get('/approval-a2b-baru/{id}', [A2bBaruController::class, 'ApprovalA2bBaru'])->name('prod.a2b-baru.approval');
+            Route::post('/approve-a2b-baru/{id}', [A2bBaruController::class, 'ApproveA2bBaru'])->name('prod.a2b-baru.approve');
+            Route::post('/reject-a2b-baru/{id}', [A2bBaruController::class, 'RejectA2bBaru'])->name('prod.a2b-baru.reject');
         });
 
         Route::prefix('ppm-900d')->group(function(){

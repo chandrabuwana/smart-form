@@ -176,16 +176,22 @@
     </div>
 
     <!-- Signatures -->
-    <table style="width: 100%; margin-top: 50px;">
+    <table style="width: 100%; margin-top: 50px; border-collapse: collapse;">
         <tr>
-            <td width="40%" style="text-align: center;">
-                Dibuat Oleh,<br><br><br><br>
-                ( {{ $record->created_by }} )
+            <td style="text-align: left; padding-bottom: 10px;">
+                Dibuat Oleh,
             </td>
-            <td width="20%"></td>
-            <td width="40%" style="text-align: center;">
-                Diketahui Oleh,<br><br><br><br>
-                ( {{ $record->acknowledged_by }} )
+        </tr>
+        <tr>
+            <td style="text-align: left;">
+                <div style="display: inline-block; border-bottom: 1px solid #000; width: 150px;">
+                    {{ $record->created_by }}
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align: left; padding-top: 10px;">
+                Foreman Produksi
             </td>
         </tr>
     </table>

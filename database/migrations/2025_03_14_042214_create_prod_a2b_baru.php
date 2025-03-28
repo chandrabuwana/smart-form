@@ -25,6 +25,10 @@ return new class extends Migration
             $table->string('hmakhir1');
             $table->string('hmakhir2');
             $table->string('kondisi_tubuh');
+            $table->string('operator');
+            $table->string('pengawas');
+            $table->string('status_operator');
+            $table->string('status_pengawas');
             $table->string('question1');
             $table->string('question2');
             $table->string('question3');

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
+use Modules\SmartForm\helpers\HrdHelper;
 
 class A2bBaruController extends Controller
 {
@@ -79,12 +80,15 @@ class A2bBaruController extends Controller
 
                 return view('smartform::production.a2b_baru.form-a2b-baru', [
                     'record' => $record,
-                    'isShowDetail' => true
+                    'isShowDetail' => true,
+                    'approvalList' => HrdHelper::getApprovalList(),
                 ]);
             }
 
             return view('smartform::production.a2b_baru.form-a2b-baru', [
-                'isShowDetail' => false
+                'record' => $record ?? null,
+                'isShowDetail' => false,
+                'approvalList' => HrdHelper::getApprovalList(),
             ]);
         } catch (\Exception $e) {
             Log::error('Error in AddForm: ' . $e->getMessage());
@@ -110,6 +114,10 @@ class A2bBaruController extends Controller
                 'hmawal2' => $request->hmawal2,
                 'hmakhir1' => $request->hmakhir1,
                 'hmakhir2' => $request->hmakhir2,
+                'operator' => $request->operator,
+                'pengawas' => $request->pengawas,
+                'status_operator' => $request->status_operator ?? 'Pending',
+                'status_pengawas' => $request->status_pengawas ?? 'Pending',
                 'catatan_unit' => $request->catatan_unit,
                 'catatan_pengawas' => $request->catatan_pengawas,
                 'kondisi_tubuh' => $request->kondisi_tubuh,
@@ -251,7 +259,11 @@ class A2bBaruController extends Controller
         $record->question12 = json_decode($record->question12);
         $record->deskripsi  = json_decode($record->deskripsi);
 
-        return view('smartform::production.a2b_baru.edit-a2b-baru', compact('record'));
+        return view('smartform::production.a2b_baru.edit-a2b-baru', compact('record'), [
+            'record' => $record,
+            'isShowDetail' => false,
+            'approvalList' => HrdHelper::getApprovalList(),
+        ]);
     }
 
     public function UpdateA2bBaru(Request $request, $id)
@@ -270,6 +282,10 @@ class A2bBaruController extends Controller
                 'hmawal2' => $request->hmawal2,
                 'hmakhir1' => $request->hmakhir1,
                 'hmakhir2' => $request->hmakhir2,
+                'operator' => $request->operator,
+                'pengawas' => $request->pengawas,
+                'status_operator' => $request->status_operator ?? 'Pending',
+                'status_pengawas' => $request->status_pengawas ?? 'Pending',
                 'catatan_unit' => $request->catatan_unit,
                 'catatan_pengawas' => $request->catatan_pengawas,
                 'kondisi_tubuh' => $request->kondisi_tubuh,
@@ -388,6 +404,129 @@ class A2bBaruController extends Controller
         }
     }
 
+    public function ApprovalA2bBaru($id)
+    {
+        $record = DB::table('prod_a2b_baru')
+            ->where('id', $id)
+            ->first();
+
+        $record->question1 = json_decode($record->question1);
+        $record->question2 = json_decode($record->question2);
+        $record->question3 = json_decode($record->question3);
+        $record->question4 = json_decode($record->question4);
+        $record->question5 = json_decode($record->question5);
+        $record->question6 = json_decode($record->question6);
+        $record->question7 = json_decode($record->question7);
+        $record->question8 = json_decode($record->question8);
+        $record->question9 = json_decode($record->question9);
+        $record->question10 = json_decode($record->question10);
+        $record->question11 = json_decode($record->question11);
+        $record->question12 = json_decode($record->question12);
+        $record->deskripsi  = json_decode($record->deskripsi);
+
+        return view('smartform::production.a2b_baru.approval-a2b-baru', compact('record'), [
+            'record' => $record,
+            'isShowDetail' => true,
+            'approvalList' => HrdHelper::getApprovalList(),
+        ]);
+    }
+
+    public function ApproveA2bBaru($id)
+    {
+        try {
+            // Ambil data dari database berdasarkan ID
+            $record = DB::table('prod_a2b_baru')->where('id', $id)->first();
+
+            // Ambil user_id dari session
+            $loggedInUserId = session('user_id');
+
+            if ($record) {
+                // Cek apakah user adalah pemeriksa
+                if ($record->operator == $loggedInUserId) {
+                    DB::table('prod_a2b_baru')
+                        ->where('id', $id)
+                        ->update(['status_operator' => 'Approve']);
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Status operator berhasil diubah menjadi Approve'
+                    ]);
+                }
+
+                // Cek apakah user adalah atasan
+                if ($record->pengawas == $loggedInUserId) {
+                    DB::table('prod_a2b_baru')
+                        ->where('id', $id)
+                        ->update(['status_pengawas' => 'Approve']);
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Status pengawas berhasil diubah menjadi Approve'
+                    ]);
+                }
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda tidak berhak melakukan approve untuk data ini'
+            ], 403);
+        } catch (\Exception $e) {
+            Log::error('Error in A2B Form: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function RejectA2bBaru($id)
+    {
+        try {
+            // Ambil data dari database berdasarkan ID
+            $record = DB::table('prod_a2b_baru')->where('id', $id)->first();
+
+            // Ambil user_id dari session
+            $loggedInUserId = session('user_id');
+
+            if ($record) {
+                // Cek apakah user adalah pemeriksa
+                if ($record->operator == $loggedInUserId) {
+                    DB::table('prod_a2b_baru')
+                        ->where('id', $id)
+                        ->update(['status_operator' => 'Reject']);
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Status operator berhasil diubah menjadi Reject'
+                    ]);
+                }
+
+                // Cek apakah user adalah atasan
+                if ($record->pengawas == $loggedInUserId) {
+                    DB::table('prod_a2b_baru')
+                        ->where('id', $id)
+                        ->update(['status_pengawas' => 'Reject']);
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Status pengawas berhasil diubah menjadi Reject'
+                    ]);
+                }
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda tidak berhak melakukan reject untuk data ini'
+            ], 403);
+        } catch (\Exception $e) {
+            Log::error('Error in A2B Form: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function destroy($id)
     {
         try {
@@ -456,7 +595,10 @@ class A2bBaruController extends Controller
             $record->question12 = $safeJsonDecode($record->question12);
             $record->deskripsi = $safeJsonDecode($record->deskripsi);
 
-            $pdf = PDF::loadView('smartform::production.a2b_baru.export-pdf', compact('record'));
+            $pdf = PDF::loadView('smartform::production.a2b_baru.export-pdf', [
+                'record' => $record,
+                'approvalList' => HrdHelper::getApprovalList() // Pastikan ini ditambahkan
+            ]);
             $pdf->setPaper('a4', 'landscape');
 
             return $pdf->download('FORM A2B BARU_' . $record->doc_number . '.pdf');

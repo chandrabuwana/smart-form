@@ -102,6 +102,7 @@
                                                 <td class="align-middle">
                                                     <input type="number" name="qty_{{ $item['id'] }}" class="form-control"
                                                         value="{{ $itemData ? $itemData['current_qty'] : 0 }}"
+                                                        min="0" 
                                                         {{ $isShowDetail ? 'disabled' : '' }}>
                                                 </td>
                                                 <td class="align-middle">

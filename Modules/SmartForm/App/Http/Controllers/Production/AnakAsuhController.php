@@ -16,6 +16,7 @@ class AnakAsuhController extends Controller
         try {
             $query = DB::table('prod_anak_asuh_monitoring')
                 ->select('*')
+                ->where('isActive', true) // Only show active records
                 ->orderBy('created_at', 'desc');
 
             // Search functionality
@@ -138,6 +139,48 @@ class AnakAsuhController extends Controller
         }
     }
 
+    /**
+     * Display the form in edit mode with existing data
+     * 
+     * @param int $id
+     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
+     */
+    public function EditForm($id)
+    {
+        try {
+            $record = DB::table('prod_anak_asuh_monitoring')
+                ->where('id', $id)
+                ->first();
+
+            if (!$record) {
+                Log::error('Anak Asuh record not found for ID: ' . $id);
+                return redirect()->route('prod.anak-asuh.dashboard')
+                    ->with('error', 'Record not found');
+            }
+
+            // Parse JSON arrays
+            $record->tanggal_items = json_decode($record->tanggal_items);
+            $record->attendance_items = json_decode($record->attendance_items);
+            $record->nama_anak_asuh_items = json_decode($record->nama_anak_asuh_items);
+            $record->review_temuan_items = json_decode($record->review_temuan_items);
+            $record->disiplin_score_items = json_decode($record->disiplin_score_items);
+            $record->skill_score_items = json_decode($record->skill_score_items);
+            $record->attitude_score_items = json_decode($record->attitude_score_items);
+            $record->shift_items = json_decode($record->shift_items);
+
+            Log::info('Anak Asuh record loaded for editing, ID: ' . $id);
+
+            return view('smartform::production.anak_asuh.edit-form', [
+                'record' => $record
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error in EditForm: ' . $e->getMessage());
+            return redirect()->route('prod.anak-asuh.dashboard')
+                ->with('error', 'Failed to load edit form: ' . $e->getMessage());
+        }
+    }
+
     public function Store(Request $request)
     {
         try {
@@ -213,17 +256,35 @@ class AnakAsuhController extends Controller
         }
     }
 
-    public function Update(Request $request, $id)
+    /**
+     * Update an existing Anak Asuh record
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function UpdateAnakAsuh(Request $request)
     {
         try {
-            $data = [
-                'name' => $request->name,
-                'nik' => $request->nik,
-                'jabatan' => $request->jabatan,
-                'departemen' => $request->departemen,
-                'created_by' => $request->created_by,
-                // 'acknowledged_by' => $request->acknowledged_by,
-            ];
+            // Validate the request
+            $validated = $request->validate([
+                'id' => 'required|exists:prod_anak_asuh_monitoring,id',
+                'name' => 'required|string|max:255',
+                'nik' => 'required|string|max:50',
+                'jabatan' => 'required|string|max:255',
+                'departemen' => 'required|string|max:255',
+                'created_by' => 'required|string|max:255',
+            ]);
+
+            // Get the existing record to preserve the doc_number
+            $existingRecord = DB::table('prod_anak_asuh_monitoring')
+                ->where('id', $validated['id'])
+                ->first();
+                
+            if (!$existingRecord) {
+                return redirect()->back()
+                    ->with('error', 'Record not found')
+                    ->withInput();
+            }
 
             // Initialize arrays for multiple entries
             $tanggal_items = [];
@@ -233,6 +294,7 @@ class AnakAsuhController extends Controller
             $disiplin_score_items = [];
             $skill_score_items = [];
             $attitude_score_items = [];
+            $shift_items = [];
 
             // Collect data for each row (10 rows)
             for ($i = 1; $i <= 10; $i++) {
@@ -243,32 +305,48 @@ class AnakAsuhController extends Controller
                 $disiplin_score_items[] = $request->input("disiplin_score_$i");
                 $skill_score_items[] = $request->input("skill_score_$i");
                 $attitude_score_items[] = $request->input("attitude_score_$i");
+                $shift_items[] = $request->input("shift_$i");
             }
 
-            // Add arrays to data
-            $data['tanggal_items'] = json_encode($tanggal_items);
-            $data['attendance_items'] = json_encode($attendance_items);
-            $data['nama_anak_asuh_items'] = json_encode($nama_anak_asuh_items);
-            $data['review_temuan_items'] = json_encode($review_temuan_items);
-            $data['disiplin_score_items'] = json_encode($disiplin_score_items);
-            $data['skill_score_items'] = json_encode($skill_score_items);
-            $data['attitude_score_items'] = json_encode($attitude_score_items);
+            // Begin transaction for data integrity
+            DB::beginTransaction();
 
+            // Update the record
             DB::table('prod_anak_asuh_monitoring')
-                ->where('id', $id)
-                ->update($data);
+                ->where('id', $validated['id'])
+                ->update([
+                    'name' => $validated['name'],
+                    'nik' => $validated['nik'],
+                    'jabatan' => $validated['jabatan'],
+                    'departemen' => $validated['departemen'],
+                    'created_by' => $validated['created_by'],
+                    'tanggal_items' => json_encode($tanggal_items),
+                    'attendance_items' => json_encode($attendance_items),
+                    'nama_anak_asuh_items' => json_encode($nama_anak_asuh_items),
+                    'review_temuan_items' => json_encode($review_temuan_items),
+                    'disiplin_score_items' => json_encode($disiplin_score_items),
+                    'skill_score_items' => json_encode($skill_score_items),
+                    'attitude_score_items' => json_encode($attitude_score_items),
+                    'shift_items' => json_encode($shift_items),
+                    'updated_at' => now()
+                ]);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Data berhasil diperbarui'
-            ]);
+            // Commit the transaction
+            DB::commit();
 
+            Log::info('Anak Asuh record updated successfully. ID: ' . $validated['id']);
+            
+            return redirect()->route('prod.anak-asuh.dashboard')
+                ->with('success', 'Record updated successfully');
+                
         } catch (\Exception $e) {
-            Log::error('Error in Update: ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to update record: ' . $e->getMessage()
-            ], 500);
+            // Rollback the transaction in case of error
+            DB::rollBack();
+            
+            Log::error('Error updating Anak Asuh record: ' . $e->getMessage());
+            return redirect()->back()
+                ->with('error', 'Failed to update record: ' . $e->getMessage())
+                ->withInput();
         }
     }
 
@@ -305,7 +383,8 @@ class AnakAsuhController extends Controller
             $record->attitude_score_items = $safeJsonDecode($record->attitude_score_items);
             $record->shift_items = $safeJsonDecode($record->shift_items);
 
-            $pdf = PDF::loadView('smartform::production.anak_asuh.export-pdf', compact('record'));
+            // Use Barryvdh\DomPDF\Facade\Pdf instead of PDF alias
+            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('smartform::production.anak_asuh.export-pdf', compact('record'));
             $pdf->setPaper('a4', 'portrait');
             
             return $pdf->download('Anak_Asuh_Monitoring_' . $record->doc_number . '.pdf');
@@ -318,19 +397,79 @@ class AnakAsuhController extends Controller
         }
     }
 
+    /**
+     * Soft delete an Anak Asuh record by setting isActive to false
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function Delete(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'id' => 'required|exists:prod_anak_asuh_monitoring,id',
+            ]);
+
+            DB::beginTransaction();
+            
+            DB::table('prod_anak_asuh_monitoring')
+                ->where('id', $validated['id'])
+                ->update([
+                    'isActive' => false, // Set to false to mark as deleted
+                    'updated_at' => now()
+                ]);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Anak Asuh record has been deleted successfully',
+            ]);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error deleting Anak Asuh record: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while deleting the record',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     private function generateDocNumber()
     {
         $today = Carbon::now();
-        $count = DB::table('prod_anak_asuh_monitoring')
-            ->whereYear('created_at', $today->year)
-            ->whereMonth('created_at', $today->month)
-            ->count();
-
-        return sprintf(
-            'BSS-FRM-PROD-03-%s%s-%03d',
+        $prefix = sprintf(
+            'BSS-FRM-PROD-03-%s%s-',
             $today->format('y'),
-            $today->format('m'),
-            $count + 1
+            $today->format('m')
         );
+        
+        // Find the highest existing number for this month and year
+        $highestRecord = DB::table('prod_anak_asuh_monitoring')
+            ->where('doc_number', 'like', $prefix . '%')
+            ->orderByRaw('LEN(doc_number) DESC, doc_number DESC')
+            ->first();
+            
+        $nextNumber = 1;
+        
+        if ($highestRecord) {
+            // Extract the numeric part from the existing doc number
+            $lastPart = substr($highestRecord->doc_number, strlen($prefix));
+            if (is_numeric($lastPart)) {
+                $nextNumber = intval($lastPart) + 1;
+            }
+        }
+        
+        // Format with leading zeros (3 digits)
+        return $prefix . sprintf('%03d', $nextNumber);
     }
 }
