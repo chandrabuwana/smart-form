@@ -288,17 +288,17 @@
     <table class="signature-table">
         <tr>
             <td width="15%">Diinspeksi Oleh</td>
-            <td width="25%">: {{ $record->inspected_by }}</td>
+            <td width="25%">: {{ $record->inspected_by_name }}</td>
             <td width="15%">Tanda Tangan</td>
-            <td width="20%">: {{ $record->inspected_signature ? 'Signed' : '' }}</td>
+            <td width="20%">: {{  'Signed' }}</td>
             <td width="10%">Tanggal</td>
             <td width="15%">: {{ $record->formatted_inspection_date }}</td>
         </tr>
         <tr>
             <td>Mengetahui</td>
-            <td>: {{ $record->acknowledged_by }}</td>
+            <td>: {{ $record->acknowledged_by_name }}</td>
             <td>Tanda Tangan</td>
-            <td>: {{ $record->acknowledged_signature ? 'Signed' : '' }}</td>
+            <td width="20%">: {{ $record->approval_status === 'approved' ? 'Signed' : '' }}</td>
             <td>Tanggal</td>
             <td>: {{ $record->formatted_acknowledgment_date }}</td>
         </tr>

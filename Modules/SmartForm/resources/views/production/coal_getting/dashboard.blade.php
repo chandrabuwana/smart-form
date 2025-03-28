@@ -207,9 +207,6 @@
                                                 <a href="{{ route('prod.coal.form', ['id' => $record->id]) }}" class="btn btn-primary btn-sm d-inline-flex align-items-center justify-content-center">
                                                     <i class="fas fa-eye me-1"></i> Detail
                                                 </a>
-                                                <button type="button" class="btn btn-danger btn-sm d-inline-flex align-items-center justify-content-center btn-delete" data-id="{{ $record->id }}">
-                                                    <i class="fas fa-trash me-1"></i> Delete
-                                                </button>
                                                 @php
                                                     $user = Auth::user();
                                                 @endphp
@@ -225,6 +222,12 @@
                                                     <a href="{{ route('prod.coal.form.edit', ['id' => $record->id]) }}" class="btn btn-info btn-sm">
                                                         <i class="fas fa-edit"></i> Edit
                                                     </a>
+                                                    
+                                                @endif
+                                                @if(trim($record->inspected_by_nik) === trim($user->userid))
+                                                <button type="button" class="btn btn-danger btn-sm d-inline-flex align-items-center justify-content-center btn-delete" data-id="{{ $record->id }}">
+                                                    <i class="fas fa-trash me-1"></i> Delete
+                                                </button>
                                                 @endif
                                             </td>
                                         </tr>
