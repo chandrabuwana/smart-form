@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('start_loading');
             $table->string('stop_loading');
             $table->string('shift');
+            $table->string('status');
             $table->string('operator_leader');
             $table->string('pic_area');
             $table->string('alat_angkut');

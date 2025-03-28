@@ -28,7 +28,7 @@
                         </div>
                     </div>
 
-                    <form id="formChecker" method="POST">
+                    <form id="postForm" method="POST">
                         @csrf
                         <div class="mx-3">
                             <!-- Basic Information -->
@@ -91,7 +91,10 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="nama_pic" class="ms-0">Nama PIC</label>
-                                        <input type="text" class="form-control" id="nama-pic" name="nama_pic"required>
+                                        <input type="text" class="form-control" id="nama-pic"
+                                            value="{{ optional(collect($approvalList)->firstWhere('nik', $nik))->nama ?? '' }}"
+                                            readonly>
+                                        <input type="hidden" name="nama_pic" value="{{ $nik }}">
                                     </div>
                                 </div>
                             </div>
@@ -220,12 +223,10 @@
                                 <div class="col-6">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="dibuat" class="ms-0">Dibuat Oleh</label>
-                                        <select name="dibuat_oleh" id="dibuat_oleh" class="form-control" required>
-                                            <option disabled selected>-- Select Creator --</option>
-                                            @foreach ($approvalList as $data)
-                                                <option value="{{ $data->nama }}">{{ $data->nama }}</option>
-                                            @endforeach
-                                        </select>
+                                        <input type="text" class="form-control" id="dibuat"
+                                            value="{{ optional(collect($approvalList)->firstWhere('nik', $nik))->nama ?? '' }}"
+                                            readonly>
+                                        <input type="hidden" name="dibuat_oleh" value="{{ $nik }}">
                                     </div>
                                 </div>
                                 <div class="col-6">
@@ -234,7 +235,7 @@
                                         <select name="diperiksa_oleh" id="diperiksa" class="form-control" required>
                                             <option disabled selected>-- Select Approval --</option>
                                             @foreach ($approvalList as $data)
-                                                <option value="{{ $data->nama }}">{{ $data->nama }}</option>
+                                                <option value="{{ $data->nik }}">{{ $data->nama }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -335,18 +336,14 @@
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <script>
-        $(document).ready(function() {
-            $('#dibuat_oleh').select2();
-            $('#diperiksa').select2();
-        });
         $(function() {
-            var form = $("#formChecker");
+            var form = $("#postForm");
             var submitBtn = form.find('button[type="submit"]');
 
             form.submit(function(e) {
                 e.preventDefault();
                 submitBtn.prop('disabled', true);
-
+                console.log('submit');
                 var formData = new FormData(this);
 
                 axios.post('{{ route('prod.checker.submit') }}', formData)
@@ -386,6 +383,13 @@
 
             });
         });
+
+
+        $(document).ready(function() {
+            $('#dibuat_oleh').select2();
+            $('#diperiksa').select2();
+        });
+
         document.getElementById('shiftSelector').addEventListener('change', function() {
             var selectedShift = this.value;
 

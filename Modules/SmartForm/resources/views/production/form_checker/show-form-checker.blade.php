@@ -28,30 +28,32 @@
                         </div>
                     </div>
 
-                    <form action="" method="POST">
+                    <form id="formChecker" method="POST">
                         @csrf
                         <div class="mx-3">
+                            <input type="hidden" name="status" value="{{ $record->status }}">
+                            <input type="text" name="doc_num" value="{{ $record->doc_num }}" hidden>
                             <!-- Basic Information -->
                             <div class="row mb-3">
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="date" class="ms-0">Tanggal</label>
                                         <input type="date" class="form-control" value="{{ $record->tanggal }}"
-                                            id="date" name="date" disabled>
+                                            id="date" name="date">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="alat_pc" class="ms-0">Alat Muat PC:</label>
                                         <input type="text" class="form-control" id="alat_pc" name="alat_pc"
-                                            value="{{ $record->alat_muat[0] }}" disabled>
+                                            value="{{ $record->alat_muat[0] }}">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="alat_x" class="ms-0">Alat Muat X:</label>
                                         <input type="text" class="form-control" id="alat_x" name="alat_x"
-                                            value="{{ $record->alat_muat[1] }}" disabled>
+                                            value="{{ $record->alat_muat[1] }}">
                                     </div>
                                 </div>
 
@@ -61,25 +63,25 @@
                                     <div class="input-group input-group-static mb-3">
                                         <label for="start_load" class="ms-0">Start Loading</label>
                                         <input type="time" class="form-control" value="{{ $record->start_loading }}"
-                                            id="start_load" name="start_load" disabled>
+                                            id="start_load" name="start_load">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="stop_load" class="ms-0">Stop Loading</label>
                                         <input type="time" class="form-control" id="stop_load"
-                                            value="{{ $record->stop_loading }}" name="stop_load" disabled>
+                                            value="{{ $record->stop_loading }}" name="stop_load">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="shift" class="ms-0">Shift</label>
-                                        <select class="form-control" name="shift" id="shiftSelector" disabled>
+                                        <select class="form-control" name="shift" id="shiftSelector">
                                             <option disabled selected>-- Select Shift --</option>
                                             <option value="DS"
                                                 {{ old('shift', $record->shift ?? '') == 'DS' ? 'selected' : '' }}>
                                                 DS</option>
-                                            <option value="DS"
+                                            <option value="NS"
                                                 {{ old('shift', $record->shift ?? '') == 'NS' ? 'selected' : '' }}>
                                                 NS</option>
                                         </select>
@@ -92,14 +94,16 @@
                                     <div class="input-group input-group-static mb-3">
                                         <label for="operator_load" class="ms-0">Nama Operator Loader</label>
                                         <input type="text" class="form-control" id="operator_load"
-                                            value="{{ $record->operator_leader }}" name="operator_load" disabled>
+                                            value="{{ $record->operator_leader }}" name="operator_load">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="nama_pic" class="ms-0">Nama PIC</label>
                                         <input type="text" class="form-control" id="nama-pic"
-                                            value="{{ $record->pic_area }}" name="nama_pic" disabled>
+                                            value="{{ optional(collect($approvalList)->firstWhere('nik', $record->pic_area))->nama ?? '' }}"
+                                            readonly>
+                                        <input type="hidden" name="nama_pic" value="{{ $record->pic_area }}">
                                     </div>
                                 </div>
                             </div>
@@ -113,8 +117,7 @@
                                                 <th>CN</th>
                                                 <th colspan="4" class="text-center">
                                                     <input class="form-control" type="text" name="alat_angkut"
-                                                        placeholder="Input Alat Angkut" disabled
-                                                        value="{{ $alat }}"
+                                                        placeholder="Input Alat Angkut" value="{{ $alat }}"
                                                         style="text-align: center; background-color: #eee7e8; color: rgb(11, 10, 10);">
                                                 </th>
                                                 <th>∑</th>
@@ -126,7 +129,7 @@
                                                     <input class="form-control" type="text" name="nama_operator"
                                                         style="text-align: center; background-color: #eee7e8; color: rgb(11, 10, 10);"
                                                         placeholder="Input Nama Operator"
-                                                        value="{{ $record->nama_operator[$index] }}" disabled>
+                                                        value="{{ $record->nama_operator[$index] }}">
                                                 </th>
                                                 <th>RITASI</th>
                                             </tr>
@@ -144,16 +147,16 @@
                                                     @for ($i = 1; $i <= 5; $i++)
                                                         <td>
                                                             <input type="time" class="time-input form-control"
-                                                                value="{{ $time_details[$counts][$index]->{$i} }}"
-                                                                disabled>
+                                                                name="time[{{ $counts }}][{{ $i }}]"
+                                                                value="{{ $time_details[$counts][$index]->{$i} }}">
                                                         </td>
                                                     @endfor
                                                     <td>
                                                         <input type="text" class="form-control text-center"
-                                                            value="{{ $nonNullCounts[$counts][$index] }}" disabled>
+                                                            value="{{ $nonNullCounts[$counts][$index] }}">
                                                     </td>
                                                     <td>
-                                                        <textarea class="form-control" name="material[]" cols="5" disabled>{{ $record->material[$index][$id] }}</textarea>
+                                                        <textarea class="form-control" name="material[]" cols="5">{{ $record->material[$index][$id] }}</textarea>
                                                     </td>
                                                 </tr>
                                                 @php
@@ -169,7 +172,7 @@
 
 
 
-                            <div class="bg-gradient-success rounded p-2">
+                            <div class="bg-gradient-success rounded p-2 mt-2">
                                 <div id="row-container">
                                     <h6 class="custom-text-color">IDENTIFIKASI TINDAKAN YANG DILAKUKAN</h6>
                                     @foreach ($record->kendala as $index => $kendala)
@@ -178,15 +181,14 @@
                                                 <div class="input-group input-group-static mb-3">
                                                     <label class="custom-text-color">Kendala / Lokasi</label>
                                                     <input type="text" class="form-control"
-                                                        value="{{ $kendala }}" name="kendala[]" disabled>
+                                                        value="{{ $kendala }}" name="kendala[]">
                                                 </div>
                                             </div>
                                             <div class="col-3 mt-4">
                                                 <div class="input-group input-group-static mb-3">
                                                     <label class="custom-text-color">Waktu Mulai</label>
                                                     <input type="time" class="form-control"
-                                                        value="{{ $record->waktu_mulai[$index] }}" name="waktu_mulai[]"
-                                                        disabled>
+                                                        value="{{ $record->waktu_mulai[$index] }}" name="waktu_mulai[]">
                                                 </div>
                                             </div>
                                             <div class="col-3 mt-4">
@@ -194,14 +196,14 @@
                                                     <label class="custom-text-color">Waktu Selesai</label>
                                                     <input type="time" class="form-control"
                                                         value="{{ $record->waktu_selesai[$index] }}"
-                                                        name="waktu_selesai[]" disabled>
+                                                        name="waktu_selesai[]">
                                                 </div>
                                             </div>
                                             <div class="col-3 mt-4">
                                                 <div class="input-group input-group-static mb-3">
                                                     <label class="custom-text-color">Keterangan</label>
                                                     <input type="text" value="{{ $record->keterangan[$index] }}"
-                                                        class="form-control" name="keterangan[]" disabled>
+                                                        class="form-control" name="keterangan[]">
                                                 </div>
 
                                             </div>
@@ -217,7 +219,7 @@
                                         <div class="input-group input-group-static mb-3">
                                             <label>Loading Point</label>
                                             <input type="text" class="form-control"
-                                                value="{{ $record->loading_point }}" name="loading_point" disabled>
+                                                value="{{ $record->loading_point }}" name="loading_point">
                                         </div>
                                     </div>
                                 </div>
@@ -226,7 +228,7 @@
                                         <div class="input-group input-group-static mb-3">
                                             <label>Jarak (M)</label>
                                             <input type="text" class="form-control" value="{{ $record->jarak }}"
-                                                name="jarak" disabled>
+                                                name="jarak">
                                         </div>
                                     </div>
                                 </div>
@@ -235,7 +237,7 @@
                                         <div class="input-group input-group-static mb-3">
                                             <label>Disposal</label>
                                             <input type="text" class="form-control" value="{{ $record->disposal }}"
-                                                name="disposal" disabled>
+                                                name="disposal">
                                         </div>
                                     </div>
                                 </div>
@@ -247,14 +249,22 @@
                                     <div class="input-group input-group-static mb-3">
                                         <label for="dibuat" class="ms-0">Dibuat Oleh</label>
                                         <input type="text" class="form-control" id="dibuat"
-                                            value="{{ $record->checker }}" name="dibuat_oleh" disabled>
+                                            value="{{ optional(collect($approvalList)->firstWhere('nik', $record->checker))->nama ?? '' }}"
+                                            readonly>
+                                        <input type="hidden" name="dibuat_oleh" value="{{ $record->checker }}">
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="diperiksa" class="ms-0">Diperiksa Oleh</label>
-                                        <input type="text" class="form-control" id="diperiksa"
-                                            value="{{ $record->pengawas }}" name="diperiksa_oleh" disabled>
+                                        <select name="diperiksa_oleh" id="diperiksa" class="form-control" required>
+                                            <option disabled selected>-- Select Validator --</option>
+                                            @foreach ($approvalList as $user)
+                                                <option value="{{ $user->nik }}"
+                                                    {{ old('validated', $record->pengawas ?? '') == $user->nik ? 'selected' : '' }}>
+                                                    {{ $user->nama }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -262,13 +272,13 @@
                                         <div class="form-actions">
                                             <a href="{{ route('prod.form.checker.dashboard') }}"
                                                 class="btn btn-secondary">Cancel</a>
-                                            <a href="{{ route('prod.form.checker.export', ['id' => $record->id]) }}"
-                                                class="btn btn-primary">Export</a>
+                                            <button type="submit" class="btn btn-primary">Update</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                     </form>
+
 
                 </div>
             </div>
@@ -348,9 +358,59 @@
 @endsection
 
 @section('custom-js')
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+
     <script>
+        $(function() {
+            var form = $("#formChecker");
+            var submitBtn = form.find('button[type="submit"]');
+
+            form.submit(function(e) {
+                e.preventDefault();
+                submitBtn.prop('disabled', true);
+
+                var formData = new FormData(this);
+
+                axios.post('{{ route('prod.form.checker.update') }}', formData)
+                    .then(function(response) {
+                        if (response.data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: response.data.message
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href =
+                                        '{{ route('prod.form.checker.dashboard') }}';
+                                }
+                            });
+                        }
+                    })
+                    .catch(function(error) {
+                        let errorMessage = 'Terjadi kesalahan pada sistem';
+                        if (error.response) {
+                            if (error.response.data.errors) {
+                                errorMessage = Object.values(error.response.data.errors).flat().join(
+                                    '\n');
+                            } else if (error.response.data.message) {
+                                errorMessage = error.response.data.message;
+                            }
+                        }
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: errorMessage
+                        });
+                    })
+                    .finally(function() {
+                        submitBtn.prop('disabled', false);
+                    });
+
+            });
+        });
         document.getElementById('shiftSelector').addEventListener('change', function() {
             var selectedShift = this.value;
 

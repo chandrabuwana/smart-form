@@ -15,6 +15,7 @@ use Modules\SmartForm\helpers\HrdHelper;
 
 class FormCheckerController extends Controller {
     public function dashboard(Request $request) {
+        $nik_session = $request->session()->get( 'user_id', '' );
         try {
             $query = DB::table( 'prod_checker_form' )
             ->select( '*' )
@@ -47,7 +48,7 @@ class FormCheckerController extends Controller {
         ];
 
             $records = $query->paginate( 5 );
-            return view( 'smartform::production.form_checker.dashboard-form-checker', [ 'record' => $records, 'statistics'=>$statistics, 'filters' => [
+            return view( 'smartform::production.form_checker.dashboard-form-checker', [ 'record' => $records, 'session'=>$nik_session, 'user'=> HrdHelper::getApprovalList(), 'statistics'=>$statistics, 'filters' => [
             'search' => $request->search,
             'shift' => $request->shift,
             'date' => $request->date,
@@ -59,7 +60,102 @@ class FormCheckerController extends Controller {
 
     }
 
+    public function ShowFormChecker($id, Request $request) {
+        $nik_session = $request->session()->get( 'user_id', '' );
+        $dataDS = [
+            '06-00 sd 07.00',
+            '07-00 sd 08.00',
+            '08-00 sd 09.00',
+            '09-00 sd 10.00',
+            '10-00 sd 11.00',
+            '11-00 sd 12.00',
+            '12-00 sd 13.00',
+            '13-00 sd 14.00',
+            '14-00 sd 15.00',
+            '15-00 sd 16.00',
+            '16-00 sd 17.00',
+            '17-00 sd 18.00',
+        ];
+        $dataNS = [
+            '18-00 sd 19.00',
+            '19-00 sd 20.00',
+            '20-00 sd 21.00',
+            '21-00 sd 22.00',
+            '22-00 sd 23.00',
+            '23-00 sd 00.00',
+            '00-00 sd 01.00',
+            '01-00 sd 02.00',
+            '02-00 sd 03.00',
+            '03-00 sd 04.00',
+            '04-00 sd 05.00',
+            '05-00 sd 06.00',
+        ];
+        $record = DB::table( 'prod_checker_form' )
+        ->where( 'id', $request->id )
+        ->first();
+        // Parse JSON arrays
+        $record->alat_muat = json_decode( $record->alat_muat );
+        $record->alat_angkut = json_decode( $record->alat_angkut );
+        $record->nama_operator = json_decode( $record->nama_operator );
+        $record->time_detail1 = json_decode( $record->time_detail1 );
+        $record->time_detail2 = json_decode( $record->time_detail2 );
+        $record->time_detail3 = json_decode( $record->time_detail3 );
+        $record->time_detail4 = json_decode( $record->time_detail4 );
+        $record->time_detail5 = json_decode( $record->time_detail5 );
+        $record->time_detail6 = json_decode( $record->time_detail6 );
+        $record->time_detail7 = json_decode( $record->time_detail7 );
+        $record->time_detail8 = json_decode( $record->time_detail8 );
+        $record->time_detail9 = json_decode( $record->time_detail9 );
+        $record->time_detail10 = json_decode( $record->time_detail10 );
+        $record->time_detail11 = json_decode( $record->time_detail11 );
+        $record->time_detail12 = json_decode( $record->time_detail12 );
+        $record->material = json_decode( $record->material );
+        $record->waktu_mulai = json_decode( $record->waktu_mulai );
+        $record->waktu_selesai = json_decode( $record->waktu_selesai );
+        $record->keterangan = json_decode( $record->keterangan );
+        $record->kendala = json_decode( $record->kendala );
+
+        $time_details = [];
+
+
+        for ($i = 1; $i <= 12; $i++) {
+
+            $time_detail_key = "time_detail" . $i;
+
+
+            if (isset($record->$time_detail_key)) {
+
+                $time_details[$i] = $record->$time_detail_key;
+            }
+        }
+
+        $nonNullCounts = [];
+
+        foreach ($time_details as $key => $timeDetail) {
+            $nonNullCounts[$key] = [];
+
+
+            foreach ($timeDetail as $index => $times) {
+                $nonNullCount = 0;
+
+
+                foreach ($times as $time) {
+                    if ($time !== null) {
+                        $nonNullCount++;
+                    }
+                }
+                $nonNullCounts[$key][$index] = $nonNullCount;
+            }
+        }
+
+
+        return view( 'smartform::production.form_checker.detail-form-checker', [
+            'record' => $record, 'dataDS' => $dataDS, 'dataNS' => $dataNS, 'nik'=>$nik_session, 'time_details' => $time_details, 'nonNullCounts' => $nonNullCounts,  'approvalList' => HrdHelper::getApprovalList()
+
+        ] );
+    }
     public function AddFormChecker( Request $request ) {
+        $nik_session = $request->session()->get( 'user_id', '' );
         $dataDS = [
             '06-00 sd 07.00',
             '07-00 sd 08.00',
@@ -89,84 +185,256 @@ class FormCheckerController extends Controller {
             '05-00 sd 06.00',
         ];
         if ( $request->has( 'id' ) ) {
-            $record = DB::table( 'prod_checker_form' )
-            ->where( 'id', $request->id )
-            ->first();
 
-            if ( !$record ) {
-                Log::error( 'Compressor Pompa record not found for ID: ' . $request->id );
-                return redirect()->route( 'plant.compressor.dashboard' )
-                ->with( 'error', 'Record not found' );
-            }
-
-            // Parse JSON arrays
-            $record->alat_muat = json_decode( $record->alat_muat );
-            $record->alat_angkut = json_decode( $record->alat_angkut );
-            $record->nama_operator = json_decode( $record->nama_operator );
-            $record->time_detail1 = json_decode( $record->time_detail1 );
-            $record->time_detail2 = json_decode( $record->time_detail2 );
-            $record->time_detail3 = json_decode( $record->time_detail3 );
-            $record->time_detail4 = json_decode( $record->time_detail4 );
-            $record->time_detail5 = json_decode( $record->time_detail5 );
-            $record->time_detail6 = json_decode( $record->time_detail6 );
-            $record->time_detail7 = json_decode( $record->time_detail7 );
-            $record->time_detail8 = json_decode( $record->time_detail8 );
-            $record->time_detail9 = json_decode( $record->time_detail9 );
-            $record->time_detail10 = json_decode( $record->time_detail10 );
-            $record->time_detail11 = json_decode( $record->time_detail11 );
-            $record->time_detail12 = json_decode( $record->time_detail12 );
-            $record->material = json_decode( $record->material );
-            $record->waktu_mulai = json_decode( $record->waktu_mulai );
-            $record->waktu_selesai = json_decode( $record->waktu_selesai );
-            $record->keterangan = json_decode( $record->keterangan );
-            $record->kendala = json_decode( $record->kendala );
-
-            $time_details = [];
-
-
-            for ($i = 1; $i <= 12; $i++) {
-
-                $time_detail_key = "time_detail" . $i;
-
-
-                if (isset($record->$time_detail_key)) {
-
-                    $time_details[$i] = $record->$time_detail_key;
-                }
-            }
-
-            $nonNullCounts = [];
-
-            foreach ($time_details as $key => $timeDetail) {
-                $nonNullCounts[$key] = [];
-
-
-                foreach ($timeDetail as $index => $times) {
-                    $nonNullCount = 0;
-
-
-                    foreach ($times as $time) {
-                        if ($time !== null) {
-                            $nonNullCount++;
-                        }
-                    }
-                    $nonNullCounts[$key][$index] = $nonNullCount;
-                }
-            }
-
-
-            return view( 'smartform::production.form_checker.show-form-checker', [
-                'record' => $record, 'dataDS' => $dataDS, 'dataNS' => $dataNS, 'time_details' => $time_details, 'nonNullCounts' => $nonNullCounts,  'approvalList' => HrdHelper::getApprovalList()
-
-            ] );
         }
-        return view( 'smartform::production.form_checker.form-checker', ['dataDS' => $dataDS, 'dataNS'=> $dataNS,  'approvalList' => HrdHelper::getApprovalList()] );
+        return view( 'smartform::production.form_checker.form-checker', ['dataDS' => $dataDS, 'nik'=>$nik_session, 'dataNS'=> $dataNS,  'approvalList' => HrdHelper::getApprovalList()] );
     }
 
+    public function detail($id, Request $request) {
+        $nik_session = $request->session()->get( 'user_id', '' );
+        $dataDS = [
+            '06-00 sd 07.00',
+            '07-00 sd 08.00',
+            '08-00 sd 09.00',
+            '09-00 sd 10.00',
+            '10-00 sd 11.00',
+            '11-00 sd 12.00',
+            '12-00 sd 13.00',
+            '13-00 sd 14.00',
+            '14-00 sd 15.00',
+            '15-00 sd 16.00',
+            '16-00 sd 17.00',
+            '17-00 sd 18.00',
+        ];
+        $dataNS = [
+            '18-00 sd 19.00',
+            '19-00 sd 20.00',
+            '20-00 sd 21.00',
+            '21-00 sd 22.00',
+            '22-00 sd 23.00',
+            '23-00 sd 00.00',
+            '00-00 sd 01.00',
+            '01-00 sd 02.00',
+            '02-00 sd 03.00',
+            '03-00 sd 04.00',
+            '04-00 sd 05.00',
+            '05-00 sd 06.00',
+        ];
+        $record = DB::table( 'prod_checker_form' )
+        ->where( 'id', $id )
+        ->first();
 
+
+        // Parse JSON arrays
+        $record->alat_muat = json_decode( $record->alat_muat );
+        $record->alat_angkut = json_decode( $record->alat_angkut );
+        $record->nama_operator = json_decode( $record->nama_operator );
+        $record->time_detail1 = json_decode( $record->time_detail1 );
+        $record->time_detail2 = json_decode( $record->time_detail2 );
+        $record->time_detail3 = json_decode( $record->time_detail3 );
+        $record->time_detail4 = json_decode( $record->time_detail4 );
+        $record->time_detail5 = json_decode( $record->time_detail5 );
+        $record->time_detail6 = json_decode( $record->time_detail6 );
+        $record->time_detail7 = json_decode( $record->time_detail7 );
+        $record->time_detail8 = json_decode( $record->time_detail8 );
+        $record->time_detail9 = json_decode( $record->time_detail9 );
+        $record->time_detail10 = json_decode( $record->time_detail10 );
+        $record->time_detail11 = json_decode( $record->time_detail11 );
+        $record->time_detail12 = json_decode( $record->time_detail12 );
+        $record->material = json_decode( $record->material );
+        $record->waktu_mulai = json_decode( $record->waktu_mulai );
+        $record->waktu_selesai = json_decode( $record->waktu_selesai );
+        $record->keterangan = json_decode( $record->keterangan );
+        $record->kendala = json_decode( $record->kendala );
+
+        $time_details = [];
+
+
+        for ($i = 1; $i <= 12; $i++) {
+
+            $time_detail_key = "time_detail" . $i;
+
+
+            if (isset($record->$time_detail_key)) {
+
+                $time_details[$i] = $record->$time_detail_key;
+            }
+        }
+
+        $nonNullCounts = [];
+
+        foreach ($time_details as $key => $timeDetail) {
+            $nonNullCounts[$key] = [];
+
+
+            foreach ($timeDetail as $index => $times) {
+                $nonNullCount = 0;
+
+
+                foreach ($times as $time) {
+                    if ($time !== null) {
+                        $nonNullCount++;
+                    }
+                }
+                $nonNullCounts[$key][$index] = $nonNullCount;
+            }
+        }
+
+
+        return view( 'smartform::production.form_checker.show-form-checker', [
+            'record' => $record, 'dataDS' => $dataDS, 'dataNS' => $dataNS, 'nik'=>$nik_session, 'time_details' => $time_details, 'nonNullCounts' => $nonNullCounts,  'approvalList' => HrdHelper::getApprovalList()
+
+        ] );
+    }
+
+    public function Update( Request $request ) {
+
+
+        try {
+            $data = [
+                'doc_num' => $request->doc_num,
+                'tanggal' => $request->date,
+                'alat_muat' => json_encode( array_values( [ $request->alat_pc, $request->alat_x ] ) ),
+                'start_loading' => $request->start_load,
+                'stop_loading' => $request->stop_load ,
+                'shift' => $request->shift,
+                'operator_leader' => $request->operator_load,
+                'pic_area' => $request->nama_pic,
+                'loading_point' => $request->loading_point,
+                'jarak' => $request->jarak,
+                'status' => $request->status,
+                'disposal' => $request->disposal,
+                'checker' => $request->dibuat_oleh,
+                'pengawas' => $request->diperiksa_oleh,
+                'waktu_mulai' => json_encode( array_values( $request->waktu_mulai ) ),
+                'waktu_selesai' =>json_encode( array_values( $request->waktu_selesai ) ),
+                'keterangan' =>json_encode( array_values( $request->keterangan ) ),
+                'kendala' => json_encode( array_values( $request->kendala ) ),
+                'updated_at' => Carbon::now()
+
+            ];
+
+
+            $alat = [];
+            $time = [];
+            $operator = [];
+
+            // insert to array alat angkut, nama operator, time detail, material
+            foreach ( $request->all() as $key => $value ) {
+
+                if ( stripos( $key, 'alat_angkut' ) !== false ) {
+                    $alat[] =  $value ;
+                }
+                if ( stripos( $key, 'nama_operator' ) !== false ) {
+                    $operator[] =  $value;
+                }
+                if ( stripos( $key, 'time' ) !== false ) {
+                    $time[] =  $value ;
+                }
+                if ( stripos( $key, 'material' ) !== false ) {
+                    $data[ 'material' ][] =  $value;
+                }
+            }
+
+            $data[ 'alat_angkut' ] = json_encode( array_values( $alat ) );
+            $data[ 'nama_operator' ] = json_encode( array_values( $operator ) );
+
+
+                    $filteredTime = [];
+                    $filteredMaterial = [];
+                    foreach ($time as $array) {
+                    $filteredTime[] = array_slice($array, 0, 12);
+                    }
+                    foreach ($data[ 'material' ] as $mat) {
+                        $filteredMaterial[] = array_slice($mat, 0, 12);
+                    }
+
+
+            $time = $filteredTime ;
+            $data[ 'material' ] = json_encode( array_values( $filteredMaterial ) );
+            for ( $i = 0; $i < count( $time[ 0 ] );
+            $i++ ) {
+                $time_detail_key = 'time_detail' . ( $i + 1 );
+                $time_detail_values = [];
+
+                foreach ( $time as $detail_array ) {
+                    $time_detail_values[] = $detail_array[ $i ];
+                }
+
+                $data[ $time_detail_key ] = json_encode( array_values( $time_detail_values ) );
+            }
+
+            DB::table( 'prod_checker_form' )
+            ->where( 'doc_num', $request->doc_num )
+            ->update( $data );
+            return response()->json( [
+                'success' => true,
+                'message' => 'Data berhasil diUpdate'
+            ] );
+
+
+        } catch ( QueryException $e ) {
+            Log::error( 'Error in Store: ' . $e->getMessage() );
+
+            return response()->json( [
+                'success' => false,
+                'message' => 'Data gagal disimpan'
+            ] );
+
+        }
+    }
+    public function Approve( Request $request ) {
+
+        $data = [
+            'status' => $request->checked,
+            'updated_at' => Carbon::now()
+        ];
+
+        DB::table( 'prod_checker_form' )
+        ->where( 'doc_num', $request->doc_num )
+        ->update( $data );
+
+        return response()->json( [
+            'success' => true,
+            'message' => 'Data berhasil di Approve'
+        ] );
+
+    }
+    public function Reset( $id ) {
+
+        $data = [
+            'status' => 'Draft',
+            'updated_at' => Carbon::now()
+        ];
+
+        DB::table( 'prod_checker_form' )
+        ->where( 'doc_num', $id )
+        ->update( $data );
+
+        return response()->json( [
+            'success' => true,
+            'message' => 'Data berhasil di Reset'
+        ] );
+
+    }
+    public function Reject( Request $request ) {
+        $data = [
+            'status' => $request->checked,
+            'updated_at' => Carbon::now()
+        ];
+        ;
+
+        DB::table( 'prod_checker_form' )
+        ->where( 'doc_num', $request->doc_num )
+        ->update( $data );
+
+        return response()->json( [
+            'success' => true,
+            'message' => 'Data berhasil di Reject'
+        ] );
+    }
 
     public function StoreChecker( Request $request ) {
-
         try {
             $data = [
                 'doc_num' => $this->generateDocNumber(),
@@ -177,6 +445,7 @@ class FormCheckerController extends Controller {
                 'shift' => $request->shift,
                 'operator_leader' => $request->operator_load,
                 'pic_area' => $request->nama_pic,
+                'status' => 'Draft',
                 'loading_point' => $request->loading_point,
                 'jarak' => $request->jarak,
                 'disposal' => $request->disposal,
@@ -190,6 +459,7 @@ class FormCheckerController extends Controller {
                 'updated_at' => Carbon::now()
 
             ];
+
 
             $alat = [];
             $time = [];
@@ -253,7 +523,6 @@ class FormCheckerController extends Controller {
             }
 
 
-
             DB::table( 'prod_checker_form' )->insert( $data );
             return response()->json( [
                 'success' => true,
@@ -272,7 +541,7 @@ class FormCheckerController extends Controller {
         }
 
     }
-    
+
     public function Delete( $id ) {
         try {
             $id = request()->id;
@@ -405,7 +674,7 @@ class FormCheckerController extends Controller {
             }
 
             $pdf = PDF::loadView( 'smartform::production.form_checker.export-pdf', [
-                'record' => $record, 'dataDS' => $dataDS, 'dataNS' => $dataNS, 'time_details' => $time_details, 'nonNullCounts' => $nonNullCounts, 'sumRitasi' => $sumRitasi
+                'record' => $record, 'dataDS' => $dataDS, 'dataNS' => $dataNS, 'approvalList' => HrdHelper::getApprovalList(),'time_details' => $time_details, 'nonNullCounts' => $nonNullCounts, 'sumRitasi' => $sumRitasi
 
             ] );
             $pdf->setPaper('A4', 'landscape');

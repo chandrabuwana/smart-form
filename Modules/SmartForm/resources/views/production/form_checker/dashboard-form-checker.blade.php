@@ -20,6 +20,32 @@
             width: auto;
             margin-right: 8px;
         }
+
+        .status {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
+
+        .box {
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+            border-radius: 4px;
+        }
+
+        .red {
+            background-color: #F44335;
+        }
+
+        .green {
+            background-color: #4CAF50;
+        }
+
+        .blue {
+            background-color: #0000FF;
+        }
     </style>
 @endsection
 
@@ -118,6 +144,7 @@
 
                                     </div>
                                 </div>
+
                                 <div class="col-md-3 mb-3">
                                     <div class="input-group input-group-static mb-4 position-relative">
                                         <label for="date" class="ms-0">Date</label>
@@ -132,6 +159,18 @@
                                     <button type="button" class="btn btn-secondary filter-btn" id="btnClearFilter">
                                         Clear Filter
                                     </button>
+                                </div>
+                                <div class="col-md-12 d-flex justify-content-end">
+
+                                    <div class="status me-2">
+                                        <span class="box red"></span> Rejected
+                                    </div>
+                                    <div class="status me-2">
+                                        <span class="box green"></span> Approved
+                                    </div>
+                                    <div class="status me-2">
+                                        <span class="box blue"></span> Draft
+                                    </div>
                                 </div>
                             </div>
                         </form>
@@ -162,6 +201,12 @@
                                             Date</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            Vaidator</th>
+                                        <th
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            Status</th>
+                                        <th
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Actions</th>
                                     </tr>
                                 </thead>
@@ -189,18 +234,52 @@
                                                 <span class="text-xs font-weight-bold">{{ $data->tanggal }}</span>
                                             </td>
                                             <td>
-                                                <a href="{{ route('prod.form.checker.form', ['id' => $data->id]) }}"
-                                                    class="btn btn-info btn-sm">
+                                                <span class="text-xs font-weight-bold">
+                                                    @if ($data->status === 'Approved')
+                                                        <span
+                                                            class="badge bg-success">{{ optional(collect($user)->firstWhere('nik', $data->pengawas))->nama ?? '' }}</span>
+                                                    @elseif ($data->status === 'Rejected')
+                                                        <span
+                                                            class="badge bg-danger">{{ optional(collect($user)->firstWhere('nik', $data->pengawas))->nama ?? '' }}</span>
+                                                    @elseif ($data->status === 'Draft')
+                                                        <span
+                                                            class="badge bg-info">{{ optional(collect($user)->firstWhere('nik', $data->pengawas))->nama ?? '' }}</span>
+                                                    @endif
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="text-xs font-weight-bold">
+                                                    @if ($data->status === 'Approved')
+                                                        <span class="badge bg-success">Approved</span>
+                                                    @elseif ($data->status === 'Rejected')
+                                                        <span class="badge bg-danger">Rejected</span>
+                                                    @elseif ($data->status === 'Draft')
+                                                        <span class="badge bg-info">Draf</span>
+                                                    @endif
+                                                </span>
+                                            </td>
+                                            <td>
+                                                @if ($session == $data->checker)
+                                                    <a href="{{ route('prod.form.checker.detail', ['id' => $data->id]) }}"
+                                                        class="btn btn-warning btn-sm mt-2">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <button type="button" class="btn btn-danger btn-sm mt-2"
+                                                        onclick="deleteChecker('{{ $data->doc_num }}')">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                @endif
+                                                <a href="{{ route('prod.form.checker.show', ['id' => $data->id]) }}"
+                                                    class="btn btn-info btn-sm mt-2">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
-                                                <a href="{{ route('prod.form.checker.export', ['id' => $data->id]) }}"
-                                                    class="btn btn-primary btn-sm">
-                                                    <i class="fas fa-download"></i>
-                                                </a>
-                                                <button type="button" class="btn btn-danger btn-sm"
-                                                    onclick="deleteChecker('{{ $data->doc_num }}')">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
+                                                @if ($data->status === 'Approved')
+                                                    <a href="{{ route('prod.form.checker.export', ['id' => $data->id]) }}"
+                                                        class="btn btn-primary btn-sm mt-2">
+                                                        <i class="fas fa-download"></i>
+                                                    </a>
+                                                @endif
+
                                             </td>
                                         </tr>
                                     @endforeach

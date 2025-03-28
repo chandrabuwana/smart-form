@@ -132,7 +132,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/submit-approve-pemakaian-solar', [PemakaianSolarController::class, 'SubmitApprovePemakaianSolar'])->name("bss-form.log.submit-approve-pemakaian-solar");
             Route::post('/submit-reject-pemakaian-solar', [PemakaianSolarController::class, 'SubmitRejectPemakaianSolar'])->name("bss-form.log.submit-reject-pemakaian-solar");
 
-            // CHECK OGC COMPLIANCE
+            // // CHECK OGC COMPLIANCE
             Route::get('/check-ogc-compliance', [CheckOgcComController::class, 'CheckOgcCompDashboard'])->name('bss-form.log.check-ogc-comp.dashboard');
             Route::get('/list-check-ogc', [CheckOgcComController::class, 'GetListCheckOgc'])->name("bss-form.log.list-check-ogc");
             Route::get('/form-check-ogc', [CheckOgcComController::class, 'formCheckOgc'])->name('bss-form.log.form-check-ogc');
@@ -445,9 +445,14 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/dashboard', [FormCheckerController::class, 'dashboard'])->name('prod.form.checker.dashboard');
             Route::get('/form-checker/export/{id}', [FormCheckerController::class, 'ExportForm'])->name('prod.form.checker.export');
             Route::get('/form-checker', [FormCheckerController::class, 'AddFormChecker'])->name('prod.form.checker.form');
+            Route::get('/show/{id}', [FormCheckerController::class, 'ShowFormChecker'])->name('prod.form.checker.show');
             Route::post('/store-form-checker', [FormCheckerController::class, 'StoreChecker'])->name('prod.checker.submit');
-            Route::put('/form-checker/{id}', [FormCheckerController::class, 'UpdateChecker'])->name('prod.form.checker.update');
             Route::delete('/delete/{id}', [FormCheckerController::class, 'Delete'])->name('prod.form.checker.delete');
+            Route::post('/approve-form-checker', [FormCheckerController::class, 'Approve'])->name("prod.form.checker.approve");
+            Route::post('/reject-form-checker', [FormCheckerController::class, 'Reject'])->name("prod.form.checker.reject");
+            Route::post('/reset-form-checker/{id}', [FormCheckerController::class, 'Reset'])->name("prod.form.checker.reset");
+            Route::post('/update-form-checker',[FormCheckerController::class, 'Update'])->name('prod.form.checker.update');
+            Route::get('/detail/{id}', [FormCheckerController::class, 'detail'])->name('prod.form.checker.detail');
 
         });
 
