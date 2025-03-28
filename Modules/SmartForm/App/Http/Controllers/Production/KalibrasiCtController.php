@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
 use Modules\SmartForm\helpers\HrdHelper;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class KalibrasiCtController extends Controller
 {
@@ -23,8 +24,96 @@ class KalibrasiCtController extends Controller
                 ->select('*')
                 ->orderBy('created_at');
 
-            // Get records with pagination
-            $records = $query->paginate(10);
+            if ($request->has('search')) {
+                $searchTerm = $request->search;
+                $query->where(function ($q) use ($searchTerm) {
+                    $q->where('doc_number', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('mengetahui_hauler', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('mengetahui_loader', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('mengetahui_dozer', 'like', '%' . $searchTerm . '%');
+                });
+            }
+
+            if ($request->has('mengetahui_hauler') && $request->mengetahui_hauler) {
+                $query->where('mengetahui_hauler', $request->mengetahui_hauler);
+            }
+
+            if ($request->has('mengetahui_loader') && $request->mengetahui_loader) {
+                $query->where('mengetahui_loader', $request->mengetahui_loader);
+            }
+
+            if ($request->has('mengetahui_dozer') && $request->mengetahui_dozer) {
+                $query->where('mengetahui_dozer', $request->mengetahui_dozer);
+            }
+
+            $query = $query->get();
+
+            if ($request->has('status') && $request->status) {
+                $query = $query->filter(function ($record) use ($request) {
+                    $final_status = 'Undefined'; // Default status jika tidak memenuhi kondisi
+
+                    if (
+                        $record->status_dibuat_hauler === 'Approve' &&
+                        $record->status_mengetahui_hauler === 'Approve' &&
+                        $record->status_dibuat_loader === 'Approve' &&
+                        $record->status_mengetahui_loader === 'Approve' &&
+                        $record->status_dibuat_dozer === 'Approve' &&
+                        $record->status_mengetahui_dozer === 'Approve'
+                    ) {
+                        $final_status = 'Approved';
+                    } elseif (
+                        $record->status_dibuat_hauler === 'Reject' &&
+                        $record->status_mengetahui_hauler === 'Reject' &&
+                        $record->status_dibuat_loader === 'Reject' &&
+                        $record->status_mengetahui_loader === 'Reject' &&
+                        $record->status_dibuat_dozer === 'Reject' &&
+                        $record->status_mengetahui_dozer === 'Reject'
+                    ) {
+                        $final_status = 'Rejected';
+                    } elseif (
+                        $record->status_dibuat_hauler === 'Pending' ||
+                        $record->status_mengetahui_hauler === 'Pending' ||
+                        $record->status_dibuat_loader === 'Pending' ||
+                        $record->status_mengetahui_loader === 'Pending' ||
+                        $record->status_dibuat_dozer === 'Pending' ||
+                        $record->status_mengetahui_dozer === 'Pending'
+                    ) {
+                        $final_status = 'Pending';
+                    } elseif (
+                        ($record->status_dibuat_hauler === 'Approve' && $record->status_mengetahui_hauler === 'Reject') ||
+                        ($record->status_dibuat_loader === 'Approve' && $record->status_mengetahui_loader === 'Reject') ||
+                        ($record->status_dibuat_dozer === 'Approve' && $record->status_mengetahui_dozer === 'Reject') ||
+                        ($record->status_dibuat_hauler === 'Reject' && $record->status_mengetahui_hauler === 'Approve') ||
+                        ($record->status_dibuat_loader === 'Reject' && $record->status_mengetahui_loader === 'Approve') ||
+                        ($record->status_dibuat_dozer === 'Reject' && $record->status_mengetahui_dozer === 'Approve')
+                    ) {
+                        $final_status = 'Rejected';
+                    }
+
+                    return $final_status === $request->status;
+                });
+
+                // Pagination manual setelah filter
+                $currentPage = LengthAwarePaginator::resolveCurrentPage();
+                $perPage = 10; // Jumlah item per halaman
+                $items = $query->slice(($currentPage - 1) * $perPage, $perPage)->values();
+                $records = new LengthAwarePaginator($items, $query->count(), $perPage, $currentPage, [
+                    'path' => $request->url(),
+                    'query' => $request->query(),
+                ]);
+            } else {
+                // Jika tidak ada filter status, langsung paginate
+                $records = new LengthAwarePaginator(
+                    $query->forPage(LengthAwarePaginator::resolveCurrentPage(), 10)->values(),
+                    $query->count(),
+                    10,
+                    LengthAwarePaginator::resolveCurrentPage(),
+                    [
+                        'path' => $request->url(),
+                        'query' => $request->query(),
+                    ]
+                );
+            }
 
             // Calculate statistics
             $statistics = (object)[
@@ -38,7 +127,15 @@ class KalibrasiCtController extends Controller
             return view('smartform::production.kalibrasi_ct.dashboard-kalibrasi-ct', [
                 'records' => $records,
                 'statistics' => $statistics,
-                
+                'user' => HrdHelper::getApprovalList(),
+                'filters' => [
+                    'search' => $request->search,
+                    'operator' => $request->operator,
+                    'pengawas' => $request->pengawas,
+                    'status_operator' => $request->status_operator,
+                    'status_pengawas' => $request->status_pengawas,
+                ],
+
             ]);
         } catch (\Exception $e) {
             Log::error('Error in Dashboard: ' . $e->getMessage());
