@@ -99,9 +99,21 @@
         }
 
         function actionFormatter(value, row, index) {
-            return `
-                <a class="btn btn-primary btn-action btn-sm" href="/bss-form/log/pdf-req-master/${row.id}">Pdf</a>
-            `;
+            // return `
+            //     <a class="btn btn-primary btn-action btn-sm" href="/bss-form/log/pdf-req-master/${row.id}">Pdf</a>
+            // `;
+
+            var btn = '<a type="button" class="btn btn-secondary btn-sm me-1" href="/bss-form/log/detail-req-master?id=' + row.id + '">Lihat</a>';
+            btn = btn + '<a type="button" class="btn btn-info btn-sm me-1" href="/bss-form/log/edit-req-master?id=' + row.id + '">Edit</a>';
+            btn = btn + '<a class="btn btn-primary btn-action btn-sm" href="/bss-form/log/pdf-req-master/' + row.id + '">Pdf</a>';
+            
+            // if(row.status = "Need Approval" || row.status == null) {
+            //     if(row.dibuat_oleh == users_nik && (row.editable == 0 || row.editable == null)) {
+            //         btn = btn + '<a type="button" class="btn btn-info btn-sm me-1" href="/bss-form/log/edit-req-master?no_doc=' + row.no_doc + '">Edit</a>'
+            //              + '<a class="btn btn-primary btn-action btn-sm" href="/bss-form/log/pdf-req-master/' + row.id + '">Pdf</a>';
+            //     }
+            // }
+            return btn;
         }
 
     </script>

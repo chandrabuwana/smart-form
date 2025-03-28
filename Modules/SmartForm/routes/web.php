@@ -44,6 +44,7 @@ use Modules\SmartForm\App\Http\Controllers\SM\AssetRequestController;
 use Modules\SmartForm\App\Http\Controllers\SM\RegistrasiSupplierController;
 use Modules\SmartForm\App\Http\Controllers\LOG\CheckOgcComController;
 use Modules\SmartForm\App\Http\Controllers\LOG\LogController;
+use Modules\SmartForm\App\Http\Controllers\LOG\RequestMasterController;
 use Modules\SmartForm\App\Http\Controllers\LOG\PemakaianSolarController;
 use Modules\SmartForm\App\Http\Controllers\LOG\FuelController;
 use Modules\SmartForm\App\Http\Controllers\LOG\Pengajuan003SapController;
@@ -94,11 +95,14 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
         Route::prefix('log')->group(function () {
 
             // REQUEST MASTER MENU
-            Route::get('/request-master', [LogController::class, 'RequestMasterDashboard'])->name('bss-form.log.request-master.dashboard');
-            Route::get('/list', [LogController::class, 'GetListRequestMaster'])->name("bss-form.log.list-request-master");
-            Route::get('/form-req-master', [LogController::class, 'formReqMaster'])->name('bss-form.log.form-req-master');
-            Route::post('/add-request-master', [LogController::class, 'SubmitFormRequestMaster'])->name("bss-form.log.add-request-master");
-            Route::get('/pdf-req-master/{id}', [LogController::class, 'PdfReqMaster'])->name('bss-form.log.pdf-req-master');
+            Route::get('/request-master', [RequestMasterController::class, 'RequestMasterDashboard'])->name('bss-form.log.request-master.dashboard');
+            Route::get('/list', [RequestMasterController::class, 'GetListRequestMaster'])->name("bss-form.log.list-request-master");
+            Route::get('/form-req-master', [RequestMasterController::class, 'formReqMaster'])->name('bss-form.log.form-req-master');
+            Route::post('/add-request-master', [RequestMasterController::class, 'SubmitFormRequestMaster'])->name("bss-form.log.add-request-master");
+            Route::get('/pdf-req-master/{id}', [RequestMasterController::class, 'PdfReqMaster'])->name('bss-form.log.pdf-req-master');
+            Route::get('/edit-req-master', [RequestMasterController::class, 'EditReqMaster'])->name('bss-form.log.edit-request-master');
+            Route::post('/update-request-master', [RequestMasterController::class, 'UpdateFormRequestMaster'])->name("bss-form.log.update-pemakaian-solar");
+            Route::get('/detail-req-master', [RequestMasterController::class, 'DetailReqMaster'])->name('bss-form.log.detail-request-master');
 
             // PERMINTAAN PENGISIAN FUEL
             Route::get('/request-fuel', [FuelController::class, 'FuelDashboard'])->name('bss-form.log.fuel.dashboard');

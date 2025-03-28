@@ -144,17 +144,12 @@ table.atas td {
                                 <th>Part Number</th>
                                 <th>Brand</th>
                                 <th>GEN/ITC</th>
-                                <!-- <th>Model</th> -->
-                                <th>Compar tement</th>
+                                <th>Model</th>
+                                <th>Compartement</th>
                                 <th>FFF Class</th>
                                 <th>Plant Material Status</th>
-                                <th>MRP Type</th>
-                                <th>Scrap</th>
-                                <th>Material Type</th>
-                                <th>Material Group</th>
-                                <th>Valuation Class</th>
-                                <th style="background-color:#5858eb">Material Type</th>
-                                <th style="background-color:#5858eb">SCRAP (Y/N)</th>
+                                <th style="background-color:#5858eb">MRP Type</th>
+                                <th style="background-color:#5858eb">Scrap (Y/N)</th>
                                 <th style="background-color:#FF8C00">Material Type</th>
                                 <th style="background-color:#FF8C00">Material Group</th>
                                 <th style="background-color:#FF8C00">Valuation Class</th>
@@ -173,23 +168,20 @@ table.atas td {
                                 <td>{{ $item->partNumber }}</td>
                                 <td>{{ $item->brand }}</td>
                                 <td>{{ $item->gen }}</td>
-                                <!-- <td>{{ $item->model }}</td> -->
+                                <td>{{ $item->model }}</td>
                                 <td>{{ $item->cmp }}</td>
                                 <td>{{ $item->fC }}</td>
                                 <td>{{ $item->pms }}</td>
                                 <td>{{ $item->mrpT }}</td>
                                 <td>{{ $item->scrap }}</td>
+
                                 <td>{{ $item->matType }}</td>
                                 <td>{{ $item->matGroup }}</td>
                                 <td>{{ $item->vC }}</td>
-                                <td>{{ $item->vC }}</td>
-                                <td>{{ $item->vC }}</td>
-                                <td>{{ $item->vC }}</td>
-                                <td>{{ $item->vC }}</td>
-                                <td>{{ $item->vC }}</td>
-                                <td>{{ $item->vC }}</td>
-                                <td>{{ $item->vC }}</td>
-                                <td>{{ $item->vC }}</td>
+    
+                                <td>{{ $item->req }}</td>
+                                <td>{{ $item->date }}</td>
+                                <td>{{ $item->site }}</td>
                             </tr>
                             @endforeach
                         </tbody>
