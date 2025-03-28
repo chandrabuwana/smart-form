@@ -398,7 +398,80 @@
                                                                 </tr>
                                                                 @endfor
                                                             </tbody>
-                                                        </table>
+                                                        </table>                                                         
+                                                    </div>
+                                                    <div>
+                                                        <h5>Dibuat Oleh</h5>
+                                                        <div class="row mb-3">
+                                                            <div class="col-md-4">
+                                                                <div class="input-group input-group-static mb-3">
+                                                                    <label for="alat_support_hauler" class="ms-0">Nama Pembuat</label>
+                                                                    <select name="dibuat_hauler" id="dibuat_hauler" class="form-control" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                        <option disabled {{ optional($record)->dibuat_hauler == '' ? 'selected' : '' }}>-- Select Pembuat --</option>
+                                                                        @foreach ($approvalList as $user)
+                                                                            <option value="{{ $user->nik }}" {{ optional($record)->dibuat_hauler == $user->nik ? 'selected' : '' }}>
+                                                                                {{ $user->nama }}
+                                                                            </option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+        
+                                                            <div class="col-md-4">
+                                                                <div class="input-group input-group-static mb-3">
+                                                                    <label for="jabatan_dibuat_hauler" class="ms-0">Jabatan</label>
+                                                                    <select class="form-control" name="jabatan_dibuat_hauler" id="jabatan_dibuat_hauler" required
+                                                                        {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                        <option value="LH"
+                                                                            {{ old('jabatan_dibuat_hauler', $record->jabatan_dibuat_hauler ?? '') == 'LH' ? 'selected' : '' }}>
+                                                                            LH</option>
+                                                                        <option value="Foreman Prod"
+                                                                            {{ old('jabatan_dibuat_hauler', $record->jabatan_dibuat_hauler ?? '') == 'Foreman Prod' ? 'selected' : '' }}>
+                                                                            Foreman Prod</option>
+                                                                        <option value="Trainer"
+                                                                            {{ old('jabatan_dibuat_hauler', $record->jabatan_dibuat_hauler ?? '') == 'Trainer' ? 'selected' : '' }}>
+                                                                            Trainer</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+        
+                                                    <div>
+                                                        <h5>Diketahui Oleh</h5>
+                                                        <div class="row mb-3">
+                                                            <div class="col-md-4">
+                                                                <div class="input-group input-group-static mb-3">
+                                                                    <label for="alat_support_hauler" class="ms-0">Nama Pemeriksa</label>
+                                                                    <select name="mengetahui_hauler" id="mengetahui_hauler" class="form-control" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                        <option disabled {{ optional($record)->mengetahui_hauler == '' ? 'selected' : '' }}>-- Select Pemeriksa --</option>
+                                                                        @foreach ($approvalList as $user)
+                                                                            <option value="{{ $user->nik }}" {{ optional($record)->mengetahui_hauler == $user->nik ? 'selected' : '' }}>
+                                                                                {{ $user->nama }}
+                                                                            </option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+        
+                                                            <div class="col-md-4">
+                                                                <div class="input-group input-group-static mb-3">
+                                                                    <label for="jabatan_mengetahui_hauler" class="ms-0">Jabatan</label>
+                                                                    <select class="form-control" name="jabatan_mengetahui_hauler" id="jabatan_mengetahui_hauler" required
+                                                                        {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                        <option value="Spv. Prod"
+                                                                            {{ old('jabatan_mengetahui_hauler', $record->jabatan_mengetahui_hauler ?? '') == 'Spv. Prod' ? 'selected' : '' }}>
+                                                                            Spv. Prod</option>
+                                                                        <option value="Kabag. Prod"
+                                                                            {{ old('jabatan_mengetahui_hauler', $record->jabatan_mengetahui_hauler ?? '') == 'Kabag. Prod' ? 'selected' : '' }}>
+                                                                            Kabag. Prod</option>
+                                                                        <option value="Project Manager"
+                                                                            {{ old('jabatan_mengetahui_hauler', $record->jabatan_mengetahui_hauler ?? '') == 'Project Manager' ? 'selected' : '' }}>
+                                                                            Project Manager</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -612,6 +685,73 @@
                                                             </tbody>
                                                         </table>
                                                     </div>
+                                                        <div>
+                                                        <h5>Dibuat Oleh</h5>
+                                                        <div class="row mb-3">
+                                                            <div class="col-md-4">
+                                                                <div class="input-group input-group-static mb-3">
+                                                                    <label for="alat_support_hauler" class="ms-0">Nama Pembuat</label>
+                                                                    <select name="dibuat_loader" id="dibuat_loader" class="form-control" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                        <option disabled {{ optional($record)->dibuat_loader == '' ? 'selected' : '' }}>-- Select Pembuat --</option>
+                                                                        @foreach ($approvalList as $user)
+                                                                            <option value="{{ $user->nik }}" {{ optional($record)->dibuat_loader == $user->nik ? 'selected' : '' }}>
+                                                                                {{ $user->nama }}
+                                                                            </option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+        
+                                                            <div class="col-md-4">
+                                                                <div class="input-group input-group-static mb-3">
+                                                                    <label for="jabatan_dibuat_loader" class="ms-0">Jabatan</label>
+                                                                    <select class="form-control" name="jabatan_dibuat_loader" id="jabatan_dibuat_loader" required
+                                                                        {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                        <option value="Foreman"
+                                                                            {{ old('jabatan_dibuat_loader', $record->jabatan_dibuat_loader ?? '') == 'Foreman' ? 'selected' : '' }}>
+                                                                            Foreman</option>
+                                                                        <option value="Pengawas Produksi"
+                                                                            {{ old('jabatan_dibuat_loader', $record->jabatan_dibuat_loader ?? '') == 'Pengawas Produksi' ? 'selected' : '' }}>
+                                                                            Pengawas Produksi</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+        
+                                                    <div>
+                                                        <h5>Diketahui Oleh</h5>
+                                                        <div class="row mb-3">
+                                                            <div class="col-md-4">
+                                                                <div class="input-group input-group-static mb-3">
+                                                                    <label for="alat_support_hauler" class="ms-0">Nama Pemeriksa</label>
+                                                                    <select name="mengetahui_loader" id="mengetahui_loader" class="form-control" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                        <option disabled {{ optional($record)->mengetahui_loader == '' ? 'selected' : '' }}>-- Select Pemeriksa --</option>
+                                                                        @foreach ($approvalList as $user)
+                                                                            <option value="{{ $user->nik }}" {{ optional($record)->mengetahui_loader == $user->nik ? 'selected' : '' }}>
+                                                                                {{ $user->nama }}
+                                                                            </option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+        
+                                                            <div class="col-md-4">
+                                                                <div class="input-group input-group-static mb-3">
+                                                                    <label for="jabatan_mengetahui_loader" class="ms-0">Jabatan</label>
+                                                                    <select class="form-control" name="jabatan_mengetahui_loader" id="jabatan_mengetahui_loader" required
+                                                                        {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                        <option value="Spv. Prod"
+                                                                            {{ old('jabatan_mengetahui_loader', $record->jabatan_mengetahui_loader ?? '') == 'Spv. Prod' ? 'selected' : '' }}>
+                                                                            Spv. Prod</option>
+                                                                        <option value="Kabag. Prod"
+                                                                            {{ old('jabatan_mengetahui_loader', $record->jabatan_mengetahui_loader ?? '') == 'Kabag. Prod' ? 'selected' : '' }}>
+                                                                            Kabag. Prod</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -816,6 +956,75 @@
                                                             </tbody>
                                                         </table>
                                                     </div>
+
+                                                    <div>
+                                                        <h5>Dibuat Oleh</h5>
+                                                        <div class="row mb-3">
+                                                            <div class="col-md-4">
+                                                                <div class="input-group input-group-static mb-3">
+                                                                    <label for="alat_support_hauler" class="ms-0">Nama Pembuat</label>
+                                                                    <select name="dibuat_dozer" id="dibuat_dozer" class="form-control" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                        <option disabled {{ optional($record)->dibuat_dozer == '' ? 'selected' : '' }}>-- Select Pembuat --</option>
+                                                                        @foreach ($approvalList as $user)
+                                                                            <option value="{{ $user->nik }}" {{ optional($record)->dibuat_dozer == $user->nik ? 'selected' : '' }}>
+                                                                                {{ $user->nama }}
+                                                                            </option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+        
+                                                            <div class="col-md-4">
+                                                                <div class="input-group input-group-static mb-3">
+                                                                    <label for="jabatan_dibuat_dozer" class="ms-0">Jabatan</label>
+                                                                    <select class="form-control" name="jabatan_dibuat_dozer" id="jabatan_dibuat_dozer" required
+                                                                        {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                        <option value="LH Produksi"
+                                                                            {{ old('jabatan_dibuat_dozer', $record->jabatan_dibuat_dozer ?? '') == 'LH Produksi' ? 'selected' : '' }}>
+                                                                            LH Produksi</option>
+                                                                        <option value="Foreman Prod"
+                                                                            {{ old('jabatan_dibuat_dozer', $record->jabatan_dibuat_dozer ?? '') == 'Foreman Prod' ? 'selected' : '' }}>
+                                                                            Foreman Prod</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div>
+                                                        <h5>Diketahui Oleh</h5>
+                                                        <div class="row mb-3">
+                                                            <div class="col-md-4">
+                                                                <div class="input-group input-group-static mb-3">
+                                                                    <label for="alat_support_hauler" class="ms-0">Nama Pemeriksa</label>
+                                                                    <select name="mengetahui_dozer" id="mengetahui_dozer" class="form-control" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                        <option disabled {{ optional($record)->mengetahui_dozer == '' ? 'selected' : '' }}>-- Select Pemeriksa --</option>
+                                                                        @foreach ($approvalList as $user)
+                                                                            <option value="{{ $user->nik }}" {{ optional($record)->mengetahui_dozer == $user->nik ? 'selected' : '' }}>
+                                                                                {{ $user->nama }}
+                                                                            </option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+        
+                                                            <div class="col-md-4">
+                                                                <div class="input-group input-group-static mb-3">
+                                                                    <label for="jabatan_mengetahui_dozer" class="ms-0">Jabatan</label>
+                                                                    <select class="form-control" name="jabatan_mengetahui_dozer" id="jabatan_mengetahui_dozer" required
+                                                                        {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                        <option value="Spv. Prod"
+                                                                            {{ old('jabatan_mengetahui_dozer', $record->jabatan_mengetahui_dozer ?? '') == 'Spv. Prod' ? 'selected' : '' }}>
+                                                                            Spv. Prod</option>
+                                                                        <option value="Kabag. Prod"
+                                                                            {{ old('jabatan_mengetahui_dozer', $record->jabatan_mengetahui_dozer ?? '') == 'Kabag. Prod' ? 'selected' : '' }}>
+                                                                            Kabag. Prod</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
                                                 </div>
                                             </div>
                                         </div>
