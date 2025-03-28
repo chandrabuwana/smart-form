@@ -70,7 +70,7 @@ $serialNumbers = $data['serialNumbers'];
                                                 <td id="requestor">{{$master->status_req ?? '-'}}</td>
                                             </tr>
                                             <tr>
-                                                <td class="fw-bold">Approve/Reject Notes</td>
+                                                <td class="fw-bold">Approve/Reject Reason</td>
                                                 <td id="requestor">{{$master->remark ?? '-'}}</td>
                                             </tr>
                                         </table>
@@ -358,7 +358,7 @@ $serialNumbers = $data['serialNumbers'];
                                 <i class="fas fa-save"></i> &nbsp;
                                 Update Form
                             </button>
-                            <a href="{{url()->previous()}}" class="btn btn-success" style="margin:5px"><i class="fas fa-cancel"></i> &nbsp; Cancel</a>
+                            <a href="{{url()->previous()}}" class="btn btn-secondary" style="margin:5px"><i class="fas fa-cancel"></i> &nbsp; Cancel</a>
                         </div>
                     </div>
 

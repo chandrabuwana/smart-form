@@ -42,7 +42,7 @@
                                 <tr>
                                     <th data-field="no_dok" data-align="left" data-halign="text-center" data-sortable="true">No. Document</th>
                                     <th data-field="site" data-align="left" data-halign="text-center" data-sortable="true">Site</th>
-                                    <th data-field="request_by" data-align="left" data-halign="text-center" data-sortable="true">Requeste by</th>
+                                    <th data-field="request_by" data-align="left" data-halign="text-center" data-sortable="true">Request by</th>
                                     <th data-field="cataloging_by" data-align="left" data-halign="text-center" data-sortable="true">Cataloging by</th>
                                     <th data-field="cataloging_update" data-align="left" data-halign="text-center" data-sortable="true">Cataloging Record</th>
                                     <th data-field="approval_by" data-align="left" data-halign="text-center" data-sortable="true">Approval by</th>
@@ -108,11 +108,11 @@
 
             var btn = '';
             if (row.created_by == "{{ session('user_id') }}") {
-                btn = btn + '<a type="button" class="btn btn-secondary btn-sm me-1" href="/bss-form/log/detail-req-master?id=' + row.id + '">Lihat</a>';
+                btn = btn + '<a type="button" class="btn btn-success btn-sm me-1" href="/bss-form/log/detail-req-master?id=' + row.id + '">View</a>';
                 btn = btn + '<a type="button" class="btn btn-info btn-sm me-1" href="/bss-form/log/edit-req-master?id=' + row.id + '">Edit</a>';
                 
             } else {
-                var btn = '<a type="button" class="btn btn-secondary btn-sm me-1" href="/bss-form/log/detail-req-master?id=' + row.id + '">Lihat</a>';
+                var btn = '<a type="button" class="btn btn-success btn-sm me-1" href="/bss-form/log/detail-req-master?id=' + row.id + '">View</a>';
                 
             }
          

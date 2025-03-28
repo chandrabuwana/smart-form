@@ -113,23 +113,21 @@ table.atas td {
          </tr>
          <tr>
             <td>No. Dok</td>
-            <td colspan="2">: BSS-FRM-LOG-002</td>
+            <td colspan="2"> {{ $data['no_dok'] }}</td>
          </tr>
          <tr>
             <td>Site</td>
-            <td colspan="2">: </td>
-            <!-- <td colspan="2">: {{ $data['site'] }}</td> -->
+            <td colspan="2">{{ $data['site'] }} </td>
          </tr>
          <tr>
             <td>Tanggal</td>
-            <td colspan="2">: </td>
-            <!-- <td colspan="2">: {{ $data['dibuat_tgl'] }}</td> -->
+            <td colspan="2"> {{ $data['dibuat_tgl'] }}</td>
          </tr>
          <tr>
             <td style="text-align: center"> FROM REQUEST CODE MATERIAL</td>
             <td>Halaman</td>
-            <td colspan="2">: </td>
-            <!-- <td colspan="2">: 1 dari 1</td> -->
+            {{-- <td colspan="2">: </td> --}}
+            <td colspan="2"> 1 dari 1</td> 
          </tr>
     </table>
 
@@ -148,6 +146,8 @@ table.atas td {
                                 <th>Compartement</th>
                                 <th>FFF Class</th>
                                 <th>Plant Material Status</th>
+                                <th>Purchasing Group</th>
+                                <th>Serial Number</th>
                                 <th style="background-color:#5858eb">MRP Type</th>
                                 <th style="background-color:#5858eb">Scrap (Y/N)</th>
                                 <th style="background-color:#FF8C00">Material Type</th>
@@ -169,19 +169,22 @@ table.atas td {
                                 <td>{{ $item->brand }}</td>
                                 <td>{{ $item->gen }}</td>
                                 <td>{{ $item->model }}</td>
-                                <td>{{ $item->cmp }}</td>
-                                <td>{{ $item->fC }}</td>
-                                <td>{{ $item->pms }}</td>
-                                <td>{{ $item->mrpT }}</td>
+                                <td>{{ $item->compartement }}</td>
+                                <td>{{ $item->fffC }}</td>
+                                <td>{{ $item->planMatStatus }}</td>
+                                <td>{{ $item->purchasingGroup }}</td>
+                                <td>{{ $item->serialNumber }}</td>
+
+                                <td>{{ $item->mrpType }}</td>
                                 <td>{{ $item->scrap }}</td>
 
                                 <td>{{ $item->matType }}</td>
                                 <td>{{ $item->matGroup }}</td>
-                                <td>{{ $item->vC }}</td>
+                                <td>{{ $item->valuationStatus }}</td>
     
-                                <td>{{ $item->req }}</td>
-                                <td>{{ $item->date }}</td>
-                                <td>{{ $item->site }}</td>
+                                <td>{{ $data['dibuat_oleh'] }}</td>
+                                <td>{{ $data['dibuat_tgl'] }}</td>
+                                <td>{{ $data['site'] }}</td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -221,7 +224,7 @@ table.atas td {
                 </td>
                 <td>
                     <div>__________</div>
-                    <div>Cataloging</div>
+                    <div>{{ $data['diproses_oleh'] }}</div>
                 </td>
                 <td>
                     <div>____________</div>

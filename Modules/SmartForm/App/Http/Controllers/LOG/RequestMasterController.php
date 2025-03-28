@@ -223,7 +223,7 @@ class RequestMasterController extends Controller {
         );
 
         $sort = $request->query('sort', 'id'); // Default sort by id
-        $order = $request->query('order', 'asc'); // Default order is ascending
+        $order = $request->query('order', 'desc'); // Default order is desc
         $offset = $request->query('offset', 0); // Default offset
         $limit = $request->query('limit', null); // Default limit
         $filter = $request->query('filter', null); // Default limit
@@ -376,14 +376,19 @@ class RequestMasterController extends Controller {
         );
         try {
             $data = DB::table($TABLE_MASTER)
-                    ->select('id', 'no_dok','site','created_at','created_by','disetujui_oleh')
+                    ->select('id', 'no_dok','site','created_at','created_by','disetujui_oleh','cataloging_id')
                     ->where('id', $id)
                     ->first();
                 
+            // $data_detail = DB::table($TABLE_DETAIL)
+            //     ->select('kode_master as kodeMaster','part_name as partName','uom', 'part_number as partNumber','brand','gen_itc as gen','model','compartement as cmp','fff_class as fC','plan_material_status as pms','mrp_type as mrpT','scrap','material_type as matType','material_group as matGroup','valuation_class as vC','req','date','site')
+            //     ->where('id_req_master', $data->id)
+            //     ->get();
+
             $data_detail = DB::table($TABLE_DETAIL)
-                ->select('kode_master as kodeMaster','part_name as partName','uom', 'part_number as partNumber','brand','gen_itc as gen','model','compartement as cmp','fff_class as fC','plan_material_status as pms','mrp_type as mrpT','scrap','material_type as matType','material_group as matGroup','valuation_class as vC','req','date','site')
-                ->where('id_req_master', $data->id)
-                ->get();
+            ->select('kode_master as kodeMaster','part_name as partName','uom', 'part_number as partNumber','brand','gen_itc as gen','model','compartement','fff_class as fffC','plan_material_status as planMatStatus','mrp_type as mrpType','scrap','material_type as matType','material_group as matGroup','valuation_class as valuationStatus','req','date','site','serial_number as serialNumber','purchasing_group as purchasingGroup')
+            ->where('id_req_master', $data->id)
+            ->get();
             
             $nomor = 1;
             foreach($data_detail as $detail) {
@@ -395,14 +400,15 @@ class RequestMasterController extends Controller {
             $data_master['no_dok'] = $data->no_dok;
             $data_master['site'] = $data->site;
             $data_master['dibuat_tgl'] = $data->created_at;
-            $data_master['dibuat_oleh'] = $data->created_by;
-            $data_master['disetujui_oleh'] = $data->disetujui_oleh;
+            $data_master['diproses_oleh'] = DB::connection('sqlsrv2')->table(self::TABLE_KARYAWAN)->where('IDCard', $data->cataloging_id)->value('Nama');
+            $data_master['dibuat_oleh'] = DB::connection('sqlsrv2')->table(self::TABLE_KARYAWAN)->where('IDCard', $data->created_by)->value('Nama');
+            $data_master['disetujui_oleh'] = DB::connection('sqlsrv2')->table(self::TABLE_KARYAWAN)->where('IDCard', $data->disetujui_oleh)->value('Nama');
         } catch (Exception $ex) {
             Log::error($ex->getMessage());
         }
         Log::info("data_master : ". json_encode($data_master));
         $pdf = PDF::loadView('SmartForm::LOG/request-master/req-master-pdf',  ['data' => $data_master, 'data_detail' => $data_detail, 'error' => $errors])->setPaper('a4', 'landscape');
-        return $pdf->download('BSS-FRM-LOG-002.pdf');
+        return $pdf->download($data->no_dok.'.pdf');
     }
 
     public function GetDetail($request, $id, $returnJson = false){
@@ -553,9 +559,9 @@ class RequestMasterController extends Controller {
                 DB::table($TABLE_DETAIL)->insert(array(
                     'id_req_master' => $id,
                     'kode_master' => $data_item_detail->kodeMaster,
-                    'part_name' => $data_item_detail->kodeMaster,
-                    'uom' => $data_item_detail->partName,
-                    'part_number' => $data_item_detail->uom,
+                    'part_name' => $data_item_detail->partName,
+                    'uom' => $data_item_detail->uom,
+                    'part_number' => $data_item_detail->partNumber,
                     'brand' => $data_item_detail->brand,
                     'gen_itc' => $data_item_detail->gen,
                     'model' => $data_item_detail->model,

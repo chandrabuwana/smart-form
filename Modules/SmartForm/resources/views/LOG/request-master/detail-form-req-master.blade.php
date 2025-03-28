@@ -70,7 +70,7 @@ $serialNumbers = $data['serialNumbers'];
                                                 <td id="requestor">{{$master->status_req ?? '-'}}</td>
                                             </tr>
                                             <tr>
-                                                <td class="fw-bold">Approve/Reject Notes</td>
+                                                <td class="fw-bold">Approve/Reject Reason</td>
                                                 <td id="requestor">{{$master->remark ?? '-'}}</td>
                                             </tr>
                                         </table>
@@ -193,9 +193,9 @@ $serialNumbers = $data['serialNumbers'];
                                     <i class="fas fa-close"></i> &nbsp;
                                     Reject
                                 </button>
-                                <a href="{{url()->previous()}}" class="btn btn-success" style="margin:5px"><i class="fas fa-cancel"></i> &nbsp; Cancel</a>
+                                <a href="{{url()->previous()}}" class="btn btn-secondary" style="margin:5px"><i class="fas fa-cancel"></i> &nbsp; Cancel</a>
                             @else
-                                <a href="{{url()->previous()}}" class="btn btn-success" style="margin:5px"><i class="fas fa-cancel"></i> &nbsp; Cancel</a>
+                                <a href="{{url()->previous()}}" class="btn btn-secondary" style="margin:5px"><i class="fas fa-cancel"></i> &nbsp; Cancel</a>
                             @endif
                         </div>
                     </div>
@@ -527,9 +527,9 @@ $serialNumbers = $data['serialNumbers'];
 
             function showApprovalDialog(action) {
                 const isApprove = action === 'approve';
-                const title = isApprove ? 'Approve Document' : 'Reject Document';
+                const title = isApprove ? 'Are you sure you want to approve this document?' : 'Are you sure you want to reject this document?';
                 const confirmButtonColor = isApprove ? '#e91e63' : '#fb8c00';
-                const confirmButtonText = isApprove ? 'Approve' : 'Reject';
+                const confirmButtonText = isApprove ? 'Yes, approve' : 'Yes, reject';
                 
                 Swal.fire({
                     title: title,
@@ -537,9 +537,9 @@ $serialNumbers = $data['serialNumbers'];
                         <div class="form-group">
                             <label for="swal-remark">${isApprove ? 'Optional remarks' : 'Reason for rejection (required)'}</label>
                             <textarea id="swal-remark" class="form-control" style="height: 8rem !important;"
-                                placeholder="${isApprove ? 'Add any comments (max 200 characters)...' : 'Please specify the reason (max 200 characters)...'}"
+                                placeholder="${isApprove ? 'Catatan ...' : 'Catatan ...'}"
                                 ${!isApprove ? 'required' : ''}></textarea>
-                            <small id="swal-remark-counter" style="font-size:small" class="text-muted float-right">0/200</small>
+                            <small id="swal-remark-counter" style="font-size:small" class="text-muted float-right">0/500</small>
                         </div>
                     `,
                     icon: 'question',

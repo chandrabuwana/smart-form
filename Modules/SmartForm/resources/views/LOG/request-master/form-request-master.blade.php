@@ -329,7 +329,7 @@
                                 <i class="fas fa-save"></i> &nbsp;
                                 Submit Form
                             </button>
-                            <a href="{{url()->previous()}}" class="btn btn-success" style="margin:5px"><i class="fas fa-cancel"></i> &nbsp; Cancel</a>
+                            <a href="{{url()->previous()}}" class="btn btn-secondary" style="margin:5px"><i class="fas fa-cancel"></i> &nbsp; Cancel</a>
                         </div>
                     </div>
 
