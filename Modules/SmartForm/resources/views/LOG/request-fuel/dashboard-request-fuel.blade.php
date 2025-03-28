@@ -88,7 +88,7 @@
                                 <label>Status data :</label>
                             </div>
                             <div class="status me-2">
-                                <span class="box green"></span> Yes
+                                <span class="box green"></span> Active
                             </div>
                             <div class="status me-2">
                                 <span class="box grey"></span> Deleted
@@ -198,7 +198,7 @@
 
         function statusFormater(value, row, index) {
             if (value == 1) {
-                return `<button type="button" class="btn btn-success btn-sm" disabled>Yes</button>`
+                return `<button type="button" class="btn btn-success btn-sm" disabled>Active</button>`
             } else if (value == 2) {
                 return `<button type="button" class="btn btn-secondary btn-sm" disabled>Deleted</button>`
             } else {
