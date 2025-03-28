@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
 use Modules\SmartForm\helpers\HrdHelper;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class A2bBaruController extends Controller
 {
@@ -23,8 +24,69 @@ class A2bBaruController extends Controller
                 ->select('*')
                 ->orderBy('created_at');
 
-            // Get records with pagination
-            $records = $query->paginate(20);
+            if ($request->has('search')) {
+                $searchTerm = $request->search;
+                $query->where(function ($q) use ($searchTerm) {
+                    $q->where('doc_number', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('nrp', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('lokasi', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('operator', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('pengawas', 'like', '%' . $searchTerm . '%');
+                });
+            }
+
+            if ($request->has('operator') && $request->operator) {
+                $query->where('operator', $request->operator);
+            }
+
+            if ($request->has('pengawas') && $request->pengawas) {
+                $query->where('pengawas', $request->pengawas);
+            }
+
+            $query = $query->get();
+
+            if ($request->has('status') && $request->status) {
+                $query = $query->filter(function ($record) use ($request) {
+                    $final_status = '';
+                    if ($record->status_operator === 'Approve' && $record->status_pengawas === 'Approve') {
+                        $final_status = 'Approved';
+                    } elseif ($record->status_operator === 'Reject' && $record->status_pengawas === 'Reject') {
+                        $final_status = 'Rejected';
+                    } elseif ($record->status_operator === 'Pending' && $record->status_pengawas === 'Pending') {
+                        $final_status = 'Pending';
+                    } elseif ($record->status_operator === 'Pending' || $record->status_pengawas === 'Pending') {
+                        $final_status = 'Pending';
+                    } elseif (
+                        ($record->status_operator === 'Approve' && $record->status_pengawas === 'Reject') ||
+                        ($record->status_operator === 'Reject' && $record->status_pengawas === 'Approve')
+                    ) {
+                        $final_status = 'Rejected';
+                    }
+
+                    return $final_status === $request->status; // Filter sesuai status
+                });
+
+                // Pagination manual setelah filter
+                $currentPage = LengthAwarePaginator::resolveCurrentPage();
+                $perPage = 10; // Jumlah item per halaman
+                $items = $query->slice(($currentPage - 1) * $perPage, $perPage)->values();
+                $records = new LengthAwarePaginator($items, $query->count(), $perPage, $currentPage, [
+                    'path' => $request->url(),
+                    'query' => $request->query(),
+                ]);
+            } else {
+                // Jika tidak ada filter status, langsung paginate
+                $records = new LengthAwarePaginator(
+                    $query->forPage(LengthAwarePaginator::resolveCurrentPage(), 10)->values(),
+                    $query->count(),
+                    10,
+                    LengthAwarePaginator::resolveCurrentPage(),
+                    [
+                        'path' => $request->url(),
+                        'query' => $request->query(),
+                    ]
+                );
+            }
 
             // Calculate statistics
             $statistics = (object)[
@@ -38,6 +100,14 @@ class A2bBaruController extends Controller
             return view('smartform::production.a2b_baru.dashboard-a2b-baru', [
                 'records' => $records,
                 'statistics' => $statistics,
+                'user' => HrdHelper::getApprovalList(),
+                'filters' => [
+                    'search' => $request->search,
+                    'operator' => $request->operator,
+                    'pengawas' => $request->pengawas,
+                    'status_operator' => $request->status_operator,
+                    'status_pengawas' => $request->status_pengawas,
+                ],
 
             ]);
         } catch (\Exception $e) {
