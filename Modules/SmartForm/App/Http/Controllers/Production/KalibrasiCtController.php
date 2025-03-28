@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
+use Modules\SmartForm\helpers\HrdHelper;
 
 class KalibrasiCtController extends Controller
 {
@@ -99,12 +100,15 @@ class KalibrasiCtController extends Controller
 
                 return view('smartform::production.kalibrasi_ct.form-kalibrasi-ct', [
                     'record' => $record,
-                    'isShowDetail' => true
+                    'isShowDetail' => true,
+                    'approvalList' => HrdHelper::getApprovalList(),
                 ]);
             }
 
             return view('smartform::production.kalibrasi_ct.form-kalibrasi-ct', [
-                'isShowDetail' => false
+                'record' => $record ?? null,
+                'isShowDetail' => false,
+                'approvalList' => HrdHelper::getApprovalList(),
             ]);
         } catch (\Exception $e) {
             Log::error('Error in AddForm: ' . $e->getMessage());
@@ -149,6 +153,27 @@ class KalibrasiCtController extends Controller
                 'kondisi_area_kerja_dozer' => $request->kondisi_area_kerja_dozer,
                 'alat_support_dozer' => $request->alat_support_dozer,
                 'cuaca_dozer' => $request->cuaca_dozer,
+
+                'dibuat_loader' => $request->dibuat_loader,
+                'mengetahui_loader' => $request->mengetahui_loader,
+                'status_dibuat_loader' => $request->status_dibuat_loader ?? 'Pending',
+                'status_mengetahui_loader' => $request->status_mengetahui_loader ?? 'Pending',
+                'jabatan_dibuat_loader' => $request->jabatan_dibuat_loader,
+                'jabatan_mengetahui_loader' => $request->jabatan_mengetahui_loader,
+
+                'dibuat_dozer' => $request->dibuat_dozer,
+                'mengetahui_dozer' => $request->mengetahui_dozer,
+                'status_dibuat_dozer' => $request->status_dibuat_dozer ?? 'Pending',
+                'status_mengetahui_dozer' => $request->status_mengetahui_dozer ?? 'Pending',
+                'jabatan_dibuat_dozer' => $request->jabatan_dibuat_dozer,
+                'jabatan_mengetahui_dozer' => $request->jabatan_mengetahui_dozer,
+
+                'dibuat_hauler' => $request->dibuat_hauler,
+                'mengetahui_hauler' => $request->mengetahui_hauler,
+                'status_dibuat_hauler' => $request->status_dibuat_hauler ?? 'Pending',
+                'status_mengetahui_hauler' => $request->status_mengetahui_hauler ?? 'Pending',
+                'jabatan_dibuat_hauler' => $request->jabatan_dibuat_hauler,
+                'jabatan_mengetahui_hauler' => $request->jabatan_mengetahui_hauler,
             ];
 
             // Initialize arrays for multiple entries
@@ -403,7 +428,11 @@ class KalibrasiCtController extends Controller
         $record->durasi_dozer = json_decode($record->durasi_dozer);
         $record->reason_dozer = json_decode($record->reason_dozer);
 
-        return view('smartform::production.kalibrasi_ct.edit-kalibrasi-ct', compact('record'));
+        return view('smartform::production.kalibrasi_ct.edit-kalibrasi-ct', [
+            'record' => $record,
+            'isShowDetail' => false,
+            'approvalList' => HrdHelper::getApprovalList(),
+        ]);
     }
 
 
@@ -442,6 +471,27 @@ class KalibrasiCtController extends Controller
                 'kondisi_area_kerja_dozer' => $request->kondisi_area_kerja_dozer,
                 'alat_support_dozer' => $request->alat_support_dozer,
                 'cuaca_dozer' => $request->cuaca_dozer,
+
+                'dibuat_loader' => $request->dibuat_loader,
+                'mengetahui_loader' => $request->mengetahui_loader,
+                'status_dibuat_loader' => $request->status_dibuat_loader ?? 'Pending',
+                'status_mengetahui_loader' => $request->status_mengetahui_loader ?? 'Pending',
+                'jabatan_dibuat_loader' => $request->jabatan_dibuat_loader,
+                'jabatan_mengetahui_loader' => $request->jabatan_mengetahui_loader,
+
+                'dibuat_dozer' => $request->dibuat_dozer,
+                'mengetahui_dozer' => $request->mengetahui_dozer,
+                'status_dibuat_dozer' => $request->status_dibuat_dozer ?? 'Pending',
+                'status_mengetahui_dozer' => $request->status_mengetahui_dozer ?? 'Pending',
+                'jabatan_dibuat_dozer' => $request->jabatan_dibuat_dozer,
+                'jabatan_mengetahui_dozer' => $request->jabatan_mengetahui_dozer,
+
+                'dibuat_hauler' => $request->dibuat_hauler,
+                'mengetahui_hauler' => $request->mengetahui_hauler,
+                'status_dibuat_hauler' => $request->status_dibuat_hauler ?? 'Pending',
+                'status_mengetahui_hauler' => $request->status_mengetahui_hauler ?? 'Pending',
+                'jabatan_dibuat_hauler' => $request->jabatan_dibuat_hauler,
+                'jabatan_mengetahui_hauler' => $request->jabatan_mengetahui_hauler,
             ];
 
             // Initialize arrays for multiple entries
@@ -626,6 +676,243 @@ class KalibrasiCtController extends Controller
         }
     }
 
+    public function ApprovalKalibrasi($id)
+    {
+
+        $record = DB::table('prod_kalibrasi_ct')
+            ->where('id', $id)
+            ->first();
+
+
+
+        // Parse JSON arrays
+        $record->ket_front_hauler = json_decode($record->ket_front_hauler);
+        $record->ket_jalan_hauler = json_decode($record->ket_jalan_hauler);
+        $record->ket_grade_hauler = json_decode($record->ket_grade_hauler);
+        $record->ket_disposal_hauler = json_decode($record->ket_disposal_hauler);
+        $record->no_loader_hauler = json_decode($record->no_loader_hauler);
+        $record->nomor_dtht_hauler = json_decode($record->nomor_dtht_hauler);
+        $record->nama_operator_hauler = json_decode($record->nama_operator_hauler);
+        $record->jarak_hauling_hauler = json_decode($record->jarak_hauling_hauler);
+        $record->waktu_antri_hauler = json_decode($record->waktu_antri_hauler);
+        $record->meninggalkan_front_hauler = json_decode($record->meninggalkan_front_hauler);
+        $record->cycle_timer_hauler = json_decode($record->cycle_timer_hauler);
+        $record->jumlah_bucket_hauler = json_decode($record->jumlah_bucket_hauler);
+
+        $record->no_loader = json_decode($record->no_loader);
+        $record->jenis_material_loader = json_decode($record->jenis_material_loader);
+        $record->nomor_cmtdt_loader = json_decode($record->nomor_cmtdt_loader);
+        $record->digging_loader = json_decode($record->digging_loader);
+        $record->swing_isi_loader = json_decode($record->swing_isi_loader);
+        $record->load_loader = json_decode($record->load_loader);
+        $record->swing_kosong_loader = json_decode($record->swing_kosong_loader);
+        $record->total_pengisian_loader = json_decode($record->total_pengisian_loader);
+        $record->durasi_loader = json_decode($record->durasi_loader);
+        $record->reason_loader = json_decode($record->reason_loader);
+
+        $record->no_dozer = json_decode($record->no_dozer);
+        $record->dozing_dozer = json_decode($record->dozing_dozer);
+        $record->reverse_dozer = json_decode($record->reverse_dozer);
+        $record->gear_shifting_dozer = json_decode($record->gear_shifting_dozer);
+        $record->total_dozer = json_decode($record->total_dozer);
+        $record->cm_dozer = json_decode($record->cm_dozer);
+        $record->jarak_dozer = json_decode($record->jarak_dozer);
+        $record->durasi_dozer = json_decode($record->durasi_dozer);
+        $record->reason_dozer = json_decode($record->reason_dozer);
+
+        return view('smartform::production.kalibrasi_ct.approval-kalibrasi-ct', compact('record'), [
+            'record' => $record,
+            'isShowDetail' => true,
+            'approvalList' => HrdHelper::getApprovalList(),
+        ]);
+    }
+
+    public function ApproveKalibrasi($id)
+    {
+        try {
+            // Ambil data dari database berdasarkan ID
+            $record = DB::table('prod_kalibrasi_ct')->where('id', $id)->first();
+
+            // Ambil user_id dari session
+            $loggedInUserId = session('user_id');
+
+            if ($record) {
+                // Cek apakah user adalah pemeriksa, dan hanya eksekusi jika status bernilai Pending
+                if ($record->dibuat_hauler == $loggedInUserId && $record->status_dibuat_hauler == 'Pending') {
+                    DB::table('prod_kalibrasi_ct')
+                        ->where('id', $id)
+                        ->update(['status_dibuat_hauler' => 'Approve']);
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Status berhasil diubah menjadi Approve'
+                    ]);
+                }
+
+                // Cek apakah user adalah atasan
+                if ($record->mengetahui_hauler == $loggedInUserId && $record->status_mengetahui_hauler == 'Pending') {
+                    DB::table('prod_kalibrasi_ct')
+                        ->where('id', $id)
+                        ->update(['status_mengetahui_hauler' => 'Approve']);
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Status berhasil diubah menjadi Approve'
+                    ]);
+                }
+
+                if ($record->dibuat_loader == $loggedInUserId && $record->status_dibuat_loader == 'Pending') {
+                    DB::table('prod_kalibrasi_ct')
+                        ->where('id', $id)
+                        ->update(['status_dibuat_loader' => 'Approve']);
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Status berhasil diubah menjadi Approve'
+                    ]);
+                }
+
+                if ($record->mengetahui_loader == $loggedInUserId && $record->status_mengetahui_loader == 'Pending') {
+                    DB::table('prod_kalibrasi_ct')
+                        ->where('id', $id)
+                        ->update(['status_mengetahui_loader' => 'Approve']);
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Status berhasil diubah menjadi Approve'
+                    ]);
+                }
+
+                if ($record->dibuat_dozer == $loggedInUserId && $record->status_dibuat_dozer == 'Pending') {
+                    DB::table('prod_kalibrasi_ct')
+                        ->where('id', $id)
+                        ->update(['status_dibuat_dozer' => 'Approve']);
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Status berhasil diubah menjadi Approve'
+                    ]);
+                }
+
+                if ($record->mengetahui_dozer == $loggedInUserId && $record->status_mengetahui_dozer == 'Pending') {
+                    DB::table('prod_kalibrasi_ct')
+                        ->where('id', $id)
+                        ->update(['status_mengetahui_dozer' => 'Approve']);
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Status berhasil diubah menjadi Approve'
+                    ]);
+                }
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak ada status Pending untuk diubah atau Anda tidak berhak melakukan approve'
+            ], 403);
+        } catch (\Exception $e) {
+            Log::error('Error in ApproveKalibrasi: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+    public function RejectKalibrasi($id)
+    {
+        try {
+            // Ambil data dari database berdasarkan ID
+            $record = DB::table('prod_kalibrasi_ct')->where('id', $id)->first();
+
+            // Ambil user_id dari session
+            $loggedInUserId = session('user_id');
+
+            if ($record) {
+                // Cek apakah user adalah pemeriksa, dan hanya eksekusi jika status bernilai Pending
+                if ($record->dibuat_hauler == $loggedInUserId && $record->status_dibuat_hauler == 'Pending') {
+                    DB::table('prod_kalibrasi_ct')
+                        ->where('id', $id)
+                        ->update(['status_dibuat_hauler' => 'Reject']);
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Status berhasil diubah menjadi Reject'
+                    ]);
+                }
+
+                // Cek apakah user adalah atasan
+                if ($record->mengetahui_hauler == $loggedInUserId && $record->status_mengetahui_hauler == 'Pending') {
+                    DB::table('prod_kalibrasi_ct')
+                        ->where('id', $id)
+                        ->update(['status_mengetahui_hauler' => 'Reject']);
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Status berhasil diubah menjadi Reject'
+                    ]);
+                }
+
+                if ($record->dibuat_loader == $loggedInUserId && $record->status_dibuat_loader == 'Pending') {
+                    DB::table('prod_kalibrasi_ct')
+                        ->where('id', $id)
+                        ->update(['status_dibuat_loader' => 'Reject']);
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Status berhasil diubah menjadi Reject'
+                    ]);
+                }
+
+                if ($record->mengetahui_loader == $loggedInUserId && $record->status_mengetahui_loader == 'Pending') {
+                    DB::table('prod_kalibrasi_ct')
+                        ->where('id', $id)
+                        ->update(['status_mengetahui_loader' => 'Reject']);
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Status berhasil diubah menjadi Reject'
+                    ]);
+                }
+
+                if ($record->dibuat_dozer == $loggedInUserId && $record->status_dibuat_dozer == 'Pending') {
+                    DB::table('prod_kalibrasi_ct')
+                        ->where('id', $id)
+                        ->update(['status_dibuat_dozer' => 'Reject']);
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Status berhasil diubah menjadi Reject'
+                    ]);
+                }
+
+                if ($record->mengetahui_dozer == $loggedInUserId && $record->status_mengetahui_dozer == 'Pending') {
+                    DB::table('prod_kalibrasi_ct')
+                        ->where('id', $id)
+                        ->update(['status_mengetahui_dozer' => 'Reject']);
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Status berhasil diubah menjadi Reject'
+                    ]);
+                }
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak ada status Pending untuk diubah atau Anda tidak berhak melakukan reject'
+            ], 403);
+        } catch (\Exception $e) {
+            Log::error('Error in RejectKalibrasi: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+
     public function ExportForm($id)
     {
         try {
@@ -690,7 +977,12 @@ class KalibrasiCtController extends Controller
 
 
 
-            $pdf = PDF::loadView('smartform::production.kalibrasi_ct.export-pdf', compact('record','total'));
+            $pdf = PDF::loadView('smartform::production.kalibrasi_ct.export-pdf', [
+            'total' => $total,
+            'record' => $record,
+            'isShowDetail' => true,
+            'approvalList' => HrdHelper::getApprovalList(),
+        ]);
             $pdf->setPaper('a4', 'landscape');
 
             return $pdf->download('Kalibrasi CT_' . $record->doc_number . '.pdf');

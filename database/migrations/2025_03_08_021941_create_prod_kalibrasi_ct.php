@@ -80,6 +80,28 @@ return new class extends Migration
             $table->text('durasi_dozer');
             $table->text('reason_dozer');
 
+            //Approval Needs
+            $table->text('dibuat_hauler');
+            $table->text('mengetahui_hauler');
+            $table->text('status_dibuat_hauler');
+            $table->text('status_mengetahui_hauler');
+            $table->text('jabatan_dibuat_hauler');
+            $table->text('jabatan_mengetahui_hauler');
+
+            $table->text('dibuat_loader');
+            $table->text('mengetahui_loader');
+            $table->text('status_dibuat_loader');
+            $table->text('status_mengetahui_loader');
+            $table->text('jabatan_dibuat_loader');
+            $table->text('jabatan_mengetahui_loader');
+
+            $table->text('dibuat_dozer');
+            $table->text('mengetahui_dozer');
+            $table->text('status_dibuat_dozer');
+            $table->text('status_mengetahui_dozer');
+            $table->text('jabatan_dibuat_dozer');
+            $table->text('jabatan_mengetahui_dozer');
+
             $table->softDeletes();
             $table->timestamps();
         });

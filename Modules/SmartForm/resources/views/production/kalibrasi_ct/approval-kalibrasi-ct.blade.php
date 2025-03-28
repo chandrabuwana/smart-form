@@ -40,7 +40,7 @@
                                                 <h5 style="color: white;">Form Hauler</h5>
                                             </a>
                                             {{-- Isi Hauler --}}
-                                            <div class="collapse show mt-2" id="collapseHauler">       
+                                            <div class="collapse {{ $isShowDetail ? 'show' : '' }} mt-2" id="collapseHauler">       
                                                 <div class="card card-body">
                                                     <div class="mx-3 mb-2">
                                                         <h5>Basic Information</h5>
@@ -414,7 +414,24 @@
                                                                             </option>
                                                                         @endforeach
                                                                     </select>
+                                                                    @if($isShowDetail)
+                                                                        <span class="
+                                                                            {{ $record->status_dibuat_hauler == 'Approve' ? 'text-success' : '' }}
+                                                                            {{ $record->status_dibuat_hauler == 'Pending' ? 'text-warning' : '' }}
+                                                                            {{ $record->status_dibuat_hauler == 'Reject' ? 'text-danger' : '' }}">
+                                                                            {{ ucfirst($record->status_dibuat_hauler) }}
+                                                                        </span>
+                                                                    @endif
                                                                 </div>
+                                                                @php
+                                                                    $loggedInUserId = session('user_id');
+                                                                @endphp
+                                                                @if(optional($record)->dibuat_hauler == $loggedInUserId)
+                                                                    <div>
+                                                                        <button class="btnApprove btn btn-info btn-sm" data-id="{{ $record->id }}">Approve</button>
+                                                                        <button class="btnReject btn btn-danger btn-sm" data-id="{{ $record->id }}">Reject</button>
+                                                                    </div>
+                                                                @endif
                                                             </div>
         
                                                             <div class="col-md-4">
@@ -451,7 +468,25 @@
                                                                             </option>
                                                                         @endforeach
                                                                     </select>
+                                                                    @if($isShowDetail)
+                                                                        <span class="
+                                                                            {{ $record->status_mengetahui_hauler == 'Approve' ? 'text-success' : '' }}
+                                                                            {{ $record->status_mengetahui_hauler == 'Pending' ? 'text-warning' : '' }}
+                                                                            {{ $record->status_mengetahui_hauler == 'Reject' ? 'text-danger' : '' }}">
+                                                                            {{ ucfirst($record->status_mengetahui_hauler) }}
+                                                                        </span>
+                                                                    @endif
                                                                 </div>
+                                                                @php
+                                                                    $loggedInUserId = session('user_id');
+                                                                @endphp
+
+                                                                @if(optional($record)->mengetahui_hauler == $loggedInUserId)
+                                                                    <div>
+                                                                        <button class="btnApprove btn btn-info btn-sm" data-id="{{ $record->id }}">Approve</button>
+                                                                        <button class="btnReject btn btn-danger btn-sm" data-id="{{ $record->id }}">Reject</button>
+                                                                    </div>
+                                                                @endif
                                                             </div>
         
                                                             <div class="col-md-4">
@@ -484,7 +519,7 @@
                                                 <h5 style="color: white;">Form Loader</h5>
                                             </a>
                                             {{-- Isi Loader --}}
-                                            <div class="collapse show mt-2" id="collapseLoader">
+                                            <div class="collapse {{ $isShowDetail ? 'show' : '' }} mt-2" id="collapseLoader">
                                                 <div class="card card-body">
                                                     <div class="mx-3">
                                                     <!-- Basic Information -->
@@ -699,7 +734,25 @@
                                                                             </option>
                                                                         @endforeach
                                                                     </select>
+                                                                    @if($isShowDetail)
+                                                                        <span class="
+                                                                            {{ $record->status_dibuat_loader == 'Approve' ? 'text-success' : '' }}
+                                                                            {{ $record->status_dibuat_loader == 'Pending' ? 'text-warning' : '' }}
+                                                                            {{ $record->status_dibuat_loader == 'Reject' ? 'text-danger' : '' }}">
+                                                                            {{ ucfirst($record->status_dibuat_loader) }}
+                                                                        </span>
+                                                                    @endif
                                                                 </div>
+                                                                @php
+                                                                    $loggedInUserId = session('user_id');
+                                                                @endphp
+
+                                                                @if(optional($record)->dibuat_loader == $loggedInUserId)
+                                                                    <div>
+                                                                        <button class="btnApprove btn btn-info btn-sm" data-id="{{ $record->id }}">Approve</button>
+                                                                        <button class="btnReject btn btn-danger btn-sm" data-id="{{ $record->id }}">Reject</button>
+                                                                    </div>
+                                                                @endif
                                                             </div>
         
                                                             <div class="col-md-4">
@@ -733,7 +786,25 @@
                                                                             </option>
                                                                         @endforeach
                                                                     </select>
+                                                                    @if($isShowDetail)
+                                                                        <span class="
+                                                                            {{ $record->status_mengetahui_loader == 'Approve' ? 'text-success' : '' }}
+                                                                            {{ $record->status_mengetahui_loader == 'Pending' ? 'text-warning' : '' }}
+                                                                            {{ $record->status_mengetahui_loader == 'Reject' ? 'text-danger' : '' }}">
+                                                                            {{ ucfirst($record->status_mengetahui_loader) }}
+                                                                        </span>
+                                                                    @endif
                                                                 </div>
+                                                                @php
+                                                                    $loggedInUserId = session('user_id');
+                                                                @endphp
+
+                                                                @if(optional($record)->mengetahui_loader == $loggedInUserId)
+                                                                    <div>
+                                                                        <button class="btnApprove btn btn-info btn-sm" data-id="{{ $record->id }}">Approve</button>
+                                                                        <button class="btnReject btn btn-danger btn-sm" data-id="{{ $record->id }}">Reject</button>
+                                                                    </div>
+                                                                @endif
                                                             </div>
         
                                                             <div class="col-md-4">
@@ -763,7 +834,7 @@
                                                 <h5 style="color: white;">Form Dozer</h5>
                                             </a>
                                             {{-- Isi Dozer --}}
-                                            <div class="collapse show mt-2" id="collapseDozer">
+                                            <div class="collapse {{ $isShowDetail ? 'show' : '' }} mt-2" id="collapseDozer">
                                                 <div class="card card-body">
                                                     <div class="mx-3">
                                                     <!-- Basic Information -->
@@ -971,7 +1042,26 @@
                                                                             </option>
                                                                         @endforeach
                                                                     </select>
+                                                                    @if($isShowDetail)
+                                                                        <span class="
+                                                                            {{ $record->status_dibuat_dozer == 'Approve' ? 'text-success' : '' }}
+                                                                            {{ $record->status_dibuat_dozer == 'Pending' ? 'text-warning' : '' }}
+                                                                            {{ $record->status_dibuat_dozer == 'Reject' ? 'text-danger' : '' }}">
+                                                                            {{ ucfirst($record->status_dibuat_dozer) }}
+                                                                        </span>
+                                                                    @endif
                                                                 </div>
+                                                                @php
+                                                                    $loggedInUserId = session('user_id');
+                                                                @endphp
+
+                                                                @if(optional($record)->dibuat_dozer == $loggedInUserId)
+                                                                    <div>
+                                                                        <button class="btnApprove btn btn-info btn-sm" data-id="{{ $record->id }}">Approve</button>
+                                                                        <button class="btnReject btn btn-danger btn-sm" data-id="{{ $record->id }}">Reject</button>
+                                                                    </div>
+                                                                @endif
+
                                                             </div>
         
                                                             <div class="col-md-4">
@@ -1005,7 +1095,26 @@
                                                                             </option>
                                                                         @endforeach
                                                                     </select>
+                                                                    @if($isShowDetail)
+                                                                        <span class="
+                                                                            {{ $record->status_mengetahui_dozer == 'Approve' ? 'text-success' : '' }}
+                                                                            {{ $record->status_mengetahui_dozer == 'Pending' ? 'text-warning' : '' }}
+                                                                            {{ $record->status_mengetahui_dozer == 'Reject' ? 'text-danger' : '' }}">
+                                                                            {{ ucfirst($record->status_mengetahui_dozer) }}
+                                                                        </span>
+                                                                    @endif
                                                                 </div>
+                                                                @php
+                                                                    $loggedInUserId = session('user_id');
+                                                                @endphp
+
+                                                                @if(optional($record)->mengetahui_dozer == $loggedInUserId)
+                                                                    <div>
+                                                                        <button class="btnApprove btn btn-info btn-sm" data-id="{{ $record->id }}">Approve</button>
+                                                                        <button class="btnReject btn btn-danger btn-sm" data-id="{{ $record->id }}">Reject</button>
+                                                                    </div>
+                                                                @endif
+
                                                             </div>
         
                                                             <div class="col-md-4">
@@ -1034,15 +1143,11 @@
                                 </div>
                                 <div class="row">
                                 <div class="col-12 text-end" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
-                                    @if($isShowDetail)
+
                                         <a href="{{ route('prod.kalibrasi-ct.dashboard') }}" class="btn btn-secondary">Back</a>
                                         <a href="{{ route('prod.kalibrasi-ct.export', ['id' => $record->id]) }}" class="btn btn-primary">
                                             <i class="material-icons">download</i> Export PDF
                                         </a>
-                                    @else
-                                        <a href="{{ route('prod.kalibrasi-ct.dashboard') }}" class="btn btn-secondary">Cancel</a>
-                                        <button type="submit" class="btn btn-primary">Update</button>
-                                    @endif
                                 </div>
                             </div>
                             </form>    
@@ -1190,52 +1295,61 @@ function convertToTimeFormat(totalSeconds) {
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <script>
-        $(function() {
-            var form = $("#kalibrasiForm");
-            var submitBtn = form.find('button[type="submit"]');
+    $(function() {
+        // Delegasi event ke tombol Approve
+        $(document).on("click", ".btnApprove", function(e) {
+            e.preventDefault();
+            const recordId = $(this).data("id"); // Ambil ID dari atribut data-id
+            const url = `{{ route('prod.kalibrasi-ct.approve', ['id' => ':id']) }}`.replace(":id", recordId);
 
-            form.submit(function(e) {
-                e.preventDefault();
-                submitBtn.prop('disabled', true);
-
-                var formData = new FormData(this);
-                axios.post(`{{ route('prod.kalibrasi-ct.update', ['id' => $record->id]) }}`, formData)
-                    .then(function(response) {
-                        if (response.data.success) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Success',
-                                text: response.data.message
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    window.location.href =
-                                        '{{ route("prod.kalibrasi-ct.dashboard") }}';
-                                }
-                            });
-                        }
-                    })
-                    .catch(function(error) {
-                        let errorMessage = 'Terjadi kesalahan pada sistem';
-
-                        if (error.response) {
-                            if (error.response.data.errors) {
-                                errorMessage = Object.values(error.response.data.errors).flat().join(
-                                    '\n');
-                            } else if (error.response.data.message) {
-                                errorMessage = error.response.data.message;
-                            }
-                        }
-
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: errorMessage
-                        });
-                    })
-                    .finally(function() {
-                        submitBtn.prop('disabled', false);
+            axios.post(url, {
+                _token: '{{ csrf_token() }}'
+            }).then(function(response) {
+                if (response.data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: response.data.message
+                    }).then(() => {
+                        location.reload(); // Reload halaman
                     });
+                }
+            }).catch(function(error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Terjadi kesalahan pada sistem'
+                });
             });
         });
-    </script>
+
+        // Delegasi event ke tombol Reject
+        $(document).on("click", ".btnReject", function(e) {
+            e.preventDefault();
+            const recordId = $(this).data("id"); // Ambil ID dari atribut data-id
+            const url = `{{ route('prod.kalibrasi-ct.reject', ['id' => ':id']) }}`.replace(":id", recordId);
+
+            axios.post(url, {
+                _token: '{{ csrf_token() }}'
+            }).then(function(response) {
+                if (response.data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: response.data.message
+                    }).then(() => {
+                        location.reload(); // Reload halaman
+                    });
+                }
+            }).catch(function(error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Terjadi kesalahan pada sistem'
+                });
+            });
+        });
+    });
+</script>
+
 @endsection

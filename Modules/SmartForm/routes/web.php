@@ -426,6 +426,9 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/edit-kalibrasi-ct/{id}', [KalibrasiCtController::class, 'EditKalibrasi'])->name('prod.kalibrasi-ct.edit');
             Route::post('/form-kalibrasi-ct/{id}', [KalibrasiCtController::class, 'UpdateKalibrasi'])->name('prod.kalibrasi-ct.update');
             Route::delete('/form-kalibrasi-ct/{id}', [KalibrasiCtController::class, 'destroy'])->name('prod.kalibrasi-ct.delete');
+            Route::get('/approval-form-kalibrasi-ct/{id}', [KalibrasiCtController::class, 'ApprovalKalibrasi'])->name('prod.kalibrasi-ct.approval');
+            Route::post('/approve-form-kalibrasi-ct/{id}', [KalibrasiCtController::class, 'ApproveKalibrasi'])->name('prod.kalibrasi-ct.approve');
+            Route::post('/reject-form-kalibrasi-ct/{id}', [KalibrasiCtController::class, 'RejectKalibrasi'])->name('prod.kalibrasi-ct.reject');
         });
 
         Route::prefix('prod-a2b-baru')->group(function () {

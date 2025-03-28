@@ -70,6 +70,7 @@
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Nama Operator Hauler</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Nama Operator Loader</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Nama Operator Dozer</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Status</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Actions</th>
                                 </tr>
                             </thead>
@@ -92,6 +93,51 @@
                                     <td>
                                         <p class="text-xs font-weight-bold mb-0">{{ $record->nama_operator_dozer }}</p>
                                     </td>
+
+                                    <td>
+                                        <span class="text-xs font-weight-bold">
+                                            @if (
+                                                $record->status_dibuat_hauler === 'Approve' && 
+                                                $record->status_mengetahui_hauler === 'Approve' && 
+                                                $record->status_dibuat_loader === 'Approve' && 
+                                                $record->status_mengetahui_loader === 'Approve' && 
+                                                $record->status_dibuat_dozer === 'Approve' && 
+                                                $record->status_mengetahui_dozer === 'Approve'
+                                            )
+                                                Approved
+                                            @elseif (
+                                                $record->status_dibuat_hauler === 'Reject' && 
+                                                $record->status_mengetahui_hauler === 'Reject' && 
+                                                $record->status_dibuat_loader === 'Reject' && 
+                                                $record->status_mengetahui_loader === 'Reject' && 
+                                                $record->status_dibuat_dozer === 'Reject' && 
+                                                $record->status_mengetahui_dozer === 'Reject'
+                                            )
+                                                Rejected
+                                            @elseif (
+                                                $record->status_dibuat_hauler === 'Pending' || 
+                                                $record->status_mengetahui_hauler === 'Pending' || 
+                                                $record->status_dibuat_loader === 'Pending' || 
+                                                $record->status_mengetahui_loader === 'Pending' || 
+                                                $record->status_dibuat_dozer === 'Pending' || 
+                                                $record->status_mengetahui_dozer === 'Pending'
+                                            )
+                                                Pending
+                                            @elseif (
+                                                ($record->status_dibuat_hauler === 'Approve' && $record->status_mengetahui_hauler === 'Reject') || 
+                                                ($record->status_dibuat_loader === 'Approve' && $record->status_mengetahui_loader === 'Reject') || 
+                                                ($record->status_dibuat_dozer === 'Approve' && $record->status_mengetahui_dozer === 'Reject') || 
+                                                ($record->status_dibuat_hauler === 'Reject' && $record->status_mengetahui_hauler === 'Approve') || 
+                                                ($record->status_dibuat_loader === 'Reject' && $record->status_mengetahui_loader === 'Approve') || 
+                                                ($record->status_dibuat_dozer === 'Reject' && $record->status_mengetahui_dozer === 'Approve')
+                                            )
+                                                Rejected
+                                            @else
+                                                Undefined
+                                            @endif
+                                        </span>
+                                    </td>
+
                                     <td>
                                         <a href="{{ route('prod.kalibrasi-ct.form', ['id' => $record->id]) }}" class="btn btn-info btn-sm">
                                             <i class="fas fa-eye"></i>
@@ -106,6 +152,10 @@
                                         <a href="{{ route('prod.kalibrasi-ct.edit', ['id' => $record->id]) }}"
                                                 class="btn btn-warning btn-sm">
                                                 <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a href="{{ route('prod.kalibrasi-ct.approval', ['id' => $record->id]) }}"
+                                                class="btn btn-info btn-sm">
+                                                <i class="fas fa-user-check"></i>
                                         </a>
                                     </td>
                                 </tr>
