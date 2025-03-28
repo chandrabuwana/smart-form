@@ -31,6 +31,7 @@ return new class extends Migration
             $table->string('total_liter');
             $table->string('diserahkan_oleh')->nullable();
             $table->string('diterima_oleh')->nullable();
+            $table->string('is_active')->nullable();
         });
     }
 

@@ -52,9 +52,9 @@ class PemakaianSolarController extends Controller {
         return view( 'SmartForm::LOG/pemakaian-solar/dashboard-pemakaian-solar', [
             'nik_session' => $nik_session,
             'name_session' => $name_session ] );
-    }
+        }
 
-    function GetPemakaianSolarData( Request $request ) {
+        function GetPemakaianSolarData( Request $request ) {
             $TABLE_MASTER = 'FM_LOG_037_PEMAKAIAN_SOLAR';
             $TABLE_DETAIL = 'FM_LOG_037_PEMAKAIAN_SOLAR_DETAIL';
 
@@ -112,9 +112,9 @@ class PemakaianSolarController extends Controller {
 
             return response()->json( $response );
             // return response()->json( [ 'total'=> $totalNotFiltered, 'totalNotFiltered'=> $totalNotFiltered, 'rows' => $users ] );
-    }
+        }
 
-    private function getUserSM(): array {
+        private function getUserSM(): array {
             $list_nik_SM = [];
 
             try {
@@ -125,9 +125,9 @@ class PemakaianSolarController extends Controller {
             }
 
             return $list_nik_SM;
-    }
+        }
 
-    function editPemakaianSolar( Request $request ) {
+        function editPemakaianSolar( Request $request ) {
             $no_doc = $request->query( 'no_doc' );
             $nik_session = $request->session()->get( 'user_id', '' );
             $data = $this->getDetail( $request, $no_doc, $nik_session );
