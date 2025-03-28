@@ -112,7 +112,7 @@
                                     <th data-field="departemen" data-align="left" data-halign="text-center" data-sortable="true">Departemen</th>
                                     <th data-field="tanggal" data-align="left" data-halign="text-center" data-sortable="true">Tanggal</th>
                                     <th data-field="no_lambung" data-align="left" data-halign="text-center" data-sortable="true">No Lambung</th>
-                                    <th data-field="is_active" data-align="left" data-formatter="statusFormater" data-halign="text-center" data-sortable="true">Is Active?</th>
+                                    <!-- <th data-field="is_active" data-align="left" data-formatter="statusFormater" data-halign="text-center" data-sortable="true">Is Active?</th>
                                     <!-- <th data-field="jenis_kendaraan" data-align="left" data-halign="text-center" data-sortable="true">Jenis Kendaraan</th> -->
                                     <th data-field="action" data-formatter="actionFormatter" >Actions</th>
                                 </tr>
