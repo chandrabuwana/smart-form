@@ -9,6 +9,30 @@
     .m-0 {
         margin: 0;
     }
+    .status {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        font-family: Arial, sans-serif;
+        padding: 3px;
+    }
+    .box {
+        width: 20px;
+        height: 20px;
+        display: inline-block;
+        border-radius: 4px;
+    }
+    .grey {
+        background-color:rgb(134, 132, 132);
+    }
+
+    .green {
+        background-color: #4CAF50;
+    }
+
+    .blue {
+        background-color: #0000FF;
+    }
 </style>
 @endsection
 
@@ -59,6 +83,17 @@
                                 Clear Filter
                             </button>
                         </div>
+                        <div class="col-md-12 d-flex justify-content-end">
+                            <div class="status me-2">
+                                <label>Status data :</label>
+                            </div>
+                            <div class="status me-2">
+                                <span class="box green"></span> Yes
+                            </div>
+                            <div class="status me-2">
+                                <span class="box grey"></span> Deleted
+                            </div>
+                        </div>
                     </div>
 
                     <div class="table-responsive p-0">
@@ -73,10 +108,11 @@
                                     <th data-field="id" data-align="left" data-halign="text-center" data-sortable="true">ID</th>
                                     <th data-field="nama" data-align="left" data-halign="text-center" data-sortable="true">Nama</th>
                                     <th data-field="dibuat_oleh" data-align="left" data-halign="text-center" data-sortable="true">NIK</th>
-                                    <th data-field="jabatan" data-align="left" data-halign="text-center" data-sortable="true">Jabatan</th>
+                                    <!-- <th data-field="jabatan" data-align="left" data-halign="text-center" data-sortable="true">Jabatan</th> -->
                                     <th data-field="departemen" data-align="left" data-halign="text-center" data-sortable="true">Departemen</th>
                                     <th data-field="tanggal" data-align="left" data-halign="text-center" data-sortable="true">Tanggal</th>
                                     <th data-field="no_lambung" data-align="left" data-halign="text-center" data-sortable="true">No Lambung</th>
+                                    <th data-field="is_active" data-align="left" data-formatter="statusFormater" data-halign="text-center" data-sortable="true">Is Active?</th>
                                     <!-- <th data-field="jenis_kendaraan" data-align="left" data-halign="text-center" data-sortable="true">Jenis Kendaraan</th> -->
                                     <th data-field="action" data-formatter="actionFormatter" >Actions</th>
                                 </tr>
@@ -160,6 +196,16 @@
             ]
         });
 
+        function statusFormater(value, row, index) {
+            if (value == 1) {
+                return `<button type="button" class="btn btn-success btn-sm" disabled>Yes</button>`
+            } else if (value == 2) {
+                return `<button type="button" class="btn btn-secondary btn-sm" disabled>Deleted</button>`
+            } else {
+                return `<button type="button" class="btn btn-info btn-sm" disabled>?</button>`
+            }
+        }
+
         function applyFilter(e) {
             $("#list-form").bootstrapTable('refresh')
         }
@@ -222,7 +268,8 @@
             var btn = '<a type="button" class="btn btn-secondary btn-sm me-1" href="/bss-form/log/get-request-fuel-detail?id=' + row.id + '">Lihat</a>';
             if(row.dibuat_oleh == users_nik && (row.editable == 0 || row.editable == null)) {
                 btn = btn + '<a type="button" class="btn btn-info btn-sm me-1" href="/bss-form/log/edit-req-fuel?id=' + row.id + '">Edit</a>'
-                     + '<a class="btn btn-primary btn-action btn-sm" href="/bss-form/LOG/pdf-fuel/${row.id}">Pdf</a>';
+                     + '<a class="btn btn-primary btn-action btn-sm me-1" href="/bss-form/log/pdf-fuel?id=' + row.id + '">Pdf</a>'
+                     + '<a class="btn btn-danger btn-action btn-sm me-1" href="/bss-form/log/delete-fuel?id=' + row.id + '">Delete</a>';
             }
             
             return btn;

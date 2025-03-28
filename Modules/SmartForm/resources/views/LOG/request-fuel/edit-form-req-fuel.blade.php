@@ -62,11 +62,12 @@
 
     <div class="row">
         <div class="col-12">
-            <form class="card my-4" id="formRequestFuel">
+            <form method="POST" action="{{route('bss-form.log.update-fuel')}}">
+                @csrf
                 <div class="card my-4">
                     <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                         <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                            <h6 class="text-white text-capitalize ps-3">Form Permintaan Pengisian Fuel</h6>
+                            <h6 class="text-white text-capitalize ps-3">Update Permintaan Pengisian Fuel</h6>
                         </div>
                     </div>
 
@@ -79,7 +80,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <table class="w-full">
-                                    <input type="text" class="input-text w-full" id="tglDoc" name="tglDoc" value="{{$data['id']}}" hidden>
+                                    <input type="text" class="input-text w-full" name="idDoc" value="{{$data['id']}}" hidden>
                                     <tr>
                                         <td>Date</td>
                                         <td>
@@ -89,7 +90,7 @@
                                     <tr>
                                         <td>Jabatan</td>
                                         <td>
-                                            <input type="text" class="input-text w-full" id="i_jabatan" name="i_jabatan" value="{{$data['jabatan']}}">
+                                            <input type="text" class="input-text w-full" name="i_jabatan" value="{{$data['jabatan']}}">
                                         </td>
                                     </tr>
                                     <tr>
@@ -103,7 +104,7 @@
                                     <tr>
                                         <td>Departemen</td>
                                         <td>
-                                            <select class="form-select form-select-sm input-text" aria-label="Default select example" id="i_departemen" name="i_departemen">
+                                            <select class="form-select form-select-sm input-text" aria-label="Default select example" name="i_departemen">
                                             <option value="{{$data['departemen']}}" selected>{{$data['departemen']}}</option>    
                                                 <option value="ENG">ENGINEERING</option>
                                                 <option value="SHE">SHE</option>
@@ -134,11 +135,11 @@
                                     </tr>
                                     <tr>
                                         <td>No Lambung</td>
-                                        <td><input type="text" class="input-text w-full" id="i_no_lambung" name="i_no_lambung" value="{{$data['no_lambung']}}"></td>
+                                        <td><input type="text" class="input-text w-full" name="i_no_lambung" value="{{$data['no_lambung']}}"></td>
                                     </tr>
                                     <tr>
                                         <td>Jenis Kendaraan</td>
-                                        <td><input type="text" class="input-text w-full" id="i_jenis_kendaraan" name="i_jenis_kendaraan" value="{{$data['jenis_kendaraan']}}"></td>
+                                        <td><input type="text" class="input-text w-full" name="i_jenis_kendaraan" value="{{$data['jenis_kendaraan']}}"></td>
                                     </tr>
                                 </table>
                             </div>
@@ -185,7 +186,7 @@
                             </td>
                             <td>Diserahkan Oleh, :</td>
                             <td> 
-                                <select name="dDiterima" class="form-control text-center" required>
+                                <select name="dDiserahkan" class="form-control text-center">
                                     <option value="{{$data['diserahkan_oleh']}}">{{$data['diserahkan_oleh']}}</option>
                                     @foreach($approvalList as $user)
                                         <option value="{{ $user->nama }}">
@@ -196,7 +197,7 @@
                             </td>
                             <td>Diterima Oleh, :</td>
                             <td>
-                                <select name="dApproved" class="form-control text-center" required>
+                                <select name="dDiterima" class="form-control text-center">
                                     <option value="{{$data['diterima_oleh']}}">{{$data['diterima_oleh']}}</option>
                                     @foreach($approvalList as $user)
                                         <option value="{{ $user->nama }}">
@@ -210,7 +211,7 @@
 
                     <div class="card-footer">
                         <div class="d-flex align-items-center">
-                            <button class="btn btn-primary ms-auto uploadBtn" id="btnSubmitFormRequestFuel">
+                            <button type="submit" class="btn btn-primary ms-auto uploadBtn">
                                 <i class="fas fa-save"></i>
                                 Submit Form
                             </button>
@@ -228,152 +229,6 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script>
-        var tglNow = new Date()
-        var mudof = new Date();
-        var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        var months_angka = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
-        var tanggalSekarang = $("#tanggalSekarang")
-        var iKupon = $("#iKupon");
-        var tglDoc = $("#tglDoc");
 
-        var dataForm = {
-            formName: "Data Form",
-            id: "",
-            dibuat_oleh: "",
-            tanggal: ""
-        }
-
-        //  END MEMBUAT NO KUPON URUT FORMAT YYMM000x
-
-        tanggalSekarang.attr('min', getTodayDate())
-
-        function formatTgl() {
-            return tglNow.getDate() + "-" + months[tglNow.getMonth()] + "-" + tglNow.getFullYear();
-        }
-        
-        $(function() {
-
-            iAkhir.change(function(e) {
-                iTotalLiter.text((iAkhir.val()) - (iAwal.val() ))
-            });
-
-            tStokAwal.change(function(e) {
-                tTotalAkhir.text((tStokAwal.val()) - (parseInt(tTotals.text())))
-            });
-            
-            if(isError.error) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error!',
-                    text: isError.errorMessage,
-                }).then((result) => {
-
-                })
-            } else {
-                console.log({{ Illuminate\Support\Js::from($data) }})
-                
-                tglDoc.val({{ Illuminate\Support\Js::from( $data['tanggal']) }})
-
-                dataForm.tanggal = tglDoc.val()
-
-            }
-
-            function validateForm() {
-                var errorValidate = []
-                
-                if(iForeman.val() == ""){
-                    errorValidate.push({
-                        field: "Kolom Foreman",
-                        message: "Harus dipilih"
-                    })
-                }
-                if(tStokAwal.val() == "") {
-                    errorValidate.push({
-                        field: "Kolom Stok Awal",
-                        message: "Harus Diisi"
-                    })
-                }
-                if(tMasuk.val() == "") {
-                    errorValidate.push({
-                        field: "Kolom Masuk",
-                        message: "Harus Diisi"
-                    })
-                }
-                if(iFuel.val() == ""){
-                    errorValidate.push({
-                        field: "Kolom Fuel",
-                        message: "Harus diisi"
-                    })
-                }
-                if(iShift.val() == ""){
-                    errorValidate.push({
-                        field: "Kolom Shift",
-                        message: "Harus dipilih"
-                    })
-                }
-
-                return errorValidate
-            }
-
-            btnSubmitSolar.click(function(e) {
-                e.preventDefault();
-                var errValidate = validateForm()
-                if(errValidate.length > 0) {
-                    var msg = ""
-                    for (var listErr of errValidate) {
-                        msg = msg + "<p class='m-0'>" + listErr.field + " " + listErr.message +  "</p>"
-                    }
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Gagal!',
-                        html: msg,
-                    }).then((result) => {
-                        // window.location.href = `/get-form-detail?no_doc=${response.data.data.no_doc}`;
-                    })
-                } else {
-                    var dataReq = {
-                        formName: dataPemakaianSolar.formName,
-                        id: tglDoc.val(),
-                        jobSite: iJobSite.val(),
-                        noDoc: noDoc.text(),
-                        tglDoc: formatTgl(),
-                        approval: dApproved.val(),
-                        shift: iShift.val(),
-                        total_pemakaian: tTotals.val(),
-                        stokAwal: tStokAwal.val(),
-                        stokAkhir: tTotalAkhir.text(),
-                        status: "Need Approval",
-                        masuk: tMasuk.val(),
-                        fuel: iFuel.val()
-                    }
-                    
-                    // TODO
-                    axios.post('/bss-form/log/update-req-fuel?id='+id.text(), formData, {
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-                            'Content-Type': 'multipart/form-data'
-                        }
-                    })
-                    .then(function (response) {
-                        console.log(response.data)
-                        showLoading()
-                        Swal.fire({
-                                icon: 'success',
-                                title: 'Data Berhasil Diperbarui!',
-                                // text: response.data.data,
-                            }).then((result) => {
-                                window.location.href = `/bss-form/log/request-fuel/dashboard-request-fuel`;
-                            })
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                    })
-                    .finally(function() {
-                        stopLoading()
-                    })
-                }
-                // submitAssetRequest(dataReq);
-            })
-        })
     </script>
 @endsection
