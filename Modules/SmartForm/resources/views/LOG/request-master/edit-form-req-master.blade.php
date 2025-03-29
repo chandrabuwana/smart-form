@@ -9,6 +9,20 @@
     .m-0 {
         margin: 0;
     }
+
+    .invalid-feedback {
+        color: #dc3545;
+        font-size: 0.875em;
+        margin-top: 0.25rem;
+    }
+
+    .is-invalid {
+        border-bottom-color: #dc3545 !important;
+    }
+
+    .input-group.input-group-dynamic.is-focused label, .input-group.input-group-static.is-focused label {
+        color: #7b809a !important;
+    }
 </style>
 @endsection
 
@@ -90,7 +104,7 @@ $serialNumbers = $data['serialNumbers'];
                                                         
                                                         <option value="">-- select user --</option>
                                                         @forelse($users as $catalog)
-                                                            <option value="{{ $catalog->IDCard ?? '' }}" {{ $master->cataloging_id == $catalog->IDCard ? 'selected' : '' }}>
+                                                            <option value="{{ $catalog->NIK ?? '' }}" {{ $master->cataloging_id == $catalog->NIK ? 'selected' : '' }}>
                                                                 {{ $catalog->nama ?? 'Nama tidak tersedia' }}
                                                             </option>
                                                         @empty
@@ -106,7 +120,7 @@ $serialNumbers = $data['serialNumbers'];
                                                         
                                                         <option value="">-- select user --</option>
                                                         @forelse($users as $approved)
-                                                            <option value="{{ $approved->IDCard ?? '' }}" {{ $master->disetujui_oleh == $approved->IDCard ? 'selected' : '' }}>
+                                                            <option value="{{ $approved->NIK ?? '' }}" {{ $master->disetujui_oleh == $approved->NIK ? 'selected' : '' }}>
                                                                 {{ $approved->nama ?? 'Nama tidak tersedia' }}
                                                             </option>
                                                         @empty
@@ -162,7 +176,7 @@ $serialNumbers = $data['serialNumbers'];
                                         <div class="input-group input-group-static mb-4">
                                             <label for="iKodeMaster">Kode Master</label>
                                             <input type="text" class="form-control" id="iKodeMaster" name="iKodeMaster" disabled>
-                                            <small class="text-muted">kode master akan di isi oleh cataloging</small>
+                                            <small class="text-muted">hanya di isi oleh cataloging</small>
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-lg-2">
@@ -352,6 +366,183 @@ $serialNumbers = $data['serialNumbers'];
                         </div>
                     </form>
 
+                    
+                    <!-- Edit Item Modal -->
+                    <div class="modal fade" id="editItemModal" tabindex="-1" aria-labelledby="editItemModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editItemModalLabel">Edit Item</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="editItemForm">
+                                        <input type="hidden" id="editIndex">
+                                        <div class="row mb-2">
+                                            {{-- <div class="col-12">
+                                                <div class="input-group input-group-static mb-4">
+                                                    <label for="iKodeMaster">Kode Master</label>
+                                                    <input type="text" class="form-control" id="editKodeMaster" name="iKodeMaster" disabled>
+                                                </div>
+                                            </div> --}}
+                                            <div class="col-6">
+                                                <div class="input-group input-group-static mb-4">
+                                                    <label for="iPartName">Part Name</label>
+                                                    <input type="text" class="form-control" id="editPartName" name="iPartName">
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="input-group input-group-static mb-4">
+                                                    <label for="iUom">UoM</label>
+                                                    <select class="form-control form-select" id="editUom" name="iUom">
+                                                        @forelse($uoms as $code => $value)
+                                                            <option value="{{ $code }}">
+                                                                {{ $value }}
+                                                            </option>
+                                                        @empty
+                                                            <option>Data UoM tidak ditemukan</option>
+                                                        @endforelse
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="input-group input-group-static mb-4">
+                                                    <label for="iPartNumber">Part Number</label>
+                                                    <input type="text" class="form-control" id="editPartNumber" name="iPartNumber">
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="input-group input-group-static mb-4">
+                                                    <label for="iBrand">Brand</label>
+                                                    <input type="text" class="form-control" id="editBrand" name="iBrand">
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="input-group input-group-static mb-4">
+                                                    <label for="iGen">Gen/ITC</label>
+                                                    <select class="form-control form-select" id="editGen" name="iGen">
+                                                        <option value="Yes">Yes</option>
+                                                        <option value="Yes">No</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="input-group input-group-static mb-4">
+                                                    <label for="iModel">Model</label>
+                                                    <input type="text" class="form-control" id="editModel" name="iModel">
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="input-group input-group-static mb-4">
+                                                    <label for="iCompartemen">Compartement</label>
+                                                    <input type="text" class="form-control" id="editCompartement" name="iCompartemen">
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="input-group input-group-static mb-4">
+                                                    <label for="iFff">FFF Class</label>
+                                                    <input type="text" class="form-control" id="editFffC" name="iFff">
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="input-group input-group-static mb-4">
+                                                    <label for="iPlanMat">Plan Material Status</label>
+                                                    <input type="text" class="form-control" id="editPlanMatStatus" name="iPlanMat">
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="input-group input-group-static mb-4">
+                                                    <label for="iMrp">MRP Type</label>
+                                                    <input type="text" class="form-control" id="editMrpType" name="iMrp">
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="input-group input-group-static mb-4">
+                                                    <label for="iScrap">SCRAP</label>
+                                                    <input type="text" class="form-control" id="editScrap" name="iScrap">
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="input-group input-group-static mb-4">
+                                                    <label for="iMatType">Material Type</label>
+                                                    <select class="form-control form-select" id="editMatType" name="iMatType">
+                                                        @forelse($materialTypes as $code => $value)
+                                                            <option value="{{ $code }}">
+                                                                {{ $value }}
+                                                            </option>
+                                                        @empty
+                                                            <option>Data Material Type tidak ditemukan</option>
+                                                        @endforelse
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="input-group input-group-static mb-4">
+                                                    <label for="iMatGroup">Material Group</label>
+                                                    <select class="form-control form-select" id="editMatGroup" name="iMatGroup">
+                                                        @forelse($materialGroups as $code => $value)
+                                                            <option value="{{ $code }}">
+                                                                {{ $value }}
+                                                            </option>
+                                                        @empty
+                                                            <option>Data Material Group tidak ditemukan</option>
+                                                        @endforelse
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="input-group input-group-static mb-4">
+                                                    <label for="iVal">Valuation Class</label>
+                                                    <select class="form-control form-select" id="editValuationStatus" name="iVal">
+                                                        @forelse($vulationClass as $code => $value)
+                                                            <option value="{{ $code }}">
+                                                                {{ $value }}
+                                                            </option>
+                                                        @empty
+                                                            <option>Data Vulation class tidak ditemukan</option>
+                                                        @endforelse
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="input-group input-group-static mb-4">
+                                                    <label for="iPG">Purchasing Group</label>
+                                                    <select class="form-control form-select" id="editPurchasingGroup" name="iPG">
+                                                        @forelse($purchasingGroups as $code => $value)
+                                                            <option value="{{ $code }}">
+                                                                {{ $value }}
+                                                            </option>
+                                                        @empty
+                                                            <option>Data Purchasing Group tidak ditemukan</option>
+                                                        @endforelse
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="input-group input-group-static mb-4">
+                                                    <label for="iSerialNum">Serial Number</label>
+                                                    <select class="form-control form-select" id="editSerialNumber" name="iSerialNum">
+                                                        @forelse($serialNumbers as $code => $value)
+                                                            <option value="{{ $code }}">
+                                                                {{ $value }}
+                                                            </option>
+                                                        @empty
+                                                            <option>Data Serial Number tidak ditemukan</option>
+                                                        @endforelse
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary" id="saveEditItem">Save changes</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="card-footer" style="padding-right: 0px;">
                         <div class="d-flex align-items-center">
                             <button class="btn btn-primary ms-auto uploadBtn" style="margin:5px"  id="btnUpdateRequestMaster">
@@ -448,13 +639,19 @@ $serialNumbers = $data['serialNumbers'];
 
         function actionFormatter(value, row, index) {
             if (row.kodeMaster != "") {
-                // return `
-                //     <a class="btn btn-danger btn-sm disabled">Delete</a>
-                // `;
-                return '';
+                return `
+                  
+                     <a class="btn btn-warning btn-sm edit-kode-master disabled" href="javascript:void(0)">
+                        Edit
+                    </a>
+                      <a class="btn btn-danger btn-sm disabled" href="javascript:void(0)">Delete</a>
+                `;
             } else {
                 return `
-                    <a class="btn btn-danger btn-sm" onclick="deleteRow(${index})">Delete</a>
+                     <a class="btn btn-warning btn-sm edit-kode-master " data-index="${index}" href="javascript:void(0)">
+                        Edit
+                    </a>
+                      <a class="btn btn-danger btn-sm " onclick="deleteRow(${index})" href="javascript:void(0)">Delete</a>
                 `;
                 
             }
@@ -509,6 +706,105 @@ $serialNumbers = $data['serialNumbers'];
                 detial.forEach(element => {
                     $table.bootstrapTable('append', element)
                 });
+
+             // Edit item functionality
+             $(document).on('click', '.edit-kode-master', function() {
+                var index = $(this).data('index');
+                var rowData = $table.bootstrapTable('getData')[index];
+
+                 // Clear previous validation errors
+                $('#editItemForm').find('.is-invalid').removeClass('is-invalid');
+                $('#editItemForm').find('.invalid-feedback').remove();
+
+                // Populate the modal with row data
+                $('#editIndex').val(index);
+                $('#editKodeMaster').val(rowData.kodeMaster);
+                $('#editPartName').val(rowData.partName);
+                $('#editUom').val(rowData.uom);
+                $('#editPartNumber').val(rowData.partNumber);
+                $('#editBrand').val(rowData.brand);
+                $('#editGen').val(rowData.gen);
+                $('#editModel').val(rowData.model);
+                $('#editCompartement').val(rowData.compartement);
+                $('#editFffC').val(rowData.fffC);
+                $('#editPlanMatStatus').val(rowData.planMatStatus);
+                $('#editMrpType').val(rowData.mrpType);
+                $('#editScrap').val(rowData.scrap);
+                $('#editMatType').val(rowData.matType);
+                $('#editMatGroup').val(rowData.matGroup);
+                $('#editValuationStatus').val(rowData.valuationStatus);
+                $('#editPurchasingGroup').val(rowData.purchasingGroup);
+                $('#editSerialNumber').val(rowData.serialNumber);
+                
+                // Show the modal
+                var editModal = new bootstrap.Modal(document.getElementById('editItemModal'));
+                editModal.show();
+            });
+
+            // Function to validate edit form
+            function validateEditForm() {
+                let isValid = true;
+                const requiredFields = [
+                    'editPartName', 'editUom', 'editPartNumber', 'editBrand', 'editGen',
+                    'editModel', 'editCompartement', 'editFffC', 'editPlanMatStatus',
+                    'editMrpType', 'editScrap', 'editMatType', 'editMatGroup',
+                    'editValuationStatus', 'editPurchasingGroup', 'editSerialNumber'
+                ];
+
+                // Clear previous validation errors
+                $('#editItemForm').find('.is-invalid').removeClass('is-invalid');
+                $('#editItemForm').find('.invalid-feedback').remove();
+
+                // Validate each required field
+                requiredFields.forEach(fieldId => {
+                    const field = $(`#${fieldId}`);
+                    if (!field.val()) {
+                        field.addClass('is-invalid');
+                        field.after(`<div class="invalid-feedback">Tidak boleh kosong</div>`);
+                        isValid = false;
+                    }
+                });
+
+                return isValid;
+            }
+
+            // Save edited item
+            $('#saveEditItem').click(function() {
+                if (!validateEditForm()) {
+                    return; // Don't proceed if validation fails
+                }
+
+                var index = $('#editIndex').val();
+                var updatedRow = {
+                    kodeMaster: $('#editKodeMaster').val(),
+                    partName: $('#editPartName').val(),
+                    uom: $('#editUom').val(),
+                    partNumber: $('#editPartNumber').val(),
+                    brand: $('#editBrand').val(),
+                    gen: $('#editGen').val(),
+                    model: $('#editModel').val(),
+                    compartement: $('#editCompartement').val(),
+                    fffC: $('#editFffC').val(),
+                    planMatStatus: $('#editPlanMatStatus').val(),
+                    mrpType: $('#editMrpType').val(),
+                    scrap: $('#editScrap').val(),
+                    matType: $('#editMatType').val(),
+                    matGroup: $('#editMatGroup').val(),
+                    valuationStatus: $('#editValuationStatus').val(),
+                    purchasingGroup: $('#editPurchasingGroup').val(),
+                    serialNumber: $('#editSerialNumber').val()
+                };
+                
+                // Update the table row
+                $table.bootstrapTable('updateRow', {
+                    index: index,
+                    row: updatedRow
+                });
+                
+                // Close the modal
+                var editModal = bootstrap.Modal.getInstance(document.getElementById('editItemModal'));
+                editModal.hide();
+            });
 
             function validateItem() {
                 var errorValidate = []
@@ -721,6 +1017,7 @@ $serialNumbers = $data['serialNumbers'];
                         disetujuiOleh: iApproval.val(),
                         cataloging: idCataloging.val(),
                         kodePlant: iPlant.val(),
+                        isCataloging: 0
                     }
                     let formData = new FormData();
                     formData.append('item',JSON.stringify(dataRequestMaster.item));

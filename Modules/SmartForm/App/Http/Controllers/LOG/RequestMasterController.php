@@ -238,10 +238,10 @@ class RequestMasterController extends Controller {
                 $TABLE_REQUEST_MASTER.'.no_dok', 
                 $TABLE_REQUEST_MASTER.'.site', 
                 $TABLE_REQUEST_MASTER.'.created_by',
-                DB::raw('(SELECT Nama FROM HRD.dbo.TKaryawan WHERE IDCard = '.$TABLE_REQUEST_MASTER.'.created_by) as request_by'),
-                DB::raw('(SELECT Nama FROM HRD.dbo.TKaryawan WHERE IDCard = '.$TABLE_REQUEST_MASTER.'.cataloging_id) as cataloging_by'),
+                DB::raw('(SELECT Nama FROM HRD.dbo.TKaryawan WHERE NIK = '.$TABLE_REQUEST_MASTER.'.created_by) as request_by'),
+                DB::raw('(SELECT Nama FROM HRD.dbo.TKaryawan WHERE NIK = '.$TABLE_REQUEST_MASTER.'.cataloging_id) as cataloging_by'),
                 $TABLE_REQUEST_MASTER.'.cataloging_update',
-                DB::raw('(SELECT Nama FROM HRD.dbo.TKaryawan WHERE IDCard = '.$TABLE_REQUEST_MASTER.'.disetujui_oleh) as approval_by'),
+                DB::raw('(SELECT Nama FROM HRD.dbo.TKaryawan WHERE NIK = '.$TABLE_REQUEST_MASTER.'.disetujui_oleh) as approval_by'),
                 $TABLE_REQUEST_MASTER.'.status_req',
                 $TABLE_REQUEST_MASTER.'.created_at',
                 $TABLE_REQUEST_MASTER.'.updated_at',
@@ -271,8 +271,8 @@ class RequestMasterController extends Controller {
     }
     
     public function formReqMaster() {
-        $sites = DB::connection('sqlsrv2')->table(self::TABLE_SITES)->select('KodeST')->get();
-        $users = DB::connection('sqlsrv2')->table(self::TABLE_KARYAWAN)->select('IDCard', 'nama')->get();
+        $sites = DB::connection('sqlsrv2')->table(self::TABLE_SITES)->select(columns: 'KodeST')->get();
+        $users = DB::connection('sqlsrv2')->table(self::TABLE_KARYAWAN)->select('NIK', 'nama')->get();
         $plants = Self::LIST_KODE_PLANTS;
         $uoms = Self::LIST_UOMS;
         $materialTypes = self::LIST_MATERIAL_TYPE;
@@ -400,9 +400,9 @@ class RequestMasterController extends Controller {
             $data_master['no_dok'] = $data->no_dok;
             $data_master['site'] = $data->site;
             $data_master['dibuat_tgl'] = $data->created_at;
-            $data_master['diproses_oleh'] = DB::connection('sqlsrv2')->table(self::TABLE_KARYAWAN)->where('IDCard', $data->cataloging_id)->value('Nama');
-            $data_master['dibuat_oleh'] = DB::connection('sqlsrv2')->table(self::TABLE_KARYAWAN)->where('IDCard', $data->created_by)->value('Nama');
-            $data_master['disetujui_oleh'] = DB::connection('sqlsrv2')->table(self::TABLE_KARYAWAN)->where('IDCard', $data->disetujui_oleh)->value('Nama');
+            $data_master['diproses_oleh'] = DB::connection('sqlsrv2')->table(self::TABLE_KARYAWAN)->where('NIK', $data->cataloging_id)->value('Nama');
+            $data_master['dibuat_oleh'] = DB::connection('sqlsrv2')->table(self::TABLE_KARYAWAN)->where('NIK', $data->created_by)->value('Nama');
+            $data_master['disetujui_oleh'] = DB::connection('sqlsrv2')->table(self::TABLE_KARYAWAN)->where('NIK', $data->disetujui_oleh)->value('Nama');
         } catch (Exception $ex) {
             Log::error($ex->getMessage());
         }
@@ -423,7 +423,7 @@ class RequestMasterController extends Controller {
 
         try {
             $sites = DB::connection('sqlsrv2')->table(self::TABLE_SITES)->select('KodeST')->get();
-            $users = DB::connection('sqlsrv2')->table(self::TABLE_KARYAWAN)->select('IDCard', 'nama')->get();
+            $users = DB::connection('sqlsrv2')->table(self::TABLE_KARYAWAN)->select('NIK', 'nama')->get();
             $plants = Self::LIST_KODE_PLANTS;
             $uoms = Self::LIST_UOMS;
             $materialTypes = self::LIST_MATERIAL_TYPE;
@@ -438,12 +438,12 @@ class RequestMasterController extends Controller {
                     $TABLE_MASTER.'.id', 
                     $TABLE_MASTER.'.no_dok', 
                     $TABLE_MASTER.'.site', 
-                    DB::raw('(SELECT Nama FROM HRD.dbo.TKaryawan WHERE IDCard = '.$TABLE_MASTER.'.created_by) as created_by'),
+                    DB::raw('(SELECT Nama FROM HRD.dbo.TKaryawan WHERE NIK = '.$TABLE_MASTER.'.created_by) as created_by'),
                     $TABLE_MASTER.'.created_at',
                     $TABLE_MASTER.'.disetujui_oleh',
                     $TABLE_MASTER.'.diproses_oleh',
                     $TABLE_MASTER.'.diketahui_oleh',
-                    DB::raw('(SELECT Nama FROM HRD.dbo.TKaryawan WHERE IDCard = '.$TABLE_MASTER.'.updated_by) as updated_by'),
+                    DB::raw('(SELECT Nama FROM HRD.dbo.TKaryawan WHERE NIK = '.$TABLE_MASTER.'.updated_by) as updated_by'),
                     $TABLE_MASTER.'.updated_at',
                     $TABLE_MASTER.'.cataloging_id',
                     $TABLE_MASTER.'.cataloging_update',
@@ -489,7 +489,6 @@ class RequestMasterController extends Controller {
 
     public function EditReqMaster(Request $request){
         $id = $request->query('id');
-        $nik_session = $request->session()->get('user_id', '');
         $response = $this->getDetail($request, $id);
         
         // Convert response to array if it's a JsonResponse
@@ -527,6 +526,12 @@ class RequestMasterController extends Controller {
             'kode_plant' => $data['kodePlant'],
             'status_req' => STATUS::OPEN,
         ];
+
+
+        if ($data['isCataloging'] == 1) {
+            $data_update['cataloging_update'] = now()->toDateTimeString();
+        }
+
 
         // Check if any kode_master is null in data_item
         $hasNullKodeMaster = false;
@@ -606,6 +611,10 @@ class RequestMasterController extends Controller {
             : (array)$response;
 
         Log::debug('response detail: '. json_encode($responseData, JSON_PRETTY_PRINT));
+
+        if(session('user_id') == $responseData['data']['master']->cataloging_id) {
+            return view('SmartForm::LOG/request-master/cataloging-form-req-master', $responseData);
+        }
 
         return view('SmartForm::LOG/request-master/detail-form-req-master', $responseData);
     }

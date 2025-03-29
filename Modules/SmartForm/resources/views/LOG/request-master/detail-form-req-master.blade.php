@@ -90,7 +90,7 @@ $serialNumbers = $data['serialNumbers'];
                                                         
                                                         <option value="">-- select user --</option>
                                                         @forelse($users as $catalog)
-                                                            <option value="{{ $catalog->IDCard ?? '' }}" {{ $master->cataloging_id == $catalog->IDCard ? 'selected' : '' }}>
+                                                            <option value="{{ $catalog->NIK ?? '' }}" {{ $master->cataloging_id == $catalog->NIK ? 'selected' : '' }}>
                                                                 {{ $catalog->nama ?? 'Nama tidak tersedia' }}
                                                             </option>
                                                         @empty
@@ -106,7 +106,7 @@ $serialNumbers = $data['serialNumbers'];
                                                         
                                                         <option value="">-- select user --</option>
                                                         @forelse($users as $approved)
-                                                            <option value="{{ $approved->IDCard ?? '' }}" {{ $master->disetujui_oleh == $approved->IDCard ? 'selected' : '' }}>
+                                                            <option value="{{ $approved->NIK ?? '' }}" {{ $master->disetujui_oleh == $approved->NIK ? 'selected' : '' }}>
                                                                 {{ $approved->nama ?? 'Nama tidak tersedia' }}
                                                             </option>
                                                         @empty
