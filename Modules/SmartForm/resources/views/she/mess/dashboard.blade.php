@@ -188,7 +188,7 @@
                                 </td>
                                 <td class="align-middle">
                                     <span class="text-secondary text-xs font-weight-bold">
-                                        @if($record->survey_date)
+                                        @if($record->survey_date && $record->survey_date != '1970-01-01')
                                             {{ date('d M Y', strtotime($record->survey_date)) }}
                                         @else
                                             -

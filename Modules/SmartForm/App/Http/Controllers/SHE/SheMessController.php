@@ -47,22 +47,25 @@ class SheMessController extends Controller
 
             // Format dates using Carbon
             $records->transform(function($record) {
-                if ($record->survey_date) {
+                // Handle survey_date
+                if (isset($record->survey_date)) {
                     try {
-                        // First try parsing the date in the format "Feb 4 2025 12:00:00:AM"
-                        $dateStr = preg_replace('/:([AP]M)/', ' $1', $record->survey_date);
-                        $date = \Carbon\Carbon::createFromFormat('M d Y h:i:s A', $dateStr);
-                    } catch (\Exception $e) {
-                        try {
-                            // If that fails, try parsing it as a standard date format
-                            $date = \Carbon\Carbon::parse($record->survey_date);
-                        } catch (\Exception $e2) {
-                            Log::error('Date parsing error: ' . $e2->getMessage());
-                            $date = now();
+                        // For SQL Server, we need to handle dates differently
+                        // Convert to timestamp first if it's not already a valid date
+                        if (strtotime($record->survey_date) <= 0) {
+                            // This is likely a SQL Server date format issue
+                            Log::info('Invalid date detected: ' . $record->survey_date);
+                            // Default to current date if we can't parse it
+                            $record->survey_date = now()->format('Y-m-d');
+                        } else {
+                            $record->survey_date = date('Y-m-d', strtotime($record->survey_date));
                         }
+                    } catch (\Exception $e) {
+                        Log::error('Date parsing error: ' . $e->getMessage());
+                        $record->survey_date = now()->format('Y-m-d');
                     }
-                    $record->survey_date = $date->format('d/m/Y');
                 }
+                
                 return $record;
             });
 
