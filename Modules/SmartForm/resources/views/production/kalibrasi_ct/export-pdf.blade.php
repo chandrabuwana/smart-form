@@ -447,13 +447,15 @@
                     <td colspan="2" style="border-top: none; border-bottom: none; border-right: none;">CT Hauler</td>
                 </tr>
                 <tr>
-                    <td colspan="8" style="border-top: none; border-bottom: none; border-left: none; border-right: none;"></td>
+                    <td colspan="2" style="border-top: none; border-bottom: none; border-left: none; border-right: none;">{{ collect($approvalList)->firstWhere('nik', $record->dibuat_hauler)?->nama ?? 'N/A' }}</td>
+                    <td colspan="2" style="border-top: none; border-bottom: none; border-left: none; border-right: none;">{{ collect($approvalList)->firstWhere('nik', $record->mengetahui_hauler)?->nama ?? 'N/A' }}</td>
+                    <td colspan="4" style="border-top: none; border-bottom: none; border-left: none; border-right: none;"></td>
                     <td style="border-top: none; border-bottom: none; border-right: none;">PDTY Fleet/Jam =</td>
                     <td style="border-top: none; border-bottom: none; border-left: none; border-right: none;">Rit/Unit/Jam x Cap. Vessel x Eff x Jumlah Hauler</td>
                 </tr>
                 <tr>
-                    <td colspan="2" style="border-top: none; border-bottom: none; border-left: none; border-right: none;">LH/Foreman Prod/Trainer</td>
-                    <td colspan="2" style="border-top: none; border-bottom: none; border-left: none; border-right: none;">Spv. Prod/Kabag. Prod/Project Manager</td>
+                    <td colspan="2" style="border-top: none; border-bottom: none; border-left: none; border-right: none;">({{ $record->jabatan_dibuat_hauler}})</td>
+                    <td colspan="2" style="border-top: none; border-bottom: none; border-left: none; border-right: none;">({{ $record->jabatan_mengetahui_hauler}})</td>
                     <td colspan="4" style="border-top: none; border-bottom: none; border-left: none; border-right: none;"></td>
                     <td colspan="2" style="border-top: none; border-bottom: none; border-right: none;"></td>
                 </tr>
@@ -475,7 +477,7 @@
 
         <table class="container" style="page-break-after: always;">
             <tr>
-                <td colspan="13" style=" background-color: #8d8d8d; color: white; border-bottom: 1px solid transparent;"><h1>HAULER CONTROL</h1></td>
+                <td colspan="13" style=" background-color: #8d8d8d; color: white; border-bottom: 1px solid transparent;"><h1>EXCAVATOR CONTROL</h1></td>
             </tr>
 
             <tr>
@@ -633,13 +635,17 @@
                     <td colspan="7" style="border-top: none; border-bottom: none; border-left: none; border-right: none; text-align: left">&nbsp;</td>
                 </tr>
                 <tr>
-                    <td colspan="7" style="border-top: none; border-bottom: none; border-left: none; border-right: none; text-align: left">&nbsp;</td>
+                    <td style="border-top: none; border-bottom: none; border-left: none; border-right: none; text-align: left"></td>
+                    <td style="border-top: none; border-bottom: none; border-left: none; border-right: none; text-align: left">{{ collect($approvalList)->firstWhere('nik', $record->dibuat_loader)?->nama ?? 'N/A' }}</td>
+                    <td style="border-top: none; border-bottom: none; border-left: none; border-right: none; text-align: left"></td>
+                    <td style="border-top: none; border-bottom: none; border-left: none; border-right: none; text-align: left">{{ collect($approvalList)->firstWhere('nik', $record->mengetahui_loader)?->nama ?? 'N/A' }}</td>
+                    <td colspan="9" style="border-top: none; border-bottom: none; border-left: none; border-right: none; text-align: left"></td>
                 </tr>
                 <tr>
                     <td style="border-top: none; border-bottom: none; border-left: none; border-right: none; text-align: left"></td>
-                    <td style="border-top: none; border-bottom: none; border-left: none; border-right: none; text-align: left">Foreman/Pengawas Produksi</td>
+                    <td style="border-top: none; border-bottom: none; border-left: none; border-right: none; text-align: left">({{ $record->jabatan_dibuat_dozer}})</td>
                     <td style="border-top: none; border-bottom: none; border-left: none; border-right: none; text-align: left"></td>
-                    <td style="border-top: none; border-bottom: none; border-left: none; border-right: none; text-align: left">Kabag/Spv. Produksi</td>
+                    <td style="border-top: none; border-bottom: none; border-left: none; border-right: none; text-align: left">({{ $record->jabatan_mengetahui_dozer}})</td>
                     <td colspan="9" style="border-top: none; border-bottom: none; border-left: none; border-right: none; text-align: left"></td>
                 </tr>
                 <tr>
@@ -786,15 +792,15 @@
             <tr>
                 <td colspan="2" style="border-top: none; border-bottom: none; text-align: left">&nbsp;</td>
                 <td style="border-bottom: none; text-align: left">Rekomendasi Follow Up Spv.:</td>
-                <td style="border-top: none; border-left: none; border-right: none; border-bottom: none; text-align: left;"></td>
-                <td style="border-top: none; border-left: none; border-right: none; border-bottom: none; text-align: left;"></td>
+                <td style="border-top: none; border-left: none; border-right: none; border-bottom: none; text-align: left;">{{ collect($approvalList)->firstWhere('nik', $record->dibuat_dozer)?->nama ?? 'N/A' }}</td>
+                <td style="border-top: none; border-left: none; border-right: none; border-bottom: none; text-align: left;">{{ collect($approvalList)->firstWhere('nik', $record->mengetahui_dozer)?->nama ?? 'N/A' }}</td>
                 <td colspan="4" style="border-top: none; border-left: none; border-right: none; border-bottom: none; text-align: left;"></td>
             </tr>
             <tr>
                 <td colspan="2" style="border-top: none; border-bottom: none; text-align: left">&nbsp;</td>
                 <td style="border-top: none; border-bottom: none; text-align: left"></td>
-                <td style="border-top: none; border-left: none; border-right: none; border-bottom: none; text-align: left;">Foreman/LH Produksi</td>
-                <td style="border-top: none; border-left: none; border-right: none; border-bottom: none; text-align: left;">Kabag/Supv. Produksi</td>
+                <td style="border-top: none; border-left: none; border-right: none; border-bottom: none; text-align: left;">({{ $record->jabatan_dibuat_dozer}})</td>
+                <td style="border-top: none; border-left: none; border-right: none; border-bottom: none; text-align: left;">({{ $record->jabatan_mengetahui_dozer}})</td>
                 <td colspan="4" style="border-top: none; border-left: none; border-right: none; border-bottom: none; text-align: left;"></td>
             </tr>
             <tr>

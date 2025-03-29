@@ -127,35 +127,43 @@
     <table class="signature-table">
         <tr>
             <td width="25%">Dibuat Oleh Pengawas</td>
-            <td width="25%">: {{ $record->created_by }}</td>
+            <td width="25%">: {{ $record->inspector_1_name }}</td>
             <td width="15%">Tanda Tangan</td>
-            <td width="20%">: Signed</td>
+            <td>: {{ $record->inspector_1_status === 'approved' ? 'Signed' : 'Not Signed' }}</td>
+            <td width="15%">Tanggal</td>
+            <td>: {{ \Carbon\Carbon::createFromFormat('Y-m-d', $record->formatted_date)->format('d F Y') }}</td>
+        </tr>
+        <tr>
+            <td width="25%">Dibuat Oleh Pengawas</td>
+            <td width="25%">: {{ $record->inspector_2_name }}</td>
+            <td width="15%">Tanda Tangan</td>
+            <td>: {{ $record->inspector_2_status === 'approved' ? 'Signed' : 'Not Signed' }}</td>
             <td width="15%">Tanggal</td>
             <td>: {{ \Carbon\Carbon::createFromFormat('Y-m-d', $record->formatted_date)->format('d F Y') }}</td>
         </tr>
         <tr>
             <td>Diperiksa Oleh Supervisor</td>
-            <td>: {{ $record->supervisor }}</td>
+            <td>: {{ $record->supervisor_name }}</td>
             <td>Tanda Tangan</td>
-            <td>:</td>
+            <td>: {{ $record->supervisor_status === 'approved' ? 'Signed' : 'Not Signed' }}</td>
             <td>Tanggal</td>
-            <td>:</td>
+            <td>: {{ \Carbon\Carbon::createFromFormat('Y-m-d', $record->formatted_date)->format('d F Y') }}</td>
         </tr>
         <tr>
             <td>Disampaikan kepada DH</td>
-            <td>: {{ $record->dh }}</td>
+            <td>: {{ $record->dh_name }}</td>
             <td>Tanda Tangan</td>
-            <td>: Signed</td>
+            <td>: {{ $record->dh_status === 'approved' ? 'Signed' : 'Not Signed' }}</td>
             <td>Tanggal</td>
             <td>: {{ \Carbon\Carbon::createFromFormat('Y-m-d', $record->formatted_date)->format('d F Y') }}</td>
         </tr>
         <tr>
             <td>Diperiksa Oleh SHE</td>
-            <td>: {{ $record->she }}</td>
+            <td>: {{ $record->she_name }}</td>
             <td>Tanda Tangan</td>
-            <td>:</td>
+            <td>: {{ $record->she_status === 'approved' ? 'Signed' : 'Not Signed' }}</td>
             <td>Tanggal</td>
-            <td>:</td>
+            <td>: {{ \Carbon\Carbon::createFromFormat('Y-m-d', $record->formatted_date)->format('d F Y') }}</td>
         </tr>
     </table>
 

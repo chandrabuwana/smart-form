@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
 use Modules\SmartForm\helpers\HrdHelper;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class PlantWeldingController extends Controller
 {
@@ -19,33 +20,96 @@ class PlantWeldingController extends Controller
     public function dashboard(Request $request)
     {
         try {
+            // Inisialisasi query
             $query = DB::table('plant_welding')
                 ->select('*')
                 ->orderBy('created_at');
 
+            // Filter berdasarkan search
             if ($request->has('search')) {
                 $searchTerm = $request->search;
-                $query->where(
-                    function ($q) use ($searchTerm) {
-                        $q->where('doc_number', 'like', '%' . $searchTerm . '%')
-                            ->orWhere('site_name', 'like', '%' . $searchTerm . '%')
-                            ->orWhere('location', 'like', '%' . $searchTerm . '%')
-                            ->orWhere('jenis_instalasi', 'like', '%' . $searchTerm . '%');
-                    }
-                );
+                $query->where(function ($q) use ($searchTerm) {
+                    $q->where('doc_number', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('site_name', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('location', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('jenis_instalasi', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('status_pemeriksa', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('status_atasan', 'like', '%' . $searchTerm . '%');
+                });
             }
+
+            // Filter berdasarkan lokasi
             if ($request->has('location') && $request->location) {
                 $query->where('location', $request->location);
             }
 
-            // Date range filter
+            // Filter berdasarkan nama site
             if ($request->has('site_name') && $request->site_name) {
                 $query->where('site_name', $request->site_name);
             }
+
+            // Filter berdasarkan tanggal
             if ($request->has('date') && $request->date) {
-                $query->whereDate('created_at',  $request->date);
+                $query->whereDate('created_at', $request->date);
             }
 
+            if ($request->has('pemeriksa') && $request->pemeriksa) {
+                $query->where('pemeriksa', $request->pemeriksa);
+            }
+
+            if ($request->has('atasan') && $request->atasan) {
+                $query->where('atasan', $request->atasan);
+            }
+
+
+            // Fetch data dari query
+            $query = $query->get();
+
+            // Filter status jika diperlukan
+            if ($request->has('status') && $request->status) {
+                $query = $query->filter(function ($record) use ($request) {
+                    $final_status = '';
+                    if ($record->status_pemeriksa === 'Approve' && $record->status_atasan === 'Approve') {
+                        $final_status = 'Approved';
+                    } elseif ($record->status_pemeriksa === 'Reject' && $record->status_atasan === 'Reject') {
+                        $final_status = 'Rejected';
+                    } elseif ($record->status_pemeriksa === 'Pending' && $record->status_atasan === 'Pending') {
+                        $final_status = 'Pending';
+                    } elseif ($record->status_pemeriksa === 'Pending' || $record->status_atasan === 'Pending') {
+                        $final_status = 'Pending';
+                    } elseif (
+                        ($record->status_pemeriksa === 'Approve' && $record->status_atasan === 'Reject') ||
+                        ($record->status_pemeriksa === 'Reject' && $record->status_atasan === 'Approve')
+                    ) {
+                        $final_status = 'Rejected';
+                    }
+
+                    return $final_status === $request->status; // Filter sesuai status
+                });
+
+                // Pagination manual setelah filter
+                $currentPage = LengthAwarePaginator::resolveCurrentPage();
+                $perPage = 10; // Jumlah item per halaman
+                $items = $query->slice(($currentPage - 1) * $perPage, $perPage)->values();
+                $records = new LengthAwarePaginator($items, $query->count(), $perPage, $currentPage, [
+                    'path' => $request->url(),
+                    'query' => $request->query(),
+                ]);
+            } else {
+                // Jika tidak ada filter status, langsung paginate
+                $records = new LengthAwarePaginator(
+                    $query->forPage(LengthAwarePaginator::resolveCurrentPage(), 10)->values(),
+                    $query->count(),
+                    10,
+                    LengthAwarePaginator::resolveCurrentPage(),
+                    [
+                        'path' => $request->url(),
+                        'query' => $request->query(),
+                    ]
+                );
+            }
+
+            // Statistik
             $statistics = (object)[
                 'total_records' => DB::table('plant_welding')->count(),
                 'total_this_month' => DB::table('plant_welding')
@@ -54,13 +118,20 @@ class PlantWeldingController extends Controller
                     ->count(),
                 'location' => DB::table('plant_welding')->distinct()->count('location'),
             ];
-            $records = $query->paginate(10);
-            return view('smartform::plant.welding.dashboard-welding', ['records' => $records, 'statistics' => $statistics, 'user' => HrdHelper::getApprovalList(), 'filters' => [
-                'search' => $request->search,
-                'location' => $request->location,
-                'site_name' => $request->site_name,
-                'date' => $request->date,
-            ]]);
+
+            // Return view dengan data
+            return view('smartform::plant.welding.dashboard-welding', [
+                'records' => $records,
+                'statistics' => $statistics,
+                'user' => HrdHelper::getApprovalList(),
+                'filters' => [
+                    'search' => $request->search,
+                    'location' => $request->location,
+                    'site_name' => $request->site_name,
+                    'date' => $request->date,
+                    'status' => $request->status,
+                ],
+            ]);
         } catch (\Exception $e) {
             Log::error('Error in Dashboard: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Failed to load dashboard data: ' . $e->getMessage());
