@@ -24,7 +24,16 @@
                 <!-- Card Header -->
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                     <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                        <h6 class="text-white text-capitalize ps-3">{{$isShowDetail ? 'Detail' : 'New'}} Inspeksi Toilet, Mess dan Kantor</h6>
+                        <h6 class="text-white text-capitalize ps-3">
+                            @if(isset($isEdit) && $isEdit)
+                                Edit
+                            @elseif($isShowDetail)
+                                Detail
+                            @else
+                                New
+                            @endif
+                            Inspeksi Toilet, Mess dan Kantor
+                        </h6>
                     </div>
                 </div>
                 <div class="card-body px-4">
@@ -212,7 +221,7 @@ Tidak ada peraturan yg berlaku atau berdampak kelingkungan perusahaan
                                         <td class="text-center align-middle">
                                             <div class="d-flex justify-content-center gap-3">
                                                 @php
-                                                    $checklist_value = isset($data->checklist_items) && is_array($data->checklist_items) ? 
+                                                    $checklist_value = isset($data) && is_array($data->checklist_items) ? 
                                                         ($data->checklist_items[$index] ?? '') : '';
                                                 @endphp
                                                 <div class="form-check">
@@ -445,23 +454,20 @@ Tidak ada peraturan yg berlaku atau berdampak kelingkungan perusahaan
                         <!-- Form Actions -->
                         <div class="row">
                             <div class="col-12 text-end">
-                            @if (isset($isShowDetail) && $isShowDetail)
-                                <a href="{{ route('she.mess.dashboard') }}" class="btn btn-secondary">Back</a>
-                                <a href="{{ route('she.mess.export', $data->id) }}" class="btn btn-primary">
-                                    <i class="material-icons">download</i> Export
-                                </a>
-                            @else
-                                <div class="row mt-4">
-                                    <div class="col-12 d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <a href="{{ route('she.mess.dashboard') }}" class="btn btn-secondary">Back</a>
-                                        </div>
-                                        <div>
-                                            <button type="submit" class="btn btn-primary">Submit</button>
-                                        </div>
-                                    </div>  
-                                </div>
-                            @endif
+                                @if($isShowDetail)
+                                    <a href="{{ route('she.mess.dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+                                    <a href="{{ route('she.mess.export', ['id' => $data->id]) }}" class="btn btn-primary">Export PDF</a>
+                                @else
+                                    <button type="button" class="btn btn-secondary" onclick="window.location.href='{{ route('she.mess.dashboard') }}'">Cancel</button>
+                                    <button type="submit" class="btn btn-primary">
+                                        @if(isset($isEdit) && $isEdit)
+                                            Update
+                                        @else
+                                            Save
+                                        @endif
+                                    </button>
+                                @endif
+                            </div>
                         </div>
                     </form>
                 </div>

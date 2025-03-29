@@ -399,6 +399,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('approve/{id}/{role}', [SheMessController::class, 'Approve'])->name('she.mess.approve');
             Route::get('reject/{id}/{role}', [SheMessController::class, 'Reject'])->name('she.mess.reject');
             Route::delete('delete', [SheMessController::class, 'Delete'])->name('she.mess.delete');
+            Route::get('edit/{id}', [SheMessController::class, 'EditForm'])->name('she.mess.form.edit');
         });
 
         Route::prefix('prod-coal')->group(function(){

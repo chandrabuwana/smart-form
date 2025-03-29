@@ -151,7 +151,7 @@ class SheMessController extends Controller
                             if (strpos($dateStr, 'AM') !== false || strpos($dateStr, 'PM') !== false) {
                                 $record->$dateField = Carbon::createFromFormat('M d Y h:i:s A', $dateStr)->format('Y-m-d');
                             } else {
-                                $record->$dateField = Carbon::parse($dateStr)->format('Y-m-d');
+                                $record->$dateField = Carbon::parse($record->$dateField)->format('Y-m-d');
                             }
                         }
                     } catch (\Exception $e) {
@@ -169,7 +169,7 @@ class SheMessController extends Controller
                         if (strpos($dateStr, 'AM') !== false || strpos($dateStr, 'PM') !== false) {
                             $record->acknowledgment_date = Carbon::createFromFormat('M d Y h:i:s A', $dateStr)->format('Y-m-d');
                         } else {
-                            $record->acknowledgment_date = Carbon::parse($dateStr)->format('Y-m-d');
+                            $record->acknowledgment_date = Carbon::parse($record->acknowledgment_date)->format('Y-m-d');
                         }
                     }
                 } catch (\Exception $e) {
@@ -256,6 +256,65 @@ class SheMessController extends Controller
             Log::error('Error in AddForm: ' . $e->getMessage());
             return redirect()->route('she.mess.dashboard')
                 ->with('error', 'Failed to load form: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Show the form for editing a mess survey record
+     * 
+     * @param int $id
+     * @return \Illuminate\View\View
+     */
+    public function EditForm($id)
+    {
+        try {
+            // Retrieve the record from the database
+            $record = DB::table('she_mess_survey')->where('id', $id)->first();
+            
+            if (!$record) {
+                Log::error('Record not found for editing, ID: ' . $id);
+                return redirect()->route('she.mess.dashboard')
+                    ->with('error', 'Record not found');
+            }
+            
+            // Decode checklist items
+            try {
+                $record->checklist_items = is_string($record->checklist_items) ? 
+                    json_decode($record->checklist_items, true) : 
+                    (is_array($record->checklist_items) ? $record->checklist_items : []);
+                
+                // Ensure checklist_items is always an array
+                if (!is_array($record->checklist_items)) {
+                    $record->checklist_items = [];
+                    Log::warning('Checklist items converted to empty array for record ID: ' . $id);
+                }
+            } catch (\Exception $e) {
+                Log::error('Error decoding checklist items: ' . $e->getMessage());
+                $record->checklist_items = [];
+            }
+            
+            // Format dates for the form
+            foreach (['survey_date', 'completion_date', 'inspection_date', 'inspection_date2', 'inspection_date3', 'acknowledgment_date'] as $dateField) {
+                try {
+                    if (!empty($record->$dateField)) {
+                        $record->$dateField = Carbon::parse($record->$dateField)->format('Y-m-d');
+                    }
+                } catch (\Exception $e) {
+                    Log::error("Date parsing error for {$dateField}: " . $e->getMessage() . " | Original value: " . $record->$dateField);
+                    $record->$dateField = now()->format('Y-m-d');
+                }
+            }
+            
+            // Return the edit form view with the record data
+            return view('smartform::she.mess.edit', [
+                'data' => $record,
+                'approvalList' => HrdHelper::getApprovalList(),
+            ]);
+            
+        } catch (\Exception $e) {
+            Log::error('Error in EditForm: ' . $e->getMessage());
+            return redirect()->route('she.mess.dashboard')
+                ->with('error', 'Failed to load edit form: ' . $e->getMessage());
         }
     }
 
@@ -641,6 +700,14 @@ class SheMessController extends Controller
             DB::table('she_mess_survey')
                 ->where('id', $id)
                 ->update($updateData);
+                
+            // Log the update for debugging
+            Log::info('Record rejected successfully', [
+                'id' => $id,
+                'role' => $role,
+                'user' => $user->nama,
+                'updateData' => $updateData
+            ]);
                 
             return redirect()->route('she.mess.dashboard')
                 ->with('success', 'Record rejected successfully');

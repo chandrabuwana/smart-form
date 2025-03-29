@@ -293,11 +293,17 @@
                                         @endif
                                         
                                         <!-- Delete Button - Only for pending/rejected status -->
-                                        @if($record->approval_status == 'pending' || $record->approval_status == 'rejected')
+                                        @if(($record->approval_status == 'pending' || $record->approval_status == 'rejected') && $record->inspected_by_nik == $user_id)
                                             <button type="button" class="btn btn-danger btn-sm d-inline-flex align-items-center justify-content-center delete-record" 
                                                     data-id="{{ $record->id }}">
                                                 <i class="fas fa-trash me-1"></i> Delete
                                             </button>
+                                            
+                                            <!-- Edit Button - Only for pending/rejected status -->
+                                            <a href="{{ route('she.mess.form.edit', ['id' => $record->id]) }}" 
+                                               class="btn btn-warning btn-sm d-inline-flex align-items-center justify-content-center">
+                                                <i class="fas fa-edit me-1"></i> Edit
+                                            </a>
                                         @endif
                                     @endif
                                 </td>
