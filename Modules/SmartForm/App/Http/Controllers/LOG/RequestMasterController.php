@@ -215,50 +215,135 @@ class RequestMasterController extends Controller {
         return view('SmartForm::LOG/request-master/dashboard-request-master');
     }
 
+    // public function GetListRequestMaster(Request $request) {
+    //     $TABLE_REQUEST_MASTER = "FM_LOG_002_REQUESTER_MASTER";
+    //     $response = array(
+    //         'message' => '',
+    //         'isSuccess' => false
+    //     );
+
+    //     $sort = $request->query('sort', 'id'); // Default sort by id
+    //     $order = $request->query('order', 'desc'); // Default order is desc
+    //     $offset = $request->query('offset', 0); // Default offset
+    //     $limit = $request->query('limit', null); // Default limit
+    //     $filter = $request->query('filter', null); // Default limit
+    //     try {
+    //         // $master = DB::table($TABLE_REQUEST_MASTER)
+    //         //     ->select('id', 'no_dok', 'site', 'created_by');
+            
+
+    //         $master = DB::table($TABLE_REQUEST_MASTER)
+    //         ->select(
+    //             $TABLE_REQUEST_MASTER.'.id', 
+    //             $TABLE_REQUEST_MASTER.'.no_dok', 
+    //             $TABLE_REQUEST_MASTER.'.site', 
+    //             $TABLE_REQUEST_MASTER.'.created_by',
+    //             DB::raw('(SELECT Nama FROM HRD.dbo.TKaryawan WHERE NIK = '.$TABLE_REQUEST_MASTER.'.created_by) as request_by'),
+    //             DB::raw('(SELECT Nama FROM HRD.dbo.TKaryawan WHERE NIK = '.$TABLE_REQUEST_MASTER.'.cataloging_id) as cataloging_by'),
+    //             $TABLE_REQUEST_MASTER.'.cataloging_update',
+    //             DB::raw('(SELECT Nama FROM HRD.dbo.TKaryawan WHERE NIK = '.$TABLE_REQUEST_MASTER.'.disetujui_oleh) as approval_by'),
+    //             $TABLE_REQUEST_MASTER.'.status_req',
+    //             $TABLE_REQUEST_MASTER.'.created_at',
+    //             $TABLE_REQUEST_MASTER.'.updated_at',
+    //         );
+
+    //         $master->orderBy($sort, $order);
+    //         $jml = $master->count();            
+    //         $document = $master->get();
+
+    //         $response['message'] = "Ok";
+    //         $response['isSuccess'] = true;
+    //         $response['data'] = [
+    //             'total' => $jml,
+    //             'totalNotFiltered' => $jml,
+    //             'rows' => $document
+    //         ];
+
+    //     } catch (Exception $ex) {
+    //         Log::error($ex->getMessage());
+    //         Log::error($ex->getTraceAsString());
+            
+    //         $response['message'] = $ex->getMessage();
+    //         $response['isSuccess'] = false;
+    //     }
+
+    //     return response()->json($response);
+    // }
+    
+    
     public function GetListRequestMaster(Request $request) {
         $TABLE_REQUEST_MASTER = "FM_LOG_002_REQUESTER_MASTER";
         $response = array(
             'message' => '',
             'isSuccess' => false
         );
-
-        $sort = $request->query('sort', 'id'); // Default sort by id
-        $order = $request->query('order', 'desc'); // Default order is desc
-        $offset = $request->query('offset', 0); // Default offset
-        $limit = $request->query('limit', null); // Default limit
-        $filter = $request->query('filter', null); // Default limit
+    
         try {
-            // $master = DB::table($TABLE_REQUEST_MASTER)
-            //     ->select('id', 'no_dok', 'site', 'created_by');
+            // Get pagination parameters
+            $page = $request->query('offset', 0) / $request->query('limit', 10) + 1;
+            $perPage = $request->query('limit', 10);
+            $sort = $request->query('sort', 'id');
+            $order = $request->query('order', 'desc');
             
-
-            $master = DB::table($TABLE_REQUEST_MASTER)
-            ->select(
-                $TABLE_REQUEST_MASTER.'.id', 
-                $TABLE_REQUEST_MASTER.'.no_dok', 
-                $TABLE_REQUEST_MASTER.'.site', 
-                $TABLE_REQUEST_MASTER.'.created_by',
-                DB::raw('(SELECT Nama FROM HRD.dbo.TKaryawan WHERE NIK = '.$TABLE_REQUEST_MASTER.'.created_by) as request_by'),
-                DB::raw('(SELECT Nama FROM HRD.dbo.TKaryawan WHERE NIK = '.$TABLE_REQUEST_MASTER.'.cataloging_id) as cataloging_by'),
-                $TABLE_REQUEST_MASTER.'.cataloging_update',
-                DB::raw('(SELECT Nama FROM HRD.dbo.TKaryawan WHERE NIK = '.$TABLE_REQUEST_MASTER.'.disetujui_oleh) as approval_by'),
-                $TABLE_REQUEST_MASTER.'.status_req',
-                $TABLE_REQUEST_MASTER.'.created_at',
-                $TABLE_REQUEST_MASTER.'.updated_at',
-            );
-
-            $master->orderBy($sort, $order);
-            $jml = $master->count();            
-            $document = $master->get();
-
+            // Get filters from request
+            $filters = $request->query('filters', []);
+            $search = $request->query('search', '');
+    
+            $query = DB::table($TABLE_REQUEST_MASTER)
+                ->select(
+                    $TABLE_REQUEST_MASTER.'.id', 
+                    $TABLE_REQUEST_MASTER.'.no_dok', 
+                    $TABLE_REQUEST_MASTER.'.site', 
+                    $TABLE_REQUEST_MASTER.'.created_by',
+                    DB::raw('(SELECT Nama FROM HRD.dbo.TKaryawan WHERE NIK = '.$TABLE_REQUEST_MASTER.'.created_by) as request_by'),
+                    DB::raw('(SELECT Nama FROM HRD.dbo.TKaryawan WHERE NIK = '.$TABLE_REQUEST_MASTER.'.cataloging_id) as cataloging_by'),
+                    $TABLE_REQUEST_MASTER.'.cataloging_update',
+                    DB::raw('(SELECT Nama FROM HRD.dbo.TKaryawan WHERE NIK = '.$TABLE_REQUEST_MASTER.'.disetujui_oleh) as approval_by'),
+                    $TABLE_REQUEST_MASTER.'.status_req',
+                    $TABLE_REQUEST_MASTER.'.created_at',
+                    $TABLE_REQUEST_MASTER.'.updated_at',
+                );
+    
+            // Apply filters
+            foreach ($filters as $field => $value) {
+                
+                if ($value) {
+                    if($field == 'request_by') {
+                        $findUser = DB::connection('sqlsrv2')->table(self::TABLE_KARYAWAN)->where('Nama', 'like', '%' . $value . '%')->first();
+                        
+                        $query->where('created_by', $findUser->NIK);
+                    } else{
+                        $query->where($field, 'like', '%' . $value . '%');
+                    }
+                   
+                }
+            }
+    
+            // Apply search
+            if ($search) {
+                $query->where(function($q) use ($search, $TABLE_REQUEST_MASTER) {
+                    $q->where($TABLE_REQUEST_MASTER.'.no_dok', 'like', '%' . $search . '%')
+                      ->orWhere($TABLE_REQUEST_MASTER.'.site', 'like', '%' . $search . '%')
+                      ->orWhere(DB::raw('(SELECT Nama FROM HRD.dbo.TKaryawan WHERE NIK = '.$TABLE_REQUEST_MASTER.'.created_by)'), 'like', '%' . $search . '%')
+                      ->orWhere($TABLE_REQUEST_MASTER.'.status_req', 'like', '%' . $search . '%');
+                });
+            }
+    
+            // Get total count before pagination
+            $total = $query->count();
+    
+            // Apply sorting and pagination
+            $documents = $query->orderBy($sort, $order)
+                              ->paginate($perPage, ['*'], 'page', $page);
+    
             $response['message'] = "Ok";
             $response['isSuccess'] = true;
             $response['data'] = [
-                'total' => $jml,
-                'totalNotFiltered' => $jml,
-                'rows' => $document
+                'total' => $total,
+                'totalNotFiltered' => $total, // This is important for bootstrap-table
+                'rows' => $documents->items()
             ];
-
+    
         } catch (Exception $ex) {
             Log::error($ex->getMessage());
             Log::error($ex->getTraceAsString());
@@ -266,7 +351,7 @@ class RequestMasterController extends Controller {
             $response['message'] = $ex->getMessage();
             $response['isSuccess'] = false;
         }
-
+    
         return response()->json($response);
     }
     
