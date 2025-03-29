@@ -148,9 +148,8 @@
                                 <span>Shift</span>
                                 <select class="form-select form-select-sm input-text" aria-label="Default select example" id="i_shift" name="i_shift">
                                     <option value="" selected>-- Pilih Shift --</option>    
-                                    <option value="I">I</option>
-                                    <option value="II">II</option>
-                                    <option value="III">III</option>
+                                    <option value="DS">DS</option>
+                                    <option value="NS">NS</option>
                                 </select> 
                             </div>
                             <div class="w-1/2 md:w-1/6">
