@@ -455,45 +455,56 @@ class P3KController extends Controller
     public function Update(Request $request, $id)
     {
         try {
+            // Get current user from session
+            $currentUsername = session('username') ?? '';
+            
+            if (empty($currentUsername)) {
+                return redirect()->route('she-p3k.dashboard')
+                    ->with('error', 'Please set your username first');
+            }
+            
+            // Get the record
+            $record = DB::table('she_p3k')->where('id', $id)->first();
+            
+            if (!$record) {
+                return redirect()->route('she-p3k.dashboard')
+                    ->with('error', 'Record not found');
+            }
+            
+            // Check if user is the creator of the record
+            if ($record->created_by !== $currentUsername) {
+                return redirect()->route('she-p3k.dashboard')
+                    ->with('error', 'You are not authorized to edit this record');
+            }
+            
+            // Check if the record has any approvals
+            if ($record->inspector_1_status === 'approved' || 
+                $record->inspector_2_status === 'approved' || 
+                $record->supervisor_status === 'approved' || 
+                $record->dh_status === 'approved' || 
+                $record->she_status === 'approved') {
+                return redirect()->route('she-p3k.dashboard')
+                    ->with('error', 'Cannot edit a record that has been approved');
+            }
+            
             $validator = Validator::make($request->all(), [
                 'inspection_date' => 'required|date',
                 'location' => 'required|string|max:255',
                 'created_by' => 'required|string|max:255',
-                'created_signature' => 'nullable|string',
-                'created_date' => 'nullable|date',
-                'inspector_1_name' => 'nullable|string|max:255',
-                'inspector_1_nik' => 'nullable|string',
-                'inspector_1_date' => 'nullable|date',
-                'inspector_2_name' => 'nullable|string|max:255',
-                'inspector_2_nik' => 'nullable|string',
-                'inspector_2_date' => 'nullable|date',
-                'supervisor_name' => 'nullable|string|max:255',
-                'supervisor_nik' => 'nullable|string',
-                'supervisor_date' => 'nullable|date',
-                'dh_name' => 'nullable|string|max:255',
-                'dh_nik' => 'nullable|string',
-                'dh_date' => 'nullable|date',
-                'she_name' => 'nullable|string|max:255',
-                'she_nik' => 'nullable|string',
-                'she_date' => 'nullable|date',
+                'inspector_1_name' => 'required|string|max:255',
+                'inspector_1_nik' => 'required|string',
+                'inspector_1_date' => 'required|date',
             ]);
 
             if ($validator->fails()) {
-                return response()->json([
-                    'success' => false,
-                    'errors' => $validator->errors()
-                ], 422);
+                return redirect()->back()
+                    ->withErrors($validator)
+                    ->withInput();
             }
 
             DB::beginTransaction();
 
             try {
-                $record = DB::table('she_p3k')->where('id', $id)->first();
-                
-                if (!$record) {
-                    throw new \Exception('Record not found');
-                }
-
                 // Prepare items data
                 $itemsData = [];
                 $needsRestock = false;
@@ -515,6 +526,9 @@ class P3KController extends Controller
                     ];
                 }
 
+                // Determine approval status - preserve current status unless there's a reason to change it
+                $approvalStatus = $record->approval_status;
+                
                 // Update record
                 DB::table('she_p3k')
                     ->where('id', $id)
@@ -545,37 +559,27 @@ class P3KController extends Controller
                         'she_nik' => $request->she_nik,
                         'she_date' => $request->she_date,
                         'she_status' => $request->she_status ?? 'pending',
-                        // Set overall approval status
-                        'approval_status' => $this->determineApprovalStatus($request),
+                        'approval_status' => $approvalStatus,
                         'updated_at' => now()
                     ]);
 
-                // If any item needs restock, send notification
-                if ($needsRestock) {
-                    Log::info("P3K inspection {$record->doc_number} at {$request->location} needs restock after update.");
-                }
-
                 DB::commit();
                 
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Form inspeksi P3K berhasil diperbarui.',
-                    'needs_restock' => $needsRestock
-                ]);
-
+                return redirect()->route('she-p3k.dashboard')
+                    ->with('success', 'P3K record updated successfully');
+                    
             } catch (\Exception $e) {
-                DB::rollBack();
-                Log::error('Error in P3K Update transaction: ' . $e->getMessage());
-                throw $e;
+                DB::rollback();
+                Log::error('Error updating P3K record: ' . $e->getMessage());
+                return redirect()->back()
+                    ->with('error', 'Failed to update record: ' . $e->getMessage())
+                    ->withInput();
             }
-
+            
         } catch (\Exception $e) {
-            Log::error('Error in P3K Update: ' . $e->getMessage());
-            Log::error($e->getTraceAsString());
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to update form: ' . $e->getMessage()
-            ], 500);
+            Log::error('Error in Update: ' . $e->getMessage());
+            return redirect()->route('she-p3k.dashboard')
+                ->with('error', 'Failed to update record: ' . $e->getMessage());
         }
     }
 
@@ -1132,5 +1136,61 @@ class P3KController extends Controller
 
         return redirect()->route('she-p3k.dashboard')
             ->with('success', 'User ID set successfully');
+    }
+
+    /**
+     * Show the form for editing a P3K record
+     * 
+     * @param int $id Record ID
+     * @return \Illuminate\Http\Response
+     */
+    public function EditForm($id)
+    {
+        try {
+            // Get current user from session
+            $currentUsername = session('username') ?? '';
+            
+            if (empty($currentUsername)) {
+                return redirect()->route('she-p3k.dashboard')
+                    ->with('error', 'Please set your username first');
+            }
+            
+            // Get the record
+            $record = DB::table('she_p3k')->where('id', $id)->first();
+            
+            if (!$record) {
+                return redirect()->route('she-p3k.dashboard')
+                    ->with('error', 'Record not found');
+            }
+            
+            // Check if user is the creator of the record
+            if ($record->created_by !== $currentUsername) {
+                return redirect()->route('she-p3k.dashboard')
+                    ->with('error', 'You are not authorized to edit this record');
+            }
+            
+            // Check if the record has any approvals
+            if ($record->inspector_1_status === 'approved' || 
+                $record->inspector_2_status === 'approved' || 
+                $record->supervisor_status === 'approved' || 
+                $record->dh_status === 'approved' || 
+                $record->she_status === 'approved') {
+                return redirect()->route('she-p3k.dashboard')
+                    ->with('error', 'Cannot edit a record that has been approved');
+            }
+            
+            $record->items_data = json_decode($record->items_data, true);
+            
+            return view('SmartForm::she/p3k/edit-form', [
+                'record' => $record,
+                'p3kItems' => $this->p3kItems,
+                'approvalList' => HrdHelper::getApprovalList(),
+            ]);
+            
+        } catch (\Exception $e) {
+            Log::error('Error in EditForm: ' . $e->getMessage());
+            return redirect()->route('she-p3k.dashboard')
+                ->with('error', 'Failed to load edit form: ' . $e->getMessage());
+        }
     }
 }

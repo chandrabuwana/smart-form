@@ -362,7 +362,8 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/form/export/{id}', [P3KController::class, 'ExportForm'])->name('she-p3k.export');
             Route::get('/form', [P3KController::class, 'AddForm'])->name('she-p3k.form');
             Route::post('/store', [P3KController::class, 'Store'])->name('she-p3k.submit');
-            Route::put('/form/{id}', [P3KController::class, 'Update'])->name('she-p3k.form.update');
+            Route::get('/form/edit/{id}', [P3KController::class, 'EditForm'])->name('she-p3k.edit');
+            Route::post('/update/{id}', [P3KController::class, 'Update'])->name('she-p3k.update');
             Route::get('/approve/{id}/{role}', [P3KController::class, 'Approve'])->name('she-p3k.approve');
             Route::get('/approve-all/{id}', [P3KController::class, 'ApproveAll'])->name('she-p3k.approve-all');
             Route::post('/set-user-nik', [P3KController::class, 'SetUserNik'])->name('she-p3k.set-user-nik');

@@ -258,6 +258,10 @@
                                             
                                             @if(session('username') && session('username') == $record->created_by)
                                                 @if(in_array($record->approval_status, ['pending', 'rejected']))
+                                                    <a href="{{ route('she-p3k.edit', ['id' => $record->id]) }}" class="btn btn-warning btn-action text-white">
+                                                        <i class="fas fa-edit"></i> Edit
+                                                    </a>
+                                                    
                                                     <button type="button" class="btn btn-danger btn-action text-white delete-record" data-id="{{ $record->id }}">
                                                         <i class="fas fa-trash"></i> Delete
                                                     </button>
