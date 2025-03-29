@@ -501,6 +501,24 @@ class RequestMasterController extends Controller {
         return view('SmartForm::LOG/request-master/edit-form-req-master', $responseData);
     }
 
+    
+    public function CatalogViewReqMaster(Request $request){
+        $id = $request->query('id');
+        $nik_session = $request->session()->get('user_id', '');
+        $response = $this->getDetail($request, $id);
+        
+        // Convert response to array if it's a JsonResponse
+        $responseData = $response instanceof \Illuminate\Http\JsonResponse 
+            ? $response->getData(true) 
+            : (array)$response;
+
+        Log::debug('response detail: '. json_encode($responseData, JSON_PRETTY_PRINT));
+
+        return view('SmartForm::LOG/request-master/cataloging-form-req-master', $responseData);
+    }
+
+    
+
     public function UpdateFormRequestMaster(Request $req) {
         $TABLE_MASTER = self::TABLE_MASTER;
         $TABLE_DETAIL = self::TABLE_DETAIL;
@@ -612,12 +630,9 @@ class RequestMasterController extends Controller {
 
         Log::debug('response detail: '. json_encode($responseData, JSON_PRETTY_PRINT));
 
-        if(session('user_id') == $responseData['data']['master']->cataloging_id) {
-            return view('SmartForm::LOG/request-master/cataloging-form-req-master', $responseData);
-        }
-
         return view('SmartForm::LOG/request-master/detail-form-req-master', $responseData);
     }
+
 
     public function ApproveRejectRequestMaster(Request $request)
     {

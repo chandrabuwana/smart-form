@@ -107,17 +107,47 @@
             console.log(row)
 
             var btn = '';
+            if (row.status_req == "APPROVED") {
+                btn = btn + '<a type="button" class="btn btn-success btn-sm me-1" href="/bss-form/log/detail-req-master?id=' + row.id + '">View</a>';
+                btn = btn + '<a class="btn btn-primary btn-action btn-sm" href="/bss-form/log/pdf-req-master/' + row.id + '">Pdf</a>';
+                return btn;
+            }
+
+            //btn requester
             if (row.created_by == "{{ session('user_id') }}") {
                 btn = btn + '<a type="button" class="btn btn-success btn-sm me-1" href="/bss-form/log/detail-req-master?id=' + row.id + '">View</a>';
                 btn = btn + '<a type="button" class="btn btn-info btn-sm me-1" href="/bss-form/log/edit-req-master?id=' + row.id + '">Edit</a>';
-                
-            } else {
-                var btn = '<a type="button" class="btn btn-success btn-sm me-1" href="/bss-form/log/detail-req-master?id=' + row.id + '">View</a>';
-                
-            }
-         
-            btn = btn + '<a class="btn btn-primary btn-action btn-sm" href="/bss-form/log/pdf-req-master/' + row.id + '">Pdf</a>';
+                btn = btn + '<a class="btn btn-primary btn-action btn-sm" href="/bss-form/log/pdf-req-master/' + row.id + '">Pdf</a>';
+                return btn;
+            } 
 
+            //btm cataloging
+            if (row.cataloging_by == "{{ session('username') }}") {
+                btn = btn + '<a type="button" class="btn btn-warning btn-sm me-1" href="/bss-form/log/catalog-view-req-master?id=' + row.id + '">Review</a>';
+                btn = btn + '<a class="btn btn-primary btn-action btn-sm" href="/bss-form/log/pdf-req-master/' + row.id + '">Pdf</a>';
+                return btn;
+            }
+
+            //btn approval
+            if (row.approval_by == "{{ session('username') }}") {
+
+                if(row.status_req == "REJECTED"){
+                    btn = btn + '<a type="button" class="btn btn-success btn-sm me-1" href="/bss-form/log/detail-req-master?id=' + row.id + '">View</a>';
+                    btn = btn + '<a class="btn btn-primary btn-action btn-sm" href="/bss-form/log/pdf-req-master/' + row.id + '">Pdf</a>';
+                    return btn;
+                }
+
+                btn = btn + '<a type="button" class="btn btn-warning btn-sm me-1" href="/bss-form/log/detail-req-master?id=' + row.id + '">Review</a>';
+                btn = btn + '<a class="btn btn-primary btn-action btn-sm" href="/bss-form/log/pdf-req-master/' + row.id + '">Pdf</a>';
+                return btn;
+            }
+
+
+            // else {
+            //     btn = btn + '<a type="button" class="btn btn-success btn-sm me-1" href="/bss-form/log/detail-req-master?id=' + row.id + '">View</a>';
+                
+            // }
+         
             return btn;
         }
 
