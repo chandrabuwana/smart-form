@@ -302,7 +302,7 @@ class RequestMasterController extends Controller {
                     $TABLE_REQUEST_MASTER.'.status_req',
                     $TABLE_REQUEST_MASTER.'.created_at',
                     $TABLE_REQUEST_MASTER.'.updated_at',
-                );
+                )->where('status_req', '!=', STATUS::DELETED);
     
             // Apply filters
             foreach ($filters as $field => $value) {
@@ -536,7 +536,7 @@ class RequestMasterController extends Controller {
                     $TABLE_MASTER.'.kode_plant',
                     $TABLE_MASTER.'.remark',
                 )
-                ->where('id', $id)
+                ->where('id', $id)->where('status_req', '!=', STATUS::DELETED)
                 ->first();
             
             $detail = DB::table($TABLE_DETAIL)
@@ -782,6 +782,41 @@ class RequestMasterController extends Controller {
         }
     }
 
+    public function DeleteRequestMaster(Request $request) {
+        $TABLE_MASTER = self::TABLE_MASTER;
+
+        $response = array(
+            'message' => "",
+            'isSuccess' => false
+        );
+        
+        $id = $request->id; 
+        
+        try {
+            $data_update = [
+                'status_req' => STATUS::DELETED,
+                'deleted_at' => now()->toDateTimeString(),
+                'deleted_by' => $request->session()->get('user_id')
+            ];
+
+             // soft delete master 
+             DB::table($TABLE_MASTER)
+             ->where('id', $id)
+             ->update($data_update);
+    
+            $response['message'] = "Delete successful";
+            $response['isSuccess'] = true;
+        } catch (Exception $ex) {
+            Log::error($ex->getTraceAsString());
+            DB::rollBack();
+            $response['message'] = $ex->getMessage();
+            $response['isSuccess'] = false;
+        }
+    
+        return response()->json($response);
+
+    }
+
 }
 
 class STATUS {
@@ -789,4 +824,5 @@ class STATUS {
     const CLOSE = 'CLOSE';
     const APPROVED = 'APPROVED';
     const REJECTED = 'REJECTED';
+    const DELETED = 'DELETED';
 }

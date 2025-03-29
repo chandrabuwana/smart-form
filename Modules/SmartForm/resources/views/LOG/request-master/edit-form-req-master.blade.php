@@ -545,11 +545,20 @@ $serialNumbers = $data['serialNumbers'];
 
                     <div class="card-footer" style="padding-right: 0px;">
                         <div class="d-flex align-items-center">
-                            <button class="btn btn-primary ms-auto uploadBtn" style="margin:5px"  id="btnUpdateRequestMaster">
-                                <i class="fas fa-save"></i> &nbsp;
-                                Update Form
-                            </button>
-                            <a href="{{url()->previous()}}" class="btn btn-secondary" style="margin:5px"><i class="fas fa-cancel"></i> &nbsp; Cancel</a>
+                            <div class="w-80">
+                                <button class="btn btn-danger ms-auto" style="margin:5px"  id="btnDeletedData">
+                                    <i class="fas fa-trash"></i> &nbsp;
+                                    Delete Form
+                                </button>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <button class="btn btn-primary ms-auto uploadBtn" style="margin:5px"  id="btnUpdateRequestMaster">
+                                    <i class="fas fa-save"></i> &nbsp;
+                                    Update Form
+                                </button>
+                                <a href="{{url()->previous()}}" class="btn btn-secondary" style="margin:5px"><i class="fas fa-cancel"></i> &nbsp; Cancel</a>
+                            </div>
+                          
                         </div>
                     </div>
 
@@ -569,8 +578,9 @@ $serialNumbers = $data['serialNumbers'];
 
         var btnUpdateRequestMaster = $("#btnUpdateRequestMaster");
         var $table = $("#item-master");
-        var $buttonTambah = $("#btn-add-item")
-        var $buttonReset = $("#btn-reset-item")
+        var $buttonTambah = $("#btn-add-item");
+        var $buttonReset = $("#btn-reset-item");
+        var $btnDeletedData = $('#btnDeletedData');
         
         // Variable form
         var tanggalSekarang = $("#tanggalSekarang")
@@ -1054,6 +1064,44 @@ $serialNumbers = $data['serialNumbers'];
                 }
                 
             })
+        
+            $btnDeletedData.click(function(e) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Apakah anda yakin hapus dokument ini?',
+                    text: "Data yang dihapus tidak dapat dikembalikan!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#e91e63',
+                    cancelButtonColor: '#7b809a',
+                    confirmButtonText: 'Ya, hapus!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        showLoading()
+                        axios.post('/bss-form/log/delete-request-master', {
+                            id: "{{$master->id}}"
+                        })
+                        .then(function (response) {
+                            console.log(response.data)
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Delete Form',
+                                text: 'Document {{$master->no_dok}} sukses di hapus',
+                            }).then((result) => {
+                                window.location.href = `/bss-form/log/request-master`;
+                            })
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                            stopLoading()
+                        })
+                        .finally(function() {
+                            stopLoading()
+                        });
+                    }
+                })
+            })
+        
         })
     </script>
 @endsection
