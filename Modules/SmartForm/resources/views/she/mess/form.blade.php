@@ -39,35 +39,44 @@
                                 <div class="col-md-3">
                                     <div class="input-group input-group-static mb-3">
                                         <label>Site Name</label>
-                                        <select class="form-control" id="site_name" name="site_name" {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                        <select class="form-control" id="site_name" name="site_name" required {{ $isShowDetail ? 'disabled' : '' }}>
                                             <option value="">-- Pilih Site --</option>
-                                            @foreach(['agm', 'mbl', 'mme', 'mas', 'pmss', 'taj', 'bssr', 'tdm', 'msj'] as $site)
-                                                <option value="{{ $site }}" {{ isset($data) && strtolower($data->site_name) === $site ? 'selected' : '' }}>{{ strtoupper($site) }}</option>
+                                            @foreach(\Modules\SmartForm\helpers\SiteHelper::getAllSites() as $code => $name)
+                                                <option value="{{ strtoupper($code) }}" 
+                                                    {{ $isShowDetail && strtolower($data->site_name) == strtolower($code) ? 'selected' : 
+                                                    (!$isShowDetail && isset($defaultValues['site_name']) && strtolower($defaultValues['site_name']) == strtolower($code) ? 'selected' : '') }}>
+                                                    {{ $name }}
+                                                </option>
                                             @endforeach
+                                            <option value="BSS" 
+                                                {{ $isShowDetail && strtolower($data->site_name) == 'bss' ? 'selected' : 
+                                                (!$isShowDetail && isset($defaultValues['site_name']) && strtolower($defaultValues['site_name']) == 'bss' ? 'selected' : '') }}>
+                                                BSS
+                                            </option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="input-group input-group-static mb-3">
                                         <label>Lokasi Kerja</label>
-                                        <input type="text" class="form-control" name="work_location" value="{{ isset($data) ? $data->work_location : '' }}" {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                        <input type="text" class="form-control" name="work_location" value="{{ isset($data) ? $data->work_location : '' }}" {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }} required>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="input-group input-group-static mb-3">
                                         <label>Dept./Section</label>
-                                        <input type="text" class="form-control" name="department" value="{{ isset($data) ? $data->department : 'SHE & GS' }}" {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                        <select class="form-control" name="department" id="department" {{ $isShowDetail ? 'disabled' : '' }} required>
+                                            <option value="">-- Pilih Departemen --</option>
+                                            @foreach(\Modules\SmartForm\helpers\DepartmentHelper::getAllDepartments() as $code => $name)
+                                                <option value="{{ $code }}" {{ $isShowDetail && $data->department == $code ? 'selected' : '' }}>{{ $name }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="input-group input-group-static mb-3">
                                         <label>Shift</label>
-                                        <select class="form-control" name="shift" {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
-                                            <option value="">-- Pilih Shift --</option>
-                                            @foreach(['Day', 'Night'] as $shift)
-                                                <option value="{{ $shift }}" {{ isset($data) && $data->shift === $shift ? 'selected' : '' }}>{{ $shift }}</option>
-                                            @endforeach
-                                        </select>
+                                        {!! \Modules\SmartForm\helpers\ShiftHelper::renderShiftSelect('shift', $isShowDetail ? $data->shift : (isset($defaultValues['shift']) ? $defaultValues['shift'] : null), isset($isShowDetail) && $isShowDetail) !!}
                                     </div>
                                 </div>
                             </div>
@@ -76,7 +85,7 @@
                                 <div class="col-md-3">
                                     <div class="input-group input-group-static mb-3">
                                         <label>Jumlah Inspektor</label>
-                                        <input type="number" class="form-control" name="inspector_count" value="{{ isset($data) ? $data->inspector_count : '1' }}" {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                        <input type="number" class="form-control" name="inspector_count" value="{{ isset($data) ? $data->inspector_count : '1' }}" {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }} min="1" step="1">
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -286,113 +295,149 @@ Tidak ada peraturan yg berlaku atau berdampak kelingkungan perusahaan
                             <tr>
                                 <td width="25%">Diinspeksi Oleh</td>
                                 <td width="25%">
-                                    <select name="inspected_by" class="form-control text-center" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                    <select name="inspected_by_name" id="inspected_by_name" class="form-control text-center" required {{ $isShowDetail ? 'disabled' : '' }}>
                                         <option value="">-- Pilih Inspektor --</option>
                                         @foreach($approvalList as $user)
-                                            <option value="{{ $user->nama }}" {{ $isShowDetail && $data->inspected_by == $user->nama ? 'selected' : '' }}>
-                                                {{ $user->nama }} ({{ $user->nik }})
+                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" 
+                                                {{ ($isShowDetail && isset($data->inspected_by_name) && $data->inspected_by_name == $user->nama) || 
+                                                   (!$isShowDetail && $user->nama == session('username')) ? 'selected' : '' }}>
+                                                {{ $user->nama }}
                                             </option>
                                         @endforeach
                                     </select>
+                                    <input type="hidden" name="inspected_by_nik" id="inspected_by_nik" 
+                                           value="{{ $isShowDetail && isset($data->inspected_by_nik) ? $data->inspected_by_nik : session('user_id') }}">
                                 </td>
-                                <td width="15%">Tanda Tangan</td>
+                                <td width="15%">Status</td>
                                 <td width="10%">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="inspected_signature[]" value="1"
-                                               {{ isset($data->inspected_signature) && $data->inspected_signature ? 'checked' : '' }}
-                                               {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
-                                        <label class="form-check-label">Signed</label>
-                                    </div>
+                                    @if($isShowDetail)
+                                        <span class="badge bg-{{ $data->inspected_by_status == 'approved' ? 'success' : ($data->inspected_by_status == 'rejected' ? 'danger' : 'secondary') }}">
+                                            {{ ucfirst($data->inspected_by_status) }}
+                                        </span>
+                                    @else
+                                        <select name="inspected_by_status" class="form-control">
+                                            <option value="pending" {{ isset($data) && $data->inspected_by_status == 'pending' ? 'selected' : '' }}>Pending</option>
+                                            <option value="approved" {{ isset($data) && $data->inspected_by_status == 'approved' ? 'selected' : '' }}>Approved</option>
+                                            <option value="rejected" {{ isset($data) && $data->inspected_by_status == 'rejected' ? 'selected' : '' }}>Rejected</option>
+                                        </select>
+                                    @endif
                                 </td>
                                 <td width="10%">Tanggal</td>
                                 <td width="15%">
                                     <input type="date" class="form-control" name="inspection_date"
                                            value="{{ isset($data->inspection_date) ? $data->inspection_date : now()->format('Y-m-d') }}"
-                                           {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                           {{ $isShowDetail ? 'disabled' : '' }}>
                                 </td>
                             </tr>
                             <tr>
                                 <td>Diinspeksi Oleh</td>
                                 <td>
-                                    <select name="inspected_by2" class="form-control text-center" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                    <select name="inspected_by2_name" id="inspected_by2_name" class="form-control text-center" {{ $isShowDetail ? 'disabled' : '' }}>
                                         <option value="">-- Pilih Inspektor --</option>
                                         @foreach($approvalList as $user)
-                                            <option value="{{ $user->nama }}" {{ $isShowDetail && $data->inspected_by2 == $user->nama ? 'selected' : '' }}>
-                                                {{ $user->nama }} ({{ $user->nik }})
+                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" 
+                                                {{ ($isShowDetail && isset($data->inspected_by2_name) && $data->inspected_by2_name == $user->nama) || 
+                                                   (!$isShowDetail && $user->nama == session('username')) ? 'selected' : '' }}>
+                                                {{ $user->nama }}
                                             </option>
                                         @endforeach
                                     </select>
+                                    <input type="hidden" name="inspected_by2_nik" id="inspected_by2_nik" 
+                                           value="{{ $isShowDetail && isset($data->inspected_by2_nik) ? $data->inspected_by2_nik : '' }}">
                                 </td>
-                                <td>Tanda Tangan</td>
+                                <td>Status</td>
                                 <td>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="inspected_signature[]" value="1"
-                                               {{ isset($data->inspected_signature2) && $data->inspected_signature2 ? 'checked' : '' }}
-                                               {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
-                                        <label class="form-check-label">Signed</label>
-                                    </div>
+                                    @if($isShowDetail)
+                                        <span class="badge bg-{{ $data->inspected_by2_status == 'approved' ? 'success' : ($data->inspected_by2_status == 'rejected' ? 'danger' : 'secondary') }}">
+                                            {{ ucfirst($data->inspected_by2_status) }}
+                                        </span>
+                                    @else
+                                        <select name="inspected_by2_status" class="form-control">
+                                            <option value="pending" {{ isset($data) && $data->inspected_by2_status == 'pending' ? 'selected' : '' }}>Pending</option>
+                                            <option value="approved" {{ isset($data) && $data->inspected_by2_status == 'approved' ? 'selected' : '' }}>Approved</option>
+                                            <option value="rejected" {{ isset($data) && $data->inspected_by2_status == 'rejected' ? 'selected' : '' }}>Rejected</option>
+                                        </select>
+                                    @endif
                                 </td>
                                 <td>Tanggal</td>
                                 <td>
                                     <input type="date" class="form-control" name="inspection_date2"
                                            value="{{ isset($data->inspection_date2) ? $data->inspection_date2 : now()->format('Y-m-d') }}"
-                                           {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                           {{ $isShowDetail ? 'disabled' : '' }}>
                                 </td>
                             </tr>
                             <tr>
                                 <td>Diinspeksi Oleh</td>
                                 <td>
-                                    <select name="inspected_by3" class="form-control text-center" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                    <select name="inspected_by3_name" id="inspected_by3_name" class="form-control text-center" {{ $isShowDetail ? 'disabled' : '' }}>
                                         <option value="">-- Pilih Inspektor --</option>
                                         @foreach($approvalList as $user)
-                                            <option value="{{ $user->nama }}" {{ $isShowDetail && $data->inspected_by3 == $user->nama ? 'selected' : '' }}>
-                                                {{ $user->nama }} ({{ $user->nik }})
+                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" 
+                                                {{ ($isShowDetail && isset($data->inspected_by3_name) && $data->inspected_by3_name == $user->nama) || 
+                                                   (!$isShowDetail && $user->nama == session('username')) ? 'selected' : '' }}>
+                                                {{ $user->nama }}
                                             </option>
                                         @endforeach
                                     </select>
+                                    <input type="hidden" name="inspected_by3_nik" id="inspected_by3_nik" 
+                                           value="{{ $isShowDetail && isset($data->inspected_by3_nik) ? $data->inspected_by3_nik : '' }}">
                                 </td>
-                                <td>Tanda Tangan</td>
+                                <td>Status</td>
                                 <td>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="inspected_signature[]" value="1"
-                                               {{ isset($data->inspected_signature3) && $data->inspected_signature3 ? 'checked' : '' }}
-                                               {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
-                                        <label class="form-check-label">Signed</label>
-                                    </div>
+                                    @if($isShowDetail)
+                                        <span class="badge bg-{{ $data->inspected_by3_status == 'approved' ? 'success' : ($data->inspected_by3_status == 'rejected' ? 'danger' : 'secondary') }}">
+                                            {{ ucfirst($data->inspected_by3_status) }}
+                                        </span>
+                                    @else
+                                        <select name="inspected_by3_status" class="form-control">
+                                            <option value="pending" {{ isset($data) && $data->inspected_by3_status == 'pending' ? 'selected' : '' }}>Pending</option>
+                                            <option value="approved" {{ isset($data) && $data->inspected_by3_status == 'approved' ? 'selected' : '' }}>Approved</option>
+                                            <option value="rejected" {{ isset($data) && $data->inspected_by3_status == 'rejected' ? 'selected' : '' }}>Rejected</option>
+                                        </select>
+                                    @endif
                                 </td>
                                 <td>Tanggal</td>
                                 <td>
                                     <input type="date" class="form-control" name="inspection_date3"
                                            value="{{ isset($data->inspection_date3) ? $data->inspection_date3 : now()->format('Y-m-d') }}"
-                                           {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                           {{ $isShowDetail ? 'disabled' : '' }}>
                                 </td>
                             </tr>
                             <tr>
                                 <td>Disetujui Oleh</td>
                                 <td>
-                                    <select name="acknowledged_by" class="form-control text-center" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
-                                        <option value="">-- Pilih Inspektor --</option>
+                                    <select name="acknowledged_by_name" id="acknowledged_by_name" class="form-control text-center" {{ $isShowDetail ? 'disabled' : '' }}>
+                                        <option value="">-- Pilih Approver --</option>
                                         @foreach($approvalList as $user)
-                                            <option value="{{ $user->nama }}" {{ $isShowDetail && $data->acknowledged_by == $user->nama ? 'selected' : '' }}>
-                                                {{ $user->nama }} ({{ $user->nik }})
+                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" 
+                                                {{ ($isShowDetail && isset($data->acknowledged_by_name) && $data->acknowledged_by_name == $user->nama) || 
+                                                   (!$isShowDetail && $user->nama == session('username')) ? 'selected' : '' }}>
+                                                {{ $user->nama }}
                                             </option>
                                         @endforeach
                                     </select>
+                                    <input type="hidden" name="acknowledged_by_nik" id="acknowledged_by_nik" 
+                                           value="{{ $isShowDetail && isset($data->acknowledged_by_nik) ? $data->acknowledged_by_nik : '' }}">
                                 </td>
-                                <td>Tanda Tangan</td>
+                                <td>Status</td>
                                 <td>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="acknowledged_signature" value="1"
-                                               {{ isset($data->acknowledged_signature) && $data->acknowledged_signature ? 'checked' : '' }}
-                                               {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
-                                        <label class="form-check-label">Signed</label>
-                                    </div>
+                                    @if($isShowDetail)
+                                        <span class="badge bg-{{ $data->acknowledged_by_status == 'approved' ? 'success' : ($data->acknowledged_by_status == 'rejected' ? 'danger' : 'secondary') }}">
+                                            {{ ucfirst($data->acknowledged_by_status) }}
+                                        </span>
+                                    @else
+                                        <select name="acknowledged_by_status" class="form-control">
+                                            <option value="pending" {{ isset($data) && $data->acknowledged_by_status == 'pending' ? 'selected' : '' }}>Pending</option>
+                                            <option value="approved" {{ isset($data) && $data->acknowledged_by_status == 'approved' ? 'selected' : '' }}>Approved</option>
+                                            <option value="rejected" {{ isset($data) && $data->acknowledged_by_status == 'rejected' ? 'selected' : '' }}>Rejected</option>
+                                        </select>
+                                    @endif
                                 </td>
                                 <td>Tanggal</td>
                                 <td>
                                     <input type="date" class="form-control" name="acknowledgment_date"
                                            value="{{ isset($data->acknowledgment_date) ? $data->acknowledgment_date : now()->format('Y-m-d') }}"
-                                           {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                           {{ $isShowDetail ? 'disabled' : '' }}>
                                 </td>
                             </tr>
                         </table>
@@ -464,6 +509,80 @@ Tidak ada peraturan yg berlaku atau berdampak kelingkungan perusahaan
 
 @section('custom-js')
 <script>
+    $(document).ready(function() {
+        // Initialize the form
+        initializeForm();
+        
+        // Handle checklist item changes
+        $('.condition-select').on('change', function() {
+            updateRiskLevel();
+        });
+
+        // Handle NIK selection for inspectors and acknowledger
+        $('#inspected_by_name').on('change', function() {
+            var selectedOption = $(this).find('option:selected');
+            var nik = selectedOption.data('nik');
+            $('#inspected_by_nik').val(nik);
+        });
+
+        $('#inspected_by2_name').on('change', function() {
+            var selectedOption = $(this).find('option:selected');
+            var nik = selectedOption.data('nik');
+            $('#inspected_by2_nik').val(nik);
+        });
+
+        $('#inspected_by3_name').on('change', function() {
+            var selectedOption = $(this).find('option:selected');
+            var nik = selectedOption.data('nik');
+            $('#inspected_by3_nik').val(nik);
+        });
+
+        $('#acknowledged_by_name').on('change', function() {
+            var selectedOption = $(this).find('option:selected');
+            var nik = selectedOption.data('nik');
+            $('#acknowledged_by_nik').val(nik);
+        });
+
+        // Trigger change events to set initial NIK values
+        $('#inspected_by_name').trigger('change');
+        $('#inspected_by2_name').trigger('change');
+        $('#inspected_by3_name').trigger('change');
+        $('#acknowledged_by_name').trigger('change');
+    });
+
+    function initializeForm() {
+        // Set up initial values and states
+        updateRiskLevel();
+        
+        // Make sure checkboxes are properly initialized
+        $('.form-check-input').each(function() {
+            if ($(this).prop('checked')) {
+                $(this).closest('tr').find('.condition-select').val('OK');
+            }
+        });
+    }
+
+    function updateRiskLevel() {
+        var notOkCount = 0;
+        $('.condition-select').each(function() {
+            if ($(this).val() === 'NOT OK') {
+                notOkCount++;
+                $(this).closest('tr').find('.description-input').prop('required', true);
+            } else {
+                $(this).closest('tr').find('.description-input').prop('required', false);
+            }
+        });
+
+        var riskLevel = 'LOW';
+        if (notOkCount > 5) {
+            riskLevel = 'HIGH';
+        } else if (notOkCount > 2) {
+            riskLevel = 'MEDIUM';
+        }
+
+        $('#risk_level').val(riskLevel);
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         const form = document.querySelector('form');
         form.addEventListener('submit', function(e) {

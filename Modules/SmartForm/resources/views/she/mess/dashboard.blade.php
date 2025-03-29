@@ -171,7 +171,8 @@
                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Tanggal</th>
                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Lokasi</th>
                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Site</th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status Inspeksi</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status Persetujuan</th>
                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Actions</th>
                             </tr>
                         </thead>
@@ -210,19 +211,100 @@
                                     </span>
                                 </td>
                                 <td class="align-middle">
-                                    <a href="{{ route('she.mess.form', ['id' => $record->id]) }}" class="btn btn-link text-dark px-3 mb-0">
-                                        <i class="fas fa-eye text-dark me-2"></i>View
+                                    @php
+                                        $statusClass = 'secondary';
+                                        $statusText = 'Pending';
+                                        
+                                        if ($record->approval_status == 'approved') {
+                                            $statusClass = 'success';
+                                            $statusText = 'Approved';
+                                        } elseif ($record->approval_status == 'rejected') {
+                                            $statusClass = 'danger';
+                                            $statusText = 'Rejected';
+                                        } elseif ($record->approval_status == 'in_progress') {
+                                            $statusClass = 'info';
+                                            $statusText = 'In Progress';
+                                        }
+                                    @endphp
+                                    <span class="badge bg-gradient-{{ $statusClass }}">{{ $statusText }}</span>
+                                </td>
+                                <td class="align-middle">
+                                    <a href="{{ route('she.mess.form', ['id' => $record->id]) }}" class="btn btn-primary btn-sm d-inline-flex align-items-center justify-content-center">
+                                        <i class="fas fa-eye me-1"></i> Detail
                                     </a>
                                     @if($record->doc_number)
-                                    <a href="{{ route('she.mess.export', ['id' => $record->id]) }}" class="btn btn-link text-dark px-3 mb-0">
-                                        <i class="fas fa-download text-dark me-2"></i>Export
+                                    <a href="{{ route('she.mess.export', ['id' => $record->id]) }}" class="btn btn-secondary btn-sm d-inline-flex align-items-center justify-content-center">
+                                        <i class="fas fa-download me-1"></i> Export
                                     </a>
+                                    @endif
+                                    
+                                    @php
+                                        $username = session('username');
+                                        $user_id = session('user_id');
+                                    @endphp
+                                    
+                                    @if($record->approval_status != 'approved')
+                                        <!-- Inspector 1 Approval/Rejection Buttons -->
+                                        @if($record->inspected_by_status != 'approved' && $record->inspected_by_status != 'rejected' && $record->inspected_by_nik == $user_id)
+                                            <a href="{{ route('she.mess.approve', ['id' => $record->id, 'role' => 'inspector1']) }}" 
+                                               class="btn btn-success btn-sm d-inline-flex align-items-center justify-content-center">
+                                                <i class="fas fa-check me-1"></i> Approve
+                                            </a>
+                                            <a href="{{ route('she.mess.reject', ['id' => $record->id, 'role' => 'inspector1']) }}" 
+                                               class="btn btn-danger btn-sm d-inline-flex align-items-center justify-content-center">
+                                                <i class="fas fa-times me-1"></i> Reject
+                                            </a>
+                                        @endif
+                                        
+                                        <!-- Inspector 2 Approval/Rejection Buttons -->
+                                        @if($record->inspected_by_status == 'approved' && $record->inspected_by2_status != 'approved' && $record->inspected_by2_status != 'rejected' && $record->inspected_by2_nik == $user_id)
+                                            <a href="{{ route('she.mess.approve', ['id' => $record->id, 'role' => 'inspector2']) }}" 
+                                               class="btn btn-success btn-sm d-inline-flex align-items-center justify-content-center">
+                                                <i class="fas fa-check me-1"></i> Approve
+                                            </a>
+                                            <a href="{{ route('she.mess.reject', ['id' => $record->id, 'role' => 'inspector2']) }}" 
+                                               class="btn btn-danger btn-sm d-inline-flex align-items-center justify-content-center">
+                                                <i class="fas fa-times me-1"></i> Reject
+                                            </a>
+                                        @endif
+                                        
+                                        <!-- Inspector 3 Approval/Rejection Buttons -->
+                                        @if($record->inspected_by2_status == 'approved' && $record->inspected_by3_status != 'approved' && $record->inspected_by3_status != 'rejected' && $record->inspected_by3_nik == $user_id)
+                                            <a href="{{ route('she.mess.approve', ['id' => $record->id, 'role' => 'inspector3']) }}" 
+                                               class="btn btn-success btn-sm d-inline-flex align-items-center justify-content-center">
+                                                <i class="fas fa-check me-1"></i> Approve
+                                            </a>
+                                            <a href="{{ route('she.mess.reject', ['id' => $record->id, 'role' => 'inspector3']) }}" 
+                                               class="btn btn-danger btn-sm d-inline-flex align-items-center justify-content-center">
+                                                <i class="fas fa-times me-1"></i> Reject
+                                            </a>
+                                        @endif
+                                        
+                                        <!-- Acknowledger Approval/Rejection Buttons -->
+                                        @if($record->inspected_by3_status == 'approved' && $record->acknowledged_by_status != 'approved' && $record->acknowledged_by_status != 'rejected' && $record->acknowledged_by_nik == $user_id)
+                                            <a href="{{ route('she.mess.approve', ['id' => $record->id, 'role' => 'acknowledger']) }}" 
+                                               class="btn btn-success btn-sm d-inline-flex align-items-center justify-content-center">
+                                                <i class="fas fa-check me-1"></i> Approve
+                                            </a>
+                                            <a href="{{ route('she.mess.reject', ['id' => $record->id, 'role' => 'acknowledger']) }}" 
+                                               class="btn btn-danger btn-sm d-inline-flex align-items-center justify-content-center">
+                                                <i class="fas fa-times me-1"></i> Reject
+                                            </a>
+                                        @endif
+                                        
+                                        <!-- Delete Button - Only for pending/rejected status -->
+                                        @if($record->approval_status == 'pending' || $record->approval_status == 'rejected')
+                                            <button type="button" class="btn btn-danger btn-sm d-inline-flex align-items-center justify-content-center delete-record" 
+                                                    data-id="{{ $record->id }}">
+                                                <i class="fas fa-trash me-1"></i> Delete
+                                            </button>
+                                        @endif
                                     @endif
                                 </td>
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="6" class="text-center py-4">No records found</td>
+                                <td colspan="7" class="text-center py-4">No records found</td>
                             </tr>
                             @endforelse
                         </tbody>
@@ -236,13 +318,12 @@
 
 @section('custom-js')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.js"></script>
 <script>
 $(document).ready(function() {
     // Initialize date pickers
-    flatpickr('input[type="date"]', {
+    flatpickr(".datepicker", {
         dateFormat: "Y-m-d",
-        allowInput: true
     });
 
     // Clear filter functionality
@@ -275,6 +356,57 @@ $(document).ready(function() {
             text: '{{ session('error') }}'
         });
     @endif
+
+    // Handle delete record button click
+    $('.delete-record').on('click', function() {
+        const recordId = $(this).data('id');
+        
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Send delete request
+                $.ajax({
+                    url: "{{ route('she.mess.delete') }}",
+                    type: 'DELETE',
+                    data: {
+                        id: recordId,
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            Swal.fire(
+                                'Deleted!',
+                                'Record has been deleted.',
+                                'success'
+                            ).then(() => {
+                                window.location.reload();
+                            });
+                        } else {
+                            Swal.fire(
+                                'Error!',
+                                response.message || 'Failed to delete record.',
+                                'error'
+                            );
+                        }
+                    },
+                    error: function() {
+                        Swal.fire(
+                            'Error!',
+                            'An error occurred while deleting the record.',
+                            'error'
+                        );
+                    }
+                });
+            }
+        });
+    });
 });
 </script>
 @endsection
