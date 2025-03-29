@@ -57,7 +57,6 @@ use Modules\SmartForm\App\Http\Controllers\TeamManagement\RoleManagementControll
 use Modules\SmartForm\App\Http\Controllers\TeamManagement\UserManagementController;
 use Modules\SmartForm\App\Http\Controllers\UnderCarriage\UnderCarriageInspectionController;
 use Modules\SmartForm\App\Http\Controllers\FAT\PPH\PPHDashboardController;
-use Modules\SmartForm\App\Http\Controllers\FAT\PPH\HelperPPHController;
 use Modules\SmartForm\App\Http\Controllers\IT\PrinterFormController;
 use Modules\SmartForm\App\Http\Controllers\IT\CctvFormController;
 use Modules\SmartForm\App\Http\Controllers\IT\DeviceFormController;
@@ -400,9 +399,11 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('form', [CoalGettingController::class, 'AddForm'])->name('prod.coal.form');
             Route::get('form/edit/{id}', [CoalGettingController::class, 'EditForm'])->name('prod.coal.form.edit');
             Route::post('store', [CoalGettingController::class, 'Store'])->name('prod.coal.store');
-            Route::put('form/{id}', [CoalGettingController::class, 'Update'])->name('prod.coal.form.update');
+            Route::post('update', [CoalGettingController::class, 'Update'])->name('prod.coal.update');
             Route::post('delete', [CoalGettingController::class, 'Delete'])->name('prod.coal.delete');
+            Route::post('/update-status', [CoalGettingController::class, 'updateStatus'])->name('prod.coal.update-status');
         });
+
         Route::prefix('she-ergonomi')->group(function () {
             Route::get('dashboard', [ErgonomiController::class, 'Dashboard'])->name('she.ergonomi.dashboard');
             Route::get('form/export/{id}', [ErgonomiController::class, 'ExportForm'])->name('she.ergonomi.export');

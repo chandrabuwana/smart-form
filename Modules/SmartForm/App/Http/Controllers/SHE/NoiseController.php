@@ -19,7 +19,28 @@ class NoiseController extends Controller
         try {
             $query = DB::table('she_noise_survey')
                 ->select([
-                    'she_noise_survey.*',
+                    'she_noise_survey.id',
+                    'she_noise_survey.doc_number',
+                    'she_noise_survey.revision',
+                    'she_noise_survey.survey_date',
+                    'she_noise_survey.department',
+                    'she_noise_survey.site_name',
+                    'she_noise_survey.inspector_count',
+                    'she_noise_survey.inspection_date',
+                    'she_noise_survey.acknowledgment_date',
+                    'she_noise_survey.inspected_by_name',
+                    'she_noise_survey.inspected_by_nik',
+                    'she_noise_survey.acknowledged_by_name',
+                    'she_noise_survey.acknowledged_by_nik',
+                    'she_noise_survey.shift',
+                    'she_noise_survey.work_location',
+                    'she_noise_survey.risk_level',
+                    'she_noise_survey.activities',
+                    'she_noise_survey.work_areas',
+                    'she_noise_survey.findings_description',
+                    'she_noise_survey.approval_status',
+                    'she_noise_survey.created_at',
+                    'she_noise_survey.updated_at',
                     DB::raw('CONVERT(varchar, survey_date, 23) as formatted_date')
                 ]);
 
@@ -29,7 +50,8 @@ class NoiseController extends Controller
                 $query->where(function($q) use ($searchTerm) {
                     $q->where('doc_number', 'like', '%' . $searchTerm . '%')
                         ->orWhere('work_location', 'like', '%' . $searchTerm . '%')
-                        ->orWhere('inspected_by', 'like', '%' . $searchTerm . '%');
+                        ->orWhere('inspected_by_name', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('inspected_by_nik', 'like', '%' . $searchTerm . '%');
                 });
             }
 
@@ -86,6 +108,9 @@ class NoiseController extends Controller
                     'start_date' => $request->start_date,
                     'end_date' => $request->end_date,
                     'work_location' => $request->work_location,
+                ],
+                'user' => (object)[
+                    'userid' => session('user_id')
                 ]
             ]);
 
