@@ -57,7 +57,6 @@ use Modules\SmartForm\App\Http\Controllers\TeamManagement\RoleManagementControll
 use Modules\SmartForm\App\Http\Controllers\TeamManagement\UserManagementController;
 use Modules\SmartForm\App\Http\Controllers\UnderCarriage\UnderCarriageInspectionController;
 use Modules\SmartForm\App\Http\Controllers\FAT\PPH\PPHDashboardController;
-use Modules\SmartForm\App\Http\Controllers\FAT\PPH\HelperPPHController;
 use Modules\SmartForm\App\Http\Controllers\IT\PrinterFormController;
 use Modules\SmartForm\App\Http\Controllers\IT\CctvFormController;
 use Modules\SmartForm\App\Http\Controllers\IT\DeviceFormController;
@@ -106,9 +105,9 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/form-fuel', [FuelController::class, 'FormFuel'])->name('bss-form.log.form-fuel');
             Route::post('/create-fuel', [FuelController::class, 'CreateReqFuel'])->name('bss-form.log.create-req-fuel');
             Route::get('/edit-req-fuel', [FuelController::class, 'editReqFuel'])->name('bss-form.log.edit-req-fuel');
-            Route::post('/update-fuel/{id}', [FuelController::class, 'updateReqFuel'])->name('bss-form.log.update-req-fuel');
-            Route::get('/delete-fuel/{id}', [FuelController::class, 'DeleteReqFuel'])->name('bss-form.log.delete-fuel');
-            Route::get('/pdf-fuel/{id}', [FuelController::class, 'PdfReqFuel'])->name('bss-form.log.pdf-fuel');
+            Route::post('/update-fuel', [FuelController::class, 'updateReqFuel'])->name('bss-form.log.update-fuel');
+            Route::get('/delete-fuel', [FuelController::class, 'HapusReqFuel'])->name('bss-form.log.delete-fuel');
+            Route::get('/pdf-fuel', [FuelController::class, 'PdfReqFuel'])->name('bss-form.log.pdf-fuel');
             Route::get('/get-req-fuel-detail', [FuelController::class, 'FuelDetailById'])->name("bss-form.log.form-detail-by-id");
 
             // PENGELUARAN OIL, GREASE & COOLANT MENU
@@ -363,7 +362,12 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/form/export/{id}', [P3KController::class, 'ExportForm'])->name('she-p3k.export');
             Route::get('/form', [P3KController::class, 'AddForm'])->name('she-p3k.form');
             Route::post('/store', [P3KController::class, 'Store'])->name('she-p3k.submit');
-            Route::put('/form/{id}', [P3KController::class, 'Update'])->name('she-p3k.form.update');
+            Route::get('/form/edit/{id}', [P3KController::class, 'EditForm'])->name('she-p3k.edit');
+            Route::post('/update/{id}', [P3KController::class, 'Update'])->name('she-p3k.update');
+            Route::get('/approve/{id}/{role}', [P3KController::class, 'Approve'])->name('she-p3k.approve');
+            Route::get('/approve-all/{id}', [P3KController::class, 'ApproveAll'])->name('she-p3k.approve-all');
+            Route::post('/set-user-nik', [P3KController::class, 'SetUserNik'])->name('she-p3k.set-user-nik');
+            Route::delete('/delete/{id}', [P3KController::class, 'Delete'])->name('she-p3k.delete');
         });
 
         Route::prefix('she-air-minum')->group(function () {
@@ -392,6 +396,10 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('form/{id?}', [SheMessController::class, 'AddForm'])->name('she.mess.form');
             Route::post('store', [SheMessController::class, 'Store'])->name('she.mess.store');
             Route::put('form/{id}', [SheMessController::class, 'Update'])->name('she.mess.form.update');
+            Route::get('approve/{id}/{role}', [SheMessController::class, 'Approve'])->name('she.mess.approve');
+            Route::get('reject/{id}/{role}', [SheMessController::class, 'Reject'])->name('she.mess.reject');
+            Route::delete('delete', [SheMessController::class, 'Delete'])->name('she.mess.delete');
+            Route::get('edit/{id}', [SheMessController::class, 'EditForm'])->name('she.mess.form.edit');
         });
 
         Route::prefix('prod-coal')->group(function(){
@@ -400,9 +408,11 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('form', [CoalGettingController::class, 'AddForm'])->name('prod.coal.form');
             Route::get('form/edit/{id}', [CoalGettingController::class, 'EditForm'])->name('prod.coal.form.edit');
             Route::post('store', [CoalGettingController::class, 'Store'])->name('prod.coal.store');
-            Route::put('form/{id}', [CoalGettingController::class, 'Update'])->name('prod.coal.form.update');
+            Route::post('update', [CoalGettingController::class, 'Update'])->name('prod.coal.update');
             Route::post('delete', [CoalGettingController::class, 'Delete'])->name('prod.coal.delete');
+            Route::post('/update-status', [CoalGettingController::class, 'updateStatus'])->name('prod.coal.update-status');
         });
+
         Route::prefix('she-ergonomi')->group(function () {
             Route::get('dashboard', [ErgonomiController::class, 'Dashboard'])->name('she.ergonomi.dashboard');
             Route::get('form/export/{id}', [ErgonomiController::class, 'ExportForm'])->name('she.ergonomi.export');

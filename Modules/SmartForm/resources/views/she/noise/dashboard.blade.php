@@ -184,6 +184,18 @@
                                         <div class="d-flex px-2 py-1">
                                             <div class="d-flex flex-column justify-content-center">
                                                 <h6 class="mb-0 text-sm">{{ $record->doc_number }}</h6>
+                                                <!-- Debug info - remove after fixing -->
+                                                @if(isset($record->inspected_by_nik))
+                                                <small class="text-muted">NIK: {{ $record->inspected_by_nik }}</small>
+                                                @else
+                                                <small class="text-danger">inspected_by_nik not set</small>
+                                                @endif
+                                                @if(isset($user->userid))
+                                                <small class="text-muted">User: {{ $user->userid }}</small>
+                                                @else
+                                                <small class="text-danger">user->userid not set</small>
+                                                @endif
+                                                <!-- End debug info -->
                                             </div>
                                         </div>
                                     </td>
@@ -234,12 +246,12 @@
                                                 <i class="fas fa-times me-1"></i> Reject
                                             </button>
                                         @endif
-                                        @if($record->approval_status === 'reject' && trim($record->inspected_by_nik) === trim($user->userid))
+                                        @if($record->approval_status === 'reject' && isset($record->inspected_by_nik) && isset($user->userid) && trim($record->inspected_by_nik) === trim($user->userid))
                                             <a href="{{ route('she.noise.edit', ['id' => $record->id]) }}" class="btn btn-info btn-sm d-inline-flex align-items-center justify-content-center">
                                                 <i class="fas fa-edit me-1"></i> Edit
                                             </a> 
                                         @endif
-                                        @if(trim($record->inspected_by_nik) === trim($user->userid))
+                                        @if(isset($record->inspected_by_nik) && isset($user->userid) && trim($record->inspected_by_nik) === trim($user->userid))
                                         <button type="button" class="btn btn-danger btn-sm d-inline-flex align-items-center justify-content-center btn-delete" data-id="{{ $record->id }}">
                                                 <i class="fas fa-trash me-1"></i> Delete
                                             </button>  
