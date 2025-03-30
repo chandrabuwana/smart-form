@@ -409,6 +409,10 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('form/{id?}', [SheMessController::class, 'AddForm'])->name('she.mess.form');
             Route::post('store', [SheMessController::class, 'Store'])->name('she.mess.store');
             Route::put('form/{id}', [SheMessController::class, 'Update'])->name('she.mess.form.update');
+            Route::get('approve/{id}/{role}', [SheMessController::class, 'Approve'])->name('she.mess.approve');
+            Route::get('reject/{id}/{role}', [SheMessController::class, 'Reject'])->name('she.mess.reject');
+            Route::delete('delete', [SheMessController::class, 'Delete'])->name('she.mess.delete');
+            Route::get('edit/{id}', [SheMessController::class, 'EditForm'])->name('she.mess.form.edit');
         });
 
         Route::prefix('prod-coal')->group(function(){
@@ -468,11 +472,19 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::prefix('general-inspection')->name('general-inspection.')->group(function () {
                 // CMT
                 Route::get('cmt/{id}/print', [InspectionCmtController::class, 'print'])->name('cmt.print');
+                Route::get('cmt/dashboard', [InspectionCmtController::class, 'index'])->name('cmt.dashboard');
+                Route::post('/approve-cmt', [InspectionCmtController::class, 'Approve'])->name("cmt.approve");
+                Route::post('/reject-cmt', [InspectionCmtController::class, 'Reject'])->name("cmt.reject");
+                Route::post('/reset-cmt/{id}', [InspectionCmtController::class, 'Reset'])->name("cmt.reset");
                 Route::get('cmt/get-data', [InspectionCmtController::class, 'getData'])->name('cmt.get-data');
                 Route::resource('cmt', InspectionCmtController::class);
 
                 // Dongfeng
                 Route::get('dongfeng/{id}/print', [InspectionDongfengController::class, 'print'])->name('dongfeng.print');
+                Route::get('dongfeng/dashboard', [InspectionDongfengController::class, 'index'])->name('dongfeng.dashboard');
+                Route::post('/approve-dongfeng', [InspectionDongfengController::class, 'Approve'])->name("dongfeng.approve");
+                Route::post('/reject-dongfeng', [InspectionDongfengController::class, 'Reject'])->name("dongfeng.reject");
+                Route::post('/reset-dongfeng/{id}', [InspectionDongfengController::class, 'Reset'])->name("dongfeng.reset");
                 Route::get('dongfeng/get-data', [InspectionDongfengController::class, 'getData'])->name('dongfeng.get-data');
                 Route::resource('dongfeng', InspectionDongfengController::class);
             });

@@ -6,6 +6,19 @@
             border-width: 0 1px
         }
 
+        .ty {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .img-app {
+            width: 100px;
+            height: 40px;
+            align-items: center;
+        }
+
+
         .switch {
             position: relative;
             display: inline-block;
@@ -127,25 +140,22 @@
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                     <div class="bg-gradient-primary shadow-primary border-radius-lg">
                         <div class="d-flex justify-content-between align-items-center p-3">
-                            <h6 class="text-white text-capitalize my-auto">Edit General Inspection CMT</h6>
+                            <h6 class="text-white text-capitalize my-auto">Approval General Inspection CMT</h6>
 
                         </div>
                     </div>
                 </div>
                 <div class="card-body">
                     <div class="container">
-                        <form method="POST" id="formData"
-                            action="{{ route('bss-form.plant.general-inspection.cmt.update', $inspection['id']) }}">
+                        <form>
                             @csrf
-                            @method('PUT')
-
                             <div class="card-body border rounded">
                                 <h5>Informasi Unit</h5>
                                 <div class="row mt-4">
                                     <div class="col-12">
                                         <div class="input-group input-group-static">
                                             <label>Site</label>
-                                            <select name="site" class="form-control">
+                                            <select name="site" class="form-control" disabled>
                                                 @foreach ($sites as $site)
                                                     <option value="{{ $site }}"
                                                         {{ $site == $inspection['site'] ? 'selected' : '' }}>
@@ -158,7 +168,7 @@
                                     <div class="col-12 col-lg-4 mt-4">
                                         <div class="input-group input-group-static">
                                             <label>Model Unit</label>
-                                            <input type="text" name="model_unit" class="form-control"
+                                            <input type="text" name="model_unit" class="form-control" disabled
                                                 value="{{ old('model_unit', $inspection['model_unit']) }}">
                                         </div>
                                     </div>
@@ -166,14 +176,14 @@
                                         <div class="input-group input-group-static">
                                             <label>C/N</label>
                                             <input type="text" name="cn" class="form-control"
-                                                value="{{ old('cn', $inspection['cn']) }}">
+                                                value="{{ old('cn', $inspection['cn']) }}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-12 col-lg-4 mt-4">
                                         <div class="input-group input-group-static">
                                             <label>HM</label>
                                             <input type="text" name="hm" class="form-control"
-                                                value="{{ old('hm', $inspection['hm']) }}">
+                                                value="{{ old('hm', $inspection['hm']) }}" disabled>
                                         </div>
                                     </div>
                                 </div>
@@ -197,8 +207,7 @@
                                                     <i class="fa fa-circle-arrow-up fa-lg"></i>
                                                 </div>
                                             </a>
-                                            <div class="card-body pt-2 collapse show"
-                                                id="{{ 'category-' . $loop->index }}">
+                                            <div class="card-body pt-2 collapse show" id="{{ 'category-' . $loop->index }}">
                                                 <div class="accordion-body table-responsive">
                                                     <table class="table table-bordered">
                                                         <thead>
@@ -231,7 +240,7 @@
                                                                     <td>{{ $item['critical_point'] }}</td>
                                                                     <td>
                                                                         <div class="input-group input-group-static">
-                                                                            <select
+                                                                            <select disabled
                                                                                 name="inspection[{{ $category }}][{{ $item['activity'] }}][pre_inspect]"
                                                                                 class="form-control" role="button">
                                                                                 <option value=""
@@ -248,7 +257,7 @@
                                                                     </td>
                                                                     <td>
                                                                         <div class="input-group input-group-static">
-                                                                            <select
+                                                                            <select disabled
                                                                                 name="inspection[{{ $category }}][{{ $item['activity'] }}][final_inspect]"
                                                                                 class="form-control" role="button">
                                                                                 <option value=""
@@ -265,7 +274,7 @@
                                                                     </td>
                                                                     <td>
                                                                         <div class="input-group input-group-static">
-                                                                            <select
+                                                                            <select disabled
                                                                                 name="inspection[{{ $category }}][{{ $item['activity'] }}][delivery_inspect]"
                                                                                 class="form-control" role="button">
                                                                                 <option value=""
@@ -317,7 +326,7 @@
                                                             <td>{{ $category }}</td>
                                                             <td class="text-center align-middle">
                                                                 <label class="radio-container">
-                                                                    <input type="radio"
+                                                                    <input type="radio" disabled
                                                                         name="performance[{{ $category }}]"
                                                                         value="bagus"
                                                                         {{ old("performance.$category", $inspection['performance'][$category] ?? '') == 'bagus' ? 'checked' : '' }}>
@@ -326,7 +335,7 @@
                                                             </td>
                                                             <td class="text-center align-middle">
                                                                 <label class="radio-container">
-                                                                    <input type="radio"
+                                                                    <input type="radio" disabled
                                                                         name="performance[{{ $category }}]"
                                                                         value="cukup"
                                                                         {{ old("performance.$category", $inspection['performance'][$category] ?? '') == 'cukup' ? 'checked' : '' }}>
@@ -335,7 +344,7 @@
                                                             </td>
                                                             <td class="text-center align-middle">
                                                                 <label class="radio-container">
-                                                                    <input type="radio"
+                                                                    <input type="radio" disabled
                                                                         name="performance[{{ $category }}]"
                                                                         value="kurang"
                                                                         {{ old("performance.$category", $inspection['performance'][$category] ?? '') == 'kurang' ? 'checked' : '' }}>
@@ -344,6 +353,7 @@
                                                             </td>
                                                             <td>
                                                                 <input type="text" name="remark[{{ $category }}]"
+                                                                    disabled
                                                                     value="{{ old("remark.$category", $inspection['remark'][$category] ?? '') }}"
                                                                     class="input-remark"
                                                                     placeholder="Masukkan remark (opsional)">
@@ -360,46 +370,22 @@
                                 <div class="col-6 ">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="dibuat" class="ms-0">Dilakukan Oleh</label>
-                                        <select name="dilakukan1" id="dilakukan1" class="form-control" required>
-                                            <option disabled selected>-- Select User --</option>
-                                            @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nama }}"
-                                                    {{ old('dilakukan1', $inspection['dilakukan1'] ?? '') == $user->nama ? 'selected' : '' }}>
-                                                    {{ $user->nama }}</option>
-                                            @endforeach
-                                        </select>
+                                        <input type="text" name="dilakukan1" value="{{ $inspection['dilakukan1'] }}"
+                                            class="form-control" disabled required>
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="dibuat" class="ms-0">Dilakukan Oleh</label>
-                                        <select name="dilakukan2" id="dilakukan2" class="form-control" required>
-                                            <option disabled selected>-- Select User --</option>
-                                            @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nama }}"
-                                                    {{ old('dilakukan2', $inspection['dilakukan2'] ?? '') == $user->nama ? 'selected' : '' }}>
-                                                    {{ $user->nama }}</option>
-                                            @endforeach
-                                        </select>
+                                        <input type="text" name="dilakukan2" value="{{ $inspection['dilakukan2'] }}"
+                                            class="form-control" disabled required>
                                     </div>
                                 </div>
-                                <div class="col-6 mt-2">
-                                    <div class="input-group input-group-static mb-3">
-                                        <label for="diperiksa" class="ms-0">Diperiksa Oleh</label>
-                                        <select name="diperiksa" id="diperiksa" class="form-control" required>
-                                            <option disabled selected>-- Select User --</option>
-                                            @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nik }}"
-                                                    {{ old('diperiksa', $inspection['diperiksa'] ?? '') == $user->nik ? 'selected' : '' }}>
-                                                    {{ $user->nama }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
+
                                 <div class="col-6 mt-2">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="diketahui" class="ms-0">Diketahui Oleh</label>
-                                        <select name="diketahui" id="diketahui" class="form-control" required>
+                                        <select name="diketahui" id="diketahui" class="form-control" disabled required>
                                             <option disabled selected>-- Select User --</option>
                                             @foreach ($approvalList as $user)
                                                 <option value="{{ $user->nik }}"
@@ -409,10 +395,94 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div class="col-6 mt-2">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label for="diperiksa" class="ms-0">Diperiksa Oleh</label>
+                                        <select name="diperiksa" id="diperiksa" class="form-control" disabled required>
+                                            <option disabled selected>-- Select User --</option>
+                                            @foreach ($approvalList as $user)
+                                                <option value="{{ $user->nik }}"
+                                                    {{ old('diperiksa', $inspection['diperiksa'] ?? '') == $user->nik ? 'selected' : '' }}>
+                                                    {{ $user->nama }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="d-flex justify-content-end">
-                                <button type="submit" class="btn btn-primary mt-3">Update</button>
+
+                            <div class="row">
+                                @for ($i = 0; $i < 2; $i++)
+                                    @if ($i == 0)
+                                        @if ($status[$i] == 'Rejected')
+                                            <div class="col-6 ty">
+                                                <img src="{{ asset('img/rejected.png') }}" class="img-app"
+                                                    alt="">
+                                            </div>
+                                        @elseif ($status[$i] == 'Approved')
+                                            <div class="col-6 ty">
+                                                <img src="{{ asset('img/checked.png') }}" class="img-app"
+                                                    alt="">
+                                            </div>
+                                        @elseif ($status[$i] == 'Draft')
+                                            <div class="col-6 ty">
+
+                                            </div>
+                                        @endif
+                                    @else
+                                        @if ($status[$i] == 'Rejected')
+                                            <div class="col-6 ty">
+                                                <img src="{{ asset('img/rejected.png') }}" class="img-app"
+                                                    alt="">
+                                            </div>
+                                        @elseif ($status[$i] == 'Approved')
+                                            <div class="col-6 ty">
+                                                <img src="{{ asset('img/validated.png') }}" class="img-app"
+                                                    alt="">
+                                            </div>
+                                        @elseif ($status[$i] == 'Draft')
+                                            <div class="col-6 ty">
+
+                                            </div>
+                                        @endif
+                                    @endif
+                                @endfor
+
+                            </div>
+                            @php
+                                $statusJson = json_encode($status); // Konversi ke JSON string
+                            @endphp
+                            <div class="d-flex justify-content-end mt-3">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="form-actions">
+                                            @if ($nik == $inspection['diketahui'] || $nik == $inspection['diperiksa'])
+                                                <button type="button" class="btn btn-success btn-sm"
+                                                    onclick="approved('{{ $inspection['id'] }}', '{{ $statusJson }}', '{{ $nik }}')">
+                                                    <i class="fas fa-check"></i> Approve
+                                                </button>
+                                                <button type="button" class="btn btn-warning btn-sm"
+                                                    onclick="rejected('{{ $inspection['id'] }}', '{{ $statusJson }}', '{{ $nik }}')">
+                                                    <i class="fas fa-close"></i> Reject
+                                                </button>
+                                            @endif
+
+                                            @if (collect($status)->contains(fn($s) => $s === 'Rejected'))
+                                                @if ($nik == $inspection['creator'])
+                                                    <button type="button" class="btn btn-primary btn-sm"
+                                                        onclick="resetApproval('{{ $inspection['id'] }}')">
+                                                        <i class="fas fa-undo"></i> Reset
+                                                    </button>
+                                                @endif
+                                            @endif
+
+                                            <a href="{{ route('bss-form.plant.general-inspection.cmt.dashboard') }}"
+                                                class="btn btn-secondary btn-sm" id="btn-back">
+                                                Cancel</a>
+                                        </div>
+
+                                    </div>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -429,8 +499,6 @@
         $(document).ready(function() {
             $('#diperiksa').select2();
             $('#diketahui').select2();
-            $('#dilakukan1').select2();
-            $('#dilakukan2').select2();
         });
         document.addEventListener("DOMContentLoaded", function() {
             document.querySelectorAll(".toggle-switch").forEach(function(toggle) {
@@ -450,6 +518,150 @@
             });
         });
 
+        function rejected(id, status, nik) {
+            let date2 = nik == "{{ $inspection['diketahui'] }}";
+            let date3 = nik == "{{ $inspection['diperiksa'] }}";
+            axios.post('{{ route('bss-form.plant.general-inspection.cmt.reject') }}', {
+                    _token: "{{ csrf_token() }}",
+                    id: id,
+                    date2: date2,
+                    date3: date3,
+                    datesign2: "{{ $inspection['date_sign2'] }}",
+                    datesign3: "{{ $inspection['date_sign3'] }}",
+                    diketahui: nik == "{{ $inspection['diketahui'] }}" ? 'Rejected' : "{{ $status[0] }}",
+                    diperiksa: nik == "{{ $inspection['diperiksa'] }}" ? 'Rejected' : "{{ $status[1] }}",
+                })
+                .then(function(response) {
+                    console.log('Response:', response);
+                    if (response.data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: response.data.message
+                        }).then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Failed to reset the approval.'
+                        });
+                    }
+                })
+                .catch(error => {
+                    let errorMessage = 'Terjadi kesalahan pada sistem';
+                    console.log("Error respons:", error.response);
+
+                    if (error.response) {
+                        if (error.response.data.errors) {
+                            errorMessage = Object.values(error.response.data.errors).flat().join(
+                                '\n');
+                        } else if (error.response.data.message) {
+                            errorMessage = error.response.data.message;
+                        }
+                    }
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: errorMessage
+                    });
+                });
+        }
+
+        function approved(id, status, nik) {
+            let date2 = nik == "{{ $inspection['diketahui'] }}";
+            let date3 = nik == "{{ $inspection['diperiksa'] }}";
+
+            axios.post('{{ route('bss-form.plant.general-inspection.cmt.approve') }}', {
+                    _token: "{{ csrf_token() }}",
+                    id: id,
+                    date2: date2,
+                    date3: date3,
+                    datesign2: "{{ $inspection['date_sign2'] }}",
+                    datesign3: "{{ $inspection['date_sign3'] }}",
+                    diketahui: nik == "{{ $inspection['diketahui'] }}" ? 'Approved' : "{{ $status[0] }}",
+                    diperiksa: nik == "{{ $inspection['diperiksa'] }}" ? 'Approved' : "{{ $status[1] }}",
+                })
+                .then(function(response) {
+                    console.log('Response:', response);
+                    if (response.data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: response.data.message
+                        }).then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Failed to reset the approval.'
+                        });
+                    }
+                })
+                .catch(error => {
+                    let errorMessage = 'Terjadi kesalahan pada sistem';
+                    console.log("Error respons:", error.response);
+
+                    if (error.response) {
+                        if (error.response.data.errors) {
+                            errorMessage = Object.values(error.response.data.errors).flat().join(
+                                '\n');
+                        } else if (error.response.data.message) {
+                            errorMessage = error.response.data.message;
+                        }
+                    }
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: errorMessage
+                    });
+                });
+        }
+
+        function resetApproval(id) {
+            if (confirm('Are you sure you want to reset this Approval?')) {
+                axios.post('{{ route('bss-form.plant.general-inspection.cmt.reset', ['id' => 'ID']) }}'.replace('ID', id))
+                    .then(function(response) {
+                        console.log('Response:', response);
+                        if (response.data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: response.data.message
+                            }).then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Failed to reset the approval.'
+                            });
+                        }
+                    })
+                    .catch(function(error) {
+                        console.error('Error:', error);
+                        let errorMessage = 'Terjadi kesalahan pada sistem';
+                        if (error.response) {
+                            if (error.response.data.errors) {
+                                errorMessage = Object.values(error.response.data.errors).flat().join('\n');
+                            } else if (error.response.data.message) {
+                                errorMessage = error.response.data.message;
+                            }
+                        }
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: errorMessage
+                        });
+                    });
+            }
+        }
 
 
         $('#btn-inspection-act-accordion').on('click', function(e) {
@@ -462,38 +674,6 @@
                 $(this).text('Expand all');
                 $('#checklistAccordion .card-body').collapse('hide');
             }
-        });
-
-        $(document).ready(function() {
-            $('#formData').on('submit', async function(e) {
-                e.preventDefault();
-                try {
-                    let formData = new FormData(this)
-
-                    const response = await axios.post(
-                        "{{ route('bss-form.plant.general-inspection.cmt.update', $inspection['id']) }}",
-                        formData
-                    );
-
-                    await Swal.fire({
-                        icon: 'success',
-                        title: 'Berhasil!',
-                        text: 'Form General Inspection CMT berhasil diubah!',
-                    })
-
-                    window.location.href =
-                        `{{ route('bss-form.plant.general-inspection.cmt.index') }}`;
-
-                } catch (error) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error Occured',
-                        text: error.response.data.message,
-                        confirmButtonText: 'OK'
-                    });
-                }
-
-            });
         });
     </script>
 @endsection

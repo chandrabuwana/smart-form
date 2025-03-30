@@ -12,13 +12,26 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Modules\SmartForm\helpers\HrdHelper;
 
 class InspectionCmtController extends Controller
 {
     public function index()
     {
         try {
-            return view('smartform::plant.general-inspection.cmt.index');
+            $nik_session = request()->session()->get('user_id', '');
+            $statistics = ( object )[
+                'total_records' => DB::table( 'plant_general_inspection_cmt' )->count(),
+                'total_this_month' => DB::table( 'plant_general_inspection_cmt' )
+                ->whereMonth( 'created_at', now()->month )
+                ->whereYear( 'created_at', now()->year )
+                ->count(),
+                'model_unit' => DB::table( 'plant_general_inspection_cmt' )->distinct()->count( 'model_unit' ),
+
+            ];
+
+            $sites = ['PMSS', 'MAS', 'MME', 'BRAM', 'TAJ', 'AGM', 'MSJ', 'TDM', 'BSSR', 'MBLM', 'MBLH', 'others'];
+            return view('smartform::plant.general-inspection.cmt.index', ['sites'=>$sites, 'approvalList' => HrdHelper::getApprovalList(), 'session'=>$nik_session, 'statistics'=> $statistics]);
         } catch (Exception $e) {
             $errorMessages = env('APP_DEBUG') ? $e->getMessage() : 'Error Occurred';
             return redirect()->back()->with('error', $errorMessages);
@@ -29,25 +42,57 @@ class InspectionCmtController extends Controller
     {
         try {
             $search = $request->query('search');
-            $sort   = $request->query('sort', 'created_at'); 
+            $sort   = $request->query('sort', 'created_at');
             $order  = $request->query('order', 'desc');
 
-            $inspectionCmt = InspectionCmt::select('id', 'site', 'model_unit', 'cn', 'hm', 'created_at')
+            // Ambil filter tambahan dari request
+            $site       = $request->query('site');
+            $status  = $request->query('status');
+            $date       = $request->query('date');
+
+            $inspectionCmt = InspectionCmt::select('id', 'diperiksa','creator','diketahui','status', 'site', 'model_unit', 'cn', 'hm', 'created_at')
                 ->when($search, function ($query) use ($search) {
-                    $query->where('site', 'LIKE', "%$search%")
-                        ->orWhere('model_unit', 'LIKE', "%$search%")
-                        ->orWhere('cn', 'LIKE', "%$search%")
-                        ->orWhere('hm', 'LIKE', "%$search%")
-                        ->orWhere('created_at', 'LIKE', "%$search%");
+                    $query->where(function ($q) use ($search) {
+                        $q->where('site', 'LIKE', "%$search%")
+                            ->orWhere('model_unit', 'LIKE', "%$search%")
+                            ->orWhere('cn', 'LIKE', "%$search%")
+                            ->orWhere('hm', 'LIKE', "%$search%")
+                            ->orWhere('created_at', 'LIKE', "%$search%");
+                    });
+                })
+                ->when($site, function ($query) use ($site) {
+                    return $query->where('site', 'LIKE', "%$site%");
+                })
+                ->when($status, function ($query) use ($status) {
+                    return $query->where('status', 'LIKE', "%$status%");
+                })
+                ->when($date, function ($query) use ($date) {
+                    return $query->whereDate('created_at', $date);
                 })
                 ->orderBy($sort, $order)
                 ->paginate(10);
-            
             $inspectionCmt->getCollection()->transform(function ($inspection) {
+                $statuses = collect(json_decode($inspection->status, true));
+
+                if ($statuses->contains('Rejected')) {
+                    $status = 'Rejected';
+                } elseif ($statuses->contains('Draft')) {
+                    $status = 'Draft';
+                } else {
+                    $status = 'Approved';
+                }
+
+
+
+
                 return [
                     ...$inspection->toArray(),
                     'created_at' => Carbon::parse($inspection->created_at)->format('d M Y'),
+                    'status' =>$status,
+
+
                 ];
+
             });
 
             return response()->json([
@@ -57,38 +102,52 @@ class InspectionCmtController extends Controller
             ]);
         } catch (Exception $e) {
             $errorMessages = env('APP_DEBUG') ? $e->getMessage() : 'Error Occurred';
-            return redirect()->back()->with('error', $errorMessages);
+            return response()->json(['status' => false, 'message' => $errorMessages], 500);
         }
     }
+
 
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        $result['sites'] = ['PMSS', 'MAS', 'MME', 'BRAM', 'TAJ', 'AGM', 'MSJ', 'TDM', 'BSSR', 'MBLM', 'MBLH', 'others'];
+        $sites = ['PMSS', 'MAS', 'MME', 'BRAM', 'TAJ', 'AGM', 'MSJ', 'TDM', 'BSSR', 'MBLM', 'MBLH', 'others'];
 
         $json = file_get_contents(resource_path('data/general-inspection/cmt/activity-list.json'));
-        $result['activityChecklistJson'] = json_decode($json, true);
-        
-        $json = file_get_contents(resource_path('data/general-inspection/cmt/inspection-result.json'));
-        $result['inspectionResultJson'] = json_decode($json, true);
+        $activityChecklistJson = json_decode($json, true);
 
-        return view('smartform::plant.general-inspection.cmt.create', $result);
+        $json = file_get_contents(resource_path('data/general-inspection/cmt/inspection-result.json'));
+        $inspectionResultJson = json_decode($json, true);
+
+        return view('smartform::plant.general-inspection.cmt.create', [
+            'sites' => $sites,
+            'activityChecklistJson' => $activityChecklistJson,
+            'inspectionResultJson' => $inspectionResultJson,
+            'approvalList' => HrdHelper::getApprovalList()
+        ]);
+
     }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
+
     {
         try {
+
+
             DB::beginTransaction();
             $validator = Validator::make($request->all(), [
                 'site'        => 'required|string',
                 'model_unit'  => 'required|string',
                 'cn'          => 'required|string',
                 'hm'          => 'required|string',
+                'dilakukan1'  => 'required|string',
+                'dilakukan2'  => 'required|string',
+                'diperiksa'   => 'required|string',
+                'diketahui'   => 'required|string',
                 'inspection'  => 'array',
                 'performance' => 'array',
                 'remark'      => 'array'
@@ -101,12 +160,28 @@ class InspectionCmtController extends Controller
                 ], 422);
             }
 
+
             $inspectionCmt = InspectionCmt::create([
                 'site'       => $request->site,
                 'model_unit' => $request->model_unit,
                 'cn'         => $request->cn,
-                'hm'         => $request->hm
+                'hm'         => $request->hm,
+                'dilakukan1' => $request->dilakukan1,
+                'dilakukan2' => $request->dilakukan2,
+                'diperiksa'  => $request->diperiksa,
+                'diketahui'  => $request->diketahui,
+                'creator'    => $request->session()->get('user_id', ''),
+                'date_sign1' => Carbon::now(),
+                'date_sign2' => null,
+                'date_sign3' => null,
+                'status' => json_encode( array_values( [
+                    'Draft',
+                    'Draft'
+                ] ) ),
+                'created_at' => Carbon::now(),
+                 'updated_at' => Carbon::now()
             ]);
+
 
             if (!empty($request->inspection)) {
                 $activityData = [];
@@ -124,6 +199,7 @@ class InspectionCmtController extends Controller
                         ];
                     }
                 }
+
                 InspectionCmtActivity::insert($activityData);
             }
 
@@ -138,6 +214,7 @@ class InspectionCmtController extends Controller
                         'remark'            => $item,
                     ];
                 }
+
                 InspectionCmtResult::insert($resultData);
             }
 
@@ -159,30 +236,23 @@ class InspectionCmtController extends Controller
     /**
      * Show the specified resource.
      */
-    public function show(InspectionCmt $cmt)
+    public function show(InspectionCmt $cmt, Request $request)
     {
-        return view('inspection_cmt.show', compact('cmt'));
-    }
+        $nik_session = $request->session()->get( 'user_id', '' );
+        $sites = ['PMSS', 'MAS', 'MME', 'BRAM', 'TAJ', 'AGM', 'MSJ', 'TDM', 'BSSR', 'MBLM', 'MBLH', 'others'];
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(InspectionCmt $cmt)
-    {
-        $result['sites'] = ['PMSS', 'MAS', 'MME', 'BRAM', 'TAJ', 'AGM', 'MSJ', 'TDM', 'BSSR', 'MBLM', 'MBLH', 'others'];
-    
         $json = file_get_contents(resource_path('data/general-inspection/cmt/activity-list.json'));
-        $result['activityChecklistJson'] = json_decode($json, true);
-        
+        $activityChecklistJson = json_decode($json, true);
+
         $json = file_get_contents(resource_path('data/general-inspection/cmt/inspection-result.json'));
-        $result['inspectionResultJson'] = json_decode($json, true);
-        
+        $inspectionResultJson = json_decode($json, true);
+
         $inspectionData = [];
 
         foreach ($cmt->inspectionActivity as $activity) {
             $category = $activity->category;
             $activityName = $activity->activity;
-    
+
             $inspectionData[$category][$activityName] = [
                 'pre_inspect' => $activity->pre_inspect,
                 'final_inspect' => $activity->final_inspect,
@@ -202,15 +272,85 @@ class InspectionCmtController extends Controller
             $remarkData[$component] = $remark;
         }
 
-        $result['inspection'] = [
+        $inspection = [
             ...$cmt->toArray(),
             'activity'    => $inspectionData,
             'performance' => $inspectionResultData,
             'remark'      => $remarkData
         ];
 
-        return view('smartform::plant.general-inspection.cmt.edit', $result);
-    }    
+
+        $status = json_decode($cmt->status, true);
+
+        return view('smartform::plant.general-inspection.cmt.show', [
+            'activityChecklistJson' => $activityChecklistJson,
+            'inspectionResultJson' => $inspectionResultJson,
+            'inspection' => $inspection,
+            'sites' => $sites,
+            'nik'=> $nik_session,
+            'status' => $status,
+            'approvalList' => HrdHelper::getApprovalList()
+        ]);
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(InspectionCmt $cmt)
+    {
+        $sites = ['PMSS', 'MAS', 'MME', 'BRAM', 'TAJ', 'AGM', 'MSJ', 'TDM', 'BSSR', 'MBLM', 'MBLH', 'others'];
+
+        $json = file_get_contents(resource_path('data/general-inspection/cmt/activity-list.json'));
+        $activityChecklistJson = json_decode($json, true);
+
+        $json = file_get_contents(resource_path('data/general-inspection/cmt/inspection-result.json'));
+        $inspectionResultJson = json_decode($json, true);
+
+        $inspectionData = [];
+
+        foreach ($cmt->inspectionActivity as $activity) {
+            $category = $activity->category;
+            $activityName = $activity->activity;
+
+            $inspectionData[$category][$activityName] = [
+                'pre_inspect' => $activity->pre_inspect,
+                'final_inspect' => $activity->final_inspect,
+                'delivery_inspect' => $activity->delivery_inspect,
+            ];
+        }
+
+        $inspectionResultData = [];
+        $remarkData       = [];
+        foreach ($cmt->inspectionResult as $inspectionResult) {
+            $component   = $inspectionResult->component;
+            $performance = $inspectionResult->performance;
+            $remark      = $inspectionResult->remark;
+
+            $inspectionResultData[$component] = $performance;
+
+            $remarkData[$component] = $remark;
+        }
+
+
+        $inspection = [
+            ...$cmt->toArray(),
+            'activity'    => $inspectionData,
+            'performance' => $inspectionResultData,
+            'remark'      => $remarkData
+        ];
+
+
+
+
+
+        return view('smartform::plant.general-inspection.cmt.edit', [
+            'activityChecklistJson' => $activityChecklistJson,
+            'inspectionResultJson' => $inspectionResultJson,
+            'inspection' => $inspection,
+            'sites' => $sites,
+            'approvalList' => HrdHelper::getApprovalList()
+        ]);
+    }
 
     /**
      * Update the specified resource in storage.
@@ -242,10 +382,14 @@ class InspectionCmtController extends Controller
 
             // Update the main inspection details
             $inspectionCmt->update([
-                'site'       => $request->site,
+               'site'       => $request->site,
                 'model_unit' => $request->model_unit,
                 'cn'         => $request->cn,
-                'hm'         => $request->hm
+                'hm'         => $request->hm,
+                'dilakukan1' => $request->dilakukan1,
+                'dilakukan2' => $request->dilakukan2,
+                'diperiksa'  => $request->diperiksa,
+                'diketahui'  => $request->diketahui,
             ]);
 
             // Update Inspection Activities
@@ -306,6 +450,94 @@ class InspectionCmtController extends Controller
             ], 500);
         }
     }
+    public function Approve( Request $request ) {
+
+        if($request->date2 == true){
+          $date2 = Carbon::now();
+        }else{
+            $date2 = $request->datesign2;
+        }
+        if($request->date3 == true){
+          $date3 = Carbon::now();
+        }else{
+            $date3 = $request->datesign3;
+
+        }
+
+        $data = [
+            'status' => json_encode( array_values( [
+                $request->diketahui,
+                $request->diperiksa,
+            ] ) ),
+            'date_sign2' => $date2,
+            'date_sign3' =>$date3,
+            'updated_at' => Carbon::now()
+        ];
+
+        DB::table( 'plant_general_inspection_cmt' )
+        ->where( 'id', $request->id )
+        ->update( $data );
+
+        return response()->json( [
+            'success' => true,
+            'message' => 'Data berhasil di Approve'
+        ] );
+
+    }
+    public function Reset( $id ) {
+
+        $data = [
+            'status' => json_encode( array_values( [
+              'Draft',
+              'Draft'
+            ] ) ),
+            'date_sign2' => null,
+            'date_sign3' => null,
+            'updated_at' => Carbon::now()
+        ];
+
+        DB::table( 'plant_general_inspection_cmt' )
+        ->where( 'id', $id )
+        ->update( $data );
+
+        return response()->json( [
+            'success' => true,
+            'message' => 'Data berhasil di Reset'
+        ] );
+
+    }
+
+    public function Reject( Request $request ) {
+        if($request->date2 == true){
+            $date2 = Carbon::now();
+          }else{
+              $date2 = $request->datesign2;
+          }
+          if($request->date3 == true){
+            $date3 = Carbon::now();
+          }else{
+              $date3 = $request->datesign3;
+
+          }
+        $data = [
+            'status' => json_encode( array_values( [
+                $request->diketahui,
+                $request->diperiksa,
+            ] ) ),
+            'date_sign2' => $date2,
+            'date_sign3' => $date3,
+            'updated_at' => Carbon::now()
+        ];
+
+        DB::table( 'plant_general_inspection_cmt' )
+        ->where( 'id', $request->id )
+        ->update( $data );
+
+        return response()->json( [
+            'success' => true,
+            'message' => 'Data berhasil di Reject'
+        ] );
+    }
 
     /**
      * Remove the specified resource from storage.
@@ -346,7 +578,7 @@ class InspectionCmtController extends Controller
         foreach ($cmt->inspectionActivity as $activity) {
             $category = $activity->category;
             $activityName = $activity->activity;
-    
+
             $inspectionData[$category][$activityName] = [
                 'pre_inspect' => $activity->pre_inspect,
                 'final_inspect' => $activity->final_inspect,
@@ -372,10 +604,10 @@ class InspectionCmtController extends Controller
             'performance' => $inspectionResultData,
             'remark'      => $remarkData
         ];
+        $result['approvalList'] = HrdHelper::getApprovalList();
 
 
-
-        return view('smartform::plant.general-inspection.cmt.print-template.index', $result);
+        return view('smartform::plant.general-inspection.cmt.print-template.index', $result  );
     }
 
 }
