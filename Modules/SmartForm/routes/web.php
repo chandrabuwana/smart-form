@@ -468,6 +468,10 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
 
                 // Dongfeng
                 Route::get('dongfeng/{id}/print', [InspectionDongfengController::class, 'print'])->name('dongfeng.print');
+                Route::get('dongfeng/dashboard', [InspectionDongfengController::class, 'index'])->name('dongfeng.dashboard');
+                Route::post('/approve-dongfeng', [InspectionDongfengController::class, 'Approve'])->name("dongfeng.approve");
+                Route::post('/reject-dongfeng', [InspectionDongfengController::class, 'Reject'])->name("dongfeng.reject");
+                Route::post('/reset-dongfeng/{id}', [InspectionDongfengController::class, 'Reset'])->name("dongfeng.reset");
                 Route::get('dongfeng/get-data', [InspectionDongfengController::class, 'getData'])->name('dongfeng.get-data');
                 Route::resource('dongfeng', InspectionDongfengController::class);
             });
