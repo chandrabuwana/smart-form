@@ -376,11 +376,6 @@
                                                             <td>
                                                                 <textarea class="form-control" name="eng_remarks"></textarea>
                                                             </td>
-                                                            {{-- @if ($index === 0)
-                                                                <td rowspan="13">
-                                                                    <textarea class="form-control" rows="30" name="eng_remarks"></textarea>
-                                                                </td>
-                                                            @endif --}}
                                                         </tr>
                                                         @php
                                                             $index++;
@@ -402,7 +397,7 @@
                                         <select name="checked" id="dibuat_oleh" class="form-control" required>
                                             <option disabled selected>-- Select Creator --</option>
                                             @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nama }}">{{ $user->nama }}</option>
+                                                <option value="{{ $user->nik }}">{{ $user->nama }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -413,7 +408,7 @@
                                         <select name="validated" id="diperiksa" class="form-control" required>
                                             <option disabled selected>-- Select Approval --</option>
                                             @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nama }}">{{ $user->nama }}</option>
+                                                <option value="{{ $user->nik }}">{{ $user->nama }}</option>
                                             @endforeach
                                         </select>
                                     </div>

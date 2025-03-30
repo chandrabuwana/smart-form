@@ -561,6 +561,13 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/add', [PpmShantuiDH24Controller::class, 'Add'])->name('form-create-dh24');
             Route::post('/store', [PpmShantuiDH24Controller::class, 'Store'])->name('store-dh24');
             Route::get('/export/{id}', [PpmShantuiDH24Controller::class, 'ExportPDF'])->name('export-pdf-dh24');
+            Route::delete('/delete/{id}', [PpmShantuiDH24Controller::class, 'Delete'])->name('delete-dh24');
+            Route::get('/show/{id}', [PpmShantuiDH24Controller::class, 'show'])->name('show-dh24');
+            Route::get('/detail/{id}', [PpmShantuiDH24Controller::class, 'detail'])->name('detail-dh24');
+            Route::post('/approve-dh24', [PpmShantuiDH24Controller::class, 'Approve'])->name("plant.dh24.approve");
+            Route::post('/reject-dh24', [PpmShantuiDH24Controller::class, 'Reject'])->name("plant.dh24.reject");
+            Route::post('/reset-dh24/{id}', [PpmShantuiDH24Controller::class, 'Reset'])->name("plant.dh24.reset");
+            Route::post('/update',[PpmShantuiDH24Controller::class, 'Update'])->name('plant.dh24.update');
         });
 
         Route::prefix('ppm-xe1250')->group(function(){
