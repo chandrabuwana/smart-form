@@ -449,6 +449,10 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::prefix('general-inspection')->name('general-inspection.')->group(function () {
                 // CMT
                 Route::get('cmt/{id}/print', [InspectionCmtController::class, 'print'])->name('cmt.print');
+                Route::get('cmt/dashboard', [InspectionCmtController::class, 'index'])->name('cmt.dashboard');
+                Route::post('/approve-cmt', [InspectionCmtController::class, 'Approve'])->name("cmt.approve");
+                Route::post('/reject-cmt', [InspectionCmtController::class, 'Reject'])->name("cmt.reject");
+                Route::post('/reset-cmt/{id}', [InspectionCmtController::class, 'Reset'])->name("cmt.reset");
                 Route::get('cmt/get-data', [InspectionCmtController::class, 'getData'])->name('cmt.get-data');
                 Route::resource('cmt', InspectionCmtController::class);
 
