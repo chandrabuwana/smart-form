@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Modules\SmartForm\helpers\HrdHelper;
+use Modules\SmartForm\helpers\Status;
 
 class PengeluaranOilController extends Controller {
 
@@ -123,32 +124,81 @@ class PengeluaranOilController extends Controller {
 
     public function GetListPengeluaranOli(Request $request) {
         $TABLE_PENGELUARAN_OLI = "FM_LOG_034_PENGELUARAN_OLI";
+        $TABLE_KARYAWAN = "HRD.dbo.TKaryawan";
         $response = array(
             'message' => '',
             'isSuccess' => false
         );
-
-        $sort = $request->query('sort', 'id'); // Default sort by id
-        $order = $request->query('order', 'desc'); // Default order is ascending
-        $offset = $request->query('offset', 0); // Default offset
-        $limit = $request->query('limit', null); // Default limit
-        $filter = $request->query('filter', null); // Default limit
+    
         try {
-            $master = DB::table($TABLE_PENGELUARAN_OLI)
-                ->select('id', 'no_dok', 'job_site as site', 'dilaporkan_oleh','no_lube_station as lube');
+            // Get pagination parameters
+            $page = $request->query('offset', 0) / $request->query('limit', 10) + 1;
+            $perPage = $request->query('limit', 10);
+            $sort = $request->query('sort', 'id');
+            $order = $request->query('order', 'desc');
             
-            $master->orderBy($sort, $order);
-            $jml = $master->count();            
-            $document = $master->get();
-
+            // Get filters from request
+            $filters = $request->query('filters', []);
+            $search = $request->query('search', '');
+    
+            $query = DB::table($TABLE_PENGELUARAN_OLI)
+                ->select(
+                    $TABLE_PENGELUARAN_OLI.'.id', 
+                    $TABLE_PENGELUARAN_OLI.'.no_dok', 
+                    $TABLE_PENGELUARAN_OLI.'.job_site as site', 
+                    $TABLE_PENGELUARAN_OLI.'.no_lube_station as lube',
+                    $TABLE_PENGELUARAN_OLI.'.status_req',
+                    $TABLE_PENGELUARAN_OLI.'.dilaporkan_oleh',
+                    DB::raw('(SELECT Nama FROM '.$TABLE_KARYAWAN.' WHERE NIK = '.$TABLE_PENGELUARAN_OLI.'.dilaporkan_oleh) as reported_by_name'),
+                    $TABLE_PENGELUARAN_OLI.'.created_at',
+                    DB::raw('(SELECT Nama FROM '.$TABLE_KARYAWAN.' WHERE NIK = '.$TABLE_PENGELUARAN_OLI.'.diketahui_oleh) as approval_by'),
+                    $TABLE_PENGELUARAN_OLI.'.updated_at'
+                );
+    
+            // Apply filters
+            foreach ($filters as $field => $value) {
+                if ($value) {
+                    if ($field === 'dilaporkan_oleh') {
+                        $findUser = DB::connection('sqlsrv2')->table($TABLE_KARYAWAN)
+                            ->where('Nama', 'like', '%' . $value . '%')
+                            ->first();
+                        
+                        if ($findUser) {    
+                            $query->where($TABLE_PENGELUARAN_OLI.'.dilaporkan_oleh', $findUser->NIK);
+                        } else {
+                            $query->where($TABLE_PENGELUARAN_OLI.'.dilaporkan_oleh', null);
+                        }
+                    } else {
+                        $query->where($TABLE_PENGELUARAN_OLI.'.'.$field, 'like', '%' . $value . '%');
+                    }
+                }
+            }
+    
+            // Apply search
+            if ($search) {
+                $query->where(function($q) use ($search, $TABLE_PENGELUARAN_OLI, $TABLE_KARYAWAN) {
+                    $q->where($TABLE_PENGELUARAN_OLI.'.no_dok', 'like', '%' . $search . '%')
+                      ->orWhere($TABLE_PENGELUARAN_OLI.'.job_site', 'like', '%' . $search . '%')
+                      ->orWhere($TABLE_PENGELUARAN_OLI.'.no_lube_station', 'like', '%' . $search . '%')
+                      ->orWhere(DB::raw('(SELECT Nama FROM '.$TABLE_KARYAWAN.' WHERE NIK = '.$TABLE_PENGELUARAN_OLI.'.dilaporkan_oleh)'), 'like', '%' . $search . '%');
+                });
+            }
+    
+            // Get total count before pagination
+            $total = $query->count();
+    
+            // Apply sorting and pagination
+            $documents = $query->orderBy($sort, $order)
+                              ->paginate($perPage, ['*'], 'page', $page);
+    
             $response['message'] = "Ok";
             $response['isSuccess'] = true;
             $response['data'] = [
-                'total' => $jml,
-                'totalNotFiltered' => $jml,
-                'rows' => $document
+                'total' => $total,
+                'totalNotFiltered' => $total,
+                'rows' => $documents->items()
             ];
-
+    
         } catch (Exception $ex) {
             Log::error($ex->getMessage());
             Log::error($ex->getTraceAsString());
@@ -156,7 +206,7 @@ class PengeluaranOilController extends Controller {
             $response['message'] = $ex->getMessage();
             $response['isSuccess'] = false;
         }
-
+    
         return response()->json($response);
     }
 
@@ -181,23 +231,24 @@ class PengeluaranOilController extends Controller {
             'message' => "",
             'isSuccess' => false
         );
+
         $tgl = now()->toDateTimeString();
         $requested_by = $req->session()->get('user_id');
         $data = $req->input();
         
         $data_insert = [
-            'dilaporkan_oleh' => $requested_by,
-            'job_site' => $data['jobSite'],
-            // 'no_dok' => $data['noDoc'],
-            'no_dok' => "BSS-FRM-LOG-034",
+            'no_dok' => $data['noDoc'],
             'revisi' => "1",
-            // 'tanggal' => $data['tglDoc'],
-            'tanggal' => "7 Agustus 2024",
+            'created_at' => $data['tglDoc'],
             'halaman' => "1 dari 1",
+            'job_site' => $data['jobSite'],
             'no_lube_station' => $data['lube'],
             'shift' => $data['shift'],
-            'diketahui_oleh' => $data['foreman']
+            'dilaporkan_oleh' => $requested_by,
+            'diketahui_oleh' => $data['foreman'],
+            'status_req' => STATUS::NEED_APPROVED,
         ];
+
         $spliited_no_doc = explode("/", $data_insert['no_dok']);
         $data_item = json_decode($data['item']);
         

@@ -219,7 +219,7 @@
                                         <label>Pic / Nama</label>
                                         <select class="form-control" id="iPic" name="iPic">
                                             @forelse($users as $user)
-                                                <option value="{{ $user->NIK ?? '' }}">
+                                                <option value="{{ $user->nama ?? '' }}">
                                                     {{ $user->nama ?? 'Nama tidak tersedia' }}
                                                 </option>
                                             @empty
@@ -261,6 +261,121 @@
                             </table>
                         </div>
                     </form>
+
+                    <!-- Edit Item Modal -->
+                    <div class="modal fade" id="editItemModal" tabindex="-1" aria-labelledby="editItemModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editItemModalLabel">Edit Item</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="editItemForm">
+                                        <input type="hidden" id="editIndex">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="input-group input-group-static mb-4">
+                                                    <label>Unit</label>
+                                                    <input type="text" class="form-control" id="editUnit" name="editUnit">
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="input-group input-group-static mb-4">
+                                                    <label>Time</label>
+                                                    <input type="time" class="form-control" id="editTime" name="editTime">
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="input-group input-group-static mb-4">
+                                                    <label>HM</label>
+                                                    <input type="text" class="form-control" id="editHm" name="editHm">
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="input-group input-group-static mb-4">
+                                                    <label>Jenis</label>
+                                                    <select class="form-control" id="editJenis" name="editJenis">
+                                                        @forelse($jenis as $code => $value)
+                                                            <option value="{{ $code }}">{{ $value }}</option>
+                                                        @empty
+                                                            <option>Data Jenis tidak ditemukan</option>
+                                                        @endforelse
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="input-group input-group-static mb-4">
+                                                    <label>Merk</label>
+                                                    <select class="form-control" id="editMerk" name="editMerk">
+                                                        @forelse($merks as $code => $value)
+                                                            <option value="{{ $code }}">{{ $value }}</option>
+                                                        @empty
+                                                            <option>Data Merk tidak ditemukan</option>
+                                                        @endforelse
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="input-group input-group-static mb-4">
+                                                    <label>Awal</label>
+                                                    <input type="number" class="form-control" id="editAwal" name="editAwal">
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="input-group input-group-static mb-4">
+                                                    <label>Akhir</label>
+                                                    <input type="number" class="form-control" id="editAkhir" name="editAkhir">
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="input-group input-group-static mb-4">
+                                                    <label>Component</label>
+                                                    <select class="form-control" id="editCompo" name="editCompo">
+                                                        @forelse($components as $code => $value)
+                                                            <option value="{{ $code }}">{{ $value }}</option>
+                                                        @empty
+                                                            <option>Data Component tidak ditemukan</option>
+                                                        @endforelse
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="input-group input-group-static mb-4">
+                                                    <label>Remark</label>
+                                                    <select class="form-control" id="editRemark" name="editRemark">
+                                                        @forelse($remarks as $code => $value)
+                                                            <option value="{{ $code }}">{{ $value }}</option>
+                                                        @empty
+                                                            <option>Data Remark tidak ditemukan</option>
+                                                        @endforelse
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="input-group input-group-static mb-4">
+                                                    <label>Pic / Nama</label>
+                                                    <select class="form-control" id="editPic" name="editPic">
+                                                        @forelse($users as $user)
+                                                            <option value="{{ $user->nama ?? '' }}">
+                                                                {{ $user->nama ?? 'Nama tidak tersedia' }}
+                                                            </option>
+                                                        @empty
+                                                            <option>Data karyawan tidak ditemukan</option>
+                                                        @endforelse
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary" id="saveEditItem">Save changes</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="card-footer">
                         <div class="d-flex align-items-center">
@@ -384,6 +499,7 @@
 
         function actionFormatter(value, row, index) {
             return `
+                <a class="btn btn-warning btn-sm edit-item" data-index="${index}">Edit</a>
                 <a class="btn btn-danger btn-sm" onclick="deleteRow(${index})">Delete</a>
             `;
         }
@@ -452,6 +568,98 @@
 
             dataPengeluaranOli.foreman = iForeman.val()
             dataPengeluaranOli.lube = iLube.val()
+
+            // Edit item functionality
+            $(document).on('click', '.edit-item', function() {
+                var index = $(this).data('index');
+                var rowData = $table.bootstrapTable('getData')[index];
+
+                // Populate the modal with row data
+                $('#editIndex').val(index);
+                $('#editUnit').val(rowData.unit);
+                $('#editTime').val(rowData.time);
+                $('#editHm').val(rowData.hm);
+                $('#editJenis').val(rowData.jenis);
+                $('#editMerk').val(rowData.merk);
+                $('#editAwal').val(rowData.awal);
+                $('#editAkhir').val(rowData.akhir);
+                $('#editCompo').val(rowData.compo);
+                $('#editRemark').val(rowData.remark);
+                $('#editPic').val(rowData.pic);
+                
+                // Show the modal
+                var editModal = new bootstrap.Modal(document.getElementById('editItemModal'));
+                editModal.show();
+            });
+
+            // Function to validate edit form
+            function validateEditForm() {
+                let isValid = true;
+                const requiredFields = [
+                    'editUnit', 'editTime', 'editHm', 'editJenis', 'editMerk',
+                    'editAwal', 'editAkhir', 'editCompo', 'editRemark', 'editPic'
+                ];
+
+                // Clear previous validation errors
+                $('#editItemForm').find('.is-invalid').removeClass('is-invalid');
+                $('#editItemForm').find('.invalid-feedback').remove();
+
+                // Validate each required field
+                requiredFields.forEach(fieldId => {
+                    const field = $(`#${fieldId}`);
+                    if (!field.val()) {
+                        field.addClass('is-invalid');
+                        field.after(`<div class="invalid-feedback">Tidak boleh kosong</div>`);
+                        isValid = false;
+                    }
+                });
+
+                // Validate awal and akhir
+                const awal = parseFloat($('#editAwal').val()) || 0;
+                const akhir = parseFloat($('#editAkhir').val()) || 0;
+                
+                if (awal >= akhir) {
+                    $('#editAwal').addClass('is-invalid');
+                    $('#editAkhir').addClass('is-invalid');
+                    $('#editAwal').after(`<div class="invalid-feedback">Awal harus lebih kecil dari Akhir</div>`);
+                    $('#editAkhir').after(`<div class="invalid-feedback">Akhir harus lebih besar dari Awal</div>`);
+                    isValid = false;
+                }
+
+                return isValid;
+            }
+
+            // Save edited item
+            $('#saveEditItem').click(function() {
+                if (!validateEditForm()) {
+                    return; // Don't proceed if validation fails
+                }
+
+                var index = $('#editIndex').val();
+                var updatedRow = {
+                    unit: $('#editUnit').val(),
+                    time: $('#editTime').val(),
+                    hm: $('#editHm').val(),
+                    jenis: $('#editJenis').val(),
+                    merk: $('#editMerk').val(),
+                    awal: $('#editAwal').val(),
+                    akhir: $('#editAkhir').val(),
+                    qty: $('#editAkhir').val() - $('#editAwal').val(),
+                    compo: $('#editCompo').val(),
+                    remark: $('#editRemark').val(),
+                    pic: $('#editPic').val()
+                };
+                
+                // Update the table row
+                $table.bootstrapTable('updateRow', {
+                    index: index,
+                    row: updatedRow
+                });
+                
+                // Close the modal
+                var editModal = bootstrap.Modal.getInstance(document.getElementById('editItemModal'));
+                editModal.hide();
+            });
 
             iAkhir.change(function(e) {
                 totalQty.text((iAkhir.val()) - (iAwal.val() ))
@@ -558,51 +766,42 @@
 
             // Update the validateForm function
             function validateForm() {
-                let isValid = true;
+                var errorValidate = []
                 
-                // Clear previous error states
-                $('.is-invalid').removeClass('is-invalid');
-                $('.invalid-feedback').remove();
-                
-                // Validate Foreman
-                if(iForeman.val() == "") {
-                    iForeman.addClass('is-invalid');
-                    iForeman.after('<div class="invalid-feedback">Foreman/Spv harus dipilih</div>');
-                    isValid = false;
+                if(iForeman.val() == ""){
+                    errorValidate.push({
+                        field: "Kolom Foreman",
+                        message: "Harus dipilih"
+                    })
                 }
-                
-                // Validate Lube
-                if(iLube.val() == "") {
-                    iLube.addClass('is-invalid');
-                    iLube.after('<div class="invalid-feedback">No. Lube Station tidak boleh kosong</div>');
-                    isValid = false;
+                if(iLube.val() == ""){
+                    errorValidate.push({
+                        field: "Kolom Lube",
+                        message: "Harus diisi"
+                    })
                 }
-                
-                // Validate Shift
-                if(iShift.val() == "") {
-                    iShift.addClass('is-invalid');
-                    iShift.after('<div class="invalid-feedback">Shift harus dipilih</div>');
-                    isValid = false;
+                if(iShift.val() == ""){
+                    errorValidate.push({
+                        field: "Kolom Shift",
+                        message: "Harus dipilih"
+                    })
                 }
-                
-                // Validate Job Site
-                if(iJobSite.val() == "") {
-                    iJobSite.addClass('is-invalid');
-                    iJobSite.after('<div class="invalid-feedback">Site harus dipilih</div>');
-                    isValid = false;
+
+                if(iJobSite.val() == ""){
+                    errorValidate.push({
+                        field: "Site",
+                        message: "Harus dipilih"
+                    })
                 }
-                
-                // Validate at least one item
+
                 if($table.bootstrapTable('getData').length < 1) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Gagal!',
-                        text: 'Minimal harus ada 1 item',
-                    });
-                    isValid = false;
+                    errorValidate.push({
+                        field: "Item",
+                        message: "minimal harus ada 1"
+                    })
                 }
-                
-                return isValid;
+
+                return errorValidate
             }
 
             $buttonTambah.click(function (e) {
@@ -625,48 +824,21 @@
                     });
                     
                     // Clear form after successful addition
-                    // iUnit.val('');
-                    // iTime.val('');
-                    // iHm.val('');
-                    // iJenis.val('');
-                    // iMerk.val('');
-                    // iAwal.val('');
-                    // iAkhir.val('');
-                    // iCompo.val('');
-                    // iRemark.val('');
-                    // iPic.val('');
-                    // totalQty.text('-');
+                    iUnit.val('');
+                    iTime.val('');
+                    iHm.val('');
+                    iJenis.val('');
+                    iMerk.val('');
+                    iAwal.val('');
+                    iAkhir.val('');
+                    iCompo.val('');
+                    iRemark.val('');
+                    iPic.val('');
+                    totalQty.text('-');
                     
                     $table.bootstrapTable('scrollTo', 'bottom');
                 }
                 
-                // var msg = "";
-                // if(errorValidate.length > 0) {
-                //     for (var listErr of errorValidate) {
-                //         msg = msg + "<p class='m-0'>" + listErr.field + " " + listErr.message +  "</p>"
-                //     }
-                //     Swal.fire({
-                //         icon: 'error',
-                //         title: 'Gagal!',
-                //         html: msg,
-                //     }).then((result) => {
-                //     })
-                // } else {
-                //     $table.bootstrapTable('append', {
-                //         unit: iUnit.val(),
-                //         time: iTime.val(),
-                //         hm: iHm.val(),
-                //         jenis: iJenis.val(),
-                //         merk: iMerk.val(),
-                //         awal: iAwal.val(),
-                //         akhir: iAkhir.val(),
-                //         qty: totalQty.text(),
-                //         compo: iCompo.val(),
-                //         remark: iRemark.val(),
-                //         pic: iPic.val()
-                //     })
-                //     $table.bootstrapTable('scrollTo', 'bottom')
-                // }
             })
 
             btnSubmitPengeluaranOli.click(function(e) {
@@ -702,7 +874,7 @@
                             formData.append(key, dataReq[key])
                         }
                     }
-                    console.log(dataReq)
+                    showLoading();
                     axios.post('/bss-form/log/add-pengeluaran-oli', formData, {
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),

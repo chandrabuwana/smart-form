@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Modules\SmartForm\helpers\HrdHelper;
+use Modules\SmartForm\helpers\Status;
 
 class RequestMasterController extends Controller {
 
@@ -215,62 +216,6 @@ class RequestMasterController extends Controller {
         return view('SmartForm::LOG/request-master/dashboard-request-master');
     }
 
-    // public function GetListRequestMaster(Request $request) {
-    //     $TABLE_REQUEST_MASTER = "FM_LOG_002_REQUESTER_MASTER";
-    //     $response = array(
-    //         'message' => '',
-    //         'isSuccess' => false
-    //     );
-
-    //     $sort = $request->query('sort', 'id'); // Default sort by id
-    //     $order = $request->query('order', 'desc'); // Default order is desc
-    //     $offset = $request->query('offset', 0); // Default offset
-    //     $limit = $request->query('limit', null); // Default limit
-    //     $filter = $request->query('filter', null); // Default limit
-    //     try {
-    //         // $master = DB::table($TABLE_REQUEST_MASTER)
-    //         //     ->select('id', 'no_dok', 'site', 'created_by');
-            
-
-    //         $master = DB::table($TABLE_REQUEST_MASTER)
-    //         ->select(
-    //             $TABLE_REQUEST_MASTER.'.id', 
-    //             $TABLE_REQUEST_MASTER.'.no_dok', 
-    //             $TABLE_REQUEST_MASTER.'.site', 
-    //             $TABLE_REQUEST_MASTER.'.created_by',
-    //             DB::raw('(SELECT Nama FROM HRD.dbo.TKaryawan WHERE NIK = '.$TABLE_REQUEST_MASTER.'.created_by) as request_by'),
-    //             DB::raw('(SELECT Nama FROM HRD.dbo.TKaryawan WHERE NIK = '.$TABLE_REQUEST_MASTER.'.cataloging_id) as cataloging_by'),
-    //             $TABLE_REQUEST_MASTER.'.cataloging_update',
-    //             DB::raw('(SELECT Nama FROM HRD.dbo.TKaryawan WHERE NIK = '.$TABLE_REQUEST_MASTER.'.disetujui_oleh) as approval_by'),
-    //             $TABLE_REQUEST_MASTER.'.status_req',
-    //             $TABLE_REQUEST_MASTER.'.created_at',
-    //             $TABLE_REQUEST_MASTER.'.updated_at',
-    //         );
-
-    //         $master->orderBy($sort, $order);
-    //         $jml = $master->count();            
-    //         $document = $master->get();
-
-    //         $response['message'] = "Ok";
-    //         $response['isSuccess'] = true;
-    //         $response['data'] = [
-    //             'total' => $jml,
-    //             'totalNotFiltered' => $jml,
-    //             'rows' => $document
-    //         ];
-
-    //     } catch (Exception $ex) {
-    //         Log::error($ex->getMessage());
-    //         Log::error($ex->getTraceAsString());
-            
-    //         $response['message'] = $ex->getMessage();
-    //         $response['isSuccess'] = false;
-    //     }
-
-    //     return response()->json($response);
-    // }
-    
-    
     public function GetListRequestMaster(Request $request) {
         $TABLE_REQUEST_MASTER = "FM_LOG_002_REQUESTER_MASTER";
         $response = array(
@@ -310,8 +255,12 @@ class RequestMasterController extends Controller {
                 if ($value) {
                     if($field == 'request_by') {
                         $findUser = DB::connection('sqlsrv2')->table(self::TABLE_KARYAWAN)->where('Nama', 'like', '%' . $value . '%')->first();
+                        if($findUser != null){    
+                            $query->where('created_by', $findUser->NIK);
+                        }else{
+                            $query->where('created_by', null);
+                        }
                         
-                        $query->where('created_by', $findUser->NIK);
                     } else{
                         $query->where($field, 'like', '%' . $value . '%');
                     }
@@ -819,10 +768,4 @@ class RequestMasterController extends Controller {
 
 }
 
-class STATUS {
-    const OPEN = 'OPEN';
-    const CLOSE = 'CLOSE';
-    const APPROVED = 'APPROVED';
-    const REJECTED = 'REJECTED';
-    const DELETED = 'DELETED';
-}
+
