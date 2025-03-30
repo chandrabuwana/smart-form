@@ -85,7 +85,7 @@ $remarks = $data['remarks'];
                                                 <td class="fw-bold">Foreman/Spv</td>
                                                 <td>
                                                     <select class="form-select form-select-sm input-text" id="iForeman" name="iForeman" disabled>
-                                                        <option value="">-- Pilih Submition Foreman/Spv --</option>
+                                                        <option value=""> </option>
                                                         @forelse($users as $user)
                                                             <option value="{{ $user->NIK ?? '' }}" {{ $master->diketahui_oleh == $user->NIK ? 'selected' : '' }}>
                                                                 {{ $user->nama ?? 'Nama tidak tersedia' }}
@@ -106,7 +106,6 @@ $remarks = $data['remarks'];
                                                 <td class="fw-bold">Shift</td>
                                                 <td>
                                                     <select class="form-select form-select-sm input-text" aria-label="Default select example" id="iShift" name="iShift" disabled>
-                                                        <option value="">-- select shift --</option>
                                                         @forelse($shifts as $code => $value)
                                                             <option value="{{ $code }}" {{ $master->shift == $code ? 'selected' : '' }}>
                                                                 {{ $value }}
@@ -121,7 +120,6 @@ $remarks = $data['remarks'];
                                                 <td class="fw-bold">Site</td>
                                                 <td>
                                                     <select class="form-select form-select-sm input-text" id="iJobSite" name="iJobSite" disabled>
-                                                        <option value="">-- select site --</option>
                                                         @forelse($sites as $site)
                                                             <option value="{{ $site->KodeST ?? '' }}" {{ $master->site == $site->KodeST ? 'selected' : '' }}>
                                                                 {{ $site->KodeST ?? 'Site tidak tersedia' }}
@@ -237,7 +235,6 @@ $remarks = $data['remarks'];
                                       <div class="input-group input-group-static mb-4">
                                         <label>Remark</label>
                                         <select class="form-control" id="iRemark" name="iRemark">
-                                          <option value="" selected>-- Pilih Remark --</option> 
                                            @forelse($remarks as $code => $value)
                                                 <option value="{{ $code }}">
                                                     {{ $value }}

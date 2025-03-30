@@ -22,18 +22,21 @@ class PengeluaranOilController extends Controller {
     private const TABLE_KARYAWAN = 'TKaryawan';
 
     private const LIST_SHIFT = [
+        "" => "",
         'I' => 'I',
         'II' => 'II',
         'III' => 'III',
     ];
 
     private const LIST_JENIS = [
+        "" => "",
         'COOLANT' => 'COOLANT',
         'GREASE' => 'GREASE',
         'OIL' => 'OIL',
     ];
 
     private const LIST_MERKS = [
+        "" => "",
         "2000000202 - SEIKEN COOLANT 50%" => "2000000202 - SEIKEN COOLANT 50%",
         "2000000044 - COOLANT MULTIROAD RECO COOL" => "2000000044 - COOLANT MULTIROAD RECO COOL",
         "2000000056 - SYCG-AF-NACDMPZ" => "2000000056 - SYCG-AF-NACDMPZ",
@@ -63,6 +66,7 @@ class PengeluaranOilController extends Controller {
     ];
 
     private const LIST_COMPONENT = [
+        "" => "",
         "ENGINE" => "ENGINE",
         "TRANSMISSION" => "TRANSMISSION",
         "FINAL DRIVE LH" => "FINAL DRIVE LH",
@@ -111,6 +115,7 @@ class PengeluaranOilController extends Controller {
     ];
 
     private const LIST_REMARKS = [
+        "" => "",
         "ADD" => "ADD",
         "CHANGE" => "CHANGE",
         "GREASING" => "GREASING",
@@ -155,7 +160,7 @@ class PengeluaranOilController extends Controller {
                     $TABLE_PENGELUARAN_OLI.'.created_at',
                     DB::raw('(SELECT Nama FROM '.$TABLE_KARYAWAN.' WHERE NIK = '.$TABLE_PENGELUARAN_OLI.'.diketahui_oleh) as approval_by'),
                     $TABLE_PENGELUARAN_OLI.'.updated_at'
-                );
+                )->where('status_req', '!=', STATUS::DELETED);
     
             // Apply filters
             foreach ($filters as $field => $value) {
@@ -303,17 +308,37 @@ class PengeluaranOilController extends Controller {
 
     public function PdfPengeluaranOli($id)
     {
-        $TABLE_MASTER = "FM_LOG_034_PENGELUARAN_OLI";
-        $TABLE_DETAIL = "FM_LOG_034_PENGELUARAN_OLI_DETAIL";
+        $TABLE_MASTER = self::TABLE_MASTER;
+        $TABLE_DETAIL = self::TABLE_DETAIL;
         $errors = array(
             'error' => false,
             'message' => ''
         );
         try {
             $data = DB::table($TABLE_MASTER)
-                    ->select('id', 'no_dok','revisi','tanggal','job_site as jobsite','no_lube_station as nolube','shift','dilaporkan_oleh as pelapor','diketahui_oleh as mengetahui')
-                    ->where('id', $id)
-                    ->first();
+                ->select(  
+                $TABLE_MASTER.'.id', 
+                    $TABLE_MASTER.'.no_dok', 
+                    $TABLE_MASTER.'.revisi', 
+                    $TABLE_MASTER.'.status_req',
+                    $TABLE_MASTER.'.job_site AS site',
+                    $TABLE_MASTER.'.no_lube_station AS lube',
+                    $TABLE_MASTER.'.shift', 
+                    $TABLE_MASTER.'.dilaporkan_oleh',
+                    DB::raw('(SELECT Nama FROM HRD.dbo.TKaryawan WHERE NIK = '.$TABLE_MASTER.'.dilaporkan_oleh) as created_by'),
+                    $TABLE_MASTER.'.created_at',
+                    $TABLE_MASTER.'.diketahui_oleh',
+                    DB::raw('(SELECT Nama FROM HRD.dbo.TKaryawan WHERE NIK = '.$TABLE_MASTER.'.diketahui_oleh) as approvad_by'),
+                    DB::raw('(SELECT Nama FROM HRD.dbo.TKaryawan WHERE NIK = '.$TABLE_MASTER.'.updated_by) as updated_by'),
+                    $TABLE_MASTER.'.updated_at',
+                    $TABLE_MASTER.'.remark',
+                )
+                ->where('id', $id)
+                ->first();
+
+            if (!$data) {
+                throw new Exception("Data not found");
+            }
                 
             $data_detail = DB::table($TABLE_DETAIL)
                 ->select('id_peng_oli','unit','time','hm','jenis','merk','awal','akhir','qty','component','remark','pic_nama as pic')
@@ -328,16 +353,17 @@ class PengeluaranOilController extends Controller {
         
             $data_master['id'] = $data->id;
             $data_master['no_dok'] = $data->no_dok;
-            $data_master['jobsite'] = $data->jobsite;
-            $data_master['tanggal'] = $data->tanggal;
-            $data_master['pelapor'] = $data->pelapor;
-            $data_master['mengetahui'] = $data->mengetahui;
+            $data_master['revisi'] = $data->revisi;
+            $data_master['jobsite'] = $data->site;
+            $data_master['tanggal'] = $data->created_at;
+            $data_master['pelapor'] = $data->created_by;
+            $data_master['mengetahui'] = $data->approvad_by;
         } catch (Exception $ex) {
             Log::error($ex->getMessage());
         }
         Log::info("data_master : ". json_encode($data_master));
-        $pdf = PDF::loadView('SmartForm::LOG/pengeluaran-oli-pdf',  ['data' => $data_master, 'data_detail' => $data_detail, 'error' => $errors])->setPaper('a4', 'landscape');
-        return $pdf->download('BSS-FRM-LOG-034.pdf');
+        $pdf = PDF::loadView('SmartForm::LOG/pengeluaran-oli/pengeluaran-oli-pdf',  ['data' => $data_master, 'data_detail' => $data_detail, 'error' => $errors])->setPaper('a4', 'landscape');
+        return $pdf->download($data->no_dok.'.pdf');
     }
 
     public function GetDetail($request, $id, $returnJson = false){
