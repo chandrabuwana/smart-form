@@ -195,52 +195,57 @@
                                                             $i = 0;
                                                         @endphp
                                                         @foreach ($list['ENGINE'] as $value)
-                                                        <tr>
-                                                            @if (isset($value['item']))
+                                                            <tr>
+                                                                @if (isset($value['item']))
                                                                 @if ($value['item'] == 'Engine Speed' || $value['item'] == 'Lub Oil Press.')
-                                                                    <td class="align-middle" rowspan="2">{!! $value['item'] !!}</td>
+                                                                    <td class="align-middle" rowspan="2">
+                                                                        {!! $value['item'] !!}</td>
                                                                 @else
-                                                                    <td class="align-middle">{!! $value['item'] !!}</td>
+                                                                    <td class="align-middle">
+                                                                        {!! $value['item'] !!}</td>
                                                                 @endif
                                                             @endif
                                                             @if (isset($value['condition']))
-                                                                @if ($value['condition'] == 'Rated Output (1800 rpm)' && ($value['unit'] == 'C'))
-                                                                    <td class="align-middle" rowspan="6">{!! $value['condition'] !!}</td>
+                                                            @if ($value['condition'] == 'Rated Output (1800 rpm)' && ($value['unit'] == 'C'))
+                                                                    <td class="align-middle" rowspan="6">
+                                                                        {!! $value['condition'] !!}</td>
                                                                 @else
-                                                                    <td class="align-middle">{!! $value['condition'] !!}</td>
+                                                                    <td class="align-middle">{!! $value['condition'] !!}
+                                                                    </td>
                                                                 @endif
                                                             @endif
                                                             @if (isset($value['unit']))
                                                                 @if ($value['unit'] == 'Rpm' || $value['unit'] == 'Kg/cm2')
-                                                                    <td class="align-middle" rowspan="2">{!! $value['unit'] !!}</td>
+                                                                    <td class="align-middle" rowspan="2">
+                                                                        {!! $value['unit'] !!}</td>
                                                                 @else
-                                                                    <td class="align-middle">{!! $value['unit'] !!}</td>
+                                                                    <td class="align-middle">
+                                                                        {!! $value['unit'] !!}</td>
                                                                 @endif
                                                             @endif
                                                             @if (isset($value['standard']))
-                                                                <td class="align-middle">{!! $value['standard'] !!}</td>
-                                                            @endif
-                                                            <td><input type="text" class="form-control" name="eng_actual[]"
-                                                                    value="{{ $data->eng_actual[$i] ?? '' }}" disabled></td>
-                                                            <td><input type="text" class="form-control" name="eng_correct[]"
-                                                                    value="{{ $data->eng_correction_made[$i] ?? '' }}" disabled></td>
-                                                            <td><input type="text" class="form-control" name="eng_result[]"
-                                                                    value="{{ $data->eng_result[$i] ?? '' }}" disabled></td>
-                                                            <td><input type="text" class="form-control" name="eng_pr_no[]"
-                                                                    value="{{ $data->eng_pr[$i] ?? '' }}" disabled></td>
-                                                            <td><input type="date" class="form-control" name="eng_tanggal[]"
-                                                                    value="{{ $data->eng_taggal[$i] ?? '' }}" disabled></td>
-                                                            @if ($i === 0)
-                                                                <td rowspan="13">
-                                                                    <textarea class="form-control" rows="30" name="eng_remarks" disabled>{{ $data->eng_remark }}</textarea>
+                                                                <td class="align-middle">{!! $value['standard'] !!}
                                                                 </td>
                                                             @endif
-                                                        </tr>
-                                                        @php
-                                                            $i++;
-                                                        @endphp
+                                                            <td><input type="text" class="form-control"
+                                                                    name="eng_actual[]" value="{{ $data->eng_actual[$i] ?? '' }}"></td>
+                                                            <td><input type="text" class="form-control"
+                                                                    name="eng_correct[]" value="{{ $data->eng_correction_made[$i] ?? '' }}"></td>
+                                                            <td><input type="text" class="form-control"
+                                                                    name="eng_result[]" value="{{ $data->eng_result[$i] ?? '' }}"></td>
+                                                            <td><input type="text" class="form-control"
+                                                                    name="eng_pr_no[]" value="{{ $data->eng_pr[$i] ?? '' }}"></td>
+                                                            <td><input type="date" class="form-control"
+                                                                    name="eng_tanggal[]" value="{{ $data->eng_taggal[$i] ?? '' }}"></td>
+                                                            @if ($i === 0)
+                                                                <td rowspan="13">
+                                                                    <textarea class="form-control" rows="30" name="eng_remarks" value="{{ $data->eng_remark }}"></textarea>
+                                                                </td>
+                                                            @endif
+                                                            @php
+                                                                $i++;
+                                                            @endphp
                                                         @endforeach
-
 
 
                                                     </tbody>
@@ -284,53 +289,66 @@
                                                             $j = 0;
                                                         @endphp
                                                         @foreach ($list['WORK_EQUIPMENT_HYDRAULIC_OIL_PRESSURE'] as $value)
-                                                        <tr>
-                                                            @if (($value['item'] ?? '') == 'Blade Left Tilt Pressure' || ($value['item'] ?? '') == 'Blade Right Tilt Pressure')
-                                                                <td class="align-middle" rowspan="2">{!! $value['item'] !!}</td>
-                                                            @elseif (isset($value['item']))
-                                                                <td class="align-middle" rowspan="1">{!! $value['item'] !!}</td>
-                                                            @endif
-                                                            @if (!empty($value['condition0']) && ($value['item'] ?? '') == 'Blade Left Tilt Pressure')
-                                                                <td class="align-middle" rowspan="4">{!! $value['condition0'] !!}</td>
-                                                                <td class="align-middle" rowspan="1">{!! $value['condition1'] ?? '' !!}</td>
-                                                            @elseif (!empty($value['condition0']) && ($value['item'] ?? '') == 'Pilot Pressure')
-                                                                <td class="align-middle" rowspan="1">{!! $value['condition0'] !!}</td>
-                                                                <td class="align-middle">{!! $value['condition1'] ?? '' !!}</td>
-                                                            @else
-                                                                <td class="align-middle">{!! $value['condition1'] ?? '' !!}</td>
-                                                            @endif
-
-                                                            @if (isset($value['unit']))
-                                                                @if ($value['unit'] == 'Kg/cm2')
-                                                                    <td class="align-middle" rowspan="5">{!! $value['unit'] !!}</td>
-                                                                @else
-                                                                    <td class="align-middle">{!! $value['unit'] !!}</td>
+                                                            <tr>
+                                                                @if (($value['item'] ?? '') == 'Blade Left Tilt Pressure' || ($value['item'] ?? '') == 'Blade Right Tilt Pressure')
+                                                                    <td class="align-middle" rowspan="2">{!! $value['item'] !!}</td>
+                                                                @elseif (isset($value['item']))
+                                                                    <td class="align-middle" rowspan="1">{!! $value['item'] !!}</td>
                                                                 @endif
-                                                            @endif
-                                                            @if (isset($value['standard']))
-                                                                <td class="align-middle">{!! $value['standard'] !!}</td>
-                                                            @endif
-                                                            <td><input type="text" class="form-control" name="eng_actual[]"
-                                                                    value="{{ $data->hyd_actual[$j] ?? '' }}" disabled></td>
-                                                            <td><input type="text" class="form-control" name="eng_correct[]"
-                                                                    value="{{ $data->hyd_correction_made[$j] ?? '' }}" disabled></td>
-                                                            <td><input type="text" class="form-control" name="eng_result[]"
-                                                                    value="{{ $data->hyd_result[$j] ?? '' }}" disabled></td>
-                                                            <td><input type="text" class="form-control" name="eng_pr_no[]"
-                                                                    value="{{ $data->hyd_pr[$j] ?? '' }}" disabled></td>
-                                                            <td><input type="date" class="form-control" name="eng_tanggal[]"
-                                                                    value="{{ $data->hyd_taggal[$j] ?? '' }}" disabled></td>
-                                                            @if ($j === 0)
-                                                                <td rowspan="13">
-                                                                    <textarea class="form-control" rows="30" name="eng_remarks" disabled>{{ $data->hyd_remark }}</textarea>
-                                                                </td>
-                                                            @endif
-                                                        </tr>
-                                                        @php
-                                                            $j++;
-                                                        @endphp
-                                                        @endforeach
+                                                                @if (!empty($value['condition0']) && ($value['item'] ?? '') == 'Blade Left Tilt Pressure')
+                                                                    <td class="align-middle" rowspan="4">{!! $value['condition0'] !!}</td>
+                                                                    <td class="align-middle" rowspan="1">{!! $value['condition1'] ?? '' !!}</td>
+                                                                @elseif (!empty($value['condition0']) && ($value['item'] ?? '') == 'Pilot Pressure')
+                                                                    <td class="align-middle" rowspan="1">{!! $value['condition0'] !!}</td>
+                                                                    <td class="align-middle">{!! $value['condition1'] ?? '' !!}</td>
+                                                                @else
+                                                                    <td class="align-middle">{!! $value['condition1'] ?? '' !!}</td>
+                                                                @endif
 
+                                                                @if (isset($value['unit']))
+                                                                    @if ($value['unit'] == 'Kg/cm2')
+                                                                        <td class="align-middle" rowspan="5">
+                                                                            {!! $value['unit'] !!}</td>
+                                                                    @else
+                                                                        <td class="align-middle">
+                                                                            {!! $value['unit'] !!}</td>
+                                                                    @endif
+                                                                @endif
+                                                                @if (isset($value['standard']))
+                                                                    <td class="align-middle">{!! $value['standard'] !!}
+                                                                    </td>
+                                                                @endif
+                                                                {{-- <td>{{ $data->hyd_actual[$j] ?? '' }}</td>
+                                                                <td>{{ $data->hyd_correction_made[$j] ?? '' }}</td>
+                                                                <td>{{ $data->hyd_result[$j] ?? '' }}
+                                                                </td>
+                                                                <td>{{ $data->hyd_pr[$j] ?? '' }}
+                                                                </td>
+                                                                <td>{{ $data->hyd_taggal[$j] ?? '' }}
+                                                                </td>
+                                                                @if ($j === 0)
+                                                                    <td colspan="2" rowspan="5">{{ $data->hyd_remark }}</td>
+                                                                @endif --}}
+                                                                <td><input type="text" class="form-control"
+                                                                        name="eng_actual[]" value="{{ $data->hyd_actual[$j] ?? '' }}"></td>
+                                                                <td><input type="text" class="form-control"
+                                                                        name="eng_correct[]" value="{{ $data->hyd_correction_made[$j] ?? '' }}"></td>
+                                                                <td><input type="text" class="form-control"
+                                                                        name="eng_result[]" value="{{ $data->hyd_result[$j] ?? '' }}"></td>
+                                                                <td><input type="text" class="form-control"
+                                                                        name="eng_pr_no[]" value="{{ $data->hyd_pr[$j] ?? '' }}"></td>
+                                                                <td><input type="date" class="form-control"
+                                                                        name="eng_tanggal[]" value="{{ $data->hyd_taggal[$j] ?? '' }}"></td>
+                                                                @if ($j === 0)
+                                                                    <td rowspan="13">
+                                                                        <textarea class="form-control" rows="30" name="eng_remarks" value="{{ $data->hyd_remark }}"></textarea>
+                                                                    </td>
+                                                                @endif
+                                                            </tr>
+                                                            @php
+                                                                $j++;
+                                                            @endphp
+                                                        @endforeach
 
 
                                                     </tbody>
@@ -373,43 +391,44 @@
                                                         @php
                                                             $j = 0;
                                                         @endphp
-                                                       @foreach ($list['WORK_TRAVEL_SYSTEM'] as $value)
-                                                       <tr>
-                                                           @if (!empty($value['item']))
-                                                               <td class="align-middle" rowspan="2">{!! $value['item'] !!}</td>
-                                                           @endif
-                                                           @if (!empty($value['condition0']))
-                                                               <td class="align-middle" rowspan="10">{!! $value['condition0'] !!}</td>
-                                                               <td class="align-middle" rowspan="1">{!! $value['condition1'] ?? '' !!}</td>
-                                                           @else
-                                                               <td class="align-middle">{!! $value['condition1'] ?? '' !!}</td>
-                                                           @endif
+                                                        @foreach ($list['WORK_TRAVEL_SYSTEM'] as $value)
+                                                            <tr>
+                                                                @if (!empty($value['item']))
+                                                                    <td class="align-middle" rowspan="2">{!! $value['item'] !!}</td>
+                                                                @endif
+                                                                @if (!empty($value['condition0']))
+                                                                    <td class="align-middle" rowspan="10">{!! $value['condition0'] !!}</td>
+                                                                    <td class="align-middle" rowspan="1">{!! $value['condition1'] ?? '' !!}</td>
+                                                                @else
+                                                                    <td class="align-middle">{!! $value['condition1'] ?? '' !!}</td>
+                                                                @endif
 
-                                                           @if (isset($value['unit']))
-                                                               <td class="align-middle" rowspan="10">{!! $value['unit'] !!}</td>
-                                                           @endif
-                                                           @if (isset($value['standard']))
-                                                               <td class="align-middle">{!! $value['standard'] !!}</td>
-                                                           @endif
-                                                           <td><input type="text" class="form-control" name="eng_actual[]"
-                                                                   value="{{ $data->hyd_actual[$j] ?? '' }}" disabled></td>
-                                                           <td><input type="text" class="form-control" name="eng_correct[]"
-                                                                   value="{{ $data->hyd_correction_made[$j] ?? '' }}" disabled></td>
-                                                           <td><input type="text" class="form-control" name="eng_result[]"
-                                                                   value="{{ $data->hyd_result[$j] ?? '' }}" disabled></td>
-                                                           <td><input type="text" class="form-control" name="eng_pr_no[]"
-                                                                   value="{{ $data->hyd_pr[$j] ?? '' }}" disabled></td>
-                                                           <td><input type="date" class="form-control" name="eng_tanggal[]"
-                                                                   value="{{ $data->hyd_taggal[$j] ?? '' }}" disabled></td>
-                                                           <td>
-                                                               <textarea class="form-control" name="eng_remarks" disabled>{{ $data->hyd_remark ?? '' }}</textarea>
-                                                           </td>
-                                                       </tr>
-                                                       @php
-                                                           $j++;
-                                                       @endphp
-                                                       @endforeach
-
+                                                                @if (isset($value['unit']))
+                                                                    <td class="align-middle" rowspan="10">
+                                                                        {!! $value['unit'] !!}</td>
+                                                                @endif
+                                                                @if (isset($value['standard']))
+                                                                    <td class="align-middle">{!! $value['standard'] !!}
+                                                                    </td>
+                                                                @endif
+                                                                <td><input type="text" class="form-control"
+                                                                    name="eng_actual[]" value="{{ $data->hyd_actual[$j] ?? '' }}"></td>
+                                                                <td><input type="text" class="form-control"
+                                                                        name="eng_correct[]" value="{{ $data->hyd_correction_made[$j] ?? '' }}"></td>
+                                                                <td><input type="text" class="form-control"
+                                                                        name="eng_result[]" value="{{ $data->hyd_result[$j] ?? '' }}"></td>
+                                                                <td><input type="text" class="form-control"
+                                                                        name="eng_pr_no[]" value="{{ $data->hyd_pr[$j] ?? '' }}"></td>
+                                                                <td><input type="date" class="form-control"
+                                                                        name="eng_tanggal[]" value="{{ $data->hyd_taggal[$j] ?? '' }}"></td>
+                                                                <td>
+                                                                    <textarea class="form-control" name="eng_remarks" value="{{ $data->hyd_remark ?? '' }}"></textarea>
+                                                                </td>
+                                                            </tr>
+                                                            @php
+                                                                $j++;
+                                                            @endphp
+                                                        @endforeach
 
 
                                                     </tbody>
@@ -422,9 +441,8 @@
                                     <div class="col-6 ">
                                         <div class="input-group input-group-static mb-3">
                                             <label for="dibuat" class="ms-0">Checked By</label>
-                                            <select name="checked" id="dibuat_oleh" class="form-control" disabled
-                                                required>
-                                                <option disabled selected>-- Select Creator --</option>
+                                            <select name="checked" id="dibuat_oleh" class="form-control" required>
+                                                <option disabled selected>-- Select Checked --</option>
                                                 @foreach ($approvalList as $user)
                                                     <option value="{{ $user->nik }}"
                                                         {{ old('checked', $data->checked_by ?? '') == $user->nik ? 'selected' : '' }}>
@@ -437,87 +455,23 @@
                                     <div class="col-6">
                                         <div class="input-group input-group-static mb-3">
                                             <label for="diperiksa" class="ms-0">Validated By</label>
-                                            <select name="validated" id="diperiksa" class="form-control" disabled
-                                                required>
+                                            <select name="validated" id="diperiksa" class="form-control" required>
                                                 <option disabled selected>-- Select Approval --</option>
                                                 @foreach ($approvalList as $user)
                                                     <option value="{{ $user->nik }}"
-                                                        {{ old('checked', $data->validated_by ?? '') == $user->nik ? 'selected' : '' }}>
+                                                        {{ old('validated', $data->validated_by ?? '') == $user->nik ? 'selected' : '' }}>
                                                         {{ $user->nama }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
                                     </div>
                                     <div class="row">
-                                        @for ($i = 0; $i < 2; $i++)
-                                            @if ($i == 0)
-                                                @if ($data->status[$i] == 'rejected')
-                                                    <div class="col-6 ty">
-                                                        <img src="{{ asset('img/rejected.png') }}" class="img-app"
-                                                            alt="">
-                                                    </div>
-                                                @elseif ($data->status[$i] == 'approved')
-                                                    <div class="col-6 ty">
-                                                        <img src="{{ asset('img/checked.png') }}" class="img-app"
-                                                            alt="">
-                                                    </div>
-                                                @elseif ($data->status[$i] == null)
-                                                    <div class="col-6 ty">
-
-                                                    </div>
-                                                @endif
-                                            @else
-                                                @if ($data->status[$i] == 'rejected')
-                                                    <div class="col-6 ty">
-                                                        <img src="{{ asset('img/rejected.png') }}" class="img-app"
-                                                            alt="">
-                                                    </div>
-                                                @elseif ($data->status[$i] == 'approved')
-                                                    <div class="col-6 ty">
-                                                        <img src="{{ asset('img/validated.png') }}" class="img-app"
-                                                            alt="">
-                                                    </div>
-                                                @elseif ($data->status[$i] == null)
-                                                    <div class="col-6 ty">
-
-                                                    </div>
-                                                @endif
-                                            @endif
-                                        @endfor
-
-                                    </div>
-                                    <div class="row">
                                         <div class="col-12">
                                             <div class="form-actions">
-                                                @if ($nik == $data->checked_by || $nik == $data->validated_by)
-                                                    <button class="btn btn-primary btn-sm" id="btn900Approve"
-                                                        data-doc="{{ $data->doc_num }}"
-                                                        data-status='@json($data->status)'
-                                                        data-nik="{{ $nik }}">
-                                                        <i class="fas fa-check"></i> Approve
-                                                    </button>
-
-                                                    <button class="btn btn-warning btn-sm" id="btn900Reject"
-                                                        data-doc="{{ $data->doc_num }}"
-                                                        data-status='@json($data->status)'
-                                                        data-nik="{{ $nik }}">
-                                                        <i class="fas fa-close"></i> Reject
-                                                    </button>
-                                                @endif
-
-                                                @if (collect($data->status)->contains(fn($s) => $s === 'rejected'))
-                                                    @if ($nik == $data->creator)
-                                                        <button type="button" class="btn btn-primary btn-sm"
-                                                            onclick="resetApproval('{{ $data->doc_num }}')">
-                                                            <i class="fas fa-undo"></i> Reset
-                                                        </button>
-                                                    @endif
-                                                @endif
-
                                                 <a href="{{ route('dashboard-dh24') }}"
-                                                    class="btn btn-secondary btn-sm">Cancel</a>
+                                                    class="btn btn-secondary">Cancel</a>
+                                                <button type='submit' class="btn btn-primary">Update</button>
                                             </div>
-
                                         </div>
                                     </div>
                                 </div>
@@ -617,7 +571,6 @@
     </style>
 @endsection
 
-
 @section('custom-js')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
@@ -654,145 +607,56 @@
                 });
             });
         });
-        document.addEventListener("DOMContentLoaded", function() {
+        $(function() {
+            var form = $("#formDH24");
+            var submitBtn = form.find('button[type="submit"]');
 
-            document.getElementById("btn900Approve").addEventListener("click", function() {
-                let docNumber = this.getAttribute("data-doc");
-                let status = JSON.parse(this.getAttribute('data-status'));
+            form.submit(function(e) {
+                e.preventDefault();
+                submitBtn.prop('disabled', true);
 
-                let nik = this.getAttribute("data-nik");
+                var formData = new FormData(this);
+                console.log("Form data yang dikirim:", formData);
 
-                axios.post("{{ route('plant.dh24.approve') }}", {
-                        _token: "{{ csrf_token() }}",
-                        doc_num: docNumber,
-
-                        checked: nik == "{{ $data->checked_by }}" ? 'approved' : status[0],
-                        validated: nik == "{{ $data->validated_by }}" ? 'approved' : status[1],
-
-                    })
-                    .then(response => {
-                        if (response.data.success) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Success',
-                                text: response.data.message
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    window.location.href =
-                                        '{{ route('dashboard-dh24') }}';
-                                }
-                            });
-                        }
-                    })
-                    .catch(error => {
-                        let errorMessage = 'Terjadi kesalahan pada sistem';
-                        console.log("Error respons:", error.response);
-
-                        if (error.response) {
-                            if (error.response.data.errors) {
-                                errorMessage = Object.values(error.response.data.errors).flat().join(
-                                    '\n');
-                            } else if (error.response.data.message) {
-                                errorMessage = error.response.data.message;
-                            }
-                        }
-
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: errorMessage
-                        });
-                    });
-            });
-
-
-            document.getElementById("btn900Reject").addEventListener("click", function() {
-                let docNumber = this.getAttribute("data-doc");
-                let status = JSON.parse(this.getAttribute('data-status'));
-                let nik = this.getAttribute("data-nik");
-
-                axios.post("{{ route('plant.dh24.reject') }}", {
-                        _token: "{{ csrf_token() }}",
-                        doc_num: docNumber,
-                        checked: nik == "{{ $data->checked_by }}" ? 'rejected' : status[0],
-                        validated: nik == "{{ $data->validated_by }}" ? 'rejected' : status[1],
-                    })
-                    .then(response => {
-                        if (response.data.success) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Success',
-                                text: response.data.message
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    window.location.href =
-                                        '{{ route('dashboard-dh24') }}';
-                                }
-                            });
-                        }
-                    })
-                    .catch(error => {
-                        let errorMessage = 'Terjadi kesalahan pada sistem';
-                        console.log("Error respons:", error.response);
-
-                        if (error.response) {
-                            if (error.response.data.errors) {
-                                errorMessage = Object.values(error.response.data.errors).flat().join(
-                                    '\n');
-                            } else if (error.response.data.message) {
-                                errorMessage = error.response.data.message;
-                            }
-                        }
-
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: errorMessage
-                        });
-                    });
-            });
-
-
-        });
-
-        function resetApproval(id) {
-            if (confirm('Are you sure you want to reset this Approval?')) {
-                axios.post('{{ route('plant.ppm.xe1250.reset', ['id' => 'ID']) }}'.replace('ID', id))
+                axios.post('{{ route('plant.dh24.update') }}', formData)
                     .then(function(response) {
-                        console.log('Response:', response);
+                        console.log("Respons dari server:", response.data);
                         if (response.data.success) {
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Success',
                                 text: response.data.message
-                            }).then(() => {
-                                location.reload();
-                            });
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: 'Failed to reset the approval.'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href =
+                                        '{{ route('dashboard-dh24') }}';
+                                }
                             });
                         }
                     })
                     .catch(function(error) {
-                        console.error('Error:', error);
                         let errorMessage = 'Terjadi kesalahan pada sistem';
+                        console.log("Error respons:", error.response);
+
                         if (error.response) {
                             if (error.response.data.errors) {
-                                errorMessage = Object.values(error.response.data.errors).flat().join('\n');
+                                errorMessage = Object.values(error.response.data.errors).flat().join(
+                                    '\n');
                             } else if (error.response.data.message) {
                                 errorMessage = error.response.data.message;
                             }
                         }
+
                         Swal.fire({
                             icon: 'error',
                             title: 'Error',
                             text: errorMessage
                         });
+                    })
+                    .finally(function() {
+                        submitBtn.prop('disabled', false);
                     });
-            }
-        }
+            });
+        });
     </script>
 @endsection

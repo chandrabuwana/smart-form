@@ -330,21 +330,27 @@
                                             <td>
                                                 @if ($session == $data->creator)
                                                     <a href="{{ route('plant.ppm.xe1250.detail', ['id' => $data->id]) }}"
-                                                        class="btn btn-warning btn-sm mt-3">
+                                                        class="btn btn-warning btn-sm mt-3"
+                                                        style="{{ $data->delete_status == 1 ? 'pointer-events: none; opacity: 0.6;' : '' }}">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
                                                     <button type="button" class="btn btn-danger btn-sm mt-3"
-                                                        onclick="deleteXcmg900('{{ $data->doc_num }}')">
+                                                        onclick="deleteXcmg900('{{ $data->doc_num }}')"
+                                                        {{ $data->delete_status == 1 ? 'disabled' : '' }}>
                                                         <i class="fas fa-trash"></i>
                                                     </button>
                                                 @endif
+
                                                 <a href="{{ route('plant.ppm.xe1250.show', ['id' => $data->id]) }}"
-                                                    class="btn btn-info btn-sm mt-3">
+                                                    class="btn btn-info btn-sm mt-3"
+                                                    style="{{ $data->delete_status == 1 ? 'pointer-events: none; opacity: 0.6;' : '' }}">
                                                     <i class="far fa-check-circle " style="font-size:12px;"></i>
                                                 </a>
+
                                                 @if (collect($status)->every(fn($s) => $s === 'approved'))
                                                     <a href="{{ route('plant.ppm.xe1250.export', ['id' => $data->id]) }}"
-                                                        class="btn btn-primary btn-sm mt-3">
+                                                        class="btn btn-primary btn-sm mt-3"
+                                                        style="{{ $data->delete_status == 1 ? 'pointer-events: none; opacity: 0.6;' : '' }}">
                                                         <i class="fas fa-download"></i>
                                                     </a>
                                                 @endif
