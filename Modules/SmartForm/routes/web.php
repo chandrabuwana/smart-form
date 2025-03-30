@@ -44,6 +44,8 @@ use Modules\SmartForm\App\Http\Controllers\SM\AssetRequestController;
 use Modules\SmartForm\App\Http\Controllers\SM\RegistrasiSupplierController;
 use Modules\SmartForm\App\Http\Controllers\LOG\CheckOgcComController;
 use Modules\SmartForm\App\Http\Controllers\LOG\LogController;
+use Modules\SmartForm\App\Http\Controllers\LOG\RequestMasterController;
+use Modules\SmartForm\App\Http\Controllers\LOG\PengeluaranOilController;
 use Modules\SmartForm\App\Http\Controllers\LOG\PemakaianSolarController;
 use Modules\SmartForm\App\Http\Controllers\LOG\FuelController;
 use Modules\SmartForm\App\Http\Controllers\LOG\Pengajuan003SapController;
@@ -93,12 +95,18 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
         Route::prefix('log')->group(function () {
 
             // REQUEST MASTER MENU
-            Route::get('/request-master', [LogController::class, 'RequestMasterDashboard'])->name('bss-form.log.request-master.dashboard');
-            Route::get('/list', [LogController::class, 'GetListRequestMaster'])->name("bss-form.log.list-request-master");
-            Route::get('/form-req-master', [LogController::class, 'formReqMaster'])->name('bss-form.log.form-req-master');
-            Route::post('/add-request-master', [LogController::class, 'SubmitFormRequestMaster'])->name("bss-form.log.add-request-master");
-            Route::get('/pdf-req-master/{id}', [LogController::class, 'PdfReqMaster'])->name('bss-form.log.pdf-req-master');
-
+            Route::get('/request-master', [RequestMasterController::class, 'RequestMasterDashboard'])->name('bss-form.log.request-master.dashboard');
+            Route::get('/list', [RequestMasterController::class, 'GetListRequestMaster'])->name("bss-form.log.list-request-master");
+            Route::get('/form-req-master', [RequestMasterController::class, 'formReqMaster'])->name('bss-form.log.form-req-master');
+            Route::post('/add-request-master', [RequestMasterController::class, 'SubmitFormRequestMaster'])->name("bss-form.log.add-request-master");
+            Route::get('/pdf-req-master/{id}', [RequestMasterController::class, 'PdfReqMaster'])->name('bss-form.log.pdf-req-master');
+            Route::get('/edit-req-master', [RequestMasterController::class, 'EditReqMaster'])->name('bss-form.log.edit-request-master');
+            Route::post('/update-request-master', [RequestMasterController::class, 'UpdateFormRequestMaster'])->name("bss-form.log.update-request-master");
+            Route::get('/catalog-view-req-master', [RequestMasterController::class, 'CatalogViewReqMaster'])->name('bss-form.log.catalog-view-request-master');
+            Route::get('/detail-req-master', [RequestMasterController::class, 'DetailReqMaster'])->name('bss-form.log.detail-request-master');
+            Route::post('/approve-reject-request-master', [RequestMasterController::class, 'ApproveRejectRequestMaster'])->name('bss-form.log.approve-reject-request-master');
+            Route::post('/delete-request-master', [RequestMasterController::class, 'DeleteRequestMaster'])->name('bss-form.log.delete-request-master');
+            
             // PERMINTAAN PENGISIAN FUEL
             Route::get('/request-fuel', [FuelController::class, 'FuelDashboard'])->name('bss-form.log.fuel.dashboard');
             Route::get('/list-fuel', [FuelController::class, 'GetListRequestFuel'])->name("bss-form.log.list-fuel");
@@ -111,12 +119,17 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/get-req-fuel-detail', [FuelController::class, 'FuelDetailById'])->name("bss-form.log.form-detail-by-id");
 
             // PENGELUARAN OIL, GREASE & COOLANT MENU
-            Route::get('/pengeluaran-oli', [LogController::class, 'PengeluaranOliDashboard'])->name('bss-form.log.pengeluaran-oli.dashboard');
-            Route::get('/list-pengeluaran-oli', [LogController::class, 'GetListPengeluaranOli'])->name("bss-form.log.list-pengeluaran-oli");
-            Route::get('/form-pengeluaran-oli', [LogController::class, 'formPengeluaranOli'])->name('bss-form.log.form-pengeluaran-oli');
-            Route::post('/add-pengeluaran-oli', [LogController::class, 'SubmitFormPengeluaranOli'])->name("bss-form.log.add-pengeluaran-oli");
-            Route::get('/pdf-pengeluaran-oli/{id}', [LogController::class, 'PdfPengeluaranOli'])->name('bss-form.log.pdf-pengeluaran-oli');
-
+            Route::get('/pengeluaran-oli', [PengeluaranOilController::class, 'PengeluaranOliDashboard'])->name('bss-form.log.pengeluaran-oli.dashboard');
+            Route::get('/list-pengeluaran-oli', [PengeluaranOilController::class, 'GetListPengeluaranOli'])->name("bss-form.log.list-pengeluaran-oli");
+            Route::get('/form-pengeluaran-oli', [PengeluaranOilController::class, 'formPengeluaranOli'])->name('bss-form.log.form-pengeluaran-oli');
+            Route::post('/add-pengeluaran-oli', [PengeluaranOilController::class, 'SubmitFormPengeluaranOli'])->name("bss-form.log.add-pengeluaran-oli");
+            Route::get('/pdf-pengeluaran-oli/{id}', [PengeluaranOilController::class, 'PdfPengeluaranOli'])->name('bss-form.log.pdf-pengeluaran-oli');
+            Route::get('/edit-pengeluaran-oli', [PengeluaranOilController::class, 'EditPengeluaranOli'])->name('bss-form.log.edit-pengeluaran-oli');
+            Route::post('/update-pengeluaran-oli', [PengeluaranOilController::class, 'UpdateFormPengeluaranOli'])->name("bss-form.log.update-pengeluaran-oli");
+            Route::get('/detail-pengeluaran-oli', [PengeluaranOilController::class, 'DetailPengeluaranOli'])->name('bss-form.log.detail-pengeluaran-oli');
+            Route::post('/approve-reject-pengeluaran-oli', [PengeluaranOilController::class, 'ApproveRejectPengeluaranOli'])->name('bss-form.log.approve-reject-pengeluaran-oli');
+            Route::post('/delete-pengeluaran-oli', [PengeluaranOilController::class, 'DeletePengeluaranOli'])->name('bss-form.log.delete-pengeluaran-oli');
+            
             // PEMAKAIAN SOLAR
             Route::get('/pemakaian-solar', [PemakaianSolarController::class, 'PemakaianSolarDashboard'])->name('bss-form.log.pemakaian-solar.dashboard');
             Route::get('/list-pemakaian-solar', [PemakaianSolarController::class, 'GetListPemakaianSolar'])->name("bss-form.log.list-pemakaian-solar");

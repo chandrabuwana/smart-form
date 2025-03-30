@@ -108,15 +108,15 @@ table.atas td {
          </tr>
          <tr>
             <td>No. Dok</td>
-            <td colspan="2"> BSS-FRM-LOG-034</td>
+            <td colspan="2"> {{$data['no_dok']}}</td>
          </tr>
          <tr>
             <td>Revisi</td>
-            <td colspan="2"> 1</td>
+            <td colspan="2"> {{$data['revisi']}}</td>
          </tr>
          <tr>
             <td>Tanggal</td>
-            <td colspan="2"> 7 Agustus 2024</td>
+            <td colspan="2"> {{$data['tanggal']}}</td>
          </tr>
          <tr>
             <td style="text-align: center"> FROM PENGELUARAN OIL, GREASE & COOLANT</td>
@@ -168,26 +168,26 @@ table.atas td {
         <table class="w-full">
             <tr  class="approval">
                 <td>
-                    <div>Dilaporkan Oleh,</div>
-                </td>
-                <td>
                     <div>Diketahui Oleh,</div>
                 </td>
-            </tr>
-            <tr class="approval">
-                <td></td>
-            </tr>
-            <tr class="approval">
-                <td></td>
-            </tr>
-            <tr class="approval">
                 <td>
-                    <div>(_______________)</div>
-                    <div>{{ $data['pelapor'] }}</div>
+                    <div>Dilaporkan Oleh,</div>
                 </td>
+            </tr>
+            <tr class="approval">
+                <td></td>
+            </tr>
+            <tr class="approval">
+                <td></td>
+            </tr>
+            <tr class="approval">
                 <td>
                     <div>(__________)</div>
                     <div>{{ $data['mengetahui'] }}</div>
+                </td>
+                <td>
+                    <div>(_______________)</div>
+                    <div>{{ $data['pelapor'] }}</div>
                 </td>
             </tr>
         </table>
