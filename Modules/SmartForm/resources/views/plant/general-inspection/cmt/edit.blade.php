@@ -239,10 +239,10 @@
                                                                                     {{ $preInspect === null ? 'selected' : null }}>
                                                                                     N/A</option>
                                                                                 <option value="1"
-                                                                                    {{ $preInspect === "1" ? 'selected' : null }}>
+                                                                                    {{ $preInspect === 1 ? 'selected' : null }}>
                                                                                     Good</option>
                                                                                 <option value="0"
-                                                                                    {{ $preInspect === "0" ? 'selected' : null }}>
+                                                                                    {{ $preInspect === 0 ? 'selected' : null }}>
                                                                                     Broken</option>
                                                                             </select>
                                                                         </div>
@@ -256,10 +256,10 @@
                                                                                     {{ $finalInspect === null ? 'selected' : null }}>
                                                                                     N/A</option>
                                                                                 <option value="1"
-                                                                                    {{ $finalInspect === "1" ? 'selected' : null }}>
+                                                                                    {{ $finalInspect === 1 ? 'selected' : null }}>
                                                                                     Good</option>
                                                                                 <option value="0"
-                                                                                    {{ $finalInspect === "0" ? 'selected' : null }}>
+                                                                                    {{ $finalInspect === 0 ? 'selected' : null }}>
                                                                                     Broken</option>
                                                                             </select>
                                                                         </div>
@@ -273,10 +273,10 @@
                                                                                     {{ $deliveryInspect === null ? 'selected' : null }}>
                                                                                     N/A</option>
                                                                                 <option value="1"
-                                                                                    {{ $deliveryInspect === "1" ? 'selected' : null }}>
+                                                                                    {{ $deliveryInspect === 1 ? 'selected' : null }}>
                                                                                     Good</option>
                                                                                 <option value="0"
-                                                                                    {{ $deliveryInspect === "0" ? 'selected' : null }}>
+                                                                                    {{ $deliveryInspect === 0 ? 'selected' : null }}>
                                                                                     Broken</option>
                                                                             </select>
                                                                         </div>
@@ -296,7 +296,8 @@
                                 <h5>Analisa Hasil Inspeksi</h5>
                                 <div class="row">
                                     <div class="col-12">
-                                        <div class="card-body table-responsive shadow border-radius-lg" id="{{ 'analisa-hasil-inspeksi' }}">
+                                        <div class="card-body table-responsive shadow border-radius-lg"
+                                            id="{{ 'analisa-hasil-inspeksi' }}">
                                             <table class="table table-bordered">
                                                 <thead class="text-center">
                                                     <tr>
