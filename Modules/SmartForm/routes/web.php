@@ -101,7 +101,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/add-request-master', [RequestMasterController::class, 'SubmitFormRequestMaster'])->name("bss-form.log.add-request-master");
             Route::get('/pdf-req-master/{id}', [RequestMasterController::class, 'PdfReqMaster'])->name('bss-form.log.pdf-req-master');
             Route::get('/edit-req-master', [RequestMasterController::class, 'EditReqMaster'])->name('bss-form.log.edit-request-master');
-            Route::post('/update-request-master', [RequestMasterController::class, 'UpdateFormRequestMaster'])->name("bss-form.log.update-pemakaian-solar");
+            Route::post('/update-request-master', [RequestMasterController::class, 'UpdateFormRequestMaster'])->name("bss-form.log.update-request-master");
             Route::get('/catalog-view-req-master', [RequestMasterController::class, 'CatalogViewReqMaster'])->name('bss-form.log.catalog-view-request-master');
             Route::get('/detail-req-master', [RequestMasterController::class, 'DetailReqMaster'])->name('bss-form.log.detail-request-master');
             Route::post('/approve-reject-request-master', [RequestMasterController::class, 'ApproveRejectRequestMaster'])->name('bss-form.log.approve-reject-request-master');
@@ -124,7 +124,12 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/form-pengeluaran-oli', [PengeluaranOilController::class, 'formPengeluaranOli'])->name('bss-form.log.form-pengeluaran-oli');
             Route::post('/add-pengeluaran-oli', [PengeluaranOilController::class, 'SubmitFormPengeluaranOli'])->name("bss-form.log.add-pengeluaran-oli");
             Route::get('/pdf-pengeluaran-oli/{id}', [PengeluaranOilController::class, 'PdfPengeluaranOli'])->name('bss-form.log.pdf-pengeluaran-oli');
-
+            Route::get('/edit-pengeluaran-oli', [PengeluaranOilController::class, 'EditPengeluaranOli'])->name('bss-form.log.edit-pengeluaran-oli');
+            Route::post('/update-pengeluaran-oli', [PengeluaranOilController::class, 'UpdateFormPengeluaranOli'])->name("bss-form.log.update-pengeluaran-oli");
+            Route::get('/detail-pengeluaran-oli', [PengeluaranOilController::class, 'DetailPengeluaranOli'])->name('bss-form.log.detail-pengeluaran-oli');
+            Route::post('/approve-reject-pengeluaran-oli', [PengeluaranOilController::class, 'ApproveRejectPengeluaranOli'])->name('bss-form.log.approve-reject-pengeluaran-oli');
+            Route::post('/delete-pengeluaran-oli', [PengeluaranOilController::class, 'DeletePengeluaranOli'])->name('bss-form.log.delete-pengeluaran-oli');
+            
             // PEMAKAIAN SOLAR
             Route::get('/pemakaian-solar', [PemakaianSolarController::class, 'PemakaianSolarDashboard'])->name('bss-form.log.pemakaian-solar.dashboard');
             Route::get('/list-pemakaian-solar', [PemakaianSolarController::class, 'GetListPemakaianSolar'])->name("bss-form.log.list-pemakaian-solar");

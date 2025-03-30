@@ -12,13 +12,27 @@
 </style>
 @endsection
 
+@php
+
+$master = $data['master'];
+$detail = $data['detail'];
+$sites = $data['sites'];
+$users = $data['users'];
+$shifts = $data['shifts'];
+$jenis = $data['jenis'];
+$merks = $data['merks'];
+$components = $data['components'];
+$remarks = $data['remarks'];
+
+@endphp
+
 @section('content')
     <div class="row">
         <div class="col-12">
             <div class="card my-4">
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                     <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                        <h6 class="text-white text-capitalize ps-3">FORM BSS-FRM-LOG-034 PENGELUARAN OIL, GREASE & COOLANT</h6>
+                        <h6 class="text-white text-capitalize ps-3">EDIT FORM BSS-FRM-LOG-034 PENGELUARAN OIL, GREASE & COOLANT</h6>
                     </div>
                 </div>
                 <div class="card-body my-1">
@@ -29,13 +43,34 @@
                                     <div class="card-body">
                                         <table class="w-100">
                                             <tr>
-                                                <td class="fw-bold">No. Doc</td>
-                                                <td id="noDoc">No.Doc</td>
+                                                <td class="fw-bold" style="width: 10rem">No. Doc</td>
+                                                <td >{{$master->no_dok ?? '-'}}</td>
                                             </tr>
                                             <tr>
-                                                <td class="fw-bold">Date</td>
-                                                <td id="tglDoc"></td>
+                                                <td class="fw-bold">Created By</td>
+                                                <td id="requestor">{{$master->created_by ?? '-'}}</td>
                                             </tr>
+                                            <tr>
+                                                <td class="fw-bold">Created  Date</td>
+                                                <td>{{$master->created_at ?? '-'}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold">Updated By</td>
+                                                <td id="requestor">{{$master->updated_by ?? '-'}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold">Updated Date</td>
+                                                <td id="requestor">{{$master->updated_at ?? '-'}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold">Status</td>
+                                                <td id="requestor">{{$master->status_req ?? '-'}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold">Approve/Reject Reason</td>
+                                                <td id="requestor">{{$master->remark ?? '-'}}</td>
+                                            </tr>
+                                            
                                         </table>
                                     </div>
                                 </div>
@@ -47,12 +82,12 @@
                                     <div class="card-body">
                                         <table class="w-100">
                                             <tr>
-                                                <td class="fw-bold">Pilih Foreman/Spv</td>
+                                                <td class="fw-bold">Foreman/Spv</td>
                                                 <td>
-                                                    <select class="form-select form-select-sm input-text" id="iForeman" name="iForeman">
+                                                    <select class="form-select form-select-sm input-text" id="iForeman" name="iForeman" disabled>
                                                         <option value="">-- Pilih Submition Foreman/Spv --</option>
                                                         @forelse($users as $user)
-                                                            <option value="{{ $user->NIK ?? '' }}">
+                                                            <option value="{{ $user->NIK ?? '' }}" {{ $master->diketahui_oleh == $user->NIK ? 'selected' : '' }}>
                                                                 {{ $user->nama ?? 'Nama tidak tersedia' }}
                                                             </option>
                                                         @empty
@@ -64,16 +99,16 @@
                                             <tr>
                                                 <td class="fw-bold">No. Lube Station / Lube Truck</td>
                                                 <td>
-                                                    <input type="text" class="form-control" id="iLube" name="iLube" placeholder="Input no lube station">
+                                                    <input type="text" class="form-control" id="iLube" name="iLube" value="{{ $master->lube }}" placeholder="Input no lube station" readonly>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td class="fw-bold">Shift</td>
                                                 <td>
-                                                    <select class="form-select form-select-sm input-text" aria-label="Default select example" id="iShift" name="iShift">
+                                                    <select class="form-select form-select-sm input-text" aria-label="Default select example" id="iShift" name="iShift" disabled>
                                                         <option value="">-- select shift --</option>
                                                         @forelse($shifts as $code => $value)
-                                                            <option value="{{ $code }}">
+                                                            <option value="{{ $code }}" {{ $master->shift == $code ? 'selected' : '' }}>
                                                                 {{ $value }}
                                                             </option>
                                                         @empty
@@ -85,10 +120,10 @@
                                             <tr>
                                                 <td class="fw-bold">Site</td>
                                                 <td>
-                                                    <select class="form-select form-select-sm input-text" id="iJobSite" name="iJobSite">
+                                                    <select class="form-select form-select-sm input-text" id="iJobSite" name="iJobSite" disabled>
                                                         <option value="">-- select site --</option>
                                                         @forelse($sites as $site)
-                                                            <option value="{{ $site->KodeST ?? '' }}">
+                                                            <option value="{{ $site->KodeST ?? '' }}" {{ $master->site == $site->KodeST ? 'selected' : '' }}>
                                                                 {{ $site->KodeST ?? 'Site tidak tersedia' }}
                                                             </option>
                                                         @empty
@@ -105,141 +140,8 @@
                                
                         </div>
 
-                        <div class="my-3">
-                            <div class="card my-4">
-                                <div class="card-header p-3">
-                                  <h5 class="mb-0">ITEM</h5>
-                                </div>
-                                <div class="card-body p-3">
-                                  <div class="row">
-                                    <div class="col-2">
-                                      <div class="input-group input-group-static mb-4">
-                                        <label>Unit</label>
-                                        <input type="text" class="form-control" id="iUnit" name="iUnit">
-                                      </div>
-                                    </div>
-                                    
-                                    <div class="col-2">
-                                      <div class="input-group input-group-static mb-4">
-                                        <label>Time</label>
-                                        <input type="time" class="form-control" id="iTime" name="iTime">
-                                      </div>
-                                    </div>
-                                    
-                                    <div class="col-2">
-                                      <div class="input-group input-group-static mb-4">
-                                        <label>HM</label>
-                                        <input type="text" class="form-control" id="iHm" name="iHm">
-                                      </div>
-                                    </div>
-                                    
-                                    <div class="col-2">
-                                      <div class="input-group input-group-static mb-4">
-                                        <label>Jenis</label>
-                                        <select class="form-control" id="iJenis" name="iJenis">
-                                           @forelse($jenis as $code => $value)
-                                                <option value="{{ $code }}">
-                                                    {{ $value }}
-                                                </option>
-                                            @empty
-                                                <option>Data Jenis tidak ditemukan</option>
-                                            @endforelse
-                                        </select>
-                                      </div>
-                                    </div>
-                                    
-                                    <div class="col-2">
-                                      <div class="input-group input-group-static mb-4">
-                                        <label>Merk</label>
-                                        <select class="form-control" id="iMerk" name="iMerk">
-                                            @forelse($merks as $code => $value)
-                                                <option value="{{ $code }}">
-                                                    {{ $value }}
-                                                </option>
-                                            @empty
-                                                <option>Data Merk tidak ditemukan</option>
-                                            @endforelse
-                                        </select>
-                                      </div>
-                                    </div>
-                                    
-                                    <div class="col-2">
-                                        <div class="input-group input-group-static mb-4">
-                                            <label>Awal</label>
-                                            <input type="number" class="form-control" id="iAwal" name="iAwal">
-                                            <small id="awalError" class="text-danger d-none"></small>
-                                        </div>
-                                    </div>
-                                    <div class="col-2">
-                                        <div class="input-group input-group-static mb-4">
-                                            <label>Akhir</label>
-                                            <input type="number" class="form-control" id="iAkhir" name="iAkhir">
-                                            <small id="akhirError" class="text-danger d-none"></small>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="col-md-2 col-lg-2 d-flex align-items-center">
-                                      <span class="text-sm font-weight-bold">Qty: </span>
-                                      <span class="text-sm ms-2" id="totalQty">-</span>
-                                    </div>
-                                    
-                                    <div class="col-2">
-                                      <div class="input-group input-group-static mb-4">
-                                        <label>Component</label>
-                                        <select class="form-control" id="iCompo" name="iCompo">
-                                            @forelse($components as $code => $value)
-                                                <option value="{{ $code }}">
-                                                    {{ $value }}
-                                                </option>
-                                            @empty
-                                                <option>Data Component tidak ditemukan</option>
-                                            @endforelse
-                                        </select>
-                                      </div>
-                                    </div>
-                                    
-                                    <div class="col-2">
-                                      <div class="input-group input-group-static mb-4">
-                                        <label>Remark</label>
-                                        <select class="form-control" id="iRemark" name="iRemark">
-                                          <option value="" selected>-- Pilih Remark --</option> 
-                                           @forelse($remarks as $code => $value)
-                                                <option value="{{ $code }}">
-                                                    {{ $value }}
-                                                </option>
-                                            @empty
-                                                <option>Data Component tidak ditemukan</option>
-                                            @endforelse
-                                        </select>
-                                      </div>
-                                    </div>
-                                    
-                                    <div class="col-2">
-                                      <div class="input-group input-group-static mb-4">
-                                        <label>Pic / Nama</label>
-                                        <select class="form-control" id="iPic" name="iPic">
-                                            @forelse($users as $user)
-                                                <option value="{{ $user->nama ?? '' }}">
-                                                    {{ $user->nama ?? 'Nama tidak tersedia' }}
-                                                </option>
-                                            @empty
-                                                <option>Data karyawan tidak ditemukan</option>
-                                            @endforelse
-                                         </select>
-                                      </div>
-                                    </div>
-                                    
-                                    <div class="col-2 d-flex align-items-center">
-                                      <button id="btn-add-item" class="btn btn-primary mb-0">
-                                        <i class="material-icons text-sm">add</i> &nbsp; Tambah
-                                      </button>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                        </div>
 
-                        <div class="table-responsive">
+                        <div class="table-responsive mt-4">
                             <table id="item-pengeluaran" class="display" data-toggle="table">
                                 <thead>
                                     <tr>
@@ -255,137 +157,30 @@
                                         <th data-field="compo">Component</th>
                                         <th data-field="remark">Remark</th>
                                         <th data-field="pic">PIC / Nama</th>
-                                        <th data-formatter="actionFormatter">Actions</th>
                                     </tr>
                                 </thead>
                             </table>
                         </div>
                     </form>
 
-                    <!-- Edit Item Modal -->
-                    <div class="modal fade" id="editItemModal" tabindex="-1" aria-labelledby="editItemModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="editItemModalLabel">Edit Item</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <form id="editItemForm">
-                                        <input type="hidden" id="editIndex">
-                                        <div class="row">
-                                            <div class="col-6">
-                                                <div class="input-group input-group-static mb-4">
-                                                    <label>Unit</label>
-                                                    <input type="text" class="form-control" id="editUnit" name="editUnit">
-                                                </div>
-                                            </div>
-                                            <div class="col-6">
-                                                <div class="input-group input-group-static mb-4">
-                                                    <label>Time</label>
-                                                    <input type="time" class="form-control" id="editTime" name="editTime">
-                                                </div>
-                                            </div>
-                                            <div class="col-6">
-                                                <div class="input-group input-group-static mb-4">
-                                                    <label>HM</label>
-                                                    <input type="text" class="form-control" id="editHm" name="editHm">
-                                                </div>
-                                            </div>
-                                            <div class="col-6">
-                                                <div class="input-group input-group-static mb-4">
-                                                    <label>Jenis</label>
-                                                    <select class="form-control" id="editJenis" name="editJenis">
-                                                        @forelse($jenis as $code => $value)
-                                                            <option value="{{ $code }}">{{ $value }}</option>
-                                                        @empty
-                                                            <option>Data Jenis tidak ditemukan</option>
-                                                        @endforelse
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-6">
-                                                <div class="input-group input-group-static mb-4">
-                                                    <label>Merk</label>
-                                                    <select class="form-control" id="editMerk" name="editMerk">
-                                                        @forelse($merks as $code => $value)
-                                                            <option value="{{ $code }}">{{ $value }}</option>
-                                                        @empty
-                                                            <option>Data Merk tidak ditemukan</option>
-                                                        @endforelse
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-6">
-                                                <div class="input-group input-group-static mb-4">
-                                                    <label>Awal</label>
-                                                    <input type="number" class="form-control" id="editAwal" name="editAwal">
-                                                </div>
-                                            </div>
-                                            <div class="col-6">
-                                                <div class="input-group input-group-static mb-4">
-                                                    <label>Akhir</label>
-                                                    <input type="number" class="form-control" id="editAkhir" name="editAkhir">
-                                                </div>
-                                            </div>
-                                            <div class="col-6">
-                                                <div class="input-group input-group-static mb-4">
-                                                    <label>Component</label>
-                                                    <select class="form-control" id="editCompo" name="editCompo">
-                                                        @forelse($components as $code => $value)
-                                                            <option value="{{ $code }}">{{ $value }}</option>
-                                                        @empty
-                                                            <option>Data Component tidak ditemukan</option>
-                                                        @endforelse
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-6">
-                                                <div class="input-group input-group-static mb-4">
-                                                    <label>Remark</label>
-                                                    <select class="form-control" id="editRemark" name="editRemark">
-                                                        @forelse($remarks as $code => $value)
-                                                            <option value="{{ $code }}">{{ $value }}</option>
-                                                        @empty
-                                                            <option>Data Remark tidak ditemukan</option>
-                                                        @endforelse
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-6">
-                                                <div class="input-group input-group-static mb-4">
-                                                    <label>Pic / Nama</label>
-                                                    <select class="form-control" id="editPic" name="editPic">
-                                                        @forelse($users as $user)
-                                                            <option value="{{ $user->nama ?? '' }}">
-                                                                {{ $user->nama ?? 'Nama tidak tersedia' }}
-                                                            </option>
-                                                        @empty
-                                                            <option>Data karyawan tidak ditemukan</option>
-                                                        @endforelse
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary" id="saveEditItem">Save changes</button>
-                                </div>
-                            </div>
+                    <div class="card-footer">
+                        <div class="d align-items-center">
+                            @if ( session('user_id') == $master->diketahui_oleh && ($master->status_req == 'NEED APPROVED') )
+                                <button class="btn btn-primary ms-auto uploadBtn" style="margin:5px" id="btnApprove">
+                                    <i class="fas fa-check"></i> &nbsp;
+                                    Approve
+                                </button>
+                                <button class="btn btn-warning ms-auto uploadBtn" style="margin:5px" id="btnReject">
+                                    <i class="fas fa-close"></i> &nbsp;
+                                    Reject
+                                </button>
+                                <a href="{{url()->previous()}}" class="btn btn-secondary" style="margin:5px"><i class="fas fa-cancel"></i> &nbsp; Cancel</a>
+                            @else
+                                <a href="{{url()->previous()}}" class="btn btn-secondary" style="margin:5px"><i class="fas fa-cancel"></i> &nbsp; Cancel</a>
+                            @endif
                         </div>
                     </div>
 
-                    <div class="card-footer">
-                        <div class="d-flex align-items-center">
-                            <button class="btn btn-primary ms-auto uploadBtn" id="btnSubmitPengeluaranOli" style="margin:5px">
-                                <i class="fas fa-save"></i> &nbsp; 
-                                Submit Form
-                            </button>
-                            <a href="{{url()->previous()}}" class="btn btn-secondary" style="margin:5px"><i class="fas fa-cancel"></i> &nbsp; Cancel</a>
-                        </div>
-                    </div>
 
                 </div>
             </div>
@@ -401,10 +196,14 @@
         var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         var months_romawi = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
 
-        var btnSubmitPengeluaranOli = $("#btnSubmitPengeluaranOli");
+        var btnUpdatePengeluaranOli = $("#btnUpdatePengeluaranOli");
         var $table = $("#item-pengeluaran");
         var $buttonTambah = $("#btn-add-item")
         var totalQty = $("#totalQty")
+        var $btnDeletedData = $('#btnDeletedData');
+
+        var $btnApprove = $("#btnApprove")
+        var $btnReject = $("#btnReject")
         
         // Variable form
         var tanggalSekarang = $("#tanggalSekarang")
@@ -500,10 +299,11 @@
 
         function actionFormatter(value, row, index) {
             return `
-                <a class="btn btn-warning btn-sm edit-item" data-index="${index}">Edit</a>
-                <a class="btn btn-danger btn-sm" onclick="deleteRow(${index})">Delete</a>
+                <a class="btn btn-warning btn-sm edit-item" data-index="${index}" href="javascript:void(0)">Edit</a>
+                <a class="btn btn-danger btn-sm" onclick="deleteRow(${index})" href="javascript:void(0)">Delete</a>
             `;
         }
+
 
         function deleteRow(id) {
             $table.bootstrapTable('remove', {
@@ -512,35 +312,6 @@
             })
         }
 
-        function submitRequestMaster(data) {
-            $.ajax({
-                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                type: "post",
-                url: "bss-form/log/add-pengeluaran-oli",
-                data: data,
-                dataType: "json",
-                success: function(response) {
-                    if (response.code == 200) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Berhasil!',
-                            text: response.message,
-                        }).then((result) => {
-
-                        })
-                    }
-                },
-                error: function(xhr, ajaxOptions, thrownError) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'thrownError',
-                        html: errorMessage,
-                        confirmButtonText: 'OK'
-                    });
-                    console.log()
-                }
-            })
-        }
 
         $table.on('post-body.bs.table', function(data) {
             var items = [];
@@ -569,6 +340,15 @@
 
             dataPengeluaranOli.foreman = iForeman.val()
             dataPengeluaranOli.lube = iLube.val()
+
+
+            var detial = {{ Illuminate\Support\Js::from($detail) }}
+                console.log({{ Illuminate\Support\Js::from($data) }})
+                detial.forEach(element => {
+                    $table.bootstrapTable('append', element)
+                });
+
+
 
             // Edit item functionality
             $(document).on('click', '.edit-item', function() {
@@ -842,7 +622,8 @@
                 
             })
 
-            btnSubmitPengeluaranOli.click(function(e) {
+            btnUpdatePengeluaranOli.click(function(e) {
+                
                 e.preventDefault();
 
                 var errValidate = validateForm()
@@ -859,8 +640,9 @@
                     })
                 } else {
                     var dataReq = {
+                        id: "{{$master->id}}",
                         formName: dataPengeluaranOli.formName,
-                        noDoc: noDoc.text(),
+                        noDoc: "{{ $master->no_dok }}",
                         jobSite: iJobSite.val(),
                         shift: iShift.val(),
                         lube: iLube.text(),
@@ -876,7 +658,7 @@
                         }
                     }
                     showLoading();
-                    axios.post('/bss-form/log/add-pengeluaran-oli', formData, {
+                    axios.post('/bss-form/log/update-pengeluaran-oli', formData, {
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
                             'Content-Type': 'multipart/form-data'
@@ -887,8 +669,8 @@
                         console.log(response.data)
                         Swal.fire({
                                 icon: 'success',
-                                title: 'Request sukses direkam dgn no dokumen:',
-                                text: response.data.data.no_doc,
+                                title: 'Form update',
+                                text: 'Document '+ response.data.data.no_doc +' sukses di update',
                             }).then((result) => {
                                 window.location.href = `/bss-form/log/pengeluaran-oli`;
                             })
@@ -903,10 +685,157 @@
                 }
                 
             })
+       
+            $btnDeletedData.click(function(e) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Apakah anda yakin hapus dokument ini?',
+                    text: "Data yang dihapus tidak dapat dikembalikan!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#e91e63',
+                    cancelButtonColor: '#7b809a',
+                    confirmButtonText: 'Ya, hapus!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        showLoading()
+                        axios.post('/bss-form/log/delete-pengeluaran-oli', {
+                            id: "{{$master->id}}"
+                        })
+                        .then(function (response) {
+                            console.log(response.data)
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Delete Form',
+                                text: 'Document {{$master->no_dok}} sukses di hapus',
+                            }).then((result) => {
+                                window.location.href = `/bss-form/log/pengeluaran-oli`;
+                            })
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                            stopLoading()
+                        })
+                        .finally(function() {
+                            stopLoading()
+                        });
+                    }
+                })
+            })
+            
+            $btnApprove.click(function(e) {
+                e.preventDefault();
+                showApprovalDialog('approve');
+            })
+
+            $btnReject.click(function(e) {
+                e.preventDefault();
+                showApprovalDialog('reject');
+            })
+
+            function showApprovalDialog(action) {
+                const isApprove = action === 'approve';
+                const title = isApprove ? 'Are you sure you want to approve this document?' : 'Are you sure you want to reject this document?';
+                const confirmButtonColor = isApprove ? '#e91e63' : '#fb8c00';
+                const confirmButtonText = isApprove ? 'Yes, approve' : 'Yes, reject';
+                
+                Swal.fire({
+                    title: title,
+                    html: `
+                        <div class="form-group">
+                            <label for="swal-remark">${isApprove ? 'Optional remarks' : 'Reason for rejection (required)'}</label>
+                            <textarea id="swal-remark" class="form-control" style="height: 8rem !important;"
+                                placeholder="${isApprove ? 'Catatan ...' : 'Catatan ...'}"
+                                ${!isApprove ? 'required' : ''}></textarea>
+                            <small id="swal-remark-counter" style="font-size:small" class="text-muted float-right">0/500</small>
+                        </div>
+                    `,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: confirmButtonColor,
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: confirmButtonText,
+                    cancelButtonText: 'Cancel',
+                    focusConfirm: false,
+                    didOpen: () => {
+                        const remarkInput = document.getElementById('swal-remark');
+                        const counter = document.getElementById('swal-remark-counter');
+                        
+                        remarkInput.addEventListener('input', (e) => {
+                            if (e.target.value.length > 500) {
+                                e.target.value = e.target.value.substring(0, 500);
+                            }
+                            counter.textContent = `${e.target.value.length}/500`;
+                        });
+                        
+                        // Initialize counter
+                        counter.textContent = `${remarkInput.value.length}/500`;
+                    },
+                    preConfirm: () => {
+                        const remark = document.getElementById('swal-remark').value.trim();
+                        
+                        if (!isApprove && !remark) {
+                            Swal.showValidationMessage('Please provide a reason for rejection');
+                            return false;
+                        }
+                        
+                        return remark;
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        submitApprovalAction(action, result.value);
+                    }
+                });
+            }
+                
+            function submitApprovalAction(action, remark) {
+                showLoading();
+                
+                var dataReq = {
+                    id: "{{$master->id}}",
+                    noDoc: "{{ $master->no_dok }}",
+                    disetujuiOleh: "{{ session('user_id') }}",
+                    action: action,
+                    remark: remark || null
+                };
+
+                let formData = new FormData();
+                for (const key in dataReq) {
+                    if(key != "item") {
+                        formData.append(key, dataReq[key]);
+                    }
+                }
+
+                axios.post('/bss-form/log/approve-reject-pengeluaran-oli', formData, {
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                        'Content-Type': 'multipart/form-data'
+                    }
+                })
+                .then(function(response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: response.data.message,
+                    }).then((result) => {
+                        window.location.href = `/bss-form/log/pengeluaran-oli`;
+                    });
+                })
+                .catch(function(error) {
+                    console.error(error);
+                    let errorMessage = error.response?.data?.message || 'An error occurred';
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: errorMessage,
+                    });
+                })
+                .finally(function() {
+                    stopLoading();
+                });
+            }
+    
         })
 
-
-
-      
     </script>
 @endsection

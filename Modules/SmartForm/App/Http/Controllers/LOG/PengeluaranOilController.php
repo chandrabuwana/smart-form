@@ -16,6 +16,8 @@ use Modules\SmartForm\helpers\Status;
 
 class PengeluaranOilController extends Controller {
 
+    private const TABLE_MASTER = "FM_LOG_034_PENGELUARAN_OLI";
+    private const TABLE_DETAIL = "FM_LOG_034_PENGELUARAN_OLI_DETAIL";
     private const TABLE_SITES = 'tsite';
     private const TABLE_KARYAWAN = 'TKaryawan';
 
@@ -225,8 +227,8 @@ class PengeluaranOilController extends Controller {
     }
 
     function SubmitFormPengeluaranOli(Request $req) {
-        $TABLE_MASTER = "FM_LOG_034_PENGELUARAN_OLI";
-        $TABLE_DETAIL = "FM_LOG_034_PENGELUARAN_OLI_DETAIL";
+        $TABLE_MASTER = self::TABLE_MASTER;
+        $TABLE_DETAIL = self::TABLE_DETAIL;
         $response = array(
             'message' => "",
             'isSuccess' => false
@@ -337,4 +339,290 @@ class PengeluaranOilController extends Controller {
         $pdf = PDF::loadView('SmartForm::LOG/pengeluaran-oli-pdf',  ['data' => $data_master, 'data_detail' => $data_detail, 'error' => $errors])->setPaper('a4', 'landscape');
         return $pdf->download('BSS-FRM-LOG-034.pdf');
     }
+
+    public function GetDetail($request, $id, $returnJson = false){
+        $TABLE_MASTER = self::TABLE_MASTER;
+        $TABLE_DETAIL = self::TABLE_DETAIL;
+        $isError = true;
+        $errorMessage = '';
+        $response = array(
+            'message' => '',
+            'isSuccess' => false
+        );
+
+        try {
+            $sites = DB::connection('sqlsrv2')->table(self::TABLE_SITES)->select(columns: 'KodeST')->get();
+            $users = DB::connection('sqlsrv2')->table(self::TABLE_KARYAWAN)->select('NIK', 'nama')->get();
+            $shifts = self::LIST_SHIFT;
+            $jenis = self::LIST_JENIS;
+            $merks = self::LIST_MERKS;
+            $components = self::LIST_COMPONENT;
+            $remarks = self::LIST_REMARKS;
+
+            $data = DB::table($TABLE_MASTER)
+                ->select(  
+                $TABLE_MASTER.'.id', 
+                    $TABLE_MASTER.'.no_dok', 
+                    $TABLE_MASTER.'.status_req',
+                    $TABLE_MASTER.'.job_site AS site',
+                    $TABLE_MASTER.'.no_lube_station AS lube',
+                    $TABLE_MASTER.'.shift', 
+                    $TABLE_MASTER.'.dilaporkan_oleh',
+                    DB::raw('(SELECT Nama FROM HRD.dbo.TKaryawan WHERE NIK = '.$TABLE_MASTER.'.dilaporkan_oleh) as created_by'),
+                    $TABLE_MASTER.'.created_at',
+                    $TABLE_MASTER.'.diketahui_oleh',
+                    DB::raw('(SELECT Nama FROM HRD.dbo.TKaryawan WHERE NIK = '.$TABLE_MASTER.'.diketahui_oleh) as approvad_by'),
+                    DB::raw('(SELECT Nama FROM HRD.dbo.TKaryawan WHERE NIK = '.$TABLE_MASTER.'.updated_by) as updated_by'),
+                    $TABLE_MASTER.'.updated_at',
+                    $TABLE_MASTER.'.remark',
+                )
+                ->where('id', $id)->where('status_req', '!=', STATUS::DELETED)
+                ->first();
+
+            if (!$data) {
+                throw new Exception("Data not found");
+            }
+
+            $data_detail = DB::table($TABLE_DETAIL)
+                ->select('id_peng_oli', 'unit', 'time', 'hm', 'jenis', 'merk', 'awal', 'akhir', 'qty', 'component AS compo', 'remark', 'pic_nama as pic')
+                ->where('id_peng_oli', $data->id)
+                ->get();
+
+            $response['message'] = "Ok";
+            $response['isSuccess'] = true;
+            $response['data'] = [
+                'master' => $data,
+                'detail' => $data_detail,
+                'sites' => $sites,
+                'users' => $users,
+                'shifts' => $shifts,
+                'jenis' => $jenis,
+                'merks' => $merks,
+                'components' => $components,
+                'remarks' => $remarks
+            ];
+
+        } catch (Exception $ex) {
+            Log::error($ex->getMessage());
+            Log::error($ex->getTraceAsString());
+            
+            $response['message'] = $ex->getMessage();
+            $response['isSuccess'] = false;
+        }
+    
+        return $returnJson ? response()->json($response) : $response;
+    }
+
+    public function EditPengeluaranOli(Request $request){
+        $id = $request->query('id');
+        $response = $this->getDetail($request, $id);
+        
+        // Convert response to array if it's a JsonResponse
+        $responseData = $response instanceof \Illuminate\Http\JsonResponse 
+            ? $response->getData(true) 
+            : (array)$response;
+        //dd($responseData);
+        Log::debug('response edit: '. json_encode($responseData, JSON_PRETTY_PRINT));
+
+        return view('SmartForm::LOG/pengeluaran-oli/edit-form-pengeluaran-oli', $responseData);
+    }
+
+    
+    public function UpdateFormPengeluaranOli(Request $req) {
+        $TABLE_MASTER = "FM_LOG_034_PENGELUARAN_OLI";
+        $TABLE_DETAIL = "FM_LOG_034_PENGELUARAN_OLI_DETAIL";
+
+        $response = array(
+            'message' => "",
+            'isSuccess' => false
+        );
+        
+        $requested_by = $req->session()->get('user_id');
+        $data = $req->input();
+        
+        $id = $data['id']; 
+
+        $data_item = json_decode($data['item']);
+        
+        $master = DB::table($TABLE_MASTER)
+                ->select()
+                ->where('id', $id)
+                ->first();
+
+        $data_update = [
+            'no_dok' => $data['noDoc'],
+            'revisi' => $master->revisi + 1,
+            //'created_at' => $data['tglDoc'],
+            //'job_site' => $data['jobSite'],
+            //'no_lube_station' => $data['lube'],
+            //'shift' => $data['shift'],
+            //'dilaporkan_oleh' => $requested_by,
+            //'diketahui_oleh' => $data['foreman'],
+            'status_req' => STATUS::NEED_APPROVED,
+            'updated_by' => $requested_by,
+            'updated_at' => now()->toDateTimeString(),
+        ];
+
+        try {
+            DB::beginTransaction();
+            
+            // Update master record
+            $affected = DB::table($TABLE_MASTER)
+                ->where('id', $id)
+                ->update($data_update);
+            
+            // First delete all existing detail records
+            DB::table($TABLE_DETAIL)
+                ->where('id_peng_oli', $id)
+                ->delete();
+            
+            // Then insert the updated detail records
+            foreach ($data_item as $data_item_detail) {
+                DB::table($TABLE_DETAIL)->insert(array(
+                    'id_peng_oli' => $id,
+                    'unit' => $data_item_detail->unit,
+                    'time' => $data_item_detail->time,
+                    'hm' => $data_item_detail->hm,
+                    'jenis' => $data_item_detail->jenis,
+                    'merk' => $data_item_detail->merk,
+                    'awal' => $data_item_detail->awal,
+                    'akhir' => $data_item_detail->akhir,
+                    'qty' => $data_item_detail->qty,
+                    'component' => $data_item_detail->compo,
+                    'remark' => $data_item_detail->remark,
+                    'pic_nama' => $data_item_detail->pic
+                ));
+            }
+    
+            DB::commit();
+    
+            $response['message'] = "Update successful";
+            $response['isSuccess'] = true;
+            $response['data'] = array(
+                'no_doc' => $data_update['no_dok']
+            );
+        } catch (Exception $ex) {
+            Log::error($ex->getTraceAsString());
+            DB::rollBack();
+            $response['message'] = $ex->getMessage();
+            $response['isSuccess'] = false;
+        }
+    
+        return response()->json($response);
+    }
+
+    public function DetailPengeluaranOli(Request $request){
+        $id = $request->query('id');
+        $response = $this->getDetail($request, $id);
+        
+        // Convert response to array if it's a JsonResponse
+        $responseData = $response instanceof \Illuminate\Http\JsonResponse 
+            ? $response->getData(true) 
+            : (array)$response;
+        //dd($responseData);
+        Log::debug('response edit: '. json_encode($responseData, JSON_PRETTY_PRINT));
+
+        return view('SmartForm::LOG/pengeluaran-oli/detail-form-pengeluaran-oli', $responseData);
+    }
+
+    public function ApproveRejectPengeluaranOli(Request $request)
+    {
+        $TABLE_MASTER = self::TABLE_MASTER;
+
+        try {
+            $request->validate([
+                'id' => 'required|integer',
+                'noDoc' => 'required|string',
+                'disetujuiOleh' => 'required|integer',
+                'action' => 'required|string|in:approve,reject',
+                'remark' => 'nullable|string'
+            ]);
+
+            // Using DB::table() with where()->first() instead of findOrFail()
+            $PengeluaranOli = DB::table($TABLE_MASTER)->where('id', $request->id)->first();
+            
+            if (!$PengeluaranOli) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Document not found'
+                ], 404);
+            }
+
+            // Authorization check
+            if (session('user_id') != $PengeluaranOli->diketahui_oleh) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'You are not authorized to perform this action'
+                ], 403);
+            }
+
+            // Update status based on action
+            $updateData = [
+                'status_req' => $request->action === 'approve' ? STATUS::APPROVED : STATUS::REJECTED,
+                'updated_at' => now(),
+                'updated_by' => session('user_id'),
+                'remark' => $request->remark
+            ];
+
+            DB::table($TABLE_MASTER)
+                ->where('id', $request->id)
+                ->update($updateData);
+
+            $message = 'Document ' . $request->noDoc . ' ' . $request->action . 'ed successfully';
+
+            // If you need the updated record, fetch it again
+            $updatedRecord = DB::table($TABLE_MASTER)->find($request->id);
+
+            return response()->json([
+                'success' => true,
+                'data' => $updatedRecord,
+                'message' => $message
+            ]);
+
+        } catch (Exception $e) {
+            Log::error($e->getTraceAsString());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function DeletePengeluaranOli(Request $request) {
+        $TABLE_MASTER = self::TABLE_MASTER;
+
+        $response = array(
+            'message' => "",
+            'isSuccess' => false
+        );
+        
+        $id = $request->id; 
+        
+        try {
+            $data_update = [
+                'status_req' => STATUS::DELETED,
+                'deleted_at' => now()->toDateTimeString(),
+                'deleted_by' => $request->session()->get('user_id')
+            ];
+
+             // soft delete master 
+             DB::table($TABLE_MASTER)
+             ->where('id', $id)
+             ->update($data_update);
+    
+            $response['message'] = "Delete successful";
+            $response['isSuccess'] = true;
+        } catch (Exception $ex) {
+            Log::error($ex->getTraceAsString());
+            DB::rollBack();
+            $response['message'] = $ex->getMessage();
+            $response['isSuccess'] = false;
+        }
+    
+        return response()->json($response);
+
+    }
+
+
+
 }

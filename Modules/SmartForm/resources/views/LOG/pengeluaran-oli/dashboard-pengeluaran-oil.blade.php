@@ -167,9 +167,34 @@
         });
 
         function actionFormatter(value, row, index) {
-            return `
-                <a class="btn btn-primary btn-action btn-sm" href="/bss-form/log/pdf-pengeluaran-oli/${row.id}">Pdf</a>
-            `;
+            var btn = '';
+
+            if (row.status_req == "APPROVED") {
+                btn = btn + '<a type="button" class="btn btn-success btn-sm me-1" href="/bss-form/log/detail-pengeluaran-oli?id=' + row.id + '">View</a>';
+                btn = btn + '<a class="btn btn-primary btn-action btn-sm" href="/bss-form/log/pdf-pengeluaran-oli/' + row.id + '">Pdf</a>';
+                return btn;
+            }
+
+            //btn requester
+            if (row.dilaporkan_oleh == "{{ session('user_id') }}") {
+                btn = btn + '<a type="button" class="btn btn-success btn-sm me-1" href="/bss-form/log/detail-pengeluaran-oli?id=' + row.id + '">View</a>';
+                btn = btn + '<a type="button" class="btn btn-info btn-sm me-1" href="/bss-form/log/edit-pengeluaran-oli?id=' + row.id + '">Edit</a>';
+                btn = btn + '<a class="btn btn-primary btn-action btn-sm" href="/bss-form/log/pdf-pengeluaran-oli/' + row.id + '">Pdf</a>';
+                return btn;
+            } 
+
+            //btn approval
+            if (row.approval_by == "{{ session('username') }}") {
+                if(row.status_req == "REJECTED"){
+                    btn = btn + '<a type="button" class="btn btn-success btn-sm me-1" href="/bss-form/log/detail-pengeluaran-oli?id=' + row.id + '">View</a>';
+                    btn = btn + '<a class="btn btn-primary btn-action btn-sm" href="/bss-form/log/pdf-pengeluaran-oli/' + row.id + '">Pdf</a>';
+                    return btn;
+                }
+
+                btn = btn + '<a type="button" class="btn btn-warning btn-sm me-1" href="/bss-form/log/detail-pengeluaran-oli?id=' + row.id + '">Review</a>';
+                btn = btn + '<a class="btn btn-primary btn-action btn-sm" href="/bss-form/log/pdf-pengeluaran-oli/' + row.id + '">Pdf</a>';
+                return btn;
+            }
         }
     </script>
 @endsection

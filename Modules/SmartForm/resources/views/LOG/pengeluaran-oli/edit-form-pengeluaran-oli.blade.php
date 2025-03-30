@@ -12,13 +12,27 @@
 </style>
 @endsection
 
+@php
+
+$master = $data['master'];
+$detail = $data['detail'];
+$sites = $data['sites'];
+$users = $data['users'];
+$shifts = $data['shifts'];
+$jenis = $data['jenis'];
+$merks = $data['merks'];
+$components = $data['components'];
+$remarks = $data['remarks'];
+
+@endphp
+
 @section('content')
     <div class="row">
         <div class="col-12">
             <div class="card my-4">
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                     <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                        <h6 class="text-white text-capitalize ps-3">FORM BSS-FRM-LOG-034 PENGELUARAN OIL, GREASE & COOLANT</h6>
+                        <h6 class="text-white text-capitalize ps-3">EDIT FORM BSS-FRM-LOG-034 PENGELUARAN OIL, GREASE & COOLANT</h6>
                     </div>
                 </div>
                 <div class="card-body my-1">
@@ -29,13 +43,34 @@
                                     <div class="card-body">
                                         <table class="w-100">
                                             <tr>
-                                                <td class="fw-bold">No. Doc</td>
-                                                <td id="noDoc">No.Doc</td>
+                                                <td class="fw-bold" style="width: 10rem">No. Doc</td>
+                                                <td >{{$master->no_dok ?? '-'}}</td>
                                             </tr>
                                             <tr>
-                                                <td class="fw-bold">Date</td>
-                                                <td id="tglDoc"></td>
+                                                <td class="fw-bold">Created By</td>
+                                                <td id="requestor">{{$master->created_by ?? '-'}}</td>
                                             </tr>
+                                            <tr>
+                                                <td class="fw-bold">Created  Date</td>
+                                                <td>{{$master->created_at ?? '-'}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold">Updated By</td>
+                                                <td id="requestor">{{$master->updated_by ?? '-'}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold">Updated Date</td>
+                                                <td id="requestor">{{$master->updated_at ?? '-'}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold">Status</td>
+                                                <td id="requestor">{{$master->status_req ?? '-'}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold">Approve/Reject Reason</td>
+                                                <td id="requestor">{{$master->remark ?? '-'}}</td>
+                                            </tr>
+                                            
                                         </table>
                                     </div>
                                 </div>
@@ -47,12 +82,12 @@
                                     <div class="card-body">
                                         <table class="w-100">
                                             <tr>
-                                                <td class="fw-bold">Pilih Foreman/Spv</td>
+                                                <td class="fw-bold">Foreman/Spv</td>
                                                 <td>
-                                                    <select class="form-select form-select-sm input-text" id="iForeman" name="iForeman">
+                                                    <select class="form-select form-select-sm input-text" id="iForeman" name="iForeman" disabled>
                                                         <option value="">-- Pilih Submition Foreman/Spv --</option>
                                                         @forelse($users as $user)
-                                                            <option value="{{ $user->NIK ?? '' }}">
+                                                            <option value="{{ $user->NIK ?? '' }}" {{ $master->diketahui_oleh == $user->NIK ? 'selected' : '' }}>
                                                                 {{ $user->nama ?? 'Nama tidak tersedia' }}
                                                             </option>
                                                         @empty
@@ -64,16 +99,16 @@
                                             <tr>
                                                 <td class="fw-bold">No. Lube Station / Lube Truck</td>
                                                 <td>
-                                                    <input type="text" class="form-control" id="iLube" name="iLube" placeholder="Input no lube station">
+                                                    <input type="text" class="form-control" id="iLube" name="iLube" value="{{ $master->lube }}" placeholder="Input no lube station" readonly>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td class="fw-bold">Shift</td>
                                                 <td>
-                                                    <select class="form-select form-select-sm input-text" aria-label="Default select example" id="iShift" name="iShift">
+                                                    <select class="form-select form-select-sm input-text" aria-label="Default select example" id="iShift" name="iShift" disabled>
                                                         <option value="">-- select shift --</option>
                                                         @forelse($shifts as $code => $value)
-                                                            <option value="{{ $code }}">
+                                                            <option value="{{ $code }}" {{ $master->shift == $code ? 'selected' : '' }}>
                                                                 {{ $value }}
                                                             </option>
                                                         @empty
@@ -85,10 +120,10 @@
                                             <tr>
                                                 <td class="fw-bold">Site</td>
                                                 <td>
-                                                    <select class="form-select form-select-sm input-text" id="iJobSite" name="iJobSite">
+                                                    <select class="form-select form-select-sm input-text" id="iJobSite" name="iJobSite" disabled>
                                                         <option value="">-- select site --</option>
                                                         @forelse($sites as $site)
-                                                            <option value="{{ $site->KodeST ?? '' }}">
+                                                            <option value="{{ $site->KodeST ?? '' }}" {{ $master->site == $site->KodeST ? 'selected' : '' }}>
                                                                 {{ $site->KodeST ?? 'Site tidak tersedia' }}
                                                             </option>
                                                         @empty
@@ -377,15 +412,25 @@
                         </div>
                     </div>
 
-                    <div class="card-footer">
+                    <div class="card-footer" style="padding-right: 0px;">
                         <div class="d-flex align-items-center">
-                            <button class="btn btn-primary ms-auto uploadBtn" id="btnSubmitPengeluaranOli" style="margin:5px">
-                                <i class="fas fa-save"></i> &nbsp; 
-                                Submit Form
-                            </button>
-                            <a href="{{url()->previous()}}" class="btn btn-secondary" style="margin:5px"><i class="fas fa-cancel"></i> &nbsp; Cancel</a>
+                            <div class="w-80">
+                                <button class="btn btn-danger ms-auto" style="margin:5px"  id="btnDeletedData">
+                                    <i class="fas fa-trash"></i> &nbsp;
+                                    Delete Form
+                                </button>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <button class="btn btn-primary ms-auto uploadBtn" style="margin:5px"  id="btnUpdatePengeluaranOli">
+                                    <i class="fas fa-save"></i> &nbsp;
+                                    Update Form
+                                </button>
+                                <a href="{{url()->previous()}}" class="btn btn-secondary" style="margin:5px"><i class="fas fa-cancel"></i> &nbsp; Cancel</a>
+                            </div>
+                          
                         </div>
                     </div>
+
 
                 </div>
             </div>
@@ -401,10 +446,11 @@
         var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         var months_romawi = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
 
-        var btnSubmitPengeluaranOli = $("#btnSubmitPengeluaranOli");
+        var btnUpdatePengeluaranOli = $("#btnUpdatePengeluaranOli");
         var $table = $("#item-pengeluaran");
         var $buttonTambah = $("#btn-add-item")
         var totalQty = $("#totalQty")
+        var $btnDeletedData = $('#btnDeletedData');
         
         // Variable form
         var tanggalSekarang = $("#tanggalSekarang")
@@ -500,10 +546,11 @@
 
         function actionFormatter(value, row, index) {
             return `
-                <a class="btn btn-warning btn-sm edit-item" data-index="${index}">Edit</a>
-                <a class="btn btn-danger btn-sm" onclick="deleteRow(${index})">Delete</a>
+                <a class="btn btn-warning btn-sm edit-item" data-index="${index}" href="javascript:void(0)">Edit</a>
+                <a class="btn btn-danger btn-sm" onclick="deleteRow(${index})" href="javascript:void(0)">Delete</a>
             `;
         }
+
 
         function deleteRow(id) {
             $table.bootstrapTable('remove', {
@@ -512,35 +559,35 @@
             })
         }
 
-        function submitRequestMaster(data) {
-            $.ajax({
-                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                type: "post",
-                url: "bss-form/log/add-pengeluaran-oli",
-                data: data,
-                dataType: "json",
-                success: function(response) {
-                    if (response.code == 200) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Berhasil!',
-                            text: response.message,
-                        }).then((result) => {
+        // function submitRequestMaster(data) {
+        //     $.ajax({
+        //         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        //         type: "post",
+        //         url: "bss-form/log/add-pengeluaran-oli",
+        //         data: data,
+        //         dataType: "json",
+        //         success: function(response) {
+        //             if (response.code == 200) {
+        //                 Swal.fire({
+        //                     icon: 'success',
+        //                     title: 'Berhasil!',
+        //                     text: response.message,
+        //                 }).then((result) => {
 
-                        })
-                    }
-                },
-                error: function(xhr, ajaxOptions, thrownError) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'thrownError',
-                        html: errorMessage,
-                        confirmButtonText: 'OK'
-                    });
-                    console.log()
-                }
-            })
-        }
+        //                 })
+        //             }
+        //         },
+        //         error: function(xhr, ajaxOptions, thrownError) {
+        //             Swal.fire({
+        //                 icon: 'error',
+        //                 title: 'thrownError',
+        //                 html: errorMessage,
+        //                 confirmButtonText: 'OK'
+        //             });
+        //             console.log()
+        //         }
+        //     })
+        // }
 
         $table.on('post-body.bs.table', function(data) {
             var items = [];
@@ -569,6 +616,15 @@
 
             dataPengeluaranOli.foreman = iForeman.val()
             dataPengeluaranOli.lube = iLube.val()
+
+
+            var detial = {{ Illuminate\Support\Js::from($detail) }}
+                console.log({{ Illuminate\Support\Js::from($data) }})
+                detial.forEach(element => {
+                    $table.bootstrapTable('append', element)
+                });
+
+
 
             // Edit item functionality
             $(document).on('click', '.edit-item', function() {
@@ -842,7 +898,8 @@
                 
             })
 
-            btnSubmitPengeluaranOli.click(function(e) {
+            btnUpdatePengeluaranOli.click(function(e) {
+                
                 e.preventDefault();
 
                 var errValidate = validateForm()
@@ -859,8 +916,9 @@
                     })
                 } else {
                     var dataReq = {
+                        id: "{{$master->id}}",
                         formName: dataPengeluaranOli.formName,
-                        noDoc: noDoc.text(),
+                        noDoc: "{{ $master->no_dok }}",
                         jobSite: iJobSite.val(),
                         shift: iShift.val(),
                         lube: iLube.text(),
@@ -876,7 +934,7 @@
                         }
                     }
                     showLoading();
-                    axios.post('/bss-form/log/add-pengeluaran-oli', formData, {
+                    axios.post('/bss-form/log/update-pengeluaran-oli', formData, {
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
                             'Content-Type': 'multipart/form-data'
@@ -887,8 +945,8 @@
                         console.log(response.data)
                         Swal.fire({
                                 icon: 'success',
-                                title: 'Request sukses direkam dgn no dokumen:',
-                                text: response.data.data.no_doc,
+                                title: 'Form update',
+                                text: 'Document '+ response.data.data.no_doc +' sukses di update',
                             }).then((result) => {
                                 window.location.href = `/bss-form/log/pengeluaran-oli`;
                             })
@@ -902,6 +960,43 @@
                     });
                 }
                 
+            })
+       
+            $btnDeletedData.click(function(e) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Apakah anda yakin hapus dokument ini?',
+                    text: "Data yang dihapus tidak dapat dikembalikan!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#e91e63',
+                    cancelButtonColor: '#7b809a',
+                    confirmButtonText: 'Ya, hapus!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        showLoading()
+                        axios.post('/bss-form/log/delete-pengeluaran-oli', {
+                            id: "{{$master->id}}"
+                        })
+                        .then(function (response) {
+                            console.log(response.data)
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Delete Form',
+                                text: 'Document {{$master->no_dok}} sukses di hapus',
+                            }).then((result) => {
+                                window.location.href = `/bss-form/log/pengeluaran-oli`;
+                            })
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                            stopLoading()
+                        })
+                        .finally(function() {
+                            stopLoading()
+                        });
+                    }
+                })
             })
         })
 
