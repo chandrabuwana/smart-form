@@ -28,8 +28,6 @@
                                 <div class="card col-md-6">
                                     <table class="w-full">
                                         <tr>
-                                            <!-- <td>No. Doc</td>
-                                            <td>:</td> -->
                                             <td id="noDoc" hidden>No.Doc</td>
                                         </tr>
                                         <tr>
@@ -119,7 +117,6 @@
                                     <div class="col-md-4 col-lg-2">
                                         <label for="dMetode">Metode Pemenuhan</label>
                                         <fieldset class="card" style="width: 13rem;">
-                                          <!-- <legend class="col-form-label">Kondisi Luar Tabung :</legend> -->
                                           <div class="col-sm-12">
                                             <div class="form-check">
                                               <input class="form-check-input" type="checkbox" value="1" id="cTabung1">
@@ -232,14 +229,12 @@
         var $table = $("#item-inspeksi");
         var $buttonTambah = $("#btn-add-item")
         
-        // Variable form
         var tanggalSekarang = $("#tanggalSekarang")
         var noDoc = $("#noDoc");
         var tglDoc = $("#tglDoc");
         var dLok1 = $("#dLok1")
         var tCatatan = $("#tCatatan")
         
-        // Variable items
         var dLok2 = $("#dLok2")
         var dJenis = $("#dJenis")
         var dTekanan = $("#dTekanan")
@@ -312,7 +307,6 @@
         $table.on('post-body.bs.table', function(data) {
             var items = [];
             data.sender.data.forEach(function (item, index, arr) {
-                // console.log(item)
                 item.no = index;
                 items.push(item)
             })
@@ -338,8 +332,6 @@
 
             noDoc.text(generateNoDoc())
             tglDoc.text(formatTgl() || "-")
-
-            // dataInspeksiApar.foreman = iForeman.val()
 
             function validateItem() {
                 var errorValidate = []

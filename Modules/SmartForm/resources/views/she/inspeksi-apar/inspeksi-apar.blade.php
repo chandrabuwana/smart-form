@@ -63,7 +63,6 @@
                     </div>
                 </div>
 
-                <!-- Statistics Cards -->
                 <div class="row g-3 m-3 mb-4">
                     <div class="col-md-3">
                         <div class="card stats-card">
@@ -166,16 +165,9 @@
                                 </div>
                                 <div class="col-md-3 mb-3">
                                     <div class="input-group input-group-static mb-4 position-relative">
-                                        <label for="start_date" class="ms-0">Start Date</label>
+                                        <label for="start_date" class="ms-0">Tanggal Dibuat</label>
                                         <input type="date" class="form-control" id="start_date" name="start_date" 
                                             value="{{ $filters['start_date'] ?? '' }}">
-                                    </div>
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <div class="input-group input-group-static mb-4 position-relative">
-                                        <label for="end_date" class="ms-0">End Date</label>
-                                        <input type="date" class="form-control" id="end_date" name="end_date" 
-                                            value="{{ $filters['end_date'] ?? '' }}">
                                     </div>
                                 </div>
                                 <div class="col-md-12 mb-3 d-flex justify-content-start">
@@ -190,7 +182,6 @@
                         </form>
                     </div>
 
-                    <!-- Records Table -->
                     <div class="table-responsive p-0 mx-3">
                         <table class="table align-items-center mb-0">
                             <thead>
@@ -274,7 +265,6 @@
                                         @endphp
                                         
                                         @if(!$isApproved)
-                                            <!-- Check if user can approve as Diperiksa Oleh -->
                                             @if($record->diperiksa_oleh == $user_id && 
                                                (!isset($record->status) || 
                                                 json_decode($record->status, true)[0] === null))
@@ -292,7 +282,6 @@
                                                 </button>
                                             @endif
                                             
-                                            <!-- Check if user can approve as Diketahui Oleh -->
                                             @if($record->diketahui_oleh == $user_id && 
                                                 isset($record->status) &&
                                                 json_decode($record->status, true)[0] === 'approved' &&
@@ -311,7 +300,6 @@
                                                 </button>
                                             @endif
                                             
-                                            <!-- Check if user can approve as Disetujui Oleh -->
                                             @if($record->disetujui_oleh == $user_id && 
                                                 isset($record->status) &&
                                                 json_decode($record->status, true)[0] === 'approved' &&
@@ -331,7 +319,6 @@
                                                 </button>
                                             @endif
                                             
-                                            <!-- Delete & Edit buttons - Only for creator or admin -->
                                             @if(($record->dibuat_oleh == $user_id || in_array($user_id, ['1008491', '1008492', '1008493', '1008494', '1008526'])) &&
                                                 (!isset($record->status) || 
                                                 is_array(json_decode($record->status, true)) && 
@@ -367,7 +354,7 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
         function deleteInspeksiApar(id) {
-            console.log('Delete function called with ID:', id); // Added logging
+            console.log('Delete function called with ID:', id);
             
             Swal.fire({
                 title: 'Apakah Anda yakin?',
@@ -380,7 +367,6 @@
                 cancelButtonText: 'Batal'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Show loading
                     Swal.fire({
                         title: 'Memproses...',
                         html: 'Mohon tunggu sebentar.',
@@ -390,13 +376,12 @@
                         }
                     });
                     
-                    // Use a POST request with the correct URL and data
                     axios.post('{{ route("bss-form.she-019B.delete-inspeksi-apar") }}', {
                         id: id,
                         _token: '{{ csrf_token() }}'
                     })
                     .then(function(response) {
-                        console.log('Response:', response.data); // Added logging
+                        console.log('Response:', response.data);
                         
                         if (response.data.success) {
                             Swal.fire({
@@ -404,7 +389,6 @@
                                 title: 'Berhasil!',
                                 text: response.data.message
                             }).then(() => {
-                                // Reload the page to show updated data
                                 window.location.reload();
                             });
                         } else {
@@ -417,7 +401,7 @@
                     })
                     .catch(function(error) {
                         console.error('Error:', error);
-                        console.error('Error response:', error.response?.data); // Added detailed error logging
+                        console.error('Error response:', error.response?.data);
                         
                         Swal.fire({
                             icon: 'error',
@@ -431,23 +415,18 @@
         }
 
         $(document).ready(function() {
-            // Initialize date pickers
             flatpickr(".datepicker", {
                 dateFormat: "Y-m-d",
             });
 
-            // Clear filter functionality
             $('#btnClearFilter').click(function() {
-                // Clear all form inputs
                 $('#filterForm input[type="text"]').val('');
                 $('#filterForm input[type="date"]').val('');
                 $('#filterForm select').val('');
                 
-                // Submit the form
                 $('#filterForm').submit();
             });
 
-            // Show success message if exists
             @if(session('success'))
                 Swal.fire({
                     icon: 'success',
@@ -458,7 +437,6 @@
                 });
             @endif
 
-            // Show error message if exists
             @if(session('error'))
                 Swal.fire({
                     icon: 'error',
@@ -467,7 +445,6 @@
                 });
             @endif
 
-            // Handle approve button click
             $('.approve-btn').on('click', function() {
                 const recordId = $(this).data('id');
                 const position = $(this).data('position');
@@ -478,7 +455,6 @@
                     _token: '{{ csrf_token() }}'
                 };
                 
-                // Set approval data based on position
                 if (position === 0) {
                     approveData.diperiksa = 'approved';
                 } else if (position === 1) {
@@ -526,7 +502,6 @@
                 });
             });
 
-            // Handle reject button click
             $('.reject-btn').on('click', function() {
                 const recordId = $(this).data('id');
                 const position = $(this).data('position');
@@ -537,7 +512,6 @@
                     _token: '{{ csrf_token() }}'
                 };
                 
-                // Set rejection data based on position
                 if (position === 0) {
                     rejectData.diperiksa = 'rejected';
                 } else if (position === 1) {
@@ -585,7 +559,6 @@
                 });
             });
 
-            // Handle reset approval button click
             $('.reset-approval').on('click', function() {
                 const recordId = $(this).data('id');
 

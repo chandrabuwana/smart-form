@@ -259,7 +259,6 @@ $formatDate = function($date) {
         function dateFormatter(value, row) {
             if (!value) return '';
             
-            // Check if the date is already in a readable format
             if (typeof value === 'string' && value.match(/^\d{4}-\d{2}-\d{2}$/)) {
                 return value;
             }
@@ -443,7 +442,7 @@ $formatDate = function($date) {
                     selang: cSelang.prop('checked'),
                     label: cLabel.prop('checked'),
                     tabung2: cTabung2.prop('checked'),
-                    kondisi: {}, // This is a placeholder, the formatter will use the individual fields
+                    kondisi: {},
                     metode: dMetode.val(),
                     tglBerlaku: tBerlaku.val(),
                     pic: tPic.val(),
@@ -552,7 +551,6 @@ $formatDate = function($date) {
                     let status = JSON.parse(this.getAttribute('data-status') || '[]');
                     let nik = this.getAttribute("data-nik");
                     
-                    // Make sure status has the right length
                     while (status.length < 3) {
                         status.push(null);
                     }
@@ -604,7 +602,6 @@ $formatDate = function($date) {
                     let status = JSON.parse(this.getAttribute('data-status') || '[]');
                     let nik = this.getAttribute("data-nik");
                     
-                    // Make sure status has the right length
                     while (status.length < 3) {
                         status.push(null);
                     }

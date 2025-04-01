@@ -59,7 +59,6 @@
                     </div>
                 </div>
                 <div class="card-body my-1">
-                    <!-- Document Information -->
                     <div class="row mb-4">
                         <div class="col-md-6">
                             <div class="card">
@@ -106,7 +105,6 @@
                         </div>
                     </div>
 
-                    <!-- Approval Status -->
                     <div class="approval-section">
                         <h5 class="font-weight-bold">Approval Status</h5>
                         <div class="row">
@@ -208,7 +206,6 @@
                             </div>
                         </div>
                         
-                        <!-- Reset button for rejected status -->
                         @php
                             $hasRejection = isset($data->status) && in_array('rejected', $data->status);
                             $isCreatorOrAdmin = $data->dibuat_oleh == $nik || in_array($nik, ['1008491', '1008492', '1008493', '1008494', '1008526']);
@@ -224,7 +221,6 @@
                         @endif
                     </div>
 
-                    <!-- APAR Details Table -->
                     <div class="mt-4">
                         <h5 class="font-weight-bold">Detail APAR</h5>
                         <div class="table-responsive">
@@ -316,7 +312,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <script>
         $(document).ready(function() {
-            // Handle approve button click
             $('.approve-btn').on('click', function() {
                 const recordId = $(this).data('id');
                 const position = $(this).data('position');
@@ -327,7 +322,6 @@
                     _token: '{{ csrf_token() }}'
                 };
                 
-                // Set approval data based on position
                 if (position === 0) {
                     approveData.diperiksa = 'approved';
                 } else if (position === 1) {
@@ -377,7 +371,6 @@
                 });
             });
 
-            // Handle reject button click
             $('.reject-btn').on('click', function() {
                 const recordId = $(this).data('id');
                 const position = $(this).data('position');
@@ -388,7 +381,6 @@
                     _token: '{{ csrf_token() }}'
                 };
                 
-                // Set rejection data based on position
                 if (position === 0) {
                     rejectData.diperiksa = 'rejected';
                 } else if (position === 1) {
@@ -438,7 +430,6 @@
                 });
             });
 
-            // Handle reset approval button click
             $('.reset-approval').on('click', function() {
                 const recordId = $(this).data('id');
 

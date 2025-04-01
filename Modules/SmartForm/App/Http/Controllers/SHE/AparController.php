@@ -47,20 +47,14 @@ class AparController extends Controller {
         try {
             $query = DB::table('FM_SHE_036_INSPEKSI_APAR');
 
-            // Apply date filter
             if ($request->filled('start_date')) {
                 $query->whereDate('tanggal', '>=', $request->start_date);
             }
-            if ($request->filled('end_date')) {
-                $query->whereDate('tanggal', '<=', $request->end_date);
-            }
 
-            // Apply location filter
             if ($request->filled('work_location')) {
                 $query->where('lokasi_inspeksi', $request->work_location);
             }
 
-            // Apply search
             if ($request->filled('search')) {
                 $search = $request->search;
                 $query->where(function($q) use ($search) {
@@ -69,19 +63,15 @@ class AparController extends Controller {
                 });
             }
 
-            // Get records
             $records = $query->orderBy('id', 'desc')->get();
                 
-            // Get unique locations
             $locations = DB::table('FM_SHE_036_INSPEKSI_APAR')
                 ->select('lokasi_inspeksi')
                 ->distinct()
                 ->get();
                 
-            // Calculate records this month using 'tanggal' field
             $startOfMonth = now()->startOfMonth()->format('Y-m-d');
             $recordsThisMonth = $records->filter(function($record) use ($startOfMonth) {
-                // Convert string date to comparable format if needed
                 try {
                     $recordDate = \Carbon\Carbon::parse($record->tanggal)->format('Y-m-d');
                     return $recordDate >= $startOfMonth;
@@ -90,7 +80,6 @@ class AparController extends Controller {
                 }
             })->count();
 
-            // Get filter values for the view
             $filters = $request->all();
                 
             return view('SmartForm::she/inspeksi-apar/inspeksi-apar', [
@@ -113,11 +102,11 @@ class AparController extends Controller {
             'isSuccess' => false
         );
 
-        $sort = $request->query('sort', 'id'); // Default sort by id
-        $order = $request->query('order', 'desc'); // Default order is ascending
-        $offset = $request->query('offset', 0); // Default offset
-        $limit = $request->query('limit', null); // Default limit
-        $filter = $request->query('filter', null); // Default limit
+        $sort = $request->query('sort', 'id');
+        $order = $request->query('order', 'desc');
+        $offset = $request->query('offset', 0); 
+        $limit = $request->query('limit', null);
+        $filter = $request->query('filter', null);
         try {
             $master = DB::table($TABLE_MASTER)
                 ->select('id', 'no_dok', 'lokasi_inspeksi as lokasi', 'dibuat_oleh as dibuat','tanggal as tgl');
@@ -200,12 +189,10 @@ class AparController extends Controller {
                 ));
             }
             
-            // Create updated document number with the ID
             $no_doc_parts = explode('/', $data_insert['no_dok']);
             $no_doc_parts[0] = $id;
             $updated_no_doc = implode('/', $no_doc_parts);
             
-            // Update the record with the new document number
             DB::table($TABLE_MASTER)
                 ->where('id', $id)
                 ->update(['no_dok' => $updated_no_doc]);
@@ -240,7 +227,6 @@ class AparController extends Controller {
                 abort(404, 'Record not found');
             }
             
-            // Get user details from users table
             $createdBy = DB::table('users')
                 ->where('userid', $data->dibuat_oleh)
                 ->select('username')
@@ -270,13 +256,11 @@ class AparController extends Controller {
                     ->first();
             }
             
-            // Add username information to data object
             $data->dibuat_oleh_name = $createdBy ? $createdBy->username : null;
             $data->diperiksa_oleh_name = $checkedBy ? $checkedBy->username : null;
             $data->diketahui_oleh_name = $knownBy ? $knownBy->username : null;
             $data->disetujui_oleh_name = $approvedBy ? $approvedBy->username : null;
             
-            // Decode the status JSON
             if (isset($data->status) && !empty($data->status)) {
                 $statusArray = json_decode($data->status, true);
                 if (is_array($statusArray)) {
@@ -294,7 +278,6 @@ class AparController extends Controller {
                 
             $user_id = session('user_id');
             
-            // Check if document is fully approved
             $isApproved = false;
             if (isset($data->status) && is_array($data->status)) {
                 if (count(array_filter($data->status, function($item) { return $item === 'approved'; })) === 3) {
@@ -305,7 +288,7 @@ class AparController extends Controller {
             return view('smartform::she.inspeksi-apar.detail-inspeksi-apar', [
                 'data' => $data,
                 'detail' => $detail,
-                'nik' => $user_id, // Pass user's NIK to view for authorization checks
+                'nik' => $user_id,
                 'isApproved' => $isApproved
             ]);
         } catch (\Exception $e) {
@@ -317,7 +300,6 @@ class AparController extends Controller {
     public function UpdateInspeksiApar(Request $request)
     {
         try {
-            // Log incoming request data to debug
             Log::info('UpdateInspeksiApar request data:', $request->all());
             
             DB::beginTransaction();
@@ -326,7 +308,6 @@ class AparController extends Controller {
             $lokasi_inspeksi = $request->lok1;
             $catatan = $request->catatan;
             
-            // Check if item data is valid JSON
             if (!$request->has('item') || empty($request->item)) {
                 return response()->json([
                     'success' => false,
@@ -334,21 +315,17 @@ class AparController extends Controller {
                 ], 400);
             }
             
-            // Decode the item data safely
             try {
                 $data_item = json_decode($request->item);
                 
-                // Check if JSON decoding was successful
                 if (json_last_error() !== JSON_ERROR_NONE) {
                     throw new \Exception('Invalid JSON: ' . json_last_error_msg());
                 }
                 
-                // Verify data_item is an array
                 if (!is_array($data_item) && !is_object($data_item)) {
                     throw new \Exception('Item data is not an array or object');
                 }
                 
-                // Log the decoded data for debugging
                 Log::info('Decoded item data:', ['count' => is_array($data_item) ? count($data_item) : 1, 'data' => $data_item]);
             } catch (\Exception $e) {
                 Log::error('JSON decode error: ' . $e->getMessage());
@@ -359,7 +336,6 @@ class AparController extends Controller {
                 ], 400);
             }
             
-            // Get existing data to preserve fields not being updated
             $existingData = DB::table('FM_SHE_036_INSPEKSI_APAR')
                 ->where('id', $id)
                 ->first();
@@ -371,13 +347,11 @@ class AparController extends Controller {
                 ], 404);
             }
             
-            // Create update array
             $updateData = [
                 'lokasi_inspeksi' => $lokasi_inspeksi,
                 'catatan' => $catatan
             ];
             
-            // Only update approver fields if they are provided in the request
             if ($request->has('diperiksa')) {
                 $updateData['diperiksa_oleh'] = $request->diperiksa;
             }
@@ -388,31 +362,25 @@ class AparController extends Controller {
                 $updateData['disetujui_oleh'] = $request->disetujui;
             }
             
-            // Log the update data
             Log::info('Update data:', $updateData);
             
-            // Update master record
             $affected = DB::table('FM_SHE_036_INSPEKSI_APAR')
                 ->where('id', $id)
                 ->update($updateData);
                 
             Log::info('Master record updated, affected rows: ' . $affected);
             
-            // Delete existing details
             $detailsDeleted = DB::table('FM_SHE_036_INSPEKSI_APAR_DETAIL')
                 ->where('id_inspeksi_apar', $id)
                 ->delete();
                 
             Log::info('Deleted details: ' . $detailsDeleted);
             
-            // Insert new details
             foreach ($data_item as $data_item_detail) {
-                // Validate required fields
                 if (!isset($data_item_detail->lok2) || empty($data_item_detail->lok2)) {
                     throw new \Exception('Location is required for all items');
                 }
                 
-                // Format dates properly
                 $berlaku_sampai = null;
                 if (isset($data_item_detail->tglBerlaku) && !empty($data_item_detail->tglBerlaku)) {
                     try {
@@ -449,7 +417,6 @@ class AparController extends Controller {
                     'keterangan' => $data_item_detail->ket ?? ''
                 ];
                 
-                // Insert the detail record
                 $insertId = DB::table('FM_SHE_036_INSPEKSI_APAR_DETAIL')->insertGetId($insertData);
                 Log::info('Inserted detail with ID: ' . $insertId);
             }
@@ -473,17 +440,14 @@ class AparController extends Controller {
         }
     }
     
-    // Helper method for date formatting
     private function formatDate($dateString)
     {
         if (empty($dateString)) return null;
         
-        // If already in YYYY-MM-DD format, return as is
         if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateString)) {
             return $dateString;
         }
         
-        // For "Apr 1 2025 12:00:00:AM" format
         if (preg_match('/(\w+)\s+(\d+)\s+(\d{4})\s+(\d{2}):(\d{2}):(\d{2}):(\w+)/', $dateString, $matches)) {
             $month = date('m', strtotime($matches[1]));
             $day = $matches[2];
@@ -491,7 +455,6 @@ class AparController extends Controller {
             return "$year-$month-$day";
         }
         
-        // Try standard date parsing for other formats
         try {
             return date('Y-m-d', strtotime($dateString));
         } catch (\Exception $e) {
@@ -502,7 +465,6 @@ class AparController extends Controller {
     
     public function DeleteInspeksiApar(Request $request) {
         try {
-            // Log all incoming data for debugging
             Log::info('DeleteInspeksiApar request data:', $request->all());
             
             $id = $request->id;
@@ -514,7 +476,6 @@ class AparController extends Controller {
                 ], 400);
             }
             
-            // Check if record exists first
             $recordExists = DB::table('FM_SHE_036_INSPEKSI_APAR')
                 ->where('id', $id)
                 ->exists();
@@ -526,32 +487,27 @@ class AparController extends Controller {
                 ], 404);
             }
             
-            // Log table structure
             $detailTableStructure = DB::getSchemaBuilder()->getColumnListing('FM_SHE_036_INSPEKSI_APAR_DETAIL');
             $masterTableStructure = DB::getSchemaBuilder()->getColumnListing('FM_SHE_036_INSPEKSI_APAR');
             
             Log::info('Detail table structure:', $detailTableStructure);
             Log::info('Master table structure:', $masterTableStructure);
             
-            // Get existing details for logging
             $existingDetails = DB::table('FM_SHE_036_INSPEKSI_APAR_DETAIL')
                 ->where('id_inspeksi_apar', $id)
                 ->get();
                 
             Log::info('Existing details count: ' . count($existingDetails));
             
-            // Begin transaction
             DB::beginTransaction();
             
             try {
-                // Delete details first
                 $detailsDeleted = DB::table('FM_SHE_036_INSPEKSI_APAR_DETAIL')
                     ->where('id_inspeksi_apar', $id)
                     ->delete();
                     
                 Log::info('Details deleted: ' . $detailsDeleted);
                 
-                // Then delete the master record
                 $masterDeleted = DB::table('FM_SHE_036_INSPEKSI_APAR')
                     ->where('id', $id)
                     ->delete();
@@ -611,7 +567,6 @@ class AparController extends Controller {
                 $detail->nomor = $nomor;            
                 $nomor++;
             }
-            // DB => data variable
             $data_master['id'] = $data->id;
             $data_master['tgl'] = $data->tgl;
             $data_master['dibuat'] = $data->dibuat;
@@ -635,7 +590,6 @@ class AparController extends Controller {
         }
         
         try {
-            // Get master data
             $data = DB::table('FM_SHE_036_INSPEKSI_APAR')
                 ->where('id', $id)
                 ->first();
@@ -644,15 +598,12 @@ class AparController extends Controller {
                 return abort(404, 'Data not found');
             }
             
-            // Get detail data
             $detail = DB::table('FM_SHE_036_INSPEKSI_APAR_DETAIL')
                 ->where('id_inspeksi_apar', $id)
                 ->get();
             
-            // Get current user ID
             $user_id = session('user_id');
             
-            // Get list of users for approval dropdowns - REMOVED STATUS FILTER
             $approvalList = DB::table('users')
                 ->select('userid as nik', 'username as nama')
                 ->orderBy('username')
@@ -662,8 +613,8 @@ class AparController extends Controller {
                 'data' => $data,
                 'detail' => $detail,
                 'list_dept' => self::LIST_DEPT,
-                'nik' => $user_id,  // Pass the current user's NIK
-                'approvalList' => $approvalList  // Pass the list of users for approval dropdowns
+                'nik' => $user_id,
+                'approvalList' => $approvalList
             ]);
         } catch (Exception $e) {
             Log::error('Error in EditInspeksiApar: ' . $e->getMessage());
@@ -674,13 +625,11 @@ class AparController extends Controller {
     public function Approve(Request $request)
     {
         try {
-            // Log incoming request for debugging
             Log::info('Approve request data:', $request->all());
             
             $id = $request->id;
             $userId = $request->session()->get('user_id');
             
-            // Get user info from users table
             $user = DB::table('users')
                 ->where('userid', $userId)
                 ->first();
@@ -695,7 +644,6 @@ class AparController extends Controller {
             
             Log::info('Current user:', ['userid' => $user->userid, 'username' => $user->username]);
             
-            // Get existing record
             $record = DB::table('FM_SHE_036_INSPEKSI_APAR')
                 ->where('id', $id)
                 ->first();
@@ -707,16 +655,12 @@ class AparController extends Controller {
                 ], 404);
             }
             
-            // For debugging, log the record data
             Log::info('Record data:', (array)$record);
             
-            // Check if status column exists
             if (!property_exists($record, 'status') || empty($record->status)) {
-                // Initialize status if it doesn't exist
                 $statusArray = [null, null, null];
             } else {
                 try {
-                    // Try to decode the JSON
                     $statusArray = json_decode($record->status, true);
                     if (!is_array($statusArray) || count($statusArray) !== 3) {
                         $statusArray = [null, null, null];
@@ -729,23 +673,21 @@ class AparController extends Controller {
             
             Log::info('Status array before update:', $statusArray);
             
-            // Create update array for the database
             $updateData = [
-                'status' => null  // Will be set below
+                'status' => null
             ];
             
-            // Update the appropriate status and set the approver field
             if (isset($request->diperiksa)) {
                 $statusArray[0] = 'approved';
-                $updateData['diperiksa_oleh'] = $userId;  // Set the current user as the approver
+                $updateData['diperiksa_oleh'] = $userId;
                 Log::info('Updating diperiksa status');
             } elseif (isset($request->diketahui)) {
                 $statusArray[1] = 'approved';
-                $updateData['diketahui_oleh'] = $userId;  // Set the current user as the approver
+                $updateData['diketahui_oleh'] = $userId;
                 Log::info('Updating diketahui status');
             } elseif (isset($request->disetujui)) {
                 $statusArray[2] = 'approved';
-                $updateData['disetujui_oleh'] = $userId;  // Set the current user as the approver
+                $updateData['disetujui_oleh'] = $userId;
                 Log::info('Updating disetujui status');
             } else {
                 return response()->json([
@@ -754,14 +696,11 @@ class AparController extends Controller {
                 ]);
             }
             
-            // Set the updated status array in the update data
             $updateData['status'] = json_encode($statusArray);
             
-            // Log the updated status array
             Log::info('Status array after update:', $statusArray);
             Log::info('Update data:', $updateData);
             
-            // Update the record
             DB::table('FM_SHE_036_INSPEKSI_APAR')
                 ->where('id', $id)
                 ->update($updateData);
@@ -784,13 +723,11 @@ class AparController extends Controller {
     public function Reject(Request $request)
     {
         try {
-            // Log incoming request for debugging
             Log::info('Reject request data:', $request->all());
             
             $id = $request->id;
             $userId = $request->session()->get('user_id');
             
-            // Get user info from users table
             $user = DB::table('users')
                 ->where('userid', $userId)
                 ->first();
@@ -805,7 +742,6 @@ class AparController extends Controller {
             
             Log::info('Current user:', ['userid' => $user->userid, 'username' => $user->username]);
             
-            // Get existing record
             $record = DB::table('FM_SHE_036_INSPEKSI_APAR')
                 ->where('id', $id)
                 ->first();
@@ -817,16 +753,12 @@ class AparController extends Controller {
                 ], 404);
             }
             
-            // For debugging, log the record data
             Log::info('Record data:', (array)$record);
             
-            // Check if status column exists
             if (!property_exists($record, 'status') || empty($record->status)) {
-                // Initialize status if it doesn't exist
                 $statusArray = [null, null, null];
             } else {
                 try {
-                    // Try to decode the JSON
                     $statusArray = json_decode($record->status, true);
                     if (!is_array($statusArray) || count($statusArray) !== 3) {
                         $statusArray = [null, null, null];
@@ -839,23 +771,21 @@ class AparController extends Controller {
             
             Log::info('Status array before update:', $statusArray);
             
-            // Create update array for the database
             $updateData = [
-                'status' => null  // Will be set below
+                'status' => null
             ];
             
-            // Update the appropriate status and set the approver field
             if (isset($request->diperiksa)) {
                 $statusArray[0] = 'rejected';
-                $updateData['diperiksa_oleh'] = $userId;  // Set the current user as the rejector
+                $updateData['diperiksa_oleh'] = $userId;
                 Log::info('Updating diperiksa status to rejected');
             } elseif (isset($request->diketahui)) {
                 $statusArray[1] = 'rejected';
-                $updateData['diketahui_oleh'] = $userId;  // Set the current user as the rejector
+                $updateData['diketahui_oleh'] = $userId;
                 Log::info('Updating diketahui status to rejected');
             } elseif (isset($request->disetujui)) {
                 $statusArray[2] = 'rejected';
-                $updateData['disetujui_oleh'] = $userId;  // Set the current user as the rejector
+                $updateData['disetujui_oleh'] = $userId;
                 Log::info('Updating disetujui status to rejected');
             } else {
                 return response()->json([
@@ -864,14 +794,11 @@ class AparController extends Controller {
                 ]);
             }
             
-            // Set the updated status array in the update data
             $updateData['status'] = json_encode($statusArray);
             
-            // Log the updated status array
             Log::info('Status array after update:', $statusArray);
             Log::info('Update data:', $updateData);
             
-            // Update the record
             DB::table('FM_SHE_036_INSPEKSI_APAR')
                 ->where('id', $id)
                 ->update($updateData);
@@ -894,13 +821,11 @@ class AparController extends Controller {
     public function Reset($id, Request $request)
     {
         try {
-            // Log the reset request
             Log::info('Reset request for ID: ' . $id);
             
             $userId = $request->session()->get('user_id');
             Log::info('Current user ID: ' . $userId);
             
-            // Get existing record
             $record = DB::table('FM_SHE_036_INSPEKSI_APAR')
                 ->where('id', $id)
                 ->first();
@@ -912,10 +837,8 @@ class AparController extends Controller {
                 ], 404);
             }
             
-            // For debugging, log the record data
             Log::info('Record data:', (array)$record);
             
-            // Get user info from users table
             $user = DB::table('users')
                 ->where('userid', $userId)
                 ->first();
@@ -926,7 +849,6 @@ class AparController extends Controller {
                 Log::info('User info:', ['userid' => $user->userid, 'username' => $user->username]);
             }
             
-            // Check if user is authorized (creator or admin)
             $isAuthorized = ($record->dibuat_oleh == $userId) || 
                             in_array($userId, $this->user_sm);
             
@@ -937,15 +859,13 @@ class AparController extends Controller {
                 ]);
             }
             
-            // Reset status array to all null values
             $resetStatus = json_encode([null, null, null]);
             
-            // Update the record
             DB::table('FM_SHE_036_INSPEKSI_APAR')
                 ->where('id', $id)
                 ->update([
                     'status' => $resetStatus,
-                    'diperiksa_oleh' => null,  // Clear the approver fields
+                    'diperiksa_oleh' => null,
                     'diketahui_oleh' => null,
                     'disetujui_oleh' => null
                 ]);
