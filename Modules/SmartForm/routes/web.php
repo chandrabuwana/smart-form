@@ -106,7 +106,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/detail-req-master', [RequestMasterController::class, 'DetailReqMaster'])->name('bss-form.log.detail-request-master');
             Route::post('/approve-reject-request-master', [RequestMasterController::class, 'ApproveRejectRequestMaster'])->name('bss-form.log.approve-reject-request-master');
             Route::post('/delete-request-master', [RequestMasterController::class, 'DeleteRequestMaster'])->name('bss-form.log.delete-request-master');
-            
+
             // PERMINTAAN PENGISIAN FUEL
             Route::get('/request-fuel', [FuelController::class, 'FuelDashboard'])->name('bss-form.log.fuel.dashboard');
             Route::get('/list-fuel', [FuelController::class, 'GetListRequestFuel'])->name("bss-form.log.list-fuel");
@@ -129,7 +129,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/detail-pengeluaran-oli', [PengeluaranOilController::class, 'DetailPengeluaranOli'])->name('bss-form.log.detail-pengeluaran-oli');
             Route::post('/approve-reject-pengeluaran-oli', [PengeluaranOilController::class, 'ApproveRejectPengeluaranOli'])->name('bss-form.log.approve-reject-pengeluaran-oli');
             Route::post('/delete-pengeluaran-oli', [PengeluaranOilController::class, 'DeletePengeluaranOli'])->name('bss-form.log.delete-pengeluaran-oli');
-            
+
             // PEMAKAIAN SOLAR
             Route::get('/pemakaian-solar', [PemakaianSolarController::class, 'PemakaianSolarDashboard'])->name('bss-form.log.pemakaian-solar.dashboard');
             Route::get('/list-pemakaian-solar', [PemakaianSolarController::class, 'GetListPemakaianSolar'])->name("bss-form.log.list-pemakaian-solar");
@@ -332,7 +332,13 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/store-form', [InspeksiToiletMessKantorController::class, 'storeForm'])->name('store-wc');
             Route::get('/list', [InspeksiToiletMessKantorController::class, 'list'])->name('list-wc');
             Route::get('/export-inspeksi/{id}', [InspeksiToiletMessKantorController::class, 'exportPDF'])->name('export-inspeksi');
-
+            Route::put('/update/{id}', [InspeksiToiletMessKantorController::class, 'Update'])->name('wc-update');
+            Route::get('/detail/{id}', [InspeksiToiletMessKantorController::class, 'detail'])->name('wc-detail');
+            Route::delete('/delete/{id}', [InspeksiToiletMessKantorController::class, 'Delete'])->name('wc-delete');
+            Route::get('/show/{id}', [InspeksiToiletMessKantorController::class, 'show'])->name('wc-show');
+            Route::post('/approve-ppm.xe1250', [InspeksiToiletMessKantorController::class, 'Approve'])->name("wc-approve");
+            Route::post('/reject-ppm.xe1250', [InspeksiToiletMessKantorController::class, 'Reject'])->name("wc-reject");
+            Route::post('/reset-ppm.xe1250/{id}', [InspeksiToiletMessKantorController::class, 'Reset'])->name("wc-reset");
         });
 
         Route::prefix('it-ops')->group(function () {
