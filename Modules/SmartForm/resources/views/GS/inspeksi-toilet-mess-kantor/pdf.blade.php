@@ -305,7 +305,7 @@ p.thick {
                         </colgroup>
                         <tr class="itemKop">
                             <td style="text-align:left;">Diinspeksi Oleh</td>
-                            <td style="text-align:left; word-wrap: break-word; overflow-wrap: break-word;">: {{ $data->diinspeksi_oleh }}</td>
+                            <td style="text-align:left; word-wrap: break-word; overflow-wrap: break-word;">: {{ $data->checked_by }}</td>
                             <td style="text-align:left;">Tanda Tangan</td>
                             <td style="text-align:left;">:</td>
                             <td style="text-align:left;">Tanggal</td>
@@ -313,7 +313,7 @@ p.thick {
                         </tr>
                         <tr class="itemKop">
                             <td style="text-align:left;">Diinspeksi Ulang Oleh</td>
-                            <td style="text-align:left; word-wrap: break-word; overflow-wrap: break-word;">: {{ $data->diinspeksi_ulang_oleh }}</td>
+                            <td style="text-align:left; word-wrap: break-word; overflow-wrap: break-word;">: {{ $data->validated_by }}</td>
                             <td style="text-align:left;">Tanda Tangan</td>
                             <td style="text-align:left;">:</td>
                             <td style="text-align:left;">Tanggal</td>

@@ -659,105 +659,74 @@
             document.getElementById("btn900Approve").addEventListener("click", function() {
                 let docNumber = this.getAttribute("data-doc");
                 let status = JSON.parse(this.getAttribute('data-status'));
-
                 let nik = this.getAttribute("data-nik");
 
-                axios.post("{{ route('plant.dh24.approve') }}", {
-                        _token: "{{ csrf_token() }}",
+                fetch("{{ route('plant.dh24.approve') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    },
+                    body: JSON.stringify({
                         doc_num: docNumber,
-
                         checked: nik == "{{ $data->checked_by }}" ? 'approved' : status[0],
                         validated: nik == "{{ $data->validated_by }}" ? 'approved' : status[1],
-
-                    })
-                    .then(response => {
-                        if (response.data.success) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Success',
-                                text: response.data.message
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    window.location.href =
-                                        '{{ route('dashboard-dh24') }}';
-                                }
-                            });
-                        }
-                    })
-                    .catch(error => {
-                        let errorMessage = 'Terjadi kesalahan pada sistem';
-                        console.log("Error respons:", error.response);
-
-                        if (error.response) {
-                            if (error.response.data.errors) {
-                                errorMessage = Object.values(error.response.data.errors).flat().join(
-                                    '\n');
-                            } else if (error.response.data.message) {
-                                errorMessage = error.response.data.message;
-                            }
-                        }
-
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: errorMessage
-                        });
-                    });
+                        nik: nik,
+                    }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        window.location.href = "{{ route('dashboard-dh24') }}";
+                    } else {
+                        alert('Gagal Approve data.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Terjadi kesalahan.');
+                });
             });
 
 
-            document.getElementById("btn900Reject").addEventListener("click", function() {
-                let docNumber = this.getAttribute("data-doc");
-                let status = JSON.parse(this.getAttribute('data-status'));
-                let nik = this.getAttribute("data-nik");
+            document.getElementById('btn900Reject').addEventListener('click', function() {
+                const docNum = this.getAttribute('data-doc');
+                const nik = this.getAttribute('data-nik');
+                const status = JSON.parse(this.getAttribute('data-status'));
 
-                axios.post("{{ route('plant.dh24.reject') }}", {
-                        _token: "{{ csrf_token() }}",
-                        doc_num: docNumber,
-                        checked: nik == "{{ $data->checked_by }}" ? 'rejected' : status[0],
-                        validated: nik == "{{ $data->validated_by }}" ? 'rejected' : status[1],
-                    })
-                    .then(response => {
-                        if (response.data.success) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Success',
-                                text: response.data.message
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    window.location.href =
-                                        '{{ route('dashboard-dh24') }}';
-                                }
-                            });
-                        }
-                    })
-                    .catch(error => {
-                        let errorMessage = 'Terjadi kesalahan pada sistem';
-                        console.log("Error respons:", error.response);
-
-                        if (error.response) {
-                            if (error.response.data.errors) {
-                                errorMessage = Object.values(error.response.data.errors).flat().join(
-                                    '\n');
-                            } else if (error.response.data.message) {
-                                errorMessage = error.response.data.message;
-                            }
-                        }
-
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: errorMessage
-                        });
-                    });
+                fetch('{{ route('plant.dh24.reject') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    },
+                    body: JSON.stringify({
+                        doc_num: docNum,
+                        checked: 'rejected',
+                        validated: status,
+                        nik: nik
+                    }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        window.location.href = "{{ route('dashboard-dh24') }}";
+                    } else {
+                        alert('Gagal Reject data.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Terjadi kesalahan.');
+                });
             });
-
-
         });
 
         function resetApproval(id) {
             if (confirm('Are you sure you want to reset this Approval?')) {
-                axios.post('{{ route('plant.ppm.xe1250.reset', ['id' => 'ID']) }}'.replace('ID', id))
+                axios.post('{{ route('plant.dh24.reset', ['id' => 'ID']) }}'.replace('ID', id))
                     .then(function(response) {
                         console.log('Response:', response);
                         if (response.data.success) {

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Modules\SmartForm\helpers\HrdHelper;
 use Illuminate\Support\Facades\Log;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 
 class InspeksiToiletMessKantorController extends Controller
 {
@@ -148,7 +149,7 @@ class InspeksiToiletMessKantorController extends Controller
                 'dept' => $request->dept,
                 'shift' => $request->shift,
                 'loker' => $request->loker,
-                'jml_ins' => 5,
+                'jml_ins' => $request->jml_ins,
                 'checked_by' => $request->checked_by,
                 'validated_by' => $request->validated_by,
                 'mengetahui' => $request->mengetahui,
@@ -327,6 +328,7 @@ class InspeksiToiletMessKantorController extends Controller
     }
 
     public function Reject( Request $request ) {
+        // dd($request);
         $data = [
             'status' => json_encode( array_values( [
                 $request->checked,
@@ -384,7 +386,7 @@ class InspeksiToiletMessKantorController extends Controller
             'Mengetahui' => 'Mengetahui'
         ];
 
-        return view('SmartForm::GS/inspeksi-toilet-mess-kantor/show-wc', [
+        return view('SmartForm::GS/inspeksi-toilet-mess-kantor/detail-wc', [
             'data' => $data,
             'questions' => $pertanyaan,
             'dropdowns' => $dropdowns,

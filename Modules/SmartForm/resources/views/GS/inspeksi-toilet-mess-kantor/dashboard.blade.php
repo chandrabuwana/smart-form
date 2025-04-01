@@ -327,7 +327,7 @@
                                                 </a>
 
                                                 @if (collect($status)->every(fn($s) => $s === 'approved'))
-                                                    <a href="{{ route('wc-export', ['id' => $data->id]) }}"
+                                                    <a href="{{ route('export-inspeksi', ['id' => $data->id]) }}"
                                                         class="btn btn-primary btn-sm mt-3"
                                                         style="{{ $data->delete_status == 1 ? 'pointer-events: none; opacity: 0.6;' : '' }}">
                                                         <i class="fas fa-download"></i>

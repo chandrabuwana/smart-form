@@ -69,7 +69,7 @@
                                 </div>
                                 <div class="text-end pt-1">
                                     <p class="text-sm mb-0 text-capitalize">Total Records</p>
-                                    <h4 class="mb-0">3</h4>
+                                    <<h4 class="mb-0">{{ $statistics->total_records }}</h4>
                                 </div>
                             </div>
                         </div>
@@ -85,7 +85,7 @@
                                 </div>
                                 <div class="text-end pt-1">
                                     <p class="text-sm mb-0 text-capitalize">This Month</p>
-                                    <h4 class="mb-0">4</h4>
+                                    <h4 class="mb-0">{{ $statistics->total_this_month }}</h4>
                                 </div>
                             </div>
                         </div>
@@ -101,7 +101,7 @@
                                 </div>
                                 <div class="text-end pt-1">
                                     <p class="text-sm mb-0 text-capitalize">Engine Model</p>
-                                    <h4 class="mb-0">2</h4>
+                                    <h4 class="mb-0">{{ $statistics->engine_model }}</h4>
                                 </div>
                             </div>
                         </div>
@@ -117,7 +117,7 @@
                                 </div>
                                 <div class="text-end pt-1">
                                     <p class="text-sm mb-0 text-capitalize">Job Site</p>
-                                    <h4 class="mb-0">54</h4>
+                                    <h4 class="mb-0">{{ $statistics->job_site }}</h4>
                                 </div>
                             </div>
                         </div>

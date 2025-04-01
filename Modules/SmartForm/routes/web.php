@@ -155,6 +155,13 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
                 Route::get('/create-form', [Pengajuan003SapController::class, 'createForm'])->name('create-003-sap');
                 Route::post('/store-form', [Pengajuan003SapController::class, 'storeForm'])->name('store-003-sap');
                 Route::get('/export-pdf/{id}', [Pengajuan003SapController::class, 'exportPDF'])->name('export-003-sap');
+                Route::post('/update/{id}',[Pengajuan003SapController::class, 'Update'])->name('003-sap-update');
+                Route::get('/detail/{id}', [Pengajuan003SapController::class, 'detail'])->name('003-sap-detail');
+                Route::delete('/delete/{id}', [Pengajuan003SapController::class, 'Delete'])->name('003-sap-delete');
+                Route::get('/show/{id}', [Pengajuan003SapController::class, 'show'])->name('003-sap-show');
+                Route::post('/approve-ppm.xe1250', [Pengajuan003SapController::class, 'Approve'])->name("003-sap-approve");
+                Route::post('/reject-ppm.xe1250', [Pengajuan003SapController::class, 'Reject'])->name("003-sap-reject");
+                Route::post('/reset-ppm.xe1250/{id}', [Pengajuan003SapController::class, 'Reset'])->name("003-sap-reset");
             });
 
         });
@@ -336,9 +343,9 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/detail/{id}', [InspeksiToiletMessKantorController::class, 'detail'])->name('wc-detail');
             Route::delete('/delete/{id}', [InspeksiToiletMessKantorController::class, 'Delete'])->name('wc-delete');
             Route::get('/show/{id}', [InspeksiToiletMessKantorController::class, 'show'])->name('wc-show');
-            Route::post('/approve-ppm.xe1250', [InspeksiToiletMessKantorController::class, 'Approve'])->name("wc-approve");
-            Route::post('/reject-ppm.xe1250', [InspeksiToiletMessKantorController::class, 'Reject'])->name("wc-reject");
-            Route::post('/reset-ppm.xe1250/{id}', [InspeksiToiletMessKantorController::class, 'Reset'])->name("wc-reset");
+            Route::post('/approve-wc', [InspeksiToiletMessKantorController::class, 'Approve'])->name("wc-approve");
+            Route::post('/reject-wc', [InspeksiToiletMessKantorController::class, 'Reject'])->name("wc-reject");
+            Route::post('/reset-wc/{id}', [InspeksiToiletMessKantorController::class, 'Reset'])->name("wc-reset");
         });
 
         Route::prefix('it-ops')->group(function () {

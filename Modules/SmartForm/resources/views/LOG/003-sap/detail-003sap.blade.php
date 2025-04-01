@@ -28,32 +28,33 @@
                         </div>
                     </div>
 
-                    <form id="form003Sap" method="POST" action="{{ route('store-003-sap') }}">
+                    <form id="form003Sap" method="POST" action="{{ route('003-sap-update', ['id' => $data->id]) }}">
                         @csrf
                         <div class="mx-3">
-
+                            <input type="hidden" name="id" value="{{ $data->id }}">
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="plant" class="ms-0">PLANT</label>
                                         <select class="form-control" name="plant" id="plant" required>
                                             <option disabled selected>-- Select Site --</option>
-                                            <option value="agm">agm</option>
-                                            <option value="mbl">mbl</option>
-                                            <option value="mme">mme</option>
-                                            <option value="mas">mas</option>
-                                            <option value="pmss">pmss</option>
-                                            <option value="taj">taj</option>
-                                            <option value="bssr">bssr</option>
-                                            <option value="tdm">tdm</option>
-                                            <option value="msj">msj</option>
+                                            <option value="agm" {{ $data->plant == 'agm' ? 'selected' : '' }}>agm</option>
+                                            <option value="mbl" {{ $data->plant == 'mbl' ? 'selected' : '' }}>mbl</option>
+                                            <option value="mme" {{ $data->plant == 'mme' ? 'selected' : '' }}>mme</option>
+                                            <option value="mas" {{ $data->plant == 'mas' ? 'selected' : '' }}>mas</option>
+                                            <option value="pmss" {{ $data->plant == 'pmss' ? 'selected' : '' }}>pmss</option>
+                                            <option value="taj" {{ $data->plant == 'taj' ? 'selected' : '' }}>taj</option>
+                                            <option value="bssr" {{ $data->plant == 'bssr' ? 'selected' : '' }}>bssr</option>
+                                            <option value="tdm" {{ $data->plant == 'tdm' ? 'selected' : '' }}>tdm</option>
+                                            <option value="msj" {{ $data->plant == 'msj' ? 'selected' : '' }}>msj</option>
                                         </select>
                                     </div>
                                 </div>
+
                                 <div class="col-md-6">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="date" class="ms-0">TANGGAL</label>
-                                        <input type="date" class="form-control" id="date" name="date"
+                                        <input type="date" class="form-control" id="date" name="date" value="{{ $data->tanggal }}"
                                             required>
                                     </div>
                                 </div>
@@ -83,60 +84,55 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>
-                                                <button type="button" class="btn btn-success btn-add">+</button>
-                                                <button type="button" class="btn btn-danger btn-remove" style="display: none;">-</button>
-                                            </td>
-                                            <td>
-                                                <input type="number" name="item_of_requisition_[]" id="item_of_requisition_[]" readonly>
-                                            </td>
-                                            <td>
-                                                <input type="text" name="part_number_[]" id="part_number_[]">
-                                            </td>
-                                            <td>
-                                                <input type="text" name="material_code_[]" id="material_code_[]">
-                                            </td>
-                                            <td>
-                                                <input type="text" name="short_text_[]" id="short_text_[]">
-                                            </td>
-                                            <td>
-                                                <input type="number" name="qty_requested_[]" id="qty_requested_[]">
-                                            </td>
-                                            <td>
-                                                <input type="text" name="uom_[]" id="uom_[]">
-                                            </td>
-                                            <td>
-                                                <input type="date" name="delivery_date_[]" id="delivery_date_[]">
-                                            </td>
-                                            <td>
-                                                <input type="text" name="plant_[]" id="plant_[]">
-                                            </td>
-                                            <td>
-                                                <input type="text" name="storage_[]" id="storage_[]">
-                                            </td>
-                                            <td>
-                                                <input type="text" name="requisitioner_[]" id="requisitioner_[]">
-                                            </td>
-                                            <td>
-                                                <input type="text" name="req_tracking_number_[]" id="req_tracking_number_[]">
-                                            </td>
-                                            <td>
-                                                <input type="text" name="purchasing_group_[]" id="purchasing_group_[]">
-                                            </td>
-                                            <td>
-                                                <input type="text" name="valuation_price_[]" id="valuation_price_[]">
-                                            </td>
-                                            <td>
-                                                <input type="date" name="release_date_[]" id="release_date_[]">
-                                            </td>
-                                            <td>
-                                                <input type="text" name="cost_center_[]" id="cost_center_[]">
-                                            </td>
-                                            <td>
-                                                <input type="text" name="gl_account_[]" id="gl_account_[]">
-                                            </td>
-                                        </tr>
+                                        @if ($detail && count($detail) > 0)
+                                            @foreach ($detail as $item)
+                                                <tr>
+                                                    <td>
+                                                        <button type="button" class="btn btn-success btn-add">+</button>
+                                                        <button type="button" class="btn btn-danger btn-remove">-</button>
+                                                    </td>
+                                                    <td><input type="number" name="item_of_requisition_[]" value="{{ $item->item_of_requisition }}" readonly></td>
+                                                    <td><input type="text" name="part_number_[]" value="{{ $item->part_number }}"></td>
+                                                    <td><input type="text" name="material_code_[]" value="{{ $item->material_code }}"></td>
+                                                    <td><input type="text" name="short_text_[]" value="{{ $item->short_text }}"></td>
+                                                    <td><input type="number" name="qty_requested_[]" value="{{ $item->qty_requested }}"></td>
+                                                    <td><input type="text" name="uom_[]" value="{{ $item->uom }}"></td>
+                                                    <td><input type="date" name="delivery_date_[]" value="{{ $item->delivery_date }}"></td>
+                                                    <td><input type="text" name="plant_[]" value="{{ $item->plant }}"></td>
+                                                    <td><input type="text" name="storage_[]" value="{{ $item->storage }}"></td>
+                                                    <td><input type="text" name="requisitioner_[]" value="{{ $item->requisitioner }}"></td>
+                                                    <td><input type="text" name="req_tracking_number_[]" value="{{ $item->req_tracking_number }}"></td>
+                                                    <td><input type="text" name="purchasing_group_[]" value="{{ $item->purchasing_group }}"></td>
+                                                    <td><input type="text" name="valuation_price_[]" value="{{ $item->valuation_price }}"></td>
+                                                    <td><input type="date" name="release_date_[]" value="{{ $item->release_date }}"></td>
+                                                    <td><input type="text" name="cost_center_[]" value="{{ $item->cost_center }}"></td>
+                                                    <td><input type="text" name="gl_account_[]" value="{{ $item->gl_account }}"></td>
+                                                </tr>
+                                            @endforeach
+                                        @else
+                                            <tr>
+                                                <td>
+                                                    <button type="button" class="btn btn-success btn-add">+</button>
+                                                    <button type="button" class="btn btn-danger btn-remove" style="display: none;">-</button>
+                                                </td>
+                                                <td><input type="number" name="item_of_requisition_[]" readonly value="1"></td>
+                                                <td><input type="text" name="part_number_[]"></td>
+                                                <td><input type="text" name="material_code_[]"></td>
+                                                <td><input type="text" name="short_text_[]"></td>
+                                                <td><input type="number" name="qty_requested_[]"></td>
+                                                <td><input type="text" name="uom_[]"></td>
+                                                <td><input type="date" name="delivery_date_[]"></td>
+                                                <td><input type="text" name="plant_[]"></td>
+                                                <td><input type="text" name="storage_[]"></td>
+                                                <td><input type="text" name="requisitioner_[]"></td>
+                                                <td><input type="text" name="req_tracking_number_[]"></td>
+                                                <td><input type="text" name="purchasing_group_[]"></td>
+                                                <td><input type="text" name="valuation_price_[]"></td>
+                                                <td><input type="date" name="release_date_[]"></td>
+                                                <td><input type="text" name="cost_center_[]"></td>
+                                                <td><input type="text" name="gl_account_[]"></td>
+                                            </tr>
+                                        @endif
                                     </tbody>
                                 </table>
                             </div>
@@ -145,22 +141,27 @@
                                 <div class="col-6 ">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="dibuat" class="ms-0">Dibuat Oleh</label>
-                                        <select name="checked" id="dibuat_oleh" class="form-control" required>
+                                        <select name="dibuat_oleh" id="dibuat_oleh" class="form-control" required>
                                             <option disabled selected>-- Select Creator --</option>
                                             @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nik }}">{{ $user->nama }}</option>
+                                                <option value="{{ $user->nik }}"{{ old('dibuat_oleh', $data->dibuat_oleh ?? '') == $user->nik ? 'selected' : '' }}>
+                                                    {{ $user->nama }}</option>
+
                                             @endforeach
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-6">
+                                <div class="col-6 ">
                                     <div class="input-group input-group-static mb-3">
-                                        <label for="diperiksa" class="ms-0">Disetujui Oleh</label>
-                                        <select name="validated" id="diperiksa" class="form-control" required>
-                                            <option disabled selected>-- Select Approval --</option>
+                                        <label for="dibuat" class="ms-0">Disetujui oleh</label>
+                                        <select name="checked_by" id="checked_by" class="form-control" required>
+                                            <option disabled selected>-- Select Checked --</option>
                                             @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nik }}">{{ $user->nama }}</option>
+                                                <option value="{{ $user->nik }}"
+                                                    {{ old('checked', $data->checked_by ?? '') == $user->nik ? 'selected' : '' }}>
+                                                    {{ $user->nama }}</option>
                                             @endforeach
+
                                         </select>
                                     </div>
                                 </div>
@@ -169,7 +170,7 @@
                                         <div class="form-actions">
                                             <a href="{{ route('dashboard-003-sap') }}"
                                                 class="btn btn-secondary">Cancel</a>
-                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                            <button type="submit" class="btn btn-primary">Update</button>
                                         </div>
                                     </div>
                                 </div>

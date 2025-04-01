@@ -63,7 +63,6 @@
         <div class="col-12">
             <form class="card my-4" method="POST" id="inspectionForm">
                 @csrf
-                @method('PUT')
                 <input type="hidden" id="inspeksi_id" value="{{ $data->id }}">
                 <div class="card my-4">
                     <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
@@ -262,97 +261,68 @@
             document.getElementById("btn900Approve").addEventListener("click", function() {
                 let docNumber = this.getAttribute("data-doc");
                 let status = JSON.parse(this.getAttribute('data-status'));
-
                 let nik = this.getAttribute("data-nik");
 
-                axios.post("{{ route('wc-approve') }}", {
-                        _token: "{{ csrf_token() }}",
+                fetch("{{ route('wc-approve') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    },
+                    body: JSON.stringify({
                         doc_num: docNumber,
-
                         checked: nik == "{{ $data->checked_by }}" ? 'approved' : status[0],
                         validated: nik == "{{ $data->validated_by }}" ? 'approved' : status[1],
-
-                    })
-                    .then(response => {
-                        if (response.data.success) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Success',
-                                text: response.data.message
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    window.location.href =
-                                        '{{ route('dashboard-wc') }}';
-                                }
-                            });
-                        }
-                    })
-                    .catch(error => {
-                        let errorMessage = 'Terjadi kesalahan pada sistem';
-                        console.log("Error respons:", error.response);
-
-                        if (error.response) {
-                            if (error.response.data.errors) {
-                                errorMessage = Object.values(error.response.data.errors).flat().join(
-                                    '\n');
-                            } else if (error.response.data.message) {
-                                errorMessage = error.response.data.message;
-                            }
-                        }
-
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: errorMessage
-                        });
-                    });
+                        nik: nik,
+                    }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        window.location.href = "{{ route('dashboard-wc') }}";
+                    } else {
+                        alert('Gagal Approve data.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Terjadi kesalahan.');
+                });
             });
 
 
-            document.getElementById("btn900Reject").addEventListener("click", function() {
-                let docNumber = this.getAttribute("data-doc");
-                let status = JSON.parse(this.getAttribute('data-status'));
-                let nik = this.getAttribute("data-nik");
+            document.getElementById('btn900Reject').addEventListener('click', function() {
+                const docNum = this.getAttribute('data-doc');
+                const nik = this.getAttribute('data-nik');
+                const status = JSON.parse(this.getAttribute('data-status'));
 
-                axios.post("{{ route('wc-reject') }}", {
-                        _token: "{{ csrf_token() }}",
-                        doc_num: docNumber,
-                        checked: nik == "{{ $data->checked_by }}" ? 'rejected' : status[0],
-                        validated: nik == "{{ $data->validated_by }}" ? 'rejected' : status[1],
-                    })
-                    .then(response => {
-                        if (response.data.success) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Success',
-                                text: response.data.message
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    window.location.href =
-                                        '{{ route('dashboard-wc') }}';
-                                }
-                            });
-                        }
-                    })
-                    .catch(error => {
-                        let errorMessage = 'Terjadi kesalahan pada sistem';
-                        console.log("Error respons:", error.response);
-
-                        if (error.response) {
-                            if (error.response.data.errors) {
-                                errorMessage = Object.values(error.response.data.errors).flat().join(
-                                    '\n');
-                            } else if (error.response.data.message) {
-                                errorMessage = error.response.data.message;
-                            }
-                        }
-
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: errorMessage
-                        });
-                    });
+                fetch('{{ route('wc-reject') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    },
+                    body: JSON.stringify({
+                        doc_num: docNum,
+                        checked: 'rejected',
+                        validated: status,
+                        nik: nik
+                    }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        window.location.href = "{{ route('dashboard-wc') }}";
+                    } else {
+                        alert('Gagal Reject data.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Terjadi kesalahan.');
+                });
             });
 
 
