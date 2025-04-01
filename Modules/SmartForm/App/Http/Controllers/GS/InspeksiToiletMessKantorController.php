@@ -158,7 +158,6 @@ class InspeksiToiletMessKantorController extends Controller
                 'creator' => $request->session()->get( 'user_id', '' ),
                 'status' => json_encode( array_values( [ null, null] ) )
             ]);
-            dd($inspeksi_id);
 
             if (!$inspeksi_id) {
                 throw new \Exception('Gagal mendapatkan ID inspeksi.');
