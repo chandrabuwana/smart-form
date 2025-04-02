@@ -235,31 +235,37 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/store', [TransactionSHEFRM19BController::class, 'addDataPraCheckUp']);
             Route::get('/get-dashboard-data', [TransactionSHEFRM19BController::class, 'helperDataListSHE019B']);
             Route::post('/store-petugas-checker', [TransactionSHEFRM19BController::class, 'addDataCheckUpPetugas']);
+        });
 
-			// INSPEKSI APAR
-            Route::get('/inspeksi-apar', [AparController::class, 'inspeksiAparDashboard'])->name('bss-form.she-019B.inspeksi-apar.dashboard');
-            Route::get('/list-inspeksi-apar', [AparController::class, 'GetListInspeksiApar'])->name('bss-form.she-019B.list-inspeksi-apar');
-            Route::get('/form-inspeksi-apar', [AparController::class, 'formInspeksiApar'])->name('bss-form.she-019B.form-inspeksi-apar');
-            Route::post('/add-inspeksi-apar', [AparController::class, 'SubmitFormInspeksiApar'])->name('bss-form.she-019B.add-inspeksi-apar');
-            Route::post('/update-inspeksi-apar', [AparController::class, 'UpdateInspeksiApar'])->name('bss-form.she-019B.update-inspeksi-apar');
-            Route::get('/detail-inspeksi-apar/{id}', [AparController::class, 'DetailInspeksiApar'])->name('bss-form.she-019B.detail-inspeksi-apar');
-            Route::post('/delete-inspeksi-apar', [AparController::class, 'DeleteInspeksiApar'])->name('bss-form.she-019B.delete-inspeksi-apar');
-            Route::get('/edit-inspeksi-apar', [AparController::class, 'EditInspeksiApar'])->name('bss-form.she-019B.edit-inspeksi-apar');
-            Route::get('/show-inspeksi-apar/{id}', [AparController::class, 'ShowInspeksiApar'])->name('bss-form.she-019B.show-inspeksi-apar');
-            Route::post('/approve-inspeksi-apar', [AparController::class, 'Approve'])->name('bss-form.she-019B.approve-inspeksi-apar');
-            Route::post('/reject-inspeksi-apar', [AparController::class, 'Reject'])->name('bss-form.she-019B.reject-inspeksi-apar');
-            Route::post('/reset-inspeksi-apar/{id}', [AparController::class, 'Reset'])->name('bss-form.she-019B.reset-inspeksi-apar');
-            Route::get('/pdf-inspeksi-apar/{id}', [AparController::class, 'PdfInspeksiApar'])->name('bss-form.she-019B.pdf-inspeksi-apar');
+        Route::prefix('she-036')->group(function () {
+            Route::get('/inspeksi-apar', [AparController::class, 'inspeksiAparDashboard'])->name('bss-form.she-036.inspeksi-apar.dashboard');
+            Route::get('/list-inspeksi-apar', [AparController::class, 'GetListInspeksiApar'])->name('bss-form.she-036.list-inspeksi-apar');
+            Route::get('/form-inspeksi-apar', [AparController::class, 'formInspeksiApar'])->name('bss-form.she-036.form-inspeksi-apar');
+            Route::post('/add-inspeksi-apar', [AparController::class, 'SubmitFormInspeksiApar'])->name('bss-form.she-036.add-inspeksi-apar');
+            Route::post('/update-inspeksi-apar', [AparController::class, 'UpdateInspeksiApar'])->name('bss-form.she-036.update-inspeksi-apar');
+            Route::get('/detail-inspeksi-apar/{id}', [AparController::class, 'DetailInspeksiApar'])->name('bss-form.she-036.detail-inspeksi-apar');
+            Route::post('/delete-inspeksi-apar', [AparController::class, 'DeleteInspeksiApar'])->name('bss-form.she-036.delete-inspeksi-apar');
+            Route::get('/edit-inspeksi-apar', [AparController::class, 'EditInspeksiApar'])->name('bss-form.she-036.edit-inspeksi-apar');
+            Route::get('/show-inspeksi-apar/{id}', [AparController::class, 'ShowInspeksiApar'])->name('bss-form.she-036.show-inspeksi-apar');
+            Route::post('/approve-inspeksi-apar', [AparController::class, 'Approve'])->name('bss-form.she-036.approve-inspeksi-apar');
+            Route::post('/reject-inspeksi-apar', [AparController::class, 'Reject'])->name('bss-form.she-036.reject-inspeksi-apar');
+            Route::post('/reset-inspeksi-apar/{id}', [AparController::class, 'Reset'])->name('bss-form.she-036.reset-inspeksi-apar');
+            Route::get('/pdf-inspeksi-apar/{id}', [AparController::class, 'PdfInspeksiApar'])->name('bss-form.she-036.pdf-inspeksi-apar');
+        });
 
-            // INSPEKSI CATERING
+        Route::prefix('she-048')->group(function () {
             Route::get('/inspeksi-catering', [InspeksiCateringController::class, 'InspeksiCateringDashboard'])->name('bss-form.she-048.inspeksi-catering.dashboard');
             Route::get('/list-inspeksi-catering', [InspeksiCateringController::class, 'GetListInspeksiCatering'])->name("bss-form.she-048.list-inspeksi-catering");
-            Route::get('/form-inspeksi-catering', [InspeksiCateringController::class, 'FormInspeksiCatering'])->name('bss-form.she-019B.form-inspeksi-catering');
-            Route::post('/create-inspeksi-catering', [InspeksiCateringController::class, 'CreateInspeksiCatering'])->name('bss-form.she-019B.create-inspeksi-catering');
-            Route::get('/edit-fuel/{id}', [LogController::class, 'editReqFuel'])->name('bss-form.log.edit-req-fuel');
-            Route::post('/update-fuel/{id}', [LogController::class, 'updateReqFuel'])->name('bss-form.log.update-req-fuel');
-            Route::get('/delete-inspeksi-catering/{id}', [InspeksiCateringController::class, 'DeleteInspeksiCatering'])->name('bss-form.she-019B.delete-inspeksi-catering');
-            Route::get('/pdf-inspeksi-catering/{id}', [InspeksiCateringController::class, 'PdfInspeksiCatering'])->name('bss-form.she-019B.pdf-inspeksi-catering');
+            Route::get('/form-inspeksi-catering', [InspeksiCateringController::class, 'FormInspeksiCatering'])->name('bss-form.she-048.form-inspeksi-catering');
+            Route::post('/create-inspeksi-catering', [InspeksiCateringController::class, 'CreateInspeksiCatering'])->name('bss-form.she-048.create-inspeksi-catering');
+            Route::get('/detail-inspeksi-catering/{id}', [InspeksiCateringController::class, 'DetailInspeksiCatering'])->name('bss-form.she-048.detail-inspeksi-catering');
+            Route::get('/edit-inspeksi-catering', [InspeksiCateringController::class, 'EditInspeksiCatering'])->name('bss-form.she-048.edit-inspeksi-catering');
+            Route::post('/update-inspeksi-catering', [InspeksiCateringController::class, 'UpdateInspeksiCatering'])->name('bss-form.she-048.update-inspeksi-catering');
+            Route::post('/delete-inspeksi-catering', [InspeksiCateringController::class, 'DeleteInspeksiCatering'])->name('bss-form.she-048.delete-inspeksi-catering');
+            Route::post('/approve-inspeksi-catering', [InspeksiCateringController::class, 'Approve'])->name('bss-form.she-048.approve-inspeksi-catering');
+            Route::post('/reject-inspeksi-catering', [InspeksiCateringController::class, 'Reject'])->name('bss-form.she-048.reject-inspeksi-catering');
+            Route::post('/reset-inspeksi-catering/{id}', [InspeksiCateringController::class, 'Reset'])->name('bss-form.she-048.reset-inspeksi-catering');
+            Route::get('/pdf-inspeksi-catering/{id}', [InspeksiCateringController::class, 'PdfInspeksiCatering'])->name('bss-form.she-048.pdf-inspeksi-catering');
         });
 
         Route::prefix('timesheet')->group(function () {

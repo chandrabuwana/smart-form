@@ -434,7 +434,7 @@
                 console.log(dataReq)
                 showLoading();
                 
-                axios.post('/bss-form/she-019B/add-inspeksi-apar', formData, {
+                axios.post('/bss-form/she-036/add-inspeksi-apar', formData, {
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
                         'Content-Type': 'multipart/form-data'
@@ -450,7 +450,7 @@
                             title: 'Request sukses direkam dgn no dokumen:',
                             text: response.data.data?.no_dok || 'Form berhasil disimpan',
                         }).then((result) => {
-                            window.location.href = `/bss-form/she-019B/inspeksi-apar`;
+                            window.location.href = `/bss-form/she-036/inspeksi-apar`;
                         });
                     } else {
                         Swal.fire({

@@ -496,7 +496,7 @@ $formatDate = function($date) {
                     formData.append('item', JSON.stringify($table.bootstrapTable('getData')));
                     formData.append('_token', '{{ csrf_token() }}');
                     
-                    axios.post('/bss-form/she-019B/update-inspeksi-apar', formData, {
+                    axios.post('/bss-form/she-036/update-inspeksi-apar', formData, {
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
                             'Content-Type': 'multipart/form-data'
@@ -510,7 +510,7 @@ $formatDate = function($date) {
                                 title: 'Success',
                                 text: response.data.message || 'Data berhasil diupdate'
                             }).then(() => {
-                                window.location.href = '/bss-form/she-019B/inspeksi-apar';
+                                window.location.href = '/bss-form/she-036/inspeksi-apar';
                             });
                         } else {
                             Swal.fire({
@@ -555,7 +555,7 @@ $formatDate = function($date) {
                         status.push(null);
                     }
                     
-                    axios.post("{{ route('bss-form.she-019B.approve-inspeksi-apar') }}", {
+                    axios.post("{{ route('bss-form.she-036.approve-inspeksi-apar') }}", {
                         _token: "{{ csrf_token() }}",
                         id: id,
                         diperiksa: nik == "{{ $data->diperiksa_oleh ?? '' }}" ? 'approved' : status[0],
@@ -606,7 +606,7 @@ $formatDate = function($date) {
                         status.push(null);
                     }
                     
-                    axios.post("{{ route('bss-form.she-019B.reject-inspeksi-apar') }}", {
+                    axios.post("{{ route('bss-form.she-036.reject-inspeksi-apar') }}", {
                         _token: "{{ csrf_token() }}",
                         id: id,
                         diperiksa: nik == "{{ $data->diperiksa_oleh ?? '' }}" ? 'rejected' : status[0],

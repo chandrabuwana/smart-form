@@ -133,7 +133,7 @@
 
                 <div class="card-body px-0 pb-2">
                     <div class="d-flex align-items-center mx-3 mb-3">
-                        <a href="{{ route('bss-form.she-019B.form-inspeksi-apar') }}">
+                        <a href="{{ route('bss-form.she-036.form-inspeksi-apar') }}">
                             <button class="btn btn-primary ms-auto uploadBtn">
                                 <i class="fas fa-plus"></i> New Form
                             </button>
@@ -142,7 +142,7 @@
 
                     <h4 class="mx-3">Filter Data</h4>
                     <div class="mx-4 row">
-                        <form action="{{ route('bss-form.she-019B.inspeksi-apar.dashboard') }}" method="GET" id="filterForm">
+                        <form action="{{ route('bss-form.she-036.inspeksi-apar.dashboard') }}" method="GET" id="filterForm">
                             <div class="row align-items-center">
                                 <div class="col-md-3 mb-3">
                                     <div class="input-group input-group-static mb-4 position-relative">
@@ -239,7 +239,7 @@
                                         <span class="badge bg-gradient-{{ $statusClass }}">{{ $statusText }}</span>
                                     </td>
                                     <td class="align-middle">
-                                        <a href="{{ route('bss-form.she-019B.detail-inspeksi-apar', ['id' => $record->id]) }}" class="btn btn-primary btn-sm d-inline-flex align-items-center justify-content-center">
+                                        <a href="{{ route('bss-form.she-036.detail-inspeksi-apar', ['id' => $record->id]) }}" class="btn btn-primary btn-sm d-inline-flex align-items-center justify-content-center">
                                             <i class="fas fa-eye me-1"></i> Detail
                                         </a>
 
@@ -250,7 +250,7 @@
                                         @endphp
 
                                         @if($record->no_dok && $isFullyApproved)
-                                        <a href="{{ route('bss-form.she-019B.pdf-inspeksi-apar', ['id' => $record->id]) }}" class="btn btn-secondary btn-sm d-inline-flex align-items-center justify-content-center">
+                                        <a href="{{ route('bss-form.she-036.pdf-inspeksi-apar', ['id' => $record->id]) }}" class="btn btn-secondary btn-sm d-inline-flex align-items-center justify-content-center">
                                             <i class="fas fa-download me-1"></i> Export
                                         </a>
                                         @endif
@@ -265,72 +265,17 @@
                                         @endphp
                                         
                                         @if(!$isApproved)
-                                            @if($record->diperiksa_oleh == $user_id && 
-                                               (!isset($record->status) || 
-                                                json_decode($record->status, true)[0] === null))
-                                                <button type="button" class="btn btn-success btn-sm d-inline-flex align-items-center justify-content-center approve-btn" 
-                                                        data-id="{{ $record->id }}"
-                                                        data-position="0"
-                                                        data-role="diperiksa">
-                                                    <i class="fas fa-check me-1"></i> Approve
-                                                </button>
-                                                <button type="button" class="btn btn-danger btn-sm d-inline-flex align-items-center justify-content-center reject-btn"
-                                                        data-id="{{ $record->id }}"
-                                                        data-position="0"
-                                                        data-role="diperiksa">
-                                                    <i class="fas fa-times me-1"></i> Reject
-                                                </button>
-                                            @endif
-                                            
-                                            @if($record->diketahui_oleh == $user_id && 
-                                                isset($record->status) &&
-                                                json_decode($record->status, true)[0] === 'approved' &&
-                                                json_decode($record->status, true)[1] === null)
-                                                <button type="button" class="btn btn-success btn-sm d-inline-flex align-items-center justify-content-center approve-btn"
-                                                        data-id="{{ $record->id }}"
-                                                        data-position="1"
-                                                        data-role="diketahui">
-                                                    <i class="fas fa-check me-1"></i> Approve
-                                                </button>
-                                                <button type="button" class="btn btn-danger btn-sm d-inline-flex align-items-center justify-content-center reject-btn"
-                                                        data-id="{{ $record->id }}"
-                                                        data-position="1"
-                                                        data-role="diketahui">
-                                                    <i class="fas fa-times me-1"></i> Reject
-                                                </button>
-                                            @endif
-                                            
-                                            @if($record->disetujui_oleh == $user_id && 
-                                                isset($record->status) &&
-                                                json_decode($record->status, true)[0] === 'approved' &&
-                                                json_decode($record->status, true)[1] === 'approved' &&
-                                                json_decode($record->status, true)[2] === null)
-                                                <button type="button" class="btn btn-success btn-sm d-inline-flex align-items-center justify-content-center approve-btn"
-                                                        data-id="{{ $record->id }}"
-                                                        data-position="2"
-                                                        data-role="disetujui">
-                                                    <i class="fas fa-check me-1"></i> Approve
-                                                </button>
-                                                <button type="button" class="btn btn-danger btn-sm d-inline-flex align-items-center justify-content-center reject-btn"
-                                                        data-id="{{ $record->id }}"
-                                                        data-position="2"
-                                                        data-role="disetujui">
-                                                    <i class="fas fa-times me-1"></i> Reject
-                                                </button>
-                                            @endif
-                                            
                                             @if(($record->dibuat_oleh == $user_id || in_array($user_id, ['1008491', '1008492', '1008493', '1008494', '1008526'])) &&
                                                 (!isset($record->status) || 
                                                 is_array(json_decode($record->status, true)) && 
                                                 (in_array(null, json_decode($record->status, true)) || in_array('rejected', json_decode($record->status, true)))))
-                                                <a href="{{ route('bss-form.she-019B.edit-inspeksi-apar', ['id' => $record->id]) }}" class="btn btn-primary btn-sm">
+                                                <a href="{{ route('bss-form.she-036.edit-inspeksi-apar', ['id' => $record->id]) }}" class="btn btn-primary btn-sm">
                                                     <i class="fas fa-edit"></i> Edit
                                                 </a>
                                                 <button class="btn btn-danger btn-sm" onclick="deleteInspeksiApar({{ $record->id }})">
                                                     <i class="fas fa-trash"></i> Delete
                                                 </button>
                                             @endif
-                                        
                                         @endif
                                     </td>
                                 </tr>
@@ -376,7 +321,7 @@
                         }
                     });
                     
-                    axios.post('{{ route("bss-form.she-019B.delete-inspeksi-apar") }}', {
+                    axios.post('{{ route("bss-form.she-036.delete-inspeksi-apar") }}', {
                         id: id,
                         _token: '{{ csrf_token() }}'
                     })
@@ -473,7 +418,7 @@
                     confirmButtonText: 'Yes, approve it!'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        axios.post("{{ route('bss-form.she-019B.approve-inspeksi-apar') }}", approveData)
+                        axios.post("{{ route('bss-form.she-036.approve-inspeksi-apar') }}", approveData)
                             .then(function(response) {
                                 if (response.data.success) {
                                     Swal.fire({
@@ -530,7 +475,7 @@
                     confirmButtonText: 'Yes, reject it!'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        axios.post("{{ route('bss-form.she-019B.reject-inspeksi-apar') }}", rejectData)
+                        axios.post("{{ route('bss-form.she-036.reject-inspeksi-apar') }}", rejectData)
                             .then(function(response) {
                                 if (response.data.success) {
                                     Swal.fire({
@@ -572,7 +517,7 @@
                     confirmButtonText: 'Yes, reset it!'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        axios.post(`/bss-form/she-019B/reset-inspeksi-apar/${recordId}`)
+                        axios.post(`/bss-form/she-036/reset-inspeksi-apar/${recordId}`)
                             .then(function(response) {
                                 if (response.data.success) {
                                     Swal.fire({

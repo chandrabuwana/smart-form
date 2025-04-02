@@ -52,7 +52,7 @@
                     <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3 d-flex justify-content-between align-items-center">
                         <h6 class="text-white text-capitalize ps-3">FORM BSS SHE 036 INSPEKSI APAR</h6>
                         <div class="d-flex mx-3">
-                            <a href="{{ route('bss-form.she-019B.inspeksi-apar.dashboard') }}" class="btn btn-white btn-sm me-2">
+                            <a href="{{ route('bss-form.she-036.inspeksi-apar.dashboard') }}" class="btn btn-white btn-sm me-2">
                                 <i class="fas fa-arrow-left me-1"></i> Back
                             </a>
                         </div>
@@ -157,18 +157,23 @@
                                     @endif
                                     
                                     <div class="mt-2">
-                                        <button type="button" class="btn btn-success btn-sm approve-btn"
-                                                data-id="{{ $data->id }}"
-                                                data-position="1"
-                                                data-role="diketahui">
-                                            <i class="fas fa-check me-1"></i> Approve
-                                        </button>
-                                        <button type="button" class="btn btn-danger btn-sm reject-btn"
-                                                data-id="{{ $data->id }}"
-                                                data-position="1"
-                                                data-role="diketahui">
-                                            <i class="fas fa-times me-1"></i> Reject
-                                        </button>
+                                        <!-- Only show Diketahui buttons if Diperiksa is approved -->
+                                        @if($diperiksa_status === 'approved')
+                                            <button type="button" class="btn btn-success btn-sm approve-btn"
+                                                    data-id="{{ $data->id }}"
+                                                    data-position="1"
+                                                    data-role="diketahui">
+                                                <i class="fas fa-check me-1"></i> Approve
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-sm reject-btn"
+                                                    data-id="{{ $data->id }}"
+                                                    data-position="1"
+                                                    data-role="diketahui">
+                                                <i class="fas fa-times me-1"></i> Reject
+                                            </button>
+                                        @else
+                                            <small class="text-muted">Waiting for previous approval</small>
+                                        @endif
                                     </div>
                                 </p>
                             </div>
@@ -189,18 +194,23 @@
                                     @endif
                                     
                                     <div class="mt-2">
-                                        <button type="button" class="btn btn-success btn-sm approve-btn"
-                                                data-id="{{ $data->id }}"
-                                                data-position="2"
-                                                data-role="disetujui">
-                                            <i class="fas fa-check me-1"></i> Approve
-                                        </button>
-                                        <button type="button" class="btn btn-danger btn-sm reject-btn"
-                                                data-id="{{ $data->id }}"
-                                                data-position="2"
-                                                data-role="disetujui">
-                                            <i class="fas fa-times me-1"></i> Reject
-                                        </button>
+                                        <!-- Only show Disetujui buttons if both Diperiksa and Diketahui are approved -->
+                                        @if($diperiksa_status === 'approved' && $diketahui_status === 'approved')
+                                            <button type="button" class="btn btn-success btn-sm approve-btn"
+                                                    data-id="{{ $data->id }}"
+                                                    data-position="2"
+                                                    data-role="disetujui">
+                                                <i class="fas fa-check me-1"></i> Approve
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-sm reject-btn"
+                                                    data-id="{{ $data->id }}"
+                                                    data-position="2"
+                                                    data-role="disetujui">
+                                                <i class="fas fa-times me-1"></i> Reject
+                                            </button>
+                                        @else
+                                            <small class="text-muted">Waiting for previous approval</small>
+                                        @endif
                                     </div>
                                 </p>
                             </div>
@@ -265,21 +275,6 @@
                         </div>
                     </div>
 
-                    @php
-                                $isFullyApproved = isset($data->status) && 
-                                                is_array($data->status) && 
-                                                count($data->status) >= 3 &&
-                                                $data->status[0] === 'approved' && 
-                                                $data->status[1] === 'approved' && 
-                                                $data->status[2] === 'approved';
-                            @endphp
-                            
-                            @if($isFullyApproved)
-                                <a href="{{ route('bss-form.she-019B.pdf-inspeksi-apar', ['id' => $data->id]) }}" class="btn btn-white btn-sm">
-                                    <i class="fas fa-download me-1"></i> Export PDF
-                                </a>
-                            @endif
-
                     <div class="card-footer">
                         <div class="d-flex align-items-center">
 
@@ -293,7 +288,7 @@
                             @endphp
 
                             @if($isFullyApproved)
-                             <a href="{{ route('bss-form.she-019B.pdf-inspeksi-apar', ['id' => $data->id]) }}" class="btn btn-primary ms-auto">
+                             <a href="{{ route('bss-form.she-036.pdf-inspeksi-apar', ['id' => $data->id]) }}" class="btn btn-primary ms-auto">
                                     <i class="fas fa-download me-1"></i> Export PDF
                                 </a>
                             @endif
@@ -341,7 +336,7 @@
                     cancelButtonText: 'Batal'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        axios.post("{{ route('bss-form.she-019B.approve-inspeksi-apar') }}", approveData)
+                        axios.post("{{ route('bss-form.she-036.approve-inspeksi-apar') }}", approveData)
                             .then(function(response) {
                                 if (response.data.success) {
                                     Swal.fire({
@@ -400,7 +395,7 @@
                     cancelButtonText: 'Batal'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        axios.post("{{ route('bss-form.she-019B.reject-inspeksi-apar') }}", rejectData)
+                        axios.post("{{ route('bss-form.she-036.reject-inspeksi-apar') }}", rejectData)
                             .then(function(response) {
                                 if (response.data.success) {
                                     Swal.fire({
@@ -444,7 +439,7 @@
                     cancelButtonText: 'Batal'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        axios.post(`/bss-form/she-019B/reset-inspeksi-apar/${recordId}`)
+                        axios.post(`/bss-form/she-036/reset-inspeksi-apar/${recordId}`)
                             .then(function(response) {
                                 if (response.data.success) {
                                     Swal.fire({
