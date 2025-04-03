@@ -26,15 +26,15 @@ return new class extends Migration
             $table->string('alamat_kantor');
             $table->string('kota');
             $table->string('telepon');
+			$table->string('kode_pos');
+			$table->string('email');
             $table->string('pj_1');
+			$table->string('tlp_1');
+			$table->string('jabatan_1');
+			$table->string('jabatan_1_email');
             $table->string('pj_2');
-            $table->string('kode_pos');
-            $table->string('email');
-            $table->string('tlp_1');
             $table->string('tlp_2');
-            $table->string('jabatan_1');
             $table->string('jabatan_2');
-            $table->string('jabatan_1_email');
             $table->string('jabatan_2_email');
 			
 			/** Informasi Referensi Transaksi Pembayaran */
@@ -76,6 +76,7 @@ return new class extends Migration
             $table->string('diterima_oleh')->nullable();
             $table->string('status')->nullable();
             $table->string('disetujui_oleh')->nullable();
+            $table->string('is_active')->nullable();
         });
     }
 

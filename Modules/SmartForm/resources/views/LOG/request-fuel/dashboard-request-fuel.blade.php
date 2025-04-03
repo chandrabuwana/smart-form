@@ -133,10 +133,16 @@
                         </div>
                     </div> -->
 
+                    <div style="margin : 10px;">
+                        <a href="{{ route('bss-form.log.form-fuel') }}">
+                            <button class="btn btn-primary ms-auto uploadBtn" id="coba">
+                                New Form
+                            </button>
+                        </a>
+                    </div>
 
                 <div class="row card-header" style="margin : 10px;border-radius: 10px; background-color: rgba(209, 209, 209, 0.301); color:black !important;">
-                    <h4 class="mx-3">Filter Data</h4>
-                    <div class="mx-4 row">
+                    <h4>Filter Data</h4>
                         <div class="col-6 col-md-3">
                             <div class="input-group input-group-static mb-4">
                                 <label for="filterNik">NIK Requestor</label>
@@ -146,13 +152,22 @@
                         </div>
                         <div class="col-6 col-md-3">
                             <div class="input-group input-group-static mb-4">
-                                
+                                <label for="filterSite">Site</label>
+                                <select style="width: 100%" id="filterSite" name="filterSite"></select>
                             </div>
                         </div>
-                        <div class="col-6 col-md-3">
-                            <div class="input-group input-group-static mb-4">
-                                <label for="filterStatus">Status Request</label>
-                                <select style="width: 100%" id="filterStatus" name="filterStatus"></select>
+                        <div class="col-md-3 mb-3">
+                            <div class="input-group input-group-static mb-4 position-relative">
+                                <label for="start_date" class="ms-0">Start Date</label>
+                                <input type="date" class="form-control" id="start_date" name="start_date" 
+                                    value="{{ $start_date ?? '' }}">
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="input-group input-group-static mb-4 position-relative">
+                                <label for="end_date" class="ms-0">End Date</label>
+                                <input type="date" class="form-control" id="end_date" name="end_date" 
+                                    value="{{ $end_date ?? '' }}">
                             </div>
                         </div>
                         <div>
@@ -163,16 +178,9 @@
                                 Clear Filter
                             </button>
                         </div>
-                    </div>
                 </div>
 
-                    <div class="d-flex align-items-center ms-3">
-                        <a href="{{ route('bss-form.log.form-fuel') }}">
-                            <button class="btn btn-primary ms-auto uploadBtn" id="coba">
-                                New Form
-                            </button>
-                        </a>
-                    </div>
+                    
                 
                         <div class="col-md-12 d-flex justify-content-end">
                             <div class="status me-2">
@@ -274,15 +282,12 @@
             }
         });
 
-        $('#filterStatus').select2({
+        $('#filterSite').select2({
             theme: 'bootstrap-5', // Menggunakan tema Bootstrap 5
-            dropdownParent: $('#filterStatus').closest('.input-group'),
-            placeholder: '--- Pilih Status ---',
+            dropdownParent: $('#filterSite').closest('.input-group'),
+            placeholder: '--- Pilih Site ---',
             data: [
-                {"id": "", "text": "--- Pilih Status ---"},
-                {"id": "Need Approval", "text": "Need Approval"},
-                {"id": "Approved", "text": "Approved"},
-                {"id": "Rejected", "text": "Rejected"},
+                {"id": "", "text": "--- Pilih Site ---"}
             ]
         });
 
