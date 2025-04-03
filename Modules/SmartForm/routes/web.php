@@ -68,6 +68,7 @@ use Modules\SmartForm\App\Http\Controllers\PLANT\GeneralInspection\InspectionDon
 use Modules\SmartForm\App\Http\Controllers\GS\InspeksiToiletMessKantorController;
 use Modules\SmartForm\App\Http\Controllers\PLANT\PpmShantuiDH24Controller;
 use Modules\SmartForm\App\Http\Controllers\PLANT\PpmXcmgXE1250Controller;
+use Modules\SmartForm\App\Http\Controllers\Production\LgmgController;
 
 /*
 |--------------------------------------------------------------------------
@@ -650,6 +651,20 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/approve-log.ogc', [OgcComplianceController::class, 'Approve'])->name('log.ogc.approve');
             Route::post('/reject-log.ogc', [OgcComplianceController::class, 'Reject'])->name('log.ogc.reject');
             Route::post('/reset-log.ogc/{id}', [OgcComplianceController::class, 'Reset'])->name('log.ogc.reset');
+        });
+
+        Route::prefix('lgmg')->group(function(){
+            Route::get('/dashboard', [LgmgController::class, 'Dashboard'])->name('lgmg.dashboard');
+            Route::get('/export/{id}', [LgmgController::class, 'Export'])->name('lgmg.export');
+            Route::get('/add', [LgmgController::class, 'Add'])->name('lgmg.form');
+            Route::post('/store', [LgmgController::class, 'Store'])->name('lgmg.store');
+            Route::post('/update/{id}',[LgmgController::class, 'Update'])->name('lgmg.update');
+            Route::get('/detail/{id}', [LgmgController::class, 'detail'])->name('lgmg.detail');
+            Route::delete('/delete/{id}', [LgmgController::class, 'Delete'])->name('lgmg.delete');
+            Route::get('/show/{id}', [LgmgController::class, 'show'])->name('lgmg.show');
+            Route::post('/approve-lgmg', [LgmgController::class, 'Approve'])->name("lgmg.approve");
+            Route::post('/reject-lgmg', [LgmgController::class, 'Reject'])->name("lgmg.reject");
+            Route::post('/reset-lgmg/{id}', [LgmgController::class, 'Reset'])->name("lgmg.reset");
         });
 
     });
