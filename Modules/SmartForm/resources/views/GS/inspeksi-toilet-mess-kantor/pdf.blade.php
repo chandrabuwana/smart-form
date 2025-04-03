@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>FORM INSPEKSI CATERING</title>
+    <title>FORM INSPEKSI TOILET MESS KANTOR</title>
 </head>
 <style type="text/css">
 body{
@@ -98,7 +98,7 @@ p.thick {
 }
 
 .page-break {
-    page-break-before: always; /* Memaksa elemen ini dimulai di halaman baru */
+    page-break-before: always;
 }
 
 .option-ya-tidak {
@@ -125,7 +125,7 @@ p.thick {
                 <td style="text-align:left;font-size:0.650rem">: 00</td>
             </tr>
             <tr class="itemKop">
-                <td colspan="2" rowspan="2" style="width:60">INSPEKSI CATERING</td>
+                <td colspan="2" rowspan="2" style="width:60">INSPEKSI TOILET MESS KANTOR</td>
                 <td style="font-size:0.650rem;text-align:left">Tanggal</td>
                 <td style="text-align:left;font-size:0.650rem">: 23 November 2021</td>
             </tr>
