@@ -174,7 +174,7 @@ class RegistrasiSupplierController extends Controller {
 	    	    'surat_lainnya' => $request->rSurat,
                 'diisi_oleh' => $requested_by,
                 'diterima_oleh' => $request->dDiterima,
-                'status' => "NEED APPROVAL",
+                'status' => "3",
                 'disetujui_oleh' => $request->dApproved
 
             ]);

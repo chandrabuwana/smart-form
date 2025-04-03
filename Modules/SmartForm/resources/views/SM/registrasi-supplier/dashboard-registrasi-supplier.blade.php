@@ -15,12 +15,14 @@
         align-items: center;
         font-family: Arial, sans-serif;
         padding: 3px;
+        font-size: 12px;
     }
     .box {
         width: 20px;
         height: 20px;
         display: inline-block;
         border-radius: 4px;
+        font-size: 12px;
     }
     .grey {
         background-color:rgb(134, 132, 132);
@@ -98,13 +100,13 @@
                                 <label>Status :</label>
                             </div>
                             <div class="status me-2">
+                                <span class="box grey"></span> Need Approval
+                            </div>
+                            <div class="status me-2">
                                 <span class="box green"></span> Approved
                             </div>
                             <div class="status me-2">
                                 <span class="box red"></span> Rejected
-                            </div>
-                            <div class="status me-2">
-                                <span class="box grey"></span> Draft
                             </div>
                         </div>
 
@@ -256,11 +258,11 @@
         // <a class="btn btn-danger btn-action btn-sm" onclick="return myFunction();" href="/bss-form/sm/delete-supplier/${row.id}">Delete</a>
 
         function actionFormatter(value, row, index) {
-            var btn = '<a type="button" class="btn btn-secondary btn-sm me-1" href="/bss-form/sm/get-supplier-detail?id=' + row.id + '">Lihat</a>';
+            var btn = '<a type="button" class="btn btn-secondary btn-sm me-1" style="--bs-btn-font-size: .60rem;" href="/bss-form/sm/get-supplier-detail?id=' + row.id + '">Lihat</a>';
             if(row.diisi_oleh == users_nik && (row.editable == 0 || row.editable == null)) {
-                 btn = btn + '<a type="button" class="btn btn-info btn-sm me-1" href="/bss-form/sm/edit-supplier?id=' + row.id + '">Edit</a>'
-                     + '<a class="btn btn-primary btn-action btn-sm me-1" href="/bss-form/sm/pdf-registrasi-supplier?id=' + row.id + '">Pdf</a>'
-                     + '<a class="btn btn-danger btn-action btn-sm me-1" href="/bss-form/sm/delete-supplier?id=' + row.id + '">Delete</a>';
+                 btn = btn + '<a type="button" class="btn btn-info btn-sm me-1" style="--bs-btn-font-size: .60rem;" href="/bss-form/sm/edit-supplier?id=' + row.id + '">Edit</a>'
+                     + '<a class="btn btn-primary btn-action btn-sm me-1" style="--bs-btn-font-size: .60rem;" href="/bss-form/sm/pdf-registrasi-supplier?id=' + row.id + '">Pdf</a>'
+                     + '<a class="btn btn-danger btn-action btn-sm me-1" style="--bs-btn-font-size: .60rem;" href="/bss-form/sm/delete-supplier?id=' + row.id + '">Delete</a>';
             }
             return btn;
         }
@@ -281,21 +283,21 @@
 
         function statusActive(value, row, index) {
             if (value == 1) {
-                return `<button type="button" class="btn btn-success btn-sm" disabled>Active</button>`
+                return `<button type="button" style="--bs-btn-font-size: .60rem;" class="btn btn-success btn-sm" disabled>Active</button>`
             } else if (value == 2) {
-                return `<button type="button" class="btn btn-secondary btn-sm" disabled>Deleted</button>`
+                return `<button type="button" style="--bs-btn-font-size: .60rem;" class="btn btn-secondary btn-sm" disabled>Deleted</button>`
             } else {
-                return `<button type="button" class="btn btn-success btn-sm" disabled>Yes</button>`
+                return `<button type="button" style="--bs-btn-font-size: .60rem;" class="btn btn-success btn-sm" disabled>Yes</button>`
             }
         }
 
         function statusFormater(value, row, index) {
             if (value == 1) {
-                return `<button type="button" class="btn btn-success btn-sm" disabled>Approved</button>`
+                return `<button type="button" style="--bs-btn-font-size: .60rem;" class="btn btn-success btn-sm" disabled>Approved</button>`
             } else if (value == 2) {
-                return `<button type="button" class="btn btn-danger btn-sm" disabled>Rejected</button>`
+                return `<button type="button" style="--bs-btn-font-size: .60rem;" class="btn btn-danger btn-sm" disabled>Rejected</button>`
             } else {
-                return `<button type="button" class="btn btn-secondary btn-sm" disabled>Draft</button>`
+                return `<button type="button" style="--bs-btn-font-size: .60rem;" class="btn btn-secondary btn-sm" disabled>Need Approval</button>`
             }
         }
 
