@@ -326,9 +326,9 @@ class RegistrasiSupplierController extends Controller {
             'name_session' => $name_session]);
     }
 
-    public function PdfRegSupplier($id)
+    public function PdfRegSupplier(Request $request)
     {
-        $data = DB::table('FM_SM_00X_REGISTRASI_SUPPLIER')->where('id', $id)->first();
+        $data = DB::table('FM_SM_00X_REGISTRASI_SUPPLIER')->where('id', $request->id)->first();
         $pdf = PDF::loadView('SmartForm::SM/registrasi-supplier/reg-supplier-pdf',  compact('data'));
 
         return $pdf->download('BSS-FRM-SM-000.pdf');
