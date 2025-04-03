@@ -214,7 +214,9 @@ class RegistrasiSupplierController extends Controller {
         if($data['data']['diisi_oleh'] != $nik_session) {
             return abort(401, 'Unauthoried Request!');
         } else {
-            return view( 'bss-form.sm.registrasi-supplier', compact('data')
+            return view( 'SmartForm::SM/registrasi-supplier/approve-registrasi-supplier', 
+                $data,
+                ['approvalList' => HrdHelper::getApprovalList()] 
             );
         }
     }
@@ -387,6 +389,72 @@ class RegistrasiSupplierController extends Controller {
         return view('SmartForm::SM/registrasi-supplier/dashboard-registrasi-supplier', [
             'nik_session' => $nik_session,
             'name_session' => $name_session]);
+    }
+
+    function SubmitApproveSupplier(Request $req) {
+        $nik_session = $req->session()->get('user_id', '');
+        $name_session = $req->session()->get('username', '');
+        $TABLE_MASTER = 'FM_SM_00X_REGISTRASI_SUPPLIER';
+        $id = $req->query( 'id' );
+        
+        $nik_session = $req->session()->get( 'user_id', '' );
+        $data = $req->input();
+
+        $data = DB::table($TABLE_MASTER)
+                    ->select('*')
+                    ->where('id', $id)
+                    ->update(['status' => "1",
+                ] );
+        return view('SmartForm::SM/registrasi-supplier/dashboard-registrasi-supplier', [
+            'nik_session' => $nik_session,
+            'name_session' => $name_session]);
+
+    }
+
+    function SubmitRejectSupplier( Request $req ) {
+        $TABLE_MASTER = 'FM_SM_00X_REGISTRASI_SUPPLIER';
+        $no_doc = $req->query( 'no_doc' );
+        $response = array(
+            'message' => '',
+            'isSuccess' => false
+        );
+        $nik_session = $req->session()->get( 'user_id', '' );
+        $data = $req->input();
+        $data_insert = [
+            'no_doc' => $data[ 'no_doc' ],
+            'status' => $data[ 'status' ]
+        ];
+        $data_item = json_decode( $data[ 'item' ] );
+        Log::info( $data_item );
+
+        try {
+            DB::beginTransaction();
+            $old_value_master = DB::table( $TABLE_MASTER )
+            ->select( 'id', 'no_doc', 'status' )
+            ->where( 'no_doc', $no_doc )
+            ->first();
+
+            $affected_rows = DB::table( $TABLE_MASTER )
+            ->where( 'no_doc', $no_doc )
+            ->update( $data_insert );
+
+            DB::commit();
+            $response[ 'message' ] = 'Ok';
+            $response[ 'isSuccess' ] = true;
+            $response[ 'data' ] = array(
+                'no_doc' => $no_doc
+            );
+
+        } catch ( Exception $ex ) {
+            // DB::rollBack();
+
+            Log::error( $ex->getMessage() );
+            Log::error( $ex->getTraceAsString() );
+            $response[ 'message' ] = $ex->getMessage();
+            $response[ 'isSuccess' ] = false;
+        }
+
+        return response()->json( $response );
     }
 
 }
