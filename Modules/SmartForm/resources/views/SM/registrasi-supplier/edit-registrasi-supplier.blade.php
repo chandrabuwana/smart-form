@@ -529,7 +529,7 @@
                             <div class="d-flex align-items-center">
                                 <button class="btn btn-primary ms-auto uploadBtn" type="submit">
                                     <i class="fas fa-save"></i>
-                                    Submit Form
+                                    Update
                                 </button>
                             </div>
                         </div>

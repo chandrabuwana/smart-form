@@ -193,7 +193,9 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/form-registrasi-supplier', [RegistrasiSupplierController::class, 'FormRegistrasiSupplier'])->name('bss-form.sm.form-registrasi-supplier');
             Route::post('/create-registrasi-supplier', [RegistrasiSupplierController::class, 'CreateRegisSupplier'])->name('bss-form.sm.create-registrasi-supplier');
             Route::get('/edit-supplier', [RegistrasiSupplierController::class, 'RubahRegisSupplier'])->name('bss-form.sm.edit-registrasi-supplier');
+            Route::get('/lihat-approve-supplier', [RegistrasiSupplierController::class, 'ApproveRegisSupplier'])->name('bss-form.sm.lihat-approve-supplier');
             Route::post('/update-supplier', [RegistrasiSupplierController::class, 'updateRegisSupplier'])->name('bss-form.sm.update-supplier');
+            Route::post('/approve-supplier', [RegistrasiSupplierController::class, 'approveSupplier'])->name('bss-form.sm.approve-supplier');
             Route::get('/delete-supplier', [RegistrasiSupplierController::class, 'DeleteSupplier'])->name('bss-form.sm.delete-supplier');
             Route::get('/pdf-registrasi-supplier', [RegistrasiSupplierController::class, 'PdfRegSupplier'])->name('bss-form.sm.pdf-registrasi-supplier');
             Route::get('/get-supplier-detail', [RegistrasiSupplierController::class, 'SupplierDetailById'])->name("bss-form.log.supplier-detail-by-id");

@@ -119,7 +119,7 @@
                             <thead>
                                 <tr>
                                     <th data-field="id" data-align="left" data-halign="text-center" data-sortable="true">Unik ID</th>
-                                    <th data-field="diisi_oleh" data-align="left" data-halign="text-center" data-sortable="true">Dibuat_oleh</th>
+                                    <th data-field="diisi_oleh" data-align="left" data-halign="text-center" data-sortable="true">Dibuat Oleh</th>
                                     <th data-field="nama_vendor" data-align="left" data-halign="text-center" data-sortable="true">Nama Supplier</th>
                                     <!-- <th data-field="no_npwp" data-align="left" data-halign="text-center" data-sortable="true">No NPWP</th> -->
                                     <!-- <th data-field="bidang_usaha" data-align="left" data-halign="text-center" data-sortable="true">Bidang Usaha</th> -->
@@ -137,6 +137,29 @@
                 </div>
             </div>
         </div>
+    </div>
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Data Supplier</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form method="POST" action="{{route('bss-form.sm.update-supplier')}}" enctype="multipart/form-data">
+                
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Approve</button>
+            <button type="button" class="btn btn-danger">Reject</button>
+          </div>
+        </div>
+      </div>
     </div>
 @endsection
 
@@ -256,9 +279,10 @@
 
         // <a class="btn btn-info btn-action btn-sm me-1" href="/bss-form/sm/edit-registrasi-supplier/${row.id}">Edit</a>
         // <a class="btn btn-danger btn-action btn-sm" onclick="return myFunction();" href="/bss-form/sm/delete-supplier/${row.id}">Delete</a>
+        // var btn = '<a type="button" class="btn btn-secondary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#exampleModal" style="--bs-btn-font-size: .60rem;" href="/bss-form/sm/get-supplier-detail?id=' + row.id + '">Lihat</a>';
 
         function actionFormatter(value, row, index) {
-            var btn = '<a type="button" class="btn btn-secondary btn-sm me-1" style="--bs-btn-font-size: .60rem;" href="/bss-form/sm/get-supplier-detail?id=' + row.id + '">Lihat</a>';
+            var btn = '<a type="button" class="btn btn-secondary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#exampleModal" style="--bs-btn-font-size: .60rem;" href="/bss-form/sm/approve-supplier?id=' + row.id + '">Lihat</a>';
             if(row.diisi_oleh == users_nik && (row.editable == 0 || row.editable == null)) {
                  btn = btn + '<a type="button" class="btn btn-info btn-sm me-1" style="--bs-btn-font-size: .60rem;" href="/bss-form/sm/edit-supplier?id=' + row.id + '">Edit</a>'
                      + '<a class="btn btn-primary btn-action btn-sm me-1" style="--bs-btn-font-size: .60rem;" href="/bss-form/sm/pdf-registrasi-supplier?id=' + row.id + '">Pdf</a>'

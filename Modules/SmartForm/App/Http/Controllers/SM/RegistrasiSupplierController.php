@@ -205,6 +205,20 @@ class RegistrasiSupplierController extends Controller {
         }
     }
 
+    public function approveSupplier(Request $request)
+    {
+        $id = $request->query('id');
+        $nik_session = $request->session()->get('user_id', '');
+        $data = $this->getDetail($request, $id, $nik_session);
+        Log::debug("Data edit : ". json_encode($data, JSON_PRETTY_PRINT));
+        if($data['data']['diisi_oleh'] != $nik_session) {
+            return abort(401, 'Unauthoried Request!');
+        } else {
+            return view( 'bss-form.sm.registrasi-supplier', compact('data')
+            );
+        }
+    }
+
     private function getDetail(Request $request, $id, $nik) {
         $TABLE_MASTER = "FM_SM_00X_REGISTRASI_SUPPLIER";
         $isError = true;
