@@ -242,6 +242,17 @@ class RegistrasiSupplierController extends Controller {
             'diterima_oleh' => '',
             'disetujui_oleh' => '',
             'file_npwp' => '',
+            'status_pajak_pkp' => '',
+            'metode_pembayaran' => '',
+            'npwp' => '',
+            'sppkp' => '',
+            'nib_siup' => '',
+            'akta_perusahaan' => '',
+            'pakta_integritas' => '',
+            'kartu_identitas_direktur' => '',
+            'struktur_organisasi' => '',
+            'profile_perusahaan' => '',
+            'surat_lainnya' => '',
             'diisi_oleh' => ''
         );
         try {
@@ -250,7 +261,8 @@ class RegistrasiSupplierController extends Controller {
                     'id','nama_vendor','diisi_oleh','no_npwp','bidang_usaha','syarat_pembayaran','ppn','pph',
                     'nama_rekening_1','nomor_rekening_1','nama_bank_1','alamat_bank_1','nama_rekening_2','nomor_rekening_2','nama_bank_2','alamat_bank_2',
                     'alamat_kantor','kota','telepon','pj_1','pj_2','kode_pos','email','tlp_1','tlp_2','jabatan_1','jabatan_2','jabatan_1_email',
-                    'jabatan_2_email','diterima_oleh','disetujui_oleh','file_npwp'
+                    'jabatan_2_email','diterima_oleh','disetujui_oleh','file_npwp','status_pajak_pkp','metode_pembayaran',
+                    'npwp','sppkp','nib_siup','akta_perusahaan','pakta_integritas','kartu_identitas_direktur','struktur_organisasi','profile_perusahaan','surat_lainnya'
                 )
                 ->where('id', $id)
                 ->first();
@@ -295,6 +307,17 @@ class RegistrasiSupplierController extends Controller {
                 $data_master['diterima_oleh'] = $data->diterima_oleh;
                 $data_master['disetujui_oleh'] = $data->disetujui_oleh;
                 $data_master['file_npwp'] = $data->file_npwp;
+                $data_master['status_pajak_pkp'] = $data->status_pajak_pkp;
+                $data_master['metode_pembayaran'] = $data->metode_pembayaran;
+                $data_master['npwp'] = $data->npwp;
+                $data_master['sppkp'] = $data->sppkp;
+                $data_master['nib_siup'] = $data->nib_siup;
+                $data_master['akta_perusahaan'] = $data->akta_perusahaan;
+                $data_master['pakta_integritas'] = $data->pakta_integritas;
+                $data_master['kartu_identitas_direktur'] = $data->kartu_identitas_direktur;
+                $data_master['struktur_organisasi'] = $data->struktur_organisasi;
+                $data_master['profile_perusahaan'] = $data->profile_perusahaan;
+                $data_master['surat_lainnya'] = $data->surat_lainnya;
 
                 $isError = false;
             } else {

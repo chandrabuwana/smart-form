@@ -55,12 +55,12 @@
                                                 <td>:</td>
                                                 <td>
                                                     <div class="form-check">
-                                                      <input class="form-check-input" type="radio" value="PKP" name="rPkp" id="rPkp" required>
+                                                      <input class="form-check-input" type="radio" value="PKP" name="rPkp" id="rPkp" {{ old('rPkp',$data['status_pajak_pkp']) == 'PKP' ? 'checked' : '' }} required>
                                                       <label class="form-check-label" for="rPkp">
                                                         PKP
                                                       </label>
                                                     
-                                                      <input class="form-check-input" type="radio" value="NON-PKP" name="rPkp" id="rNonPkp" required>
+                                                      <input class="form-check-input" type="radio" value="NON-PKP" name="rPkp" id="rPkp" {{ old('rPkp',$data['status_pajak_pkp']) == 'NON-PKP' ? 'checked' : '' }} required>
                                                       <label class="form-check-label" for="rNonPkp">
                                                         NON PKP
                                                       </label>
@@ -96,15 +96,15 @@
                                                 <td>:</td>
                                                 <td>
                                                     <div class="form-check">
-                                                      <input class="form-check-input" type="radio" value="Tunai" name="rMetodePembayaran" id="rCash" required>
+                                                      <input class="form-check-input" type="radio" value="Tunai" name="rMetodePembayaran" id="rCash" {{ old('rMetodePembayaran',$data['metode_pembayaran']) == 'Tunai' ? 'checked' : '' }} required>
                                                       <label class="form-check-label" for="rPkp">
                                                         Tunai
                                                       </label>
-                                                      <input class="form-check-input" type="radio" value="Transfer" name="rMetodePembayaran" id="rTransfer" required>
+                                                      <input class="form-check-input" type="radio" value="Transfer" name="rMetodePembayaran" id="rTransfer" {{ old('rMetodePembayaran',$data['metode_pembayaran']) == 'Transfer' ? 'checked' : '' }} required>
                                                       <label class="form-check-label" for="rNonPkp">
                                                         Transfer
                                                       </label>
-                                                      <input class="form-check-input" type="radio" value="Cheque/Giro" name="rMetodePembayaran" id="rCheque" required>
+                                                      <input class="form-check-input" type="radio" value="Cheque/Giro" name="rMetodePembayaran" id="rCheque" {{ old('rMetodePembayaran',$data['metode_pembayaran']) == 'Cheque/Giro' ? 'checked' : '' }} required>
                                                       <label class="form-check-label" for="rNonPkp">
                                                         Cheque / Giro
                                                       </label>
@@ -304,12 +304,12 @@
                                                 <td>:</td>
                                                 <td>
                                                     <div class="form-check">
-                                                      <input class="form-check-input" type="radio" value="Ada" name="rNpwp1" id="rNpwp1" required>
+                                                      <input class="form-check-input" type="radio" value="Ada" name="rNpwp1" id="rNpwp1" {{ old('rNpwp1',$data['npwp']) == 'Ada' ? 'checked' : '' }} required>
                                                       <label class="form-check-label" for="rPkp">
                                                         Ada
                                                       </label>
                                                     
-                                                      <input class="form-check-input" type="radio" value="Tidak" name="rNpwp1" id="rNpwp1" required>
+                                                      <input class="form-check-input" type="radio" value="Tidak" name="rNpwp1" id="rNpwp1" {{ old('rNpwp1',$data['npwp']) == 'Tidak' ? 'checked' : '' }} required>
                                                       <label class="form-check-label" for="rNonPkp">
                                                         Tidak
                                                       </label>
@@ -325,12 +325,12 @@
                                                 <td>:</td>
                                                 <td>
                                                     <div class="form-check">
-                                                      <input class="form-check-input" type="radio" value="Ada" name="rSppkp" id="rSppkp" required>
+                                                      <input class="form-check-input" type="radio" value="Ada" name="rSppkp" id="rSppkp" {{ old('rSppkp',$data['sppkp']) == 'Ada' ? 'checked' : '' }} required>
                                                       <label class="form-check-label" for="rPkp">
                                                         Ada
                                                       </label>
                                                     
-                                                      <input class="form-check-input" type="radio" value="Tidak" name="rSppkp" id="rNonSppkp" required>
+                                                      <input class="form-check-input" type="radio" value="Tidak" name="rSppkp" id="rNonSppkp" {{ old('rNonSppkp',$data['sppkp']) == 'Tidak' ? 'checked' : '' }} required>
                                                       <label class="form-check-label" for="rNonPkp">
                                                         Tidak
                                                       </label>
@@ -346,12 +346,12 @@
                                                 <td>:</td>
                                                 <td>
                                                     <div class="form-check">
-                                                      <input class="form-check-input" type="radio" value="Ada" name="rNib" id="rNib" required>
+                                                      <input class="form-check-input" type="radio" value="Ada" name="rNib" id="rNib" {{ old('rNib',$data['nib_siup']) == 'Ada' ? 'checked' : '' }} required>
                                                       <label class="form-check-label" for="rPkp">
                                                         Ada
                                                       </label>
                                                     
-                                                      <input class="form-check-input" type="radio" value="Tidak" name="rNib" id="rNibNo" required>
+                                                      <input class="form-check-input" type="radio" value="Tidak" name="rNib" id="rNibNo" {{ old('rNib',$data['nib_siup']) == 'Tidak' ? 'checked' : '' }} required>
                                                       <label class="form-check-label" for="rNonPkp">
                                                         Tidak
                                                       </label>
@@ -367,12 +367,12 @@
                                                 <td>:</td>
                                                 <td>
                                                     <div class="form-check">
-                                                      <input class="form-check-input" type="radio" value="Ada" name="rAkta" id="rAkta" required>
+                                                      <input class="form-check-input" type="radio" value="Ada" name="rAkta" id="rAkta" {{ old('rAkta',$data['akta_perusahaan']) == 'Ada' ? 'checked' : '' }} required>
                                                       <label class="form-check-label" for="rPkp">
                                                         Ada
                                                       </label>
                                                     
-                                                      <input class="form-check-input" type="radio" value="Tidak" name="rAkta" id="rAktraNo" required>
+                                                      <input class="form-check-input" type="radio" value="Tidak" name="rAkta" id="rAktraNo" {{ old('rAkta',$data['akta_perusahaan']) == 'Tidak' ? 'checked' : '' }} required>
                                                       <label class="form-check-label" for="rNonPkp">
                                                         Tidak
                                                       </label>
@@ -388,12 +388,12 @@
                                                 <td>:</td>
                                                 <td>
                                                     <div class="form-check">
-                                                      <input class="form-check-input" type="radio" value="Ada" name="rPakta" id="rPakta" required>
+                                                      <input class="form-check-input" type="radio" value="Ada" name="rPakta" id="rPakta" {{ old('rPakta',$data['pakta_integritas']) == 'Ada' ? 'checked' : '' }} required>
                                                       <label class="form-check-label" for="rPkp">
                                                         Ada
                                                       </label>
                                                     
-                                                      <input class="form-check-input" type="radio" value="Tidak" name="rPakta" id="rPaktaNo" required>
+                                                      <input class="form-check-input" type="radio" value="Tidak" name="rPakta" id="rPaktaNo" {{ old('rPakta',$data['pakta_integritas']) == 'Tidak' ? 'checked' : '' }} required>
                                                       <label class="form-check-label" for="rNonPkp">
                                                         Tidak
                                                       </label>
@@ -409,12 +409,12 @@
                                                 <td>:</td>
                                                 <td>
                                                     <div class="form-check">
-                                                      <input class="form-check-input" type="radio" value="Ada" name="rKartu" id="rIden" required>
+                                                      <input class="form-check-input" type="radio" value="Ada" name="rKartu" id="rIden" {{ old('rKartu',$data['kartu_identitas_direktur']) == 'Ada' ? 'checked' : '' }} required>
                                                       <label class="form-check-label" for="rPkp">
                                                         Ada
                                                       </label>
                                                     
-                                                      <input class="form-check-input" type="radio" value="Tidak" name="rKartu" id="rIdenNo" required>
+                                                      <input class="form-check-input" type="radio" value="Tidak" name="rKartu" id="rIdenNo" {{ old('rKartu',$data['kartu_identitas_direktur']) == 'Tidak' ? 'checked' : '' }} required>
                                                       <label class="form-check-label" for="rNonPkp">
                                                         Tidak
                                                       </label>
@@ -430,12 +430,12 @@
                                                 <td>:</td>
                                                 <td>
                                                     <div class="form-check">
-                                                      <input class="form-check-input" type="radio" value="Ada" name="rStruktur" id="rStruktur" required>
+                                                      <input class="form-check-input" type="radio" value="Ada" name="rStruktur" id="rStruktur" {{ old('rStruktur',$data['struktur_organisasi']) == 'Ada' ? 'checked' : '' }} required>
                                                       <label class="form-check-label" for="rPkp">
                                                         Ada
                                                       </label>
                                                     
-                                                      <input class="form-check-input" type="radio" value="Tidak" name="rStruktur" id="rStrukturNo" required>
+                                                      <input class="form-check-input" type="radio" value="Tidak" name="rStruktur" id="rStrukturNo" {{ old('rStruktur',$data['struktur_organisasi']) == 'Tidak' ? 'checked' : '' }} required>
                                                       <label class="form-check-label" for="rNonPkp">
                                                         Tidak
                                                       </label>
@@ -451,12 +451,12 @@
                                                 <td>:</td>
                                                 <td>
                                                     <div class="form-check">
-                                                      <input class="form-check-input" type="radio" value="Ada" name="rProfile" id="rProfile" required>
+                                                      <input class="form-check-input" type="radio" value="Ada" name="rProfile" id="rProfile" {{ old('rProfile',$data['profile_perusahaan']) == 'Ada' ? 'checked' : '' }} required>
                                                       <label class="form-check-label" for="rPkp">
                                                         Ada
                                                       </label>
                                                     
-                                                      <input class="form-check-input" type="radio" value="Tidak" name="rProfile" id="rProfile" required>
+                                                      <input class="form-check-input" type="radio" value="Tidak" name="rProfile" id="rProfile" {{ old('rProfile',$data['profile_perusahaan']) == 'Tidak' ? 'checked' : '' }} required>
                                                       <label class="form-check-label" for="rNonPkp">
                                                         Tidak
                                                       </label>
@@ -472,12 +472,12 @@
                                                 <td>:</td>
                                                 <td>
                                                     <div class="form-check">
-                                                      <input class="form-check-input" type="radio" value="Ada" name="rSurat" id="rSuratLain" required>
+                                                      <input class="form-check-input" type="radio" value="Ada" name="rSurat" id="rSuratLain" {{ old('rSurat',$data['surat_lainnya']) == 'Ada' ? 'checked' : '' }} required>
                                                       <label class="form-check-label" for="rPkp">
                                                         Ada
                                                       </label>
                                                     
-                                                      <input class="form-check-input" type="radio" value="Tidak" name="rSurat" id="rSuratLainNo" required>
+                                                      <input class="form-check-input" type="radio" value="Tidak" name="rSurat" id="rSuratLainNo" {{ old('rSurat',$data['surat_lainnya']) == 'Tidak' ? 'checked' : '' }} required>
                                                       <label class="form-check-label" for="rNonPkp">
                                                         Tidak
                                                       </label>
