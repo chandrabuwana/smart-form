@@ -164,6 +164,12 @@ class EyewashController extends Controller
             $validator = Validator::make($request->all(), [
                 'inspection_date' => 'required|date',
                 'location' => 'required|string',
+                'supervisor_name' => 'nullable|string',
+                'supervisor_nik' => 'nullable|string',
+                'dh_name' => 'nullable|string',
+                'dh_nik' => 'nullable|string',
+                'dh_terkait_name' => 'nullable|string',
+                'dh_terkait_nik' => 'nullable|string',
                 // 'created_by' => 'required|string',
                 // 'supervisor' => 'required|string',
                 // 'dh' => 'required|string',
@@ -225,6 +231,18 @@ class EyewashController extends Controller
                     'monthly_data' => json_encode($monthlyData),
                     'notes' => $request->notes,
                     'created_by' => session('username'),
+                    'hygiene_name' => session('username'), // Set the creator as the hygiene approver
+                    'hygiene_nik' => session('user_id'),   // Set the creator's ID as the hygiene NIK
+                    'hygiene_signed_at' => now(),         // Set the current time as the hygiene signed timestamp
+                    'supervisor_name' => $request->supervisor_name,
+                    'supervisor_nik' => $request->supervisor_nik,
+                    'supervisor_signed_at' => $request->has('supervisor_signed_at') ? $request->supervisor_signed_at : null,
+                    'dh_name' => $request->dh_name,
+                    'dh_nik' => $request->dh_nik,
+                    'dh_signed_at' => $request->has('dh_signed_at') ? $request->dh_signed_at : null,
+                    'dh_terkait_name' => $request->dh_terkait_name,
+                    'dh_terkait_nik' => $request->dh_terkait_nik,
+                    'dh_terkait_signed_at' => $request->has('dh_terkait_signed_at') ? $request->dh_terkait_signed_at : null,
                     'created_at' => now(),
                     'updated_at' => now(),
                     'hygiene_status' => 'pending',
@@ -299,15 +317,18 @@ class EyewashController extends Controller
         }
     }
 
-    public function EditForm(Request $request)
+    public function EditForm(Request $request, $id = null)
     {
         try {
-            if (!$request->has('id')) {
+            // Check if ID is provided either as route parameter or query parameter
+            $recordId = $id ?? $request->id;
+            
+            if (!$recordId) {
                 return redirect()->route('she-inspeksi.dashboard')
                     ->with('error', 'Record ID is required');
             }
             
-            $record = DB::table('she_eyewash')->where('id', $request->id)->first();
+            $record = DB::table('she_eyewash')->where('id', $recordId)->first();
             
             if (!$record) {
                 return redirect()->route('she-inspeksi.dashboard')
@@ -360,6 +381,12 @@ class EyewashController extends Controller
                 'id' => 'required|exists:she_eyewash,id',
                 'inspection_date' => 'required|date',
                 'location' => 'required|string',
+                'supervisor_name' => 'nullable|string',
+                'supervisor_nik' => 'nullable|string',
+                'dh_name' => 'nullable|string',
+                'dh_nik' => 'nullable|string',
+                'dh_terkait_name' => 'nullable|string',
+                'dh_terkait_nik' => 'nullable|string',
             ]);
             
             if ($validator->fails()) {
@@ -421,22 +448,58 @@ class EyewashController extends Controller
                     }
                 }
                 
-                // Update record
+                $updateData = [
+                    'inspection_date' => $request->inspection_date,
+                    'location' => $request->location,
+                    'monthly_data' => json_encode($monthlyData),
+                    'notes' => $request->notes,
+                    'updated_at' => now(),
+                ];
+                
+                // Only update approver fields if they are provided in the request
+                // Otherwise, preserve the existing values
+                if ($request->filled('supervisor_name')) {
+                    $updateData['supervisor_name'] = $request->supervisor_name;
+                }
+                if ($request->filled('supervisor_nik')) {
+                    $updateData['supervisor_nik'] = $request->supervisor_nik;
+                }
+                if ($request->has('supervisor_signed_at')) {
+                    $updateData['supervisor_signed_at'] = $request->supervisor_signed_at;
+                }
+                
+                if ($request->filled('dh_name')) {
+                    $updateData['dh_name'] = $request->dh_name;
+                }
+                if ($request->filled('dh_nik')) {
+                    $updateData['dh_nik'] = $request->dh_nik;
+                }
+                if ($request->has('dh_signed_at')) {
+                    $updateData['dh_signed_at'] = $request->dh_signed_at;
+                }
+                
+                if ($request->filled('dh_terkait_name')) {
+                    $updateData['dh_terkait_name'] = $request->dh_terkait_name;
+                }
+                if ($request->filled('dh_terkait_nik')) {
+                    $updateData['dh_terkait_nik'] = $request->dh_terkait_nik;
+                }
+                if ($request->has('dh_terkait_signed_at')) {
+                    $updateData['dh_terkait_signed_at'] = $request->dh_terkait_signed_at;
+                }
+                
+                // Reset approval statuses if it was rejected
+                if ($record->approval_status === 'rejected') {
+                    $updateData['hygiene_status'] = 'pending';
+                    $updateData['supervisor_status'] = 'pending';
+                    $updateData['dh_status'] = 'pending';
+                    $updateData['dh_terkait_status'] = 'pending';
+                    $updateData['approval_status'] = 'pending';
+                }
+                
                 DB::table('she_eyewash')
                     ->where('id', $request->id)
-                    ->update([
-                        'inspection_date' => $request->inspection_date,
-                        'location' => $request->location,
-                        'monthly_data' => json_encode($monthlyData),
-                        'notes' => $request->notes,
-                        'updated_at' => now(),
-                        // Reset approval statuses if it was rejected
-                        'hygiene_status' => $record->approval_status === 'rejected' ? 'pending' : $record->hygiene_status,
-                        'supervisor_status' => $record->approval_status === 'rejected' ? 'pending' : $record->supervisor_status,
-                        'dh_status' => $record->approval_status === 'rejected' ? 'pending' : $record->dh_status,
-                        'dh_terkait_status' => $record->approval_status === 'rejected' ? 'pending' : $record->dh_terkait_status,
-                        'approval_status' => $record->approval_status === 'rejected' ? 'pending' : $record->approval_status
-                    ]);
+                    ->update($updateData);
                 
                 DB::commit();
                 Log::info('Eyewash form updated successfully');

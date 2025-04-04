@@ -141,35 +141,35 @@
     <table class="signature-table">
         <tr>
             <td width="25%">Dibuat Oleh Tim Hygiene</td>
-            <td width="25%">: {{ $record->created_by }}</td>
+            <td width="25%">: {{ $record->hygiene_name }}</td>
             <td width="15%">Tanda Tangan</td>
-            <td width="20%">: Signed</td>
+            <td width="20%">: {{ $record->hygiene_status === 'approved' ? 'Signed' : 'Not Signed' }}</td>
             <td width="15%">Tanggal</td>
-            <td>: {{ Carbon\Carbon::parse($record->inspection_date)->format('d F Y') }}</td>
+            <td>: {{ \Carbon\Carbon::parse($record->inspection_date)->format('d F Y') }}</td>
         </tr>
         <tr>
             <td>Diperiksa Oleh Supervisor</td>
-            <td>: {{ $record->supervisor }}</td>
+            <td>: {{ $record->supervisor_name }}</td>
             <td>Tanda Tangan</td>
-            <td>:</td>
+            <td>: {{ $record->supervisor_status === 'approved' ? 'Signed' : 'Not Signed' }}</td>
             <td>Tanggal</td>
-            <td>:</td>
+            <td>: {{ \Carbon\Carbon::parse($record->inspection_date)->format('d F Y') }}</td>
         </tr>
         <tr>
             <td>Disampaikan kepada DH</td>
-            <td>: {{ $record->dh }}</td>
+            <td>: {{ $record->dh_name }}</td>
             <td>Tanda Tangan</td>
-            <td>: Signed</td>
+            <td>: {{ $record->dh_status === 'approved' ? 'Signed' : 'Not Signed' }}</td>
             <td>Tanggal</td>
-            <td>: {{ Carbon\Carbon::parse($record->inspection_date)->format('d F Y') }}</td>
+            <td>: {{ \Carbon\Carbon::parse($record->inspection_date)->format('d F Y') }}</td>
         </tr>
         <tr>
             <td>Disampaikan kepada DH Terkait</td>
-            <td>:</td>
+            <td>: {{ $record->dh_terkait_name }}</td>
             <td>Tanda Tangan</td>
-            <td>:</td>
+            <td>: {{ $record->dh_terkait_status === 'approved' ? 'Signed' : 'Not Signed' }}</td>
             <td>Tanggal</td>
-            <td>:</td>
+            <td>: {{ \Carbon\Carbon::parse($record->inspection_date)->format('d F Y') }}</td>
         </tr>
     </table>
 

@@ -193,6 +193,144 @@
                                 </div>
                             </div>
 
+                            <!-- Approval Information -->
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-header bg-light">
+                                            <h5 class="mb-0">Informasi Persetujuan</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <table class="table table-bordered">
+                                                <tr class="text-center">
+                                                    <th class="border">Dibuat Oleh Hygiene</th>
+                                                    <th class="border">NIK</th>
+                                                    <th class="border">Tanggal</th>
+                                                    <th class="border">Status</th>
+                                                </tr>
+                                                <tr>
+                                                    <td class="border">
+                                                        <input type="text" name="hygiene_name" class="form-control text-center" 
+                                                        placeholder="Nama Lengkap"
+                                                        value="{{ $maintenanceRecord->hygiene_name }}" readonly>
+                                                    </td>
+                                                    <td class="border">
+                                                        <input type="text" name="hygiene_nik" class="form-control text-center" 
+                                                        placeholder="NIK"
+                                                        value="{{ $maintenanceRecord->hygiene_nik }}" readonly>
+                                                    </td>
+                                                    <td class="border">
+                                                        <input type="text" class="form-control text-center" 
+                                                        value="{{ !empty($maintenanceRecord->hygiene_signed_at) ? date('Y-m-d', strtotime($maintenanceRecord->hygiene_signed_at)) : '' }}" readonly>
+                                                    </td>
+                                                    <td class="border text-center">
+                                                        <span class="badge bg-{{ $maintenanceRecord->hygiene_status == 'approved' ? 'success' : ($maintenanceRecord->hygiene_status == 'rejected' ? 'danger' : 'secondary') }}">
+                                                            {{ ucfirst($maintenanceRecord->hygiene_status) }}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                                <tr class="text-center">
+                                                    <th class="border">Diperiksa Oleh Supervisor</th>
+                                                    <th class="border">NIK</th>
+                                                    <th class="border">Tanggal</th>
+                                                    <th class="border">Status</th>
+                                                </tr>
+                                                <tr>
+                                                    <td class="border">
+                                                        <select name="supervisor_name" id="supervisor_name" class="form-control text-center">
+                                                            <option value="">-- Pilih Supervisor --</option>
+                                                            @foreach($approvalList as $user)
+                                                                <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $maintenanceRecord->supervisor_name == $user->nama ? 'selected' : '' }}>
+                                                                    {{ $user->nama }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </td>
+                                                    <td class="border">
+                                                        <input type="text" name="supervisor_nik" id="supervisor_nik" class="form-control text-center" 
+                                                        placeholder="NIK"
+                                                        value="{{ $maintenanceRecord->supervisor_nik }}" readonly>
+                                                    </td>
+                                                    <td class="border">
+                                                        <input type="text" class="form-control text-center" 
+                                                        value="{{ !empty($maintenanceRecord->supervisor_signed_at) ? date('Y-m-d', strtotime($maintenanceRecord->supervisor_signed_at)) : '' }}" readonly>
+                                                    </td>
+                                                    <td class="border text-center">
+                                                        <span class="badge bg-{{ $maintenanceRecord->supervisor_status == 'approved' ? 'success' : ($maintenanceRecord->supervisor_status == 'rejected' ? 'danger' : 'secondary') }}">
+                                                            {{ ucfirst($maintenanceRecord->supervisor_status) }}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                                <tr class="text-center">
+                                                    <th class="border">Disetujui Oleh DH</th>
+                                                    <th class="border">NIK</th>
+                                                    <th class="border">Tanggal</th>
+                                                    <th class="border">Status</th>
+                                                </tr>
+                                                <tr>
+                                                    <td class="border">
+                                                        <select name="dh_name" id="dh_name" class="form-control text-center">
+                                                            <option value="">-- Pilih Department Head --</option>
+                                                            @foreach($approvalList as $user)
+                                                                <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $maintenanceRecord->dh_name == $user->nama ? 'selected' : '' }}>
+                                                                    {{ $user->nama }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </td>
+                                                    <td class="border">
+                                                        <input type="text" name="dh_nik" id="dh_nik" class="form-control text-center" 
+                                                        placeholder="NIK"
+                                                        value="{{ $maintenanceRecord->dh_nik }}" readonly>
+                                                    </td>
+                                                    <td class="border">
+                                                        <input type="text" class="form-control text-center" 
+                                                        value="{{ !empty($maintenanceRecord->dh_signed_at) ? date('Y-m-d', strtotime($maintenanceRecord->dh_signed_at)) : '' }}" readonly>
+                                                    </td>
+                                                    <td class="border text-center">
+                                                        <span class="badge bg-{{ $maintenanceRecord->dh_status == 'approved' ? 'success' : ($maintenanceRecord->dh_status == 'rejected' ? 'danger' : 'secondary') }}">
+                                                            {{ ucfirst($maintenanceRecord->dh_status) }}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                                <tr class="text-center">
+                                                    <th class="border">Disetujui Oleh DH Terkait</th>
+                                                    <th class="border">NIK</th>
+                                                    <th class="border">Tanggal</th>
+                                                    <th class="border">Status</th>
+                                                </tr>
+                                                <tr>
+                                                    <td class="border">
+                                                        <select name="dh_terkait_name" id="dh_terkait_name" class="form-control text-center">
+                                                            <option value="">-- Pilih DH Terkait --</option>
+                                                            @foreach($approvalList as $user)
+                                                                <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $maintenanceRecord->dh_terkait_name == $user->nama ? 'selected' : '' }}>
+                                                                    {{ $user->nama }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </td>
+                                                    <td class="border">
+                                                        <input type="text" name="dh_terkait_nik" id="dh_terkait_nik" class="form-control text-center" 
+                                                        placeholder="NIK"
+                                                        value="{{ $maintenanceRecord->dh_terkait_nik }}" readonly>
+                                                    </td>
+                                                    <td class="border">
+                                                        <input type="text" class="form-control text-center" 
+                                                        value="{{ !empty($maintenanceRecord->dh_terkait_signed_at) ? date('Y-m-d', strtotime($maintenanceRecord->dh_terkait_signed_at)) : '' }}" readonly>
+                                                    </td>
+                                                    <td class="border text-center">
+                                                        <span class="badge bg-{{ $maintenanceRecord->dh_terkait_status == 'approved' ? 'success' : ($maintenanceRecord->dh_terkait_status == 'rejected' ? 'danger' : 'secondary') }}">
+                                                            {{ ucfirst($maintenanceRecord->dh_terkait_status) }}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <!-- Submit/Back Buttons -->
                             <div class="row">
                                 <div class="col-12 text-end">
@@ -202,7 +340,7 @@
                                                 <a href="{{ route('she-inspeksi.dashboard') }}" class="btn btn-secondary">Back</a>
                                             </div>
                                             <div>
-                                                <button type="submit" class="btn btn-primary">Update</button>
+                                                <button type="button" id="submitBtn" class="btn btn-primary">Update</button>
                                             </div>
                                         </div>
                                     </div>
@@ -222,53 +360,91 @@
 @endsection
 
 @section('custom-js')
-    <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <script>
-    $(function() {
-        var form = $("#editForm");
-        var submitBtn = form.find('button[type="submit"]');
-
-        form.submit(function(e) {
-            e.preventDefault();
-            submitBtn.prop('disabled', true);
-
-            var formData = new FormData(this);
+        $(document).ready(function() {
+            // Handle NIK auto-fill for Supervisor
+            $('#supervisor_name').on('change', function() {
+                var nik = $(this).find('option:selected').data('nik');
+                $('#supervisor_nik').val(nik);
+            });
             
-            axios.post('{{ route("she-inspeksi.update") }}', formData)
-                .then(function(response) {
-                    if (response.data.success) {
+            // Handle NIK auto-fill for DH
+            $('#dh_name').on('change', function() {
+                var nik = $(this).find('option:selected').data('nik');
+                $('#dh_nik').val(nik);
+            });
+            
+            // Handle NIK auto-fill for DH Terkait
+            $('#dh_terkait_name').on('change', function() {
+                var nik = $(this).find('option:selected').data('nik');
+                $('#dh_terkait_nik').val(nik);
+            });
+            
+            // Handle form submission
+            $('#submitBtn').on('click', function(e) {
+                e.preventDefault();
+                
+                // Show confirmation dialog
+                Swal.fire({
+                    title: 'Konfirmasi',
+                    text: 'Apakah Anda yakin ingin menyimpan perubahan?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, Simpan',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Submit the form
+                        submitForm();
+                    }
+                });
+            });
+            
+            function submitForm() {
+                // Get form data
+                var formData = $('#editForm').serialize();
+                
+                // Submit form via AJAX
+                $.ajax({
+                    url: '{{ route('she-inspeksi.update') }}',
+                    type: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        if (response.success) {
+                            Swal.fire({
+                                title: 'Berhasil!',
+                                text: response.message,
+                                icon: 'success',
+                                confirmButtonText: 'OK'
+                            }).then((result) => {
+                                window.location.href = '{{ route('she-inspeksi.dashboard') }}';
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Gagal!',
+                                text: response.message,
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    },
+                    error: function(xhr) {
+                        var errorMessage = 'Terjadi kesalahan. Silakan coba lagi.';
+                        
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMessage = xhr.responseJSON.message;
+                        }
+                        
                         Swal.fire({
-                            icon: 'success',
-                            title: 'Success',
-                            text: response.data.message
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                window.location.href = '{{ route("she-inspeksi.dashboard") }}';
-                            }
+                            title: 'Gagal!',
+                            text: errorMessage,
+                            icon: 'error',
+                            confirmButtonText: 'OK'
                         });
                     }
-                })
-                .catch(function(error) {
-                    let errorMessage = 'Terjadi kesalahan pada sistem';
-                    
-                    if (error.response) {
-                        if (error.response.data.errors) {
-                            errorMessage = Object.values(error.response.data.errors).flat().join('\n');
-                        } else if (error.response.data.message) {
-                            errorMessage = error.response.data.message;
-                        }
-                    }
-                    
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: errorMessage
-                    });
-                    
-                    submitBtn.prop('disabled', false);
                 });
+            }
         });
-    });
     </script>
 @endsection
