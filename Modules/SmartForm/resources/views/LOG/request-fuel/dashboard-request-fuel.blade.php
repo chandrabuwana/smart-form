@@ -56,7 +56,7 @@
                                                 <div class="col-md-8">
                                                     <p class="text-sm mb-0 text-uppercase font-weight-bold">Step Not Net ACC
                                                     </p>
-                                                    
+
                                                 </div>
                                                 <div class="col-md-4 text-end">
                                                     <div
@@ -77,7 +77,7 @@
                                                 <div class="col-md-8">
                                                     <p class="text-sm mb-0 text-uppercase font-weight-bold">Reject By PIC
                                                     </p>
-                                                    
+
                                                 </div>
                                                 <div class="col-md-4 text-end">
                                                     <div
@@ -97,7 +97,7 @@
                                             <div class="row align-items-center">
                                                 <div class="col-md-8">
                                                     <p class="text-sm mb-0 text-uppercase font-weight-bold">On Progress</p>
-                                                    
+
                                                 </div>
                                                 <div class="col-md-4 text-end">
                                                     <div
@@ -116,7 +116,7 @@
                                             <div class="row align-items-center">
                                                 <div class="col-md-8">
                                                     <p class="text-sm mb-0 text-uppercase font-weight-bold">Closed</p>
-                                                    
+
                                                 </div>
                                                 <div class="col-md-4 text-end">
                                                     <div
@@ -153,20 +153,20 @@
                         <div class="col-6 col-md-3">
                             <div class="input-group input-group-static mb-4">
                                 <label for="filterSite">Site</label>
-                                <select style="width: 100%" id="filterSite" name="filterSite"></select>
+                                {!! $siteOptions !!}
                             </div>
                         </div>
                         <div class="col-md-3 mb-3">
                             <div class="input-group input-group-static mb-4 position-relative">
                                 <label for="start_date" class="ms-0">Start Date</label>
-                                <input type="date" class="form-control" id="start_date" name="start_date" 
+                                <input type="date" class="form-control" id="start_date" name="start_date"
                                     value="{{ $start_date ?? '' }}">
                             </div>
                         </div>
                         <div class="col-md-3 mb-3">
                             <div class="input-group input-group-static mb-4 position-relative">
                                 <label for="end_date" class="ms-0">End Date</label>
-                                <input type="date" class="form-control" id="end_date" name="end_date" 
+                                <input type="date" class="form-control" id="end_date" name="end_date"
                                     value="{{ $end_date ?? '' }}">
                             </div>
                         </div>
@@ -180,8 +180,8 @@
                         </div>
                 </div>
 
-                    
-                
+
+
                         <div class="col-md-12 d-flex justify-content-end">
                             <div class="status me-2">
                                 <label>Status data :</label>
@@ -207,6 +207,7 @@
                                     <th data-field="nama" data-align="left" data-halign="text-center" data-sortable="true">Nama</th>
                                     <th data-field="dibuat_oleh" data-align="left" data-halign="text-center" data-sortable="true">NIK</th>
                                     <!-- <th data-field="jabatan" data-align="left" data-halign="text-center" data-sortable="true">Jabatan</th> -->
+                                    <th data-field="site" data-align="left" data-halign="text-center" data-sortable="true">Site</th>
                                     <th data-field="departemen" data-align="left" data-halign="text-center" data-sortable="true">Departemen</th>
                                     <th data-field="tanggal" data-align="left" data-halign="text-center" data-sortable="true">Tanggal</th>
                                     <!-- <th data-field="no_lambung" data-align="left" data-halign="text-center" data-sortable="true">No Lambung</th> -->
@@ -238,11 +239,14 @@
             status: null,
         }
 
-        $('#filterNik').on("select2:select", function (e) { 
+        $('#filterNik').on("select2:select", function (e) {
             filter.nik = e.params.data.id
         });
         $('#filterStatus').on("select2:select", function (e) {
             filter.status = e.params.data.id
+        });
+        $('#filterSite').on("select2:select", function (e) {
+            filter.site = e.params.data.id;
         });
 
         $('#filterNik').select2({
@@ -309,6 +313,7 @@
             filter = {
                 nik: null,
                 status: null,
+                site: null,
             }
             $("#list-form").bootstrapTable('refresh')
         }
@@ -323,10 +328,10 @@
         btnClearFilter.addEventListener("click", function(e) {
 
         })
-        
+
         function debounce (func, wait){
             let timeout;
-            
+
             return function executedFunction(...args) {
                 var later = () => {
                     clearTimeout(timeout);
@@ -336,11 +341,12 @@
                 clearTimeout(timeout);
                 timeout = setTimeout(later, wait);
             };
-        };        
+        };
 
         function fetchFormsData(params) {
             if(filter.nik) params.data.nik = filter.nik
             if(filter.status) params.data.status = filter.status
+            if(filter.site) params.data.site = filter.site;
             console.log("filter : ", filter)
 
             var url = '/bss-form/log/list-fuel'
@@ -351,7 +357,7 @@
             })
         }
 
-        
+
         function myFunction() {
             if(!confirm("Yakin ingin menghapus data ini?"))
             event.preventDefault();
@@ -366,7 +372,7 @@
                      + '<a class="btn btn-primary btn-action btn-sm me-1" href="/bss-form/log/pdf-fuel?id=' + row.id + '">Pdf</a>'
                      + '<a class="btn btn-danger btn-action btn-sm me-1" href="/bss-form/log/delete-fuel?id=' + row.id + '">Delete</a>';
             }
-            
+
             return btn;
         }
 

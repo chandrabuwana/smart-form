@@ -32,6 +32,7 @@ return new class extends Migration
             $table->string('diserahkan_oleh')->nullable();
             $table->string('diterima_oleh')->nullable();
             $table->string('is_active')->nullable();
+            $table->string('site')->nullable();
         });
     }
 

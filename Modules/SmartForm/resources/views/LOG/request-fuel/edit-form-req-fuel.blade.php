@@ -97,6 +97,12 @@
                                         <td>NIK</td>
                                         <td><input type="text" class="input-text w-full" id="i_nik" value="{{$data['dibuat_oleh']}}" disabled></td>
                                     </tr>
+                                    <tr>
+                                        <td>Site</td>
+                                        <td>
+                                        {!! $siteOptions !!}
+                                        </td>
+                                    </tr>
                                 </table>
                             </div>
                             <div class="col-md-6 mb-4">
@@ -105,7 +111,7 @@
                                         <td>Departemen</td>
                                         <td>
                                             <select class="form-select form-select-sm input-text" aria-label="Default select example" name="i_departemen">
-                                            <option value="{{$data['departemen']}}" selected>{{$data['departemen']}}</option>    
+                                            <option value="{{$data['departemen']}}" selected>{{$data['departemen']}}</option>
                                                 <option value="ENG">ENGINEERING</option>
                                                 <option value="SHE">SHE</option>
                                                 <option value="PRD">PRODUKSI</option>
@@ -151,10 +157,10 @@
                             <div class="w-1/2 md:w-1/6">
                                 <span>Shift</span>
                                 <select class="form-select form-select-sm input-text" aria-label="Default select example" id="i_shift" name="i_shift">
-                                    <option value="{{$data['shift']}}"selected>{{$data['shift']}}</option>    
+                                    <option value="{{$data['shift']}}"selected>{{$data['shift']}}</option>
                                     <option value="DS">DS</option>
                                     <option value="NS">NS</option>
-                                </select> 
+                                </select>
                             </div>
                             <div class="w-1/2 md:w-1/6">
                                 <span>HM</span>
@@ -184,7 +190,7 @@
                             <td>: {{ session('username') }} {{ session('user_id') }}
                             </td>
                             <td>Diserahkan Oleh, :</td>
-                            <td> 
+                            <td>
                                 <select name="dDiserahkan" class="form-control text-center">
                                     <option value="{{$data['diserahkan_oleh']}}">{{$data['diserahkan_oleh']}}</option>
                                     @foreach($approvalList as $user)

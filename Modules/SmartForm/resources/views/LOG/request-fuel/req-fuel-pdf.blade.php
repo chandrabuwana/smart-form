@@ -109,10 +109,10 @@ div.nodok {
             </td>
         </tr>
     </table>
- 
+
     <div class="margin-top">
         <table class="w-full">
-            <tr> 
+            <tr>
                 <table class="w-full">
                     <tr>
                         <td class="w-seperempat">Nama</td>
@@ -125,6 +125,10 @@ div.nodok {
                     <tr>
                         <td class="w-seperempat">NIK</td>
                         <div>: {{$data->dibuat_oleh}}</div>
+                    </tr>
+                    <tr>
+                        <td class="w-seperempat">Site</td>
+                        <div>: {{$data->site}}</div>
                     </tr>
                 </table>
                 <td class="w-half">
@@ -150,7 +154,7 @@ div.nodok {
             </tr>
         </table>
     </div>
- 
+
     <div class="margin-top">
         <table class="products">
             <tr>
@@ -205,7 +209,7 @@ div.nodok {
             </tr>
         </table>
     </div>
- 
+
     <div class="footer">
         <p class="thick">__________________________ !!! Matikan Mesin Saat Pengisian FUEL !!! _______________________ </p>
         <div>Note: Form Mohon diprint menggunakan kertas carbonize 3 (tiga) rangkap</div>
