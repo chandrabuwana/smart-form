@@ -193,6 +193,20 @@
                                         <a href="{{ route('she.ergonomi.form', ['id' => $record->id]) }}" class="btn btn-info btn-sm">
                                             <i class="fas fa-eye"></i>
                                         </a>
+                                        
+                                        <!-- Edit button - only show for records that haven't been approved and were created by the current user -->
+                                        @if(isset($record->created_by) && $record->created_by == session('username') && (!isset($record->approval_status) || $record->approval_status != 'approved'))
+                                        <a href="{{ route('she.ergonomi.form', ['id' => $record->id, 'edit' => true]) }}" class="btn btn-warning btn-sm">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        @endif
+                                        
+                                        <!-- Delete button - only show for records that haven't been approved and were created by the current user -->
+                                        @if(isset($record->created_by) && $record->created_by == session('username') && (!isset($record->approval_status) || $record->approval_status != 'approved'))
+                                        <button type="button" class="btn btn-danger btn-sm delete-record" data-id="{{ $record->id }}">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                        @endif
                                     </td>
                                 </tr>
                                 @endforeach
@@ -216,6 +230,64 @@
         // Clear filter functionality
         document.getElementById('btnClearFilter').addEventListener('click', function() {
             window.location.href = '{{ route("she.ergonomi.dashboard") }}';
+        });
+
+        // Delete record functionality
+        document.querySelectorAll('.delete-record').forEach(button => {
+            button.addEventListener('click', function() {
+                const recordId = this.getAttribute('data-id');
+                
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Send delete request
+                        fetch('{{ route("she.ergonomi.delete") }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify({
+                                id: recordId
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire(
+                                    'Deleted!',
+                                    data.message,
+                                    'success'
+                                ).then(() => {
+                                    // Reload the page
+                                    window.location.reload();
+                                });
+                            } else {
+                                Swal.fire(
+                                    'Error!',
+                                    data.message,
+                                    'error'
+                                );
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            Swal.fire(
+                                'Error!',
+                                'There was a problem with the delete operation.',
+                                'error'
+                            );
+                        });
+                    }
+                });
+            });
         });
     });
 </script>

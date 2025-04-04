@@ -29,8 +29,11 @@
                 </div>
 
                 <div class="card-body">
-                    <form action="{{ route('she.ergonomi.store') }}" method="POST">
+                    <form action="{{ isset($isEditMode) && $isEditMode ? route('she.ergonomi.update') : route('she.ergonomi.store') }}" method="POST">
                         @csrf
+                        @if(isset($isEditMode) && $isEditMode)
+                            <input type="hidden" name="id" value="{{ $data->id }}">
+                        @endif
                         <div class="mx-3">
                             <!-- Header Information -->
                             <div class="table-responsive mb-4">
@@ -570,12 +573,12 @@
                                             </td>
                                         </tr>
                                         <tr class="text-center">
-                                            <td class="text-wrap px-2">Bekerja dengan punggung lebih dari 45° (tanpa penopang atau kemampuan postur bervariasi)</td>
-                                            <td class="text-wrap px-2">Lebih dari 2 Jam total per hari</td>
-                                            <td class="text-center">
+                                            <td class="text-wrap px-2 border">Bekerja dengan punggung lebih dari 45° (tanpa penopang atau kemampuan postur bervariasi)</td>
+                                            <td class="text-wrap px-2 border">Lebih dari 2 Jam total per hari</td>
+                                            <td class="text-center border">
                                                 <img src="{{ asset('img/form-she-ergonomi/organ5.png') }}" class="img-fluid" style="max-height: 100px">
                                             </td>
-                                            <td class="text-center">
+                                            <td class="text-center border">
                                                 <div class="form-check d-flex justify-content-center">
                                                     <input type="checkbox" class="form-check-input" name="wmsd_punggung_2"
                                                         {{ $isShowDetail && $data->wmsd_punggung_2 ? 'checked' : '' }}
