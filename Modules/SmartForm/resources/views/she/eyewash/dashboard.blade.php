@@ -268,7 +268,7 @@
                                                     <!-- Approval buttons based on role and status -->
                                                     @if($record->approval_status != 'approved')
                                                         <!-- Hygiene approval - first approval -->
-                                                        @if($record->hygiene_status == 'pending')
+                                                        @if($record->hygiene_status == 'pending' && $record->hygiene_nik == session('user_id'))
                                                             <button type="button" class="btn btn-success btn-sm approve-record" 
                                                                     data-id="{{ $record->id }}" data-role="hygiene">
                                                                 <i class="fas fa-check"></i> Approve (Hygiene)
@@ -278,7 +278,7 @@
                                                                 <i class="fas fa-times"></i> Reject
                                                             </button>
                                                         <!-- Supervisor approval - second approval -->
-                                                        @elseif($record->hygiene_status == 'approved' && $record->supervisor_status == 'pending')
+                                                        @elseif($record->hygiene_status == 'approved' && $record->supervisor_status == 'pending' && $record->supervisor_nik == session('user_id'))
                                                             <button type="button" class="btn btn-success btn-sm approve-record" 
                                                                     data-id="{{ $record->id }}" data-role="supervisor">
                                                                 <i class="fas fa-check"></i> Approve (Supervisor)
@@ -288,7 +288,7 @@
                                                                 <i class="fas fa-times"></i> Reject
                                                             </button>
                                                         <!-- DH approval - third approval -->
-                                                        @elseif($record->supervisor_status == 'approved' && $record->dh_status == 'pending')
+                                                        @elseif($record->supervisor_status == 'approved' && $record->dh_status == 'pending' && $record->dh_nik == session('user_id'))
                                                             <button type="button" class="btn btn-success btn-sm approve-record" 
                                                                     data-id="{{ $record->id }}" data-role="dh">
                                                                 <i class="fas fa-check"></i> Approve (DH)
@@ -298,7 +298,7 @@
                                                                 <i class="fas fa-times"></i> Reject
                                                             </button>
                                                         <!-- DH Terkait approval - final approval -->
-                                                        @elseif($record->dh_status == 'approved' && $record->dh_terkait_status == 'pending')
+                                                        @elseif($record->dh_status == 'approved' && $record->dh_terkait_status == 'pending' && $record->dh_terkait_nik == session('user_id'))
                                                             <button type="button" class="btn btn-success btn-sm approve-record" 
                                                                     data-id="{{ $record->id }}" data-role="dh_terkait">
                                                                 <i class="fas fa-check"></i> Approve (DH Terkait)
