@@ -136,14 +136,14 @@
                         <div class="col-md-3 mb-3">
                             <div class="input-group input-group-static mb-4 position-relative">
                                 <label for="start_date" class="ms-0">Start Date</label>
-                                <input type="date" class="form-control" id="start_date" name="start_date" 
+                                <input type="date" class="form-control" id="start_date" name="start_date"
                                     value="{{ $filters['start_date'] ?? '' }}">
                             </div>
                         </div>
                         <div class="col-md-3 mb-3">
                             <div class="input-group input-group-static mb-4 position-relative">
                                 <label for="end_date" class="ms-0">End Date</label>
-                                <input type="date" class="form-control" id="end_date" name="end_date" 
+                                <input type="date" class="form-control" id="end_date" name="end_date"
                                     value="{{ $filters['end_date'] ?? '' }}">
                             </div>
                         </div>
@@ -168,6 +168,7 @@
                             <thead>
                                 <tr>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Doc Number</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Site</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Location</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Inspector</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Risk Level</th>
@@ -198,6 +199,9 @@
                                                 <!-- End debug info -->
                                             </div>
                                         </div>
+                                    </td>
+                                    <td>
+                                        <p class="text-xs font-weight-bold mb-0">{{ $record->site_name }}</p>
                                     </td>
                                     <td>
                                         <p class="text-xs font-weight-bold mb-0">{{ $record->work_location }}</p>
@@ -249,12 +253,12 @@
                                         @if($record->approval_status === 'reject' && isset($record->inspected_by_nik) && isset($user->userid) && trim($record->inspected_by_nik) === trim($user->userid))
                                             <a href="{{ route('she.noise.edit', ['id' => $record->id]) }}" class="btn btn-info btn-sm d-inline-flex align-items-center justify-content-center">
                                                 <i class="fas fa-edit me-1"></i> Edit
-                                            </a> 
+                                            </a>
                                         @endif
                                         @if(isset($record->inspected_by_nik) && isset($user->userid) && trim($record->inspected_by_nik) === trim($user->userid))
                                         <button type="button" class="btn btn-danger btn-sm d-inline-flex align-items-center justify-content-center btn-delete" data-id="{{ $record->id }}">
                                                 <i class="fas fa-trash me-1"></i> Delete
-                                            </button>  
+                                            </button>
                                         @endif
                                     </td>
                                 </tr>
@@ -292,11 +296,11 @@ $(document).ready(function() {
             $(this).val('');
         }
     });
-    
+
     // Delete button click handler
     $('.btn-delete').click(function() {
         var recordId = $(this).data('id');
-        
+
         Swal.fire({
             title: 'Are you sure?',
             text: "This record will be deleted and cannot be recovered!",
@@ -352,7 +356,7 @@ $(document).ready(function() {
 // Function to update approval status
 function updateStatus(id, status) {
     const statusText = status === 'approved' ? 'approve' : 'reject';
-    
+
     Swal.fire({
         title: 'Are you sure?',
         text: `Do you want to ${statusText} this record?`,
