@@ -42,7 +42,7 @@
                 </div>
             </div>
                 <div class="card-body px-0 pb-2">
-                    <form action="{{ route('she-inspeksi.submit') }}" method="POST">
+                    <form action="{{ route('she-inspeksi.submit') }}" method="POST" id="maintenanceForm">
                         @csrf
                         <div class="mx-3">
                             <!-- Date and Location -->
@@ -50,7 +50,7 @@
                                 <div class="col-md-6">
                                     <div class="input-group input-group-static">
                                         <label>Tanggal</label>
-                                        <input type="date" name="inspection_date" class="form-control" required
+                                        <input type="text" name="inspection_date" class="form-control datepicker" required
                                             value="{{ $isShowDetail ? $maintenanceRecord->inspection_date : now()->format('Y-m-d') }}"
                                             {{ $isShowDetail ? 'disabled' : '' }}>
                                     </div>
@@ -199,124 +199,184 @@
                                 <div class="col-12">
                                     <div class="table-responsive">
                                         <table class="table table-bordered">
-                                        <tr class="text-center">
-                                                <th class="border">Diperiksa Oleh Supervisor</th>
-                                                <th class="border">Tanda Tangan</th>
-                                                <th class="border">Tanggal</th>
-                                            </tr>
-                                            <tr>
-                                                <td class="border">
-                                                    <select name="supervisor" class="form-control text-center" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
-                                                        <option value="">-- Pilih Supervisor --</option>
-                                                        @foreach($approvalList as $user)
-                                                            <option value="{{ $user->nama }}" {{ $isShowDetail && $maintenanceRecord->supervisor == $user->nama ? 'selected' : '' }}>
-                                                                {{ $user->nama }} ({{ $user->nik }})
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                </td>
-                                                <td class="text-center border">
-                                                    <div class="form-check d-inline">
-                                                        <input class="form-check-input" type="checkbox" 
-                                                            name="supervisor_sign" value="1"
-                                                            {{ $isShowDetail && $maintenanceRecord->supervisor_signature ? 'checked' : '' }}
-                                                            {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
-                                                    </div>
-                                                </td>
-                                                <td class="text-center border">
-                                                    <input type="date" name="supervisor_signed_at" class="form-control text-center" 
-                                                        value="{{ $isShowDetail ? $maintenanceRecord->supervisor_signed_at : now()->format('Y-m-d') }}"
-                                                        required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
-                                                </td>
-                                            </tr>
                                             <tr class="text-center">
-                                                <th class="border">Diperiksa Oleh Supervisor</th>
-                                                <th class="border">Tanda Tangan</th>
+                                                <th class="border">Dibuat Oleh Hygiene</th>
+                                                <th class="border">NIK</th>
                                                 <th class="border">Tanggal</th>
+                                                <th class="border">Status</th>
                                             </tr>
                                             <tr>
                                                 <td class="border">
-                                                    <select name="supervisor" class="form-control text-center" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
-                                                        <option value="">-- Pilih Supervisor --</option>
-                                                        @foreach($approvalList as $user)
-                                                            <option value="{{ $user->nama }}" {{ $isShowDetail && $maintenanceRecord->supervisor == $user->nama ? 'selected' : '' }}>
-                                                                {{ $user->nama }} ({{ $user->nik }})
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
+                                                    <input type="text" name="hygiene_name" class="form-control text-center" 
+                                                    placeholder="Nama Lengkap"
+                                                    value="{{ $isShowDetail ? $maintenanceRecord->hygiene_name : session('username') }}"
+                                                    {{ $isShowDetail ? 'disabled' : '' }} required>
                                                 </td>
-                                                <td class="text-center border">
-                                                    <div class="form-check d-inline">
-                                                        <input class="form-check-input" type="checkbox" 
-                                                            name="supervisor_sign" value="1"
-                                                            {{ $isShowDetail && $maintenanceRecord->supervisor_signature ? 'checked' : '' }}
-                                                            {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
-                                                    </div>
-                                                </td>
-                                                <td class="text-center border">
-                                                    <input type="date" name="supervisor_signed_at" class="form-control text-center" 
-                                                        value="{{ $isShowDetail ? $maintenanceRecord->supervisor_signed_at : now()->format('Y-m-d') }}"
-                                                        required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
-                                                </td>
-                                            </tr>
-                                            <tr class="text-center">
-                                                <th class="border">Disampaikan kepada DH</th>
-                                                <th class="border">Tanda Tangan</th>
-                                                <th class="border">Tanggal</th>
-                                            </tr>
-                                            <tr>
                                                 <td class="border">
-                                                    <select name="dh" class="form-control text-center" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
-                                                        <option value="">-- Pilih DH --</option>
-                                                        @foreach($approvalList as $user)
-                                                            <option value="{{ $user->nama }}" {{ $isShowDetail && $maintenanceRecord->dh == $user->nama ? 'selected' : '' }}>
-                                                                {{ $user->nama }} ({{ $user->nik }})
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
+                                                    <input type="text" name="hygiene_nik" class="form-control text-center" 
+                                                    placeholder="NIK"
+                                                    value="{{ $isShowDetail ? $maintenanceRecord->hygiene_nik : session('user_id') }}"
+                                                    {{ $isShowDetail ? 'disabled' : '' }} required>
                                                 </td>
-                                                <td class="text-center border">
-                                                    <div class="form-check d-inline">
-                                                        <input class="form-check-input" type="checkbox" 
-                                                            name="dh_sign" value="1"
-                                                            {{ $isShowDetail && $maintenanceRecord->dh_sign ? 'checked' : '' }}
-                                                            {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
-                                                    </div>
+                                                <td class="border">
+                                                    @if($isShowDetail)
+                                                        @if(!empty($maintenanceRecord->hygiene_signed_at))
+                                                            <input type="text" class="form-control text-center" value="{{ date('Y-m-d', strtotime($maintenanceRecord->hygiene_signed_at)) }}" disabled>
+                                                        @else
+                                                            <input type="text" class="form-control text-center" value="" disabled>
+                                                        @endif
+                                                    @else
+                                                        <input type="date" name="hygiene_signed_at" class="form-control text-center" 
+                                                            value="{{ now()->format('Y-m-d') }}" required>
+                                                    @endif
                                                 </td>
                                                 <td class="border text-center">
-                                                    <input type="date" name="dh_signed_at" class="form-control text-center" 
-                                                        value="{{ $isShowDetail ? $maintenanceRecord->dh_signed_at : now()->format('Y-m-d') }}"
-                                                        required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                                    @if($isShowDetail)
+                                                        <span class="badge bg-{{ $maintenanceRecord->hygiene_status == 'approved' ? 'success' : ($maintenanceRecord->hygiene_status == 'rejected' ? 'danger' : 'secondary') }}">
+                                                            {{ ucfirst($maintenanceRecord->hygiene_status) }}
+                                                        </span>
+                                                    @else
+                                                        <select name="hygiene_status" class="form-control">
+                                                            <option value="pending">Pending</option>
+                                                            <option value="approved">Approved</option>
+                                                            <option value="rejected">Rejected</option>
+                                                        </select>
+                                                    @endif
                                                 </td>
                                             </tr>
                                             <tr class="text-center">
-                                                <th class="border">Disampaikan kepada DH Terkait</th>
-                                                <th class="border">Tanda Tangan</th>
+                                                <th class="border">Diperiksa Oleh Supervisor</th>
+                                                <th class="border">NIK</th>
                                                 <th class="border">Tanggal</th>
+                                                <th class="border">Status</th>
                                             </tr>
                                             <tr>
                                                 <td class="border">
-                                                    <select name="dh_terkait" class="form-control text-center" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                                    <select name="supervisor_name" id="supervisor_name" class="form-control text-center" {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                                        <option value="">-- Pilih Supervisor --</option>
+                                                        @foreach($approvalList as $user)
+                                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $isShowDetail && $maintenanceRecord->supervisor_name == $user->nama ? 'selected' : '' }}>
+                                                                {{ $user->nama }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td class="border">
+                                                    <input type="text" name="supervisor_nik" id="supervisor_nik" class="form-control text-center" 
+                                                    placeholder="NIK"
+                                                    value="{{ $isShowDetail ? $maintenanceRecord->supervisor_nik : '' }}"
+                                                    {{ $isShowDetail ? 'disabled' : '' }} readonly>
+                                                </td>
+                                                <td class="border">
+                                                    @if($isShowDetail)
+                                                        @if(!empty($maintenanceRecord->supervisor_signed_at))
+                                                            <input type="text" class="form-control text-center" value="{{ date('Y-m-d', strtotime($maintenanceRecord->supervisor_signed_at)) }}" disabled>
+                                                        @else
+                                                            <input type="text" class="form-control text-center" value="" disabled>
+                                                        @endif
+                                                    @else
+                                                        <input type="date" name="supervisor_signed_at" class="form-control text-center" 
+                                                            value="{{ now()->format('Y-m-d') }}">
+                                                    @endif
+                                                </td>
+                                                <td class="border text-center">
+                                                    @if($isShowDetail)
+                                                        <span class="badge bg-{{ $maintenanceRecord->supervisor_status == 'approved' ? 'success' : ($maintenanceRecord->supervisor_status == 'rejected' ? 'danger' : 'secondary') }}">
+                                                            {{ ucfirst($maintenanceRecord->supervisor_status) }}
+                                                        </span>
+                                                    @else
+                                                        <span class="badge bg-secondary">Pending</span>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                            <tr class="text-center">
+                                                <th class="border">Disetujui Oleh DH</th>
+                                                <th class="border">NIK</th>
+                                                <th class="border">Tanggal</th>
+                                                <th class="border">Status</th>
+                                            </tr>
+                                            <tr>
+                                                <td class="border">
+                                                    <select name="dh_name" id="dh_name" class="form-control text-center" {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                                        <option value="">-- Pilih Department Head --</option>
+                                                        @foreach($approvalList as $user)
+                                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $isShowDetail && $maintenanceRecord->dh_name == $user->nama ? 'selected' : '' }}>
+                                                                {{ $user->nama }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td class="border">
+                                                    <input type="text" name="dh_nik" id="dh_nik" class="form-control text-center" 
+                                                    placeholder="NIK"
+                                                    value="{{ $isShowDetail ? $maintenanceRecord->dh_nik : '' }}"
+                                                    {{ $isShowDetail ? 'disabled' : '' }} readonly>
+                                                </td>
+                                                <td class="border">
+                                                    @if($isShowDetail)
+                                                        @if(!empty($maintenanceRecord->dh_signed_at))
+                                                            <input type="text" class="form-control text-center" value="{{ date('Y-m-d', strtotime($maintenanceRecord->dh_signed_at)) }}" disabled>
+                                                        @else
+                                                            <input type="text" class="form-control text-center" value="" disabled>
+                                                        @endif
+                                                    @else
+                                                        <input type="date" name="dh_signed_at" class="form-control text-center" 
+                                                            value="{{ now()->format('Y-m-d') }}">
+                                                    @endif
+                                                </td>
+                                                <td class="border text-center">
+                                                    @if($isShowDetail)
+                                                        <span class="badge bg-{{ $maintenanceRecord->dh_status == 'approved' ? 'success' : ($maintenanceRecord->dh_status == 'rejected' ? 'danger' : 'secondary') }}">
+                                                            {{ ucfirst($maintenanceRecord->dh_status) }}
+                                                        </span>
+                                                    @else
+                                                        <span class="badge bg-secondary">Pending</span>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                            <tr class="text-center">
+                                                <th class="border">Disetujui Oleh DH Terkait</th>
+                                                <th class="border">NIK</th>
+                                                <th class="border">Tanggal</th>
+                                                <th class="border">Status</th>
+                                            </tr>
+                                            <tr>
+                                                <td class="border">
+                                                    <select name="dh_terkait_name" id="dh_terkait_name" class="form-control text-center" {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
                                                         <option value="">-- Pilih DH Terkait --</option>
                                                         @foreach($approvalList as $user)
-                                                            <option value="{{ $user->nama }}" {{ $isShowDetail && $maintenanceRecord->dh_terkait == $user->nama ? 'selected' : '' }}>
-                                                                {{ $user->nama }} ({{ $user->nik }})
+                                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $isShowDetail && $maintenanceRecord->dh_terkait_name == $user->nama ? 'selected' : '' }}>
+                                                                {{ $user->nama }}
                                                             </option>
                                                         @endforeach
                                                     </select>
                                                 </td>
-                                                <td class="border text-center">
-                                                    <div class="form-check d-inline">
-                                                        <input class="form-check-input" type="checkbox" 
-                                                            name="acknowledged_by_signature" value="1"
-                                                            {{ $isShowDetail && $maintenanceRecord->acknowledged_by_signature ? 'checked' : '' }}
-                                                            {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
-                                                    </div>
+                                                <td class="border">
+                                                    <input type="text" name="dh_terkait_nik" id="dh_terkait_nik" class="form-control text-center" 
+                                                    placeholder="NIK"
+                                                    value="{{ $isShowDetail ? $maintenanceRecord->dh_terkait_nik : '' }}"
+                                                    {{ $isShowDetail ? 'disabled' : '' }} readonly>
                                                 </td>
                                                 <td class="border">
-                                                    <input type="date" name="acknowledged_date" class="form-control text-center" 
-                                                        value="{{ $isShowDetail ? $maintenanceRecord->acknowledged_date : now()->format('Y-m-d') }}"
-                                                        required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                                    @if($isShowDetail)
+                                                        @if(!empty($maintenanceRecord->dh_terkait_signed_at))
+                                                            <input type="text" class="form-control text-center" value="{{ date('Y-m-d', strtotime($maintenanceRecord->dh_terkait_signed_at)) }}" disabled>
+                                                        @else
+                                                            <input type="text" class="form-control text-center" value="" disabled>
+                                                        @endif
+                                                    @else
+                                                        <input type="date" name="dh_terkait_signed_at" class="form-control text-center" 
+                                                            value="{{ now()->format('Y-m-d') }}">
+                                                    @endif
+                                                </td>
+                                                <td class="border text-center">
+                                                    @if($isShowDetail)
+                                                        <span class="badge bg-{{ $maintenanceRecord->dh_terkait_status == 'approved' ? 'success' : ($maintenanceRecord->dh_terkait_status == 'rejected' ? 'danger' : 'secondary') }}">
+                                                            {{ ucfirst($maintenanceRecord->dh_terkait_status) }}
+                                                        </span>
+                                                    @else
+                                                        <span class="badge bg-secondary">Pending</span>
+                                                    @endif
                                                 </td>
                                             </tr>
                                         </table>
@@ -357,20 +417,39 @@
 
 @section('custom-css')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <style>
+        .table th {
+            background-color: #4472C4;
+            color: white;
+        }
+        .notes {
+            font-size: 0.875rem;
+        }
+    </style>
 @endsection
 
 @section('custom-js')
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
     <script>
     $(function() {
-        var form = $("form");
+        // Initialize datepicker
+        $('.datepicker').datepicker({
+            dateFormat: 'yy-mm-dd',
+            changeMonth: true,
+            changeYear: true
+        });
+        
+        // Handle form submission
+        var form = $("#maintenanceForm");
         var submitBtn = form.find('button[type="submit"]');
-
+        
         form.submit(function(e) {
             e.preventDefault();
             submitBtn.prop('disabled', true);
-
+            
             var formData = new FormData(this);
             
             axios.post('{{ route("she-inspeksi.submit") }}', formData)
@@ -397,7 +476,7 @@
                             errorMessage = error.response.data.message;
                         }
                     }
-
+                    
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
@@ -407,6 +486,24 @@
                 .finally(function() {
                     submitBtn.prop('disabled', false);
                 });
+        });
+
+        // Handle NIK auto-fill for Supervisor - exactly like P3K
+        $('#supervisor_name').on('change', function() {
+            var nik = $(this).find('option:selected').data('nik');
+            $('#supervisor_nik').val(nik);
+        });
+
+        // Handle NIK auto-fill for DH - exactly like P3K
+        $('#dh_name').on('change', function() {
+            var nik = $(this).find('option:selected').data('nik');
+            $('#dh_nik').val(nik);
+        });
+
+        // Handle NIK auto-fill for DH Terkait - exactly like P3K
+        $('#dh_terkait_name').on('change', function() {
+            var nik = $(this).find('option:selected').data('nik');
+            $('#dh_terkait_nik').val(nik);
         });
     });
     </script>

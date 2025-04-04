@@ -169,6 +169,7 @@
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Tank Condition</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Created By</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Date</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Status</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Actions</th>
                                 </tr>
                             </thead>
@@ -193,18 +194,128 @@
                                                     -
                                                 @endif
                                             </td>
-                                            <td class="align-middle text-sm">{{ $record->created_by }}</td>
+                                            <td class="align-middle text-sm">
+                                                <div class="d-flex px-2 py-1">
+                                                    <div>
+                                                        <i class="fas fa-user text-primary me-2"></i>
+                                                    </div>
+                                                    <div class="d-flex flex-column justify-content-center">
+                                                        <h6 class="mb-0 text-sm">{{ $record->created_by ?? 'N/A' }}</h6>
+                                                    </div>
+                                                </div>
+                                            </td>
                                             <td class="align-middle text-sm">{{ $record->formatted_date }}</td>
+                                            <td class="align-middle text-sm">
+                                                @if($record->approval_status == 'approved')
+                                                    <span class="badge badge-sm bg-success">Approved</span>
+                                                @elseif($record->approval_status == 'rejected')
+                                                    <span class="badge badge-sm bg-danger">Rejected</span>
+                                                @elseif($record->approval_status == 'pending')
+                                                    <span class="badge badge-sm bg-warning">Pending</span>
+                                                @elseif($record->approval_status == 'in_progress')
+                                                    <span class="badge badge-sm bg-info">In Progress</span>
+                                                    <div class="mt-1">
+                                                        @if($record->hygiene_status == 'approved')
+                                                            <span class="badge badge-sm bg-success">Hygiene ✓</span>
+                                                        @endif
+                                                        
+                                                        @if($record->supervisor_status == 'approved')
+                                                            <span class="badge badge-sm bg-success">Supervisor ✓</span>
+                                                        @endif
+                                                        
+                                                        @if($record->dh_status == 'approved')
+                                                            <span class="badge badge-sm bg-success">DH ✓</span>
+                                                        @endif
+                                                        
+                                                        @if($record->hygiene_status == 'pending' && $record->approval_status == 'in_progress')
+                                                            <span class="badge badge-sm bg-warning">Awaiting Hygiene</span>
+                                                        @elseif($record->supervisor_status == 'pending' && $record->hygiene_status == 'approved')
+                                                            <span class="badge badge-sm bg-warning">Awaiting Supervisor</span>
+                                                        @elseif($record->dh_status == 'pending' && $record->supervisor_status == 'approved')
+                                                            <span class="badge badge-sm bg-warning">Awaiting DH</span>
+                                                        @elseif($record->dh_terkait_status == 'pending' && $record->dh_status == 'approved')
+                                                            <span class="badge badge-sm bg-warning">Awaiting DH Terkait</span>
+                                                        @endif
+                                                    </div>
+                                                @endif
+                                            </td>
                                             <td class="align-middle">
-                                                <a href="{{ route('she-inspeksi.form', ['id' => $record->id]) }}" class="btn btn-primary btn-action text-white">
-                                                    <i class="fas fa-eye"></i> Detail
-                                                </a>
+                                                <div class="d-flex gap-1">
+                                                    <!-- Detail button -->
+                                                    <a href="{{ route('she-inspeksi.form', ['id' => $record->id]) }}" class="btn btn-primary btn-sm btn-action text-white">
+                                                        <i class="fas fa-eye"></i> Detail
+                                                    </a>
+                                                    
+                                                    <!-- Edit button - only for creator and pending/rejected status -->
+                                                    @if($record->created_by == $username && ($record->approval_status == 'pending' || $record->approval_status == 'rejected'))
+                                                    <a href="{{ route('she-inspeksi.edit', ['id' => $record->id]) }}" class="btn btn-warning btn-sm btn-action text-white">
+                                                        <i class="fas fa-edit"></i> Edit
+                                                    </a>
+                                                    @endif
+                                                    
+                                                    <!-- Delete button - only for creator and pending/rejected status -->
+                                                    @if($record->created_by == $username && ($record->approval_status == 'pending' || $record->approval_status == 'rejected'))
+                                                    <button type="button" class="btn btn-danger btn-sm btn-action delete-record" data-id="{{ $record->id }}">
+                                                        <i class="fas fa-trash"></i> Delete
+                                                    </button>
+                                                    @endif
+                                                    
+                                                    <!-- Export button -->
+                                                    <a href="{{ route('she-inspeksi.form.export', ['id' => $record->id]) }}" class="btn btn-info btn-sm btn-action text-white">
+                                                        <i class="fas fa-file-export"></i> Export
+                                                    </a>
+                                                    
+                                                    <!-- Approval buttons based on role and status -->
+                                                    @if($record->approval_status != 'approved')
+                                                        <!-- Hygiene approval - first approval -->
+                                                        @if($record->hygiene_status == 'pending')
+                                                            <button type="button" class="btn btn-success btn-sm approve-record" 
+                                                                    data-id="{{ $record->id }}" data-role="hygiene">
+                                                                <i class="fas fa-check"></i> Approve (Hygiene)
+                                                            </button>
+                                                            <button type="button" class="btn btn-danger btn-sm reject-record" 
+                                                                    data-id="{{ $record->id }}" data-role="hygiene">
+                                                                <i class="fas fa-times"></i> Reject
+                                                            </button>
+                                                        <!-- Supervisor approval - second approval -->
+                                                        @elseif($record->hygiene_status == 'approved' && $record->supervisor_status == 'pending')
+                                                            <button type="button" class="btn btn-success btn-sm approve-record" 
+                                                                    data-id="{{ $record->id }}" data-role="supervisor">
+                                                                <i class="fas fa-check"></i> Approve (Supervisor)
+                                                            </button>
+                                                            <button type="button" class="btn btn-danger btn-sm reject-record" 
+                                                                    data-id="{{ $record->id }}" data-role="supervisor">
+                                                                <i class="fas fa-times"></i> Reject
+                                                            </button>
+                                                        <!-- DH approval - third approval -->
+                                                        @elseif($record->supervisor_status == 'approved' && $record->dh_status == 'pending')
+                                                            <button type="button" class="btn btn-success btn-sm approve-record" 
+                                                                    data-id="{{ $record->id }}" data-role="dh">
+                                                                <i class="fas fa-check"></i> Approve (DH)
+                                                            </button>
+                                                            <button type="button" class="btn btn-danger btn-sm reject-record" 
+                                                                    data-id="{{ $record->id }}" data-role="dh">
+                                                                <i class="fas fa-times"></i> Reject
+                                                            </button>
+                                                        <!-- DH Terkait approval - final approval -->
+                                                        @elseif($record->dh_status == 'approved' && $record->dh_terkait_status == 'pending')
+                                                            <button type="button" class="btn btn-success btn-sm approve-record" 
+                                                                    data-id="{{ $record->id }}" data-role="dh_terkait">
+                                                                <i class="fas fa-check"></i> Approve (DH Terkait)
+                                                            </button>
+                                                            <button type="button" class="btn btn-danger btn-sm reject-record" 
+                                                                    data-id="{{ $record->id }}" data-role="dh_terkait">
+                                                                <i class="fas fa-times"></i> Reject
+                                                            </button>
+                                                        @endif
+                                                    @endif
+                                                </div>
                                             </td>
                                         </tr>
                                     @endforeach
                                 @else
                                     <tr>
-                                        <td colspan="8" class="text-center">No records found</td>
+                                        <td colspan="9" class="text-center">No records found</td>
                                     </tr>
                                 @endif
                             </tbody>
@@ -281,6 +392,141 @@ $(function() {
             });
             $(this).val('');
         }
+    });
+    
+    // Handle delete record
+    $('.delete-record').click(function() {
+        const recordId = $(this).data('id');
+        
+        Swal.fire({
+            title: 'Konfirmasi Hapus',
+            text: "Apakah Anda yakin ingin menghapus data ini?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, Hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Create a form and submit it
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '{{ url("bss-form/she-inspeksi/delete") }}/' + recordId;
+                form.style.display = 'none';
+                
+                const csrfToken = document.createElement('input');
+                csrfToken.type = 'hidden';
+                csrfToken.name = '_token';
+                csrfToken.value = '{{ csrf_token() }}';
+                
+                const methodField = document.createElement('input');
+                methodField.type = 'hidden';
+                methodField.name = '_method';
+                methodField.value = 'DELETE';
+                
+                form.appendChild(csrfToken);
+                form.appendChild(methodField);
+                document.body.appendChild(form);
+                form.submit();
+            }
+        });
+    });
+    
+    // Handle approve record
+    $('.approve-record').click(function() {
+        const recordId = $(this).data('id');
+        const role = $(this).data('role');
+        
+        Swal.fire({
+            title: 'Konfirmasi Approval',
+            text: "Apakah Anda yakin ingin menyetujui data ini?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#28a745',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Ya, Setuju!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Create a form and submit it
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '{{ url("bss-form/she-inspeksi/approve") }}/' + recordId;
+                form.style.display = 'none';
+                
+                const csrfToken = document.createElement('input');
+                csrfToken.type = 'hidden';
+                csrfToken.name = '_token';
+                csrfToken.value = '{{ csrf_token() }}';
+                
+                const roleField = document.createElement('input');
+                roleField.type = 'hidden';
+                roleField.name = 'role';
+                roleField.value = role;
+                
+                form.appendChild(csrfToken);
+                form.appendChild(roleField);
+                document.body.appendChild(form);
+                form.submit();
+            }
+        });
+    });
+    
+    // Handle reject record
+    $('.reject-record').click(function() {
+        const recordId = $(this).data('id');
+        const role = $(this).data('role');
+        
+        Swal.fire({
+            title: 'Alasan Penolakan',
+            input: 'textarea',
+            inputLabel: 'Masukkan alasan penolakan',
+            inputPlaceholder: 'Ketik alasan penolakan di sini...',
+            inputAttributes: {
+                'aria-label': 'Ketik alasan penolakan di sini',
+                'required': 'true'
+            },
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Tolak',
+            cancelButtonText: 'Batal',
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'Alasan penolakan harus diisi!';
+                }
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Create a form and submit it
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '{{ url("bss-form/she-inspeksi/reject") }}/' + recordId;
+                form.style.display = 'none';
+                
+                const csrfToken = document.createElement('input');
+                csrfToken.type = 'hidden';
+                csrfToken.name = '_token';
+                csrfToken.value = '{{ csrf_token() }}';
+                
+                const roleField = document.createElement('input');
+                roleField.type = 'hidden';
+                roleField.name = 'role';
+                roleField.value = role;
+                
+                const reasonField = document.createElement('input');
+                reasonField.type = 'hidden';
+                reasonField.name = 'reason';
+                reasonField.value = result.value;
+                
+                form.appendChild(csrfToken);
+                form.appendChild(roleField);
+                form.appendChild(reasonField);
+                document.body.appendChild(form);
+                form.submit();
+            }
+        });
     });
 });
 </script>

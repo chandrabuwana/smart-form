@@ -402,6 +402,11 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/form', [EyewashController::class, 'AddForm'])->name('she-inspeksi.form');
             Route::post('/store', [EyewashController::class, 'Store'])->name('she-inspeksi.submit');
             Route::put('/form/{id}', [EyewashController::class, 'Update'])->name('she-inspeksi.form.update');
+            Route::get('/edit/{id}', [EyewashController::class, 'EditForm'])->name('she-inspeksi.edit');
+            Route::post('/update', [EyewashController::class, 'UpdateForm'])->name('she-inspeksi.update');
+            Route::delete('/delete/{id}', [EyewashController::class, 'DeleteRecord'])->name('she-inspeksi.delete');
+            Route::post('/approve/{id}', [EyewashController::class, 'ApproveRecord'])->name('she-inspeksi.approve');
+            Route::post('/reject/{id}', [EyewashController::class, 'RejectRecord'])->name('she-inspeksi.reject');
         });
 
         Route::prefix('she-p3k')->group(function () {
