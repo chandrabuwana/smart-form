@@ -395,14 +395,9 @@ class RegistrasiSupplierController extends Controller {
         $nik_session = $req->session()->get('user_id', '');
         $name_session = $req->session()->get('username', '');
         $TABLE_MASTER = 'FM_SM_00X_REGISTRASI_SUPPLIER';
-        $id = $req->query( 'id' );
-        
-        $nik_session = $req->session()->get( 'user_id', '' );
-        $data = $req->input();
-
         $data = DB::table($TABLE_MASTER)
                     ->select('*')
-                    ->where('id', $id)
+                    ->where('id', $req->tId)
                     ->update(['status' => "1",
                 ] );
         return view('SmartForm::SM/registrasi-supplier/dashboard-registrasi-supplier', [
