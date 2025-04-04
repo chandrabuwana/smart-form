@@ -286,7 +286,7 @@
                     @endif
                     @if (isset($value['condition']))
                         @if ($value['condition'] == '1800 rpm (10th gear)')
-                            <td colspan="2" class="align-middle" rowspan="4">
+                            <td colspan="2" class="align-middle" rowspan="5">
                                 {!! $value['condition'] !!}</td>
                         @else
                             <td colspan="2" class="align-middle">
@@ -295,7 +295,7 @@
                     @endif
                     @if (isset($value['unit']))
                         @if ($value['unit'] == 'kg/cm³')
-                            <td class="align-middle" rowspan="4">
+                            <td class="align-middle" rowspan="5">
                                 {!! $value['unit'] !!}</td>
                         @else
                             <td class="align-middle">
@@ -352,7 +352,7 @@
                         @endif
                     @endif
                     @if (isset($value['standard']))
-                        @if ($value['standard'] == '28 ± 4 (3 round calculated after 1 round not calculated)')
+                        @if ($value['standard'] == '33 ± 3 (3 round calculated after 1 round not calculated)')
                             <td class="align-middle" rowspan="2">
                                 {!! $value['standard'] !!}</td>
                         @else

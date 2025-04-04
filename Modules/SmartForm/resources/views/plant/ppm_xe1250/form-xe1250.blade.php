@@ -354,7 +354,7 @@
                                                                 @endif
                                                             @endif
                                                             @if (isset($value['standard']))
-                                                                @if ($value['standard'] == '28 ± 4 (3 round calculated after 1 round not calculated)')
+                                                                @if ($value['standard'] == '33 ± 3 (3 round calculated after 1 round not calculated)')
                                                                     <td class="align-middle" rowspan="2">
                                                                         {!! $value['standard'] !!}</td>
                                                                 @else
@@ -385,6 +385,7 @@
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="accordion-item">
                                     <button type="button" class="btn-primary accordion-header">FINAL
                                         DRIVE</button>
@@ -443,12 +444,12 @@
                                                                 <td></td>
                                                             @endif
 
-                                                            <td><input type="checkbox" class="custom-checkbox"
-                                                                    name="final_actual{{ $inc }}" value=1></td>
-                                                            <td><input type="checkbox" class="custom-checkbox"
-                                                                    name="final_correct{{ $inc }}" value=1></td>
-                                                            <td><input type="checkbox" class="custom-checkbox"
-                                                                    name="final_result{{ $inc }}" value=1></td>
+                                                            <td><input type="text" class="form-control"
+                                                                    name="final_actual{{ $inc }}" value=""></td>
+                                                            <td><input type="text" class="form-control"
+                                                                    name="final_correct{{ $inc }}" value=""></td>
+                                                            <td><input type="text" class="form-control"
+                                                                    name="final_result{{ $inc }}" value=""></td>
                                                             <td><input type="text" class="form-control"
                                                                     name="final_pr_no[]"></td>
                                                             <td><input type="date" class="form-control"
@@ -475,6 +476,7 @@
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
                             <div class="row mt-5">
                                 <div class="col-6 ">
