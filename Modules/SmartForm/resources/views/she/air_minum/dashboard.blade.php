@@ -182,7 +182,7 @@
                                         <p class="text-xs font-weight-bold mb-0">{{ $record->work_location }}</p>
                                     </td>
                                     <td>
-                                        <p class="text-xs font-weight-bold mb-0">{{ $record->inspector_1 }}</p>
+                                        <p class="text-xs font-weight-bold mb-0">{{ $record->inspector_1_name }}</p>
                                     </td>
                                     <td>
                                         <p class="text-xs font-weight-bold mb-0">{{ $record->score }}/9</p>
@@ -203,9 +203,23 @@
                                         <p class="text-xs font-weight-bold mb-0">{{ $record->formatted_date }}</p>
                                     </td>
                                     <td class="align-middle">
-                                        <a href="{{ route('she.air-minum.form', ['id' => $record->id]) }}" class="btn btn-primary btn-action text-white">
-                                            <i class="fas fa-eye"></i> Detail
+                                        <a href="{{ route('she.air-minum.form', ['id' => $record->id]) }}" class="btn btn-info btn-sm">
+                                            <i class="fas fa-eye"></i>
                                         </a>
+                                        
+                                        <!-- Edit button - only show for records with pending or rejected status -->
+                                        @if($record->approval_status == 'pending' || $record->approval_status == 'rejected')
+                                        <a href="{{ route('she.air-minum.form', ['id' => $record->id, 'edit' => true]) }}" class="btn btn-warning btn-sm">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        @endif
+                                        
+                                        <!-- Delete button - only show for records with pending or rejected status and created by current user -->
+                                        @if(session('username') && ($record->approval_status == 'pending' || $record->approval_status == 'rejected'))
+                                        <button type="button" class="btn btn-danger btn-sm delete-record" data-id="{{ $record->id }}">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                        @endif
                                     </td>
                                 </tr>
                                 @endforeach
@@ -222,14 +236,73 @@
 @section('custom-js')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Clear filter button
-    document.getElementById('btnClearFilter').addEventListener('click', function() {
-        document.querySelectorAll('#filterForm input, #filterForm select').forEach(function(element) {
-            element.value = '';
+    $(document).ready(function() {
+        // Handle delete button click
+        $('.delete-record').on('click', function() {
+            const recordId = $(this).data('id');
+            
+            Swal.fire({
+                title: 'Konfirmasi Hapus',
+                text: "Apakah Anda yakin ingin menghapus data ini?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Send delete request
+                    $.ajax({
+                        url: "{{ route('she.air-minum.delete', '') }}/" + recordId,
+                        type: 'DELETE',
+                        data: {
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    title: 'Berhasil!',
+                                    text: response.message,
+                                    icon: 'success'
+                                }).then(() => {
+                                    // Reload page
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: 'Gagal!',
+                                    text: response.message,
+                                    icon: 'error'
+                                });
+                            }
+                        },
+                        error: function(xhr) {
+                            let errorMessage = 'Terjadi kesalahan pada sistem';
+                            
+                            if (xhr.responseJSON && xhr.responseJSON.message) {
+                                errorMessage = xhr.responseJSON.message;
+                            }
+                            
+                            Swal.fire({
+                                title: 'Gagal!',
+                                text: errorMessage,
+                                icon: 'error'
+                            });
+                        }
+                    });
+                }
+            });
         });
-        document.getElementById('filterForm').submit();
+        
+        // Clear filter button
+        $('#btnClearFilter').on('click', function() {
+            $('input[name="search"]').val('');
+            $('select[name="work_location"]').val('');
+            $('input[name="start_date"]').val('');
+            $('input[name="end_date"]').val('');
+            $('#filterForm').submit();
+        });
     });
-});
 </script>
 @endsection

@@ -39,28 +39,36 @@
                                         <label for="site_name" class="ms-0">Nama Site</label>
                                         <select class="form-control" id="site_name" name="site_name" required {{ $isShowDetail ? 'disabled' : '' }}>
                                             <option value="">-- Pilih Site --</option>
-                                            @foreach(['agm', 'mbl', 'mme', 'mas', 'pmss', 'taj', 'bssr', 'tdm', 'msj'] as $site)
-                                                <option value="{{ $site }}" {{ $isShowDetail && strtolower($maintenanceRecord->site_name) == $site ? 'selected' : '' }}>
-                                                    {{ strtoupper($site) }}
+                                            @foreach(\Modules\SmartForm\helpers\SiteHelper::getAllSites() as $code => $name)
+                                                <option value="{{ strtoupper($code) }}" 
+                                                    {{ $isShowDetail && strtolower($maintenanceRecord->site_name) == strtolower($code) ? 'selected' : 
+                                                    (!$isShowDetail && isset($defaultValues['site_name']) && strtolower($defaultValues['site_name']) == strtolower($code) ? 'selected' : '') }}>
+                                                    {{ $name }}
                                                 </option>
                                             @endforeach
+                                            <option value="BSS" 
+                                                {{ $isShowDetail && strtolower($maintenanceRecord->site_name) == 'bss' ? 'selected' : 
+                                                (!$isShowDetail && isset($defaultValues['site_name']) && strtolower($defaultValues['site_name']) == 'bss' ? 'selected' : '') }}>
+                                                BSS
+                                            </option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label>Dept./Section</label>
-                                        <input type="text" name="department" class="form-control" 
-                                            value="{{ $isShowDetail ? $maintenanceRecord->department : 'SHE' }}" 
-                                            required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                        <select class="form-control" name="department" id="department" {{ $isShowDetail ? 'disabled' : '' }} required>
+                                            <option value="">-- Pilih Departemen --</option>
+                                            @foreach(\Modules\SmartForm\helpers\DepartmentHelper::getAllDepartments() as $code => $name)
+                                                <option value="{{ $code }}" {{ $isShowDetail && $maintenanceRecord->department == $code ? 'selected' : '' }}>{{ $name }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label>Shift</label>
-                                        <input type="text" name="shift" class="form-control" 
-                                            value="{{ $isShowDetail ? $maintenanceRecord->shift : 'DS' }}" 
-                                            required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                        {!! \Modules\SmartForm\helpers\ShiftHelper::renderShiftSelect('shift', $isShowDetail ? $maintenanceRecord->shift : (isset($defaultValues['shift']) ? $defaultValues['shift'] : null), isset($isShowDetail) && $isShowDetail) !!}
                                     </div>
                                 </div>
                             </div>
@@ -79,7 +87,7 @@
                                         <label>Jumlah Inspektor</label>
                                         <input type="number" name="inspector_count" class="form-control" 
                                             value="{{ $isShowDetail ? $maintenanceRecord->inspector_count : '1' }}" 
-                                            required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                            required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }} min="0" step="1">
                                     </div>
                                 </div>
                             </div>
@@ -168,93 +176,199 @@
                                     <div class="table-responsive">
                                         <table class="table table-bordered">
                                             <tr class="text-center">
-                                                <th class="border">Diinspeksi Oleh</th>
-                                                <th class="border">Tanda Tangan</th>
+                                                <th class="border">Diinspeksi Oleh (Inspector 1)</th>
+                                                <th class="border">NIK</th>
                                                 <th class="border">Tanggal</th>
+                                                <th class="border">Status</th>
                                             </tr>
                                             <tr>
                                                 <td class="border">
-                                                    <select name="inspector_1" class="form-control text-center" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
-                                                        <option value="">-- Pilih Inspektor --</option>
+                                                    <select name="inspector_1_name" id="inspector_1_name" class="form-control text-center" {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }} required>
+                                                        <option value="">-- Pilih Inspektor 1 --</option>
                                                         @foreach($approvalList as $user)
-                                                            <option value="{{ $user->nama }}" {{ $isShowDetail && $maintenanceRecord->inspector_1 == $user->nama ? 'selected' : '' }}>
-                                                                {{ $user->nama }} ({{ $user->nik }})
+                                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $isShowDetail && $maintenanceRecord->inspector_1_name == $user->nama ? 'selected' : '' }}>
+                                                                {{ $user->nama }}
                                                             </option>
                                                         @endforeach
                                                     </select>
                                                 </td>
-                                                <td class="text-center border">
-                                                    <div class="form-check d-inline">
-                                                        <input class="form-check-input" type="checkbox" 
-                                                            name="inspector_1_signature" value="1"
-                                                            {{ $isShowDetail && $maintenanceRecord->inspector_1_signature ? 'checked' : '' }}
-                                                            {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
-                                                    </div>
+                                                <td class="border">
+                                                    <input type="text" name="inspector_1_nik" id="inspector_1_nik" class="form-control text-center" 
+                                                    placeholder="NIK"
+                                                    value="{{ $isShowDetail ? $maintenanceRecord->inspector_1_nik : '' }}"
+                                                    {{ $isShowDetail ? 'disabled' : '' }} readonly>
                                                 </td>
                                                 <td class="border">
-                                                    <input type="date" name="inspection_date" class="form-control text-center" 
-                                                        value="{{ $isShowDetail ? $maintenanceRecord->inspection_date : now()->format('Y-m-d') }}"
-                                                        required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                                    @if($isShowDetail)
+                                                        @if(!empty($maintenanceRecord->inspector_1_date))
+                                                            <input type="text" class="form-control text-center" value="{{ date('Y-m-d', strtotime(str_replace(':AM', ' AM', str_replace(':PM', ' PM', $maintenanceRecord->inspector_1_date)))) }}" disabled>
+                                                        @else
+                                                            <input type="text" class="form-control text-center" value="" disabled>
+                                                        @endif
+                                                    @else
+                                                        <input type="date" name="inspector_1_date" class="form-control text-center" 
+                                                            value="{{ now()->format('Y-m-d') }}" required>
+                                                    @endif
+                                                </td>
+                                                <td class="border text-center">
+                                                    @if($isShowDetail)
+                                                        <span class="badge bg-{{ $maintenanceRecord->inspector_1_status == 'approved' ? 'success' : ($maintenanceRecord->inspector_1_status == 'rejected' ? 'danger' : 'secondary') }}">
+                                                            {{ ucfirst($maintenanceRecord->inspector_1_status ?? 'pending') }}
+                                                        </span>
+                                                    @else
+                                                        <select name="inspector_1_status" class="form-control">
+                                                            <option value="pending">Pending</option>
+                                                            <option value="approved">Approved</option>
+                                                            <option value="rejected">Rejected</option>
+                                                        </select>
+                                                    @endif
                                                 </td>
                                             </tr>
                                             <tr class="text-center">
-                                                <th class="border">Diinspeksi Oleh</th>
-                                                <th class="border">Tanda Tangan</th>
+                                                <th class="border">Diinspeksi Oleh (Inspector 2)</th>
+                                                <th class="border">NIK</th>
                                                 <th class="border">Tanggal</th>
+                                                <th class="border">Status</th>
                                             </tr>
                                             <tr>
                                                 <td class="border">
-                                                    <select name="inspector_2" class="form-control text-center" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
-                                                        <option value="">-- Pilih Inspektor --</option>
+                                                    <select name="inspector_2_name" id="inspector_2_name" class="form-control text-center" {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                                        <option value="">-- Pilih Inspektor 2 --</option>
                                                         @foreach($approvalList as $user)
-                                                            <option value="{{ $user->nama }}" {{ $isShowDetail && $maintenanceRecord->inspector_1 == $user->nama ? 'selected' : '' }}>
-                                                                {{ $user->nama }} ({{ $user->nik }})
+                                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $isShowDetail && $maintenanceRecord->inspector_2_name == $user->nama ? 'selected' : '' }}>
+                                                                {{ $user->nama }}
                                                             </option>
                                                         @endforeach
                                                     </select>
                                                 </td>
-                                                <td class="text-center border">
-                                                    <div class="form-check d-inline">
-                                                        <input class="form-check-input" type="checkbox" 
-                                                            name="inspector_2_signature" value="1"
-                                                            {{ $isShowDetail && $maintenanceRecord->inspector_2_signature ? 'checked' : '' }}
-                                                            {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
-                                                    </div>
+                                                <td class="border">
+                                                    <input type="text" name="inspector_2_nik" id="inspector_2_nik" class="form-control text-center" 
+                                                    placeholder="NIK"
+                                                    value="{{ $isShowDetail ? $maintenanceRecord->inspector_2_nik : '' }}"
+                                                    {{ $isShowDetail ? 'disabled' : '' }} readonly>
                                                 </td>
                                                 <td class="border">
-                                                    <input type="date" name="inspector_2_date" class="form-control text-center" 
-                                                        value="{{ $isShowDetail ? $maintenanceRecord->inspector_2_date : now()->format('Y-m-d') }}"
-                                                        required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                                    @if($isShowDetail)
+                                                        @if(!empty($maintenanceRecord->inspector_2_date))
+                                                            <input type="text" class="form-control text-center" value="{{ date('Y-m-d', strtotime(str_replace(':AM', ' AM', str_replace(':PM', ' PM', $maintenanceRecord->inspector_2_date)))) }}" disabled>
+                                                        @else
+                                                            <input type="text" class="form-control text-center" value="" disabled>
+                                                        @endif
+                                                    @else
+                                                        <input type="date" name="inspector_2_date" class="form-control text-center" 
+                                                            value="{{ now()->format('Y-m-d') }}">
+                                                    @endif
+                                                </td>
+                                                <td class="border text-center">
+                                                    @if($isShowDetail)
+                                                        <span class="badge bg-{{ $maintenanceRecord->inspector_2_status == 'approved' ? 'success' : ($maintenanceRecord->inspector_2_status == 'rejected' ? 'danger' : 'secondary') }}">
+                                                            {{ ucfirst($maintenanceRecord->inspector_2_status ?? 'pending') }}
+                                                        </span>
+                                                    @else
+                                                        <select name="inspector_2_status" class="form-control">
+                                                            <option value="pending">Pending</option>
+                                                            <option value="approved">Approved</option>
+                                                            <option value="rejected">Rejected</option>
+                                                        </select>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                            <tr class="text-center">
+                                                <th class="border">Diinspeksi Oleh (Inspector 3)</th>
+                                                <th class="border">NIK</th>
+                                                <th class="border">Tanggal</th>
+                                                <th class="border">Status</th>
+                                            </tr>
+                                            <tr>
+                                                <td class="border">
+                                                    <select name="inspector_3_name" id="inspector_3_name" class="form-control text-center" {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                                        <option value="">-- Pilih Inspektor 3 --</option>
+                                                        @foreach($approvalList as $user)
+                                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $isShowDetail && $maintenanceRecord->inspector_3_name == $user->nama ? 'selected' : '' }}>
+                                                                {{ $user->nama }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td class="border">
+                                                    <input type="text" name="inspector_3_nik" id="inspector_3_nik" class="form-control text-center" 
+                                                    placeholder="NIK"
+                                                    value="{{ $isShowDetail ? $maintenanceRecord->inspector_3_nik : '' }}"
+                                                    {{ $isShowDetail ? 'disabled' : '' }} readonly>
+                                                </td>
+                                                <td class="border">
+                                                    @if($isShowDetail)
+                                                        @if(!empty($maintenanceRecord->inspector_3_date))
+                                                            <input type="text" class="form-control text-center" value="{{ date('Y-m-d', strtotime(str_replace(':AM', ' AM', str_replace(':PM', ' PM', $maintenanceRecord->inspector_3_date)))) }}" disabled>
+                                                        @else
+                                                            <input type="text" class="form-control text-center" value="" disabled>
+                                                        @endif
+                                                    @else
+                                                        <input type="date" name="inspector_3_date" class="form-control text-center" 
+                                                            value="{{ now()->format('Y-m-d') }}">
+                                                    @endif
+                                                </td>
+                                                <td class="border text-center">
+                                                    @if($isShowDetail)
+                                                        <span class="badge bg-{{ $maintenanceRecord->inspector_3_status == 'approved' ? 'success' : ($maintenanceRecord->inspector_3_status == 'rejected' ? 'danger' : 'secondary') }}">
+                                                            {{ ucfirst($maintenanceRecord->inspector_3_status ?? 'pending') }}
+                                                        </span>
+                                                    @else
+                                                        <select name="inspector_3_status" class="form-control">
+                                                            <option value="pending">Pending</option>
+                                                            <option value="approved">Approved</option>
+                                                            <option value="rejected">Rejected</option>
+                                                        </select>
+                                                    @endif
                                                 </td>
                                             </tr>
                                             <tr class="text-center">
                                                 <th class="border">Mengetahui</th>
-                                                <th class="border">Tanda Tangan</th>
+                                                <th class="border">NIK</th>
                                                 <th class="border">Tanggal</th>
+                                                <th class="border">Status</th>
                                             </tr>
                                             <tr>
                                                 <td class="border">
-                                                    <select name="acknowledged_by" class="form-control text-center" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
-                                                        <option value="">-- Pilih Inspektor --</option>
+                                                    <select name="acknowledged_by_name" id="acknowledged_by_name" class="form-control text-center" {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                                        <option value="">-- Pilih Penanggung Jawab --</option>
                                                         @foreach($approvalList as $user)
-                                                            <option value="{{ $user->nama }}" {{ $isShowDetail && $maintenanceRecord->acknowledged_by == $user->nama ? 'selected' : '' }}>
-                                                                {{ $user->nama }} ({{ $user->nik }})
+                                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $isShowDetail && $maintenanceRecord->acknowledged_by_name == $user->nama ? 'selected' : '' }}>
+                                                                {{ $user->nama }}
                                                             </option>
                                                         @endforeach
                                                     </select>
                                                 </td>
-                                                <td class="border text-center">
-                                                    <div class="form-check d-inline">
-                                                        <input class="form-check-input" type="checkbox" 
-                                                            name="acknowledged_by_signature" value="1"
-                                                            {{ $isShowDetail && $maintenanceRecord->acknowledged_by_signature ? 'checked' : '' }}
-                                                            {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
-                                                    </div>
+                                                <td class="border">
+                                                    <input type="text" name="acknowledged_by_nik" id="acknowledged_by_nik" class="form-control text-center" 
+                                                    placeholder="NIK"
+                                                    value="{{ $isShowDetail ? $maintenanceRecord->acknowledged_by_nik : '' }}"
+                                                    {{ $isShowDetail ? 'disabled' : '' }} readonly>
                                                 </td>
                                                 <td class="border">
-                                                    <input type="date" name="acknowledged_date" class="form-control text-center" 
-                                                        value="{{ $isShowDetail ? $maintenanceRecord->acknowledged_date : now()->format('Y-m-d') }}"
-                                                        required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                                    @if($isShowDetail)
+                                                        @if(!empty($maintenanceRecord->acknowledged_date))
+                                                            <input type="text" class="form-control text-center" value="{{ date('Y-m-d', strtotime(str_replace(':AM', ' AM', str_replace(':PM', ' PM', $maintenanceRecord->acknowledged_date)))) }}" disabled>
+                                                        @else
+                                                            <input type="text" class="form-control text-center" value="" disabled>
+                                                        @endif
+                                                    @else
+                                                        <input type="date" name="acknowledged_date" class="form-control text-center" 
+                                                            value="{{ now()->format('Y-m-d') }}">
+                                                    @endif
+                                                </td>
+                                                <td class="border text-center">
+                                                    @if($isShowDetail)
+                                                        <span class="badge bg-{{ $maintenanceRecord->acknowledged_status == 'approved' ? 'success' : ($maintenanceRecord->acknowledged_status == 'rejected' ? 'danger' : 'secondary') }}">
+                                                            {{ ucfirst($maintenanceRecord->acknowledged_status ?? 'pending') }}
+                                                        </span>
+                                                    @else
+                                                        <select name="acknowledged_status" class="form-control">
+                                                            <option value="pending">Pending</option>
+                                                            <option value="approved">Approved</option>
+                                                            <option value="rejected">Rejected</option>
+                                                        </select>
+                                                    @endif
                                                 </td>
                                             </tr>
                                         </table>
@@ -309,50 +423,165 @@
 <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
 <script>
-$(function() {
+$(document).ready(function() {
+    console.log('Document ready - initializing form handlers');
+    
+    // Initialize datepicker
+    if ($.fn.datepicker) {
+        $('.datepicker').datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true
+        });
+    }
+    
+    // Handle inspector selection and populate NIK fields
+    $('#inspector_1_name').on('change', function() {
+        console.log('Inspector 1 changed');
+        const selectedOption = $(this).find('option:selected');
+        const nik = selectedOption.data('nik') || '';
+        console.log('Setting inspector 1 NIK to:', nik);
+        $('#inspector_1_nik').val(nik);
+    });
+    
+    $('#inspector_2_name').on('change', function() {
+        console.log('Inspector 2 changed');
+        const selectedOption = $(this).find('option:selected');
+        const nik = selectedOption.data('nik') || '';
+        console.log('Setting inspector 2 NIK to:', nik);
+        $('#inspector_2_nik').val(nik);
+    });
+    
+    $('#inspector_3_name').on('change', function() {
+        console.log('Inspector 3 changed');
+        const selectedOption = $(this).find('option:selected');
+        const nik = selectedOption.data('nik') || '';
+        console.log('Setting inspector 3 NIK to:', nik);
+        $('#inspector_3_nik').val(nik);
+    });
+    
+    $('#acknowledged_by_name').on('change', function() {
+        console.log('Acknowledged by changed');
+        const selectedOption = $(this).find('option:selected');
+        const nik = selectedOption.data('nik') || '';
+        console.log('Setting acknowledged NIK to:', nik);
+        $('#acknowledged_by_nik').val(nik);
+    });
+    
+    // Trigger change event to populate NIK fields on page load
+    setTimeout(function() {
+        $('#inspector_1_name').trigger('change');
+        $('#inspector_2_name').trigger('change');
+        $('#inspector_3_name').trigger('change');
+        $('#acknowledged_by_name').trigger('change');
+    }, 500);
+    
+    // Form validation
+    $('form').on('submit', function(e) {
+        let isValid = true;
+        
+        // Validate required fields
+        $('input[required], select[required]').each(function() {
+            if ($(this).val() === '') {
+                isValid = false;
+                $(this).addClass('is-invalid');
+            } else {
+                $(this).removeClass('is-invalid');
+            }
+        });
+        
+        if (!isValid) {
+            e.preventDefault();
+            Swal.fire({
+                icon: 'error',
+                title: 'Validation Error',
+                text: 'Please fill in all required fields'
+            });
+        }
+    });
+    
+    // Handle form submission
     var form = $("form");
     var submitBtn = form.find('button[type="submit"]');
-
-    form.submit(function(e) {
+    
+    form.on("submit", function(e) {
         e.preventDefault();
-        submitBtn.prop('disabled', true);
-
+        
+        // Disable the submit button to prevent multiple submissions
+        submitBtn.prop("disabled", true);
+        
+        // Show loading indicator
+        Swal.fire({
+            title: 'Processing...',
+            text: 'Please wait while we submit your form',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+        
+        // Get form data
         var formData = new FormData(this);
         
-        axios.post('{{ route("she.air-minum.store") }}', formData)
-            .then(function(response) {
-                if (response.data.success) {
+        // Log form data for debugging
+        console.log('Form action:', form.attr("action"));
+        for (var pair of formData.entries()) {
+            console.log(pair[0] + ': ' + pair[1]);
+        }
+        
+        // Submit the form using AJAX
+        $.ajax({
+            url: form.attr("action"),
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                console.log('Success response:', response);
+                if (response.success) {
                     Swal.fire({
                         icon: 'success',
                         title: 'Success',
-                        text: response.data.message
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            window.location.href = '{{ route("she.air-minum.dashboard") }}';
+                        text: response.message,
+                        showConfirmButton: true
+                    }).then(function() {
+                        // Redirect to dashboard or detail page
+                        if (response.id) {
+                            window.location.href = "{{ route('she.air-minum.form') }}?id=" + response.id;
+                        } else {
+                            window.location.href = "{{ route('she.air-minum.dashboard') }}";
                         }
                     });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: response.message || 'An error occurred while submitting the form.',
+                        showConfirmButton: true
+                    });
+                    submitBtn.prop("disabled", false);
                 }
-            })
-            .catch(function(error) {
-                let errorMessage = 'Terjadi kesalahan pada sistem';
+            },
+            error: function(xhr, status, error) {
+                console.error('Error response:', xhr.responseText);
+                let errorMessage = 'An error occurred while submitting the form.';
                 
-                if (error.response) {
-                    if (error.response.data.errors) {
-                        errorMessage = Object.values(error.response.data.errors).flat().join('\n');
-                    } else if (error.response.data.message) {
-                        errorMessage = error.response.data.message;
+                if (xhr.responseJSON) {
+                    if (xhr.responseJSON.errors) {
+                        errorMessage = Object.values(xhr.responseJSON.errors).flat().join('\n');
+                    } else if (xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
                     }
                 }
-
+                
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text: errorMessage
+                    text: errorMessage,
+                    showConfirmButton: true
                 });
-            })
-            .finally(function() {
-                submitBtn.prop('disabled', false);
-            });
+                submitBtn.prop("disabled", false);
+            }
+        });
     });
 });
 </script>

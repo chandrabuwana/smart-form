@@ -51,6 +51,7 @@ class AirMinumController extends Controller
                 ->select('work_location')
                 ->distinct()
                 ->whereNotNull('work_location')
+                ->whereNull('deleted_at')
                 ->pluck('work_location');
 
             // Filter options object
@@ -59,19 +60,22 @@ class AirMinumController extends Controller
             ];
 
             // Get records with pagination
-            $records = $query->orderBy('created_at', 'desc')
+            $records = $query->whereNull('deleted_at')
+                           ->orderBy('created_at', 'desc')
                            ->paginate(10)
                            ->withQueryString();
 
             // Calculate statistics
             $statistics = (object)[
-                'total_records' => DB::table('she_air_minum')->count(),
+                'total_records' => DB::table('she_air_minum')->whereNull('deleted_at')->count(),
                 'total_this_month' => DB::table('she_air_minum')
+                    ->whereNull('deleted_at')
                     ->whereMonth('created_at', now()->month)
                     ->whereYear('created_at', now()->year)
                     ->count(),
                 'locations_count' => $locations->count(),
                 'need_attention' => DB::table('she_air_minum')
+                    ->whereNull('deleted_at')
                     ->where(function($query) {
                         $query->where('has_scattered_items', true)  // Barang berserakan
                             ->orWhere('has_scattered_trash', true); // Sampah berserakan
@@ -107,66 +111,114 @@ class AirMinumController extends Controller
 
                 if (!$record) {
                     Log::error('Air Minum record not found for ID: ' . $request->id);
-                    return redirect()->route('she-air-minum.dashboard')
+                    return redirect()->route('she.air-minum.dashboard')
                         ->with('error', 'Record not found');
                 }
 
                 try {
                     // Clean up the date string by removing extra colons and normalizing AM/PM
                     $dateStr = preg_replace(['/::/', '/\s+/'], [':', ' '], $record->inspection_date);
+                    $dateStr = str_replace(':AM', ' AM', str_replace(':PM', ' PM', $dateStr));
                     $dateStr = trim($dateStr);
                     
                     if (strpos($dateStr, 'AM') !== false || strpos($dateStr, 'PM') !== false) {
                         // If it's in AM/PM format
-                        $record->inspection_date = Carbon::createFromFormat('M d Y h:i:s A', $dateStr)->format('Y-m-d');
+                        try {
+                            $record->inspection_date = Carbon::createFromFormat('M d Y h:i:s A', $dateStr)->format('Y-m-d');
+                        } catch (\Exception $e) {
+                            // Try another format
+                            try {
+                                $record->inspection_date = Carbon::parse($dateStr)->format('Y-m-d');
+                            } catch (\Exception $e2) {
+                                Log::error('Failed to parse inspection_date: ' . $e2->getMessage());
+                                $record->inspection_date = now()->format('Y-m-d');
+                            }
+                        }
                     } else {
                         // If it's in regular date format
-                        $record->inspection_date = Carbon::parse($dateStr)->format('Y-m-d');
+                        try {
+                            $record->inspection_date = Carbon::parse($dateStr)->format('Y-m-d');
+                        } catch (\Exception $e) {
+                            Log::error('Failed to parse inspection_date: ' . $e->getMessage());
+                            $record->inspection_date = now()->format('Y-m-d');
+                        }
                     }
                 } catch (\Exception $e) {
                     Log::error('Date parsing error for inspection_date: ' . $e->getMessage() . ' | Original value: ' . $record->inspection_date);
                     $record->inspection_date = now()->format('Y-m-d');
                 }
 
-                try {
-                    if ($record->acknowledged_date) {
-                        $dateStr = preg_replace(['/::/', '/\s+/'], [':', ' '], $record->acknowledged_date);
-                        $dateStr = trim($dateStr);
-                        
-                        if (strpos($dateStr, 'AM') !== false || strpos($dateStr, 'PM') !== false) {
-                            // If it's in AM/PM format
-                            $record->acknowledged_date = Carbon::createFromFormat('M d Y h:i:s A', $dateStr)->format('Y-m-d');
-                        } else {
-                            // If it's in regular date format
-                            $record->acknowledged_date = Carbon::parse($dateStr)->format('Y-m-d');
-                        }
-                    }
-                } catch (\Exception $e) {
-                    Log::error('Date parsing error for acknowledged_date: ' . $e->getMessage() . ' | Original value: ' . $record->acknowledged_date);
-                    $record->acknowledged_date = now()->format('Y-m-d');
-                }
+                // Format inspector dates
+                $this->formatDateField($record, 'inspector_1_date');
+                $this->formatDateField($record, 'inspector_2_date');
+                $this->formatDateField($record, 'inspector_3_date');
+                $this->formatDateField($record, 'acknowledged_date');
 
-                return view('SmartForm::she/air_minum/form', [
-                    'isShowDetail' => true,
-                    'approvalList' => HrdHelper::getApprovalList(),
-                    'maintenanceRecord' => $record
+                $approvalList = HrdHelper::getApprovalList();
+                return view('smartform::she.air_minum.edit', [
+                    'maintenanceRecord' => $record,
+                    'approvalList' => $approvalList
                 ]);
             }
 
-            return view('SmartForm::she/air_minum/form', [
-                'isShowDetail' => false,
-                'approvalList' => HrdHelper::getApprovalList(),
-                'maintenanceRecord' => null
-            ]);
+            $defaultValues = [
+                'site_name' => session('site_name', ''),
+                'shift' => session('shift', '')
+            ];
 
-        } catch (\Exception $e) {
-            Log::error('Error in AddForm: ' . $e->getMessage(), [
-                'request' => $request->all(),
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+            $approvalList = HrdHelper::getApprovalList();
+
+            return view('smartform::she.air_minum.form', [
+                'defaultValues' => $defaultValues,
+                'approvalList' => $approvalList
             ]);
-            return redirect()->route('she-air-minum.dashboard')
+        } catch (\Exception $e) {
+            Log::error('Error in AddForm: ' . $e->getMessage());
+            return redirect()->route('she.air-minum.dashboard')
                 ->with('error', 'Failed to load form: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Helper method to format date fields
+     */
+    private function formatDateField(&$record, $fieldName)
+    {
+        if (empty($record->$fieldName)) {
+            return;
+        }
+
+        try {
+            // Clean up the date string
+            $dateStr = preg_replace(['/::/', '/\s+/'], [':', ' '], $record->$fieldName);
+            $dateStr = str_replace(':AM', ' AM', str_replace(':PM', ' PM', $dateStr));
+            $dateStr = trim($dateStr);
+            
+            if (strpos($dateStr, 'AM') !== false || strpos($dateStr, 'PM') !== false) {
+                // If it's in AM/PM format
+                try {
+                    $record->$fieldName = Carbon::createFromFormat('M d Y h:i:s A', $dateStr)->format('Y-m-d');
+                } catch (\Exception $e) {
+                    // Try another format
+                    try {
+                        $record->$fieldName = Carbon::parse($dateStr)->format('Y-m-d');
+                    } catch (\Exception $e2) {
+                        Log::error("Failed to parse $fieldName: " . $e2->getMessage());
+                        $record->$fieldName = now()->format('Y-m-d');
+                    }
+                }
+            } else {
+                // If it's in regular date format
+                try {
+                    $record->$fieldName = Carbon::parse($dateStr)->format('Y-m-d');
+                } catch (\Exception $e) {
+                    Log::error("Failed to parse $fieldName: " . $e->getMessage());
+                    $record->$fieldName = now()->format('Y-m-d');
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("Date parsing error for $fieldName: " . $e->getMessage() . ' | Original value: ' . $record->$fieldName);
+            $record->$fieldName = now()->format('Y-m-d');
         }
     }
 
@@ -181,9 +233,17 @@ class AirMinumController extends Controller
                 'shift' => 'required|string',
                 'work_location' => 'required|string',
                 'inspector_count' => 'required|integer',
-                'inspector_1' => 'required|string',
-                'inspection_date' => 'required|date',
-                'acknowledged_by' => 'required|string',
+                'inspector_1_name' => 'required|string',
+                'inspector_1_nik' => 'required|string',
+                'inspector_1_date' => 'required|date',
+                'inspector_2_name' => 'nullable|string',
+                'inspector_2_nik' => 'nullable|string',
+                'inspector_2_date' => 'nullable|date',
+                'inspector_3_name' => 'nullable|string',
+                'inspector_3_nik' => 'nullable|string',
+                'inspector_3_date' => 'nullable|date',
+                'acknowledged_by_name' => 'required|string',
+                'acknowledged_by_nik' => 'required|string',
                 'acknowledged_date' => 'required|date',
                 'is_work_area_clean' => 'required|boolean',
                 'has_scattered_items' => 'required|boolean',
@@ -240,7 +300,19 @@ class AirMinumController extends Controller
                     'shift' => $request->shift,
                     'work_location' => $request->work_location,
                     'inspector_count' => $request->inspector_count,
-                    'inspection_date' => $request->inspection_date,
+                    'inspection_date' => now()->format('Y-m-d'),
+                    'inspector_1_name' => $request->inspector_1_name,
+                    'inspector_1_nik' => $request->inspector_1_nik,
+                    'inspector_1_date' => $request->inspector_1_date,
+                    'inspector_2_name' => $request->inspector_2_name,
+                    'inspector_2_nik' => $request->inspector_2_nik,
+                    'inspector_2_date' => $request->inspector_2_date,
+                    'inspector_3_name' => $request->inspector_3_name,
+                    'inspector_3_nik' => $request->inspector_3_nik,
+                    'inspector_3_date' => $request->inspector_3_date,
+                    'acknowledged_by_name' => $request->acknowledged_by_name,
+                    'acknowledged_by_nik' => $request->acknowledged_by_nik,
+                    'acknowledged_date' => $request->acknowledged_date,
                     'is_work_area_clean' => $request->is_work_area_clean,
                     'has_scattered_items' => $request->has_scattered_items,
                     'has_trash_bin' => $request->has_trash_bin,
@@ -252,11 +324,11 @@ class AirMinumController extends Controller
                     'is_water_quality_checked_quarterly' => $request->is_water_quality_checked_quarterly,
                     'score' => $score,
                     'conclusion' => $conclusion,
-                    'inspector_1' => $request->inspector_1,
-                    'inspector_1_signature' => $request->inspector_1_signature,
-                    'acknowledged_by' => $request->acknowledged_by,
-                    'acknowledged_by_signature' => $request->acknowledged_by_signature,
-                    'acknowledged_date' => $request->acknowledged_date,
+                    'inspector_1_status' => 'pending',
+                    'inspector_2_status' => 'pending',
+                    'inspector_3_status' => 'pending',
+                    'acknowledged_status' => 'pending',
+                    'approval_status' => 'pending',
                     'created_at' => now(),
                     'updated_at' => now()
                 ]);
@@ -291,6 +363,199 @@ class AirMinumController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to submit form: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Update an existing Air Minum record
+     */
+    public function Update(Request $request, $id)
+    {
+        try {
+            Log::info('Processing Air Minum form update', [
+                'id' => $id,
+                'user' => session('username')
+            ]);
+
+            $validator = Validator::make($request->all(), [
+                'site_name' => 'required|string',
+                'department' => 'required|string',
+                'shift' => 'required|string',
+                'work_location' => 'required|string',
+                'inspector_count' => 'required|integer',
+                'inspector_1_name' => 'required|string',
+                'inspector_1_nik' => 'required|string',
+                'inspector_1_date' => 'required|date',
+                'inspector_2_name' => 'nullable|string',
+                'inspector_2_nik' => 'nullable|string',
+                'inspector_2_date' => 'nullable|date',
+                'inspector_3_name' => 'nullable|string',
+                'inspector_3_nik' => 'nullable|string',
+                'inspector_3_date' => 'nullable|date',
+                'acknowledged_by_name' => 'required|string',
+                'acknowledged_by_nik' => 'required|string',
+                'acknowledged_date' => 'required|date',
+                'is_work_area_clean' => 'required|boolean',
+                'has_scattered_items' => 'required|boolean',
+                'has_trash_bin' => 'required|boolean',
+                'has_scattered_trash' => 'required|boolean',
+                'has_storage_warehouse' => 'required|boolean',
+                'is_water_filter_regularly_changed' => 'required|boolean',
+                'is_water_reservoir_cleaned' => 'required|boolean',
+                'is_distribution_packing_clean' => 'required|boolean',
+                'is_water_quality_checked_quarterly' => 'required|boolean',
+            ]);
+
+            if ($validator->fails()) {
+                Log::warning('Validation failed for update: ' . json_encode($validator->errors()));
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            // Get the record
+            $record = DB::table('she_air_minum')
+                ->where('id', $id)
+                ->first();
+
+            if (!$record) {
+                Log::error('Air Minum record not found for update', [
+                    'id' => $id
+                ]);
+                
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Record not found'
+                ], 404);
+            }
+
+            // Check if the record has any approved status
+            if ($record->inspector_1_status === 'approved' || 
+                $record->inspector_2_status === 'approved' || 
+                $record->inspector_3_status === 'approved' || 
+                $record->acknowledged_status === 'approved') {
+                
+                Log::error('Cannot update Air Minum record with approved status', [
+                    'id' => $id,
+                    'inspector_1_status' => $record->inspector_1_status,
+                    'inspector_2_status' => $record->inspector_2_status,
+                    'inspector_3_status' => $record->inspector_3_status,
+                    'acknowledged_status' => $record->acknowledged_status
+                ]);
+                
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cannot update record with approved status'
+                ], 400);
+            }
+
+            DB::beginTransaction();
+
+            try {
+                // Calculate score based on checklist items
+                $score = 0;
+                $score += $request->is_work_area_clean ? 1 : 0;
+                $score += !$request->has_scattered_items ? 1 : 0; // Inverse for negative questions
+                $score += $request->has_trash_bin ? 1 : 0;
+                $score += !$request->has_scattered_trash ? 1 : 0; // Inverse for negative questions
+                $score += $request->has_storage_warehouse ? 1 : 0;
+                $score += $request->is_water_filter_regularly_changed ? 1 : 0;
+                $score += $request->is_water_reservoir_cleaned ? 1 : 0;
+                $score += $request->is_distribution_packing_clean ? 1 : 0;
+                $score += $request->is_water_quality_checked_quarterly ? 1 : 0;
+
+                // Determine conclusion based on score
+                $conclusion = 'Good'; // Default
+                if ($score <= 2) {
+                    $conclusion = 'Very Poor';
+                } elseif ($score <= 5) {
+                    $conclusion = 'Poor';
+                } elseif ($score >= 9) {
+                    $conclusion = 'Excellent';
+                }
+
+                // Format dates to ensure they're stored correctly
+                $inspection_date = $request->inspection_date;
+                $inspector_1_date = $request->inspector_1_date;
+                $inspector_2_date = $request->filled('inspector_2_date') ? $request->inspector_2_date : null;
+                $inspector_3_date = $request->filled('inspector_3_date') ? $request->inspector_3_date : null;
+                $acknowledged_date = $request->acknowledged_date;
+
+                // Update record
+                DB::table('she_air_minum')
+                    ->where('id', $id)
+                    ->update([
+                        'site_name' => $request->site_name,
+                        'department' => $request->department,
+                        'shift' => $request->shift,
+                        'work_location' => $request->work_location,
+                        'inspector_count' => $request->inspector_count,
+                        'inspection_date' => $inspection_date,
+                        'inspector_1_name' => $request->inspector_1_name,
+                        'inspector_1_nik' => $request->inspector_1_nik,
+                        'inspector_1_date' => $inspector_1_date,
+                        'inspector_2_name' => $request->inspector_2_name,
+                        'inspector_2_nik' => $request->inspector_2_nik,
+                        'inspector_2_date' => $inspector_2_date,
+                        'inspector_3_name' => $request->inspector_3_name,
+                        'inspector_3_nik' => $request->inspector_3_nik,
+                        'inspector_3_date' => $inspector_3_date,
+                        'acknowledged_by_name' => $request->acknowledged_by_name,
+                        'acknowledged_by_nik' => $request->acknowledged_by_nik,
+                        'acknowledged_date' => $acknowledged_date,
+                        'is_work_area_clean' => $request->is_work_area_clean,
+                        'has_scattered_items' => $request->has_scattered_items,
+                        'has_trash_bin' => $request->has_trash_bin,
+                        'has_scattered_trash' => $request->has_scattered_trash,
+                        'has_storage_warehouse' => $request->has_storage_warehouse,
+                        'is_water_filter_regularly_changed' => $request->is_water_filter_regularly_changed,
+                        'is_water_reservoir_cleaned' => $request->is_water_reservoir_cleaned,
+                        'is_distribution_packing_clean' => $request->is_distribution_packing_clean,
+                        'is_water_quality_checked_quarterly' => $request->is_water_quality_checked_quarterly,
+                        'score' => $score,
+                        'conclusion' => $conclusion,
+                        'notes' => $request->notes,
+                        'updated_at' => now()
+                    ]);
+
+                DB::commit();
+
+                Log::info('Air Minum record updated successfully', [
+                    'id' => $id
+                ]);
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Record updated successfully'
+                ]);
+
+            } catch (\Exception $e) {
+                DB::rollBack();
+                Log::error('Database error during update: ' . $e->getMessage(), [
+                    'id' => $id,
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
+                ]);
+                
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to update record: ' . $e->getMessage()
+                ], 500);
+            }
+
+        } catch (\Exception $e) {
+            Log::error('Error in Update: ' . $e->getMessage(), [
+                'id' => $id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update record: ' . $e->getMessage()
             ], 500);
         }
     }
@@ -359,6 +624,205 @@ class AirMinumController extends Controller
             ]);
             return redirect()->back()
                 ->with('error', 'Failed to export form: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Update the approval status of a record
+     */
+    public function UpdateApprovalStatus(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'id' => 'required|exists:she_air_minum,id',
+                'role' => 'required|in:inspector_1,inspector_2,inspector_3,acknowledged',
+                'status' => 'required|in:approved,rejected'
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $record = DB::table('she_air_minum')
+                ->where('id', $request->id)
+                ->first();
+
+            if (!$record) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Record not found'
+                ], 404);
+            }
+
+            // Get current user information
+            $user_id = session('user_id') ?? '';
+            $username = session('username') ?? '';
+            
+            if (empty($user_id) || empty($username)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'User session not found'
+                ], 401);
+            }
+
+            // Verify that the current user is authorized to approve/reject
+            $role = $request->role;
+            $role_nik_field = $role . '_nik';
+            
+            if ($record->$role_nik_field !== $user_id) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'You are not authorized to approve/reject this record'
+                ], 403);
+            }
+
+            // Check if the approval is in the correct sequence
+            $canApprove = false;
+            
+            switch ($role) {
+                case 'inspector_1':
+                    $canApprove = true;
+                    break;
+                case 'inspector_2':
+                    $canApprove = $record->inspector_1_status === 'approved';
+                    break;
+                case 'inspector_3':
+                    $canApprove = $record->inspector_1_status === 'approved' && 
+                                $record->inspector_2_status === 'approved';
+                    break;
+                case 'acknowledged':
+                    $canApprove = $record->inspector_3_status === 'approved';
+                    break;
+                default:
+                    $canApprove = false;
+            }
+            
+            if (!$canApprove && $request->status === 'approved') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Previous approvals must be completed first'
+                ], 400);
+            }
+
+            // Update the approval status
+            $updateData = [
+                $role . '_status' => $request->status,
+                'updated_at' => now()
+            ];
+            
+            // Set the date if approved
+            if ($request->status === 'approved') {
+                $updateData[$role . '_date'] = now()->format('Y-m-d');
+            }
+
+            // Update overall status based on individual statuses
+            if ($request->status === 'approved' && $role === 'acknowledged') {
+                $updateData['approval_status'] = 'approved';
+            } else if ($request->status === 'rejected') {
+                $updateData['approval_status'] = 'rejected';
+            } else if ($request->status === 'approved') {
+                $updateData['approval_status'] = 'in_progress';
+            }
+
+            DB::table('she_air_minum')
+                ->where('id', $request->id)
+                ->update($updateData);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Status updated successfully'
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error in UpdateApprovalStatus: ' . $e->getMessage(), [
+                'request' => $request->all(),
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update status: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Delete a record (soft delete)
+     */
+    public function Delete($id)
+    {
+        try {
+            Log::info('Processing Air Minum delete request', [
+                'id' => $id,
+                'user' => session('username')
+            ]);
+
+            // Get the record
+            $record = DB::table('she_air_minum')
+                ->where('id', $id)
+                ->first();
+
+            if (!$record) {
+                Log::error('Air Minum record not found for deletion', [
+                    'id' => $id
+                ]);
+                
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Record not found'
+                ]);
+            }
+
+            // Check if the record has any approved status
+            if ($record->inspector_1_status === 'approved' || 
+                $record->inspector_2_status === 'approved' || 
+                $record->inspector_3_status === 'approved' || 
+                $record->acknowledged_status === 'approved') {
+                
+                Log::error('Cannot delete Air Minum record with approved status', [
+                    'id' => $id,
+                    'inspector_1_status' => $record->inspector_1_status,
+                    'inspector_2_status' => $record->inspector_2_status,
+                    'inspector_3_status' => $record->inspector_3_status,
+                    'acknowledged_status' => $record->acknowledged_status
+                ]);
+                
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cannot delete record with approved status'
+                ]);
+            }
+
+            // Soft delete the record
+            DB::table('she_air_minum')
+                ->where('id', $id)
+                ->update(['deleted_at' => now()]);
+
+            Log::info('Air Minum record deleted successfully', [
+                'id' => $id
+            ]);
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Record deleted successfully'
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error in Delete: ' . $e->getMessage(), [
+                'id' => $id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to delete record: ' . $e->getMessage()
+            ]);
         }
     }
 
