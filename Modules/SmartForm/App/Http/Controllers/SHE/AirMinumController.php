@@ -155,9 +155,26 @@ class AirMinumController extends Controller
                 $this->formatDateField($record, 'acknowledged_date');
 
                 $approvalList = HrdHelper::getApprovalList();
+                
+                // Check if this is a detail view or edit view
+                $isEditMode = $request->has('edit') && $request->edit === 'true';
+                $isShowDetail = true;
+                
+                // If it's a detail view (not edit mode), use the form view with read-only fields
+                if (!$isEditMode) {
+                    return view('smartform::she.air_minum.form', [
+                        'maintenanceRecord' => $record,
+                        'approvalList' => $approvalList,
+                        'isShowDetail' => $isShowDetail,
+                        'isEditMode' => false
+                    ]);
+                }
+                
+                // If it's an edit view, use the edit view
                 return view('smartform::she.air_minum.edit', [
                     'maintenanceRecord' => $record,
-                    'approvalList' => $approvalList
+                    'approvalList' => $approvalList,
+                    'isShowDetail' => $isShowDetail
                 ]);
             }
 
@@ -170,7 +187,9 @@ class AirMinumController extends Controller
 
             return view('smartform::she.air_minum.form', [
                 'defaultValues' => $defaultValues,
-                'approvalList' => $approvalList
+                'approvalList' => $approvalList,
+                'isShowDetail' => false,
+                'isEditMode' => false
             ]);
         } catch (\Exception $e) {
             Log::error('Error in AddForm: ' . $e->getMessage());
@@ -630,56 +649,31 @@ class AirMinumController extends Controller
     /**
      * Update the approval status of a record
      */
-    public function UpdateApprovalStatus(Request $request)
+    public function UpdateApprovalStatus(Request $request, $id, $role)
     {
         try {
-            $validator = Validator::make($request->all(), [
-                'id' => 'required|exists:she_air_minum,id',
-                'role' => 'required|in:inspector_1,inspector_2,inspector_3,acknowledged',
-                'status' => 'required|in:approved,rejected'
-            ]);
-
-            if ($validator->fails()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Validation failed',
-                    'errors' => $validator->errors()
-                ], 422);
+            // Get current user ID from session
+            $currentUserId = session('user_id') ?? '';
+            
+            if (empty($currentUserId)) {
+                return redirect()->route('she.air-minum.dashboard')
+                    ->with('error', 'Please set your ID first');
             }
-
-            $record = DB::table('she_air_minum')
-                ->where('id', $request->id)
-                ->first();
-
+            
+            // Get the record
+            $record = DB::table('she_air_minum')->where('id', $id)->first();
+            
             if (!$record) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Record not found'
-                ], 404);
+                return redirect()->route('she.air-minum.dashboard')
+                    ->with('error', 'Record not found');
             }
-
-            // Get current user information
-            $user_id = session('user_id') ?? '';
-            $username = session('username') ?? '';
             
-            if (empty($user_id) || empty($username)) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'User session not found'
-                ], 401);
+            // Check if user is the correct approver
+            if ($record->{$role . '_nik'} !== $currentUserId) {
+                return redirect()->route('she.air-minum.dashboard')
+                    ->with('error', 'You are not authorized to approve this record');
             }
-
-            // Verify that the current user is authorized to approve/reject
-            $role = $request->role;
-            $role_nik_field = $role . '_nik';
             
-            if ($record->$role_nik_field !== $user_id) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'You are not authorized to approve/reject this record'
-                ], 403);
-            }
-
             // Check if the approval is in the correct sequence
             $canApprove = false;
             
@@ -692,62 +686,130 @@ class AirMinumController extends Controller
                     break;
                 case 'inspector_3':
                     $canApprove = $record->inspector_1_status === 'approved' && 
-                                $record->inspector_2_status === 'approved';
+                                 $record->inspector_2_status === 'approved';
                     break;
-                case 'acknowledged':
-                    $canApprove = $record->inspector_3_status === 'approved';
+                case 'acknowledged_by':
+                    $canApprove = $record->inspector_1_status === 'approved' && 
+                                 $record->inspector_2_status === 'approved' && 
+                                 $record->inspector_3_status === 'approved';
                     break;
                 default:
                     $canApprove = false;
             }
             
-            if (!$canApprove && $request->status === 'approved') {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Previous approvals must be completed first'
-                ], 400);
+            if (!$canApprove) {
+                return redirect()->route('she.air-minum.dashboard')
+                    ->with('error', 'Previous approvals must be completed first');
             }
-
+            
             // Update the approval status
             $updateData = [
-                $role . '_status' => $request->status,
+                $role . '_status' => 'approved',
+                $role . '_date' => date('Y-m-d'), // Use simple date format
                 'updated_at' => now()
             ];
             
-            // Set the date if approved
-            if ($request->status === 'approved') {
-                $updateData[$role . '_date'] = now()->format('Y-m-d');
-            }
-
-            // Update overall status based on individual statuses
-            if ($request->status === 'approved' && $role === 'acknowledged') {
+            // Update overall approval status
+            if ($role === 'acknowledged_by') {
                 $updateData['approval_status'] = 'approved';
-            } else if ($request->status === 'rejected') {
-                $updateData['approval_status'] = 'rejected';
-            } else if ($request->status === 'approved') {
+            } else {
                 $updateData['approval_status'] = 'in_progress';
             }
-
-            DB::table('she_air_minum')
-                ->where('id', $request->id)
-                ->update($updateData);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Status updated successfully'
-            ]);
-
-        } catch (\Exception $e) {
-            Log::error('Error in UpdateApprovalStatus: ' . $e->getMessage(), [
-                'request' => $request->all(),
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
             
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to update status: ' . $e->getMessage()
-            ], 500);
+            // Check if the same user is assigned to multiple roles and approve them all
+            $this->approveAllUserRoles($record, $currentUserId, $role);
+            
+            DB::table('she_air_minum')
+                ->where('id', $id)
+                ->update($updateData);
+            
+            return redirect()->route('she.air-minum.dashboard')
+                ->with('success', 'Record approved successfully');
+            
+        } catch (\Exception $e) {
+            Log::error('Error in UpdateApprovalStatus: ' . $e->getMessage());
+            return redirect()->route('she.air-minum.dashboard')
+                ->with('error', 'Failed to approve record: ' . $e->getMessage());
+        }
+    }
+    
+    /**
+     * Approve all roles for a user with the same ID
+     * 
+     * @param object $record The Air Minum record
+     * @param string $userId The current user's ID
+     * @param string $currentRole The role being approved
+     * @return void
+     */
+    private function approveAllUserRoles($record, $userId, $currentRole)
+    {
+        $roles = ['inspector_1', 'inspector_2', 'inspector_3', 'acknowledged_by'];
+        $updateData = [];
+        $now = now();
+        $dateNow = $now->format('Y-m-d');
+        
+        // First, approve the current role directly in the record object
+        // This helps with the sequential checks for later roles
+        $record->{$currentRole . '_status'} = 'approved';
+        
+        // If the user is assigned to multiple roles, approve them all in sequence
+        foreach ($roles as $role) {
+            // Skip roles that don't match the user ID or are already approved
+            if ($record->{$role . '_nik'} !== $userId || $record->{$role . '_status'} === 'approved') {
+                continue;
+            }
+            
+            // Skip the current role (it's handled in the main UpdateApprovalStatus method)
+            if ($role === $currentRole) {
+                continue;
+            }
+            
+            // Check if we can approve this role based on the sequence
+            $canApprove = false;
+            
+            switch ($role) {
+                case 'inspector_1':
+                    $canApprove = true;
+                    break;
+                    
+                case 'inspector_2':
+                    // Can approve if inspector_1 is approved
+                    $canApprove = $record->inspector_1_status === 'approved';
+                    break;
+                    
+                case 'inspector_3':
+                    // Can approve if both inspector_1 and inspector_2 are approved
+                    $canApprove = ($record->inspector_1_status === 'approved' && 
+                                  $record->inspector_2_status === 'approved');
+                    break;
+                    
+                case 'acknowledged_by':
+                    // Can approve if all inspectors are approved
+                    $canApprove = ($record->inspector_1_status === 'approved' && 
+                                  $record->inspector_2_status === 'approved' && 
+                                  $record->inspector_3_status === 'approved');
+                    break;
+            }
+            
+            if ($canApprove) {
+                $updateData[$role . '_status'] = 'approved';
+                $updateData[$role . '_date'] = $dateNow;
+                
+                // Update the record object for sequential checks
+                $record->{$role . '_status'} = 'approved';
+                
+                // If this is the acknowledged_by role, update the overall status
+                if ($role === 'acknowledged_by') {
+                    $updateData['approval_status'] = 'approved';
+                }
+            }
+        }
+        
+        // If we have updates to make, apply them
+        if (!empty($updateData)) {
+            DB::table('she_air_minum')
+                ->where('id', $record->id)
+                ->update($updateData);
         }
     }
 

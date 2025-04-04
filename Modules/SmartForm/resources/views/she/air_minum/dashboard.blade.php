@@ -165,6 +165,7 @@
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Score</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Conclusion</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Date</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Status</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Actions</th>
                                 </tr>
                             </thead>
@@ -202,6 +203,54 @@
                                     <td>
                                         <p class="text-xs font-weight-bold mb-0">{{ $record->formatted_date }}</p>
                                     </td>
+                                    <td>
+                                        <div class="d-flex px-2 py-1">
+                                            <div class="d-flex flex-column justify-content-center">
+                                                @php
+                                                    $statusClass = 'bg-secondary';
+                                                    $statusText = 'Pending';
+                                                    
+                                                    if ($record->approval_status == 'approved') {
+                                                        $statusClass = 'bg-success';
+                                                        $statusText = 'Approved';
+                                                    } elseif ($record->approval_status == 'rejected') {
+                                                        $statusClass = 'bg-danger';
+                                                        $statusText = 'Rejected';
+                                                    } elseif ($record->approval_status == 'in_progress') {
+                                                        $statusClass = 'bg-info';
+                                                        $statusText = 'In Progress';
+                                                    }
+                                                @endphp
+                                                <span class="badge badge-sm {{ $statusClass }}">{{ $statusText }}</span>
+                                                
+                                                <div class="mt-1">
+                                                    @if($record->inspector_1_status == 'approved')
+                                                        <span class="badge badge-sm bg-gradient-success">Inspector 1</span>
+                                                    @else
+                                                        <span class="badge badge-sm bg-gradient-secondary">Inspector 1</span>
+                                                    @endif
+                                                    
+                                                    @if($record->inspector_2_status == 'approved')
+                                                        <span class="badge badge-sm bg-gradient-success">Inspector 2</span>
+                                                    @else
+                                                        <span class="badge badge-sm bg-gradient-secondary">Inspector 2</span>
+                                                    @endif
+                                                    
+                                                    @if($record->inspector_3_status == 'approved')
+                                                        <span class="badge badge-sm bg-gradient-success">Inspector 3</span>
+                                                    @else
+                                                        <span class="badge badge-sm bg-gradient-secondary">Inspector 3</span>
+                                                    @endif
+                                                    
+                                                    @if($record->acknowledged_status == 'approved')
+                                                        <span class="badge badge-sm bg-gradient-success">Acknowledged</span>
+                                                    @else
+                                                        <span class="badge badge-sm bg-gradient-secondary">Acknowledged</span>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
                                     <td class="align-middle">
                                         <a href="{{ route('she.air-minum.form', ['id' => $record->id]) }}" class="btn btn-info btn-sm">
                                             <i class="fas fa-eye"></i>
@@ -219,6 +268,39 @@
                                         <button type="button" class="btn btn-danger btn-sm delete-record" data-id="{{ $record->id }}">
                                             <i class="fas fa-trash"></i>
                                         </button>
+                                        @endif
+                                        
+                                        <!-- Approval buttons - only show for users who are assigned as inspectors or acknowledger -->
+                                        @if(session('user_id') && in_array(session('user_id'), [$record->inspector_1_nik, $record->inspector_2_nik, $record->inspector_3_nik, $record->acknowledged_by_nik]))
+                                            @php
+                                                $role = '';
+                                                $canApprove = false;
+                                                
+                                                if(session('user_id') == $record->inspector_1_nik) {
+                                                    $role = 'inspector_1';
+                                                    $canApprove = true;
+                                                }
+                                                elseif(session('user_id') == $record->inspector_2_nik) {
+                                                    $role = 'inspector_2';
+                                                    $canApprove = $record->inspector_1_status == 'approved';
+                                                }
+                                                elseif(session('user_id') == $record->inspector_3_nik) {
+                                                    $role = 'inspector_3';
+                                                    $canApprove = $record->inspector_1_status == 'approved' && $record->inspector_2_status == 'approved';
+                                                }
+                                                elseif(session('user_id') == $record->acknowledged_by_nik) {
+                                                    $role = 'acknowledged_by';
+                                                    $canApprove = $record->inspector_1_status == 'approved' && 
+                                                                 $record->inspector_2_status == 'approved' && 
+                                                                 $record->inspector_3_status == 'approved';
+                                                }
+                                            @endphp
+                                            @if($record->{$role.'_status'} == 'pending' && $canApprove)
+                                            <a href="{{ route('she.air-minum.approve', ['id' => $record->id, 'role' => $role]) }}" 
+                                               class="btn btn-success btn-sm text-white">
+                                              <i class="fas fa-check"></i> Approve
+                                            </a>
+                                            @endif
                                         @endif
                                     </td>
                                 </tr>

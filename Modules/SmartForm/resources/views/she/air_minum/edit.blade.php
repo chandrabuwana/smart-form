@@ -29,6 +29,94 @@
                 </div>
 
                 <div class="card-body px-0 pb-2">
+                    <!-- Approval Status Tracking Section -->
+                    <div class="mx-3 mb-4">
+                        <div class="card bg-light">
+                            <div class="card-header bg-light p-3">
+                                <h6 class="mb-0">Status Approval</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        @php
+                                            $statusClass = 'bg-secondary';
+                                            $statusText = 'Pending';
+                                            
+                                            if ($maintenanceRecord->approval_status == 'approved') {
+                                                $statusClass = 'bg-success';
+                                                $statusText = 'Approved';
+                                            } elseif ($maintenanceRecord->approval_status == 'rejected') {
+                                                $statusClass = 'bg-danger';
+                                                $statusText = 'Rejected';
+                                            } elseif ($maintenanceRecord->approval_status == 'in_progress') {
+                                                $statusClass = 'bg-info';
+                                                $statusText = 'In Progress';
+                                            }
+                                        @endphp
+                                        <h5>Status: <span class="badge {{ $statusClass }}">{{ $statusText }}</span></h5>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="progress-container">
+                                            <span class="progress-badge">Approval Progress</span>
+                                            @php
+                                                $totalSteps = 4; // Inspector 1, Inspector 2, Inspector 3, Acknowledger
+                                                $completedSteps = 0;
+                                                
+                                                if ($maintenanceRecord->inspector_1_status == 'approved') $completedSteps++;
+                                                if ($maintenanceRecord->inspector_2_status == 'approved') $completedSteps++;
+                                                if ($maintenanceRecord->inspector_3_status == 'approved') $completedSteps++;
+                                                if ($maintenanceRecord->acknowledged_status == 'approved') $completedSteps++;
+                                                
+                                                $progressPercentage = ($completedSteps / $totalSteps) * 100;
+                                            @endphp
+                                            <div class="progress">
+                                                <div class="progress-bar bg-gradient-success" role="progressbar" 
+                                                     aria-valuenow="{{ $progressPercentage }}" aria-valuemin="0" 
+                                                     aria-valuemax="100" style="width: {{ $progressPercentage }}%;">
+                                                </div>
+                                            </div>
+                                            <span class="progress-value">{{ $completedSteps }} of {{ $totalSteps }} approvals completed</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mt-3">
+                                    <div class="col-12">
+                                        <div class="d-flex justify-content-between flex-wrap">
+                                            <div class="approval-step">
+                                                <span class="badge {{ $maintenanceRecord->inspector_1_status == 'approved' ? 'bg-success' : 'bg-secondary' }} mb-1">
+                                                    Inspector 1
+                                                </span>
+                                                <small class="d-block">{{ $maintenanceRecord->inspector_1_name }}</small>
+                                                <small class="d-block">{{ $maintenanceRecord->inspector_1_date ?? 'Pending' }}</small>
+                                            </div>
+                                            <div class="approval-step">
+                                                <span class="badge {{ $maintenanceRecord->inspector_2_status == 'approved' ? 'bg-success' : 'bg-secondary' }} mb-1">
+                                                    Inspector 2
+                                                </span>
+                                                <small class="d-block">{{ $maintenanceRecord->inspector_2_name }}</small>
+                                                <small class="d-block">{{ $maintenanceRecord->inspector_2_date ?? 'Pending' }}</small>
+                                            </div>
+                                            <div class="approval-step">
+                                                <span class="badge {{ $maintenanceRecord->inspector_3_status == 'approved' ? 'bg-success' : 'bg-secondary' }} mb-1">
+                                                    Inspector 3
+                                                </span>
+                                                <small class="d-block">{{ $maintenanceRecord->inspector_3_name }}</small>
+                                                <small class="d-block">{{ $maintenanceRecord->inspector_3_date ?? 'Pending' }}</small>
+                                            </div>
+                                            <div class="approval-step">
+                                                <span class="badge {{ $maintenanceRecord->acknowledged_status == 'approved' ? 'bg-success' : 'bg-secondary' }} mb-1">
+                                                    Acknowledged
+                                                </span>
+                                                <small class="d-block">{{ $maintenanceRecord->acknowledged_by_name }}</small>
+                                                <small class="d-block">{{ $maintenanceRecord->acknowledged_date ?? 'Pending' }}</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <form id="airMinumForm" method="POST" action="{{ route('she.air-minum.form.update', $maintenanceRecord->id) }}">
                         @csrf
                         @method('PUT')
@@ -330,6 +418,51 @@
 
 @section('custom-css')
 <style>
+    .form-control:disabled {
+        background-color: #f8f9fa;
+        opacity: 1;
+    }
+    .form-control[readonly] {
+        background-color: #f8f9fa;
+    }
+    .table-responsive {
+        overflow-x: auto;
+    }
+    .progress-container {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+    .progress-badge {
+        color: #888;
+        font-size: 0.8rem;
+        margin-bottom: 5px;
+        display: block;
+    }
+    .progress {
+        height: 8px;
+        margin-bottom: 5px;
+        overflow: hidden;
+        background-color: #e9ecef;
+        border-radius: 0.25rem;
+    }
+    .progress-bar {
+        height: 8px;
+    }
+    .progress-value {
+        font-size: 0.75rem;
+        color: #888;
+    }
+    .approval-step {
+        text-align: center;
+        padding: 10px;
+        min-width: 120px;
+        border-radius: 5px;
+        background-color: #f8f9fa;
+        margin: 5px;
+    }
+    .approval-step small {
+        color: #6c757d;
+    }
     .signature-pad {
         width: 100%;
         height: 150px;
@@ -341,6 +474,7 @@
         height: 100%;
     }
 </style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css">
 @endsection
 
 @section('custom-js')

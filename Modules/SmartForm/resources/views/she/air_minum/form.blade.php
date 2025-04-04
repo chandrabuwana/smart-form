@@ -29,8 +29,110 @@
                 </div>
 
                 <div class="card-body px-0 pb-2">
-                    <form action="{{ route('she.air-minum.store') }}" method="POST">
+                    @if($isShowDetail)
+                    <!-- Approval Status Tracking Section -->
+                    <div class="mx-3 mb-4">
+                        <div class="card bg-light">
+                            <div class="card-header bg-light p-3">
+                                <h6 class="mb-0">Status Approval</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        @php
+                                            $statusClass = 'bg-secondary';
+                                            $statusText = 'Pending';
+                                            
+                                            if ($maintenanceRecord->approval_status == 'approved') {
+                                                $statusClass = 'bg-success';
+                                                $statusText = 'Approved';
+                                            } elseif ($maintenanceRecord->approval_status == 'rejected') {
+                                                $statusClass = 'bg-danger';
+                                                $statusText = 'Rejected';
+                                            } elseif ($maintenanceRecord->approval_status == 'in_progress') {
+                                                $statusClass = 'bg-info';
+                                                $statusText = 'In Progress';
+                                            }
+                                        @endphp
+                                        <h5>Status: <span class="badge {{ $statusClass }}">{{ $statusText }}</span></h5>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="progress-container">
+                                            <span class="progress-badge">Approval Progress</span>
+                                            @php
+                                                $totalSteps = 4; // Inspector 1, Inspector 2, Inspector 3, Acknowledger
+                                                $completedSteps = 0;
+                                                
+                                                if ($maintenanceRecord->inspector_1_status == 'approved') $completedSteps++;
+                                                if ($maintenanceRecord->inspector_2_status == 'approved') $completedSteps++;
+                                                if ($maintenanceRecord->inspector_3_status == 'approved') $completedSteps++;
+                                                if ($maintenanceRecord->acknowledged_status == 'approved') $completedSteps++;
+                                                
+                                                $progressPercentage = ($completedSteps / $totalSteps) * 100;
+                                            @endphp
+                                            <div class="progress">
+                                                <div class="progress-bar bg-gradient-success" role="progressbar" 
+                                                     aria-valuenow="{{ $progressPercentage }}" aria-valuemin="0" 
+                                                     aria-valuemax="100" style="width: {{ $progressPercentage }}%;">
+                                                </div>
+                                            </div>
+                                            <span class="progress-value">{{ $completedSteps }} of {{ $totalSteps }} approvals completed</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mt-3">
+                                    <div class="col-12">
+                                        <div class="d-flex justify-content-between flex-wrap">
+                                            <div class="approval-step">
+                                                <span class="badge {{ $maintenanceRecord->inspector_1_status == 'approved' ? 'bg-success' : 'bg-secondary' }} mb-1">
+                                                    Inspector 1
+                                                </span>
+                                                <small class="d-block">{{ $maintenanceRecord->inspector_1_name }}</small>
+                                                <small class="d-block">{{ $maintenanceRecord->inspector_1_date ?? 'Pending' }}</small>
+                                            </div>
+                                            <div class="approval-step">
+                                                <span class="badge {{ $maintenanceRecord->inspector_2_status == 'approved' ? 'bg-success' : 'bg-secondary' }} mb-1">
+                                                    Inspector 2
+                                                </span>
+                                                <small class="d-block">{{ $maintenanceRecord->inspector_2_name }}</small>
+                                                <small class="d-block">{{ $maintenanceRecord->inspector_2_date ?? 'Pending' }}</small>
+                                            </div>
+                                            <div class="approval-step">
+                                                <span class="badge {{ $maintenanceRecord->inspector_3_status == 'approved' ? 'bg-success' : 'bg-secondary' }} mb-1">
+                                                    Inspector 3
+                                                </span>
+                                                <small class="d-block">{{ $maintenanceRecord->inspector_3_name }}</small>
+                                                <small class="d-block">{{ $maintenanceRecord->inspector_3_date ?? 'Pending' }}</small>
+                                            </div>
+                                            <div class="approval-step">
+                                                <span class="badge {{ $maintenanceRecord->acknowledged_status == 'approved' ? 'bg-success' : 'bg-secondary' }} mb-1">
+                                                    Acknowledged
+                                                </span>
+                                                <small class="d-block">{{ $maintenanceRecord->acknowledged_by_name }}</small>
+                                                <small class="d-block">{{ $maintenanceRecord->acknowledged_date ?? 'Pending' }}</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+                    <form action="{{ route('she.air-minum.store') }}" method="POST" id="airMinumForm">
                         @csrf
+                        @if($isShowDetail)
+                        <!-- Export and Back buttons for detail view -->
+                        <div class="row mb-3">
+                            <div class="col-12 text-end">
+                                <a href="{{ route('she.air-minum.dashboard') }}" class="btn btn-secondary">Back</a>
+                                <a href="{{ route('she.air-minum.export', $maintenanceRecord->id) }}" class="btn btn-primary">
+                                    <i class="fas fa-file-export"></i> Export
+                                </a>
+                            </div>
+                        </div>
+                        <fieldset disabled>
+                        @endif
                         <div class="mx-3">
                             <!-- Basic Information -->
                             <div class="row mb-3">
@@ -380,10 +482,7 @@
                             <div class="row">
                                 <div class="col-12 text-end">
                                     @if($isShowDetail)
-                                        <a href="{{ route('she.air-minum.dashboard') }}" class="btn btn-secondary">Back</a>
-                                        <a href="{{ route('she.air-minum.export', $maintenanceRecord->id) }}" class="btn btn-primary">
-                                            <i class="fas fa-file-export"></i> Export
-                                        </a>
+                                        <!-- Buttons moved to top of form -->
                                     @else
                                     <div class="row mt-4">
                                         <div class="col-12 d-flex justify-content-between align-items-center">
@@ -399,6 +498,9 @@
                                 </div>
                             </div>
                         </div>
+                        @if($isShowDetail)
+                        </fieldset>
+                        @endif
                     </form>
                 </div>
             </div>
@@ -415,12 +517,56 @@
     .form-check-input[type="radio"] {
         margin-top: 0;
     }
+    .form-control:disabled {
+        background-color: #f8f9fa;
+        opacity: 1;
+    }
+    .form-control[readonly] {
+        background-color: #f8f9fa;
+    }
+    .table-responsive {
+        overflow-x: auto;
+    }
+    .progress-container {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+    .progress-badge {
+        color: #888;
+        font-size: 0.8rem;
+        margin-bottom: 5px;
+        display: block;
+    }
+    .progress {
+        height: 8px;
+        margin-bottom: 5px;
+        overflow: hidden;
+        background-color: #e9ecef;
+        border-radius: 0.25rem;
+    }
+    .progress-bar {
+        height: 8px;
+    }
+    .progress-value {
+        font-size: 0.75rem;
+        color: #888;
+    }
+    .approval-step {
+        text-align: center;
+        padding: 10px;
+        min-width: 120px;
+        border-radius: 5px;
+        background-color: #f8f9fa;
+        margin: 5px;
+    }
+    .approval-step small {
+        color: #6c757d;
+    }
 </style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css">
 @endsection
 
 @section('custom-js')
-<script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
 <script>
 $(document).ready(function() {
@@ -434,73 +580,35 @@ $(document).ready(function() {
         });
     }
     
-    // Handle inspector selection and populate NIK fields
+    // Handle inspector selection
     $('#inspector_1_name').on('change', function() {
-        console.log('Inspector 1 changed');
-        const selectedOption = $(this).find('option:selected');
-        const nik = selectedOption.data('nik') || '';
-        console.log('Setting inspector 1 NIK to:', nik);
+        var selectedOption = $(this).find('option:selected');
+        var nik = selectedOption.data('nik');
         $('#inspector_1_nik').val(nik);
     });
     
     $('#inspector_2_name').on('change', function() {
-        console.log('Inspector 2 changed');
-        const selectedOption = $(this).find('option:selected');
-        const nik = selectedOption.data('nik') || '';
-        console.log('Setting inspector 2 NIK to:', nik);
+        var selectedOption = $(this).find('option:selected');
+        var nik = selectedOption.data('nik');
         $('#inspector_2_nik').val(nik);
     });
     
     $('#inspector_3_name').on('change', function() {
-        console.log('Inspector 3 changed');
-        const selectedOption = $(this).find('option:selected');
-        const nik = selectedOption.data('nik') || '';
-        console.log('Setting inspector 3 NIK to:', nik);
+        var selectedOption = $(this).find('option:selected');
+        var nik = selectedOption.data('nik');
         $('#inspector_3_nik').val(nik);
     });
     
     $('#acknowledged_by_name').on('change', function() {
-        console.log('Acknowledged by changed');
-        const selectedOption = $(this).find('option:selected');
-        const nik = selectedOption.data('nik') || '';
-        console.log('Setting acknowledged NIK to:', nik);
+        var selectedOption = $(this).find('option:selected');
+        var nik = selectedOption.data('nik');
         $('#acknowledged_by_nik').val(nik);
     });
     
-    // Trigger change event to populate NIK fields on page load
-    setTimeout(function() {
-        $('#inspector_1_name').trigger('change');
-        $('#inspector_2_name').trigger('change');
-        $('#inspector_3_name').trigger('change');
-        $('#acknowledged_by_name').trigger('change');
-    }, 500);
-    
-    // Form validation
-    $('form').on('submit', function(e) {
-        let isValid = true;
-        
-        // Validate required fields
-        $('input[required], select[required]').each(function() {
-            if ($(this).val() === '') {
-                isValid = false;
-                $(this).addClass('is-invalid');
-            } else {
-                $(this).removeClass('is-invalid');
-            }
-        });
-        
-        if (!isValid) {
-            e.preventDefault();
-            Swal.fire({
-                icon: 'error',
-                title: 'Validation Error',
-                text: 'Please fill in all required fields'
-            });
-        }
-    });
-    
+    // Only set up form submission if not in detail view
+    @if(!$isShowDetail)
     // Handle form submission
-    var form = $("form");
+    var form = $('#airMinumForm');
     var submitBtn = form.find('button[type="submit"]');
     
     form.on("submit", function(e) {
@@ -509,80 +617,64 @@ $(document).ready(function() {
         // Disable the submit button to prevent multiple submissions
         submitBtn.prop("disabled", true);
         
-        // Show loading indicator
-        Swal.fire({
-            title: 'Processing...',
-            text: 'Please wait while we submit your form',
-            allowOutsideClick: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        });
+        // Collect form data
+        var formData = $(this).serialize();
         
-        // Get form data
-        var formData = new FormData(this);
-        
-        // Log form data for debugging
-        console.log('Form action:', form.attr("action"));
-        for (var pair of formData.entries()) {
-            console.log(pair[0] + ': ' + pair[1]);
-        }
-        
-        // Submit the form using AJAX
+        // Submit form via AJAX
         $.ajax({
-            url: form.attr("action"),
-            type: "POST",
+            url: $(this).attr('action'),
+            type: 'POST',
             data: formData,
-            processData: false,
-            contentType: false,
+            dataType: 'json',
             success: function(response) {
-                console.log('Success response:', response);
                 if (response.success) {
                     Swal.fire({
                         icon: 'success',
                         title: 'Success',
                         text: response.message,
-                        showConfirmButton: true
-                    }).then(function() {
-                        // Redirect to dashboard or detail page
-                        if (response.id) {
-                            window.location.href = "{{ route('she.air-minum.form') }}?id=" + response.id;
-                        } else {
-                            window.location.href = "{{ route('she.air-minum.dashboard') }}";
-                        }
+                        confirmButtonColor: '#3085d6'
+                    }).then((result) => {
+                        window.location.href = "{{ route('she.air-minum.dashboard') }}";
                     });
                 } else {
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
-                        text: response.message || 'An error occurred while submitting the form.',
-                        showConfirmButton: true
+                        text: response.message,
+                        confirmButtonColor: '#3085d6'
                     });
                     submitBtn.prop("disabled", false);
                 }
             },
             error: function(xhr, status, error) {
-                console.error('Error response:', xhr.responseText);
-                let errorMessage = 'An error occurred while submitting the form.';
+                var errorMessage = 'An error occurred while submitting the form.';
                 
-                if (xhr.responseJSON) {
-                    if (xhr.responseJSON.errors) {
-                        errorMessage = Object.values(xhr.responseJSON.errors).flat().join('\n');
-                    } else if (xhr.responseJSON.message) {
-                        errorMessage = xhr.responseJSON.message;
-                    }
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMessage = xhr.responseJSON.message;
+                }
+                
+                if (xhr.responseJSON && xhr.responseJSON.errors) {
+                    var errors = xhr.responseJSON.errors;
+                    var errorList = '<ul>';
+                    $.each(errors, function(key, value) {
+                        errorList += '<li>' + value + '</li>';
+                    });
+                    errorList += '</ul>';
+                    errorMessage += errorList;
                 }
                 
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text: errorMessage,
-                    showConfirmButton: true
+                    html: errorMessage,
+                    confirmButtonColor: '#3085d6'
                 });
+                
                 submitBtn.prop("disabled", false);
             }
         });
     });
+    @endif
 });
 </script>
 @endsection
