@@ -112,7 +112,7 @@ table.atas td {
          </tr>
          <tr>
             <td style="font-size: 0.8rem;">No. Dok</td>
-            <td style="font-size: 0.8rem;" colspan="2">: {{ $data['no_dok'] }}</td>
+            <td style="font-size: 0.8rem;" colspan="2">: {{ $data['no_doc'] }}</td>
          </tr>
          <tr>
             <td style="font-size: 0.8rem;">Revisi</td>
@@ -135,7 +135,7 @@ table.atas td {
                <td style="font-size: 0.8rem; width:20%">Job Site</td>
                <td style="font-size: 0.8rem;">: {{ $data['jobsite'] }}</td>
                <td style="font-size: 0.8rem; width:25%">No Fuel Station / Fuel Truck</td>
-               <td style="font-size: 0.8rem;">: {{ $data['noFuel'] }}</td>
+               <td style="font-size: 0.8rem;">: {{ $data['nofuel'] }}</td>
             </tr>
             <tr>
                <td style="font-size: 0.8rem; width:20%">Hari</td>

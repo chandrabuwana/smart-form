@@ -181,7 +181,7 @@
             if(row.status = "Need Approval" || row.status == null) {
                 if(row.dibuat_oleh == users_nik && (row.editable == 0 || row.editable == null)) {
                     btn = btn + '<a type="button" class="btn btn-info btn-sm me-1" href="/bss-form/log/edit-pemakaian-solar?no_doc=' + row.no_doc + '">Edit</a>'
-                         + '<a class="btn btn-primary btn-action btn-sm" href="/bss-form/log/pdf-pemakaian-solar/${row.id}">Pdf</a>';
+                         + '<a class="btn btn-primary btn-action btn-sm" href="/bss-form/log/pdf-pemakaian-solar?no_doc=' + row.no_doc + '">Pdf</a>';
                 }
             }
             return btn;

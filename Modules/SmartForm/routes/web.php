@@ -138,7 +138,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/add-pemakaian-solar', [PemakaianSolarController::class, 'SubmitFormPemakaianSolar'])->name("bss-form.log.add-pemakaian-solar");
             Route::get('/edit-pemakaian-solar', [PemakaianSolarController::class, 'editPemakaianSolar'])->name('bss-form.log.edit-pemakaian-solar');
             Route::post('/submit-edit-pemakaian-solar', [PemakaianSolarController::class, 'SubmitEditPemakaianSolar'])->name("bss-form.log.submit-edit-pemakaian-solar");
-            Route::get('/pdf-pemakaian-solar/{id}', [PemakaianSolarController::class, 'PdfPemakaianSolar'])->name('bss-form.log.pdf-pemakaian-solar');
+            Route::get('/pdf-pemakaian-solar', [PemakaianSolarController::class, 'PdfPemakaianSolar'])->name('bss-form.log.pdf-pemakaian-solar');
             Route::get('/get-pemakaian-solar-detail', [PemakaianSolarController::class, 'SolarDetailByNoDoc'])->name("bss-form.log.form-detail-by-id");
             Route::get('/get-pemakaian-solar-data', [PemakaianSolarController::class, 'GetPemakaianSolarData'])->name("bss-form.log.get-pemakaian-solar-data");
 

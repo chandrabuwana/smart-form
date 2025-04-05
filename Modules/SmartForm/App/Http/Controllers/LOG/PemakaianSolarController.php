@@ -167,7 +167,7 @@ class PemakaianSolarController extends Controller {
             $data = DB::table( $TABLE_MASTER )
             ->select(
                 'no_doc', 'dibuat_oleh', 'no_fuel_station as fuel', 'created_date as tgl_dibuat', 'shift', 'disetujui_oleh', 'job_site as site', 'stok_awal',
-                'stok_akhir', 'masuk', 'total_pemakaian as total_pakai', 'stok_akhir'
+                'stok_akhir', 'masuk', 'total_pemakaian as total_pakai', 'stok_akhir','hari'
             )
             ->where( 'no_doc', $no_doc )
             ->first();
@@ -348,22 +348,45 @@ class PemakaianSolarController extends Controller {
         return response()->json( $response );
     }
 
-    public function PdfPemakaianSolar( $id ) {
+    public function PdfPemakaianSolar(Request $request) {
+        $no_doc = $request->query( 'no_doc' );
         $TABLE_MASTER = 'FM_LOG_037_PEMAKAIAN_SOLAR';
         $TABLE_DETAIL = 'FM_LOG_037_PEMAKAIAN_SOLAR_DETAIL';
         $errors = array(
             'error' => false,
             'message' => ''
         );
+        $data_master = array(
+            'nofuel' => '',
+            'no_doc' => '',
+            'tgldibuat' => '',
+            'revisi' => '',
+            'tanggal' => '',
+            'halaman' => '',
+            'jobsite' => '',
+            'hari' => '',
+            'shift' => '',
+            'approval' => '',
+            'stok_awal' => '',
+            'masuk' => '',
+            'total_pemakaian' => '',
+            'stok_akhir' => '',
+            'no_dok' => '',
+            'dibuat' => ''
+        );
+        $data_detail = array();
         try {
             $data = DB::table( $TABLE_MASTER )
-            ->select( 'id', 'no_dok', 'revisi as revisi', 'halaman', 'tanggal', 'job_site as jobsite', 'no_fuel_station as noFuel', 'shift', 'dibuat_oleh as dibuat', 'diketahui_oleh as mengetahui', 'disetujui_oleh as approval', 'total_pemakaian', 'created_date as tgldibuat', 'hari', 'stok_awal', 'masuk', 'stok_akhir' )
-            ->where( 'id', $id )
+            ->select( 'id', 'no_doc', 'revisi as revisi', 'halaman', 'tanggal', 'job_site as jobsite', 
+            'no_fuel_station as nofuel', 'shift', 'dibuat_oleh as dibuat', 'diketahui_oleh as mengetahui', 
+            'disetujui_oleh as approval', 'total_pemakaian', 'created_date as tgldibuat', 'hari', 'stok_awal', 
+            'masuk', 'stok_akhir', 'no_dok' )
+            ->where( 'id', $no_doc )
             ->first();
 
             $data_detail = DB::table( $TABLE_DETAIL )
             ->select( 'id_pemakai_solar', 'kode_unit as unit', 'jam', 'awal', 'akhir', 'total_liter as totalLiter', 'nama_operator', 'km', 'hm', 'keterangan' )
-            ->where( 'id_pemakai_solar', $data->id )
+            ->where( 'id_pemakai_solar', $data->no_doc )
             ->get();
 
             $nomor = 1;
@@ -373,13 +396,14 @@ class PemakaianSolarController extends Controller {
             }
 
             $data_master[ 'id' ] = $data->id;
+            $data_master[ 'no_doc' ] = $data->no_doc;
             $data_master[ 'no_dok' ] = $data->no_dok;
             $data_master[ 'jobsite' ] = $data->jobsite;
             $data_master[ 'tanggal' ] = $data->tanggal;
             $data_master[ 'revisi' ] = $data->revisi;
             $data_master[ 'halaman' ] = $data->halaman;
             $data_master[ 'dibuat' ] = $data->dibuat;
-            $data_master[ 'noFuel' ] = $data->noFuel;
+            $data_master[ 'nofuel' ] = $data->nofuel;
             $data_master[ 'total_pemakaian' ] = $data->total_pemakaian;
             $data_master[ 'shift' ] = $data->shift;
             $data_master[ 'approval' ] = $data->approval;
