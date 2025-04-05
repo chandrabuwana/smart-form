@@ -76,7 +76,7 @@ class PemakaianSolarController extends Controller {
 
             try {
                 $forms_request_sql = DB::table( $TABLE_MASTER )
-                ->select( 'no_doc', 'created_date as tgldibuat', 'dibuat_oleh', 'no_fuel_station as fuel', 'total_pemakaian as total', 'disetujui_oleh as approval', 'status' )
+                ->select( 'no_doc', 'created_date as tgldibuat', 'dibuat_oleh', 'no_fuel_station as fuel', 'total_pemakaian as total', 'disetujui_oleh as approval', 'status','is_active' )
                 ->orderBy( 'no_doc', 'desc' );
 
                 if ( $filterNik ) $forms_request_sql = $forms_request_sql->where( 'dibuat_oleh', $filterNik );
@@ -160,6 +160,7 @@ class PemakaianSolarController extends Controller {
             'masuk' => '',
             'total_pakai' => '',
             'stok_akhir' => '',
+            'is_active' => '',
             'dibuat_oleh' => ''
         );
         $data_detail = array();
@@ -167,7 +168,7 @@ class PemakaianSolarController extends Controller {
             $data = DB::table( $TABLE_MASTER )
             ->select(
                 'no_doc', 'dibuat_oleh', 'no_fuel_station as fuel', 'created_date as tgl_dibuat', 'shift', 'disetujui_oleh', 'job_site as site', 'stok_awal',
-                'stok_akhir', 'masuk', 'total_pemakaian as total_pakai', 'stok_akhir','hari'
+                'stok_akhir', 'masuk', 'total_pemakaian as total_pakai', 'stok_akhir','hari','is_active'
             )
             ->where( 'no_doc', $no_doc )
             ->first();
@@ -201,6 +202,7 @@ class PemakaianSolarController extends Controller {
                 $data_master[ 'stok_akhir' ] = $data->stok_akhir;
                 $data_master[ 'masuk' ] = $data->masuk;
                 $data_master[ 'total_pakai' ] = $data->total_pakai;
+                $data_master[ 'is_active' ] = $data->is_active;
 
                 $isError = false;
             } else {
@@ -235,7 +237,8 @@ class PemakaianSolarController extends Controller {
         // Default limit
         try {
             $master = DB::table( $TABLE_PENGELUARAN_OLI )
-            ->select( 'id', 'shift', 'job_site as site', 'dibuat_oleh', 'no_fuel_station as fuel', 'total_pemakaian', 'disetujui_oleh as approved', 'dibuat_oleh as request', 'status' );
+            ->select( 'id', 'shift', 'job_site as site', 'dibuat_oleh', 'no_fuel_station as fuel', 'total_pemakaian', 
+            'disetujui_oleh as approved', 'dibuat_oleh as request', 'status','is_active' );
 
             $master->orderBy( $sort, $order );
             $jml = $master->count();
@@ -371,6 +374,7 @@ class PemakaianSolarController extends Controller {
             'masuk' => '',
             'total_pemakaian' => '',
             'stok_akhir' => '',
+            'is_active' => '',
             'no_dok' => '',
             'dibuat' => ''
         );
@@ -380,7 +384,7 @@ class PemakaianSolarController extends Controller {
             ->select( 'id', 'no_doc', 'revisi as revisi', 'halaman', 'tanggal', 'job_site as jobsite', 
             'no_fuel_station as nofuel', 'shift', 'dibuat_oleh as dibuat', 'diketahui_oleh as mengetahui', 
             'disetujui_oleh as approval', 'total_pemakaian', 'created_date as tgldibuat', 'hari', 'stok_awal', 
-            'masuk', 'stok_akhir', 'no_dok' )
+            'masuk', 'stok_akhir', 'no_dok','is_active' )
             ->where( 'id', $no_doc )
             ->first();
 
@@ -411,6 +415,7 @@ class PemakaianSolarController extends Controller {
             $data_master[ 'hari' ] = $data->hari;
             $data_master[ 'stok_awal' ] = $data->stok_awal;
             $data_master[ 'masuk' ] = $data->masuk;
+            $data_master[ 'is_active' ] = $data->is_active;
             $data_master[ 'stok_akhir' ] = $data->stok_akhir;
         } catch ( Exception $ex ) {
             Log::error( $ex->getMessage() );

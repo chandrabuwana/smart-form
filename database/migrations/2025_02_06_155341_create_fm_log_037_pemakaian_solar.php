@@ -25,6 +25,7 @@ return new class extends Migration
             $table->date('created_date');
             $table->string('hari');
             $table->string('status');
+            $table->string('is_active')->nullable();
             $table->integer('stok_awal');
             $table->integer('masuk');
             $table->integer('stok_akhir');

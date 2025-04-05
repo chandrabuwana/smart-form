@@ -94,7 +94,6 @@
                             </button>
                         </div>
                     </div>
-
                         <div class="col-md-12 d-flex justify-content-end">
                             <div class="status me-2">
                                 <label>Status :</label>
