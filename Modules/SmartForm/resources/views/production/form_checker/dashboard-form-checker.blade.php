@@ -188,6 +188,9 @@
                                             Number</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            Site</th>
+                                        <th
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Alat Muat</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
@@ -212,6 +215,12 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($record as $data)
+                                    @php
+                                        // Ubah JSON string menjadi array PHP terlebih dahulu
+                                        $arrayAlatMuat = json_decode($data->alat_muat, true);
+                                        // Kemudian gunakan implode
+                                        $alatMuat = '"' . implode('","', $arrayAlatMuat) . '"';
+                                    @endphp
                                         <tr>
                                             <td>
                                                 <div class="d-flex px-2 py-1">
@@ -221,7 +230,10 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <p class="text-xs font-weight-bold mb-0">{{ $data->alat_muat }}</p>
+                                                <p class="text-xs font-weight-bold mb-0">{{ $data->site }}</p>
+                                            </td>
+                                            <td>
+                                                <p class="text-xs font-weight-bold mb-0">{{ $alatMuat }}</p>
                                             </td>
                                             <td>
                                                 <p class="text-xs font-weight-bold mb-0">{{ $data->shift }}</p>

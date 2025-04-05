@@ -28,7 +28,7 @@
                         </div>
                     </div>
 
-                    <form id="postForm" method="POST">
+                    <form id="postForm" method="POST" style="margin-top: 2rem;">
                         @csrf
                         <div class="mx-3">
                             <!-- Basic Information -->
@@ -84,8 +84,19 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="operator_load" class="ms-0">Nama Operator Loader</label>
-                                        <input type="text" class="form-control" id="operator_load" name="operator_load"
-                                            required>
+                                        {{-- <input type="text" class="form-control" id="operator_load" name="operator_load"
+                                            required> --}}
+                                        <select class="form-control form-select" id="operator_load" name="operator_load" required>
+                                            <option disabled selected>-- Select Nama Operator --</option>
+                                            @forelse($users as $user)
+                                                <option value="{{ $user->nik ?? '' }}">
+                                                    {{ $user->nama ?? 'User tidak tersedia' }}
+                                                </option>
+                                            @empty
+                                                <option>Data karyawan tidak ditemukan</option>
+                                            @endforelse
+                                        </select>
+
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -95,6 +106,22 @@
                                             value="{{ optional(collect($approvalList)->firstWhere('nik', $nik))->nama ?? '' }}"
                                             readonly>
                                         <input type="hidden" name="nama_pic" value="{{ $nik }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label for="site" class="ms-0">Site</label>
+                                        <select class="form-control form-select" id="site" name="site" required>
+                                            <option disabled selected>-- Select Site --</option>
+                                            @forelse($sites as $site)
+                                                <option value="{{ $site->KodeST ?? '' }}">
+                                                    {{ $site->KodeST ?? 'Site tidak tersedia' }}
+                                                </option>
+                                            @empty
+                                                <option>Data site tidak ditemukan</option>
+                                            @endforelse
+                                        </select>
+
                                     </div>
                                 </div>
                             </div>
@@ -118,9 +145,20 @@
                                         <tr>
                                             <th>Nama Operator</th>
                                             <th colspan="5" style="text-align: center;">
-                                                <input class="form-control" type="text" name="nama_operator" required
+                                                {{-- <input class="form-control" type="text" name="nama_operator" required
                                                     style="text-align: center; background-color: #eee7e8; color: rgb(11, 10, 10);"
-                                                    placeholder="Input Nama Operator">
+                                                    placeholder="Input Nama Operator"> --}}
+                                                <select class="form-control form-select" name="nama_operator" required
+                                                    style="text-align: center; background-color: #eee7e8; color: rgb(11, 10, 10);">
+                                                    <option disabled selected>-- Select Nama Operator --</option>
+                                                    @forelse($users as $user)
+                                                        <option value="{{ $user->nik ?? '' }}">
+                                                            {{ $user->nama ?? 'User tidak tersedia' }}
+                                                        </option>
+                                                    @empty
+                                                        <option>Data karyawan tidak ditemukan</option>
+                                                    @endforelse
+                                                </select>
                                             </th>
 
                                         </tr>
@@ -232,7 +270,7 @@
                                 <div class="col-6">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="diperiksa" class="ms-0">Diperiksa Oleh</label>
-                                        <select name="diperiksa_oleh" id="diperiksa" class="form-control" required>
+                                        <select name="diperiksa_oleh" id="diperiksa" class="form-control form-select" required>
                                             <option disabled selected>-- Select Approval --</option>
                                             @foreach ($approvalList as $data)
                                                 <option value="{{ $data->nik }}">{{ $data->nama }}</option>
