@@ -120,7 +120,7 @@
                                 data-query-params="queryParams" data-ajax="fetchData" data-sortable="true">
                                 <thead>
                                     <tr>
-                                        
+
                                         <th data-field="site" data-sortable="true">Site</th>
                                         <th data-field="model_unit" data-sortable="true">Model Unit</th>
                                         <th data-field="diperiksa" data-sortable="true">Diperiksa</th>
@@ -183,13 +183,13 @@
             let printUrl = `{{ route('bss-form.plant.general-inspection.dongfeng.print', ':id') }}`.replace(':id', row.id);
 
             let printButton = '';
-            if (row.status === 'Approved') {
+
                 printButton = `
             <a class="btn btn-outline-secondary btn-sm" href="${printUrl}" target="_blank">
                 <i class="fa fa-print"></i>
             </a>
         `;
-            }
+            
             // Jika bukan creator, jangan tampilkan tombol Edit & Hapus
             if (row.creator !== currentUserId) {
                 return `

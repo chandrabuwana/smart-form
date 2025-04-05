@@ -285,12 +285,12 @@
                                                     class="btn btn-info btn-sm mt-2">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
-                                                @if ($data->status === 'Approved')
+
                                                     <a href="{{ route('prod.form.checker.export', ['id' => $data->id]) }}"
                                                         class="btn btn-primary btn-sm mt-2">
                                                         <i class="fas fa-download"></i>
                                                     </a>
-                                                @endif
+                                                
 
                                             </td>
                                         </tr>

@@ -184,13 +184,13 @@
             let printUrl = `{{ route('bss-form.plant.general-inspection.cmt.print', ':id') }}`.replace(':id', row.id);
 
             let printButton = '';
-            if (row.status === 'Approved') {
+
                 printButton = `
             <a class="btn btn-outline-secondary btn-sm" href="${printUrl}" target="_blank">
                 <i class="fa fa-print"></i>
             </a>
         `;
-            }
+            
             // Jika bukan creator, jangan tampilkan tombol Edit & Hapus
             if (row.creator !== currentUserId) {
                 return `

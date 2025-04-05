@@ -342,12 +342,12 @@
                                                     class="btn btn-info btn-sm mt-3">
                                                     <i class="far fa-check-circle " style="font-size:12px;"></i>
                                                 </a>
-                                                @if (collect($status)->every(fn($s) => $s === 'approved'))
-                                                    <a href="{{ route('plant.ppm.900d.export', ['id' => $data->id]) }}"
-                                                        class="btn btn-primary btn-sm mt-3">
-                                                        <i class="fas fa-download"></i>
-                                                    </a>
-                                                @endif
+
+                                                <a href="{{ route('plant.ppm.900d.export', ['id' => $data->id]) }}"
+                                                    class="btn btn-primary btn-sm mt-3">
+                                                    <i class="fas fa-download"></i>
+                                                </a>
+
                                             </td>
                                         </tr>
                                     @endforeach
