@@ -195,14 +195,14 @@
                                         </a>
                                         
                                         <!-- Edit button - only show for records that haven't been approved and were created by the current user -->
-                                        @if(isset($record->created_by) && $record->created_by == session('username') && (!isset($record->approval_status) || $record->approval_status != 'approved'))
-                                        <a href="{{ route('she.ergonomi.form', ['id' => $record->id, 'edit' => true]) }}" class="btn btn-warning btn-sm">
+                                        @if(isset($record->employee_name) && $record->employee_name == session('username') && (!isset($record->approval_status) || $record->approval_status != 'approved'))
+                                        <a href="{{ route('she.ergonomi.edit', ['id' => $record->id]) }}" class="btn btn-warning btn-sm">
                                             <i class="fas fa-edit"></i>
                                         </a>
                                         @endif
                                         
                                         <!-- Delete button - only show for records that haven't been approved and were created by the current user -->
-                                        @if(isset($record->created_by) && $record->created_by == session('username') && (!isset($record->approval_status) || $record->approval_status != 'approved'))
+                                        @if(isset($record->employee_name) && $record->employee_name == session('username') && (!isset($record->approval_status) || $record->approval_status == 'pending' || $record->approval_status == 'rejected'))
                                         <button type="button" class="btn btn-danger btn-sm delete-record" data-id="{{ $record->id }}">
                                             <i class="fas fa-trash"></i>
                                         </button>
@@ -247,16 +247,16 @@
                     confirmButtonText: 'Yes, delete it!'
                 }).then((result) => {
                     if (result.isConfirmed) {
+                        // Create the delete URL with the record ID
+                        const deleteUrl = '{{ url("bss-form/she-ergonomi/delete") }}/' + recordId;
+                        
                         // Send delete request
-                        fetch('{{ route("she.ergonomi.delete") }}', {
-                            method: 'POST',
+                        fetch(deleteUrl, {
+                            method: 'DELETE',
                             headers: {
                                 'Content-Type': 'application/json',
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            },
-                            body: JSON.stringify({
-                                id: recordId
-                            })
+                            }
                         })
                         .then(response => response.json())
                         .then(data => {

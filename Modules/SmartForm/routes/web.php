@@ -473,8 +473,9 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('form/export/{id}', [ErgonomiController::class, 'ExportForm'])->name('she.ergonomi.export');
             Route::get('form', [ErgonomiController::class, 'AddForm'])->name('she.ergonomi.form');
             Route::post('store', [ErgonomiController::class, 'Store'])->name('she.ergonomi.store');
+            Route::get('edit/{id}', [ErgonomiController::class, 'EditForm'])->name('she.ergonomi.edit');
             Route::post('update', [ErgonomiController::class, 'UpdateForm'])->name('she.ergonomi.update');
-            Route::post('delete', [ErgonomiController::class, 'Delete'])->name('she.ergonomi.delete');
+            Route::delete('delete/{id}', [ErgonomiController::class, 'Delete'])->name('she.ergonomi.delete');
         });
 
         Route::prefix('prod-anak-asuh')->group(function () {

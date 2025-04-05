@@ -72,24 +72,41 @@
                                                 {{ $isShowDetail ? 'disabled' : '' }}>
                                         </td>
                                         <td class="border">
+                                            @php
+                                                $evaluationDate = null;
+                                                if ($isShowDetail && isset($data->evaluation_date)) {
+                                                    // Try to parse the date correctly
+                                                    if (strtotime($data->evaluation_date) > 0) {
+                                                        $evaluationDate = $data->evaluation_date;
+                                                    }
+                                                }
+                                            @endphp
                                             <input type="date" name="evaluation_date" class="form-control" required
-                                                value="{{ $isShowDetail ? $data->evaluation_date : old('evaluation_date') }}"
+                                                value="{{ $evaluationDate ?? old('evaluation_date', date('Y-m-d')) }}"
                                                 {{ $isShowDetail ? 'disabled' : '' }}>
                                         </td>
                                         <td class="border">
                                             <input type="number" name="total_employee" class="form-control" required
                                                 value="{{ $isShowDetail ? $data->total_employee : old('total_employee') }}"
-                                                {{ $isShowDetail ? 'disabled' : '' }}>
+                                                {{ $isShowDetail ? 'disabled' : '' }} min="0" step="1">
                                         </td>
                                         <td class="border">
                                             <input type="text" name="employee_name" class="form-control" required
-                                                value="{{ $isShowDetail ? $data->employee_name : old('employee_name') }}"
+                                                value="{{ $isShowDetail ? $data->employee_name : session('username') }}"
                                                 {{ $isShowDetail ? 'disabled' : '' }}>
                                         </td>
                                         <td class="border">
-                                            <input type="text" name="reviewer_name" class="form-control" required
-                                                value="{{ $isShowDetail ? $data->reviewer_name : old('reviewer_name') }}"
-                                                {{ $isShowDetail ? 'disabled' : '' }}>
+                                            <select name="reviewer_name" id="reviewer_name" class="form-control text-center" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                                <option disabled selected>-- Select Reviewer --</option>
+                                                @foreach ($approvalList as $reviewer)
+                                                    <option value="{{ $reviewer->nama }}" 
+                                                        data-nik="{{ $reviewer->nik }}"
+                                                        {{ $isShowDetail && isset($data->reviewer_name) && $data->reviewer_name == $reviewer->nama ? 'selected' : '' }}>
+                                                        {{ $reviewer->nama }} ({{ $reviewer->nik }})
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            <input type="hidden" name="reviewer_nik" id="reviewer_nik" value="{{ $isShowDetail ? $data->reviewer_nik : '' }}">
                                         </td>
                                     </tr>
                                 </table>
@@ -137,7 +154,7 @@
                                         <td class="border">
                                             <div class="form-check d-flex align-items-center mb-2">
                                                 <input type="checkbox" class="form-check-input" name="item_1"
-                                                    {{ $isShowDetail && $data->item_1 ? 'checked' : '' }}
+                                                    {{ $isShowDetail && isset($data->item_1) && $data->item_1 ? 'checked' : '' }}
                                                     {{ $isShowDetail ? 'disabled' : '' }}>
                                                 <label class="form-check-label ms-2">Status</label>
                                             </div>
@@ -158,7 +175,7 @@
                                         <td class="border">
                                             <div class="form-check d-flex align-items-center mb-2">
                                                 <input type="checkbox" class="form-check-input" name="item_2"
-                                                    {{ $isShowDetail && $data->item_2 ? 'checked' : '' }}
+                                                    {{ $isShowDetail && isset($data->item_2) && $data->item_2 ? 'checked' : '' }}
                                                     {{ $isShowDetail ? 'disabled' : '' }}>
                                                 <label class="form-check-label ms-2">Status</label>
                                             </div>
@@ -179,7 +196,7 @@
                                         <td class="border">
                                             <div class="form-check d-flex align-items-center mb-2">
                                                 <input type="checkbox" class="form-check-input" name="item_3"
-                                                    {{ $isShowDetail && $data->item_3 ? 'checked' : '' }}
+                                                    {{ $isShowDetail && isset($data->item_3) && $data->item_3 ? 'checked' : '' }}
                                                     {{ $isShowDetail ? 'disabled' : '' }}>
                                                 <label class="form-check-label ms-2">Status</label>
                                             </div>
@@ -200,7 +217,7 @@
                                         <td class="border">
                                             <div class="form-check d-flex align-items-center mb-2">
                                                 <input type="checkbox" class="form-check-input" name="item_4"
-                                                    {{ $isShowDetail && $data->item_4 ? 'checked' : '' }}
+                                                    {{ $isShowDetail && isset($data->item_4) && $data->item_4 ? 'checked' : '' }}
                                                     {{ $isShowDetail ? 'disabled' : '' }}>
                                                 <label class="form-check-label ms-2">Status</label>
                                             </div>
@@ -235,7 +252,7 @@
                                         <td>
                                             <div class="form-check d-flex align-items-center mb-2">
                                                 <input type="checkbox" class="form-check-input" name="item_5"
-                                                    {{ $isShowDetail && $data->item_5 ? 'checked' : '' }}
+                                                    {{ $isShowDetail && isset($data->item_5) && $data->item_5 ? 'checked' : '' }}
                                                     {{ $isShowDetail ? 'disabled' : '' }}>
                                                 <label class="form-check-label ms-2">Status</label>
                                             </div>
@@ -255,7 +272,7 @@
                                         <td class="border">
                                             <div class="form-check d-flex align-items-center mb-2">
                                                 <input type="checkbox" class="form-check-input" name="item_6"
-                                                    {{ $isShowDetail && $data->item_6 ? 'checked' : '' }}
+                                                    {{ $isShowDetail && isset($data->item_6) && $data->item_6 ? 'checked' : '' }}
                                                     {{ $isShowDetail ? 'disabled' : '' }}>
                                                 <label class="form-check-label ms-2">Status</label>
                                             </div>
@@ -274,7 +291,7 @@
                                         <td class="border">
                                             <div class="form-check d-flex align-items-center mb-2">
                                                 <input type="checkbox" class="form-check-input" name="item_7"
-                                                    {{ $isShowDetail && $data->item_7 ? 'checked' : '' }}
+                                                    {{ $isShowDetail && isset($data->item_7) && $data->item_7 ? 'checked' : '' }}
                                                     {{ $isShowDetail ? 'disabled' : '' }}>
                                                 <label class="form-check-label ms-2">Status</label>
                                             </div>
@@ -293,7 +310,7 @@
                                         <td class="border">
                                             <div class="form-check d-flex align-items-center mb-2">
                                                 <input type="checkbox" class="form-check-input" name="item_8"
-                                                    {{ $isShowDetail && $data->item_8 ? 'checked' : '' }}
+                                                    {{ $isShowDetail && isset($data->item_8) && $data->item_8 ? 'checked' : '' }}
                                                     {{ $isShowDetail ? 'disabled' : '' }}>
                                                 <label class="form-check-label ms-2">Status</label>
                                             </div>
@@ -326,7 +343,7 @@
                                         <td class="border">
                                             <div class="form-check d-flex align-items-center mb-2">
                                                 <input type="checkbox" class="form-check-input" name="item_9"
-                                                    {{ $isShowDetail && $data->item_9 ? 'checked' : '' }}
+                                                    {{ $isShowDetail && isset($data->item_9) && $data->item_9 ? 'checked' : '' }}
                                                     {{ $isShowDetail ? 'disabled' : '' }}>
                                                 <label class="form-check-label ms-2">Status</label>
                                             </div>
@@ -345,7 +362,7 @@
                                         <td class="border">
                                             <div class="form-check d-flex align-items-center mb-2">
                                                 <input type="checkbox" class="form-check-input" name="item_10"
-                                                    {{ $isShowDetail && $data->item_10 ? 'checked' : '' }}
+                                                    {{ $isShowDetail && isset($data->item_10) && $data->item_10 ? 'checked' : '' }}
                                                     {{ $isShowDetail ? 'disabled' : '' }}>
                                                 <label class="form-check-label ms-2">Status</label>
                                             </div>
@@ -364,7 +381,7 @@
                                         <td class="border">
                                             <div class="form-check d-flex align-items-center mb-2">
                                                 <input type="checkbox" class="form-check-input" name="item_12"
-                                                    {{ $isShowDetail && $data->item_11 ? 'checked' : '' }}
+                                                    {{ $isShowDetail && isset($data->item_11) && $data->item_11 ? 'checked' : '' }}
                                                     {{ $isShowDetail ? 'disabled' : '' }}>
                                                 <label class="form-check-label ms-2">Status</label>
                                             </div>
@@ -383,7 +400,7 @@
                                         <td class="border">
                                             <div class="form-check d-flex align-items-center mb-2">
                                                 <input type="checkbox" class="form-check-input" name="item_12"
-                                                    {{ $isShowDetail && $data->item_12 ? 'checked' : '' }}
+                                                    {{ $isShowDetail && isset($data->item_12) && $data->item_12 ? 'checked' : '' }}
                                                     {{ $isShowDetail ? 'disabled' : '' }}>
                                                 <label class="form-check-label ms-2">Status</label>
                                             </div>
@@ -417,7 +434,7 @@
                                         <td>
                                             <div class="form-check d-flex align-items-center mb-2">
                                                 <input type="checkbox" class="form-check-input" name="item_13"
-                                                    {{ $isShowDetail && $data->item_13 ? 'checked' : '' }}
+                                                    {{ $isShowDetail && isset($data->item_13) && $data->item_13 ? 'checked' : '' }}
                                                     {{ $isShowDetail ? 'disabled' : '' }}>
                                                 <label class="form-check-label ms-2">Status</label>
                                             </div>
@@ -436,7 +453,7 @@
                                         <td class="border">
                                             <div class="form-check d-flex align-items-center mb-2">
                                                 <input type="checkbox" class="form-check-input" name="item_14"
-                                                    {{ $isShowDetail && $data->item_14 ? 'checked' : '' }}
+                                                    {{ $isShowDetail && isset($data->item_14) && $data->item_14 ? 'checked' : '' }}
                                                     {{ $isShowDetail ? 'disabled' : '' }}>
                                                 <label class="form-check-label ms-2">Status</label>
                                             </div>
@@ -513,7 +530,7 @@
                                             <td class="text-center">
                                                 <div class="form-check d-flex justify-content-center">
                                                     <input type="checkbox" class="form-check-input" name="wmsd_bahu_1"
-                                                        {{ $isShowDetail && $data->wmsd_bahu_1 ? 'checked' : '' }}
+                                                        {{ $isShowDetail && isset($data->wmsd_bahu_1) && $data->wmsd_bahu_1 ? 'checked' : '' }}
                                                         {{ $isShowDetail ? 'disabled' : '' }}>
                                                 </div>
                                             </td>
@@ -527,7 +544,7 @@
                                             <td class="text-center border">
                                                 <div class="form-check d-flex justify-content-center">
                                                     <input type="checkbox" class="form-check-input" name="wmsd_bahu_2"
-                                                        {{ $isShowDetail && $data->wmsd_bahu_2 ? 'checked' : '' }}
+                                                        {{ $isShowDetail && isset($data->wmsd_bahu_2) && $data->wmsd_bahu_2 ? 'checked' : '' }}
                                                         {{ $isShowDetail ? 'disabled' : '' }}>
                                                 </div>
                                             </td>
@@ -547,7 +564,7 @@
                                             <td class="text-center">
                                                 <div class="form-check d-flex justify-content-center">
                                                     <input type="checkbox" class="form-check-input" name="wmsd_leher"
-                                                        {{ $isShowDetail && $data->wmsd_leher ? 'checked' : '' }}
+                                                        {{ $isShowDetail && isset($data->wmsd_leher) && $data->wmsd_leher ? 'checked' : '' }}
                                                         {{ $isShowDetail ? 'disabled' : '' }}>
                                                 </div>
                                             </td>
@@ -567,7 +584,7 @@
                                             <td class="text-center">
                                                 <div class="form-check d-flex justify-content-center">
                                                     <input type="checkbox" class="form-check-input" name="wmsd_punggung_1"
-                                                        {{ $isShowDetail && $data->wmsd_punggung_1 ? 'checked' : '' }}
+                                                        {{ $isShowDetail && isset($data->wmsd_punggung_1) && $data->wmsd_punggung_1 ? 'checked' : '' }}
                                                         {{ $isShowDetail ? 'disabled' : '' }}>
                                                 </div>
                                             </td>
@@ -581,7 +598,7 @@
                                             <td class="text-center border">
                                                 <div class="form-check d-flex justify-content-center">
                                                     <input type="checkbox" class="form-check-input" name="wmsd_punggung_2"
-                                                        {{ $isShowDetail && $data->wmsd_punggung_2 ? 'checked' : '' }}
+                                                        {{ $isShowDetail && isset($data->wmsd_punggung_2) && $data->wmsd_punggung_2 ? 'checked' : '' }}
                                                         {{ $isShowDetail ? 'disabled' : '' }}>
                                                 </div>
                                             </td>
@@ -601,7 +618,7 @@
                                             <td class="text-center border">
                                                 <div class="form-check d-flex justify-content-center">
                                                     <input type="checkbox" class="form-check-input" name="wmsd_punggung_1"
-                                                        {{ $isShowDetail && $data->wmsd_punggung_1 ? 'checked' : '' }}
+                                                        {{ $isShowDetail && isset($data->wmsd_punggung_1) && $data->wmsd_punggung_1 ? 'checked' : '' }}
                                                         {{ $isShowDetail ? 'disabled' : '' }}>
                                                 </div>
                                             </td>
@@ -615,7 +632,7 @@
                                             <td class="text-center border">
                                                 <div class="form-check d-flex justify-content-center">
                                                     <input type="checkbox" class="form-check-input" name="wmsd_punggung_2"
-                                                        {{ $isShowDetail && $data->wmsd_punggung_2 ? 'checked' : '' }}
+                                                        {{ $isShowDetail && isset($data->wmsd_punggung_2) && $data->wmsd_punggung_2 ? 'checked' : '' }}
                                                         {{ $isShowDetail ? 'disabled' : '' }}>
                                                 </div>
                                             </td>
@@ -672,7 +689,7 @@
                                             <td>
                                                 <div class="form-check d-flex justify-content-center">
                                                     <input type="checkbox" class="form-check-input" name="wmsd_tangan_kuat_1"
-                                                        {{ $isShowDetail && $data->wmsd_tangan_kuat_1 ? 'checked' : '' }}
+                                                        {{ $isShowDetail && isset($data->wmsd_tangan_kuat_1) && $data->wmsd_tangan_kuat_1 ? 'checked' : '' }}
                                                         {{ $isShowDetail ? 'disabled' : '' }}>
                                                 </div>
                                             </td>
@@ -683,7 +700,7 @@
                                             <td class="text-center border">
                                                 <div class="form-check d-flex justify-content-center">
                                                     <input type="checkbox" class="form-check-input" name="wmsd_tangan_kuat_2"
-                                                        {{ $isShowDetail && $data->wmsd_tangan_kuat_2 ? 'checked' : '' }}
+                                                        {{ $isShowDetail && isset($data->wmsd_tangan_kuat_2) && $data->wmsd_tangan_kuat_2 ? 'checked' : '' }}
                                                         {{ $isShowDetail ? 'disabled' : '' }}>
                                                 </div>
                                             </td>
@@ -694,7 +711,7 @@
                                             <td class="text-center border">
                                                 <div class="form-check d-flex justify-content-center">
                                                     <input type="checkbox" class="form-check-input" name="wmsd_tangan_kuat_3"
-                                                        {{ $isShowDetail && $data->wmsd_tangan_kuat_3 ? 'checked' : '' }}
+                                                        {{ $isShowDetail && isset($data->wmsd_tangan_kuat_3) && $data->wmsd_tangan_kuat_3 ? 'checked' : '' }}
                                                         {{ $isShowDetail ? 'disabled' : '' }}>
                                                 </div>
                                             </td>
@@ -742,7 +759,7 @@
                                             <td>
                                                 <div class="form-check d-flex justify-content-center">
                                                     <input type="checkbox" class="form-check-input" name="wmsd_berulang_1"
-                                                        {{ $isShowDetail && $data->wmsd_berulang_1 ? 'checked' : '' }}
+                                                        {{ $isShowDetail && isset($data->wmsd_berulang_1) && $data->wmsd_berulang_1 ? 'checked' : '' }}
                                                         {{ $isShowDetail ? 'disabled' : '' }}>
                                                 </div>
                                             </td>
@@ -754,7 +771,7 @@
                                             <td class="text-center border">
                                                 <div class="form-check d-flex justify-content-center">
                                                     <input type="checkbox" class="form-check-input" name="wmsd_berulang_2"
-                                                        {{ $isShowDetail && $data->wmsd_berulang_2 ? 'checked' : '' }}
+                                                        {{ $isShowDetail && isset($data->wmsd_berulang_2) && $data->wmsd_berulang_2 ? 'checked' : '' }}
                                                         {{ $isShowDetail ? 'disabled' : '' }}>
                                                 </div>
                                             </td>
@@ -802,28 +819,43 @@
                                             </tr>
                                             <tr>
                                                 <td class="align-bottom text-center border">
-                                                    <select name="paramedic_name" id="paramedic_name" class="form-control text-center" required>
+                                                    <select name="paramedic_name" id="paramedic_name" class="form-control text-center" required {{ $isShowDetail ? 'disabled' : '' }}>
                                                         <option disabled selected>-- Select Paramedic --</option>
-                                                        @foreach ($approvalList as $data)
-                                                            <option value="{{ $data->nama }}">{{ $data->nama }} ({{ $data->nik }})</option>
+                                                        @foreach ($approvalList as $paramedic)
+                                                            <option value="{{ $paramedic->nama }}" 
+                                                                data-nik="{{ $paramedic->nik }}"
+                                                                {{ $isShowDetail && isset($data->paramedic_name) && $data->paramedic_name == $paramedic->nama ? 'selected' : '' }}>
+                                                                {{ $paramedic->nama }} ({{ $paramedic->nik }})
+                                                            </option>
                                                         @endforeach
                                                     </select>
+                                                    <input type="hidden" name="paramedic_nik" id="paramedic_nik" value="{{ $isShowDetail && isset($data->paramedic_nik) ? $data->paramedic_nik : '' }}">
                                                 </td>
                                                 <td class="align-bottom text-center border">
-                                                    <select name="doctor_name" id="doctor_name" class="form-control text-center" required>
+                                                    <select name="doctor_name" id="doctor_name" class="form-control text-center" required {{ $isShowDetail ? 'disabled' : '' }}>
                                                         <option disabled selected>-- Select Doctor --</option>
-                                                        @foreach ($approvalList as $data)
-                                                            <option value="{{ $data->nama }}">{{ $data->nama }} ({{ $data->nik }})</option>
+                                                        @foreach ($approvalList as $doctor)
+                                                            <option value="{{ $doctor->nama }}" 
+                                                                data-nik="{{ $doctor->nik }}"
+                                                                {{ $isShowDetail && isset($data->doctor_name) && $data->doctor_name == $doctor->nama ? 'selected' : '' }}>
+                                                                {{ $doctor->nama }} ({{ $doctor->nik }})
+                                                            </option>
                                                         @endforeach
                                                     </select>
+                                                    <input type="hidden" name="doctor_nik" id="doctor_nik" value="{{ $isShowDetail && isset($data->doctor_nik) ? $data->doctor_nik : '' }}">
                                                 </td>
                                                 <td class="align-bottom text-center border">
-                                                    <select name="dept_head_name" id="dept_head_name" class="form-control text-center" required>
-                                                        <option disabled selected>-- Select Dept Head --</option>
-                                                        @foreach ($approvalList as $data)
-                                                            <option value="{{ $data->nama }}">{{ $data->nama }} ({{ $data->nik }})</option>
+                                                    <select name="dept_head_name" id="dept_head_name" class="form-control text-center" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                                        <option disabled selected>-- Select Department Head --</option>
+                                                        @foreach ($approvalList as $deptHead)
+                                                            <option value="{{ $deptHead->nama }}" 
+                                                                data-nik="{{ $deptHead->nik }}"
+                                                                {{ $isShowDetail && isset($data->dept_head_name) && $data->dept_head_name == $deptHead->nama ? 'selected' : '' }}>
+                                                                {{ $deptHead->nama }} ({{ $deptHead->nik }})
+                                                            </option>
                                                         @endforeach
                                                     </select>
+                                                    <input type="hidden" name="dept_head_nik" id="dept_head_nik" value="{{ $isShowDetail && isset($data->dept_head_nik) ? $data->dept_head_nik : '' }}">
                                                 </td>
                                             </tr>
                                         </table>
@@ -841,8 +873,17 @@
                                             </tr>
                                             <tr>
                                                 <td class="align-bottom text-center border">
+                                                    @php
+                                                        $reviewDate = null;
+                                                        if ($isShowDetail && isset($data->review_date)) {
+                                                            // Try to parse the date correctly
+                                                            if (strtotime($data->review_date) > 0) {
+                                                                $reviewDate = $data->review_date;
+                                                            }
+                                                        }
+                                                    @endphp
                                                     <input type="date" name="review_date" class="form-control text-center mb-2" required
-                                                        value="{{ $isShowDetail ? $data->review_date : old('review_date') }}"
+                                                        value="{{ $reviewDate ?? old('review_date', date('Y-m-d')) }}"
                                                         {{ $isShowDetail ? 'disabled' : '' }}>
                                                 </td>
                                             </tr>
@@ -974,5 +1015,37 @@
                 });
         });
     });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle selection to set the NIK values for all approval fields
+            const approvalFields = [
+                { select: 'reviewer_name', nik: 'reviewer_nik' },
+                { select: 'paramedic_name', nik: 'paramedic_nik' },
+                { select: 'doctor_name', nik: 'doctor_nik' },
+                { select: 'dept_head_name', nik: 'dept_head_nik' }
+            ];
+            
+            approvalFields.forEach(field => {
+                const selectElement = document.getElementById(field.select);
+                const nikInput = document.getElementById(field.nik);
+                
+                if (selectElement && nikInput) {
+                    selectElement.addEventListener('change', function() {
+                        const selectedOption = this.options[this.selectedIndex];
+                        if (selectedOption && selectedOption.dataset.nik) {
+                            nikInput.value = selectedOption.dataset.nik;
+                        } else {
+                            nikInput.value = '';
+                        }
+                    });
+                    
+                    // Trigger change event on page load if an option is already selected
+                    if (selectElement.selectedIndex > 0) {
+                        selectElement.dispatchEvent(new Event('change'));
+                    }
+                }
+            });
+        });
     </script>
 @endsection
