@@ -6,6 +6,8 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
+        "ext-pdo_sqlsrv": "*",
+        "ext-sqlsrv": "*",
         "barryvdh/laravel-dompdf": "^2.2",
         "firebase/php-jwt": "^6.10",
         "google/apiclient": "^2.17",
