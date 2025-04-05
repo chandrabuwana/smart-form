@@ -22,9 +22,20 @@ class ErgonomiController extends Controller
                 'employee_name',
                 'job_position',
                 'reviewer_name',
+                'reviewer_nik',
+                'paramedic_name',
+                'paramedic_nik',
+                'doctor_name',
+                'doctor_nik',
+                'dept_head_name',
+                'dept_head_nik',
                 'total_employee',
                 DB::raw('CONVERT(varchar, evaluation_date, 23) as evaluation_date'),
                 'approval_status',
+                'reviewer_status',
+                'paramedic_status',
+                'doctor_status',
+                'dept_head_status',
                 'created_at'
             )
             ->whereNull('deleted_at');
@@ -588,6 +599,124 @@ class ErgonomiController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to delete record: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Approve or reject a record
+     */
+    public function Approve($id, $role, Request $request)
+    {
+        try {
+            // Validate the role
+            if (!in_array($role, ['reviewer', 'paramedic', 'doctor', 'dept_head'])) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid role specified'
+                ], 422);
+            }
+
+            // Get the record
+            $record = DB::table('she_027_ergonomi')
+                ->where('id', $id)
+                ->first();
+
+            if (!$record) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Record not found'
+                ], 404);
+            }
+
+            // Check if the current user is authorized to approve this record
+            $currentUserId = session('user_id');
+            
+            // Verify that the current user is the assigned approver for this role
+            $roleToNikMap = [
+                'reviewer' => 'reviewer_nik',
+                'paramedic' => 'paramedic_nik',
+                'doctor' => 'doctor_nik',
+                'dept_head' => 'dept_head_nik'
+            ];
+            
+            // Check if the current user's ID matches the assigned approver's NIK
+            if ($record->{$roleToNikMap[$role]} != $currentUserId) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'You are not authorized to approve this record as ' . ucfirst($role)
+                ], 403);
+            }
+
+            // Get the approval status (approved or rejected)
+            $approvalStatus = $request->input('approval_status', 'approved');
+            
+            // If rejecting, we don't need to check the approval sequence
+            if ($approvalStatus == 'approved') {
+                // Check if the approval sequence is valid
+                $isSequenceValid = true;
+                $message = '';
+                
+                switch ($role) {
+                    case 'paramedic':
+                        if ($record->reviewer_status !== 'approved') {
+                            $isSequenceValid = false;
+                            $message = 'Reviewer must approve first';
+                        }
+                        break;
+                    case 'doctor':
+                        if ($record->reviewer_status !== 'approved' || $record->paramedic_status !== 'approved') {
+                            $isSequenceValid = false;
+                            $message = 'Reviewer and Paramedic must approve first';
+                        }
+                        break;
+                    case 'dept_head':
+                        if ($record->reviewer_status !== 'approved' || $record->paramedic_status !== 'approved' || $record->doctor_status !== 'approved') {
+                            $isSequenceValid = false;
+                            $message = 'Reviewer, Paramedic, and Doctor must approve first';
+                        }
+                        break;
+                }
+                
+                if (!$isSequenceValid) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => $message
+                    ], 400);
+                }
+            }
+
+            // Update the approval status
+            $updateData = [
+                $role . '_status' => $approvalStatus,
+                'updated_at' => now()
+            ];
+            
+            // If this is the final approval (dept_head) and status is approved, update the overall approval status
+            if ($role === 'dept_head' && $approvalStatus == 'approved') {
+                $updateData['approval_status'] = 'approved';
+            }
+            
+            // If rejecting, update the overall approval status to rejected
+            if ($approvalStatus == 'rejected') {
+                $updateData['approval_status'] = 'rejected';
+            }
+            
+            DB::table('she_027_ergonomi')
+                ->where('id', $id)
+                ->update($updateData);
+
+            $actionText = $approvalStatus == 'approved' ? 'approved' : 'rejected';
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Record ' . $actionText . ' successfully'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error in Approve: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to process record: ' . $e->getMessage()
             ], 500);
         }
     }

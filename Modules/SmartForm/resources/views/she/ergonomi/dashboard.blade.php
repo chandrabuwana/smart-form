@@ -164,6 +164,7 @@
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Reviewer</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Total Employee</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Evaluation Date</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Status</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Actions</th>
                                 </tr>
                             </thead>
@@ -190,6 +191,28 @@
                                         <p class="text-xs font-weight-bold mb-0">{{ $record->evaluation_date }}</p>
                                     </td>
                                     <td>
+                                        @if($record->approval_status == 'approved')
+                                            <span class="badge bg-success">Approved</span>
+                                        @elseif($record->approval_status == 'rejected')
+                                            <span class="badge bg-danger">Rejected</span>
+                                        @else
+                                            <span class="badge bg-warning">Pending</span>
+                                        @endif
+                                        
+                                        <!-- Detailed approval status tooltip -->
+                                        <button type="button" class="btn btn-link btn-sm p-0 ms-1" 
+                                                data-bs-toggle="tooltip" 
+                                                data-bs-html="true" 
+                                                title="<div class='text-start'>
+                                                    <strong>Reviewer:</strong> {{ $record->reviewer_status ?? 'pending' }}<br>
+                                                    <strong>Paramedic:</strong> {{ $record->paramedic_status ?? 'pending' }}<br>
+                                                    <strong>Doctor:</strong> {{ $record->doctor_status ?? 'pending' }}<br>
+                                                    <strong>Dept Head:</strong> {{ $record->dept_head_status ?? 'pending' }}
+                                                </div>">
+                                            <i class="fas fa-info-circle"></i>
+                                        </button>
+                                    </td>
+                                    <td>
                                         <a href="{{ route('she.ergonomi.form', ['id' => $record->id]) }}" class="btn btn-info btn-sm">
                                             <i class="fas fa-eye"></i>
                                         </a>
@@ -206,6 +229,49 @@
                                         <button type="button" class="btn btn-danger btn-sm delete-record" data-id="{{ $record->id }}">
                                             <i class="fas fa-trash"></i>
                                         </button>
+                                        @endif
+                                        
+                                        <!-- Approval buttons - only show for records that are pending and the current user is an approver -->
+                                        @if($record->approval_status != 'approved' && $record->approval_status != 'rejected')
+                                            <!-- Reviewer approval button -->
+                                            @if(session('user_id') == $record->reviewer_nik && $record->reviewer_status != 'approved')
+                                                <button type="button" class="btn btn-success btn-sm approve-btn" data-id="{{ $record->id }}" data-role="reviewer">
+                                                    <i class="fas fa-check-circle"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-danger btn-sm reject-btn" data-id="{{ $record->id }}" data-role="reviewer">
+                                                    <i class="fas fa-times-circle"></i>
+                                                </button>
+                                            @endif
+                                            
+                                            <!-- Paramedic approval button -->
+                                            @if(session('user_id') == $record->paramedic_nik && $record->paramedic_status != 'approved' && $record->reviewer_status == 'approved')
+                                                <button type="button" class="btn btn-success btn-sm approve-btn" data-id="{{ $record->id }}" data-role="paramedic">
+                                                    <i class="fas fa-check-circle"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-danger btn-sm reject-btn" data-id="{{ $record->id }}" data-role="paramedic">
+                                                    <i class="fas fa-times-circle"></i>
+                                                </button>
+                                            @endif
+                                            
+                                            <!-- Doctor approval button -->
+                                            @if(session('user_id') == $record->doctor_nik && $record->doctor_status != 'approved' && $record->reviewer_status == 'approved' && $record->paramedic_status == 'approved')
+                                                <button type="button" class="btn btn-success btn-sm approve-btn" data-id="{{ $record->id }}" data-role="doctor">
+                                                    <i class="fas fa-check-circle"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-danger btn-sm reject-btn" data-id="{{ $record->id }}" data-role="doctor">
+                                                    <i class="fas fa-times-circle"></i>
+                                                </button>
+                                            @endif
+                                            
+                                            <!-- Department Head approval button -->
+                                            @if(session('user_id') == $record->dept_head_nik && $record->dept_head_status != 'approved' && $record->reviewer_status == 'approved' && $record->paramedic_status == 'approved' && $record->doctor_status == 'approved')
+                                                <button type="button" class="btn btn-success btn-sm approve-btn" data-id="{{ $record->id }}" data-role="dept_head">
+                                                    <i class="fas fa-check-circle"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-danger btn-sm reject-btn" data-id="{{ $record->id }}" data-role="dept_head">
+                                                    <i class="fas fa-times-circle"></i>
+                                                </button>
+                                            @endif
                                         @endif
                                     </td>
                                 </tr>
@@ -227,6 +293,14 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Initialize tooltips
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl, {
+                html: true
+            });
+        });
+        
         // Clear filter functionality
         document.getElementById('btnClearFilter').addEventListener('click', function() {
             window.location.href = '{{ route("she.ergonomi.dashboard") }}';
@@ -282,6 +356,69 @@
                             Swal.fire(
                                 'Error!',
                                 'There was a problem with the delete operation.',
+                                'error'
+                            );
+                        });
+                    }
+                });
+            });
+        });
+        
+        // Approval and rejection functionality
+        document.querySelectorAll('.approve-btn, .reject-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const recordId = this.getAttribute('data-id');
+                const role = this.getAttribute('data-role');
+                const approvalStatus = this.classList.contains('approve-btn') ? 'approved' : 'rejected';
+                
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, ' + (approvalStatus == 'approved' ? 'approve' : 'reject') + ' it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Create the approval URL with the record ID and role
+                        const approvalUrl = '{{ url("bss-form/she-ergonomi/approve") }}/' + recordId + '/' + role;
+                        
+                        // Send approval request
+                        fetch(approvalUrl, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify({
+                                approval_status: approvalStatus
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire(
+                                    (approvalStatus == 'approved' ? 'Approved' : 'Rejected') + '!',
+                                    data.message,
+                                    (approvalStatus == 'approved' ? 'success' : 'error')
+                                ).then(() => {
+                                    // Reload the page
+                                    window.location.reload();
+                                });
+                            } else {
+                                Swal.fire(
+                                    'Error!',
+                                    data.message,
+                                    'error'
+                                );
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            Swal.fire(
+                                'Error!',
+                                'There was a problem with the approval operation.',
                                 'error'
                             );
                         });

@@ -230,7 +230,6 @@
                                 </table>
                             </div>
 
-
                             <!-- Tenaga Kuat dengan Tangan -->
                             <div class="table-responsive mb-4">
                                 <table class="table table-bordered">
@@ -248,7 +247,7 @@
                                         <td style="width: 15%">
                                             <img src="{{ asset('img/form-she-ergonomi/postur5.png') }}" class="img-fluid">
                                         </td>
-                                        <td style="width: 40%" class="text-wrap text-center">Menjepit objek tanpa bantuan dengan berat 1 (satu) kilogram pertangan, atau menjepit dengan tenaga 2 (dua) kilogram lebih dari 2 (dua) jam sehari (bandingkan dengan menjepit setengah rim kertas)</td>
+                                        <td style="width: 40%" class="text-wrap text-center">Menjepit objek tanpa bantuan dengan berat 1 (satu) kilogram pertangan, atau menjepit dengan tenaga 2 (dua) kilogram lebih dari 2 (dua) jam sehari</td>
                                         <td>
                                             <div class="form-check d-flex align-items-center mb-2">
                                                 <input type="checkbox" class="form-check-input" name="item_5"
@@ -477,8 +476,7 @@
                                         </td>
                                     </tr>
                                     <tr class="border">
-                                        <td colspan="2" class="text-wrap text-center border">Untuk setiap ‘Zona Perhatian’ yang teridentifikasi, temuan setiap factor fisik
-                                            menggunakan checklist berikut ini. Tentukan setiap kondisi yang ada di tempat kerja.
+                                        <td colspan="2" class="text-wrap text-center border">Untuk setiap ‘Zona Perhatian’ yang teridentifikasi, temukan setiap kondisi yang ada di tempat kerja.
                                             Jika ada, bahaya WMSD harus direduksi sampai pada level aman atau pada</td>
                                         <td style="width: 15%" class="border">
                                         Jika terdapat bahaya WMSD,
@@ -799,6 +797,118 @@
                                 </table>
                             </div>
 
+                            <!-- Approval Section -->
+                            @if($isShowDetail && isset($data->id))
+                                <div class="card mb-4">
+                                    <div class="card-header p-3 bg-light">
+                                        <h5 class="mb-0">Approval Status</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr class="bg-light text-center">
+                                                        <th>Role</th>
+                                                        <th>Name</th>
+                                                        <th>Status</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <!-- Reviewer -->
+                                                    <tr>
+                                                        <td>Reviewer</td>
+                                                        <td>{{ $data->reviewer_name }}</td>
+                                                        <td class="text-center">
+                                                            @if($data->reviewer_status == 'approved')
+                                                                <span class="badge bg-success">Approved</span>
+                                                            @elseif($data->reviewer_status == 'rejected')
+                                                                <span class="badge bg-danger">Rejected</span>
+                                                            @else
+                                                                <span class="badge bg-warning">Pending</span>
+                                                            @endif
+                                                        </td>
+                                                        <td class="text-center">
+                                                            @if(session('username') == $data->reviewer_name && $data->reviewer_status != 'approved')
+                                                                <button type="button" class="btn btn-success btn-sm approve-btn" data-id="{{ $data->id }}" data-role="reviewer">
+                                                                    <i class="fas fa-check-circle"></i> Approve
+                                                                </button>
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                    
+                                                    <!-- Paramedic -->
+                                                    <tr>
+                                                        <td>Paramedic</td>
+                                                        <td>{{ $data->paramedic_name }}</td>
+                                                        <td class="text-center">
+                                                            @if($data->paramedic_status == 'approved')
+                                                                <span class="badge bg-success">Approved</span>
+                                                            @elseif($data->paramedic_status == 'rejected')
+                                                                <span class="badge bg-danger">Rejected</span>
+                                                            @else
+                                                                <span class="badge bg-warning">Pending</span>
+                                                            @endif
+                                                        </td>
+                                                        <td class="text-center">
+                                                            @if(session('username') == $data->paramedic_name && $data->paramedic_status != 'approved' && $data->reviewer_status == 'approved')
+                                                                <button type="button" class="btn btn-success btn-sm approve-btn" data-id="{{ $data->id }}" data-role="paramedic">
+                                                                    <i class="fas fa-check-circle"></i> Approve
+                                                                </button>
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                    
+                                                    <!-- Doctor -->
+                                                    <tr>
+                                                        <td>Doctor</td>
+                                                        <td>{{ $data->doctor_name }}</td>
+                                                        <td class="text-center">
+                                                            @if($data->doctor_status == 'approved')
+                                                                <span class="badge bg-success">Approved</span>
+                                                            @elseif($data->doctor_status == 'rejected')
+                                                                <span class="badge bg-danger">Rejected</span>
+                                                            @else
+                                                                <span class="badge bg-warning">Pending</span>
+                                                            @endif
+                                                        </td>
+                                                        <td class="text-center">
+                                                            @if(session('username') == $data->doctor_name && $data->doctor_status != 'approved' && $data->reviewer_status == 'approved' && $data->paramedic_status == 'approved')
+                                                                <button type="button" class="btn btn-success btn-sm approve-btn" data-id="{{ $data->id }}" data-role="doctor">
+                                                                    <i class="fas fa-check-circle"></i> Approve
+                                                                </button>
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                    
+                                                    <!-- Department Head -->
+                                                    <tr>
+                                                        <td>Department Head</td>
+                                                        <td>{{ $data->dept_head_name }}</td>
+                                                        <td class="text-center">
+                                                            @if($data->dept_head_status == 'approved')
+                                                                <span class="badge bg-success">Approved</span>
+                                                            @elseif($data->dept_head_status == 'rejected')
+                                                                <span class="badge bg-danger">Rejected</span>
+                                                            @else
+                                                                <span class="badge bg-warning">Pending</span>
+                                                            @endif
+                                                        </td>
+                                                        <td class="text-center">
+                                                            @if(session('username') == $data->dept_head_name && $data->dept_head_status != 'approved' && $data->reviewer_status == 'approved' && $data->paramedic_status == 'approved' && $data->doctor_status == 'approved')
+                                                                <button type="button" class="btn btn-success btn-sm approve-btn" data-id="{{ $data->id }}" data-role="dept_head">
+                                                                    <i class="fas fa-check-circle"></i> Approve
+                                                                </button>
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+
                             <!-- Signatures -->
                             <div class="row g-3">
                                 <div class="col-md-8">
@@ -829,7 +939,7 @@
                                                             </option>
                                                         @endforeach
                                                     </select>
-                                                    <input type="hidden" name="paramedic_nik" id="paramedic_nik" value="{{ $isShowDetail && isset($data->paramedic_nik) ? $data->paramedic_nik : '' }}">
+                                                    <input type="hidden" name="paramedic_nik" id="paramedic_nik" value="{{ $isShowDetail ? $data->paramedic_nik : '' }}">
                                                 </td>
                                                 <td class="align-bottom text-center border">
                                                     <select name="doctor_name" id="doctor_name" class="form-control text-center" required {{ $isShowDetail ? 'disabled' : '' }}>
@@ -842,7 +952,7 @@
                                                             </option>
                                                         @endforeach
                                                     </select>
-                                                    <input type="hidden" name="doctor_nik" id="doctor_nik" value="{{ $isShowDetail && isset($data->doctor_nik) ? $data->doctor_nik : '' }}">
+                                                    <input type="hidden" name="doctor_nik" id="doctor_nik" value="{{ $isShowDetail ? $data->doctor_nik : '' }}">
                                                 </td>
                                                 <td class="align-bottom text-center border">
                                                     <select name="dept_head_name" id="dept_head_name" class="form-control text-center" required {{ $isShowDetail ? 'disabled' : '' }}>
@@ -855,7 +965,7 @@
                                                             </option>
                                                         @endforeach
                                                     </select>
-                                                    <input type="hidden" name="dept_head_nik" id="dept_head_nik" value="{{ $isShowDetail && isset($data->dept_head_nik) ? $data->dept_head_nik : '' }}">
+                                                    <input type="hidden" name="dept_head_nik" id="dept_head_nik" value="{{ $isShowDetail ? $data->dept_head_nik : '' }}">
                                                 </td>
                                             </tr>
                                         </table>
@@ -1045,6 +1155,78 @@
                         selectElement.dispatchEvent(new Event('change'));
                     }
                 }
+            });
+        });
+    </script>
+    <script>
+        $(function() {
+            // Approval button click handler
+            $('.approve-btn').on('click', function() {
+                const id = $(this).data('id');
+                const role = $(this).data('role');
+                
+                Swal.fire({
+                    title: 'Confirm Approval',
+                    text: `Are you sure you want to approve this record as ${role}?`,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, approve it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Show loading state
+                        Swal.fire({
+                            title: 'Processing...',
+                            text: 'Please wait while we process your approval.',
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+                        
+                        // Send approval request
+                        axios.post('{{ route("she.ergonomi.approve") }}', {
+                            id: id,
+                            role: role
+                        })
+                        .then(function(response) {
+                            if (response.data.success) {
+                                Swal.fire({
+                                    title: 'Approved!',
+                                    text: response.data.message,
+                                    icon: 'success',
+                                    confirmButtonText: 'OK'
+                                }).then(() => {
+                                    // Reload the page to reflect the updated status
+                                    window.location.reload();
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: 'Error',
+                                    text: response.data.message,
+                                    icon: 'error',
+                                    confirmButtonText: 'OK'
+                                });
+                            }
+                        })
+                        .catch(function(error) {
+                            let errorMessage = 'Failed to process approval';
+                            
+                            if (error.response && error.response.data && error.response.data.message) {
+                                errorMessage = error.response.data.message;
+                            }
+                            
+                            Swal.fire({
+                                title: 'Error',
+                                text: errorMessage,
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        });
+                    }
+                });
             });
         });
     </script>
