@@ -142,7 +142,8 @@ class PpmXcmgXE1250Controller extends Controller {
             'checked_by' => $request->checked,
             'validated_by' =>$request->validated,
             'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now()
+            'updated_at' => Carbon::now(),
+            'delete_status' => 0
 
         ];
         for ( $i = 0; $i <= 3; $i++ ) {
@@ -264,7 +265,6 @@ class PpmXcmgXE1250Controller extends Controller {
             'date' => $request->date,
             'checked_by' => $request->checked,
             'validated_by' =>$request->validated,
-            'created_at' => Carbon::now(),
             'updated_at' => Carbon::now()
 
         ];
@@ -304,7 +304,6 @@ class PpmXcmgXE1250Controller extends Controller {
             'fin_pr' => json_encode( array_values( $request->final_pr_no ) ) ,
             'fin_taggal' => json_encode( array_values( $request->final_tanggal ) ),
             'fin_remark' => json_encode( array_values( $request->final_remarks ) ),
-            'created_at' => Carbon::now(),
             'updated_at' => Carbon::now()
         ];
 
@@ -431,15 +430,9 @@ class PpmXcmgXE1250Controller extends Controller {
 
     public function Delete( $id ) {
         try {
-            $id = request()->id;
-            DB::table( 'ppm_xcmg_xe1250' )
-            ->where( 'doc_num', $id )
-            ->delete();
-            $id = request()->id;
-            DB::table( 'report_ppm_xcmg_xe1250' )
-            ->where( 'doc_num_id', $id )
-            ->delete();
-
+            DB::table('ppm_xcmg_xe1250')
+            ->where('doc_num', $id)
+            ->update(['delete_status' => 1]);
 
             return response()->json( [
                 'success' => true,

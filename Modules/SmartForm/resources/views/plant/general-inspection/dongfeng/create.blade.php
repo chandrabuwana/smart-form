@@ -178,7 +178,7 @@
                                                 </div>
                                             </a>
                                             <div class="card-body pt-2 collapse show" id="{{ 'category-' . $loop->index }}">
-                                                <div class="accordion-body">
+                                                <div class="accordion-body table-responsive">
                                                     <table class="table table-bordered">
                                                         <thead>
                                                             <tr>
@@ -196,8 +196,10 @@
                                                                     <td>{{ $item['critical_point'] }}</td>
                                                                     <td>
                                                                         <div class="input-group input-group-static">
-                                                                            <select name="inspection[{{ $category }}][{{ $item['activity'] }}][pre_inspect]" class="form-control" role="button">
-                                                                                <option value="">N/A</option> 
+                                                                            <select
+                                                                                name="inspection[{{ $category }}][{{ $item['activity'] }}][pre_inspect]"
+                                                                                class="form-control" role="button">
+                                                                                <option value="">N/A</option>
                                                                                 <option value="1">Good</option>
                                                                                 <option value="0">Broken</option>
                                                                             </select>
@@ -205,8 +207,10 @@
                                                                     </td>
                                                                     <td>
                                                                         <div class="input-group input-group-static">
-                                                                            <select name="inspection[{{ $category }}][{{ $item['activity'] }}][final_inspect]" class="form-control" role="button">
-                                                                                <option value="">N/A</option> 
+                                                                            <select
+                                                                                name="inspection[{{ $category }}][{{ $item['activity'] }}][final_inspect]"
+                                                                                class="form-control" role="button">
+                                                                                <option value="">N/A</option>
                                                                                 <option value="1">Good</option>
                                                                                 <option value="0">Broken</option>
                                                                             </select>
@@ -214,8 +218,10 @@
                                                                     </td>
                                                                     <td>
                                                                         <div class="input-group input-group-static">
-                                                                            <select name="inspection[{{ $category }}][{{ $item['activity'] }}][delivery_inspect]" class="form-control" role="button">
-                                                                                <option value="">N/A</option> 
+                                                                            <select
+                                                                                name="inspection[{{ $category }}][{{ $item['activity'] }}][delivery_inspect]"
+                                                                                class="form-control" role="button">
+                                                                                <option value="">N/A</option>
                                                                                 <option value="1">Good</option>
                                                                                 <option value="0">Broken</option>
                                                                             </select>
@@ -236,7 +242,8 @@
                                 <h5>Analisa Hasil Inspeksi</h5>
                                 <div class="row">
                                     <div class="col-12">
-                                        <div class="card-body shadow border-radius-lg" id="{{ 'analisa-hasil-inspeksi' }}">
+                                        <div class="card-body table-responsive shadow border-radius-lg"
+                                            id="{{ 'analisa-hasil-inspeksi' }}">
                                             <table class="table table-bordered">
                                                 <thead class="text-center">
                                                     <tr>
@@ -280,8 +287,7 @@
                                                                 </label>
                                                             </td>
                                                             <td>
-                                                                <input type="text"
-                                                                    name="remark[{{ $category }}]"
+                                                                <input type="text" name="remark[{{ $category }}]"
                                                                     value="{{ old('remark.' . $category) }}"
                                                                     class="input-remark"
                                                                     placeholder="Masukkan remark (opsional)">
@@ -295,7 +301,52 @@
                                     </div>
                                 </div>
                             </div>
-
+                            <div class="row">
+                                <div class="col-6 ">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label for="dilakukan1" class="ms-0">Dilakukan Oleh</label>
+                                        <select name="dilakukan1" id="dilakukan1" class="form-control" required>
+                                            <option disabled selected>-- Select User --</option>
+                                            @foreach ($approvalList as $user)
+                                                <option value="{{ $user->nama }}">{{ $user->nama }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label for="dilakukan2" class="ms-0">Dilakukan Oleh</label>
+                                        <select name="dilakukan2" id="dilakukan2" class="form-control" required>
+                                            <option disabled selected>-- Select User --</option>
+                                            @foreach ($approvalList as $user)
+                                                <option value="{{ $user->nama }}">{{ $user->nama }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 mt-2">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label for="diperiksa" class="ms-0">Diperiksa Oleh</label>
+                                        <select name="diperiksa" id="diperiksa" class="form-control" required>
+                                            <option disabled selected>-- Select User --</option>
+                                            @foreach ($approvalList as $user)
+                                                <option value="{{ $user->nik }}">{{ $user->nama }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 mt-2">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label for="diketahui" class="ms-0">Diketahui Oleh</label>
+                                        <select name="diketahui" id="diketahui" class="form-control" required>
+                                            <option disabled selected>-- Select User --</option>
+                                            @foreach ($approvalList as $user)
+                                                <option value="{{ $user->nik }}">{{ $user->nama }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="d-flex justify-content-end">
                                 <button type="submit" class="btn btn-primary mt-3">Submit</button>
                             </div>
@@ -309,12 +360,19 @@
 
 @section('custom-js')
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
     <script>
+        $(document).ready(function() {
+            $('#diperiksa').select2();
+            $('#diketahui').select2();
+            $('#dilakukan1').select2();
+            $('#dilakukan2').select2();
+        });
         document.addEventListener("DOMContentLoaded", function() {
             document.querySelectorAll(".toggle-switch").forEach(function(toggle) {
                 toggle.addEventListener("change", function() {
                     let label = this.closest("label").querySelector(
-                    ".switch-label");
+                        ".switch-label");
                     if (this.checked) {
                         label.textContent = "Good";
                     } else {
@@ -350,10 +408,11 @@
                     await Swal.fire({
                         icon: 'success',
                         title: 'Berhasil!',
-                        text: 'Form General Inspection Dongfeng berhasil diubah!',
+                        text: 'Form General Inspection Dongfeng berhasil disimpan',
                     })
 
-                    window.location.href = "{{ route('bss-form.plant.general-inspection.dongfeng.index') }}";
+                    window.location.href =
+                        "{{ route('bss-form.plant.general-inspection.dongfeng.index') }}";
 
                 } catch (error) {
                     Swal.fire({

@@ -21,3 +21,4 @@ REVA.json
 *.lock
 package-lock.json
 
+*.lock

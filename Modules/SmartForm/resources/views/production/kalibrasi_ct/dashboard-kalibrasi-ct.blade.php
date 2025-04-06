@@ -49,15 +49,105 @@
             </div>
 
             <!-- Filters and Search -->
-            <div class="card-body px-0 pb-2">
-                <div class="d-flex align-items-center mx-3">
-                    <a href="{{ route('prod.kalibrasi-ct.form') }}">
-                        <button class="btn btn-primary ms-auto uploadBtn">
-                            New Form
-                        </button>
-                    </a>
+                <div class="card-body px-0 pb-2">
+                    <div class="d-flex align-items-center mx-3">
+                        <a href="{{ route('prod.kalibrasi-ct.form') }}">
+                            <button class="btn btn-primary ms-auto uploadBtn">
+                                New Form
+                            </button>
+                        </a>
+                    </div>
+                    <h5 class="mx-4">Filter Data</h5>
+                    <div class="mx-4 row">
+                        <form action="{{ route('prod.kalibrasi-ct.dashboard') }}" method="GET" id="filterForm">
+                            <div class="row align-items-center">
+                                <div class="col-md-2 mb-3">
+                                    <div class="input-group input-group-static mb-4 position-relative">
+                                        <label>Search</label>
+                                        <input type="text" name="search" class="form-control"
+                                            placeholder="Search by doc number or name"
+                                            value="{{ $filters['search'] ?? '' }}">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 mb-3">
+                                    <div class="input-group input-group-static mb-4 position-relative">
+                                        <label for="mengetahui_hauler" class="ms-0">Mengetahui Hauler</label>
+                                        <select class="form-control" id="mengetahui_hauler" name="mengetahui_hauler">
+                                            <option value="" selected disabled>-- Select Hauler --</option>
+                                            @foreach ($user as $usr)
+                                                <option value="{{ $usr->nik }}" 
+                                                    {{ isset($filters['mengetahui_hauler']) && $filters['mengetahui_hauler'] == $usr->nik ? 'selected' : '' }}>
+                                                    {{ $usr->nama }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 mb-3">
+                                    <div class="input-group input-group-static mb-4 position-relative">
+                                        <label for="mengetahui_loader" class="ms-0">Mengetahui Loader</label>
+                                        <select class="form-control" id="mengetahui_loader" name="mengetahui_loader">
+                                            <option value="" selected disabled>-- Select Loader --</option>
+                                            @foreach ($user as $usr)
+                                                <option value="{{ $usr->nik }}" 
+                                                    {{ isset($filters['mengetahui_loader']) && $filters['mengetahui_loader'] == $usr->nik ? 'selected' : '' }}>
+                                                    {{ $usr->nama }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 mb-3">
+                                    <div class="input-group input-group-static mb-4 position-relative">
+                                        <label for="mengetahui_dozer" class="ms-0">Mengetahui Dozer</label>
+                                        <select class="form-control" id="mengetahui_dozer" name="mengetahui_dozer">
+                                            <option value="" selected disabled>-- Select Dozer --</option>
+                                            @foreach ($user as $usr)
+                                                <option value="{{ $usr->nik }}" 
+                                                    {{ isset($filters['mengetahui_dozer']) && $filters['mengetahui_dozer'] == $usr->nik ? 'selected' : '' }}>
+                                                    {{ $usr->nama }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 mb-3">
+                                    <div class="input-group input-group-static mb-4 position-relative">
+                                        <label for="status" class="ms-0">Status</label>
+                                        <select class="form-control" id="status" name="status">
+                                            <option value="" selected disabled></option>
+                                            <option value="Approved"
+                                                {{ isset($filters['status']) && $filters['status'] == 'Approved' ? 'selected' : '' }}>
+                                                Approved
+                                            </option>
+                                            <option value="Rejected"
+                                                {{ isset($filters['status']) && $filters['status'] == 'Rejected' ? 'selected' : '' }}>
+                                                Rejected
+                                            </option>
+                                            <option value="Pending"
+                                                {{ isset($filters['status']) && $filters['status'] == 'Pending' ? 'selected' : '' }}>
+                                                Pending
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                    <div class="col-md-12 mb-3 d-flex justify-content-start">
+                                    <button type="submit" class="btn btn-primary filter-btn" id="btnFilterSubmit">
+                                        Filter
+                                    </button>
+                                    <button type="button" class="btn btn-secondary filter-btn" id="btnClearFilter">
+                                        Clear Filter
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-            </div>
 
             <!-- Data Table -->
             <div class="card">
@@ -67,9 +157,9 @@
                             <thead>
                                 <tr>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Doc Number</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Nama Operator Hauler</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Nama Operator Loader</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Nama Operator Dozer</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Nama Mengetahui Hauler</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Nama Mengetahui Loader</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Nama Mengetahui Dozer</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Status</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Actions</th>
                                 </tr>
@@ -85,15 +175,32 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <p class="text-xs font-weight-bold mb-0">{{ $record->nama_operator_loader_hauler }}</p>
+                                        <p class="text-xs font-weight-bold mb-0">
+                                            @foreach ($user as $usr)
+                                                @if ($record->mengetahui_hauler == $usr->nik)
+                                                    {{ $usr->nama }}
+                                                @endif
+                                            @endforeach
+                                        </p>
                                     </td>
                                     <td>
-                                        <p class="text-xs font-weight-bold mb-0">{{ $record->nama_operator_loader }}</p>
+                                        <p class="text-xs font-weight-bold mb-0">
+                                            @foreach ($user as $usr)
+                                                @if ($record->mengetahui_loader == $usr->nik)
+                                                    {{ $usr->nama }}
+                                                @endif
+                                            @endforeach
+                                        </p>
                                     </td>
                                     <td>
-                                        <p class="text-xs font-weight-bold mb-0">{{ $record->nama_operator_dozer }}</p>
+                                        <p class="text-xs font-weight-bold mb-0">
+                                            @foreach ($user as $usr)
+                                                @if ($record->mengetahui_dozer == $usr->nik)
+                                                    {{ $usr->nama }}
+                                                @endif
+                                            @endforeach
+                                        </p>
                                     </td>
-
                                     <td>
                                         <span class="text-xs font-weight-bold">
                                             @if (
@@ -179,25 +286,12 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
 <script>
 $(function() {
-    // Clear filter button
-    $('#btnClearFilter').click(function() {
-        window.location.href = '{{ route("prod.kalibrasi-ct.dashboard") }}';
-    });
+            // Clear filter button
+            $('#btnClearFilter').click(function() {
+                window.location.href = '{{ route('prod.kalibrasi-ct.dashboard') }}';
+            });
 
-    // Date range picker initialization
-    if($('#start_date').length && $('#end_date').length) {
-        const startDate = $('#start_date');
-        const endDate = $('#end_date');
-
-        startDate.on('change', function() {
-            endDate.attr('min', $(this).val());
         });
-
-        endDate.on('change', function() {
-            startDate.attr('max', $(this).val());
-        });
-    }
-});
 
 function deleteKalibrasi(id) {
             console.log('Delete ID:', id);

@@ -95,9 +95,8 @@ class ErgonomiController extends Controller
     public function AddForm(Request $request)
     {
         try {
-            if ($request->has('id')) {
-                Log::info('Ergonomi AddForm - Fetching record with ID: ' . $request->id);
-                
+            // Check if this is a view/edit request for an existing record
+            if ($request->filled('id')) {
                 $query = DB::table('she_027_ergonomi')
                     ->whereNull('deleted_at')
                     ->where('id', $request->id);
@@ -117,6 +116,14 @@ class ErgonomiController extends Controller
                 // Convert stdClass to array to make it easier to work with in the view
                 $data = json_decode(json_encode($data), true);
 
+                // Check if this is an edit request
+                if ($request->has('edit')) {
+                    return view('smartform::she.ergonomi.edit', [
+                        'data' => (object)$data,
+                        'approvalList' => HrdHelper::getApprovalList(),
+                    ]);
+                }
+
                 return view('smartform::she.ergonomi.form', [
                     'isShowDetail' => true,
                     'data' => (object)$data,
@@ -126,6 +133,7 @@ class ErgonomiController extends Controller
 
             return view('smartform::she.ergonomi.form', [
                 'isShowDetail' => false,
+                'isEditMode' => false,
                 'approvalList' => HrdHelper::getApprovalList(),
             ]);
         } catch (\Exception $e) {
@@ -328,6 +336,219 @@ class ErgonomiController extends Controller
             return redirect()
                 ->back()
                 ->with('error', 'Failed to generate PDF: ' . $e->getMessage());
+        }
+    }
+
+    public function UpdateForm(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'id' => 'required|exists:she_027_ergonomi,id',
+                'total_employee' => 'required|integer',
+                'employee_name' => 'required|string',
+                'reviewer_name' => 'required|string',
+                'paramedic_name' => 'required|string',
+                'doctor_name' => 'required|string',
+                'dept_head_name' => 'required|string',
+                'review_date' => 'required|date'
+            ]);
+
+            if ($validator->fails()) {
+                throw new ValidationException($validator);
+            }
+
+            $data = [
+                // Required fields
+                'total_employee' => $request->total_employee,
+                'employee_name' => $request->employee_name,
+                'reviewer_name' => $request->reviewer_name,
+                'paramedic_name' => $request->paramedic_name,
+                'doctor_name' => $request->doctor_name,
+                'dept_head_name' => $request->dept_head_name,
+                'review_date' => $request->review_date,
+                
+                // Optional fields
+                'job_position' => $request->job_position,
+                'evaluation_date' => $request->evaluation_date,
+                'employee_id' => $request->employee_id,
+                'reviewer_id' => $request->reviewer_id,
+                
+                // Checklist items
+                'item_1' => $request->has('item_1'),
+                'item_2' => $request->has('item_2'),
+                'item_3' => $request->has('item_3'),
+                'item_4' => $request->has('item_4'),
+                'item_5' => $request->has('item_5'),
+                'item_6' => $request->has('item_6'),
+                'item_7' => $request->has('item_7'),
+                'item_8' => $request->has('item_8'),
+                'item_9' => $request->has('item_9'),
+                'item_10' => $request->has('item_10'),
+                'item_11' => $request->has('item_11'),
+                'item_12' => $request->has('item_12'),
+                'item_13' => $request->has('item_13'),
+                'item_14' => $request->has('item_14'),
+                
+                // Item observations
+                'item_1_observation' => $request->item_1_observation,
+                'item_2_observation' => $request->item_2_observation,
+                'item_3_observation' => $request->item_3_observation,
+                'item_4_observation' => $request->item_4_observation,
+                'item_5_observation' => $request->item_5_observation,
+                'item_6_observation' => $request->item_6_observation,
+                'item_7_observation' => $request->item_7_observation,
+                'item_8_observation' => $request->item_8_observation,
+                'item_9_observation' => $request->item_9_observation,
+                'item_10_observation' => $request->item_10_observation,
+                'item_11_observation' => $request->item_11_observation,
+                'item_12_observation' => $request->item_12_observation,
+                'item_13_observation' => $request->item_13_observation,
+                'item_14_observation' => $request->item_14_observation,
+                
+                // Additional data for each item
+                'organ_tubuh_1' => $request->organ_tubuh_1,
+                'faktor_resiko_1' => $request->faktor_resiko_1,
+                'kombinasi_dengan_1' => $request->kombinasi_dengan_1,
+                'durasi_1' => $request->durasi_1,
+                'visualisasi_1' => $request->visualisasi_1,
+                
+                'organ_tubuh_2' => $request->organ_tubuh_2,
+                'faktor_resiko_2' => $request->faktor_resiko_2,
+                'kombinasi_dengan_2' => $request->kombinasi_dengan_2,
+                'durasi_2' => $request->durasi_2,
+                'visualisasi_2' => $request->visualisasi_2,
+                
+                'organ_tubuh_3' => $request->organ_tubuh_3,
+                'faktor_resiko_3' => $request->faktor_resiko_3,
+                'kombinasi_dengan_3' => $request->kombinasi_dengan_3,
+                'durasi_3' => $request->durasi_3,
+                'visualisasi_3' => $request->visualisasi_3,
+                
+                'organ_tubuh_4' => $request->organ_tubuh_4,
+                'faktor_resiko_4' => $request->faktor_resiko_4,
+                'kombinasi_dengan_4' => $request->kombinasi_dengan_4,
+                'durasi_4' => $request->durasi_4,
+                'visualisasi_4' => $request->visualisasi_4,
+                
+                'organ_tubuh_5' => $request->organ_tubuh_5,
+                'faktor_resiko_5' => $request->faktor_resiko_5,
+                'kombinasi_dengan_5' => $request->kombinasi_dengan_5,
+                'durasi_5' => $request->durasi_5,
+                'visualisasi_5' => $request->visualisasi_5,
+                
+                'organ_tubuh_6' => $request->organ_tubuh_6,
+                'faktor_resiko_6' => $request->faktor_resiko_6,
+                'kombinasi_dengan_6' => $request->kombinasi_dengan_6,
+                'durasi_6' => $request->durasi_6,
+                'visualisasi_6' => $request->visualisasi_6,
+                
+                'organ_tubuh_7' => $request->organ_tubuh_7,
+                'faktor_resiko_7' => $request->faktor_resiko_7,
+                'kombinasi_dengan_7' => $request->kombinasi_dengan_7,
+                'durasi_7' => $request->durasi_7,
+                'visualisasi_7' => $request->visualisasi_7,
+                
+                'organ_tubuh_8' => $request->organ_tubuh_8,
+                'faktor_resiko_8' => $request->faktor_resiko_8,
+                'kombinasi_dengan_8' => $request->kombinasi_dengan_8,
+                'durasi_8' => $request->durasi_8,
+                'visualisasi_8' => $request->visualisasi_8,
+                
+                'organ_tubuh_9' => $request->organ_tubuh_9,
+                'faktor_resiko_9' => $request->faktor_resiko_9,
+                'kombinasi_dengan_9' => $request->kombinasi_dengan_9,
+                'durasi_9' => $request->durasi_9,
+                'visualisasi_9' => $request->visualisasi_9,
+                
+                'organ_tubuh_10' => $request->organ_tubuh_10,
+                'faktor_resiko_10' => $request->faktor_resiko_10,
+                'kombinasi_dengan_10' => $request->kombinasi_dengan_10,
+                'durasi_10' => $request->durasi_10,
+                'visualisasi_10' => $request->visualisasi_10,
+                
+                'organ_tubuh_11' => $request->organ_tubuh_11,
+                'faktor_resiko_11' => $request->faktor_resiko_11,
+                'kombinasi_dengan_11' => $request->kombinasi_dengan_11,
+                'durasi_11' => $request->durasi_11,
+                'visualisasi_11' => $request->visualisasi_11,
+                
+                'organ_tubuh_12' => $request->organ_tubuh_12,
+                'faktor_resiko_12' => $request->faktor_resiko_12,
+                'kombinasi_dengan_12' => $request->kombinasi_dengan_12,
+                'durasi_12' => $request->durasi_12,
+                'visualisasi_12' => $request->visualisasi_12,
+                
+                'organ_tubuh_13' => $request->organ_tubuh_13,
+                'faktor_resiko_13' => $request->faktor_resiko_13,
+                'kombinasi_dengan_13' => $request->kombinasi_dengan_13,
+                'durasi_13' => $request->durasi_13,
+                'visualisasi_13' => $request->visualisasi_13,
+                
+                'organ_tubuh_14' => $request->organ_tubuh_14,
+                'faktor_resiko_14' => $request->faktor_resiko_14,
+                'kombinasi_dengan_14' => $request->kombinasi_dengan_14,
+                'durasi_14' => $request->durasi_14,
+                'visualisasi_14' => $request->visualisasi_14,
+                
+                // Recommendations and additional notes
+                'recommendations' => $request->recommendations,
+                'additional_notes' => $request->additional_notes,
+                
+                // Update timestamp
+                'updated_at' => now()
+            ];
+
+            // Update the record
+            DB::table('she_027_ergonomi')
+                ->where('id', $request->id)
+                ->update($data);
+
+            return redirect()->route('she.ergonomi.dashboard')
+                ->with('success', 'Ergonomi record updated successfully');
+        } catch (ValidationException $e) {
+            return redirect()->back()
+                ->withErrors($e->validator)
+                ->withInput();
+        } catch (\Exception $e) {
+            Log::error('Error in UpdateForm: ' . $e->getMessage());
+            return redirect()->back()
+                ->with('error', 'Failed to update record: ' . $e->getMessage())
+                ->withInput();
+        }
+    }
+
+    public function Delete(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'id' => 'required|exists:she_027_ergonomi,id'
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            // Soft delete by updating deleted_at
+            DB::table('she_027_ergonomi')
+                ->where('id', $request->id)
+                ->update([
+                    'deleted_at' => now()
+                ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Record deleted successfully'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error in Delete: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to delete record: ' . $e->getMessage()
+            ], 500);
         }
     }
 }

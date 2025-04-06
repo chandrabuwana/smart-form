@@ -137,7 +137,9 @@ return new class extends Migration
             $table->string('diinspeksi_oleh_1')->nullable();
             $table->string('diinspeksi_oleh_2')->nullable();
             $table->string('diinspeksi_oleh_3')->nullable();
+			$table->text('status')->nullable();
             $table->string('mengetahui')->nullable();
+			$table->string('dibuat_oleh')->nullable();
         });
     }
 

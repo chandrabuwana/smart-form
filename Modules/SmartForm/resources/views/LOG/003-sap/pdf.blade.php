@@ -195,7 +195,7 @@
                 </tr>
                 <tr>
                     <td colspan="2" style="border-top: none;">{{ $dataHeader->dibuat_oleh }}</td>
-                    <td colspan="2" style="border-top: none;">{{ $dataHeader->diperiksa_oleh }}</td>
+                    <td colspan="2" style="border-top: none;">{{ $dataHeader->checked_by }}</td>
 
                 </tr>
                 <tr>

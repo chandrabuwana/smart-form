@@ -17,7 +17,10 @@ return new class extends Migration
             $table->string('plant')->nullable();
             $table->date('tanggal')->nullable();
             $table->string('dibuat_oleh')->nullable();
-            $table->string('diperiksa_oleh')->nullable();
+            $table->string('checked_by')->nullable();
+            $table->string('creator');
+            $table->integer('delete_status');
+            $table->string('status');
             $table->timestamps();
         });
     }

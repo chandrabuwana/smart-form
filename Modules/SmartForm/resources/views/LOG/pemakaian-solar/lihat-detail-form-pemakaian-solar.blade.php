@@ -380,7 +380,7 @@
                 
                     var dataReq = {
                         noDoc: noDoc.text(),
-                        status: "Approved"
+                        status: "Reject"
                     }
                     let formData = new FormData();
 

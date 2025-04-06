@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
 use Modules\SmartForm\helpers\HrdHelper;
+use Modules\SmartForm\helpers\SiteHelper;
 
 class FormCheckerController extends Controller {
     public function dashboard(Request $request) {
@@ -148,9 +149,11 @@ class FormCheckerController extends Controller {
             }
         }
 
+        $users = HrdHelper::getApprovalList();
+        $sites = DB::connection('sqlsrv2')->table('tsite')->select(columns: 'KodeST')->get();
 
         return view( 'smartform::production.form_checker.detail-form-checker', [
-            'record' => $record, 'dataDS' => $dataDS, 'dataNS' => $dataNS, 'nik'=>$nik_session, 'time_details' => $time_details, 'nonNullCounts' => $nonNullCounts,  'approvalList' => HrdHelper::getApprovalList()
+            'record' => $record, 'dataDS' => $dataDS, 'dataNS' => $dataNS, 'nik'=>$nik_session, 'time_details' => $time_details, 'nonNullCounts' => $nonNullCounts,  'approvalList' => $users, 'users' => $users, 'sites' => $sites
 
         ] );
     }
@@ -187,7 +190,11 @@ class FormCheckerController extends Controller {
         if ( $request->has( 'id' ) ) {
 
         }
-        return view( 'smartform::production.form_checker.form-checker', ['dataDS' => $dataDS, 'nik'=>$nik_session, 'dataNS'=> $dataNS,  'approvalList' => HrdHelper::getApprovalList()] );
+
+        $users = HrdHelper::getApprovalList();
+        $sites = DB::connection('sqlsrv2')->table('tsite')->select(columns: 'KodeST')->get();
+
+        return view( 'smartform::production.form_checker.form-checker', ['dataDS' => $dataDS, 'nik'=>$nik_session, 'dataNS'=> $dataNS,  'approvalList' => $users, 'users' => $users, 'sites' => $sites] );
     }
 
     public function detail($id, Request $request) {
@@ -280,9 +287,11 @@ class FormCheckerController extends Controller {
             }
         }
 
+        $users = HrdHelper::getApprovalList();
+        $sites = DB::connection('sqlsrv2')->table('tsite')->select(columns: 'KodeST')->get();
 
         return view( 'smartform::production.form_checker.show-form-checker', [
-            'record' => $record, 'dataDS' => $dataDS, 'dataNS' => $dataNS, 'nik'=>$nik_session, 'time_details' => $time_details, 'nonNullCounts' => $nonNullCounts,  'approvalList' => HrdHelper::getApprovalList()
+            'record' => $record, 'dataDS' => $dataDS, 'dataNS' => $dataNS, 'nik'=>$nik_session, 'time_details' => $time_details, 'nonNullCounts' => $nonNullCounts,  'approvalList' => $users, 'users' => $users, 'sites' => $sites
 
         ] );
     }
@@ -310,7 +319,8 @@ class FormCheckerController extends Controller {
                 'waktu_selesai' =>json_encode( array_values( $request->waktu_selesai ) ),
                 'keterangan' =>json_encode( array_values( $request->keterangan ) ),
                 'kendala' => json_encode( array_values( $request->kendala ) ),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
+                'site' => $request->site,
 
             ];
 
@@ -456,7 +466,8 @@ class FormCheckerController extends Controller {
                 'keterangan' =>json_encode( array_values( $request->keterangan ) ),
                 'kendala' => json_encode( array_values( $request->kendala ) ),
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
+                'site' => $request->site,
 
             ];
 
@@ -593,8 +604,8 @@ class FormCheckerController extends Controller {
             '05-00 sd 06.00',
         ];
         try {
-            $record = DB::table( 'prod_checker_form' )
-            ->where( 'id', $id )
+            $record = DB::table( table: 'prod_checker_form' )
+            ->where( 'id', operator: $id )
             ->first();
 
             if ( !$record ) {
@@ -672,6 +683,8 @@ class FormCheckerController extends Controller {
                     $sumRitasi += $value;
                 }
             }
+
+            $record->operator_leader =  $findUser = DB::connection('sqlsrv2')->table('TKaryawan')->where('NIK',  $record->operator_leader)->first()->Nama;
 
             $pdf = PDF::loadView( 'smartform::production.form_checker.export-pdf', [
                 'record' => $record, 'dataDS' => $dataDS, 'dataNS' => $dataNS, 'approvalList' => HrdHelper::getApprovalList(),'time_details' => $time_details, 'nonNullCounts' => $nonNullCounts, 'sumRitasi' => $sumRitasi

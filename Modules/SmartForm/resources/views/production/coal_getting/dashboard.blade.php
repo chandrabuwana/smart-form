@@ -224,7 +224,7 @@
                                                     </a>
                                                     
                                                 @endif
-                                                @if(trim($record->inspected_by_nik) === trim($user->userid))
+                                                @if(trim($record->created_by_nik) === trim($user->userid))
                                                 <button type="button" class="btn btn-danger btn-sm d-inline-flex align-items-center justify-content-center btn-delete" data-id="{{ $record->id }}">
                                                     <i class="fas fa-trash me-1"></i> Delete
                                                 </button>
@@ -276,7 +276,7 @@ function updateStatus(id, status) {
         cancelButtonText: 'No'
     }).then((result) => {
         if (result.isConfirmed) {
-            axios.put("{{ route('prod.coal.update-status') }}", {
+            axios.post("{{ route('prod.coal.update-status') }}", {
                 id: id,
                 status: status
             })

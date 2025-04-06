@@ -21,9 +21,13 @@ class RegistrasiSupplierController extends Controller {
         return $pdf->download();
     }
 
-    public function RegisSupplierDashboard()
+    public function RegisSupplierDashboard(Request $req)
     {
-        return view('SmartForm::SM/registrasi-supplier/registrasi-supplier');
+        $nik_session = $req->session()->get('user_id', '');
+        $name_session = $req->session()->get('username', '');
+        return view('SmartForm::SM/registrasi-supplier/dashboard-registrasi-supplier', [
+            'nik_session' => $nik_session,
+            'name_session' => $name_session]);
     }
 
     function GetListRegistrasiSupplier(Request $request) {
@@ -44,7 +48,7 @@ class RegistrasiSupplierController extends Controller {
         $filter = $request->query('filter', null); // Default limit
         try {
             $master = DB::table($TABLE_MASTER)
-                ->select('id','nama_vendor','status','no_npwp','bidang_usaha','kota');
+                ->select('id','nama_vendor','status','no_npwp','bidang_usaha','kota','diisi_oleh','is_active','disetujui_oleh');
             
             if($filterTanggal == null || $filterTanggal == 'null') {
             } else {
@@ -170,7 +174,7 @@ class RegistrasiSupplierController extends Controller {
 	    	    'surat_lainnya' => $request->rSurat,
                 'diisi_oleh' => $requested_by,
                 'diterima_oleh' => $request->dDiterima,
-                'status' => "NEED APPROVAL",
+                'status' => "3",
                 'disetujui_oleh' => $request->dApproved
 
             ]);
@@ -185,18 +189,267 @@ class RegistrasiSupplierController extends Controller {
         ]);
     }
 
-    public function DeleteSupplier($id)
+    public function RubahRegisSupplier(Request $request)
     {
-        DB::table('FM_SM_00X_REGISTRASI_SUPPLIER')->where('id', $id)->delete();
-        return view('SmartForm::SM/registrasi-supplier/registrasi-supplier');
+        $id = $request->query('id');
+        $nik_session = $request->session()->get('user_id', '');
+        $data = $this->getDetail($request, $id, $nik_session);
+        Log::debug("Data edit : ". json_encode($data, JSON_PRETTY_PRINT));
+        if($data['data']['diisi_oleh'] != $nik_session) {
+            return abort(401, 'Unauthoried Request!');
+        } else {
+            return view( 'SmartForm::SM/registrasi-supplier/edit-registrasi-supplier', 
+                $data,
+                ['approvalList' => HrdHelper::getApprovalList()] 
+            );
+        }
     }
 
-    public function PdfRegSupplier($id)
+    public function approveSupplier(Request $request)
     {
-        $data = DB::table('FM_SM_00X_REGISTRASI_SUPPLIER')->where('id', $id)->first();
+        $id = $request->query('id');
+        $nik_session = $request->session()->get('user_id', '');
+        $data = $this->getDetail($request, $id, $nik_session);
+        Log::debug("Data edit : ". json_encode($data, JSON_PRETTY_PRINT));
+        if($data['data']['diisi_oleh'] != $nik_session) {
+            return abort(401, 'Unauthoried Request!');
+        } else {
+            return view( 'SmartForm::SM/registrasi-supplier/approve-registrasi-supplier', 
+                $data,
+                ['approvalList' => HrdHelper::getApprovalList()] 
+            );
+        }
+    }
+
+    private function getDetail(Request $request, $id, $nik) {
+        $TABLE_MASTER = "FM_SM_00X_REGISTRASI_SUPPLIER";
+        $isError = true;
+        $errorMessage = '';
+        // $this->user_sm = $this->getUserSM();
+        $data_master = array(
+            'id' => '',
+            'nama_vendor' => '',
+            'no_npwp' => '',
+            'bidang_usaha' => '',
+            'syarat_pembayaran' => '',
+            'ppn' => '',
+            'pph' => '',
+            'nama_rekening_1' => '',
+            'nomor_rekening_1' => '',
+            'nama_bank_1' => '',
+            'alamat_bank_1' => '',
+            'nama_rekening_2' => '',
+            'nomor_rekening_2' => '',
+            'nama_bank_2' => '',
+            'alamat_bank_2' => '',
+            'alamat_kantor' => '',
+            'kota' => '',
+            'telepon' => '',
+            'pj_1' => '',
+            'pj_2' => '',
+            'kode_pos' => '',
+            'email' => '',
+            'tlp_1' => '',
+            'tlp_2' => '',
+            'jabatan_1' => '',
+            'jabatan_2' => '',
+            'jabatan_1_email' => '',
+            'jabatan_2_email' => '',
+            'diterima_oleh' => '',
+            'disetujui_oleh' => '',
+            'file_npwp' => '',
+            'status_pajak_pkp' => '',
+            'metode_pembayaran' => '',
+            'npwp' => '',
+            'sppkp' => '',
+            'nib_siup' => '',
+            'akta_perusahaan' => '',
+            'pakta_integritas' => '',
+            'kartu_identitas_direktur' => '',
+            'struktur_organisasi' => '',
+            'profile_perusahaan' => '',
+            'surat_lainnya' => '',
+            'diisi_oleh' => ''
+        );
+        try {
+            $data = DB::table($TABLE_MASTER)
+                ->select(
+                    'id','nama_vendor','diisi_oleh','no_npwp','bidang_usaha','syarat_pembayaran','ppn','pph',
+                    'nama_rekening_1','nomor_rekening_1','nama_bank_1','alamat_bank_1','nama_rekening_2','nomor_rekening_2','nama_bank_2','alamat_bank_2',
+                    'alamat_kantor','kota','telepon','pj_1','pj_2','kode_pos','email','tlp_1','tlp_2','jabatan_1','jabatan_2','jabatan_1_email',
+                    'jabatan_2_email','diterima_oleh','disetujui_oleh','file_npwp','status_pajak_pkp','metode_pembayaran',
+                    'npwp','sppkp','nib_siup','akta_perusahaan','pakta_integritas','kartu_identitas_direktur','struktur_organisasi','profile_perusahaan','surat_lainnya'
+                )
+                ->where('id', $id)
+                ->first();
+            if(!is_null($data)) {
+                Log::info("id : ". json_encode($data));
+
+                $data_user = DB::connection('sqlsrv2')
+                    ->table("TKaryawan")
+                    ->select('NIK as nik', 'Nama as nama')
+                    ->where("nik", $data->diisi_oleh)
+                    ->first();
+
+                $data_master['diisi_oleh'] = $data_user->nik;
+                $data_master['nama_vendor'] = $data->nama_vendor;
+                $data_master['id'] = $data->id;
+                $data_master['no_npwp'] = $data->no_npwp;
+                $data_master['bidang_usaha'] = $data->bidang_usaha;
+                $data_master['syarat_pembayaran'] = $data->syarat_pembayaran;
+                $data_master['ppn'] = $data->ppn;
+                $data_master['pph'] = $data->pph;
+                $data_master['nama_rekening_1'] = $data->nama_rekening_1;
+                $data_master['nomor_rekening_1'] = $data->nomor_rekening_1;
+                $data_master['nama_bank_1'] = $data->nama_bank_1;
+                $data_master['alamat_bank_1'] = $data->alamat_bank_1;
+                $data_master['nama_rekening_2'] = $data->nama_rekening_2;
+                $data_master['nomor_rekening_2'] = $data->nomor_rekening_2;
+                $data_master['nama_bank_2'] = $data->nama_bank_2;
+                $data_master['alamat_bank_2'] = $data->alamat_bank_2;
+                $data_master['alamat_kantor'] = $data->alamat_kantor;
+                $data_master['kota'] = $data->kota;
+                $data_master['telepon'] = $data->telepon;
+                $data_master['pj_1'] = $data->pj_1;
+                $data_master['pj_2'] = $data->pj_2;
+                $data_master['kode_pos'] = $data->kode_pos;
+                $data_master['email'] = $data->email;
+                $data_master['tlp_1'] = $data->tlp_1;
+                $data_master['tlp_2'] = $data->tlp_2;
+                $data_master['jabatan_1'] = $data->jabatan_1;
+                $data_master['jabatan_2'] = $data->jabatan_2;
+                $data_master['jabatan_1_email'] = $data->jabatan_1_email;
+                $data_master['jabatan_2_email'] = $data->jabatan_2_email;
+                $data_master['diterima_oleh'] = $data->diterima_oleh;
+                $data_master['disetujui_oleh'] = $data->disetujui_oleh;
+                $data_master['file_npwp'] = $data->file_npwp;
+                $data_master['status_pajak_pkp'] = $data->status_pajak_pkp;
+                $data_master['metode_pembayaran'] = $data->metode_pembayaran;
+                $data_master['npwp'] = $data->npwp;
+                $data_master['sppkp'] = $data->sppkp;
+                $data_master['nib_siup'] = $data->nib_siup;
+                $data_master['akta_perusahaan'] = $data->akta_perusahaan;
+                $data_master['pakta_integritas'] = $data->pakta_integritas;
+                $data_master['kartu_identitas_direktur'] = $data->kartu_identitas_direktur;
+                $data_master['struktur_organisasi'] = $data->struktur_organisasi;
+                $data_master['profile_perusahaan'] = $data->profile_perusahaan;
+                $data_master['surat_lainnya'] = $data->surat_lainnya;
+
+                $isError = false;
+            } else {
+                $isError = true;
+                $errorMessage = "Data tidak ditemukan!";
+            }
+        } catch (Exception $ex) {
+            Log::error($ex->getMessage());
+            $errorMessage = $ex->getMessage();
+        }
+        // $is_user_sm = in_array($request->session()->get('user_id', ''), $this->user_sm);
+
+        return ['error' => $isError, 'errorMessage' => $errorMessage, 'data' => $data_master, 'nik_session' => $nik];
+    }
+
+    public function DeleteSupplier(Request $request)
+    {
+        $nik_session = $request->session()->get('user_id', '');
+        $name_session = $request->session()->get('username', '');
+        $TABLE_MASTER = "FM_SM_00X_REGISTRASI_SUPPLIER";
+        $data = DB::table($TABLE_MASTER)
+                    ->select('*')
+                    ->where('id', $request->id)
+                    ->update([
+                            'is_active' => "2",
+                            ]);
+        return view('SmartForm::SM/registrasi-supplier/dashboard-registrasi-supplier', [
+            'nik_session' => $nik_session,
+            'name_session' => $name_session]);
+    }
+
+    public function PdfRegSupplier(Request $request)
+    {
+        $data = DB::table('FM_SM_00X_REGISTRASI_SUPPLIER')->where('id', $request->id)->first();
         $pdf = PDF::loadView('SmartForm::SM/registrasi-supplier/reg-supplier-pdf',  compact('data'));
 
         return $pdf->download('BSS-FRM-SM-000.pdf');
+    }
+
+    public function updateRegisSupplier(Request $request)
+    {
+        $nik_session = $request->session()->get('user_id', '');
+        $name_session = $request->session()->get('username', '');
+        $TABLE_MASTER = "FM_SM_00X_REGISTRASI_SUPPLIER";
+        $data = DB::table($TABLE_MASTER)
+                    ->select('*')
+                    ->where('id', $request->tId)
+                    ->update([
+                            'nama_vendor' => $request->tVendorName,
+                            'no_npwp' => $request->tNoNpwp,
+                            ]);
+
+        return view('SmartForm::SM/registrasi-supplier/dashboard-registrasi-supplier', [
+            'nik_session' => $nik_session,
+            'name_session' => $name_session]);
+    }
+
+    function SubmitApproveSupplier(Request $req) {
+        $nik_session = $req->session()->get('user_id', '');
+        $name_session = $req->session()->get('username', '');
+        $TABLE_MASTER = 'FM_SM_00X_REGISTRASI_SUPPLIER';
+        $data = DB::table($TABLE_MASTER)
+                    ->select('*')
+                    ->where('id', $req->tId)
+                    ->update(['status' => "1",
+                ] );
+        return view('SmartForm::SM/registrasi-supplier/dashboard-registrasi-supplier', [
+            'nik_session' => $nik_session,
+            'name_session' => $name_session]);
+
+    }
+
+    function SubmitRejectSupplier( Request $req ) {
+        $TABLE_MASTER = 'FM_SM_00X_REGISTRASI_SUPPLIER';
+        $no_doc = $req->query( 'no_doc' );
+        $response = array(
+            'message' => '',
+            'isSuccess' => false
+        );
+        $nik_session = $req->session()->get( 'user_id', '' );
+        $data = $req->input();
+        $data_insert = [
+            'no_doc' => $data[ 'no_doc' ],
+            'status' => $data[ 'status' ]
+        ];
+        $data_item = json_decode( $data[ 'item' ] );
+        Log::info( $data_item );
+
+        try {
+            DB::beginTransaction();
+            $old_value_master = DB::table( $TABLE_MASTER )
+            ->select( 'id', 'no_doc', 'status' )
+            ->where( 'no_doc', $no_doc )
+            ->first();
+
+            $affected_rows = DB::table( $TABLE_MASTER )
+            ->where( 'no_doc', $no_doc )
+            ->update( $data_insert );
+
+            DB::commit();
+            $response[ 'message' ] = 'Ok';
+            $response[ 'isSuccess' ] = true;
+            $response[ 'data' ] = array(
+                'no_doc' => $no_doc
+            );
+
+        } catch ( Exception $ex ) {
+            // DB::rollBack();
+
+            Log::error( $ex->getMessage() );
+            Log::error( $ex->getTraceAsString() );
+            $response[ 'message' ] = $ex->getMessage();
+            $response[ 'isSuccess' ] = false;
+        }
+
+        return response()->json( $response );
     }
 
 }

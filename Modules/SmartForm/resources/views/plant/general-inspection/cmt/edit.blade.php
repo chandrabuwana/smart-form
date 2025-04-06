@@ -128,7 +128,7 @@
                     <div class="bg-gradient-primary shadow-primary border-radius-lg">
                         <div class="d-flex justify-content-between align-items-center p-3">
                             <h6 class="text-white text-capitalize my-auto">Edit General Inspection CMT</h6>
-                            <button class="btn btn-light my-auto" id="btn-print"><i class="fa fa-print me-2"></i> Print</button>
+
                         </div>
                     </div>
                 </div>
@@ -148,7 +148,8 @@
                                             <select name="site" class="form-control">
                                                 @foreach ($sites as $site)
                                                     <option value="{{ $site }}"
-                                                        {{ $site == $inspection['site'] ? 'selected' : '' }}>{{ $site }}
+                                                        {{ $site == $inspection['site'] ? 'selected' : '' }}>
+                                                        {{ $site }}
                                                     </option>
                                                 @endforeach
                                             </select>
@@ -196,8 +197,9 @@
                                                     <i class="fa fa-circle-arrow-up fa-lg"></i>
                                                 </div>
                                             </a>
-                                            <div class="card-body pt-2 collapse show" id="{{ 'category-' . $loop->index }}">
-                                                <div class="accordion-body">
+                                            <div class="card-body pt-2 collapse show"
+                                                id="{{ 'category-' . $loop->index }}">
+                                                <div class="accordion-body table-responsive">
                                                     <table class="table table-bordered">
                                                         <thead>
                                                             <tr>
@@ -293,7 +295,8 @@
                                 <h5>Analisa Hasil Inspeksi</h5>
                                 <div class="row">
                                     <div class="col-12">
-                                        <div class="card-body shadow border-radius-lg" id="{{ 'analisa-hasil-inspeksi' }}">
+                                        <div class="card-body table-responsive shadow border-radius-lg"
+                                            id="{{ 'analisa-hasil-inspeksi' }}">
                                             <table class="table table-bordered">
                                                 <thead class="text-center">
                                                     <tr>
@@ -314,7 +317,8 @@
                                                             <td>{{ $category }}</td>
                                                             <td class="text-center align-middle">
                                                                 <label class="radio-container">
-                                                                    <input type="radio" name="performance[{{ $category }}]"
+                                                                    <input type="radio"
+                                                                        name="performance[{{ $category }}]"
                                                                         value="bagus"
                                                                         {{ old("performance.$category", $inspection['performance'][$category] ?? '') == 'bagus' ? 'checked' : '' }}>
                                                                     <div class="radio-custom"></div>
@@ -322,7 +326,8 @@
                                                             </td>
                                                             <td class="text-center align-middle">
                                                                 <label class="radio-container">
-                                                                    <input type="radio" name="performance[{{ $category }}]"
+                                                                    <input type="radio"
+                                                                        name="performance[{{ $category }}]"
                                                                         value="cukup"
                                                                         {{ old("performance.$category", $inspection['performance'][$category] ?? '') == 'cukup' ? 'checked' : '' }}>
                                                                     <div class="radio-custom"></div>
@@ -330,7 +335,8 @@
                                                             </td>
                                                             <td class="text-center align-middle">
                                                                 <label class="radio-container">
-                                                                    <input type="radio" name="performance[{{ $category }}]"
+                                                                    <input type="radio"
+                                                                        name="performance[{{ $category }}]"
                                                                         value="kurang"
                                                                         {{ old("performance.$category", $inspection['performance'][$category] ?? '') == 'kurang' ? 'checked' : '' }}>
                                                                     <div class="radio-custom"></div>
@@ -339,13 +345,68 @@
                                                             <td>
                                                                 <input type="text" name="remark[{{ $category }}]"
                                                                     value="{{ old("remark.$category", $inspection['remark'][$category] ?? '') }}"
-                                                                    class="input-remark" placeholder="Masukkan remark (opsional)">
+                                                                    class="input-remark"
+                                                                    placeholder="Masukkan remark (opsional)">
                                                             </td>
                                                         </tr>
                                                     @endforeach
                                                 </tbody>
                                             </table>
                                         </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 ">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label for="dibuat" class="ms-0">Dilakukan Oleh</label>
+                                        <select name="dilakukan1" id="dilakukan1" class="form-control" required>
+                                            <option disabled selected>-- Select User --</option>
+                                            @foreach ($approvalList as $user)
+                                                <option value="{{ $user->nama }}"
+                                                    {{ old('dilakukan1', $inspection['dilakukan1'] ?? '') == $user->nama ? 'selected' : '' }}>
+                                                    {{ $user->nama }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label for="dibuat" class="ms-0">Dilakukan Oleh</label>
+                                        <select name="dilakukan2" id="dilakukan2" class="form-control" required>
+                                            <option disabled selected>-- Select User --</option>
+                                            @foreach ($approvalList as $user)
+                                                <option value="{{ $user->nama }}"
+                                                    {{ old('dilakukan2', $inspection['dilakukan2'] ?? '') == $user->nama ? 'selected' : '' }}>
+                                                    {{ $user->nama }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 mt-2">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label for="diperiksa" class="ms-0">Diperiksa Oleh</label>
+                                        <select name="diperiksa" id="diperiksa" class="form-control" required>
+                                            <option disabled selected>-- Select User --</option>
+                                            @foreach ($approvalList as $user)
+                                                <option value="{{ $user->nik }}"
+                                                    {{ old('diperiksa', $inspection['diperiksa'] ?? '') == $user->nik ? 'selected' : '' }}>
+                                                    {{ $user->nama }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 mt-2">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label for="diketahui" class="ms-0">Diketahui Oleh</label>
+                                        <select name="diketahui" id="diketahui" class="form-control" required>
+                                            <option disabled selected>-- Select User --</option>
+                                            @foreach ($approvalList as $user)
+                                                <option value="{{ $user->nik }}"
+                                                    {{ old('diketahui', $inspection['diketahui'] ?? '') == $user->nik ? 'selected' : '' }}>
+                                                    {{ $user->nama }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -362,8 +423,15 @@
 @endsection
 
 @section('custom-js')
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
+        $(document).ready(function() {
+            $('#diperiksa').select2();
+            $('#diketahui').select2();
+            $('#dilakukan1').select2();
+            $('#dilakukan2').select2();
+        });
         document.addEventListener("DOMContentLoaded", function() {
             document.querySelectorAll(".toggle-switch").forEach(function(toggle) {
                 toggle.addEventListener("change", function() {
@@ -382,9 +450,7 @@
             });
         });
 
-        $('#btn-print').on('click', function(e) {
-            window.open("{{ route('bss-form.plant.general-inspection.cmt.print', $inspection['id']) }}", "_blank");
-        })
+
 
         $('#btn-inspection-act-accordion').on('click', function(e) {
             e.preventDefault();
@@ -416,7 +482,7 @@
                     })
 
                     window.location.href =
-                    `{{ route('bss-form.plant.general-inspection.cmt.index') }}`;
+                        `{{ route('bss-form.plant.general-inspection.cmt.index') }}`;
 
                 } catch (error) {
                     Swal.fire({

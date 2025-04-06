@@ -8,11 +8,91 @@ use Illuminate\Support\Facades\DB;
 use Modules\SmartForm\helpers\HrdHelper;
 use Illuminate\Support\Facades\Log;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 
 class InspeksiToiletMessKantorController extends Controller
 {
+    private function generateDocNumber() {
+        $today = Carbon::now();
+
+
+        $count = DB::table( 'gs_inspeksi_tmk_jawaban' )
+        ->whereYear( 'created_at', $today->year )
+        ->whereMonth( 'created_at', $today->month )
+        ->count();
+
+        $docNumber = '';
+
+        do {
+            $count++;
+
+            $docNumber = sprintf(
+                'BSS-FRM-SHE-048-%s%s-%03d',
+                $today->format( 'y' ),
+                $today->format( 'm' ),
+                $count
+            );
+
+            $exists = DB::table( 'gs_inspeksi_tmk_jawaban' )
+            ->where( 'doc_num', $docNumber )
+            ->exists();
+
+        }
+        while ( $exists );
+        return $docNumber;
+    }
+
     function Dashboard(Request $request) {
-        return view("SmartForm::GS/inspeksi-toilet-mess-kantor/dashboard");
+
+        try {
+            $nik_session = $request->session()->get( 'user_id', '' );
+            $query = DB::table( 'gs_inspeksi_tmk_jawaban' )
+            ->select( '*' )
+            ->orderBy( 'created_at', 'desc' );
+
+            if ( $request->has( 'search' ) ) {
+                $searchTerm = $request->search;
+                $query->where( function( $q ) use ( $searchTerm ) {
+                    $q->where( 'doc_num', 'like', '%' . $searchTerm . '%' )
+                    ->orWhere( 'nama_site', 'like', '%' . $searchTerm . '%' )
+                    ->orWhere( 'dept', 'like', '%' . $searchTerm . '%' );
+                }
+            );
+        }
+        if ( $request->has( 'nama_site' ) && $request->nama_site ) {
+            $query->where( 'nama_site', $request->nama_site );
+        }
+
+        if ( $request->has( 'dept' ) && $request->dept ) {
+            $query->where( 'dept',  $request->dept );
+        }
+        if ( $request->has( 'approval' ) && $request->approval ) {
+            $query->where( 'checked_by', $request->approval )->orwhere( 'validated_by', $request->approval );
+            ;
+        }
+
+        $statistics = ( object )[
+            'total_records' => DB::table( 'gs_inspeksi_tmk_jawaban' )->count(),
+            'total_this_month' => DB::table( 'gs_inspeksi_tmk_jawaban' )
+            ->whereMonth( 'created_at', now()->month )
+            ->whereYear( 'created_at', now()->year )
+            ->count(),
+            'nama_site' => DB::table( 'gs_inspeksi_tmk_jawaban' )->distinct()->count( 'nama_site' ),
+            'dept' => DB::table( 'gs_inspeksi_tmk_jawaban' )->distinct()->count( 'dept' ),
+        ];
+
+            $records = $query->paginate( 5 );
+            return view( 'SmartForm::GS/inspeksi-toilet-mess-kantor/dashboard', [ 'record' => $records, 'session'=>$nik_session, 'user'=> HrdHelper::getApprovalList(), 'statistics'=>$statistics, 'filters' => [
+            'search' => $request->search,
+            'nama_site' => $request->nama_site,
+            'dept' => $request->dept,
+            'approval' => $request->approval
+        ] ] );
+        } catch( \Exception $e ) {
+            // dd($e);
+            Log::error( 'Error in Dashboard: ' . $e->getMessage() );
+            return redirect()->back()->with( 'error', 'Failed to load dashboard data: ' . $e->getMessage() );
+        }
     }
 
     public function createForm(Request $request) {
@@ -52,29 +132,33 @@ class InspeksiToiletMessKantorController extends Controller
             'shift' => 'required|string',
             'loker' => 'required|string',
             'jml_ins' => 'required|integer',
-            'diinspeksi_oleh' => 'required|string',
-            'diinspeksi_ulang_oleh' => 'required|string',
-            'mengetahui' => 'required|string',
-            'pertanyaan_id.*' => 'required|integer',
-            'jawaban.*' => 'required|string|in:Ya,Tidak'
+            // 'checked_by' => 'required|string',
+            // 'validated_by' => 'required|string',
+            'mengetahui' => 'required|string'
+            // 'pertanyaan_id.*' => 'required|integer',
+            // 'jawaban.*' => 'required|string|in:Ya,Tidak'
         ]);
 
+        // dd($request);
         DB::beginTransaction();
         try {
             $inspeksi_id = DB::table('gs_inspeksi_tmk_jawaban')->insertGetId([
+                'doc_num' => $this->generateDocNumber(),
                 'tgl_doc' => $request->tgl_doc,
                 'nama_site' => $request->nama_site,
                 'dept' => $request->dept,
                 'shift' => $request->shift,
                 'loker' => $request->loker,
-                'jml_ins' => 5,
-                'diinspeksi_oleh' => $request->diinspeksi_oleh,
-                'diinspeksi_ulang_oleh' => $request->diinspeksi_ulang_oleh,
+                'jml_ins' => $request->jml_ins,
+                'checked_by' => $request->checked_by,
+                'validated_by' => $request->validated_by,
                 'mengetahui' => $request->mengetahui,
                 'created_at' => DB::raw('GETDATE()'),
-                'updated_at' => DB::raw('GETDATE()')
+                'updated_at' => DB::raw('GETDATE()'),
+                'delete_status' => 0,
+                'creator' => $request->session()->get( 'user_id', '' ),
+                'status' => json_encode( array_values( [ null, null] ) )
             ]);
-            // dd($inspeksi_id);
 
             if (!$inspeksi_id) {
                 throw new \Exception('Gagal mendapatkan ID inspeksi.');
@@ -104,10 +188,7 @@ class InspeksiToiletMessKantorController extends Controller
             DB::commit();
 
             // return redirect()->route('dashboard-inpeksi-toilet-mess-kantor')->with('success', 'Data inspeksi berhasil disimpan.');
-            return response()->json(['message' => 'Data inspeksi berhasil disimpan!', 'redirect' => route('dashboard-inpeksi-toilet-mess-kantor')]);
-            // return response()->json([
-            //     'message' => 'Data inspeksi berhasil disimpan!'
-            // ], 200);
+            return response()->json(['message' => 'Data inspeksi berhasil disimpan!', 'redirect' => route('dashboard-wc')]);
         } catch (\Exception $e) {
             // dd($e);
             DB::rollBack();
@@ -181,6 +262,246 @@ class InspeksiToiletMessKantorController extends Controller
         $pdf = PDF::loadView('SmartForm::GS/inspeksi-toilet-mess-kantor/pdf', compact('data', 'pertanyaan'));
 
         return $pdf->stream('BSS-FRM-GS-ITM.pdf');
+    }
+
+    public function Delete( $id ) {
+        try {
+            DB::table('gs_inspeksi_tmk_jawaban')
+            ->where('id', $id)
+            ->update(['delete_status' => 1]);
+
+            return response()->json( [
+                'success' => true,
+                'message' => 'Data berhasil dihapus'
+            ] );
+
+        } catch ( QueryException $e ) {
+            Log::error( 'Error in Delete: ' . $e->getMessage() );
+            return response()->json( [
+                'success' => false,
+                'message' => 'Failed to delete record: ' . $e->getMessage()
+            ], 500 );
+
+        }
+    }
+
+    public function Approve( Request $request ) {
+
+        $data = [
+            'status' => json_encode( array_values( [
+                $request->checked,
+                $request->validated,
+            ] ) ),
+            'updated_at' => Carbon::now()
+        ];
+
+        DB::table( 'gs_inspeksi_tmk_jawaban' )
+        ->where( 'doc_num', $request->doc_num )
+        ->update( $data );
+
+        return response()->json( [
+            'success' => true,
+            'message' => 'Data berhasil di Approve'
+        ] );
+
+    }
+
+    public function Reset( $id ) {
+
+        $data = [
+            'status' => json_encode( array_values( [
+                null,
+                null
+            ] ) ),
+            'updated_at' => Carbon::now()
+        ];
+
+        DB::table( 'gs_inspeksi_tmk_jawaban' )
+        ->where( 'doc_num', $id )
+        ->update( $data );
+
+        return response()->json( [
+            'success' => true,
+            'message' => 'Data berhasil di Reset'
+        ] );
+
+    }
+
+    public function Reject( Request $request ) {
+        // dd($request);
+        $data = [
+            'status' => json_encode( array_values( [
+                $request->checked,
+                $request->validated,
+
+            ] ) ),
+            'updated_at' => Carbon::now()
+        ];
+        ;
+
+        DB::table( 'gs_inspeksi_tmk_jawaban' )
+        ->where( 'doc_num', $request->doc_num )
+        ->update( $data );
+
+        return response()->json( [
+            'success' => true,
+            'message' => 'Data berhasil di Reject'
+        ] );
+    }
+
+    public function detail($id){
+        $data = DB::table('gs_inspeksi_tmk_jawaban')
+            ->where('id', $id)
+            ->first();
+
+        if (!$data) {
+            return abort(404, "Data inspeksi tidak ditemukan");
+        }
+
+        $pertanyaan = DB::table('gs_inspeksi_tmk_pertanyaan')
+            ->leftJoin('gs_inspeksi_tmk_jawaban_detail', function ($join) use ($id) {
+                $join->on('gs_inspeksi_tmk_pertanyaan.ID', '=', 'gs_inspeksi_tmk_jawaban_detail.pertanyaan_id')
+                    ->where('gs_inspeksi_tmk_jawaban_detail.inspeksi_id', '=', $id);
+            })
+            ->orderByRaw("CASE
+                WHEN gs_inspeksi_tmk_pertanyaan.category = 'TOILET' THEN 1
+                WHEN gs_inspeksi_tmk_pertanyaan.category = 'MESS' THEN 2
+                WHEN gs_inspeksi_tmk_pertanyaan.category = 'KANTOR' THEN 3
+                ELSE 4 END")
+            ->orderBy('gs_inspeksi_tmk_pertanyaan.urutan_pertanyaan')
+            ->select(
+                'gs_inspeksi_tmk_pertanyaan.ID',
+                'gs_inspeksi_tmk_pertanyaan.category',
+                'gs_inspeksi_tmk_pertanyaan.pertanyaan',
+                'gs_inspeksi_tmk_jawaban_detail.jawaban',
+                'gs_inspeksi_tmk_jawaban_detail.resiko',
+                'gs_inspeksi_tmk_jawaban_detail.keterangan'
+            )
+            ->get()
+            ->groupBy('category');
+
+        $dropdowns = [
+            'Diinspeksi' => 'Diinspeksi Oleh',
+            'DiinspeksiUlang' => 'Diinspeksi Ulang Oleh',
+            'Mengetahui' => 'Mengetahui'
+        ];
+
+        return view('SmartForm::GS/inspeksi-toilet-mess-kantor/detail-wc', [
+            'data' => $data,
+            'questions' => $pertanyaan,
+            'dropdowns' => $dropdowns,
+            'approvalList' => HrdHelper::getApprovalList()
+        ]);
+    }
+
+    public function Update($id, Request $request) {
+        DB::beginTransaction();
+        try {
+            $inspeksi = DB::table('gs_inspeksi_tmk_jawaban')->where('id', $id)->first();
+            if (!$inspeksi) {
+                return response()->json(['error' => 'Data inspeksi tidak ditemukan'], 404);
+            }
+
+            DB::table('gs_inspeksi_tmk_jawaban')
+                ->where('id', $id)
+                ->update([
+                    'tgl_doc' => $request->tgl_doc,
+                    'nama_site' => $request->nama_site,
+                    'dept' => $request->dept,
+                    'shift' => $request->shift,
+                    'loker' => $request->loker,
+                    'jml_ins' => $request->jml_ins,
+                    'checked_by' => $request->checked_by,
+                    'validated_by' => $request->validated_by,
+                    'mengetahui' => $request->mengetahui,
+                    'updated_at' => DB::raw('GETDATE()')
+                ]);
+
+            DB::table('gs_inspeksi_tmk_jawaban_detail')->where('inspeksi_id', $id)->delete();
+
+            $detailData = [];
+
+
+            $pertanyaan_id = $request->pertanyaan_id;
+            if (!empty($pertanyaan_id) && is_array($pertanyaan_id)) {
+
+                foreach ($pertanyaan_id as $index => $pertanyaan_id_value) {
+                    $detailData[] = [
+                        'inspeksi_id' => $id,
+                        'pertanyaan_id' => $pertanyaan_id_value,
+                        'jawaban' => $request->jawaban[$index] ?? null,
+                        'resiko' => $request->resiko[$index] ?? null,
+                        'keterangan' => $request->keterangan[$index] ?? null,
+                        'category' => $request->category[$index] ?? null,
+                        'updated_at' => DB::raw('GETDATE()')
+                    ];
+                }
+            } else {
+                dd('masuk kondisi gagal submit');
+            }
+
+
+            $inserted = DB::table('gs_inspeksi_tmk_jawaban_detail')->insert($detailData);
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Data inspeksi berhasil diupdate!'
+
+            ]);
+        } catch (\Exception $e) {
+            // dd($e);
+            DB::rollBack();
+            return response()->json(['error' => 'Gagal memperbarui data: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function show($id, Request $request){
+        $nik_session = $request->session()->get( 'user_id', '' );
+
+        $data = DB::table('gs_inspeksi_tmk_jawaban')
+            ->where('id', $id)
+            ->first();
+
+        if (!$data) {
+            return abort(404, "Data inspeksi tidak ditemukan");
+        }
+
+        $pertanyaan = DB::table('gs_inspeksi_tmk_pertanyaan')
+            ->leftJoin('gs_inspeksi_tmk_jawaban_detail', function ($join) use ($id) {
+                $join->on('gs_inspeksi_tmk_pertanyaan.ID', '=', 'gs_inspeksi_tmk_jawaban_detail.pertanyaan_id')
+                    ->where('gs_inspeksi_tmk_jawaban_detail.inspeksi_id', '=', $id);
+            })
+            ->orderByRaw("CASE
+                WHEN gs_inspeksi_tmk_pertanyaan.category = 'TOILET' THEN 1
+                WHEN gs_inspeksi_tmk_pertanyaan.category = 'MESS' THEN 2
+                WHEN gs_inspeksi_tmk_pertanyaan.category = 'KANTOR' THEN 3
+                ELSE 4 END")
+            ->orderBy('gs_inspeksi_tmk_pertanyaan.urutan_pertanyaan')
+            ->select(
+                'gs_inspeksi_tmk_pertanyaan.ID',
+                'gs_inspeksi_tmk_pertanyaan.category',
+                'gs_inspeksi_tmk_pertanyaan.pertanyaan',
+                'gs_inspeksi_tmk_jawaban_detail.jawaban',
+                'gs_inspeksi_tmk_jawaban_detail.resiko',
+                'gs_inspeksi_tmk_jawaban_detail.keterangan'
+            )
+            ->get()
+            ->groupBy('category');
+
+        $dropdowns = [
+            'Diinspeksi' => 'Diinspeksi Oleh',
+            'DiinspeksiUlang' => 'Diinspeksi Ulang Oleh',
+            'Mengetahui' => 'Mengetahui'
+        ];
+
+        return view('SmartForm::GS/inspeksi-toilet-mess-kantor/show-wc', [
+            'data' => $data,
+            'nik' =>$nik_session,
+            'questions' => $pertanyaan,
+            'dropdowns' => $dropdowns,
+            'approvalList' => HrdHelper::getApprovalList()
+        ]);
     }
 
 }

@@ -20,6 +20,31 @@
             width: auto;
             margin-right: 8px;
         }
+        .status {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
+
+        .box {
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+            border-radius: 4px;
+        }
+
+        .red {
+            background-color: #F44335;
+        }
+
+        .green {
+            background-color: #4CAF50;
+        }
+
+        .blue {
+            background-color: #0000FF;
+        }
     </style>
 @endsection
 
@@ -44,7 +69,7 @@
                                 </div>
                                 <div class="text-end pt-1">
                                     <p class="text-sm mb-0 text-capitalize">Total Records</p>
-                                    <h4 class="mb-0">3</h4>
+                                    <<h4 class="mb-0">{{ $statistics->total_records }}</h4>
                                 </div>
                             </div>
                         </div>
@@ -60,7 +85,7 @@
                                 </div>
                                 <div class="text-end pt-1">
                                     <p class="text-sm mb-0 text-capitalize">This Month</p>
-                                    <h4 class="mb-0">4</h4>
+                                    <h4 class="mb-0">{{ $statistics->total_this_month }}</h4>
                                 </div>
                             </div>
                         </div>
@@ -76,7 +101,7 @@
                                 </div>
                                 <div class="text-end pt-1">
                                     <p class="text-sm mb-0 text-capitalize">Engine Model</p>
-                                    <h4 class="mb-0">2</h4>
+                                    <h4 class="mb-0">{{ $statistics->engine_model }}</h4>
                                 </div>
                             </div>
                         </div>
@@ -92,7 +117,7 @@
                                 </div>
                                 <div class="text-end pt-1">
                                     <p class="text-sm mb-0 text-capitalize">Job Site</p>
-                                    <h4 class="mb-0">54</h4>
+                                    <h4 class="mb-0">{{ $statistics->job_site }}</h4>
                                 </div>
                             </div>
                         </div>
@@ -137,6 +162,23 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div class="col-md-3
+                                mb-3">
+                                    <div class="input-group input-group-static mb-4 position-relative">
+                                        <label for="approval" class="ms-0">Approval</label>
+                                        <select name="approval" id="approval" class="form-control">
+                                            <option disabled selected>-- Select Approval --</option>
+                                            @foreach ($user as $appUser)
+                                                <option value="{{ $appUser->nik }}"
+                                                    {{ $appUser->nik == $filters['approval'] ? 'selected' : '' }}>
+                                                    {{ $appUser->nama }}
+                                                </option>
+                                            @endforeach
+
+                                        </select>
+
+                                    </div>
+                                </div>
                                 <div class="col-md-12 mb-3 d-flex justify-content-start">
                                     <button type="submit" class="btn btn-primary filter-btn" id="btnFilterSubmit">
                                         Filter
@@ -144,6 +186,18 @@
                                     <button type="button" class="btn btn-secondary filter-btn" id="btnClearFilter">
                                         Clear Filter
                                     </button>
+                                </div>
+                                <div class="col-md-12 d-flex justify-content-end">
+
+                                    <div class="status me-2">
+                                        <span class="box red"></span> Rejected
+                                    </div>
+                                    <div class="status me-2">
+                                        <span class="box green"></span> Approved
+                                    </div>
+                                    <div class="status me-2">
+                                        <span class="box blue"></span> Draft
+                                    </div>
                                 </div>
                             </div>
                         </form>
@@ -173,6 +227,15 @@
                                             Date</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            Checker</th>
+                                        <th
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            Validate</th>
+                                        <th
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            Status</th>
+                                        <th
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Actions</th>
                                     </tr>
                                 </thead>
@@ -199,15 +262,74 @@
                                             <td>
                                                 <span class="text-xs font-weight-bold">{{ $data->date }}</span>
                                             </td>
+                                            @php
+                                                $status = json_decode($data->status, true);
+                                            @endphp
                                             <td>
-                                                <a href="#"
-                                                    class="btn btn-info btn-sm">
-                                                    <i class="fas fa-eye"></i>
+                                                @if ($status[0] === 'approved')
+                                                    <span
+                                                        class="badge bg-success">{{ optional(collect($user)->firstWhere('nik', $data->checked_by))->nama ?? '' }}</span>
+                                                @elseif ($status[0] === 'rejected')
+                                                    <span
+                                                        class="badge bg-danger">{{ optional(collect($user)->firstWhere('nik', $data->checked_by))->nama ?? '' }}</span>
+                                                @elseif ($status[0] === null)
+                                                    <span
+                                                        class="badge bg-info">{{ optional(collect($user)->firstWhere('nik', $data->checked_by))->nama ?? '' }}</span>
+                                                @endif
+
+                                            </td>
+                                            <td>
+                                                <span class="text-xs font-weight-bold">
+                                                    @if ($status[1] === 'approved')
+                                                        <span
+                                                            class="badge bg-success">{{ optional(collect($user)->firstWhere('nik', $data->validated_by))->nama ?? '' }}</span>
+                                                    @elseif ($status[1] === 'rejected')
+                                                        <span
+                                                            class="badge bg-danger">{{ optional(collect($user)->firstWhere('nik', $data->validated_by))->nama ?? '' }}</span>
+                                                    @elseif ($status[1] == null)
+                                                        <span
+                                                            class="badge bg-info">{{ optional(collect($user)->firstWhere('nik', $data->validated_by))->nama ?? '' }}</span>
+                                                    @endif
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="text-xs font-weight-bold">
+                                                    @if (collect($status)->every(fn($s) => $s === 'approved'))
+                                                        <span class="badge bg-success">Approved</span>
+                                                    @elseif (collect($status)->contains(fn($s) => $s === 'rejected'))
+                                                        <span class="badge bg-danger">Rejected</span>
+                                                    @elseif (collect($status)->contains(fn($s) => $s === null))
+                                                        <span class="badge bg-info">Draf</span>
+                                                    @endif
+                                                </span>
+                                            </td>
+                                            <td>
+                                                @if ($session == $data->creator)
+                                                    <a href="{{ route('detail-dh24', ['id' => $data->id]) }}"
+                                                        class="btn btn-warning btn-sm mt-3"
+                                                        style="{{ $data->delete_status == 1 ? 'pointer-events: none; opacity: 0.6;' : '' }}">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <button type="button" class="btn btn-danger btn-sm mt-3"
+                                                        onclick="deleteDh24('{{ $data->doc_num }}')"
+                                                        {{ $data->delete_status == 1 ? 'disabled' : '' }}>
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                @endif
+
+                                                <a href="{{ route('show-dh24', ['id' => $data->id]) }}"
+                                                    class="btn btn-info btn-sm mt-3"
+                                                    style="{{ $data->delete_status == 1 ? 'pointer-events: none; opacity: 0.6;' : '' }}">
+                                                    <i class="far fa-check-circle " style="font-size:12px;"></i>
                                                 </a>
-                                                <a href="{{ route('export-pdf-dh24', ['id' => $data->id]) }}"
-                                                    class="btn btn-primary btn-sm">
-                                                    <i class="fas fa-download"></i>
-                                                 </a>
+
+                                                @if (collect($status)->every(fn($s) => $s === 'approved'))
+                                                    <a href="{{ route('export-pdf-dh24', ['id' => $data->id]) }}"
+                                                        class="btn btn-primary btn-sm mt-3"
+                                                        style="{{ $data->delete_status == 1 ? 'pointer-events: none; opacity: 0.6;' : '' }}">
+                                                        <i class="fas fa-download"></i>
+                                                    </a>
+                                                @endif
                                             </td>
                                         </tr>
                                         @endforeach
@@ -223,4 +345,69 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('custom-js')
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#approval').select2();
+        });
+        $(function() {
+            // Clear filter button
+            $('#btnClearFilter').click(function() {
+                window.location.href = '{{ route('plant.ppm.xe1250.dashboard') }}';
+            });
+
+        });
+
+        function deleteDh24(id) {
+            console.log('Delete ID:', id);
+            if (confirm('Are you sure you want to delete this data?')) {
+                axios.delete('{{ route('delete-dh24', ['id' => 'ID']) }}'.replace('ID', id))
+                    .then(function(response) {
+                        console.log('Response:', response);
+                        if (response.data.success) {
+
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: response.data.message
+                            }).then(() => {
+
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Failed to delete the compressor.'
+                            });
+                        }
+                    })
+                    .catch(function(error) {
+                        console.error(error);
+                        let errorMessage = 'Terjadi kesalahan pada sistem';
+                        if (error.response) {
+
+                            if (error.response.data.errors) {
+                                errorMessage = Object.values(error.response.data.errors).flat().join('\n');
+                            } else if (error.response.data.message) {
+                                errorMessage = error.response.data.message;
+                            }
+                        }
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: errorMessage
+                        });
+                    })
+                    .finally(function() {
+                        submitBtn.prop('disabled', false);
+                    });
+            }
+        }
+    </script>
 @endsection

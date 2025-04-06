@@ -29,7 +29,7 @@
                     </div>
 
 
-                    <div class="mx-3">
+                    <div class="mx-3" style="margin-top: 2rem;">
                         <!-- Basic Information -->
                         <div class="row mb-3">
                             <div class="col-md-4">
@@ -90,8 +90,18 @@
                             <div class="col-md-4">
                                 <div class="input-group input-group-static mb-3">
                                     <label for="operator_load" class="ms-0">Nama Operator Loader</label>
-                                    <input type="text" class="form-control" id="operator_load"
-                                        value="{{ $record->operator_leader }}" name="operator_load" disabled>
+                                    {{-- <input type="text" class="form-control" id="operator_load"
+                                        value="{{ $record->operator_leader }}" name="operator_load" disabled> --}}
+                                    <select class="form-control form-select" id="operator_load" name="operator_load" disabled>
+                                        <option disabled selected>-- Select Nama Operator --</option>
+                                        @forelse($users as $user)
+                                            <option value="{{ $user->nik ?? '' }}" {{ $record->operator_leader == $user->nik ? 'selected' : '' }}>
+                                                {{ $user->nama ?? 'User tidak tersedia' }}
+                                            </option>
+                                        @empty
+                                            <option>Data karyawan tidak ditemukan</option>
+                                        @endforelse
+                                    </select>
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -100,6 +110,22 @@
                                     <input type="text" class="form-control" id="nama-pic"
                                         value="{{ optional(collect($approvalList)->firstWhere('nik', $record->pic_area))->nama ?? '' }}"
                                         disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="input-group input-group-static mb-3">
+                                    <label for="site" class="ms-0">Site</label>
+                                    <select class="form-control form-select" id="site" name="site" disabled>
+                                        <option disabled>-- Select Site --</option>
+                                        @forelse($sites as $site)
+                                            <option value="{{ $site->KodeST ?? '' }}" {{ $record->site == $site->KodeST ? 'selected' : '' }}>
+                                                {{ $site->KodeST ?? 'Site tidak tersedia' }}
+                                            </option>
+                                        @empty
+                                            <option>Data site tidak ditemukan</option>
+                                        @endforelse
+                                    </select>
+
                                 </div>
                             </div>
                         </div>
@@ -122,10 +148,22 @@
                                         <tr>
                                             <th>Nama Operator</th>
                                             <th colspan="5" class="text-center">
-                                                <input class="form-control" type="text" name="nama_operator"
+                                                {{-- <input class="form-control" type="text" name="nama_operator"
                                                     style="text-align: center; background-color: #eee7e8; color: rgb(11, 10, 10);"
                                                     placeholder="Input Nama Operator"
-                                                    value="{{ $record->nama_operator[$index] }}" disabled>
+                                                    value="{{ $record->nama_operator[$index] }}" disabled> --}}
+
+                                                <select class="form-control form-select" name="nama_operator" disabled
+                                                    style="text-align: center; background-color: #eee7e8; color: rgb(11, 10, 10);">
+                                                    <option disabled>-- Select Nama Operator --</option>
+                                                    @forelse($users as $user)
+                                                        <option value="{{ $user->nik ?? '' }}" {{ $record->nama_operator[$index] == $user->nik ? 'selected' : '' }}>
+                                                            {{ $user->nama ?? 'User tidak tersedia' }}
+                                                        </option>
+                                                    @empty
+                                                        <option>Data karyawan tidak ditemukan</option>
+                                                    @endforelse
+                                                </select>
                                             </th>
                                             <th>RITASI</th>
                                         </tr>

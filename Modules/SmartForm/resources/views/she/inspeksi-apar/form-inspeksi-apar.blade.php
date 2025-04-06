@@ -18,7 +18,7 @@
             <div class="card my-4">
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                     <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                        <h6 class="text-white text-capitalize ps-3">FORM BSS HE 036 INSPEKSI APAR</h6>
+                        <h6 class="text-white text-capitalize ps-3">FORM BSS SHE 036 INSPEKSI APAR</h6>
                     </div>
                 </div>
                 <div class="card-body my-1">
@@ -28,8 +28,6 @@
                                 <div class="card col-md-6">
                                     <table class="w-full">
                                         <tr>
-                                            <!-- <td>No. Doc</td>
-                                            <td>:</td> -->
                                             <td id="noDoc" hidden>No.Doc</td>
                                         </tr>
                                         <tr>
@@ -108,51 +106,53 @@
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-lg-2">
-                                        <div class="input-group input-group-static mb-4">
-                                            <label for="dMetode">Metode Pemenuhan</label>
-                                            <select class="form-select form-select-sm input-text" aria-label="Default select example" id="dMetode" name="dMetode">
-                                                <option value="" selected>-- Pilih Metode --</option> 
-                                                <option value="Isi Ulang">Isi Ulang</option>
-                                                <option value="Ganti Baru">Ganti Baru</option>
-                                                <option value="Tera Ulang">Tera Ulang</option>
-                                            </select>
-                                        </div>
+                                        <label for="dMetode">Metode Pemenuhan</label>
+                                        <select class="form-select form-select-sm input-text" aria-label="Default select example" id="dMetode" name="dMetode">
+                                            <option value="" selected>-- Pilih Metode --</option> 
+                                            <option value="Isi Ulang">Isi Ulang</option>
+                                            <option value="Ganti Baru">Ganti Baru</option>
+                                            <option value="Tera Ulang">Tera Ulang</option>
+                                        </select> 
                                     </div>
-                                    <fieldset class="card" style="width: 15rem;">
-                                      <legend class="col-form-label">Kondisi Luar Tabung :</legend>
-                                      <div class="col-sm-10">
-                                        <div class="form-check">
-                                          <input class="form-check-input" type="checkbox" value="1" id="cTabung1">
-                                          <label class="form-check-label" for="flexCheckDefault">
-                                            Tabung
-                                          </label>
-                                          <input class="form-check-input" type="checkbox" value="1" id="cHandle">
-                                          <label class="form-check-label" for="flexCheckDefault">
-                                            Handle
-                                          </label>
-                                        </div>
-                                        <div class="form-check">
-                                          <input class="form-check-input" type="checkbox" value="1" id="cSelang">
-                                          <label class="form-check-label" for="flexCheckChecked">
-                                            Selang&nbsp;
-                                          </label>
-                                          <input class="form-check-input" type="checkbox" value="1" id="cLabel">
-                                          <label class="form-check-label" for="flexCheckChecked">
-                                            Label
-                                          </label>
-                                        </div>
-                                      </div>
-                                    </fieldset>
                                     <div class="col-md-4 col-lg-2">
-                                        <div class="input-group input-group-static mb-4">
-                                            <label for="iKet">Kartu Bukti Pemeriksaan:</label>
+                                        <label for="dMetode">Metode Pemenuhan</label>
+                                        <fieldset class="card" style="width: 13rem;">
+                                          <div class="col-sm-12">
                                             <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="1" id="cTabung2">
-                                                <label class="form-check-label" for="flexCheckChecked">
-                                                    Tabung
-                                                </label>
+                                              <input class="form-check-input" type="checkbox" value="1" id="cTabung1">
+                                              <label class="form-check-label me-3" for="flexCheckDefault">
+                                                Tabung
+                                              </label>
+                                              <input class="form-check-input" type="checkbox" value="1" id="cHandle">
+                                              <label class="form-check-label" for="flexCheckDefault">
+                                                Handle
+                                              </label>
                                             </div>
-                                        </div>
+                                            <div class="form-check">
+                                              <input class="form-check-input" type="checkbox" value="1" id="cSelang">
+                                              <label class="form-check-label me-3" for="flexCheckChecked">
+                                                Selang&nbsp;
+                                              </label>
+                                              <input class="form-check-input" type="checkbox" value="1" id="cLabel">
+                                              <label class="form-check-label" for="flexCheckChecked">
+                                                Label
+                                              </label>
+                                            </div>
+                                          </div>
+                                        </fieldset>
+                                    </div>
+                                    <div class="col-md-4 col-lg-2">
+                                        <label for="iKet">Kartu Bukti Pemeriksaan:</label>
+                                        <fieldset class="card" style="width: 13rem;">
+                                            <div class="input-group input-group-static mb-2">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" value="1" id="cTabung2">
+                                                    <label class="form-check-label" for="flexCheckChecked">
+                                                        Tabung
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </fieldset>
                                     </div>
                                     <div class="col-md-4 col-lg-2">
                                         <div class="input-group input-group-static mb-4">
@@ -176,18 +176,18 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table id="item-inspeksi" class="display" data-toggle="table">
+                            <table id="item-inspeksi" class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
                                         <th data-formatter="indexFormatter" data-field="no">No</th>
                                         <th data-field="lok2">Lokasi APAR</th>
                                         <th data-field="jenis">Jenis APAR</th>
                                         <th data-field="tekananTab">Tekanan Tabung</th>
-                                        <th data-field="berat">Berat Tabung</th>
-                                        <th data-field="pic">PIC Name</th>
-                                        <th data-field="metode">Metode Pemenuhan</th>
-                                        <th data-field="tglBerlaku">Tgl Berlaku</th>
-                                        <th data-field="ket">Ket.</th>
+                                        <th data-field="berat">Berat APAR</th>
+                                        <th data-formatter="kondisiFormatter">Kondisi</th>
+                                        <th data-field="tglBerlaku">Berlaku Sampai</th>
+                                        <th data-field="pic">PIC</th>
+                                        <th data-field="ket">Keterangan</th>
                                         <th data-formatter="actionFormatter">Actions</th>
                                     </tr>
                                 </thead>
@@ -229,14 +229,12 @@
         var $table = $("#item-inspeksi");
         var $buttonTambah = $("#btn-add-item")
         
-        // Variable form
         var tanggalSekarang = $("#tanggalSekarang")
         var noDoc = $("#noDoc");
         var tglDoc = $("#tglDoc");
         var dLok1 = $("#dLok1")
         var tCatatan = $("#tCatatan")
         
-        // Variable items
         var dLok2 = $("#dLok2")
         var dJenis = $("#dJenis")
         var dTekanan = $("#dTekanan")
@@ -266,6 +264,18 @@
             const day = String(today.getDate()).padStart(2, '0');
             return `${day}-${month}-${year}`;
         }
+
+        function kondisiFormatter(value, row) {
+            return `
+                <ul class="list-unstyled">
+                    <li>Tabung: ${row.tabung1 ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>'}</li>
+                    <li>Handle: ${row.handle ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>'}</li>
+                    <li>Selang: ${row.selang ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>'}</li>
+                    <li>Label: ${row.label ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>'}</li>
+                    <li>Kartu: ${row.tabung2 ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>'}</li>
+                </ul>
+            `;
+        }
         
         tanggalSekarang.attr('min', getTodayDate())
 
@@ -279,10 +289,6 @@
 
         function generateNoDoc() {
             return "_/BSS-FRM-SHE-036/" + months_romawi[tglNow.getMonth()] + "/" + tglNow.getFullYear();
-        }
-
-        function validateInput() {
-
         }
 
         function actionFormatter(value, row, index) {
@@ -301,7 +307,6 @@
         $table.on('post-body.bs.table', function(data) {
             var items = [];
             data.sender.data.forEach(function (item, index, arr) {
-                // console.log(item)
                 item.no = index;
                 items.push(item)
             })
@@ -319,10 +324,14 @@
         }
 
         $(function() {
+            $table.bootstrapTable({
+                pagination: true,
+                search: true,
+                showRefresh: false
+            });
+
             noDoc.text(generateNoDoc())
             tglDoc.text(formatTgl() || "-")
-
-            // dataInspeksiApar.foreman = iForeman.val()
 
             function validateItem() {
                 var errorValidate = []
@@ -372,83 +381,101 @@
                     })
                 } else {
                     $table.bootstrapTable('append', {
-                        lok2: dLok2.val(),
-                        jenis: dJenis.val(),
-                        tekananTab: dTekanan.val(),
-                        berat: tBerat.val(),
-                        tabung1: cTabung1.checked,
-                        handle: cHandle.checked,
-                        selang: cSelang.checked,
-                        label: cLabel.checked,
-                        tabung2: cTabung1.checked,
-                        metode: dMetode.val(),
-                        tglBerlaku: tBerlaku.val(),
-                        pic: tPic.val(),
-                        tanggal: dTgl.val(),
-                        ket: tKet.val()
-                    })
+                    lok2: dLok2.val(),
+                    jenis: dJenis.val(),
+                    tekananTab: dTekanan.val(),
+                    berat: tBerat.val(),
+                    tabung1: cTabung1.checked,
+                    handle: cHandle.checked,
+                    selang: cSelang.checked,
+                    label: cLabel.checked,
+                    tabung2: cTabung2.checked,
+                    kondisi: {},
+                    metode: dMetode.val(),
+                    tglBerlaku: tBerlaku.val(),
+                    pic: tPic.val(),
+                    tanggal: dTgl.val(),
+                    ket: tKet.val()
+                })
                     $table.bootstrapTable('scrollTo', 'bottom')
                 }
             })
 
             btnSubmitInspeksiApar.click(function(e) {
-                e.preventDefault();
+            e.preventDefault();
 
-                var errValidate = validateForm()
-                if(errValidate.length > 0) {
-                    var msg = ""
-                    for (var listErr of errValidate) {
-                        msg = msg + "<p class='m-0'>" + listErr.field + " " + listErr.message +  "</p>"
+            var errValidate = validateForm()
+            if(errValidate.length > 0) {
+                var msg = ""
+                for (var listErr of errValidate) {
+                    msg = msg + "<p class='m-0'>" + listErr.field + " " + listErr.message +  "</p>"
+                }
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    html: msg,
+                }).then((result) => {
+                })
+            } else {
+                var dataReq = {
+                    formName: dataInspeksiApar.formName,
+                    noDoc: noDoc.text(),
+                    lok1: dLok1.val(),
+                    tglDoc: formatTgl(),
+                    catatan: tCatatan.val()
+                }
+                let formData = new FormData();
+                formData.append('item',JSON.stringify(dataInspeksiApar.item));
+                for (const key in dataReq) {
+                    if(key != "item") {
+                        formData.append(key, dataReq[key])
                     }
+                }
+                console.log(dataReq)
+                showLoading();
+                
+                axios.post('/bss-form/she-036/add-inspeksi-apar', formData, {
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                        'Content-Type': 'multipart/form-data'
+                    }
+                })
+                .then(function (response) {
+                    console.log(response.data);
+                    stopLoading();
+                    
+                    if (response.data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Request sukses direkam dgn no dokumen:',
+                            text: response.data.data?.no_dok || 'Form berhasil disimpan',
+                        }).then((result) => {
+                            window.location.href = `/bss-form/she-036/inspeksi-apar`;
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal!',
+                            text: response.data.message || 'Terjadi kesalahan pada server',
+                        });
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    stopLoading();
+                    
                     Swal.fire({
                         icon: 'error',
                         title: 'Gagal!',
-                        html: msg,
-                    }).then((result) => {
-                    })
-                } else {
-                    var dataReq = {
-                        formName: dataInspeksiApar.formName,
-                        noDoc: noDoc.text(),
-                        lok1: dLok1.val(),
-                        tglDoc: formatTgl(),
-                        catatan: tCatatan.val()
-                    }
-                    let formData = new FormData();
-                    formData.append('item',JSON.stringify(dataInspeksiApar.item));
-                    for (const key in dataReq) {
-                        if(key != "item") {
-                            formData.append(key, dataReq[key])
-                        }
-                    }
-                    console.log(dataReq)
-                    axios.post('/bss-form/she-019B/add-inspeksi-apar', formData, {
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-                            'Content-Type': 'multipart/form-data'
-                        }
-                    })
-                    .then(function (response) {
-                        showLoading()
-                        console.log(response.data)
-                        Swal.fire({
-                                icon: 'success',
-                                title: 'Request sukses direkam dgn no dokumen:',
-                                text: response.data.data.no_doc,
-                            }).then((result) => {
-                                window.location.href = `/bss-form/she-019B/inspeksi-apar`;
-                            })
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                        stopLoading()
-                    })
-                    .finally(function() {
-                        stopLoading()
+                        text: 'Terjadi kesalahan: ' + (error.response?.data?.message || error.message),
                     });
-                }
-                
-            })
+                })
+                .finally(function() {
+                    stopLoading();
+                });
+            }
+            
+        })
         })
     </script>
 @endsection

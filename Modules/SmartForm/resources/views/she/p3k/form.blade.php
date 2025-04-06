@@ -54,8 +54,113 @@
                     </div>
                 </div>
                 <div class="card-body px-0 pb-2">
+                    @if($isShowDetail && isset($record->approval_status))
+                    <div class="mx-3 mb-4">
+                        <div class="card">
+                            <div class="card-body p-3">
+                                <h5 class="mb-0">Status Persetujuan</h5>
+                                @php
+                                    $statusClass = 'secondary';
+                                    $statusText = 'Pending';
+                                    
+                                    switch($record->approval_status) {
+                                        case 'pending':
+                                            $statusClass = 'secondary';
+                                            $statusText = 'Menunggu Persetujuan';
+                                            break;
+                                        case 'in_progress':
+                                            $statusClass = 'info';
+                                            $statusText = 'Dalam Proses Persetujuan';
+                                            break;
+                                        case 'approved':
+                                            $statusClass = 'success';
+                                            $statusText = 'Disetujui';
+                                            break;
+                                        case 'rejected':
+                                            $statusClass = 'danger';
+                                            $statusText = 'Ditolak';
+                                            break;
+                                    }
+                                @endphp
+                                <div class="alert alert-{{ $statusClass }} text-white mt-3">
+                                    <strong>{{ $statusText }}</strong>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-md-4">
+                                        <div class="d-flex">
+                                            <div class="me-3">
+                                                <span class="badge bg-{{ $record->inspector_1_status == 'approved' ? 'success' : ($record->inspector_1_status == 'rejected' ? 'danger' : 'secondary') }} p-2">
+                                                    <i class="fas fa-{{ $record->inspector_1_status == 'approved' ? 'check' : ($record->inspector_1_status == 'rejected' ? 'times' : 'clock') }}"></i>
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0">Pengawas 1</h6>
+                                                <p class="text-sm mb-0">{{ $record->inspector_1_name ?: 'Belum diisi' }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="d-flex">
+                                            <div class="me-3">
+                                                <span class="badge bg-{{ $record->inspector_2_status == 'approved' ? 'success' : ($record->inspector_2_status == 'rejected' ? 'danger' : 'secondary') }} p-2">
+                                                    <i class="fas fa-{{ $record->inspector_2_status == 'approved' ? 'check' : ($record->inspector_2_status == 'rejected' ? 'times' : 'clock') }}"></i>
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0">Pengawas 2</h6>
+                                                <p class="text-sm mb-0">{{ $record->inspector_2_name ?: 'Belum diisi' }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="d-flex">
+                                            <div class="me-3">
+                                                <span class="badge bg-{{ $record->supervisor_status == 'approved' ? 'success' : ($record->supervisor_status == 'rejected' ? 'danger' : 'secondary') }} p-2">
+                                                    <i class="fas fa-{{ $record->supervisor_status == 'approved' ? 'check' : ($record->supervisor_status == 'rejected' ? 'times' : 'clock') }}"></i>
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0">Supervisor</h6>
+                                                <p class="text-sm mb-0">{{ $record->supervisor_name ?: 'Belum diisi' }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-md-4">
+                                        <div class="d-flex">
+                                            <div class="me-3">
+                                                <span class="badge bg-{{ $record->dh_status == 'approved' ? 'success' : ($record->dh_status == 'rejected' ? 'danger' : 'secondary') }} p-2">
+                                                    <i class="fas fa-{{ $record->dh_status == 'approved' ? 'check' : ($record->dh_status == 'rejected' ? 'times' : 'clock') }}"></i>
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0">Department Head</h6>
+                                                <p class="text-sm mb-0">{{ $record->dh_name ?: 'Belum diisi' }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="d-flex">
+                                            <div class="me-3">
+                                                <span class="badge bg-{{ $record->she_status == 'approved' ? 'success' : ($record->she_status == 'rejected' ? 'danger' : 'secondary') }} p-2">
+                                                    <i class="fas fa-{{ $record->she_status == 'approved' ? 'check' : ($record->she_status == 'rejected' ? 'times' : 'clock') }}"></i>
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0">SHE</h6>
+                                                <p class="text-sm mb-0">{{ $record->she_name ?: 'Belum diisi' }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
                     <form id="maintenanceForm" method="POST" action="{{ route('she-p3k.submit') }}" class="form">
                         @csrf
+                        <input type="hidden" name="created_by" value="{{ session('username') }}">
                         <div class="mx-3">
                             <!-- Date and Location -->
                             <div class="row mb-3">
@@ -137,93 +242,244 @@
                                     <div class="table-responsive">
                                         <table class="table table-bordered">
                                             <tr class="text-center">
-                                                <th class="border">Dibuat Oleh Pengawas</th>
-                                                <th class="border">Tanda Tangan</th>
+                                                <th class="border">Dibuat Oleh Pengawas 1</th>
+                                                <th class="border">NIK</th>
                                                 <th class="border">Tanggal</th>
+                                                <th class="border">Status</th>
                                             </tr>
                                             <tr>
                                                 <td class="border">
-                                                    <select name="created_by" class="form-control text-center" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
-                                                        <option value="">-- Pilih Pengawas --</option>
-                                                        @foreach($approvalList as $user)
-                                                            <option value="{{ $user->nama }}" {{ $isShowDetail && $record->created_by == $user->nama ? 'selected' : '' }}>
-                                                                {{ $user->nama }} ({{ $user->nik }})
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                </td>
-                                                <td class="text-center border">
-                                                    <div class="form-check d-inline">
-                                                        <input class="form-check-input" type="checkbox" 
-                                                            name="inspector_1_signature" value="1"
-                                                            {{ $isShowDetail && $record->inspector_1_signature ? 'checked' : '' }}
-                                                            {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
-                                                    </div>
+                                                    <input type="text" name="inspector_1_name" class="form-control text-center" 
+                                                    placeholder="Nama Lengkap"
+                                                    value="{{ $isShowDetail ? $record->inspector_1_name : session('username') }}"
+                                                    {{ $isShowDetail ? 'disabled' : '' }} required>
                                                 </td>
                                                 <td class="border">
-                                                    <input type="date" name="inspection_date" class="form-control text-center" 
-                                                        value="{{ $isShowDetail ? $record->inspection_date : now()->format('Y-m-d') }}"
-                                                        required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                                    <input type="text" name="inspector_1_nik" class="form-control text-center" 
+                                                    placeholder="NIK"
+                                                    value="{{ $isShowDetail ? $record->inspector_1_nik : session('user_id') }}"
+                                                    {{ $isShowDetail ? 'disabled' : '' }} required>
+                                                </td>
+                                                <td class="border">
+                                                    @if($isShowDetail)
+                                                        @if(!empty($record->inspector_1_date))
+                                                            <input type="text" class="form-control text-center" value="{{ date('Y-m-d', strtotime(str_replace(':AM', ' AM', str_replace(':PM', ' PM', $record->inspector_1_date)))) }}" disabled>
+                                                        @else
+                                                            <input type="text" class="form-control text-center" value="" disabled>
+                                                        @endif
+                                                    @else
+                                                        <input type="date" name="inspector_1_date" class="form-control text-center" 
+                                                            value="{{ now()->format('Y-m-d') }}" required>
+                                                    @endif
+                                                </td>
+                                                <td class="border text-center">
+                                                    @if($isShowDetail)
+                                                        <span class="badge bg-{{ $record->inspector_1_status == 'approved' ? 'success' : ($record->inspector_1_status == 'rejected' ? 'danger' : 'secondary') }}">
+                                                            {{ ucfirst($record->inspector_1_status) }}
+                                                        </span>
+                                                    @else
+                                                        <select name="inspector_1_status" class="form-control">
+                                                            <option value="pending">Pending</option>
+                                                            <option value="approved">Approved</option>
+                                                            <option value="rejected">Rejected</option>
+                                                        </select>
+                                                    @endif
                                                 </td>
                                             </tr>
                                             <tr class="text-center">
-                                                <th class="border">Dibuat Oleh Pengawas</th>
-                                                <th class="border">Tanda Tangan</th>
+                                                <th class="border">Dibuat Oleh Pengawas 2</th>
+                                                <th class="border">NIK</th>
                                                 <th class="border">Tanggal</th>
+                                                <th class="border">Status</th>
                                             </tr>
                                             <tr>
                                                 <td class="border">
-                                                    <select name="inspector_2" class="form-control text-center" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                                    <select name="inspector_2_name" id="inspector_2_name" class="form-control text-center" {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
                                                         <option value="">-- Pilih Pengawas --</option>
                                                         @foreach($approvalList as $user)
-                                                            <option value="{{ $user->nama }}" {{ $isShowDetail && $record->inspector_1 == $user->nama ? 'selected' : '' }}>
-                                                                {{ $user->nama }} ({{ $user->nik }})
+                                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $isShowDetail && $record->inspector_2_name == $user->nama ? 'selected' : '' }}>
+                                                                {{ $user->nama }}
                                                             </option>
                                                         @endforeach
                                                     </select>
                                                 </td>
-                                                <td class="text-center border">
-                                                    <div class="form-check d-inline">
-                                                        <input class="form-check-input" type="checkbox" 
-                                                            name="inspector_2_signature" value="1"
-                                                            {{ $isShowDetail && $record->inspector_2_signature ? 'checked' : '' }}
-                                                            {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
-                                                    </div>
+                                                <td class="border">
+                                                    <input type="text" name="inspector_2_nik" id="inspector_2_nik" class="form-control text-center" 
+                                                    placeholder="NIK"
+                                                    value="{{ $isShowDetail ? $record->inspector_2_nik : '' }}"
+                                                    {{ $isShowDetail ? 'disabled' : '' }} readonly>
                                                 </td>
                                                 <td class="border">
-                                                    <input type="date" name="inspector_2_date" class="form-control text-center" 
-                                                        value="{{ $isShowDetail ? $record->inspector_2_date : now()->format('Y-m-d') }}"
-                                                        required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                                    @if($isShowDetail)
+                                                        @if(!empty($record->inspector_2_date))
+                                                            <input type="text" class="form-control text-center" value="{{ date('Y-m-d', strtotime(str_replace(':AM', ' AM', str_replace(':PM', ' PM', $record->inspector_2_date)))) }}" disabled>
+                                                        @else
+                                                            <input type="text" class="form-control text-center" value="" disabled>
+                                                        @endif
+                                                    @else
+                                                        <input type="date" name="inspector_2_date" class="form-control text-center" 
+                                                            value="{{ now()->format('Y-m-d') }}">
+                                                    @endif
+                                                </td>
+                                                <td class="border text-center">
+                                                    @if($isShowDetail)
+                                                        <span class="badge bg-{{ $record->inspector_2_status == 'approved' ? 'success' : ($record->inspector_2_status == 'rejected' ? 'danger' : 'secondary') }}">
+                                                            {{ ucfirst($record->inspector_2_status) }}
+                                                        </span>
+                                                    @else
+                                                        <select name="inspector_2_status" class="form-control">
+                                                            <option value="pending">Pending</option>
+                                                            <option value="approved">Approved</option>
+                                                            <option value="rejected">Rejected</option>
+                                                        </select>
+                                                    @endif
                                                 </td>
                                             </tr>
                                             <tr class="text-center">
                                                 <th class="border">Diperiksa Oleh Supervisor</th>
-                                                <th class="border">Tanda Tangan</th>
+                                                <th class="border">NIK</th>
                                                 <th class="border">Tanggal</th>
+                                                <th class="border">Status</th>
                                             </tr>
                                             <tr>
                                                 <td class="border">
-                                                    <select name="acknowledged_by" class="form-control text-center" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                                    <select name="supervisor_name" id="supervisor_name" class="form-control text-center" {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
                                                         <option value="">-- Pilih Supervisor --</option>
                                                         @foreach($approvalList as $user)
-                                                            <option value="{{ $user->nama }}" {{ $isShowDetail && $maintenanceRecord->acknowledged_by == $user->nama ? 'selected' : '' }}>
-                                                                {{ $user->nama }} ({{ $user->nik }})
+                                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $isShowDetail && $record->supervisor_name == $user->nama ? 'selected' : '' }}>
+                                                                {{ $user->nama }}
                                                             </option>
                                                         @endforeach
                                                     </select>
                                                 </td>
-                                                <td class="border text-center">
-                                                    <div class="form-check d-inline">
-                                                        <input class="form-check-input" type="checkbox" 
-                                                            name="acknowledged_by_signature" value="1"
-                                                            {{ $isShowDetail && $record->acknowledged_by_signature ? 'checked' : '' }}
-                                                            {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
-                                                    </div>
+                                                <td class="border">
+                                                    <input type="text" name="supervisor_nik" id="supervisor_nik" class="form-control text-center" 
+                                                    placeholder="NIK"
+                                                    value="{{ $isShowDetail ? $record->supervisor_nik : '' }}"
+                                                    {{ $isShowDetail ? 'disabled' : '' }} readonly>
                                                 </td>
                                                 <td class="border">
-                                                    <input type="date" name="acknowledged_date" class="form-control text-center" 
-                                                        value="{{ $isShowDetail ? $record->acknowledged_date : now()->format('Y-m-d') }}"
-                                                        required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                                    @if($isShowDetail)
+                                                        @if(!empty($record->supervisor_date))
+                                                            <input type="text" class="form-control text-center" value="{{ date('Y-m-d', strtotime(str_replace(':AM', ' AM', str_replace(':PM', ' PM', $record->supervisor_date)))) }}" disabled>
+                                                        @else
+                                                            <input type="text" class="form-control text-center" value="" disabled>
+                                                        @endif
+                                                    @else
+                                                        <input type="date" name="supervisor_date" class="form-control text-center" 
+                                                            value="{{ now()->format('Y-m-d') }}">
+                                                    @endif
+                                                </td>
+                                                <td class="border text-center">
+                                                    @if($isShowDetail)
+                                                        <span class="badge bg-{{ $record->supervisor_status == 'approved' ? 'success' : ($record->supervisor_status == 'rejected' ? 'danger' : 'secondary') }}">
+                                                            {{ ucfirst($record->supervisor_status) }}
+                                                        </span>
+                                                    @else
+                                                        <select name="supervisor_status" class="form-control">
+                                                            <option value="pending">Pending</option>
+                                                            <option value="approved">Approved</option>
+                                                            <option value="rejected">Rejected</option>
+                                                        </select>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                            <tr class="text-center">
+                                                <th class="border">Disetujui Oleh Department Head</th>
+                                                <th class="border">NIK</th>
+                                                <th class="border">Tanggal</th>
+                                                <th class="border">Status</th>
+                                            </tr>
+                                            <tr>
+                                                <td class="border">
+                                                    <select name="dh_name" id="dh_name" class="form-control text-center" {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                                        <option value="">-- Pilih Department Head --</option>
+                                                        @foreach($approvalList as $user)
+                                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $isShowDetail && $record->dh_name == $user->nama ? 'selected' : '' }}>
+                                                                {{ $user->nama }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td class="border">
+                                                    <input type="text" name="dh_nik" id="dh_nik" class="form-control text-center" 
+                                                    placeholder="NIK"
+                                                    value="{{ $isShowDetail ? $record->dh_nik : '' }}"
+                                                    {{ $isShowDetail ? 'disabled' : '' }} readonly>
+                                                </td>
+                                                <td class="border">
+                                                    @if($isShowDetail)
+                                                        @if(!empty($record->dh_date))
+                                                            <input type="text" class="form-control text-center" value="{{ date('Y-m-d', strtotime(str_replace(':AM', ' AM', str_replace(':PM', ' PM', $record->dh_date)))) }}" disabled>
+                                                        @else
+                                                            <input type="text" class="form-control text-center" value="" disabled>
+                                                        @endif
+                                                    @else
+                                                        <input type="date" name="dh_date" class="form-control text-center" 
+                                                            value="{{ now()->format('Y-m-d') }}">
+                                                    @endif
+                                                </td>
+                                                <td class="border text-center">
+                                                    @if($isShowDetail)
+                                                        <span class="badge bg-{{ $record->dh_status == 'approved' ? 'success' : ($record->dh_status == 'rejected' ? 'danger' : 'secondary') }}">
+                                                            {{ ucfirst($record->dh_status) }}
+                                                        </span>
+                                                    @else
+                                                        <select name="dh_status" class="form-control">
+                                                            <option value="pending">Pending</option>
+                                                            <option value="approved">Approved</option>
+                                                            <option value="rejected">Rejected</option>
+                                                        </select>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                            <tr class="text-center">
+                                                <th class="border">Disetujui Oleh SHE</th>
+                                                <th class="border">NIK</th>
+                                                <th class="border">Tanggal</th>
+                                                <th class="border">Status</th>
+                                            </tr>
+                                            <tr>
+                                                <td class="border">
+                                                    <select name="she_name" id="she_name" class="form-control text-center" {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                                        <option value="">-- Pilih SHE --</option>
+                                                        @foreach($approvalList as $user)
+                                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $isShowDetail && $record->she_name == $user->nama ? 'selected' : '' }}>
+                                                                {{ $user->nama }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td class="border">
+                                                    <input type="text" name="she_nik" id="she_nik" class="form-control text-center" 
+                                                    placeholder="NIK"
+                                                    value="{{ $isShowDetail ? $record->she_nik : '' }}"
+                                                    {{ $isShowDetail ? 'disabled' : '' }} readonly>
+                                                </td>
+                                                <td class="border">
+                                                    @if($isShowDetail)
+                                                        @if(!empty($record->she_date))
+                                                            <input type="text" class="form-control text-center" value="{{ date('Y-m-d', strtotime(str_replace(':AM', ' AM', str_replace(':PM', ' PM', $record->she_date)))) }}" disabled>
+                                                        @else
+                                                            <input type="text" class="form-control text-center" value="" disabled>
+                                                        @endif
+                                                    @else
+                                                        <input type="date" name="she_date" class="form-control text-center" 
+                                                            value="{{ now()->format('Y-m-d') }}">
+                                                    @endif
+                                                </td>
+                                                <td class="border text-center">
+                                                    @if($isShowDetail)
+                                                        <span class="badge bg-{{ $record->she_status == 'approved' ? 'success' : ($record->she_status == 'rejected' ? 'danger' : 'secondary') }}">
+                                                            {{ ucfirst($record->she_status) }}
+                                                        </span>
+                                                    @else
+                                                        <select name="she_status" class="form-control">
+                                                            <option value="pending">Pending</option>
+                                                            <option value="approved">Approved</option>
+                                                            <option value="rejected">Rejected</option>
+                                                        </select>
+                                                    @endif
                                                 </td>
                                             </tr>
                                         </table>
@@ -310,6 +566,26 @@
                 .finally(function() {
                     submitBtn.prop('disabled', false);
                 });
+        });
+
+        $('#inspector_2_name').on('change', function() {
+            var nik = $(this).find('option:selected').data('nik');
+            $('#inspector_2_nik').val(nik);
+        });
+
+        $('#supervisor_name').on('change', function() {
+            var nik = $(this).find('option:selected').data('nik');
+            $('#supervisor_nik').val(nik);
+        });
+
+        $('#dh_name').on('change', function() {
+            var nik = $(this).find('option:selected').data('nik');
+            $('#dh_nik').val(nik);
+        });
+
+        $('#she_name').on('change', function() {
+            var nik = $(this).find('option:selected').data('nik');
+            $('#she_nik').val(nik);
         });
     });
     </script>

@@ -306,13 +306,13 @@
                         <td class="align-middle">{!! $value['standard'] !!}
                         </td>
                     @endif
-                    <td>{{ $data->hyd_actual[$j] ?? 'test' }}</td>
-                    <td>{{ $data->hyd_correction_made[$j] ?? 'test' }}</td>
-                    <td>{{ $data->hyd_result[$j] ?? 'test' }}
+                    <td>{{ $data->hyd_actual[$j] ?? '' }}</td>
+                    <td>{{ $data->hyd_correction_made[$j] ?? '' }}</td>
+                    <td>{{ $data->hyd_result[$j] ?? '' }}
                     </td>
-                    <td>{{ $data->hyd_pr[$j] ?? 'test' }}
+                    <td>{{ $data->hyd_pr[$j] ?? '' }}
                     </td>
-                    <td>{{ $data->hyd_taggal[$j] ?? 'test' }}
+                    <td>{{ $data->hyd_taggal[$j] ?? '' }}
                     </td>
                     @if ($j === 0)
                         <td colspan="2" rowspan="5">{{ $data->hyd_remark }}</td>
@@ -349,13 +349,13 @@
                         <td class="align-middle">{!! $value['standard'] !!}
                         </td>
                     @endif
-                    <td>{{ $data->hyd_actual[$j] ?? 'test' }}</td>
-                    <td>{{ $data->hyd_correction_made[$j] ?? 'test' }}</td>
-                    <td>{{ $data->hyd_result[$j] ?? 'test' }}
+                    <td>{{ $data->hyd_actual[$j] ?? '' }}</td>
+                    <td>{{ $data->hyd_correction_made[$j] ?? '' }}</td>
+                    <td>{{ $data->hyd_result[$j] ?? '' }}
                     </td>
-                    <td>{{ $data->hyd_pr[$j] ?? 'test' }}
+                    <td>{{ $data->hyd_pr[$j] ?? '' }}
                     </td>
-                    <td>{{ $data->hyd_taggal[$j] ?? 'test' }}
+                    <td>{{ $data->hyd_taggal[$j] ?? '' }}
                     </td>
                     <td colspan="2">{{ $data->hyd_remark ?? '' }}</td>
                     {{-- @if ($j === 0)

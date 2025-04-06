@@ -84,7 +84,7 @@
                                         <td>Date</td>
                                         <td><input type="text" class="input-text w-full" id="tglDoc" name="tglDoc"></td>
                                     </tr>
-                                    
+
                                     <tr>
                                         <td>Jabatan</td>
                                         <td><input type="text" class="input-text w-full" id="i_jabatan" name="i_jabatan"></td>
@@ -92,6 +92,12 @@
                                     <tr>
                                         <td>NIK</td>
                                         <td><input type="text" class="input-text w-full" id="i_nik" value="{{ session('user_id') }}" disabled></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Site</td>
+                                        <td>
+                                        {!! $siteOptions !!}
+                                        </td>
                                     </tr>
                                 </table>
                             </div>
@@ -101,7 +107,7 @@
                                         <td>Departemen</td>
                                         <td>
                                             <select class="form-select form-select-sm input-text" aria-label="Default select example" id="i_departemen" name="i_departemen">
-                                            <option value="" selected>-- Pilih Departemen --</option>    
+                                            <option value="" selected>-- Pilih Departemen --</option>
                                                 <option value="ENG">ENGINEERING</option>
                                                 <option value="SHE">SHE</option>
                                                 <option value="PRD">PRODUKSI</option>
@@ -147,11 +153,10 @@
                             <div class="w-1/2 md:w-1/6">
                                 <span>Shift</span>
                                 <select class="form-select form-select-sm input-text" aria-label="Default select example" id="i_shift" name="i_shift">
-                                    <option value="" selected>-- Pilih Shift --</option>    
-                                    <option value="I">I</option>
-                                    <option value="II">II</option>
-                                    <option value="III">III</option>
-                                </select> 
+                                    <option value="" selected>-- Pilih Shift --</option>
+                                    <option value="DS">DS</option>
+                                    <option value="NS">NS</option>
+                                </select>
                             </div>
                             <div class="w-1/2 md:w-1/6">
                                 <span>HM</span>
@@ -181,7 +186,7 @@
                             <td>: {{ session('username') }} {{ session('user_id') }}
                             </td>
                             <td>Diterima Oleh/Received by, :</td>
-                            <td> 
+                            <td>
                                 <select name="dDiterima" class="form-control text-center" required>
                                     <option value="">-- Pilih Penerima --</option>
                                     @foreach($approvalList as $user)
@@ -272,7 +277,7 @@
             //return the string "yyMMDD"
             return getYear(mudof) + getMonth(mudof);
         }
-        
+
         function getTodayDate() {
             const today = new Date();
             const year = today.getYear();
@@ -294,7 +299,7 @@
             document.getElementById("iKupon").value=(generateNoDoc());
             document.getElementById("tglDoc").value=(formatTgl() || "-");
         })
-        
+
         $('#btnSubmitFormRequestFuel').click( function(e) {
             e.preventDefault();
             const formData = $('#formRequestFuel').serialize();
@@ -322,6 +327,6 @@
                 });
             });
         });
-        
+
     </script>
 @endsection

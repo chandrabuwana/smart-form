@@ -1,0 +1,767 @@
+@extends('master.master_page')
+
+@section('content')
+    <div class="container-fluid py-4">
+        <div class="row">
+            <div class="col-12">
+                @if (session('success'))
+                    <div class="alert alert-success alert-dismissible text-white fade show" role="alert">
+                        <span class="alert-icon align-middle"><i class="fas fa-check-circle"></i></span>
+                        <span class="alert-text">{{ session('success') }}</span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">×</button>
+                    </div>
+                @endif
+
+                @if (session('error'))
+                    <div class="alert alert-danger alert-dismissible text-white fade show" role="alert">
+                        <span class="alert-icon align-middle"><i class="fas fa-exclamation-circle"></i></span>
+                        <span class="alert-text">{{ session('error') }}</span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">×</button>
+                    </div>
+                @endif
+
+                <div class="card">
+
+                    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                        <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+                            <h6 class="text-white text-capitalize ps-3"> Form PPM SHANTUI D24 SERIES</h6>
+                        </div>
+                    </div>
+
+                    <form id="formDH24" method="POST">
+                        @csrf
+                        <div class="mx-3">
+                            <input type="hidden" name="doc_num" value="{{ $data->doc_num }}">
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label for="unit_model" class="ms-0">Unit Model</label>
+                                        <input type="text" class="form-control" id="unit_model" name="unit_model"
+                                            value="{{ $data->unit_model }}" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label for="unit_sn" class="ms-0">Unit S/N</label>
+                                        <input type="text" class="form-control" id="unit_sn" name="unit_sn"
+                                            value="{{ $data->unit_sn }}" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label for="unit_cn" class="ms-0">Unit C/N</label>
+                                        <input type="text" class="form-control" id="unit_cn"
+                                            value="{{ $data->unit_cn }}" name="unit_cn" required>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label for="engine_model" class="ms-0">Engine Model</label>
+                                        <input type="text" class="form-control" id="engine_model" name="engine_model"
+                                            value="{{ $data->engine_model }}" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label for="engine_sn" class="ms-0">Engine S/N</label>
+                                        <input type="text" class="form-control" id="engine_sn" name="engine_sn"
+                                            value="{{ $data->engine_sn }}" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label for="att_front" class="ms-0">Attachment Front</label>
+                                        <input type="text" class="form-control" id="att_front" name="att_front"
+                                            value="{{ $data->att_front }}" required>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <div class="input-group input-group-static mb-3">
+                                            <label for="att_rear" class="ms-0">Attachment Rear</label>
+                                            <input type="text" class="form-control" id="att_rear" name="att_rear"
+                                                value="{{ $data->att_rear }}" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="input-group input-group-static mb-3">
+                                            <label for="job_site" class="ms-0">Job Site</label>
+                                            <select class="form-control" name="job_site" id="job_site" required>
+                                                <option disabled selected>-- Select Site --</option>
+                                                <option value="agm"
+                                                    {{ old('job_site', $data->job_site ?? '') == 'agm' ? 'selected' : '' }}>
+                                                    agm</option>
+                                                <option value="mbl"
+                                                    {{ old('job_site', $data->job_site ?? '') == 'mbl' ? 'selected' : '' }}>
+                                                    mbl</option>
+                                                <option value="mme"
+                                                    {{ old('job_site', $data->job_site ?? '') == 'mme' ? 'selected' : '' }}>
+                                                    mme</option>
+                                                <option value="mas"
+                                                    {{ old('job_site', $data->job_site ?? '') == 'mas' ? 'selected' : '' }}>
+                                                    mas</option>
+                                                <option value="pmss"
+                                                    {{ old('job_site', $data->job_site ?? '') == 'pmss' ? 'selected' : '' }}>
+                                                    pmss</option>
+                                                <option value="taj"
+                                                    {{ old('job_site', $data->job_site ?? '') == 'taj' ? 'selected' : '' }}>
+                                                    taj</option>
+                                                <option value="bssr"
+                                                    {{ old('job_site', $data->job_site ?? '') == 'bssr' ? 'selected' : '' }}>
+                                                    bssr</option>
+                                                <option value="tdm"
+                                                    {{ old('job_site', $data->job_site ?? '') == 'tdm' ? 'selected' : '' }}>
+                                                    tdm</option>
+                                                <option value="msj"
+                                                    {{ old('job_site', $data->job_site ?? '') == 'msj' ? 'selected' : '' }}>
+                                                    msj</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="input-group input-group-static mb-3">
+                                            <label for="location" class="ms-0">Location</label>
+                                            <select class="form-control" name="location" id="location" required>
+                                                <option value="Workshop"
+                                                    {{ old('location', $data->job_location ?? '') == 'Workshop' ? 'selected' : '' }}>
+                                                    Workshop</option>
+                                                <option value="Pitstop"
+                                                    {{ old('location', $data->job_location ?? '') == 'Pitstop' ? 'selected' : '' }}>
+                                                    Pitstop</option>
+                                                <option value="Service"
+                                                    {{ old('location', $data->job_location ?? '') == 'Service' ? 'selected' : '' }}>
+                                                    Service</option>
+                                                <option value="Truck"
+                                                    {{ old('location', $data->job_location ?? '') == 'Truck' ? 'selected' : '' }}>
+                                                    Truck</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <div class="input-group input-group-static mb-3">
+                                            <label for="at_inspec" class="ms-0">SMR / HM At Inspection</label>
+                                            <input type="text" class="form-control" id="at_inspec" name="at_inspec"
+                                                value="{{ $data->at_inspection }}" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="input-group input-group-static mb-3">
+                                            <label for="date" class="ms-0">SMR / HM Date</label>
+                                            <input type="date" class="form-control" id="date" name="date"
+                                                value="{{ $data->date }}" required>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="accordion">
+                                    <div class="accordion-item">
+                                        <button type="button" class="accordion-header">ENGINE</button>
+                                        <div class="accordion-content">
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th rowspan="2" style="vertical-align: middle;">
+                                                                ITEM</th>
+                                                            <th style="vertical-align: middle;" rowspan="2">
+                                                                CONDITION</th>
+                                                            <th style="vertical-align: middle;" rowspan="2">UNIT
+                                                            </th>
+                                                            <th style="vertical-align: middle;" rowspan="2">
+                                                                STANDARD STD/PMS</th>
+                                                            <th style="vertical-align: middle;"rowspan="2">ACTUAL</th>
+                                                            <th style="vertical-align: middle;" rowspan="2">
+                                                                CORRECTION MODE</th>
+                                                            <th style="vertical-align: middle;" rowspan="2">RESULT
+                                                            </th>
+                                                            <th style="vertical-align: middle;" colspan="2">
+                                                                RECOMENDED PARTS</th>
+                                                            <th style="vertical-align: middle;" rowspan="2">REMARKS
+                                                            </th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>PR.NO</th>
+                                                            <th>TANGGAL</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @php
+                                                            $i = 0;
+                                                        @endphp
+                                                        @foreach ($list['ENGINE'] as $value)
+                                                        <tr>
+                                                            @if (isset($value['item']))
+                                                                @if ($value['item'] == 'Engine Speed' || $value['item'] == 'Lub Oil Press.')
+                                                                    <td class="align-middle" rowspan="2">{!! $value['item'] !!}</td>
+                                                                @else
+                                                                    <td class="align-middle">{!! $value['item'] !!}</td>
+                                                                @endif
+                                                            @endif
+                                                            @if (isset($value['condition']))
+                                                                @if ($value['condition'] == 'Rated Output (1800 rpm)' && ($value['unit'] == 'C'))
+                                                                    <td class="align-middle" rowspan="6">{!! $value['condition'] !!}</td>
+                                                                @else
+                                                                    <td class="align-middle">{!! $value['condition'] !!}</td>
+                                                                @endif
+                                                            @endif
+                                                            @if (isset($value['unit']))
+                                                                @if ($value['unit'] == 'Rpm' || $value['unit'] == 'Kg/cm2')
+                                                                    <td class="align-middle" rowspan="2">{!! $value['unit'] !!}</td>
+                                                                @else
+                                                                    <td class="align-middle">{!! $value['unit'] !!}</td>
+                                                                @endif
+                                                            @endif
+                                                            @if (isset($value['standard']))
+                                                                <td class="align-middle">{!! $value['standard'] !!}</td>
+                                                            @endif
+                                                            <td><input type="text" class="form-control" name="eng_actual[]"
+                                                                    value="{{ $data->eng_actual[$i] ?? '' }}" disabled></td>
+                                                            <td><input type="text" class="form-control" name="eng_correct[]"
+                                                                    value="{{ $data->eng_correction_made[$i] ?? '' }}" disabled></td>
+                                                            <td><input type="text" class="form-control" name="eng_result[]"
+                                                                    value="{{ $data->eng_result[$i] ?? '' }}" disabled></td>
+                                                            <td><input type="text" class="form-control" name="eng_pr_no[]"
+                                                                    value="{{ $data->eng_pr[$i] ?? '' }}" disabled></td>
+                                                            <td><input type="date" class="form-control" name="eng_tanggal[]"
+                                                                    value="{{ $data->eng_taggal[$i] ?? '' }}" disabled></td>
+                                                            @if ($i === 0)
+                                                                <td rowspan="13">
+                                                                    <textarea class="form-control" rows="30" name="eng_remarks" disabled>{{ $data->eng_remark }}</textarea>
+                                                                </td>
+                                                            @endif
+                                                        </tr>
+                                                        @php
+                                                            $i++;
+                                                        @endphp
+                                                        @endforeach
+
+
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="accordion-item">
+                                        <button type="button" class="accordion-header">WORK EQUIPMENT HYDRAULIC OIL PRESSURE</button>
+                                        <div class="accordion-content">
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th rowspan="2" style="vertical-align: middle;">
+                                                                ITEM</th>
+                                                            <th style="vertical-align: middle;" rowspan="2" colspan="2">
+                                                                CONDITION</th>
+                                                            <th style="vertical-align: middle;" rowspan="2">UNIT
+                                                            </th>
+                                                            <th style="vertical-align: middle;" rowspan="2">
+                                                                STANDARD STD/PMS</th>
+                                                            <th style="vertical-align: middle;"rowspan="2">ACTUAL</th>
+                                                            <th style="vertical-align: middle;" rowspan="2">
+                                                                CORRECTION MODE</th>
+                                                            <th style="vertical-align: middle;" rowspan="2">RESULT
+                                                            </th>
+                                                            <th style="vertical-align: middle;" colspan="2">
+                                                                RECOMENDED PARTS</th>
+                                                            <th style="vertical-align: middle;" rowspan="2">REMARKS
+                                                            </th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>PR.NO</th>
+                                                            <th>TANGGAL</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @php
+                                                            $j = 0;
+                                                        @endphp
+                                                        @foreach ($list['WORK_EQUIPMENT_HYDRAULIC_OIL_PRESSURE'] as $value)
+                                                        <tr>
+                                                            @if (($value['item'] ?? '') == 'Blade Left Tilt Pressure' || ($value['item'] ?? '') == 'Blade Right Tilt Pressure')
+                                                                <td class="align-middle" rowspan="2">{!! $value['item'] !!}</td>
+                                                            @elseif (isset($value['item']))
+                                                                <td class="align-middle" rowspan="1">{!! $value['item'] !!}</td>
+                                                            @endif
+                                                            @if (!empty($value['condition0']) && ($value['item'] ?? '') == 'Blade Left Tilt Pressure')
+                                                                <td class="align-middle" rowspan="4">{!! $value['condition0'] !!}</td>
+                                                                <td class="align-middle" rowspan="1">{!! $value['condition1'] ?? '' !!}</td>
+                                                            @elseif (!empty($value['condition0']) && ($value['item'] ?? '') == 'Pilot Pressure')
+                                                                <td class="align-middle" rowspan="1">{!! $value['condition0'] !!}</td>
+                                                                <td class="align-middle">{!! $value['condition1'] ?? '' !!}</td>
+                                                            @else
+                                                                <td class="align-middle">{!! $value['condition1'] ?? '' !!}</td>
+                                                            @endif
+
+                                                            @if (isset($value['unit']))
+                                                                @if ($value['unit'] == 'Kg/cm2')
+                                                                    <td class="align-middle" rowspan="5">{!! $value['unit'] !!}</td>
+                                                                @else
+                                                                    <td class="align-middle">{!! $value['unit'] !!}</td>
+                                                                @endif
+                                                            @endif
+                                                            @if (isset($value['standard']))
+                                                                <td class="align-middle">{!! $value['standard'] !!}</td>
+                                                            @endif
+                                                            <td><input type="text" class="form-control" name="eng_actual[]"
+                                                                    value="{{ $data->hyd_actual[$j] ?? '' }}" disabled></td>
+                                                            <td><input type="text" class="form-control" name="eng_correct[]"
+                                                                    value="{{ $data->hyd_correction_made[$j] ?? '' }}" disabled></td>
+                                                            <td><input type="text" class="form-control" name="eng_result[]"
+                                                                    value="{{ $data->hyd_result[$j] ?? '' }}" disabled></td>
+                                                            <td><input type="text" class="form-control" name="eng_pr_no[]"
+                                                                    value="{{ $data->hyd_pr[$j] ?? '' }}" disabled></td>
+                                                            <td><input type="date" class="form-control" name="eng_tanggal[]"
+                                                                    value="{{ $data->hyd_taggal[$j] ?? '' }}" disabled></td>
+                                                            @if ($j === 0)
+                                                                <td rowspan="13">
+                                                                    <textarea class="form-control" rows="30" name="eng_remarks" disabled>{{ $data->hyd_remark }}</textarea>
+                                                                </td>
+                                                            @endif
+                                                        </tr>
+                                                        @php
+                                                            $j++;
+                                                        @endphp
+                                                        @endforeach
+
+
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="accordion-item">
+                                        <button type="button" class="accordion-header">WORK TRAVEL SYSTEM</button>
+                                        <div class="accordion-content">
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th rowspan="2" style="vertical-align: middle;">
+                                                                ITEM</th>
+                                                            <th style="vertical-align: middle;" rowspan="2" colspan="2">
+                                                                CONDITION</th>
+                                                            <th style="vertical-align: middle;" rowspan="2">UNIT
+                                                            </th>
+                                                            <th style="vertical-align: middle;" rowspan="2">
+                                                                STANDARD STD/PMS</th>
+                                                            <th style="vertical-align: middle;"rowspan="2">ACTUAL</th>
+                                                            <th style="vertical-align: middle;" rowspan="2">
+                                                                CORRECTION MODE</th>
+                                                            <th style="vertical-align: middle;" rowspan="2">RESULT
+                                                            </th>
+                                                            <th style="vertical-align: middle;" colspan="2">
+                                                                RECOMENDED PARTS</th>
+                                                            <th style="vertical-align: middle;" rowspan="2">REMARKS
+                                                            </th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>PR.NO</th>
+                                                            <th>TANGGAL</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @php
+                                                            $j = 0;
+                                                        @endphp
+                                                       @foreach ($list['WORK_TRAVEL_SYSTEM'] as $value)
+                                                       <tr>
+                                                           @if (!empty($value['item']))
+                                                               <td class="align-middle" rowspan="2">{!! $value['item'] !!}</td>
+                                                           @endif
+                                                           @if (!empty($value['condition0']))
+                                                               <td class="align-middle" rowspan="10">{!! $value['condition0'] !!}</td>
+                                                               <td class="align-middle" rowspan="1">{!! $value['condition1'] ?? '' !!}</td>
+                                                           @else
+                                                               <td class="align-middle">{!! $value['condition1'] ?? '' !!}</td>
+                                                           @endif
+
+                                                           @if (isset($value['unit']))
+                                                               <td class="align-middle" rowspan="10">{!! $value['unit'] !!}</td>
+                                                           @endif
+                                                           @if (isset($value['standard']))
+                                                               <td class="align-middle">{!! $value['standard'] !!}</td>
+                                                           @endif
+                                                           <td><input type="text" class="form-control" name="eng_actual[]"
+                                                                   value="{{ $data->hyd_actual[$j] ?? '' }}" disabled></td>
+                                                           <td><input type="text" class="form-control" name="eng_correct[]"
+                                                                   value="{{ $data->hyd_correction_made[$j] ?? '' }}" disabled></td>
+                                                           <td><input type="text" class="form-control" name="eng_result[]"
+                                                                   value="{{ $data->hyd_result[$j] ?? '' }}" disabled></td>
+                                                           <td><input type="text" class="form-control" name="eng_pr_no[]"
+                                                                   value="{{ $data->hyd_pr[$j] ?? '' }}" disabled></td>
+                                                           <td><input type="date" class="form-control" name="eng_tanggal[]"
+                                                                   value="{{ $data->hyd_taggal[$j] ?? '' }}" disabled></td>
+                                                           <td>
+                                                               <textarea class="form-control" name="eng_remarks" disabled>{{ $data->hyd_remark ?? '' }}</textarea>
+                                                           </td>
+                                                       </tr>
+                                                       @php
+                                                           $j++;
+                                                       @endphp
+                                                       @endforeach
+
+
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-5">
+                                    <div class="col-6 ">
+                                        <div class="input-group input-group-static mb-3">
+                                            <label for="dibuat" class="ms-0">Checked By</label>
+                                            <select name="checked" id="dibuat_oleh" class="form-control" disabled
+                                                required>
+                                                <option disabled selected>-- Select Creator --</option>
+                                                @foreach ($approvalList as $user)
+                                                    <option value="{{ $user->nik }}"
+                                                        {{ old('checked', $data->checked_by ?? '') == $user->nik ? 'selected' : '' }}>
+                                                        {{ $user->nama }}</option>
+                                                @endforeach
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="input-group input-group-static mb-3">
+                                            <label for="diperiksa" class="ms-0">Validated By</label>
+                                            <select name="validated" id="diperiksa" class="form-control" disabled
+                                                required>
+                                                <option disabled selected>-- Select Approval --</option>
+                                                @foreach ($approvalList as $user)
+                                                    <option value="{{ $user->nik }}"
+                                                        {{ old('checked', $data->validated_by ?? '') == $user->nik ? 'selected' : '' }}>
+                                                        {{ $user->nama }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        @for ($i = 0; $i < 2; $i++)
+                                            @if ($i == 0)
+                                                @if ($data->status[$i] == 'rejected')
+                                                    <div class="col-6 ty">
+                                                        <img src="{{ asset('img/rejected.png') }}" class="img-app"
+                                                            alt="">
+                                                    </div>
+                                                @elseif ($data->status[$i] == 'approved')
+                                                    <div class="col-6 ty">
+                                                        <img src="{{ asset('img/checked.png') }}" class="img-app"
+                                                            alt="">
+                                                    </div>
+                                                @elseif ($data->status[$i] == null)
+                                                    <div class="col-6 ty">
+
+                                                    </div>
+                                                @endif
+                                            @else
+                                                @if ($data->status[$i] == 'rejected')
+                                                    <div class="col-6 ty">
+                                                        <img src="{{ asset('img/rejected.png') }}" class="img-app"
+                                                            alt="">
+                                                    </div>
+                                                @elseif ($data->status[$i] == 'approved')
+                                                    <div class="col-6 ty">
+                                                        <img src="{{ asset('img/validated.png') }}" class="img-app"
+                                                            alt="">
+                                                    </div>
+                                                @elseif ($data->status[$i] == null)
+                                                    <div class="col-6 ty">
+
+                                                    </div>
+                                                @endif
+                                            @endif
+                                        @endfor
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="form-actions">
+                                                @if ($nik == $data->checked_by || $nik == $data->validated_by)
+                                                    <button class="btn btn-primary btn-sm" id="btn900Approve"
+                                                        data-doc="{{ $data->doc_num }}"
+                                                        data-status='@json($data->status)'
+                                                        data-nik="{{ $nik }}">
+                                                        <i class="fas fa-check"></i> Approve
+                                                    </button>
+
+                                                    <button class="btn btn-warning btn-sm" id="btn900Reject"
+                                                        data-doc="{{ $data->doc_num }}"
+                                                        data-status='@json($data->status)'
+                                                        data-nik="{{ $nik }}">
+                                                        <i class="fas fa-close"></i> Reject
+                                                    </button>
+                                                @endif
+
+                                                @if (collect($data->status)->contains(fn($s) => $s === 'rejected'))
+                                                    @if ($nik == $data->creator)
+                                                        <button type="button" class="btn btn-primary btn-sm"
+                                                            onclick="resetApproval('{{ $data->doc_num }}')">
+                                                            <i class="fas fa-undo"></i> Reset
+                                                        </button>
+                                                    @endif
+                                                @endif
+
+                                                <a href="{{ route('dashboard-dh24') }}"
+                                                    class="btn btn-secondary btn-sm">Cancel</a>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+
+@section('custom-css')
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+    <style>
+        .accordion {
+            width: 100%;
+
+            margin: auto;
+        }
+
+        .accordion-item {
+            border: 1px solid #ddd;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .accordion-header {
+            background: #E91E63;
+            color: white;
+            padding: 15px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            text-align: left;
+            width: 100%;
+            outline: none;
+        }
+
+        .accordion-content {
+            display: none;
+            padding: 15px;
+            background: #f1f1f1;
+        }
+
+        .active {
+            display: block;
+        }
+
+        .form-container {
+            display: flex;
+            align-items: center;
+            margin: 10px;
+            gap: 120px;
+
+        }
+
+        th,
+        td {
+            vertical-align: middle;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        td[rowspan] {
+            vertical-align: middle !important;
+            text-align: center;
+
+        }
+
+        .table-bordered td,
+        .table-bordered th {
+            border: 1px solid black !important;
+        }
+
+        .form-actions {
+            justify-content: flex-end;
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+
+        }
+
+        .bg-success {
+            background-color: #a6000b !important;
+        }
+
+
+
+        .custom-checkbox {
+            width: 20px;
+            height: 20px;
+            transform: scale(1.5);
+            cursor: pointer;
+        }
+    </style>
+@endsection
+
+
+@section('custom-js')
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#dibuat_oleh').select2();
+            $('#diperiksa').select2();
+        });
+        document.addEventListener("DOMContentLoaded", function() {
+            const headers = document.querySelectorAll(".accordion-header");
+
+            headers.forEach(header => {
+                header.addEventListener("click", function() {
+                    const content = this.nextElementSibling;
+
+
+                    document.querySelectorAll(".accordion-content").forEach(item => {
+                        if (item !== content) {
+                            item.classList.remove("active");
+                            item.style.display = "none";
+                        }
+                    });
+
+
+                    if (content.classList.contains("active")) {
+                        content.classList.remove("active");
+                        content.style.display = "none";
+                    } else {
+                        content.classList.add("active");
+                        content.style.display = "block";
+                    }
+                });
+            });
+        });
+        document.addEventListener("DOMContentLoaded", function() {
+
+            document.getElementById("btn900Approve").addEventListener("click", function() {
+                let docNumber = this.getAttribute("data-doc");
+                let status = JSON.parse(this.getAttribute('data-status'));
+                let nik = this.getAttribute("data-nik");
+
+                fetch("{{ route('plant.dh24.approve') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    },
+                    body: JSON.stringify({
+                        doc_num: docNumber,
+                        checked: nik == "{{ $data->checked_by }}" ? 'approved' : status[0],
+                        validated: nik == "{{ $data->validated_by }}" ? 'approved' : status[1],
+                        nik: nik,
+                    }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        window.location.href = "{{ route('dashboard-dh24') }}";
+                    } else {
+                        alert('Gagal Approve data.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Terjadi kesalahan.');
+                });
+            });
+
+
+            document.getElementById('btn900Reject').addEventListener('click', function() {
+                const docNum = this.getAttribute('data-doc');
+                const nik = this.getAttribute('data-nik');
+                const status = JSON.parse(this.getAttribute('data-status'));
+
+                fetch('{{ route('plant.dh24.reject') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    },
+                    body: JSON.stringify({
+                        doc_num: docNum,
+                        checked: 'rejected',
+                        validated: status,
+                        nik: nik
+                    }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        window.location.href = "{{ route('dashboard-dh24') }}";
+                    } else {
+                        alert('Gagal Reject data.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Terjadi kesalahan.');
+                });
+            });
+        });
+
+        function resetApproval(id) {
+            if (confirm('Are you sure you want to reset this Approval?')) {
+                axios.post('{{ route('plant.dh24.reset', ['id' => 'ID']) }}'.replace('ID', id))
+                    .then(function(response) {
+                        console.log('Response:', response);
+                        if (response.data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: response.data.message
+                            }).then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Failed to reset the approval.'
+                            });
+                        }
+                    })
+                    .catch(function(error) {
+                        console.error('Error:', error);
+                        let errorMessage = 'Terjadi kesalahan pada sistem';
+                        if (error.response) {
+                            if (error.response.data.errors) {
+                                errorMessage = Object.values(error.response.data.errors).flat().join('\n');
+                            } else if (error.response.data.message) {
+                                errorMessage = error.response.data.message;
+                            }
+                        }
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: errorMessage
+                        });
+                    });
+            }
+        }
+    </script>
+@endsection

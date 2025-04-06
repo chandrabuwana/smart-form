@@ -176,7 +176,7 @@
                                         <select name="{{ $name }}" class="form-select form-select-sm flex-grow-1">
                                             <option value="">-- Pilih --</option>
                                             @foreach($approvalList as $user)
-                                                <option value="{{ $user->nama }}">
+                                                <option value="{{ $user->nik }}">
                                                     {{ $user->nama }} ({{ $user->nik }})
                                                 </option>
                                             @endforeach
@@ -212,8 +212,8 @@
             shift: $('#shift').val(),
             loker: $('#loker').val(),
             jml_ins: $('#jml_ins').val(),
-            diinspeksi_oleh: $('[name="Diinspeksi"]').val(),
-            diinspeksi_ulang_oleh: $('[name="DiinspeksiUlang"]').val(),
+            checked_by: $('[name="Diinspeksi"]').val(),
+            dalidated_by: $('[name="DiinspeksiUlang"]').val(),
             mengetahui: $('[name="Mengetahui"]').val(),
             pertanyaan_id: [],
             jawaban: [],

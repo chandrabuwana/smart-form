@@ -852,31 +852,43 @@
             document.getElementById("tglDoc").value=(formatTgl() || "-");
         })
         
-        $('#btnSubmit').click( function(e) {
+        $('#btnSubmit').click(function(e) {
             e.preventDefault();
             const formData = $('#formInspeksiCatering').serialize();
 
-            axios.post(`{{ isset($formInspeksiCatering) ? route('bss-form.she-019B.edit-inspeksi-catering', ['id' => $formInspeksiCatering->id]) : route('bss-form.she-019B.create-inspeksi-catering') }}`, formData, {
+            // Add a loading state
+            $(this).prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Processing...');
+
+            axios.post("{{ route('bss-form.she-048.create-inspeksi-catering') }}", formData, {
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
             })
-            .then(function (response) {
-                console.log(response.data)
+            .then(function(response) {
+                console.log(response.data);
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil!',
                     text: 'Form Inspeksi Catering Berhasil di Simpan!',
-
                 }).then((result) => {
-                    window.location.href = `{{ route('bss-form.she-048.inspeksi-catering.dashboard') }}`;
+                    window.location.href = "{{ route('bss-form.she-048.inspeksi-catering.dashboard') }}";
                 });
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 console.error(error);
+                let errorMessage = 'Gagal menyimpan Form Inspeksi Catering';
+                
+                if (error.response && error.response.data && error.response.data.message) {
+                    errorMessage = error.response.data.message;
+                }
+                
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops!',
-                    text: 'Gagal menyimpan Form Inspeksi Catering'
+                    text: errorMessage
                 });
+            })
+            .finally(function() {
+                // Re-enable the button regardless of success/failure
+                $('#btnSubmit').prop('disabled', false).html('<i class="fas fa-save"></i> Submit Form');
             });
         });
         

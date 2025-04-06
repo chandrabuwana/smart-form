@@ -298,7 +298,7 @@
             <td>Mengetahui</td>
             <td>: {{ $record->acknowledged_by_name }}</td>
             <td>Tanda Tangan</td>
-            <td width="20%">: {{ $record->approval_status === 'approved' ? 'Signed' : '' }}</td>
+            <td width="20%">: {{ $record->approval_status === 'approved' ? 'Signed' : 'Not Signed' }}</td>
             <td>Tanggal</td>
             <td>: {{ $record->formatted_acknowledgment_date }}</td>
         </tr>

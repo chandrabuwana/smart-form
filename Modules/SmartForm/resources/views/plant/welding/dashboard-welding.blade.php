@@ -72,32 +72,54 @@
                                             value="{{ $filters['search'] ?? '' }}">
                                     </div>
                                 </div>
-                                <div class="col-md-3
-                                            mb-3">
+                                <div class="col-md-3 mb-3">
                                     <div class="input-group input-group-static mb-4 position-relative">
-                                        <label for="location" class="ms-0">Location</label>
-                                        <select class="form-control" id="location" name="location">
-                                            <option value="" selected disabled></option>
-                                            <option value="Workshop"
-                                                {{ isset($filters['location']) && $filters['location'] == 'Workshop' ? 'selected' : '' }}>
-                                                Workshop</option>
-                                            <option value="Pitstop"
-                                                {{ isset($filters['location']) && $filters['location'] == 'Pitstop' ? 'selected' : '' }}>
-                                                Pitstop</option>
-                                            <option value="Service"
-                                                {{ isset($filters['location']) && $filters['location'] == 'Service' ? 'selected' : '' }}>
-                                                Service</option>
-                                            <option value="Truck"
-                                                {{ isset($filters['location']) && $filters['location'] == 'Truck' ? 'selected' : '' }}>
-                                                Truck</option>
+                                        <label for="atasan" class="ms-0">Atasan</label>
+                                        <select class="form-control" id="atasan" name="atasan">
+                                            <option value="" selected disabled>-- Select Pemeriksa --</option>
+                                            @foreach ($user as $usr)
+                                                <option value="{{ $usr->nik }}" 
+                                                    {{ isset($filters['atasan']) && $filters['atasan'] == $usr->nik ? 'selected' : '' }}>
+                                                    {{ $usr->nama }}
+                                                </option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
+
                                 <div class="col-md-3 mb-3">
                                     <div class="input-group input-group-static mb-4 position-relative">
-                                        <label for="date" class="ms-0">Date</label>
-                                        <input type="date" class="form-control" id="date" name="date"
-                                            value="{{ $filters['date'] ?? '' }}">
+                                        <label for="pemeriksa" class="ms-0">Pemeriksa</label>
+                                        <select class="form-control" id="pemeriksa" name="pemeriksa">
+                                            <option value="" selected disabled>-- Select Pemeriksa --</option>
+                                            @foreach ($user as $usr)
+                                                <option value="{{ $usr->nik }}" 
+                                                    {{ isset($filters['pemeriksa']) && $filters['pemeriksa'] == $usr->nik ? 'selected' : '' }}>
+                                                    {{ $usr->nama }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 mb-3">
+                                    <div class="input-group input-group-static mb-4 position-relative">
+                                        <label for="status" class="ms-0">Status</label>
+                                        <select class="form-control" id="status" name="status">
+                                            <option value="" selected disabled></option>
+                                            <option value="Approved"
+                                                {{ isset($filters['status']) && $filters['status'] == 'Approved' ? 'selected' : '' }}>
+                                                Approved
+                                            </option>
+                                            <option value="Rejected"
+                                                {{ isset($filters['status']) && $filters['status'] == 'Rejected' ? 'selected' : '' }}>
+                                                Rejected
+                                            </option>
+                                            <option value="Pending"
+                                                {{ isset($filters['status']) && $filters['status'] == 'Pending' ? 'selected' : '' }}>
+                                                Pending
+                                            </option>
+                                        </select>
                                     </div>
                                 </div>
                                     <div class="col-md-12 mb-3 d-flex justify-content-start">
@@ -160,12 +182,20 @@
                                             </td>
                                             <td>
                                                 <p class="text-xs font-weight-bold mb-0">
-                                                    {{ $record->atasan }}
+                                                    @foreach ($user as $usr)
+                                                        @if ($record->atasan == $usr->nik)
+                                                            {{ $usr->nama }}
+                                                        @endif
+                                                    @endforeach
                                                 </p>
                                             </td>
                                             <td>
                                                 <p class="text-xs font-weight-bold mb-0">
-                                                    {{ $record->pemeriksa }}
+                                                    @foreach ($user as $usr)
+                                                        @if ($record->pemeriksa == $usr->nik)
+                                                            {{ $usr->nama }}
+                                                        @endif
+                                                    @endforeach
                                                 </p>
                                             </td>
                                             <td>

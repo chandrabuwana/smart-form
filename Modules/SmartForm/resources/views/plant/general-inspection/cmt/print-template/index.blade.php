@@ -10,26 +10,35 @@
             body {
                 width: 100%;
                 height: 100vh;
-                /* Use full height of the page */
                 overflow: hidden;
-                /* Prevent page breaks */
+                /* Menghindari scroll pada halaman */
+                margin: 0;
             }
 
             .print-container {
-                transform: scale(0.9);
-                /* Scale down content */
+                transform: scale(0.8);
+                /* Sesuaikan skala konten */
                 transform-origin: top left;
+                width: 100%;
+                height: 100%;
+            }
+
+            table {
+                table-layout: fixed;
+                width: 100%;
             }
 
             .hide-onprint {
-                display: none
+                display: none;
             }
         }
 
         @page {
             size: A4;
-            margin: 0;
+            margin: 10mm;
+            /* Mengatur margin untuk mencetak */
         }
+
 
         body {
             font-family: Arial, sans-serif !important;
@@ -39,13 +48,12 @@
             width: 100%;
             border-collapse: collapse;
             font-family: Arial, sans-serif;
-            font-size: 14px;
+            font-size: 6px;
         }
 
         th,
         td {
             border: 1px solid black;
-            padding: 8px;
             text-align: left;
         }
 
@@ -53,7 +61,7 @@
             background-color: #b0c4de;
             text-align: center;
             font-weight: semibold;
-            font-size: 24px
+            font-size: 5px
         }
 
         .logo {
@@ -69,16 +77,15 @@
         }
 
         .signature-wrapper {
-            margin-top: 12px;
+            margin-top: 5px;
             display: flex;
             justify-content: space-around;
             gap: 3;
         }
 
         .signature-box {
-            width: 350px;
+            width: 100%;
             border: 1px solid black;
-            padding: 10px;
             text-align: left;
             display: flex;
             flex-direction: column;
@@ -87,12 +94,12 @@
 
         .signature-box .title {
             font-weight: bold;
-            margin-bottom: 20px;
+            padding: 1px margin-bottom: 5px;
         }
 
         .signature-box .name {
             text-align: center;
-            margin-top: 100px;
+            margin-top: 10px;
             !important
         }
     </style>
@@ -102,13 +109,14 @@
 
     <table>
         <tr>
-            <td rowspan="2" style="width: 30%;">
+            <td rowspan="2" style="width: 20%;">
                 <img src="{{ asset('img/bss-logo.png') }}" class="logo" alt="BSS Logo">
             </td>
             <td rowspan="2" class="header" style="width: 40%;">FORM</td>
             <td rowspan="2" colspan="2" style="width: 15%;">MODEL UNIT : {{ $inspection['model_unit'] }}</td>
             <td>No. Dok</td>
             <td>BSS-PRU-PLA-061</td>
+
         </tr>
         <tr>
             <td>Issued</td>
@@ -143,16 +151,16 @@
         </tr>
     </table>
 
-    <div style="display:flex; margin-top: 12px; gap: 3px">
+    <div style="display:flex; margin-top: 10px; gap: 3px">
         <table>
             <tr>
-                <td colspan="3" style="text-align: center; height: 14px">DESCRIPTION</td>
+                <td colspan="3" style="text-align: center; height: 10px">DESCRIPTION</td>
                 <td colspan="2" style="text-align: center">PRE <br> INSPECT</td>
                 <td colspan="2" style="text-align: center">FINAL <br> INSPECT</td>
                 <td colspan="2" style="text-align: center">DELIVERY <br> INSPECT</td>
             </tr>
             <tr>
-                <td colspan="2" style="height: 20px">ACTIVITY</td>
+                <td colspan="2" style="height: 10px">ACTIVITY</td>
                 <td>CRITICAL POINT</td>
                 <td style="writing-mode: vertical-lr; transform: rotate(180deg); text-align:center">GOOD</td>
                 <td style="writing-mode: vertical-lr; transform: rotate(180deg); text-align:center">BROKEN</td>
@@ -163,7 +171,7 @@
             </tr>
             @foreach (array_slice($activityChecklistJson, 0, 4) as $category => $items)
                 <tr>
-                    <td colspan="9" style="height: 14px">
+                    <td colspan="9" style="height: 10px">
                         <strong>{{ $category }}</strong>
                     </td>
                 </tr>
@@ -175,7 +183,7 @@
                     @endphp
 
                     <tr>
-                        <td>{{ $index + 1 }}</td>
+                        <td style="text-align: center">{{ $index + 1 }}</td>
                         <td>{{ $activityKey }}</td>
                         <td>{{ $item['critical_point'] }}</td>
                         @foreach ($inspectionTypes as $type)
@@ -194,13 +202,13 @@
         </table>
         <table>
             <tr>
-                <td colspan="3" style="text-align: center; height: 14px">DESCRIPTION</td>
+                <td colspan="3" style="text-align: center; height: 10px">DESCRIPTION</td>
                 <td colspan="2" style="text-align: center">PRE <br> INSPECT</td>
                 <td colspan="2" style="text-align: center">FINAL <br> INSPECT</td>
                 <td colspan="2" style="text-align: center">DELIVERY <br> INSPECT</td>
             </tr>
             <tr>
-                <td colspan="2" style="height: 20px">ACTIVITY</td>
+                <td colspan="2" style="height: 10px">ACTIVITY</td>
                 <td>CRITICAL POINT</td>
                 <td style="writing-mode: vertical-lr; transform: rotate(180deg); text-align:center">GOOD</td>
                 <td style="writing-mode: vertical-lr; transform: rotate(180deg); text-align:center">BROKEN</td>
@@ -211,7 +219,7 @@
             </tr>
             @foreach (array_slice($activityChecklistJson, 4) as $category => $items)
                 <tr>
-                    <td colspan="9" style="height: 14px"><span style="font-weight: bold;">{{ $category }}</span>
+                    <td colspan="9" style="height: 10px"><span style="font-weight: bold;">{{ $category }}</span>
                     </td>
                 </tr>
                 @foreach ($items as $index => $item)
@@ -222,7 +230,7 @@
                     @endphp
 
                     <tr>
-                        <td>{{ $index + 1 }}</td>
+                        <td style="text-align: center">{{ $index + 1 }}</td>
                         <td>{{ $activityKey }}</td>
                         <td>{{ $item['critical_point'] }}</td>
                         @foreach ($inspectionTypes as $type)
@@ -240,10 +248,10 @@
         </table>
     </div>
 
-    <h3 style="text-align: center; font-family: arial; margin-bottom: 0">ANALISA HASIL INSPEKSI (Di isi oleh Foreman)
-    </h3>
+    <p style="text-align: center; font-family: arial; font-size:10px; ">ANALISA HASIL INSPEKSI (Di isi oleh Foreman)
+    </p>
     <div style="display:flex; gap: 3px">
-        <table style="margin-top: 12px">
+        <table style="margin-top: 5px">
             <tr>
                 <td rowspan="2">COMPONENT</td>
                 <td colspan="3" style="text-align: center">PERFORMANCE</td>
@@ -257,15 +265,18 @@
             @foreach (array_slice($inspectionResultJson, 0, 5) as $category => $item)
                 <tr>
                     <td>{{ $category }}</td>
-                    <td>{{ ($inspection['performance'][$category] ?? '') == 'bagus' ? '✔' : '' }}</td>
-                    <td>{{ ($inspection['performance'][$category] ?? '') == 'cukup' ? '✔' : '' }}</td>
-                    <td>{{ ($inspection['performance'][$category] ?? '') == 'kurang' ? '✔' : '' }}</td>
-                    <td>{{ $inspection['remark'][$category] ?? '' }}</td>
+                    <td style="text-align: center">
+                        {{ ($inspection['performance'][$category] ?? '') == 'bagus' ? '✔' : '' }}</td>
+                    <td style="text-align: center">
+                        {{ ($inspection['performance'][$category] ?? '') == 'cukup' ? '✔' : '' }}</td>
+                    <td style="text-align: center">
+                        {{ ($inspection['performance'][$category] ?? '') == 'kurang' ? '✔' : '' }}</td>
+                    <td style="text-align: center">{{ $inspection['remark'][$category] ?? '' }}</td>
                 </tr>
             @endforeach
         </table>
 
-        <table style="margin-top: 12px">
+        <table style="margin-top: 5px">
             <tr>
                 <td rowspan="2">COMPONENT</td>
                 <td colspan="3" style="text-align: center">PERFORMANCE</td>
@@ -279,10 +290,13 @@
             @foreach (array_slice($inspectionResultJson, 5) as $category => $item)
                 <tr>
                     <td>{{ $category }}</td>
-                    <td>{{ ($inspection['performance'][$category] ?? '') == 'bagus' ? '✔' : '' }}</td>
-                    <td>{{ ($inspection['performance'][$category] ?? '') == 'cukup' ? '✔' : '' }}</td>
-                    <td>{{ ($inspection['performance'][$category] ?? '') == 'kurang' ? '✔' : '' }}</td>
-                    <td>{{ $inspection['remark'][$category] ?? ''}}</td>
+                    <td style="text-align: center">
+                        {{ ($inspection['performance'][$category] ?? '') == 'bagus' ? '✔' : '' }}</td>
+                    <td style="text-align: center">
+                        {{ ($inspection['performance'][$category] ?? '') == 'cukup' ? '✔' : '' }}</td>
+                    <td style="text-align: center">
+                        {{ ($inspection['performance'][$category] ?? '') == 'kurang' ? '✔' : '' }}</td>
+                    <td style="text-align: center">{{ $inspection['remark'][$category] ?? '' }}</td>
                 </tr>
             @endforeach
         </table>
@@ -293,31 +307,63 @@
     @endphp
 
     <div class="signature-wrapper">
-        <div class="signature-box" style="width: 500px">
-            <div class="title">Date : {{ Carbon::parse($inspection['created_at'])->format('d M Y') }}</div>
-            <div style="text-align: center">Dilakukan oleh :</div>
-            <div style="display: flex; justify-content:space-around">
-
-                <div class="name">( Mechanic )</div>
-                <div class="name">( Mechanic )</div>
+        <div class="signature-box" style="width: 400px; font-size: 10px;">
+            <div>
+                <p>Date: {{ Carbon::parse($inspection['date_sign1'])->format('d M Y') }}</p>
+            </div>
+            <div style="text-align: center;">
+                <p>Dilakukan oleh:</p>
+            </div>
+            <div style="display: flex; justify-content: space-around;">
+                <div class="name">
+                    <p>{{ $inspection['dilakukan1'] }}
+                    </p>
+                    <p>(Mechanic)</p>
+                </div>
+                <div class="name">
+                    <p>{{ $inspection['dilakukan2'] }}
+                    </p>
+                    <p>(Mechanic)</p>
+                </div>
             </div>
         </div>
 
-        <div class="signature-box">
-            <div class="title">Date : {{ Carbon::parse($inspection['created_at'])->format('d M Y') }}</div>
-            <div style="text-align: center">Diperiksa oleh :</div>
-            <div class="name">( Plant Foreman )</div>
+        <div class="signature-box" style="width: 300px; font-size: 10px;">
+            <div>
+                <p>Date: {{ Carbon::parse($inspection['date_sign3'])->format('d M Y') }}</p>
+            </div>
+            <div style="text-align: center;">
+                <p>Diperiksa
+                    oleh:
+                </p>
+            </div>
+            <div class="name">
+                <p>{{ optional(collect($approvalList)->firstWhere('nik', $inspection['diperiksa']))->nama ?? '' }}</p>
+                <p>(Plant Foreman)</p>
+            </div>
         </div>
 
-        <div class="signature-box">
-            <div class="title">Date : {{ Carbon::parse($inspection['created_at'])->format('d M Y') }}</div>
-            <div style="text-align: center">Diketahui oleh :</div>
-            <div class="name">( Kabag / Spv Plant )</div>
+        <div class="signature-box" style="width: 300px; font-size: 10px;">
+            <div>
+                <p>Date: {{ Carbon::parse($inspection['date_sign2'])->format('d M Y') }}</p>
+            </div>
+            <div style="text-align: center;">
+                <p>Diketahui
+                    oleh:
+                </p>
+            </div>
+            <div class="name">
+                <p>{{ optional(collect($approvalList)->firstWhere('nik', $inspection['diketahui']))->nama ?? '' }}</p>
+                <p>(Kabag / Spv Plant)</p>
+            </div>
         </div>
     </div>
 
-    <a class="hide-onprint" href="{{route('bss-form.plant.general-inspection.cmt.index')}}" style="text-decoration: none; position: fixed; bottom: 20px; right: 100px; padding: 10px 20px; background-color: #e8e8e8; color: rgb(56, 56, 56); border: none; border-radius: 5px; cursor: pointer; font-size: 16px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">Kembali</a>
-    <button class="hide-onprint" onclick="window.print()" style="position: fixed; bottom: 20px; right: 20px; padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">Print</button>
+
+    <a class="hide-onprint" href="{{ route('bss-form.plant.general-inspection.cmt.index') }}"
+        style="text-decoration: none; position: fixed; bottom: 20px; right: 100px; padding: 10px 20px; background-color: #e8e8e8; color: rgb(56, 56, 56); border: none; border-radius: 5px; cursor: pointer; font-size: 16px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">Kembali</a>
+    <button class="hide-onprint" onclick="window.print()"
+        style="position: fixed; bottom: 20px; right: 20px; padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">Print</button>
 
 </body>
 

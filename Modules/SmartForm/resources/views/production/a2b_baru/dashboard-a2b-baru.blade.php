@@ -30,23 +30,107 @@
                 </div>
             </div>
             <!-- Statistics Cards -->
-            <div class="row g-3 mb-4">
-                <div class="col-md-3">
-                    <div class="card stats-card">
+                <div class="row g-3 mb-4 ">
+                    <div class="col-md-3">
+                        <div class="card stats-card">
+                            <div class="card-body p-3">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <i class="fas fa-file text-primary fa-2x"></i>
+                                    </div>
+                                    <div class="text-end pt-1">
+                                        <p class="text-sm mb-0 text-capitalize">Total Records</p>
+                                        <h4 class="mb-0">{{ $statistics->total_records }}</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
+                </div>  
 
             <!-- Filters and Search -->
-            <div class="card-body px-0 pb-2">
-                <div class="d-flex align-items-center mx-3">
-                    <a href="{{ route('prod.a2b-baru.form') }}">
-                        <button class="btn btn-primary ms-auto uploadBtn">
-                            New Form
-                        </button>
-                    </a>
+                <div class="card-body px-0 pb-2">
+                    <div class="d-flex align-items-center mx-3">
+                        <a href="{{ route('prod.a2b-baru.form') }}">
+                            <button class="btn btn-primary ms-auto uploadBtn">
+                                New Form
+                            </button>
+                        </a>
+                    </div>
+                    <h5 class="mx-4">Filter Data</h5>
+                    <div class="mx-4 row">
+                        <form action="{{ route('prod.a2b-baru.dashboard') }}" method="GET" id="filterForm">
+                            <div class="row align-items-center">
+                                <div class="col-md-2 mb-3">
+                                    <div class="input-group input-group-static mb-4 position-relative">
+                                        <label>Search</label>
+                                        <input type="text" name="search" class="form-control"
+                                            placeholder="Search by doc number or name"
+                                            value="{{ $filters['search'] ?? '' }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <div class="input-group input-group-static mb-4 position-relative">
+                                        <label for="operator" class="ms-0">Operator</label>
+                                        <select class="form-control" id="operator" name="operator">
+                                            <option value="" selected disabled>-- Select Operator --</option>
+                                            @foreach ($user as $usr)
+                                                <option value="{{ $usr->nik }}" 
+                                                    {{ isset($filters['operator']) && $filters['operator'] == $usr->nik ? 'selected' : '' }}>
+                                                    {{ $usr->nama }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 mb-3">
+                                    <div class="input-group input-group-static mb-4 position-relative">
+                                        <label for="pengawas" class="ms-0">Pengawas</label>
+                                        <select class="form-control" id="pengawas" name="pengawas">
+                                            <option value="" selected disabled>-- Select Pengawas --</option>
+                                            @foreach ($user as $usr)
+                                                <option value="{{ $usr->nik }}" 
+                                                    {{ isset($filters['pengawas']) && $filters['pengawas'] == $usr->nik ? 'selected' : '' }}>
+                                                    {{ $usr->nama }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 mb-3">
+                                    <div class="input-group input-group-static mb-4 position-relative">
+                                        <label for="status" class="ms-0">Status</label>
+                                        <select class="form-control" id="status" name="status">
+                                            <option value="" selected disabled></option>
+                                            <option value="Approved"
+                                                {{ isset($filters['status']) && $filters['status'] == 'Approved' ? 'selected' : '' }}>
+                                                Approved
+                                            </option>
+                                            <option value="Rejected"
+                                                {{ isset($filters['status']) && $filters['status'] == 'Rejected' ? 'selected' : '' }}>
+                                                Rejected
+                                            </option>
+                                            <option value="Pending"
+                                                {{ isset($filters['status']) && $filters['status'] == 'Pending' ? 'selected' : '' }}>
+                                                Pending
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                    <div class="col-md-12 mb-3 d-flex justify-content-start">
+                                    <button type="submit" class="btn btn-primary filter-btn" id="btnFilterSubmit">
+                                        Filter
+                                    </button>
+                                    <button type="button" class="btn btn-secondary filter-btn" id="btnClearFilter">
+                                        Clear Filter
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-            </div>
 
             <!-- Data Table -->
             <div class="card">
@@ -59,6 +143,8 @@
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Nama Operator</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Nrp</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Date</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Operator</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Pengawas</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Status</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Actions</th>
                                 </tr>
@@ -83,6 +169,24 @@
                                         <span class="text-xs font-weight-bold">{{ $record->tanggal }}</span>
                                     </td>
                                     <td>
+                                        <p class="text-xs font-weight-bold mb-0">
+                                            @foreach ($user as $usr)
+                                                @if ($record->operator == $usr->nik)
+                                                    {{ $usr->nama }}
+                                                @endif
+                                            @endforeach
+                                        </p>
+                                    </td>
+                                    <td>
+                                        <p class="text-xs font-weight-bold mb-0">
+                                            @foreach ($user as $usr)
+                                                @if ($record->pengawas == $usr->nik)
+                                                    {{ $usr->nama }}
+                                                @endif
+                                            @endforeach
+                                        </p>
+                                    </td>
+                                    <td>
                                         <span class="text-xs font-weight-bold">
                                             @if ($record->status_operator === 'Approve' && $record->status_pengawas === 'Approve')
                                                 Approved
@@ -94,7 +198,7 @@
                                                 Pending
                                             @elseif (
                                                 ($record->status_operator === 'Approve' && $record->status_pengawas === 'Reject') || 
-                                                ($record->status_operator === 'Reject' && $record->status_pengawas === 'Approve')
+                                                ($record->status_operator === 'Reject' && $record->status_pengawas   === 'Approve')
                                             )
                                                 Rejected
                                             @endif

@@ -22,6 +22,32 @@
         .select2-container--open .select2-selection.select2-selection--single, .select2-container--focus .select2-selection.select2-selection--single {
             border-bottom: 1px solid #D81B60;
         }
+    .status {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        font-family: Arial, sans-serif;
+        padding: 3px;
+        font-size: 12px;
+    }
+    .box {
+        width: 20px;
+        height: 20px;
+        display: inline-block;
+        border-radius: 4px;
+        font-size: 12px;
+    }
+    .grey {
+        background-color:rgb(134, 132, 132);
+    }
+
+    .green {
+        background-color: #4CAF50;
+    }
+
+    .red {
+        background-color:rgb(255, 38, 0);
+    }
     </style>
 @endsection
 
@@ -71,6 +97,20 @@
                             </button>
                         </div>
                     </div>
+                    <div class="col-md-12 d-flex justify-content-end">
+                        <div class="status me-2">
+                                <label>Status :</label>
+                            </div>
+                            <div class="status me-2">
+                                <span class="box grey"></span> Need Approval
+                            </div>
+                            <div class="status me-2">
+                                <span class="box green"></span> Approved
+                            </div>
+                            <div class="status me-2">
+                                <span class="box red"></span> Rejected
+                            </div>
+                        </div>
                     <div class="table-responsive p-0">
                         <table id="list-form" data-toggle="table" data-ajax="fetchFormsData" data-side-pagination="server"
                             data-page-list="[10, 25, 50, 100, all]" data-sortable="true"
@@ -86,7 +126,8 @@
                                     <th data-field="fuel" data-align="left" data-halign="center">No Fuel Station</th>
                                     <th data-field="total" data-align="left" data-halign="center">Total Pemakaian</th>
                                     <th data-field="approval" data-align="left" data-halign="center">Approval</th>
-                                    <th data-field="status" data-align="left" data-halign="center">Status</th>
+                                    <th data-field="is_active" data-align="left" data-formatter="statusActive" data-halign="text-center" data-sortable="true">Is Active?</th>
+                                    <th data-field="status" data-align="left" data-formatter="statusFormater" data-halign="text-center" data-sortable="true">Status</th>
                                     <th data-field="action" data-formatter="actionFormatter" >Actions</th>
                                 </tr>
                             </thead>
@@ -181,7 +222,7 @@
             if(row.status = "Need Approval" || row.status == null) {
                 if(row.dibuat_oleh == users_nik && (row.editable == 0 || row.editable == null)) {
                     btn = btn + '<a type="button" class="btn btn-info btn-sm me-1" href="/bss-form/log/edit-pemakaian-solar?no_doc=' + row.no_doc + '">Edit</a>'
-                         + '<a class="btn btn-primary btn-action btn-sm" href="/bss-form/log/pdf-pemakaian-solar/${row.id}">Pdf</a>';
+                         + '<a class="btn btn-primary btn-action btn-sm" href="/bss-form/log/pdf-pemakaian-solar?no_doc=' + row.no_doc + '">Pdf</a>';
                 }
             }
             return btn;
@@ -197,6 +238,25 @@
             $.get(url + '?' + $.param(params.data)).then(function(res) {
                 params.success(res.data)
             })
+        }
+
+        function statusFormater(value, row, index) {
+            if (value == 1) {
+                return `<button type="button" style="--bs-btn-font-size: .60rem;" class="btn btn-success btn-sm" disabled>Approved</button>`
+            } else if (value == 2) {
+                return `<button type="button" style="--bs-btn-font-size: .60rem;" class="btn btn-danger btn-sm" disabled>Rejected</button>`
+            } else {
+                return `<button type="button" style="--bs-btn-font-size: .60rem;" class="btn btn-secondary btn-sm" disabled>Need Approval</button>`
+            }
+        }
+        function statusActive(value, row, index) {
+            if (value == 1) {
+                return `<button type="button" style="--bs-btn-font-size: .60rem;" class="btn btn-success btn-sm" disabled>Active</button>`
+            } else if (value == 0) {
+                return `<button type="button" style="--bs-btn-font-size: .60rem;" class="btn btn-secondary btn-sm" disabled>Deleted</button>`
+            } else {
+                return `<button type="button" style="--bs-btn-font-size: .60rem;" class="btn btn-success btn-sm" disabled>Yes</button>`
+            }
         }
     </script>
 @endsection

@@ -44,6 +44,8 @@ use Modules\SmartForm\App\Http\Controllers\SM\AssetRequestController;
 use Modules\SmartForm\App\Http\Controllers\SM\RegistrasiSupplierController;
 use Modules\SmartForm\App\Http\Controllers\LOG\CheckOgcComController;
 use Modules\SmartForm\App\Http\Controllers\LOG\LogController;
+use Modules\SmartForm\App\Http\Controllers\LOG\RequestMasterController;
+use Modules\SmartForm\App\Http\Controllers\LOG\PengeluaranOilController;
 use Modules\SmartForm\App\Http\Controllers\LOG\PemakaianSolarController;
 use Modules\SmartForm\App\Http\Controllers\LOG\FuelController;
 use Modules\SmartForm\App\Http\Controllers\LOG\Pengajuan003SapController;
@@ -57,7 +59,6 @@ use Modules\SmartForm\App\Http\Controllers\TeamManagement\RoleManagementControll
 use Modules\SmartForm\App\Http\Controllers\TeamManagement\UserManagementController;
 use Modules\SmartForm\App\Http\Controllers\UnderCarriage\UnderCarriageInspectionController;
 use Modules\SmartForm\App\Http\Controllers\FAT\PPH\PPHDashboardController;
-use Modules\SmartForm\App\Http\Controllers\FAT\PPH\HelperPPHController;
 use Modules\SmartForm\App\Http\Controllers\IT\PrinterFormController;
 use Modules\SmartForm\App\Http\Controllers\IT\CctvFormController;
 use Modules\SmartForm\App\Http\Controllers\IT\DeviceFormController;
@@ -67,6 +68,7 @@ use Modules\SmartForm\App\Http\Controllers\PLANT\GeneralInspection\InspectionDon
 use Modules\SmartForm\App\Http\Controllers\GS\InspeksiToiletMessKantorController;
 use Modules\SmartForm\App\Http\Controllers\PLANT\PpmShantuiDH24Controller;
 use Modules\SmartForm\App\Http\Controllers\PLANT\PpmXcmgXE1250Controller;
+use Modules\SmartForm\App\Http\Controllers\Production\LgmgController;
 
 /*
 |--------------------------------------------------------------------------
@@ -94,11 +96,17 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
         Route::prefix('log')->group(function () {
 
             // REQUEST MASTER MENU
-            Route::get('/request-master', [LogController::class, 'RequestMasterDashboard'])->name('bss-form.log.request-master.dashboard');
-            Route::get('/list', [LogController::class, 'GetListRequestMaster'])->name("bss-form.log.list-request-master");
-            Route::get('/form-req-master', [LogController::class, 'formReqMaster'])->name('bss-form.log.form-req-master');
-            Route::post('/add-request-master', [LogController::class, 'SubmitFormRequestMaster'])->name("bss-form.log.add-request-master");
-            Route::get('/pdf-req-master/{id}', [LogController::class, 'PdfReqMaster'])->name('bss-form.log.pdf-req-master');
+            Route::get('/request-master', [RequestMasterController::class, 'RequestMasterDashboard'])->name('bss-form.log.request-master.dashboard');
+            Route::get('/list', [RequestMasterController::class, 'GetListRequestMaster'])->name("bss-form.log.list-request-master");
+            Route::get('/form-req-master', [RequestMasterController::class, 'formReqMaster'])->name('bss-form.log.form-req-master');
+            Route::post('/add-request-master', [RequestMasterController::class, 'SubmitFormRequestMaster'])->name("bss-form.log.add-request-master");
+            Route::get('/pdf-req-master/{id}', [RequestMasterController::class, 'PdfReqMaster'])->name('bss-form.log.pdf-req-master');
+            Route::get('/edit-req-master', [RequestMasterController::class, 'EditReqMaster'])->name('bss-form.log.edit-request-master');
+            Route::post('/update-request-master', [RequestMasterController::class, 'UpdateFormRequestMaster'])->name("bss-form.log.update-request-master");
+            Route::get('/catalog-view-req-master', [RequestMasterController::class, 'CatalogViewReqMaster'])->name('bss-form.log.catalog-view-request-master');
+            Route::get('/detail-req-master', [RequestMasterController::class, 'DetailReqMaster'])->name('bss-form.log.detail-request-master');
+            Route::post('/approve-reject-request-master', [RequestMasterController::class, 'ApproveRejectRequestMaster'])->name('bss-form.log.approve-reject-request-master');
+            Route::post('/delete-request-master', [RequestMasterController::class, 'DeleteRequestMaster'])->name('bss-form.log.delete-request-master');
 
             // PERMINTAAN PENGISIAN FUEL
             Route::get('/request-fuel', [FuelController::class, 'FuelDashboard'])->name('bss-form.log.fuel.dashboard');
@@ -106,17 +114,22 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/form-fuel', [FuelController::class, 'FormFuel'])->name('bss-form.log.form-fuel');
             Route::post('/create-fuel', [FuelController::class, 'CreateReqFuel'])->name('bss-form.log.create-req-fuel');
             Route::get('/edit-req-fuel', [FuelController::class, 'editReqFuel'])->name('bss-form.log.edit-req-fuel');
-            Route::post('/update-fuel/{id}', [FuelController::class, 'updateReqFuel'])->name('bss-form.log.update-req-fuel');
-            Route::get('/delete-fuel/{id}', [FuelController::class, 'DeleteReqFuel'])->name('bss-form.log.delete-fuel');
-            Route::get('/pdf-fuel/{id}', [FuelController::class, 'PdfReqFuel'])->name('bss-form.log.pdf-fuel');
+            Route::post('/update-fuel', [FuelController::class, 'updateReqFuel'])->name('bss-form.log.update-fuel');
+            Route::get('/delete-fuel', [FuelController::class, 'HapusReqFuel'])->name('bss-form.log.delete-fuel');
+            Route::get('/pdf-fuel', [FuelController::class, 'PdfReqFuel'])->name('bss-form.log.pdf-fuel');
             Route::get('/get-req-fuel-detail', [FuelController::class, 'FuelDetailById'])->name("bss-form.log.form-detail-by-id");
 
             // PENGELUARAN OIL, GREASE & COOLANT MENU
-            Route::get('/pengeluaran-oli', [LogController::class, 'PengeluaranOliDashboard'])->name('bss-form.log.pengeluaran-oli.dashboard');
-            Route::get('/list-pengeluaran-oli', [LogController::class, 'GetListPengeluaranOli'])->name("bss-form.log.list-pengeluaran-oli");
-            Route::get('/form-pengeluaran-oli', [LogController::class, 'formPengeluaranOli'])->name('bss-form.log.form-pengeluaran-oli');
-            Route::post('/add-pengeluaran-oli', [LogController::class, 'SubmitFormPengeluaranOli'])->name("bss-form.log.add-pengeluaran-oli");
-            Route::get('/pdf-pengeluaran-oli/{id}', [LogController::class, 'PdfPengeluaranOli'])->name('bss-form.log.pdf-pengeluaran-oli');
+            Route::get('/pengeluaran-oli', [PengeluaranOilController::class, 'PengeluaranOliDashboard'])->name('bss-form.log.pengeluaran-oli.dashboard');
+            Route::get('/list-pengeluaran-oli', [PengeluaranOilController::class, 'GetListPengeluaranOli'])->name("bss-form.log.list-pengeluaran-oli");
+            Route::get('/form-pengeluaran-oli', [PengeluaranOilController::class, 'formPengeluaranOli'])->name('bss-form.log.form-pengeluaran-oli');
+            Route::post('/add-pengeluaran-oli', [PengeluaranOilController::class, 'SubmitFormPengeluaranOli'])->name("bss-form.log.add-pengeluaran-oli");
+            Route::get('/pdf-pengeluaran-oli/{id}', [PengeluaranOilController::class, 'PdfPengeluaranOli'])->name('bss-form.log.pdf-pengeluaran-oli');
+            Route::get('/edit-pengeluaran-oli', [PengeluaranOilController::class, 'EditPengeluaranOli'])->name('bss-form.log.edit-pengeluaran-oli');
+            Route::post('/update-pengeluaran-oli', [PengeluaranOilController::class, 'UpdateFormPengeluaranOli'])->name("bss-form.log.update-pengeluaran-oli");
+            Route::get('/detail-pengeluaran-oli', [PengeluaranOilController::class, 'DetailPengeluaranOli'])->name('bss-form.log.detail-pengeluaran-oli');
+            Route::post('/approve-reject-pengeluaran-oli', [PengeluaranOilController::class, 'ApproveRejectPengeluaranOli'])->name('bss-form.log.approve-reject-pengeluaran-oli');
+            Route::post('/delete-pengeluaran-oli', [PengeluaranOilController::class, 'DeletePengeluaranOli'])->name('bss-form.log.delete-pengeluaran-oli');
 
             // PEMAKAIAN SOLAR
             Route::get('/pemakaian-solar', [PemakaianSolarController::class, 'PemakaianSolarDashboard'])->name('bss-form.log.pemakaian-solar.dashboard');
@@ -125,7 +138,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/add-pemakaian-solar', [PemakaianSolarController::class, 'SubmitFormPemakaianSolar'])->name("bss-form.log.add-pemakaian-solar");
             Route::get('/edit-pemakaian-solar', [PemakaianSolarController::class, 'editPemakaianSolar'])->name('bss-form.log.edit-pemakaian-solar');
             Route::post('/submit-edit-pemakaian-solar', [PemakaianSolarController::class, 'SubmitEditPemakaianSolar'])->name("bss-form.log.submit-edit-pemakaian-solar");
-            Route::get('/pdf-pemakaian-solar/{id}', [PemakaianSolarController::class, 'PdfPemakaianSolar'])->name('bss-form.log.pdf-pemakaian-solar');
+            Route::get('/pdf-pemakaian-solar', [PemakaianSolarController::class, 'PdfPemakaianSolar'])->name('bss-form.log.pdf-pemakaian-solar');
             Route::get('/get-pemakaian-solar-detail', [PemakaianSolarController::class, 'SolarDetailByNoDoc'])->name("bss-form.log.form-detail-by-id");
             Route::get('/get-pemakaian-solar-data', [PemakaianSolarController::class, 'GetPemakaianSolarData'])->name("bss-form.log.get-pemakaian-solar-data");
 
@@ -143,6 +156,13 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
                 Route::get('/create-form', [Pengajuan003SapController::class, 'createForm'])->name('create-003-sap');
                 Route::post('/store-form', [Pengajuan003SapController::class, 'storeForm'])->name('store-003-sap');
                 Route::get('/export-pdf/{id}', [Pengajuan003SapController::class, 'exportPDF'])->name('export-003-sap');
+                Route::post('/update/{id}',[Pengajuan003SapController::class, 'Update'])->name('003-sap-update');
+                Route::get('/detail/{id}', [Pengajuan003SapController::class, 'detail'])->name('003-sap-detail');
+                Route::delete('/delete/{id}', [Pengajuan003SapController::class, 'Delete'])->name('003-sap-delete');
+                Route::get('/show/{id}', [Pengajuan003SapController::class, 'show'])->name('003-sap-show');
+                Route::post('/approve-ppm.xe1250', [Pengajuan003SapController::class, 'Approve'])->name("003-sap-approve");
+                Route::post('/reject-ppm.xe1250', [Pengajuan003SapController::class, 'Reject'])->name("003-sap-reject");
+                Route::post('/reset-ppm.xe1250/{id}', [Pengajuan003SapController::class, 'Reset'])->name("003-sap-reset");
             });
 
         });
@@ -172,10 +192,16 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/list-supplier', [RegistrasiSupplierController::class, 'GetListRegistrasiSupplier'])->name("bss-form.sm.list-supplier");
             Route::get('/form-registrasi-supplier', [RegistrasiSupplierController::class, 'FormRegistrasiSupplier'])->name('bss-form.sm.form-registrasi-supplier');
             Route::post('/create-registrasi-supplier', [RegistrasiSupplierController::class, 'CreateRegisSupplier'])->name('bss-form.sm.create-registrasi-supplier');
-            Route::get('/edit-registrasi-supplier/{id}', [RegistrasiSupplierController::class, 'editRegisSupplier'])->name('bss-form.sm.edit-registrasi-supplier');
-            Route::post('/update-fuel/{id}', [RegistrasiSupplierController::class, 'updateReqFuel'])->name('bss-form.sm.update-req-fuel');
-            Route::get('/delete-supplier/{id}', [RegistrasiSupplierController::class, 'DeleteSupplier'])->name('bss-form.sm.delete-supplier');
-            Route::get('/pdf-registrasi-supplier/{id}', [RegistrasiSupplierController::class, 'PdfRegSupplier'])->name('bss-form.sm.pdf-registrasi-supplier');
+            Route::get('/edit-supplier', [RegistrasiSupplierController::class, 'RubahRegisSupplier'])->name('bss-form.sm.edit-registrasi-supplier');
+            Route::get('/lihat-approve-supplier', [RegistrasiSupplierController::class, 'ApproveRegisSupplier'])->name('bss-form.sm.lihat-approve-supplier');
+            Route::post('/update-supplier', [RegistrasiSupplierController::class, 'updateRegisSupplier'])->name('bss-form.sm.update-supplier');
+            Route::get('/approve-supplier', [RegistrasiSupplierController::class, 'approveSupplier'])->name('bss-form.sm.approve-supplier');
+            Route::get('/delete-supplier', [RegistrasiSupplierController::class, 'DeleteSupplier'])->name('bss-form.sm.delete-supplier');
+            Route::get('/pdf-registrasi-supplier', [RegistrasiSupplierController::class, 'PdfRegSupplier'])->name('bss-form.sm.pdf-registrasi-supplier');
+            Route::get('/get-supplier-detail', [RegistrasiSupplierController::class, 'SupplierDetailById'])->name("bss-form.sm.supplier-detail-by-id");
+
+            Route::post('/submit-approve-supplier', [RegistrasiSupplierController::class, 'SubmitApproveSupplier'])->name("bss-form.sm.submit-approve-supplier");
+            Route::post('/submit-reject-supplier', [RegistrasiSupplierController::class, 'SubmitRejectSupplier'])->name("bss-form.sm.submit-reject-supplier");
         });
 
         Route::prefix('induksi-karyawan')->group(function () {
@@ -216,23 +242,37 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/store', [TransactionSHEFRM19BController::class, 'addDataPraCheckUp']);
             Route::get('/get-dashboard-data', [TransactionSHEFRM19BController::class, 'helperDataListSHE019B']);
             Route::post('/store-petugas-checker', [TransactionSHEFRM19BController::class, 'addDataCheckUpPetugas']);
+        });
 
-			// INSPEKSI APAR
-            Route::get('/inspeksi-apar', [AparController::class, 'inspeksiAparDashboard'])->name('bss-form.she-019B.inspeksi-apar.dashboard');
-            Route::get('/list-inspeksi-apar', [AparController::class, 'GetListInspeksiApar'])->name("bss-form.she-019B.list-inspeksi-apar");
-            Route::get('/form-inspeksi-apar', [AparController::class, 'formInspeksiApar'])->name('bss-form.she-019B.form-inspeksi-apar');
-            Route::post('/add-inspeksi-apar', [AparController::class, 'SubmitFormInspeksiApar'])->name("bss-form.she-019B.add-inspeksi-apar");
-            Route::get('/pdf-inspeksi-apar/{id}', [AparController::class, 'PdfInspeksiApar'])->name('bss-form.log.pdf-inspeksi-apar');
+        Route::prefix('she-036')->group(function () {
+            Route::get('/inspeksi-apar', [AparController::class, 'inspeksiAparDashboard'])->name('bss-form.she-036.inspeksi-apar.dashboard');
+            Route::get('/list-inspeksi-apar', [AparController::class, 'GetListInspeksiApar'])->name('bss-form.she-036.list-inspeksi-apar');
+            Route::get('/form-inspeksi-apar', [AparController::class, 'formInspeksiApar'])->name('bss-form.she-036.form-inspeksi-apar');
+            Route::post('/add-inspeksi-apar', [AparController::class, 'SubmitFormInspeksiApar'])->name('bss-form.she-036.add-inspeksi-apar');
+            Route::post('/update-inspeksi-apar', [AparController::class, 'UpdateInspeksiApar'])->name('bss-form.she-036.update-inspeksi-apar');
+            Route::get('/detail-inspeksi-apar/{id}', [AparController::class, 'DetailInspeksiApar'])->name('bss-form.she-036.detail-inspeksi-apar');
+            Route::post('/delete-inspeksi-apar', [AparController::class, 'DeleteInspeksiApar'])->name('bss-form.she-036.delete-inspeksi-apar');
+            Route::get('/edit-inspeksi-apar', [AparController::class, 'EditInspeksiApar'])->name('bss-form.she-036.edit-inspeksi-apar');
+            Route::get('/show-inspeksi-apar/{id}', [AparController::class, 'ShowInspeksiApar'])->name('bss-form.she-036.show-inspeksi-apar');
+            Route::post('/approve-inspeksi-apar', [AparController::class, 'Approve'])->name('bss-form.she-036.approve-inspeksi-apar');
+            Route::post('/reject-inspeksi-apar', [AparController::class, 'Reject'])->name('bss-form.she-036.reject-inspeksi-apar');
+            Route::post('/reset-inspeksi-apar/{id}', [AparController::class, 'Reset'])->name('bss-form.she-036.reset-inspeksi-apar');
+            Route::get('/pdf-inspeksi-apar/{id}', [AparController::class, 'PdfInspeksiApar'])->name('bss-form.she-036.pdf-inspeksi-apar');
+        });
 
-            // INSPEKSI CATERING
+        Route::prefix('she-048')->group(function () {
             Route::get('/inspeksi-catering', [InspeksiCateringController::class, 'InspeksiCateringDashboard'])->name('bss-form.she-048.inspeksi-catering.dashboard');
             Route::get('/list-inspeksi-catering', [InspeksiCateringController::class, 'GetListInspeksiCatering'])->name("bss-form.she-048.list-inspeksi-catering");
-            Route::get('/form-inspeksi-catering', [InspeksiCateringController::class, 'FormInspeksiCatering'])->name('bss-form.she-019B.form-inspeksi-catering');
-            Route::post('/create-inspeksi-catering', [InspeksiCateringController::class, 'CreateInspeksiCatering'])->name('bss-form.she-019B.create-inspeksi-catering');
-            Route::get('/edit-fuel/{id}', [LogController::class, 'editReqFuel'])->name('bss-form.log.edit-req-fuel');
-            Route::post('/update-fuel/{id}', [LogController::class, 'updateReqFuel'])->name('bss-form.log.update-req-fuel');
-            Route::get('/delete-inspeksi-catering/{id}', [InspeksiCateringController::class, 'DeleteInspeksiCatering'])->name('bss-form.she-019B.delete-inspeksi-catering');
-            Route::get('/pdf-inspeksi-catering/{id}', [InspeksiCateringController::class, 'PdfInspeksiCatering'])->name('bss-form.she-019B.pdf-inspeksi-catering');
+            Route::get('/form-inspeksi-catering', [InspeksiCateringController::class, 'FormInspeksiCatering'])->name('bss-form.she-048.form-inspeksi-catering');
+            Route::post('/create-inspeksi-catering', [InspeksiCateringController::class, 'CreateInspeksiCatering'])->name('bss-form.she-048.create-inspeksi-catering');
+            Route::get('/detail-inspeksi-catering/{id}', [InspeksiCateringController::class, 'DetailInspeksiCatering'])->name('bss-form.she-048.detail-inspeksi-catering');
+            Route::get('/edit-inspeksi-catering', [InspeksiCateringController::class, 'EditInspeksiCatering'])->name('bss-form.she-048.edit-inspeksi-catering');
+            Route::post('/update-inspeksi-catering', [InspeksiCateringController::class, 'UpdateInspeksiCatering'])->name('bss-form.she-048.update-inspeksi-catering');
+            Route::post('/delete-inspeksi-catering', [InspeksiCateringController::class, 'DeleteInspeksiCatering'])->name('bss-form.she-048.delete-inspeksi-catering');
+            Route::post('/approve-inspeksi-catering', [InspeksiCateringController::class, 'Approve'])->name('bss-form.she-048.approve-inspeksi-catering');
+            Route::post('/reject-inspeksi-catering', [InspeksiCateringController::class, 'Reject'])->name('bss-form.she-048.reject-inspeksi-catering');
+            Route::post('/reset-inspeksi-catering/{id}', [InspeksiCateringController::class, 'Reset'])->name('bss-form.she-048.reset-inspeksi-catering');
+            Route::get('/pdf-inspeksi-catering/{id}', [InspeksiCateringController::class, 'PdfInspeksiCatering'])->name('bss-form.she-048.pdf-inspeksi-catering');
         });
 
         Route::prefix('timesheet')->group(function () {
@@ -312,7 +352,13 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/store-form', [InspeksiToiletMessKantorController::class, 'storeForm'])->name('store-wc');
             Route::get('/list', [InspeksiToiletMessKantorController::class, 'list'])->name('list-wc');
             Route::get('/export-inspeksi/{id}', [InspeksiToiletMessKantorController::class, 'exportPDF'])->name('export-inspeksi');
-
+            Route::put('/update/{id}', [InspeksiToiletMessKantorController::class, 'Update'])->name('wc-update');
+            Route::get('/detail/{id}', [InspeksiToiletMessKantorController::class, 'detail'])->name('wc-detail');
+            Route::delete('/delete/{id}', [InspeksiToiletMessKantorController::class, 'Delete'])->name('wc-delete');
+            Route::get('/show/{id}', [InspeksiToiletMessKantorController::class, 'show'])->name('wc-show');
+            Route::post('/approve-wc', [InspeksiToiletMessKantorController::class, 'Approve'])->name("wc-approve");
+            Route::post('/reject-wc', [InspeksiToiletMessKantorController::class, 'Reject'])->name("wc-reject");
+            Route::post('/reset-wc/{id}', [InspeksiToiletMessKantorController::class, 'Reset'])->name("wc-reset");
         });
 
         Route::prefix('it-ops')->group(function () {
@@ -356,6 +402,11 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/form', [EyewashController::class, 'AddForm'])->name('she-inspeksi.form');
             Route::post('/store', [EyewashController::class, 'Store'])->name('she-inspeksi.submit');
             Route::put('/form/{id}', [EyewashController::class, 'Update'])->name('she-inspeksi.form.update');
+            Route::get('/edit/{id}', [EyewashController::class, 'EditForm'])->name('she-inspeksi.edit');
+            Route::post('/update', [EyewashController::class, 'UpdateForm'])->name('she-inspeksi.update');
+            Route::delete('/delete/{id}', [EyewashController::class, 'DeleteRecord'])->name('she-inspeksi.delete');
+            Route::post('/approve/{id}', [EyewashController::class, 'ApproveRecord'])->name('she-inspeksi.approve');
+            Route::post('/reject/{id}', [EyewashController::class, 'RejectRecord'])->name('she-inspeksi.reject');
         });
 
         Route::prefix('she-p3k')->group(function () {
@@ -363,7 +414,12 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/form/export/{id}', [P3KController::class, 'ExportForm'])->name('she-p3k.export');
             Route::get('/form', [P3KController::class, 'AddForm'])->name('she-p3k.form');
             Route::post('/store', [P3KController::class, 'Store'])->name('she-p3k.submit');
-            Route::put('/form/{id}', [P3KController::class, 'Update'])->name('she-p3k.form.update');
+            Route::get('/form/edit/{id}', [P3KController::class, 'EditForm'])->name('she-p3k.edit');
+            Route::post('/update/{id}', [P3KController::class, 'Update'])->name('she-p3k.update');
+            Route::get('/approve/{id}/{role}', [P3KController::class, 'Approve'])->name('she-p3k.approve');
+            Route::get('/approve-all/{id}', [P3KController::class, 'ApproveAll'])->name('she-p3k.approve-all');
+            Route::post('/set-user-nik', [P3KController::class, 'SetUserNik'])->name('she-p3k.set-user-nik');
+            Route::delete('/delete/{id}', [P3KController::class, 'Delete'])->name('she-p3k.delete');
         });
 
         Route::prefix('she-air-minum')->group(function () {
@@ -372,6 +428,9 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/form', [AirMinumController::class, 'AddForm'])->name('she.air-minum.form');
             Route::post('/store', [AirMinumController::class, 'Store'])->name('she.air-minum.store');
             Route::put('/form/{id}', [AirMinumController::class, 'Update'])->name('she.air-minum.form.update');
+            Route::get('/approve/{id}/{role}', [AirMinumController::class, 'UpdateApprovalStatus'])->name('she.air-minum.approve');
+            Route::post('/update-approval', [AirMinumController::class, 'UpdateApprovalStatus'])->name('she.air-minum.update-approval');
+            Route::delete('/delete/{id}', [AirMinumController::class, 'Delete'])->name('she.air-minum.delete');
         });
 
         Route::prefix('she-noise')->group(function () {
@@ -392,6 +451,10 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('form/{id?}', [SheMessController::class, 'AddForm'])->name('she.mess.form');
             Route::post('store', [SheMessController::class, 'Store'])->name('she.mess.store');
             Route::put('form/{id}', [SheMessController::class, 'Update'])->name('she.mess.form.update');
+            Route::get('approve/{id}/{role}', [SheMessController::class, 'Approve'])->name('she.mess.approve');
+            Route::get('reject/{id}/{role}', [SheMessController::class, 'Reject'])->name('she.mess.reject');
+            Route::delete('delete', [SheMessController::class, 'Delete'])->name('she.mess.delete');
+            Route::get('edit/{id}', [SheMessController::class, 'EditForm'])->name('she.mess.form.edit');
         });
 
         Route::prefix('prod-coal')->group(function(){
@@ -400,15 +463,18 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('form', [CoalGettingController::class, 'AddForm'])->name('prod.coal.form');
             Route::get('form/edit/{id}', [CoalGettingController::class, 'EditForm'])->name('prod.coal.form.edit');
             Route::post('store', [CoalGettingController::class, 'Store'])->name('prod.coal.store');
-            Route::put('form/{id}', [CoalGettingController::class, 'Update'])->name('prod.coal.form.update');
+            Route::post('update', [CoalGettingController::class, 'Update'])->name('prod.coal.update');
             Route::post('delete', [CoalGettingController::class, 'Delete'])->name('prod.coal.delete');
+            Route::post('/update-status', [CoalGettingController::class, 'updateStatus'])->name('prod.coal.update-status');
         });
+
         Route::prefix('she-ergonomi')->group(function () {
             Route::get('dashboard', [ErgonomiController::class, 'Dashboard'])->name('she.ergonomi.dashboard');
             Route::get('form/export/{id}', [ErgonomiController::class, 'ExportForm'])->name('she.ergonomi.export');
             Route::get('form', [ErgonomiController::class, 'AddForm'])->name('she.ergonomi.form');
             Route::post('store', [ErgonomiController::class, 'Store'])->name('she.ergonomi.store');
-            Route::put('form/{id}', [ErgonomiController::class, 'Update'])->name('she.ergonomi.form.update');
+            Route::post('update', [ErgonomiController::class, 'UpdateForm'])->name('she.ergonomi.update');
+            Route::post('delete', [ErgonomiController::class, 'Delete'])->name('she.ergonomi.delete');
         });
 
         Route::prefix('prod-anak-asuh')->group(function () {
@@ -449,11 +515,19 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::prefix('general-inspection')->name('general-inspection.')->group(function () {
                 // CMT
                 Route::get('cmt/{id}/print', [InspectionCmtController::class, 'print'])->name('cmt.print');
+                Route::get('cmt/dashboard', [InspectionCmtController::class, 'index'])->name('cmt.dashboard');
+                Route::post('/approve-cmt', [InspectionCmtController::class, 'Approve'])->name("cmt.approve");
+                Route::post('/reject-cmt', [InspectionCmtController::class, 'Reject'])->name("cmt.reject");
+                Route::post('/reset-cmt/{id}', [InspectionCmtController::class, 'Reset'])->name("cmt.reset");
                 Route::get('cmt/get-data', [InspectionCmtController::class, 'getData'])->name('cmt.get-data');
                 Route::resource('cmt', InspectionCmtController::class);
 
                 // Dongfeng
                 Route::get('dongfeng/{id}/print', [InspectionDongfengController::class, 'print'])->name('dongfeng.print');
+                Route::get('dongfeng/dashboard', [InspectionDongfengController::class, 'index'])->name('dongfeng.dashboard');
+                Route::post('/approve-dongfeng', [InspectionDongfengController::class, 'Approve'])->name("dongfeng.approve");
+                Route::post('/reject-dongfeng', [InspectionDongfengController::class, 'Reject'])->name("dongfeng.reject");
+                Route::post('/reset-dongfeng/{id}', [InspectionDongfengController::class, 'Reset'])->name("dongfeng.reset");
                 Route::get('dongfeng/get-data', [InspectionDongfengController::class, 'getData'])->name('dongfeng.get-data');
                 Route::resource('dongfeng', InspectionDongfengController::class);
             });
@@ -561,6 +635,13 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/add', [PpmShantuiDH24Controller::class, 'Add'])->name('form-create-dh24');
             Route::post('/store', [PpmShantuiDH24Controller::class, 'Store'])->name('store-dh24');
             Route::get('/export/{id}', [PpmShantuiDH24Controller::class, 'ExportPDF'])->name('export-pdf-dh24');
+            Route::delete('/delete/{id}', [PpmShantuiDH24Controller::class, 'Delete'])->name('delete-dh24');
+            Route::get('/show/{id}', [PpmShantuiDH24Controller::class, 'show'])->name('show-dh24');
+            Route::get('/detail/{id}', [PpmShantuiDH24Controller::class, 'detail'])->name('detail-dh24');
+            Route::post('/approve-dh24', [PpmShantuiDH24Controller::class, 'Approve'])->name("plant.dh24.approve");
+            Route::post('/reject-dh24', [PpmShantuiDH24Controller::class, 'Reject'])->name("plant.dh24.reject");
+            Route::post('/reset-dh24/{id}', [PpmShantuiDH24Controller::class, 'Reset'])->name("plant.dh24.reset");
+            Route::post('/update',[PpmShantuiDH24Controller::class, 'Update'])->name('plant.dh24.update');
         });
 
         Route::prefix('ppm-xe1250')->group(function(){
@@ -591,6 +672,20 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/approve-log.ogc', [OgcComplianceController::class, 'Approve'])->name('log.ogc.approve');
             Route::post('/reject-log.ogc', [OgcComplianceController::class, 'Reject'])->name('log.ogc.reject');
             Route::post('/reset-log.ogc/{id}', [OgcComplianceController::class, 'Reset'])->name('log.ogc.reset');
+        });
+
+        Route::prefix('lgmg')->group(function(){
+            Route::get('/dashboard', [LgmgController::class, 'Dashboard'])->name('lgmg.dashboard');
+            Route::get('/export/{id}', [LgmgController::class, 'Export'])->name('lgmg.export');
+            Route::get('/add', [LgmgController::class, 'Add'])->name('lgmg.form');
+            Route::post('/store', [LgmgController::class, 'Store'])->name('lgmg.store');
+            Route::post('/update/{id}',[LgmgController::class, 'Update'])->name('lgmg.update');
+            Route::get('/detail/{id}', [LgmgController::class, 'detail'])->name('lgmg.detail');
+            Route::delete('/delete/{id}', [LgmgController::class, 'Delete'])->name('lgmg.delete');
+            Route::get('/show/{id}', [LgmgController::class, 'show'])->name('lgmg.show');
+            Route::post('/approve-lgmg', [LgmgController::class, 'Approve'])->name("lgmg.approve");
+            Route::post('/reject-lgmg', [LgmgController::class, 'Reject'])->name("lgmg.reject");
+            Route::post('/reset-lgmg/{id}', [LgmgController::class, 'Reset'])->name("lgmg.reset");
         });
 
     });

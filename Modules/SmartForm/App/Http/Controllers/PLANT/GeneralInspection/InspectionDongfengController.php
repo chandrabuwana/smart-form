@@ -12,13 +12,25 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Modules\SmartForm\helpers\HrdHelper;
 
 class InspectionDongfengController extends Controller
 {
     public function index()
     {
         try {
-            return view('smartform::plant.general-inspection.dongfeng.index');
+            $nik_session = request()->session()->get('user_id', '');
+            $statistics = ( object )[
+                'total_records' => DB::table( 'plant_general_inspection_dongfeng' )->count(),
+                'total_this_month' => DB::table( 'plant_general_inspection_dongfeng' )
+                ->whereMonth( 'created_at', now()->month )
+                ->whereYear( 'created_at', now()->year )
+                ->count(),
+                'model_unit' => DB::table( 'plant_general_inspection_dongfeng' )->distinct()->count( 'model_unit' ),
+
+            ];
+            $sites = ['PMSS', 'MAS', 'MME', 'BRAM', 'TAJ', 'AGM', 'MSJ', 'TDM', 'BSSR', 'MBLM', 'MBLH', 'others'];
+            return view('smartform::plant.general-inspection.dongfeng.index', ['sites'=>$sites, 'approvalList' => HrdHelper::getApprovalList(), 'session'=>$nik_session, 'statistics'=> $statistics]);
         } catch (Exception $e) {
             $errorMessages = env('APP_DEBUG') ? $e->getMessage() : 'Error Occurred';
             return redirect()->back()->with('error', $errorMessages);
@@ -29,24 +41,49 @@ class InspectionDongfengController extends Controller
     {
         try {
             $search = $request->query('search');
-            $sort   = $request->query('sort', 'created_at'); 
+            $sort   = $request->query('sort', 'created_at');
             $order  = $request->query('order', 'desc');
 
-            $inspectionDongfeng = InspectionDongfeng::select('id', 'site', 'model_unit', 'cn', 'hm', 'created_at')
+            $site       = $request->query('site');
+            $status  = $request->query('status');
+            $date       = $request->query('date');
+
+            $inspectionDongfeng = InspectionDongfeng::select('id','diperiksa','creator','diketahui','status', 'site', 'model_unit', 'cn', 'hm', 'created_at')
                 ->when($search, function ($query) use ($search) {
-                    $query->where('site', 'LIKE', "%$search%")
-                        ->orWhere('model_unit', 'LIKE', "%$search%")
-                        ->orWhere('cn', 'LIKE', "%$search%")
-                        ->orWhere('hm', 'LIKE', "%$search%")
-                        ->orWhere('created_at', 'LIKE', "%$search%");
+                    $query->where(function ($q) use ($search) {
+                        $q->where('site', 'LIKE', "%$search%")
+                            ->orWhere('model_unit', 'LIKE', "%$search%")
+                            ->orWhere('cn', 'LIKE', "%$search%")
+                            ->orWhere('hm', 'LIKE', "%$search%")
+                            ->orWhere('created_at', 'LIKE', "%$search%");
+                    });
+                })
+                ->when($site, function ($query) use ($site) {
+                    return $query->where('site', 'LIKE', "%$site%");
+                })
+                ->when($status, function ($query) use ($status) {
+                    return $query->where('status', 'LIKE', "%$status%");
+                })
+                ->when($date, function ($query) use ($date) {
+                    return $query->whereDate('created_at', $date);
                 })
                 ->orderBy($sort, $order)
                 ->paginate(10);
-            
+
             $inspectionDongfeng->getCollection()->transform(function ($inspection) {
+                $statuses = collect(json_decode($inspection->status, true));
+
+                if ($statuses->contains('Rejected')) {
+                    $status = 'Rejected';
+                } elseif ($statuses->contains('Draft')) {
+                    $status = 'Draft';
+                } else {
+                    $status = 'Approved';
+                }
                 return [
                     ...$inspection->toArray(),
                     'created_at' => Carbon::parse($inspection->created_at)->format('d M Y'),
+                    'status' =>$status,
                 ];
             });
 
@@ -66,15 +103,19 @@ class InspectionDongfengController extends Controller
      */
     public function create()
     {
-        $result['sites'] = ['PMSS', 'MAS', 'MME', 'BRAM', 'TAJ', 'AGM', 'MSJ', 'TDM', 'BSSR', 'MBLM', 'MBLH', 'others'];
+        $sites = ['PMSS', 'MAS', 'MME', 'BRAM', 'TAJ', 'AGM', 'MSJ', 'TDM', 'BSSR', 'MBLM', 'MBLH', 'others'];
 
         $json = file_get_contents(resource_path('data/general-inspection/dongfeng/activity-list.json'));
-        $result['activityChecklistJson'] = json_decode($json, true);
-        
-        $json = file_get_contents(resource_path('data/general-inspection/dongfeng/inspection-result.json'));
-        $result['inspectionResultJson'] = json_decode($json, true);
+        $activityChecklistJson = json_decode($json, true);
 
-        return view('smartform::plant.general-inspection.dongfeng.create', $result);
+        $json = file_get_contents(resource_path('data/general-inspection/dongfeng/inspection-result.json'));
+        $inspectionResultJson = json_decode($json, true);
+
+        return view('smartform::plant.general-inspection.dongfeng.create', [  'sites' => $sites,
+        'activityChecklistJson' => $activityChecklistJson,
+        'inspectionResultJson' => $inspectionResultJson,
+        'approvalList' => HrdHelper::getApprovalList(),
+        ]);
     }
 
     /**
@@ -105,7 +146,21 @@ class InspectionDongfengController extends Controller
                 'site'       => $request->site,
                 'model_unit' => $request->model_unit,
                 'cn'         => $request->cn,
-                'hm'         => $request->hm
+                'hm'         => $request->hm,
+                'dilakukan1' => $request->dilakukan1,
+                'dilakukan2' => $request->dilakukan2,
+                'diperiksa'  => $request->diperiksa,
+                'diketahui'  => $request->diketahui,
+                'creator'    => $request->session()->get('user_id', ''),
+                'date_sign1' => Carbon::now(),
+                'date_sign2' => null,
+                'date_sign3' => null,
+                'status' => json_encode( array_values( [
+                    'Draft',
+                    'Draft'
+                ] ) ),
+                'created_at' => Carbon::now(),
+                 'updated_at' => Carbon::now(),
             ]);
 
             if (!empty($request->inspection)) {
@@ -159,30 +214,21 @@ class InspectionDongfengController extends Controller
     /**
      * Show the specified resource.
      */
-    public function show(InspectionDongfeng $dongfeng)
+    public function show(InspectionDongfeng $dongfeng, Request $request)
     {
-        return view('inspection_dongfeng.show', compact('dongfeng'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(InspectionDongfeng $dongfeng)
-    {
-        $result['sites'] = ['PMSS', 'MAS', 'MME', 'BRAM', 'TAJ', 'AGM', 'MSJ', 'TDM', 'BSSR', 'MBLM', 'MBLH', 'others'];
-    
+        $nik_session = $request->session()->get( 'user_id', '' );
+        $sites = ['PMSS', 'MAS', 'MME', 'BRAM', 'TAJ', 'AGM', 'MSJ', 'TDM', 'BSSR', 'MBLM', 'MBLH', 'others'];
         $json = file_get_contents(resource_path('data/general-inspection/dongfeng/activity-list.json'));
-        $result['activityChecklistJson'] = json_decode($json, true);
-        
+        $activityChecklistJson = json_decode($json, true);
+
         $json = file_get_contents(resource_path('data/general-inspection/dongfeng/inspection-result.json'));
-        $result['inspectionResultJson'] = json_decode($json, true);
-        
+        $inspectionResultJson = json_decode($json, true);
         $inspectionData = [];
 
         foreach ($dongfeng->inspectionActivity as $activity) {
             $category = $activity->category;
             $activityName = $activity->activity;
-    
+
             $inspectionData[$category][$activityName] = [
                 'pre_inspect' => $activity->pre_inspect,
                 'final_inspect' => $activity->final_inspect,
@@ -202,15 +248,76 @@ class InspectionDongfengController extends Controller
             $remarkData[$component] = $remark;
         }
 
-        $result['inspection'] = [
+        $inspection = [
             ...$dongfeng->toArray(),
             'activity'    => $inspectionData,
             'performance' => $inspectionResultData,
             'remark'      => $remarkData
         ];
 
-        return view('smartform::plant.general-inspection.dongfeng.edit', $result);
-    }    
+        $status = json_decode($dongfeng->status, true);
+        return view('smartform::plant.general-inspection.dongfeng.show', [  'activityChecklistJson' => $activityChecklistJson,
+        'inspectionResultJson' => $inspectionResultJson,
+        'inspection' => $inspection,
+        'sites' => $sites,
+        'nik'=> $nik_session,
+        'status' => $status,
+        'approvalList' => HrdHelper::getApprovalList()]);
+
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(InspectionDongfeng $dongfeng)
+    {
+        $sites = ['PMSS', 'MAS', 'MME', 'BRAM', 'TAJ', 'AGM', 'MSJ', 'TDM', 'BSSR', 'MBLM', 'MBLH', 'others'];
+
+        $json = file_get_contents(resource_path('data/general-inspection/dongfeng/activity-list.json'));
+        $activityChecklistJson = json_decode($json, true);
+
+        $json = file_get_contents(resource_path('data/general-inspection/dongfeng/inspection-result.json'));
+        $inspectionResultJson = json_decode($json, true);
+
+        $inspectionData = [];
+
+        foreach ($dongfeng->inspectionActivity as $activity) {
+            $category = $activity->category;
+            $activityName = $activity->activity;
+
+            $inspectionData[$category][$activityName] = [
+                'pre_inspect' => $activity->pre_inspect,
+                'final_inspect' => $activity->final_inspect,
+                'delivery_inspect' => $activity->delivery_inspect,
+            ];
+        }
+
+        $inspectionResultData = [];
+        $remarkData       = [];
+        foreach ($dongfeng->inspectionResult as $inspectionResult) {
+            $component   = $inspectionResult->component;
+            $performance = $inspectionResult->performance;
+            $remark      = $inspectionResult->remark;
+
+            $inspectionResultData[$component] = $performance;
+
+            $remarkData[$component] = $remark;
+        }
+
+        $inspection = [
+            ...$dongfeng->toArray(),
+            'activity'    => $inspectionData,
+            'performance' => $inspectionResultData,
+            'remark'      => $remarkData
+        ];
+
+        return view('smartform::plant.general-inspection.dongfeng.edit', [
+            'activityChecklistJson' => $activityChecklistJson,
+            'inspectionResultJson' => $inspectionResultJson,
+            'inspection' => $inspection,
+            'sites' => $sites,
+            'approvalList' => HrdHelper::getApprovalList(),]);
+    }
 
     /**
      * Update the specified resource in storage.
@@ -245,7 +352,11 @@ class InspectionDongfengController extends Controller
                 'site'       => $request->site,
                 'model_unit' => $request->model_unit,
                 'cn'         => $request->cn,
-                'hm'         => $request->hm
+                'hm'         => $request->hm,
+                'dilakukan1' => $request->dilakukan1,
+                'dilakukan2' => $request->dilakukan2,
+                'diperiksa'  => $request->diperiksa,
+                'diketahui'  => $request->diketahui,
             ]);
 
             // Update Inspection Activities
@@ -307,6 +418,94 @@ class InspectionDongfengController extends Controller
         }
     }
 
+    public function Approve( Request $request ) {
+
+        if($request->date2 == true){
+          $date2 = Carbon::now();
+        }else{
+            $date2 = $request->datesign2;
+        }
+        if($request->date3 == true){
+          $date3 = Carbon::now();
+        }else{
+            $date3 = $request->datesign3;
+
+        }
+
+        $data = [
+            'status' => json_encode( array_values( [
+                $request->diketahui,
+                $request->diperiksa,
+            ] ) ),
+            'date_sign2' => $date2,
+            'date_sign3' =>$date3,
+            'updated_at' => Carbon::now()
+        ];
+
+        DB::table( 'plant_general_inspection_dongfeng' )
+        ->where( 'id', $request->id )
+        ->update( $data );
+
+        return response()->json( [
+            'success' => true,
+            'message' => 'Data berhasil di Approve'
+        ] );
+
+    }
+    public function Reset( $id ) {
+
+        $data = [
+            'status' => json_encode( array_values( [
+              'Draft',
+              'Draft'
+            ] ) ),
+            'date_sign2' => null,
+            'date_sign3' => null,
+            'updated_at' => Carbon::now()
+        ];
+
+        DB::table( 'plant_general_inspection_dongfeng' )
+        ->where( 'id', $id )
+        ->update( $data );
+
+        return response()->json( [
+            'success' => true,
+            'message' => 'Data berhasil di Reset'
+        ] );
+
+    }
+
+    public function Reject( Request $request ) {
+        if($request->date2 == true){
+            $date2 = Carbon::now();
+          }else{
+              $date2 = $request->datesign2;
+          }
+          if($request->date3 == true){
+            $date3 = Carbon::now();
+          }else{
+              $date3 = $request->datesign3;
+
+          }
+        $data = [
+            'status' => json_encode( array_values( [
+                $request->diketahui,
+                $request->diperiksa,
+            ] ) ),
+            'date_sign2' => $date2,
+            'date_sign3' => $date3,
+            'updated_at' => Carbon::now()
+        ];
+
+        DB::table( 'plant_general_inspection_dongfeng' )
+        ->where( 'id', $request->id )
+        ->update( $data );
+
+        return response()->json( [
+            'success' => true,
+            'message' => 'Data berhasil di Reject'
+        ] );
+    }
     /**
      * Remove the specified resource from storage.
      */
@@ -346,7 +545,7 @@ class InspectionDongfengController extends Controller
         foreach ($dongfeng->inspectionActivity as $activity) {
             $category = $activity->category;
             $activityName = $activity->activity;
-    
+
             $inspectionData[$category][$activityName] = [
                 'pre_inspect' => $activity->pre_inspect,
                 'final_inspect' => $activity->final_inspect,
@@ -373,7 +572,7 @@ class InspectionDongfengController extends Controller
             'remark'      => $remarkData
         ];
 
-
+        $result['approvalList'] = HrdHelper::getApprovalList();
 
         return view('smartform::plant.general-inspection.dongfeng.print-template.index', $result);
     }

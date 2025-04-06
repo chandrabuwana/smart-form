@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('plant_general_inspection_dongfeng_result', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('inspection_dongfeng_id')->constrained('plant_general_inspection_cmt');
+            $table->foreignId('inspection_dongfeng_id')->constrained('plant_general_inspection_dongfeng');
             $table->string('component');
             $table->string('performance')->nullable();
             $table->string('remark')->nullable();

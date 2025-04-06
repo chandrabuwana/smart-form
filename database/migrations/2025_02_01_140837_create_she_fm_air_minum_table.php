@@ -42,22 +42,31 @@ class CreateSheFmAirMinumTable extends Migration
             $table->text('notes')->nullable();
             
             // Approval Information
-            $table->string('inspector_1')->nullable();
-            $table->string('inspector_1_signature')->nullable();
+            $table->string('inspector_1_name')->nullable();
+            $table->string('inspector_1_nik')->nullable();
             $table->date('inspector_1_date')->nullable();
             
-            $table->string('inspector_2')->nullable();
-            $table->string('inspector_2_signature')->nullable();
+            $table->string('inspector_2_name')->nullable();
+            $table->string('inspector_2_nik')->nullable();
             $table->date('inspector_2_date')->nullable();
             
-            $table->string('inspector_3')->nullable();
-            $table->string('inspector_3_signature')->nullable();
+            $table->string('inspector_3_name')->nullable();
+            $table->string('inspector_3_nik')->nullable();
             $table->date('inspector_3_date')->nullable();
             
-            $table->string('acknowledged_by')->nullable();
-            $table->string('acknowledged_by_signature')->nullable();
+            $table->string('acknowledged_by_name')->nullable();
+            $table->string('acknowledged_by_nik')->nullable();
             $table->date('acknowledged_date')->nullable();
             
+            // Individual approval statuses
+            $table->enum('inspector_1_status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->enum('inspector_2_status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->enum('inspector_3_status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->enum('acknowledged_status', ['pending', 'approved', 'rejected'])->default('pending');
+
+            // Overall approval status
+            $table->enum('approval_status', ['pending', 'in_progress', 'approved', 'rejected'])->default('pending');
+
             $table->timestamps();
             $table->softDeletes();
         });

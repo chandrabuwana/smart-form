@@ -254,33 +254,33 @@
     <table class="signature-table">
         <tr>
             <td width="25%" style="padding: 10px; background-color: #f5f5f5;">Diinspeksi Oleh</td>
-            <td width="25%" style="padding: 10px;">{{ $data->inspected_by ?? '-' }}</td>
+            <td width="25%" style="padding: 10px;">{{ $data->inspected_by_name ?? '-' }}</td>
             <td width="15%" style="padding: 10px; background-color: #f5f5f5;">Tanda Tangan</td>
-            <td width="10%" style="padding: 10px; text-align: center;">{!! $data->inspected_signature ? '✓' : '' !!}</td>
+            <td width="10%" style="padding: 10px; text-align: center;">{!! $data->inspected_by_status === 'approved' ? '✓' : 'x' !!}</td>
             <td width="10%" style="padding: 10px; background-color: #f5f5f5;">Tanggal</td>
             <td width="15%" style="padding: 10px;">{{ $data->inspection_date ? date('d/m/Y', strtotime($data->inspection_date)) : '-' }}</td>
         </tr>
         <tr>
             <td style="padding: 10px; background-color: #f5f5f5;">Diinspeksi Oleh</td>
-            <td style="padding: 10px;">{{ $data->inspected_by2 ?? '-' }}</td>
+            <td style="padding: 10px;">{{ $data->inspected_by2_name ?? '-' }}</td>
             <td style="padding: 10px; background-color: #f5f5f5;">Tanda Tangan</td>
-            <td style="padding: 10px; text-align: center;">{!! $data->inspected_signature2 ? '✓' : '' !!}</td>
+            <td style="padding: 10px; text-align: center;">{!! $data->inspected_by2_status === 'approved' ? '✓' : 'x' !!}</td>
             <td style="padding: 10px; background-color: #f5f5f5;">Tanggal</td>
             <td style="padding: 10px;">{{ $data->inspection_date2 ? date('d/m/Y', strtotime($data->inspection_date2)) : '-' }}</td>
         </tr>
         <tr>
             <td style="padding: 10px; background-color: #f5f5f5;">Diinspeksi Oleh</td>
-            <td style="padding: 10px;">{{ $data->inspected_by3 ?? '-' }}</td>
+            <td style="padding: 10px;">{{ $data->inspected_by3_name ?? '-' }}</td>
             <td style="padding: 10px; background-color: #f5f5f5;">Tanda Tangan</td>
-            <td style="padding: 10px; text-align: center;">{!! $data->inspected_signature3 ? '✓' : '' !!}</td>
+            <td style="padding: 10px; text-align: center;">{!! $data->inspected_by3_status === 'approved' ? '✓' : 'x' !!}</td>
             <td style="padding: 10px; background-color: #f5f5f5;">Tanggal</td>
             <td style="padding: 10px;">{{ $data->inspection_date3 ? date('d/m/Y', strtotime($data->inspection_date3)) : '-' }}</td>
         </tr>
         <tr>
             <td style="padding: 10px; background-color: #f5f5f5;">Disetujui Oleh</td>
-            <td style="padding: 10px;">{{ $data->acknowledged_by ?? '-' }}</td>
+            <td style="padding: 10px;">{{ $data->acknowledged_by_name ?? '-' }}</td>
             <td style="padding: 10px; background-color: #f5f5f5;">Tanda Tangan</td>
-            <td style="padding: 10px; text-align: center;">{!! $data->acknowledged_signature ? '✓' : '' !!}</td>
+            <td style="padding: 10px; text-align: center;">{!! $data->acknowledged_by_status === 'approved' ? '✓' : 'x' !!}</td>
             <td style="padding: 10px; background-color: #f5f5f5;">Tanggal</td>
             <td style="padding: 10px;">{{ $data->acknowledgment_date ? date('d/m/Y', strtotime($data->acknowledgment_date)) : '-' }}</td>
         </tr>

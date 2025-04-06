@@ -17,6 +17,15 @@ return new class extends Migration
             $table->string('model_unit');
             $table->string('cn');
             $table->string('hm');
+            $table->string('date_sign1')->nullable();
+            $table->string('date_sign2')->nullable();
+            $table->string('date_sign3')->nullable();
+            $table->string('creator');
+            $table->string('dilakukan1');
+            $table->string('dilakukan2');
+            $table->string('diperiksa');
+            $table->string('diketahui');
+            $table->string('status');
             $table->timestamps();
         });
     }
