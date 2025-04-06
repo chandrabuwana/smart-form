@@ -98,9 +98,9 @@
                                                             <div class="col-md-4">
                                                                 <div class="input-group input-group-static mb-3">
                                                                     <label for="shift_hauler" class="ms-0">Shift</label>
-                                                                    <input type="text" class="form-control" id="shift_hauler" name="shift_hauler" required
-                                                                    value="{{ old('shift_hauler', $record->shift_hauler ?? '') }}" 
-                                                                    {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                    <select name="shift_hauler" class="form-control" {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                        {!! $shift_hauler !!}
+                                                                    </select>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -501,9 +501,9 @@
                                                             <div class="col-md-4">
                                                                 <div class="input-group input-group-static mb-3">
                                                                     <label for="shift_loader" class="ms-0">Shift Kerja</label>
-                                                                    <input type="text" class="form-control" id="shift_loader" name="shift_loader" required
-                                                                    value="{{ old('shift_loader', $record->shift_loader ?? '') }}"
-                                                                    {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                    <select name="shift_loader" class="form-control" {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                        {!! $shift_loader !!}
+                                                                    </select>
                                                                 </div>
                                                             </div>
 
@@ -780,9 +780,9 @@
                                                             <div class="col-md-4">
                                                                 <div class="input-group input-group-static mb-3">
                                                                     <label for="shift_dozer" class="ms-0">Shift Kerja</label>
-                                                                    <input type="text" class="form-control" id="shift_dozer" name="shift_dozer" required
-                                                                    value="{{ old('shift_dozer', $record->shift_dozer ?? '') }}" 
-                                                                    {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                    <select name="shift_dozer" class="form-control" {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                        {!! $shift_dozer !!}
+                                                                    </select>
                                                                 </div>
                                                             </div>
 

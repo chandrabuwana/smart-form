@@ -70,9 +70,9 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="shift" class="ms-0">Shift</label>
-                                        <input type="text" class="form-control" id="shift" name="shift" required
-                                            value="{{ old('shift', $record->shift ?? '') }}"
-                                            {{ $isShowDetail ? 'disabled' : '' }}>
+                                        <select name="shift" class="form-control" {{ $isShowDetail ? 'disabled' : '' }}>
+                                            {!! $shift !!}
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-md-4">

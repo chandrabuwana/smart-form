@@ -156,7 +156,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
                 Route::get('/create-form', [Pengajuan003SapController::class, 'createForm'])->name('create-003-sap');
                 Route::post('/store-form', [Pengajuan003SapController::class, 'storeForm'])->name('store-003-sap');
                 Route::get('/export-pdf/{id}', [Pengajuan003SapController::class, 'exportPDF'])->name('export-003-sap');
-                Route::post('/update/{id}',[Pengajuan003SapController::class, 'Update'])->name('003-sap-update');
+                Route::post('/update/{id}', [Pengajuan003SapController::class, 'Update'])->name('003-sap-update');
                 Route::get('/detail/{id}', [Pengajuan003SapController::class, 'detail'])->name('003-sap-detail');
                 Route::delete('/delete/{id}', [Pengajuan003SapController::class, 'Delete'])->name('003-sap-delete');
                 Route::get('/show/{id}', [Pengajuan003SapController::class, 'show'])->name('003-sap-show');
@@ -164,7 +164,6 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
                 Route::post('/reject-ppm.xe1250', [Pengajuan003SapController::class, 'Reject'])->name("003-sap-reject");
                 Route::post('/reset-ppm.xe1250/{id}', [Pengajuan003SapController::class, 'Reset'])->name("003-sap-reset");
             });
-
         });
 
         Route::prefix('under-carriage')->group(function () {
@@ -321,7 +320,6 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
                 Route::get('/list-kamar', [MessController::class, 'GetListKamar'])->name('list-kamar');
                 Route::get('/helper-mess', [MessController::class, 'HelperMess'])->name('helper-mess');
                 Route::get('/helper-kamar', [MessController::class, 'HelperKamar'])->name('helper-kamar');
-
             });
 
             Route::prefix('vendor')->group(function () {
@@ -457,7 +455,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('edit/{id}', [SheMessController::class, 'EditForm'])->name('she.mess.form.edit');
         });
 
-        Route::prefix('prod-coal')->group(function(){
+        Route::prefix('prod-coal')->group(function () {
             Route::get('dashboard', [CoalGettingController::class, 'Dashboard'])->name('prod.coal.dashboard');
             Route::get('form/export/{id}', [CoalGettingController::class, 'ExportForm'])->name('prod.coal.export');
             Route::get('form', [CoalGettingController::class, 'AddForm'])->name('prod.coal.form');
@@ -489,7 +487,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/delete', [AnakAsuhController::class, 'Delete'])->name('prod.anak-asuh.delete');
         });
 
-        Route::prefix('plant-compressor')->group(function(){
+        Route::prefix('plant-compressor')->group(function () {
             Route::get('/dashboard', [CompressorPompaController::class, 'dashboard'])->name('plant.compressor.dashboard');
             Route::get('/form-compressor/export/{id}', [CompressorPompaController::class, 'ExportForm'])->name('plant.compressor.export');
             Route::get('/form-compressor', [CompressorPompaController::class, 'AddFormCompressor'])->name('plant.compressor.form');
@@ -498,9 +496,9 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::delete('/delete/{id}', [CompressorPompaController::class, 'DeleteCompressor'])->name('plant.compressor.delete');
         });
 
-        Route::prefix('plant-welding')->group(function(){
-            Route::get('/dashboard',[PlantWeldingController::class, 'dashboard'])->name('plant.welding.dashboard');
-            Route::get('/form-welding/export/{id}',[PlantWeldingController::class, 'ExportForm'])->name('plant.welding.export');
+        Route::prefix('plant-welding')->group(function () {
+            Route::get('/dashboard', [PlantWeldingController::class, 'dashboard'])->name('plant.welding.dashboard');
+            Route::get('/form-welding/export/{id}', [PlantWeldingController::class, 'ExportForm'])->name('plant.welding.export');
             Route::get('/form-welding', [PlantWeldingController::class, 'AddFormWelding'])->name('plant.welding.form');
             Route::post('/store-welding', [PlantWeldingController::class, 'StoreWelding'])->name('plant.welding.store');
             Route::get('/edit-welding/{id}', [PlantWeldingController::class, 'EditWelding'])->name('plant.welding.edit');
@@ -535,7 +533,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             });
         });
 
-        Route::prefix('prod-form-checker')->group(function(){
+        Route::prefix('prod-form-checker')->group(function () {
             Route::get('/dashboard', [FormCheckerController::class, 'dashboard'])->name('prod.form.checker.dashboard');
             Route::get('/form-checker/export/{id}', [FormCheckerController::class, 'ExportForm'])->name('prod.form.checker.export');
             Route::get('/form-checker', [FormCheckerController::class, 'AddFormChecker'])->name('prod.form.checker.form');
@@ -545,9 +543,8 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/approve-form-checker', [FormCheckerController::class, 'Approve'])->name("prod.form.checker.approve");
             Route::post('/reject-form-checker', [FormCheckerController::class, 'Reject'])->name("prod.form.checker.reject");
             Route::post('/reset-form-checker/{id}', [FormCheckerController::class, 'Reset'])->name("prod.form.checker.reset");
-            Route::post('/update-form-checker',[FormCheckerController::class, 'Update'])->name('prod.form.checker.update');
+            Route::post('/update-form-checker', [FormCheckerController::class, 'Update'])->name('prod.form.checker.update');
             Route::get('/detail/{id}', [FormCheckerController::class, 'detail'])->name('prod.form.checker.detail');
-
         });
 
 
@@ -577,26 +574,25 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/reject-a2b-baru/{id}', [A2bBaruController::class, 'RejectA2bBaru'])->name('prod.a2b-baru.reject');
         });
 
-        Route::prefix('ppm-900d')->group(function(){
+        Route::prefix('ppm-900d')->group(function () {
             Route::get('/dashboard', [PpmXcmg900dController::class, 'Dashboard'])->name('plant.ppm.900d.dashboard');
             Route::get('/export/{id}', [PpmXcmg900dController::class, 'Export'])->name('plant.ppm.900d.export');
             Route::get('/add', [PpmXcmg900dController::class, 'Add'])->name('plant.ppm.900d.form');
             Route::post('/store', [PpmXcmg900dController::class, 'Store'])->name('plant.ppm.900d.store');
-            Route::post('/update',[PpmXcmg900dController::class, 'Update'])->name('plant.ppm.900d.update');
+            Route::post('/update', [PpmXcmg900dController::class, 'Update'])->name('plant.ppm.900d.update');
             Route::get('/detail/{id}', [PpmXcmg900dController::class, 'detail'])->name('plant.ppm.900d.detail');
             Route::delete('/delete/{id}', [PpmXcmg900dController::class, 'Delete'])->name('plant.ppm.900d.delete');
             Route::get('/show/{id}', [PpmXcmg900dController::class, 'show'])->name('plant.ppm.900d.show');
             Route::post('/approve-ppm.900d', [PpmXcmg900dController::class, 'Approve'])->name("plant.ppm.900d.approve");
             Route::post('/reject-ppm.900d', [PpmXcmg900dController::class, 'Reject'])->name("plant.ppm.900d.reject");
             Route::post('/reset-ppm.900d/{id}', [PpmXcmg900dController::class, 'Reset'])->name("plant.ppm.900d.reset");
-
         });
-        Route::prefix('ppm-3005T')->group(function(){
+        Route::prefix('ppm-3005T')->group(function () {
             Route::get('/dashboard', [PpmXCMG3005TController::class, 'Dashboard'])->name('plant.ppm.3005.dashboard');
             Route::get('/export/{id}', [PpmXCMG3005TController::class, 'Export'])->name('plant.ppm.3005.export');
             Route::get('/add', [PpmXCMG3005TController::class, 'Add'])->name('plant.ppm.3005.form');
             Route::post('/store', [PpmXCMG3005TController::class, 'Store'])->name('plant.ppm.3005.store');
-            Route::post('/update',[PpmXCMG3005TController::class, 'Update'])->name('plant.ppm.3005.update');
+            Route::post('/update', [PpmXCMG3005TController::class, 'Update'])->name('plant.ppm.3005.update');
             Route::get('/detail/{id}', [PpmXCMG3005TController::class, 'detail'])->name('plant.ppm.3005.detail');
             Route::delete('/delete/{id}', [PpmXCMG3005TController::class, 'Delete'])->name('plant.ppm.3005.delete');
             Route::get('/show/{id}', [PpmXCMG3005TController::class, 'show'])->name('plant.ppm.3005.show');
@@ -604,12 +600,12 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/reject-ppm.3005', [PpmXCMG3005TController::class, 'Reject'])->name("plant.ppm.3005.reject");
             Route::post('/reset-ppm.3005/{id}', [PpmXCMG3005TController::class, 'Reset'])->name("plant.ppm.3005.reset");
         });
-        Route::prefix('ppm-700d')->group(function(){
+        Route::prefix('ppm-700d')->group(function () {
             Route::get('/dashboard', [PpmXCMG700DController::class, 'Dashboard'])->name('plant.ppm.700d.dashboard');
             Route::get('/export/{id}', [PpmXCMG700DController::class, 'Export'])->name('plant.ppm.700d.export');
             Route::get('/add', [PpmXCMG700DController::class, 'Add'])->name('plant.ppm.700d.form');
             Route::post('/store', [PpmXCMG700DController::class, 'Store'])->name('plant.ppm.700d.store');
-            Route::post('/update',[PpmXCMG700DController::class, 'Update'])->name('plant.ppm.700d.update');
+            Route::post('/update', [PpmXCMG700DController::class, 'Update'])->name('plant.ppm.700d.update');
             Route::get('/detail/{id}', [PpmXCMG700DController::class, 'detail'])->name('plant.ppm.700d.detail');
             Route::delete('/delete/{id}', [PpmXCMG700DController::class, 'Delete'])->name('plant.ppm.700d.delete');
             Route::get('/show/{id}', [PpmXCMG700DController::class, 'show'])->name('plant.ppm.700d.show');
@@ -617,12 +613,12 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/reject-ppm.700d', [PpmXCMG700DController::class, 'Reject'])->name("plant.ppm.700d.reject");
             Route::post('/reset-ppm.700d/{id}', [PpmXCMG700DController::class, 'Reset'])->name("plant.ppm.700d.reset");
         });
-        Route::prefix('ppu-xe1250')->group(function(){
+        Route::prefix('ppu-xe1250')->group(function () {
             Route::get('/dashboard', [PpuXE1250Controller::class, 'Dashboard'])->name('plant.ppu.xe1250.dashboard');
             Route::get('/export/{id}', [PpuXE1250Controller::class, 'Export'])->name('plant.ppu.xe1250.export');
             Route::get('/add', [PpuXE1250Controller::class, 'Add'])->name('plant.ppu.xe1250.form');
             Route::post('/store', [PpuXE1250Controller::class, 'Store'])->name('plant.ppu.xe1250.store');
-            Route::post('/update',[PpuXE1250Controller::class, 'Update'])->name('plant.ppu.xe1250.update');
+            Route::post('/update', [PpuXE1250Controller::class, 'Update'])->name('plant.ppu.xe1250.update');
             Route::get('/detail/{id}', [PpuXE1250Controller::class, 'detail'])->name('plant.ppu.xe1250.detail');
             Route::get('/show/{id}', [PpuXE1250Controller::class, 'show'])->name('plant.ppu.xe1250.show');
             Route::delete('/delete/{id}', [PpuXE1250Controller::class, 'Delete'])->name('plant.ppu.xe1250.delete');
@@ -632,7 +628,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
         });
 
 
-        Route::prefix('ppm-dh24')->group(function(){
+        Route::prefix('ppm-dh24')->group(function () {
             Route::get('/dashboard', [PpmShantuiDH24Controller::class, 'Dashboard'])->name('dashboard-dh24');
             Route::get('/add', [PpmShantuiDH24Controller::class, 'Add'])->name('form-create-dh24');
             Route::post('/store', [PpmShantuiDH24Controller::class, 'Store'])->name('store-dh24');
@@ -643,15 +639,15 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/approve-dh24', [PpmShantuiDH24Controller::class, 'Approve'])->name("plant.dh24.approve");
             Route::post('/reject-dh24', [PpmShantuiDH24Controller::class, 'Reject'])->name("plant.dh24.reject");
             Route::post('/reset-dh24/{id}', [PpmShantuiDH24Controller::class, 'Reset'])->name("plant.dh24.reset");
-            Route::post('/update',[PpmShantuiDH24Controller::class, 'Update'])->name('plant.dh24.update');
+            Route::post('/update', [PpmShantuiDH24Controller::class, 'Update'])->name('plant.dh24.update');
         });
 
-        Route::prefix('ppm-xe1250')->group(function(){
+        Route::prefix('ppm-xe1250')->group(function () {
             Route::get('/dashboard', [PpmXcmgXE1250Controller::class, 'Dashboard'])->name('plant.ppm.xe1250.dashboard');
             Route::get('/export/{id}', [PpmXcmgXE1250Controller::class, 'Export'])->name('plant.ppm.xe1250.export');
             Route::get('/add', [PpmXcmgXE1250Controller::class, 'Add'])->name('plant.ppm.xe1250.form');
             Route::post('/store', [PpmXcmgXE1250Controller::class, 'Store'])->name('plant.ppm.xe1250.store');
-            Route::post('/update',[PpmXcmgXE1250Controller::class, 'Update'])->name('plant.ppm.xe1250.update');
+            Route::post('/update', [PpmXcmgXE1250Controller::class, 'Update'])->name('plant.ppm.xe1250.update');
             Route::get('/detail/{id}', [PpmXcmgXE1250Controller::class, 'detail'])->name('plant.ppm.xe1250.detail');
             Route::delete('/delete/{id}', [PpmXcmgXE1250Controller::class, 'Delete'])->name('plant.ppm.xe1250.delete');
             Route::get('/show/{id}', [PpmXcmgXE1250Controller::class, 'show'])->name('plant.ppm.xe1250.show');
@@ -660,12 +656,12 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/reset-ppm.xe1250/{id}', [PpmXcmgXE1250Controller::class, 'Reset'])->name("plant.ppm.xe1250.reset");
         });
 
-        Route::prefix('ogc-compliance')->group(function(){
+        Route::prefix('ogc-compliance')->group(function () {
             Route::get('/dashboard', [OgcComplianceController::class, 'Dashboard'])->name('log.ogc.dashboard');
             Route::get('/export/{id}', [OgcComplianceController::class, 'Export'])->name('log.ogc.export');
             Route::get('/add', [OgcComplianceController::class, 'Add'])->name('log.ogc.form');
             Route::post('/store', [OgcComplianceController::class, 'Store'])->name('log.ogc.store');
-            Route::post('/update',[OgcComplianceController::class, 'Update'])->name('log.ogc.update');
+            Route::post('/update', [OgcComplianceController::class, 'Update'])->name('log.ogc.update');
             Route::get('/detail/{id}', [OgcComplianceController::class, 'detail'])->name('log.ogc.detail');
             Route::get('modal/{id}/{doc_num}', [OgcComplianceController::class, 'modal'])->name('log.ogc.modal');
             Route::get('/show/{id}', [OgcComplianceController::class, 'show'])->name('log.ogc.show');
@@ -676,12 +672,12 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/reset-log.ogc/{id}', [OgcComplianceController::class, 'Reset'])->name('log.ogc.reset');
         });
 
-        Route::prefix('lgmg')->group(function(){
+        Route::prefix('lgmg')->group(function () {
             Route::get('/dashboard', [LgmgController::class, 'Dashboard'])->name('lgmg.dashboard');
             Route::get('/export/{id}', [LgmgController::class, 'Export'])->name('lgmg.export');
             Route::get('/add', [LgmgController::class, 'Add'])->name('lgmg.form');
             Route::post('/store', [LgmgController::class, 'Store'])->name('lgmg.store');
-            Route::post('/update/{id}',[LgmgController::class, 'Update'])->name('lgmg.update');
+            Route::post('/update/{id}', [LgmgController::class, 'Update'])->name('lgmg.update');
             Route::get('/detail/{id}', [LgmgController::class, 'detail'])->name('lgmg.detail');
             Route::delete('/delete/{id}', [LgmgController::class, 'Delete'])->name('lgmg.delete');
             Route::get('/show/{id}', [LgmgController::class, 'show'])->name('lgmg.show');
@@ -689,7 +685,6 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/reject-lgmg', [LgmgController::class, 'Reject'])->name("lgmg.reject");
             Route::post('/reset-lgmg/{id}', [LgmgController::class, 'Reset'])->name("lgmg.reset");
         });
-
     });
 
     Route::get('/dashboard-menu', [AdminController::class, 'index'])->name('dashboard-menu');
@@ -783,7 +778,6 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
         Route::post('/edit-why-spesific-data', [TransactionPicaController::class, 'EditWhySpesificData']);
         Route::post('/check-data-step', [TransactionPicaController::class, 'checkDataStep']);
         Route::post('/change-flag-revision', [TransactionPicaController::class, 'ChangeFlagRevision']);
-
     });
 
     Route::prefix('skl')->group(function () {
@@ -809,7 +803,6 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
     });
 
     Route::get('/landing-page-dashboard', [DashboardController::class, 'DashboardIndex']);
-
 });
 
 Route::get('/bss-form/induksi-karyawan/listing-karyawan/{data}', [ICFM05InduksiKaryawanController::class, 'indexFormAddKaryawanListing']);

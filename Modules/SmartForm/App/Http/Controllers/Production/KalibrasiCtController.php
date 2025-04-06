@@ -13,6 +13,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
 use Modules\SmartForm\helpers\HrdHelper;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Modules\SmartForm\helpers\ShiftHelper;
 
 class KalibrasiCtController extends Controller
 {
@@ -128,6 +129,9 @@ class KalibrasiCtController extends Controller
                 'records' => $records,
                 'statistics' => $statistics,
                 'user' => HrdHelper::getApprovalList(),
+                'shift_hauler' => ShiftHelper::getShiftOptions($record->shift_hauler ?? null),
+                'shift_loader' => ShiftHelper::getShiftOptions($record->shift_loader ?? null),
+                'shift_dozer'  => ShiftHelper::getShiftOptions($record->shift_dozer ?? null),
                 'filters' => [
                     'search' => $request->search,
                     'operator' => $request->operator,
@@ -199,6 +203,9 @@ class KalibrasiCtController extends Controller
                     'record' => $record,
                     'isShowDetail' => true,
                     'approvalList' => HrdHelper::getApprovalList(),
+                    'shift_hauler' => ShiftHelper::getShiftOptions($record->shift_hauler ?? null),
+                    'shift_loader' => ShiftHelper::getShiftOptions($record->shift_loader ?? null),
+                    'shift_dozer'  => ShiftHelper::getShiftOptions($record->shift_dozer ?? null),
                 ]);
             }
 
@@ -206,6 +213,9 @@ class KalibrasiCtController extends Controller
                 'record' => $record ?? null,
                 'isShowDetail' => false,
                 'approvalList' => HrdHelper::getApprovalList(),
+                'shift_hauler' => ShiftHelper::getShiftOptions($record->shift_hauler ?? null),
+                'shift_loader' => ShiftHelper::getShiftOptions($record->shift_loader ?? null),
+                'shift_dozer'  => ShiftHelper::getShiftOptions($record->shift_dozer ?? null),
             ]);
         } catch (\Exception $e) {
             Log::error('Error in AddForm: ' . $e->getMessage());
@@ -529,6 +539,9 @@ class KalibrasiCtController extends Controller
             'record' => $record,
             'isShowDetail' => false,
             'approvalList' => HrdHelper::getApprovalList(),
+            'shift_hauler' => ShiftHelper::getShiftOptions($record->shift_hauler ?? null),
+            'shift_loader' => ShiftHelper::getShiftOptions($record->shift_loader ?? null),
+            'shift_dozer'  => ShiftHelper::getShiftOptions($record->shift_dozer ?? null),
         ]);
     }
 
@@ -821,6 +834,9 @@ class KalibrasiCtController extends Controller
             'record' => $record,
             'isShowDetail' => true,
             'approvalList' => HrdHelper::getApprovalList(),
+            'shift_hauler' => ShiftHelper::getShiftOptions($record->shift_hauler ?? null),
+            'shift_loader' => ShiftHelper::getShiftOptions($record->shift_loader ?? null),
+            'shift_dozer'  => ShiftHelper::getShiftOptions($record->shift_dozer ?? null),
         ]);
     }
 
@@ -1079,6 +1095,9 @@ class KalibrasiCtController extends Controller
             'record' => $record,
             'isShowDetail' => true,
             'approvalList' => HrdHelper::getApprovalList(),
+                'shift_hauler' => ShiftHelper::getShiftOptions($record->shift_hauler ?? null),
+                'shift_loader' => ShiftHelper::getShiftOptions($record->shift_loader ?? null),
+                'shift_dozer'  => ShiftHelper::getShiftOptions($record->shift_dozer ?? null),
         ]);
             $pdf->setPaper('a4', 'landscape');
 

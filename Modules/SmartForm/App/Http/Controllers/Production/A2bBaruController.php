@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
 use Modules\SmartForm\helpers\HrdHelper;
+use Modules\SmartForm\helpers\ShiftHelper;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class A2bBaruController extends Controller
@@ -101,6 +102,7 @@ class A2bBaruController extends Controller
                 'records' => $records,
                 'statistics' => $statistics,
                 'user' => HrdHelper::getApprovalList(),
+                'shift' => ShiftHelper::getShiftOptions(),
                 'filters' => [
                     'search' => $request->search,
                     'operator' => $request->operator,
@@ -152,6 +154,7 @@ class A2bBaruController extends Controller
                     'record' => $record,
                     'isShowDetail' => true,
                     'approvalList' => HrdHelper::getApprovalList(),
+                    'shift' => ShiftHelper::getShiftOptions($record->shift ?? null),
                 ]);
             }
 
@@ -159,6 +162,7 @@ class A2bBaruController extends Controller
                 'record' => $record ?? null,
                 'isShowDetail' => false,
                 'approvalList' => HrdHelper::getApprovalList(),
+                'shift' => ShiftHelper::getShiftOptions($record->shift ?? null),
             ]);
         } catch (\Exception $e) {
             Log::error('Error in AddForm: ' . $e->getMessage());
@@ -333,6 +337,7 @@ class A2bBaruController extends Controller
             'record' => $record,
             'isShowDetail' => false,
             'approvalList' => HrdHelper::getApprovalList(),
+            'shift' => ShiftHelper::getShiftOptions($record->shift ?? null),
         ]);
     }
 
@@ -498,6 +503,7 @@ class A2bBaruController extends Controller
             'record' => $record,
             'isShowDetail' => true,
             'approvalList' => HrdHelper::getApprovalList(),
+            'shift' => ShiftHelper::getShiftOptions($record->shift ?? null),
         ]);
     }
 
@@ -667,7 +673,8 @@ class A2bBaruController extends Controller
 
             $pdf = PDF::loadView('smartform::production.a2b_baru.export-pdf', [
                 'record' => $record,
-                'approvalList' => HrdHelper::getApprovalList() // Pastikan ini ditambahkan
+                'approvalList' => HrdHelper::getApprovalList(),
+                'shift' => ShiftHelper::getShiftOptions($record->shift ?? null),
             ]);
             $pdf->setPaper('a4', 'landscape');
 
