@@ -25,14 +25,12 @@ class InspeksiCateringController extends Controller {
     public function InspeksiCateringDashboard(Request $request)
     {
         try {
-            // Get filters from request
             $filters = [
                 'search' => $request->input('search'),
                 'work_location' => $request->input('work_location'),
                 'start_date' => $request->input('start_date'),
             ];
             
-            // Build query with filters
             $query = DB::table('FM_SHE_048_INSPEKSI_CATERING');
             
             if (!empty($filters['search'])) {
@@ -50,12 +48,9 @@ class InspeksiCateringController extends Controller {
                 $query->whereDate('tanggal_form', $filters['start_date']);
             }
             
-            // Get all records sorted by newest first
             $records = $query->orderBy('id', 'desc')->get();
             
-            // Enhance records with username information from the users table
             foreach ($records as &$record) {
-                // Look up the diinspeksi_oleh_1 name if it's not already set
                 if (isset($record->diinspeksi_oleh_1) && !isset($record->diinspeksi_oleh_1_name)) {
                     $user = DB::table('users')
                         ->where('userid', $record->diinspeksi_oleh_1)
@@ -64,7 +59,6 @@ class InspeksiCateringController extends Controller {
                     $record->diinspeksi_oleh_1_name = $user ? $user->username : null;
                 }
                 
-                // Look up the diinspeksi_oleh_2 name if it's not already set
                 if (isset($record->diinspeksi_oleh_2) && !isset($record->diinspeksi_oleh_2_name)) {
                     $user = DB::table('users')
                         ->where('userid', $record->diinspeksi_oleh_2)
@@ -73,7 +67,6 @@ class InspeksiCateringController extends Controller {
                     $record->diinspeksi_oleh_2_name = $user ? $user->username : null;
                 }
                 
-                // Look up the diinspeksi_oleh_3 name if it's not already set
                 if (isset($record->diinspeksi_oleh_3) && !isset($record->diinspeksi_oleh_3_name)) {
                     $user = DB::table('users')
                         ->where('userid', $record->diinspeksi_oleh_3)
@@ -82,7 +75,6 @@ class InspeksiCateringController extends Controller {
                     $record->diinspeksi_oleh_3_name = $user ? $user->username : null;
                 }
                 
-                // Parse the status field if it exists
                 if (isset($record->status) && !empty($record->status)) {
                     try {
                         $statusArray = json_decode($record->status, true);
@@ -99,20 +91,17 @@ class InspeksiCateringController extends Controller {
                 }
             }
             
-            // Get locations for filter dropdown
             $locations = DB::table('FM_SHE_048_INSPEKSI_CATERING')
                 ->select('lokasi_kerja')
                 ->whereNotNull('lokasi_kerja')
                 ->distinct()
                 ->get();
                 
-            //Get count of records for this month
             $recordsThisMonth = DB::table('FM_SHE_048_INSPEKSI_CATERING')
                 ->whereMonth('tanggal_form', now()->month)
                 ->whereYear('tanggal_form', now()->year)
                 ->count();
             
-            // Pass data to view
             return view('SmartForm::she/inspeksi-catering/inspeksi-catering', [
                 'records' => $records,
                 'locations' => $locations,
@@ -124,7 +113,6 @@ class InspeksiCateringController extends Controller {
             Log::error('Error in InspeksiCateringDashboard: ' . $e->getMessage());
             Log::error('Stack trace: ' . $e->getTraceAsString());
             
-            // Return view with empty data to prevent undefined variable errors
             return view('SmartForm::she/inspeksi-catering/inspeksi-catering', [
                 'records' => collect(),
                 'locations' => collect(),
@@ -145,11 +133,11 @@ class InspeksiCateringController extends Controller {
         $filterNik = $request->query('nama', null);
         $filterStatus = $request->query('status', null);
         $search = $request->query('search', '');
-        $sort = $request->query('sort', 'id'); // Default sort by id
+        $sort = $request->query('sort', 'id');
         $order = $request->query('order', 'desc');
-        $offset = $request->query('offset', 0); // Default offset
-        $limit = $request->query('limit', null); // Default limit
-        $filter = $request->query('filter', null); // Default limit
+        $offset = $request->query('offset', 0);
+        $limit = $request->query('limit', null);
+        $filter = $request->query('filter', null);
         try {
             $master = DB::table($TABLE_MASTER)
                 ->select('id', 'lokasi_kerja as loker');
@@ -172,7 +160,6 @@ class InspeksiCateringController extends Controller {
                 $master->where('status', $filterStatus);
             }
             $master->orderBy($sort, $order);
-            // Log::debug("SQL : ".$master->toRawSql());
             $jml = $master->count();
             if($limit == null || $limit == 'null' || $limit == '') {
                 $master->skip($offset);
@@ -213,21 +200,18 @@ class InspeksiCateringController extends Controller {
         $requestData = $request->all();
     
         try {
-            // Log current user info for debugging
             $user_id = session('user_id');
             $username = session('username');
             
             Log::info("Creating record with user_id: $user_id, username: $username");
             Log::info("Form data received: ", $requestData);
     
-            // Create new data array
             $data = [
                 'no_dok_form' => "BSS-FRM-SHE-048",
                 'revisi_form' => "00",
                 'tanggal_form' => now()->format('Y-m-d H:i:s'),
                 'halaman_form' => "1 dari 3",
                 
-                // Basic information
                 'nama_site' => $requestData['tNamaSite'] ?? '',
                 'department' => $requestData['dDept'] ?? '',
                 'shift' => $requestData['dShift'] ?? '',
@@ -235,18 +219,14 @@ class InspeksiCateringController extends Controller {
                 'jumlah_inspektor' => $requestData['tJmlIns'] ?? '',
                 'mengetahui' => $requestData['dMengetahui'] ?? null,
                 
-                // Store the creator's ID
                 'dibuat_oleh' => $user_id,
                 
-                // Status for the three-level approval
                 'status' => json_encode([null, null, null]),
             ];
             
-            // Process all sections (A through E)
             $totalScore = 0;
             $questionCount = 0;
             
-            // Section A (Penerimaan) - 10 questions
             for ($i = 1; $i <= 10; $i++) {
                 $value = isset($requestData["tA{$i}"]) ? (int)$requestData["tA{$i}"] : 0;
                 $data["q_penerimaan_{$i}"] = $value;
@@ -258,7 +238,6 @@ class InspeksiCateringController extends Controller {
                 }
             }
             
-            // Section B (Penyimpanan) - 9 questions
             for ($i = 1; $i <= 9; $i++) {
                 $value = isset($requestData["tB{$i}"]) ? (int)$requestData["tB{$i}"] : 0;
                 $data["q_penyimpanan_{$i}"] = $value;
@@ -270,7 +249,6 @@ class InspeksiCateringController extends Controller {
                 }
             }
             
-            // Section C (Persiapan) - 10 questions
             for ($i = 1; $i <= 10; $i++) {
                 $value = isset($requestData["tC{$i}"]) ? (int)$requestData["tC{$i}"] : 0;
                 $data["q_persiapan_{$i}"] = $value;
@@ -282,7 +260,6 @@ class InspeksiCateringController extends Controller {
                 }
             }
             
-            // Section D (Pengolahan) - 10 questions
             for ($i = 1; $i <= 10; $i++) {
                 $value = isset($requestData["tD{$i}"]) ? (int)$requestData["tD{$i}"] : 0;
                 $data["q_pengolahan_{$i}"] = $value;
@@ -294,7 +271,6 @@ class InspeksiCateringController extends Controller {
                 }
             }
             
-            // Section E (Penggolongan Sampah) - 9 questions
             for ($i = 1; $i <= 9; $i++) {
                 $value = isset($requestData["tE{$i}"]) ? (int)$requestData["tE{$i}"] : 0;
                 $data["q_penggolongan_sampah_{$i}"] = $value;
@@ -306,10 +282,8 @@ class InspeksiCateringController extends Controller {
                 }
             }
             
-            // Calculate average score
             $averageScore = $questionCount > 0 ? round($totalScore / $questionCount, 2) : 0;
             
-            // Determine conclusion based on average score
             $conclusion = '';
             if ($averageScore >= 9) {
                 $conclusion = 'Sangat Baik';
@@ -321,11 +295,9 @@ class InspeksiCateringController extends Controller {
                 $conclusion = 'Kurang';
             }
             
-            // Add score data
             $data['total_score'] = $averageScore;
             $data['conclusion'] = $conclusion;
             
-            // Insert the record and capture the ID
             try {
                 $insertId = DB::table('FM_SHE_048_INSPEKSI_CATERING')->insertGetId($data);
                 Log::info("Successfully inserted record with ID: $insertId");
@@ -356,12 +328,6 @@ class InspeksiCateringController extends Controller {
         }
     }
 
-    // public function DeleteInspeksiCatering($id)
-    // {
-    //     DB::table('FM_SHE_048_INSPEKSI_CATERING')->where('id', $id)->delete();
-    //     return view('SmartForm::she/inspeksi-catering/inspeksi-catering');
-    // }
-
     public function PdfInspeksiCatering($id)
     {
         $data = DB::table('FM_SHE_048_INSPEKSI_CATERING')->where('id', $id)->first();
@@ -373,7 +339,6 @@ class InspeksiCateringController extends Controller {
     public function DetailInspeksiCatering($id)
     {
         try {
-            // Get master data
             $data = DB::table('FM_SHE_048_INSPEKSI_CATERING')
                 ->where('id', $id)
                 ->first();
@@ -382,7 +347,6 @@ class InspeksiCateringController extends Controller {
                 return abort(404, 'Data not found');
             }
             
-            // Get current user ID
             $user_id = session('user_id');
             
             return view('smartform::she.inspeksi-catering.detail-inspeksi-catering', [
@@ -404,7 +368,6 @@ class InspeksiCateringController extends Controller {
         }
         
         try {
-            // Get master data
             $data = DB::table('FM_SHE_048_INSPEKSI_CATERING')
                 ->where('id', $id)
                 ->first();
@@ -413,14 +376,12 @@ class InspeksiCateringController extends Controller {
                 return abort(404, 'Data not found');
             }
             
-            // Get current user ID
             $user_id = session('user_id');
             
-            // Get list of users for approval dropdowns
             $approvalList = HrdHelper::getApprovalList();
             
             return view('smartform::she.inspeksi-catering.edit-inspeksi-catering', [
-                'data' => $data, // Changed variable name from 'formInspeksiCatering' to 'data'
+                'data' => $data,
                 'nik' => $user_id,
                 'approvalList' => $approvalList
             ]);
@@ -433,13 +394,10 @@ class InspeksiCateringController extends Controller {
     public function UpdateInspeksiCatering(Request $request)
     {
         try {
-            // Log incoming request for debugging
             Log::info('Starting UpdateInspeksiCatering with data: ' . json_encode($request->except('_token')));
             
-            // Begin transaction
             DB::beginTransaction();
             
-            // Get the ID and validate it exists
             $id = $request->input('id');
             if (empty($id)) {
                 return response()->json([
@@ -448,7 +406,6 @@ class InspeksiCateringController extends Controller {
                 ], 400);
             }
             
-            // Verify record exists
             $record = DB::table('FM_SHE_048_INSPEKSI_CATERING')
                 ->where('id', $id)
                 ->first();
@@ -460,7 +417,6 @@ class InspeksiCateringController extends Controller {
                 ], 404);
             }
             
-            // Prepare basic data
             $updateData = [
                 'nama_site' => $request->input('tNamaSite'),
                 'department' => $request->input('dDept'),
@@ -470,66 +426,53 @@ class InspeksiCateringController extends Controller {
                 'mengetahui' => $request->input('dMengetahui'),
             ];
             
-            // Process all the question fields
-            // Section A - Penerimaan (10 questions)
             for ($i = 1; $i <= 10; $i++) {
                 $updateData['q_penerimaan_' . $i] = $request->input('tA' . $i);
                 $updateData['q_keterangan_penerimaan_' . $i] = $request->input('tA' . $i . chr(96 + $i));
             }
             
-            // Section B - Penyimpanan (9 questions)
             for ($i = 1; $i <= 9; $i++) {
                 $updateData['q_penyimpanan_' . $i] = $request->input('tB' . $i);
                 $updateData['q_keterangan_penyimpanan_' . $i] = $request->input('tB' . $i . chr(96 + $i));
             }
             
-            // Section C - Persiapan (10 questions)
             for ($i = 1; $i <= 10; $i++) {
                 $updateData['q_persiapan_' . $i] = $request->input('tC' . $i);
                 $updateData['q_keterangan_persiapan_' . $i] = $request->input('tC' . $i . chr(96 + $i));
             }
             
-            // Section D - Pengolahan (10 questions)
             for ($i = 1; $i <= 10; $i++) {
                 $updateData['q_pengolahan_' . $i] = $request->input('tD' . $i);
                 $updateData['q_keterangan_pengolahan_' . $i] = $request->input('tD' . $i . chr(96 + $i));
             }
             
-            // Section E - Penggolongan Sampah (9 questions)
             for ($i = 1; $i <= 9; $i++) {
                 $updateData['q_penggolongan_sampah_' . $i] = $request->input('tE' . $i);
                 $updateData['q_keterangan_penggolongan_sampah_' . $i] = $request->input('tE' . $i . chr(96 + $i));
             }
             
-            // Calculate total score
             $totalScore = 0;
             
-            // Add up scores from section A
             for ($i = 1; $i <= 10; $i++) {
                 $totalScore += (int)$request->input('tA' . $i);
             }
             
-            // Add up scores from section B
             for ($i = 1; $i <= 9; $i++) {
                 $totalScore += (int)$request->input('tB' . $i);
             }
             
-            // Add up scores from section C
             for ($i = 1; $i <= 10; $i++) {
                 $totalScore += (int)$request->input('tC' . $i);
             }
             
-            // Add up scores from section D
             for ($i = 1; $i <= 10; $i++) {
                 $totalScore += (int)$request->input('tD' . $i);
             }
             
-            // Add up scores from section E
             for ($i = 1; $i <= 9; $i++) {
                 $totalScore += (int)$request->input('tE' . $i);
             }
             
-            // Determine conclusion based on total score
             $conclusion = '';
             if ($totalScore >= 432) {
                 $conclusion = 'Sangat Baik';
@@ -541,19 +484,15 @@ class InspeksiCateringController extends Controller {
                 $conclusion = 'Kurang';
             }
             
-            // Add total score and conclusion to update data
             $updateData['total_score'] = $totalScore;
             $updateData['conclusion'] = $conclusion;
             
-            // Log the data being updated
             Log::info('Updating inspeksi catering with data: ' . json_encode($updateData));
             
-            // Perform the update
             DB::table('FM_SHE_048_INSPEKSI_CATERING')
                 ->where('id', $id)
                 ->update($updateData);
                 
-            // Commit the transaction
             DB::commit();
             
             return response()->json([
@@ -567,10 +506,8 @@ class InspeksiCateringController extends Controller {
             ]);
             
         } catch (Exception $e) {
-            // Rollback the transaction
             DB::rollBack();
             
-            // Log the error
             Log::error('Error in UpdateInspeksiCatering: ' . $e->getMessage());
             Log::error('Stack trace: ' . $e->getTraceAsString());
             
@@ -598,7 +535,6 @@ class InspeksiCateringController extends Controller {
             DB::beginTransaction();
             
             try {
-                // Delete the record
                 $deleted = DB::table('FM_SHE_048_INSPEKSI_CATERING')
                     ->where('id', $id)
                     ->delete();
@@ -634,13 +570,12 @@ class InspeksiCateringController extends Controller {
     public function Approve(Request $request)
     {
         try {
-            // Add detailed logging for debugging
             Log::info('Approve request data:', $request->all());
             
             DB::beginTransaction();
             
             $id = $request->id;
-            $position = (int)($request->position ?? 0); // Ensure position is an integer
+            $position = (int)($request->position ?? 0);
             $nik = session('user_id');
             $username = session('username');
             
@@ -651,10 +586,8 @@ class InspeksiCateringController extends Controller {
                 ], 400);
             }
             
-            // Log the current user info
             Log::info("Approval attempt by user: $nik ($username) for position: $position on record: $id");
             
-            // Get existing record
             $data = DB::table('FM_SHE_048_INSPEKSI_CATERING')
                 ->where('id', $id)
                 ->first();
@@ -667,10 +600,8 @@ class InspeksiCateringController extends Controller {
                 ], 404);
             }
             
-            // Initialize status array
             $currentStatus = [null, null, null];
             
-            // Try to parse existing status if it exists
             if (!empty($data->status)) {
                 try {
                     $decoded = json_decode($data->status, true);
@@ -679,19 +610,15 @@ class InspeksiCateringController extends Controller {
                     }
                 } catch (\Exception $e) {
                     Log::error("Error decoding status JSON: " . $e->getMessage());
-                    // Keep default array if there's an error
                 }
             }
             
-            // Update the status for this position
             $currentStatus[$position] = 'approved';
             
-            // Prepare the update data - ONLY update the fields that exist
             $updateData = [
                 'status' => json_encode($currentStatus)
             ];
             
-            // Set the approver information based on position - REMOVED name columns
             if ($position === 0) {
                 $updateData['diinspeksi_oleh_1'] = $nik;
             } else if ($position === 1) {
@@ -700,10 +627,8 @@ class InspeksiCateringController extends Controller {
                 $updateData['diinspeksi_oleh_3'] = $nik;
             }
             
-            // Log the data being updated
             Log::info("Updating record with data:", $updateData);
             
-            // Update the record
             DB::table('FM_SHE_048_INSPEKSI_CATERING')
                 ->where('id', $id)
                 ->update($updateData);
@@ -730,7 +655,6 @@ class InspeksiCateringController extends Controller {
     public function Reject(Request $request)
     {
         try {
-            // Log request data for debugging
             Log::info('Reject request data:', $request->all());
             
             DB::beginTransaction();
@@ -747,7 +671,6 @@ class InspeksiCateringController extends Controller {
                 ], 400);
             }
             
-            // Get existing record
             $data = DB::table('FM_SHE_048_INSPEKSI_CATERING')
                 ->where('id', $id)
                 ->first();
@@ -760,10 +683,8 @@ class InspeksiCateringController extends Controller {
                 ], 404);
             }
             
-            // Initialize status array
             $currentStatus = [null, null, null];
             
-            // Try to parse existing status if it exists
             if (!empty($data->status)) {
                 try {
                     $decoded = json_decode($data->status, true);
@@ -772,19 +693,15 @@ class InspeksiCateringController extends Controller {
                     }
                 } catch (\Exception $e) {
                     Log::error("Error decoding status JSON: " . $e->getMessage());
-                    // Keep default array if there's an error
                 }
             }
             
-            // Update the status for this position
             $currentStatus[$position] = 'rejected';
             
-            // Prepare the update data
             $updateData = [
                 'status' => json_encode($currentStatus)
             ];
 
-            // Set the approver information based on position - REMOVED name columns
             if ($position === 0) {
                 $updateData['diinspeksi_oleh_1'] = $nik;
             } else if ($position === 1) {
@@ -793,10 +710,8 @@ class InspeksiCateringController extends Controller {
                 $updateData['diinspeksi_oleh_3'] = $nik;
             }
             
-            // Log the data being updated
             Log::info("Updating record with data:", $updateData);
             
-            // Update the record
             DB::table('FM_SHE_048_INSPEKSI_CATERING')
                 ->where('id', $id)
                 ->update($updateData);
@@ -827,7 +742,6 @@ class InspeksiCateringController extends Controller {
             
             DB::beginTransaction();
             
-            // Check if record exists
             $data = DB::table('FM_SHE_048_INSPEKSI_CATERING')
                 ->where('id', $id)
                 ->first();
@@ -840,7 +754,6 @@ class InspeksiCateringController extends Controller {
                 ], 404);
             }
             
-            // Reset status to all nulls
             $updateData = [
                 'status' => json_encode([null, null, null]),
                 'diinspeksi_oleh_1' => null,
@@ -850,7 +763,6 @@ class InspeksiCateringController extends Controller {
             
             Log::info("Resetting approval status for record ID: $id");
             
-            // Update the record
             DB::table('FM_SHE_048_INSPEKSI_CATERING')
                 ->where('id', $id)
                 ->update($updateData);

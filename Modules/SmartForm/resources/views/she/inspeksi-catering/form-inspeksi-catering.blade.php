@@ -790,43 +790,29 @@
         var iKupon = $("#iKupon");
         var tglDoc = $("#tglDoc");
 
-        //  START MEMBUAT NO KUPON URUT FORMAT YYMMDD000x
         function getMonth(mudof) {
-            //get the month
             var month = mudof.getMonth();
 
-            //increment month by 1 since it is 0 indexed
-            //converts month to a string
-            //if month is 1-9 pad right with a 0 for two digits
             month = (month + 1).toString().padStart(2, '0');
 
             return month;
         }
 
-        // function getDay with 1 parameter expecting date
-        // This function returns a string of type dd (example: 09 = The 9th day of the month)
         function getDay(mudof) {
-            //get the day
-            //convert day to string
-            //if day is between 1-9 pad right with a 0 for two digits
             var day = mudof.getDate().toString().padStart(2, '0');;
 
             return day;
         }
 
         function getYear(tglNow) {
-            //get the year
             var year = mudof.getFullYear();
 
-            //pull the last two digits of the year
             year = year.toString().substr(-2);
 
             return year;
         }
-        //A function for formatting a date to yyMMDD
         function formatNomor(mudof)
         {
-            //return the string "yyMMDD"
             return getYear(mudof) + getMonth(mudof);
         }
         
@@ -840,7 +826,6 @@
         function generateNoDoc() {
             return (formatNomor(mudof) + ( (Math.random()*100000).toFixed()));
         }
-        //  END MEMBUAT NO KUPON URUT FORMAT YYMM000x
 
         tanggalSekarang.attr('min', getTodayDate())
 
@@ -856,7 +841,6 @@
             e.preventDefault();
             const formData = $('#formInspeksiCatering').serialize();
 
-            // Add a loading state
             $(this).prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Processing...');
 
             axios.post("{{ route('bss-form.she-048.create-inspeksi-catering') }}", formData, {
@@ -887,7 +871,6 @@
                 });
             })
             .finally(function() {
-                // Re-enable the button regardless of success/failure
                 $('#btnSubmit').prop('disabled', false).html('<i class="fas fa-save"></i> Submit Form');
             });
         });

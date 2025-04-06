@@ -110,7 +110,6 @@
                         </div>
                     </div>
 
-                    <!-- A section - Penerimaan -->
                     <div class="mb-1" style="padding:1rem">
                         <label class="form-label">INSPEKSI CATERING CHECKLSIT</label>
                         <div style="background-color:orange;"><label class="form-label" style="color:white">(A) Penerimaan NILAI (ACT/STD*10)</label></div>
@@ -232,13 +231,11 @@
                         </div>
                     </div>
 
-                    <!-- B section - Penyimpanan -->
                     <div class="mb-1" style="padding:1rem">
                         <div style="background-color:orange;"><label class="form-label" style="color:white">(B) Penyimpanan NILAI (ACT/STD*10)</label></div>
                         <div class="row mb-2">
                             <div class="card col-md-12 was-validated">
                                 <table class="w-full">
-                                    <!-- Generate all 9 questions for section B -->
                                     @for ($i = 1; $i <= 9; $i++)
                                     <tr>
                                         <td style="width:2%">{{ $i }}.</td>
@@ -289,13 +286,11 @@
                         </div>
                     </div>
 
-                    <!-- C section - Persiapan -->
                     <div class="mb-1" style="padding:1rem">
                         <div style="background-color:orange;"><label class="form-label" style="color:white">(C) Persiapan NILAI (ACT/STD*10)</label></div>
                         <div class="row mb-2">
                             <div class="card col-md-12 was-validated">
                                 <table class="w-full">
-                                    <!-- Generate all 10 questions for section C -->
                                     @for ($i = 1; $i <= 10; $i++)
                                     <tr>
                                         <td style="width:2%">{{ $i }}.</td>
@@ -349,13 +344,11 @@
                         </div>
                     </div>
 
-                    <!-- D section - Pengolahan -->
                     <div class="mb-1" style="padding:1rem">
                         <div style="background-color:orange;"><label class="form-label" style="color:white">(D) Pengolahan NILAI (ACT/STD*10)</label></div>
                         <div class="row mb-2">
                             <div class="card col-md-12 was-validated">
                                 <table class="w-full">
-                                    <!-- Generate all 10 questions for section D -->
                                     @for ($i = 1; $i <= 10; $i++)
                                     <tr>
                                         <td style="width:2%">{{ $i }}.</td>
@@ -409,13 +402,11 @@
                         </div>
                     </div>
 
-                    <!-- E section - Penggolongan Sampah -->
                     <div class="mb-1" style="padding:1rem">
                         <div style="background-color:orange;"><label class="form-label" style="color:white">(E) Penggolongan Sampah NILAI (ACT/STD*10)</label></div>
                         <div class="row mb-2">
                             <div class="card col-md-12 was-validated">
                                 <table class="w-full">
-                                    <!-- Generate all 9 questions for section E -->
                                     @for ($i = 1; $i <= 9; $i++)
                                     <tr>
                                         <td style="width:2%">{{ $i }}.</td>
@@ -499,11 +490,9 @@
             
             var btnSubmitUpdate = $("#btnSubmitUpdate");
             
-            // Replace the btnSubmitUpdate click handler code in the custom-js section
             btnSubmitUpdate.click(function(e) {
                 e.preventDefault();
                 
-                // Validate all required fields first
                 let isValid = true;
                 $('#formEditInspeksiCatering input[required]').each(function() {
                     if ($(this).val() === '') {
@@ -523,7 +512,6 @@
                     return;
                 }
                 
-                // Display loading animation
                 Swal.fire({
                     title: 'Updating data...',
                     text: 'Please wait',
@@ -536,11 +524,9 @@
                     }
                 });
                 
-                // Prepare form data
                 const form = document.getElementById('formEditInspeksiCatering');
                 const formData = new FormData(form);
                 
-                // Convert FormData to plain object (easier for debugging)
                 const formObject = {};
                 formData.forEach((value, key) => {
                     formObject[key] = value;
@@ -548,13 +534,11 @@
                 
                 console.log('Submitting form data:', formObject);
                 
-                // Submit via fetch API instead of axios
                 fetch('{{ route("bss-form.she-048.update-inspeksi-catering") }}', {
                     method: 'POST',
                     body: formData,
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        // Don't set Content-Type, let the browser set it for FormData
                     }
                 })
                 .then(response => {

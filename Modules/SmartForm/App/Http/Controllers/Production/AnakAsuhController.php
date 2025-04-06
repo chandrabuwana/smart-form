@@ -8,18 +8,19 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
+use Modules\SmartForm\helpers\HrdHelper;
 
 class AnakAsuhController extends Controller
 {
     public function Dashboard(Request $request)
     {
+        // dd(session()->all());
         try {
             $query = DB::table('prod_anak_asuh_monitoring')
                 ->select('*')
-                ->where('isActive', true) // Only show active records
+                ->where('isActive', true)
                 ->orderBy('created_at', 'desc');
 
-            // Search functionality
             if ($request->has('search')) {
                 $searchTerm = $request->search;
                 $query->where(function($q) use ($searchTerm) {
@@ -30,12 +31,10 @@ class AnakAsuhController extends Controller
                 });
             }
 
-            // Department filter
             if ($request->has('departemen') && $request->departemen) {
                 $query->where('departemen', $request->departemen);
             }
 
-            // Date range filter
             if ($request->has('start_date') && $request->start_date) {
                 $query->whereDate('created_at', '>=', $request->start_date);
             }
@@ -43,22 +42,18 @@ class AnakAsuhController extends Controller
                 $query->whereDate('created_at', '<=', $request->end_date);
             }
 
-            // Get unique departments for filter
             $departments = DB::table('prod_anak_asuh_monitoring')
                 ->select('departemen')
                 ->distinct()
                 ->whereNotNull('departemen')
-                ->pluck('departemen');
+                ->pluck('deartemen');
 
-            // Filter options object
             $filter_options = (object)[
                 'departments' => $departments
             ];
 
-            // Get records with pagination
             $records = $query->paginate(10);
 
-            // Calculate statistics
             $statistics = (object)[
                 'total_records' => DB::table('prod_anak_asuh_monitoring')->count(),
                 'total_this_month' => DB::table('prod_anak_asuh_monitoring')
@@ -99,18 +94,19 @@ class AnakAsuhController extends Controller
     public function AddForm(Request $request)
     {
         try {
+            $approvalList = HrdHelper::getApprovalList();
+            
             if ($request->has('id')) {
                 $record = DB::table('prod_anak_asuh_monitoring')
                     ->where('id', $request->id)
                     ->first();
-
+    
                 if (!$record) {
                     Log::error('Anak Asuh record not found for ID: ' . $request->id);
                     return redirect()->route('prod.anak-asuh.dashboard')
                         ->with('error', 'Record not found');
                 }
-
-                // Parse JSON arrays
+    
                 $record->tanggal_items = json_decode($record->tanggal_items);
                 $record->attendance_items = json_decode($record->attendance_items);
                 $record->nama_anak_asuh_items = json_decode($record->nama_anak_asuh_items);
@@ -119,19 +115,21 @@ class AnakAsuhController extends Controller
                 $record->skill_score_items = json_decode($record->skill_score_items);
                 $record->attitude_score_items = json_decode($record->attitude_score_items);
                 $record->shift_items = json_decode($record->shift_items);
-
+    
                 Log::info('Anak Asuh record loaded for ID: ' . $request->id);
-
+    
                 return view('smartform::production.anak_asuh.form', [
                     'record' => $record,
-                    'isShowDetail' => true
+                    'isShowDetail' => true,
+                    'approvalList' => $approvalList
                 ]);
             }
-
+    
             return view('smartform::production.anak_asuh.form', [
-                'isShowDetail' => false
+                'isShowDetail' => false,
+                'approvalList' => $approvalList
             ]);
-
+    
         } catch (\Exception $e) {
             Log::error('Error in AddForm: ' . $e->getMessage());
             return redirect()->route('prod.anak-asuh.dashboard')
@@ -148,17 +146,18 @@ class AnakAsuhController extends Controller
     public function EditForm($id)
     {
         try {
+            $approvalList = HrdHelper::getApprovalList();
+            
             $record = DB::table('prod_anak_asuh_monitoring')
                 ->where('id', $id)
                 ->first();
-
+    
             if (!$record) {
                 Log::error('Anak Asuh record not found for ID: ' . $id);
                 return redirect()->route('prod.anak-asuh.dashboard')
                     ->with('error', 'Record not found');
             }
-
-            // Parse JSON arrays
+    
             $record->tanggal_items = json_decode($record->tanggal_items);
             $record->attendance_items = json_decode($record->attendance_items);
             $record->nama_anak_asuh_items = json_decode($record->nama_anak_asuh_items);
@@ -167,13 +166,15 @@ class AnakAsuhController extends Controller
             $record->skill_score_items = json_decode($record->skill_score_items);
             $record->attitude_score_items = json_decode($record->attitude_score_items);
             $record->shift_items = json_decode($record->shift_items);
-
+    
             Log::info('Anak Asuh record loaded for editing, ID: ' . $id);
-
+    
             return view('smartform::production.anak_asuh.edit-form', [
-                'record' => $record
+                'record' => $record,
+                'isEdit' => true,
+                'approvalList' => $approvalList
             ]);
-
+    
         } catch (\Exception $e) {
             Log::error('Error in EditForm: ' . $e->getMessage());
             return redirect()->route('prod.anak-asuh.dashboard')
@@ -186,15 +187,19 @@ class AnakAsuhController extends Controller
         try {
             $data = [
                 'doc_number' => $this->generateDocNumber(),
-                'name' => $request->name,
-                'nik' => $request->nik,
-                'jabatan' => $request->jabatan,
-                'departemen' => $request->departemen,
+                'name' => $request->name ?? session('username'),
+                'nik' => $request->nik ?? session('user_id'),
+                'jabatan' => $request->jabatan ?? session('jabatan'),
+                'departemen' => $request->departemen ?? session('kode_department'),
                 'created_by' => $request->created_by,
-                // 'acknowledged_by' => $request->acknowledged_by,
+                'site' => $request->site ?? session('kode_site'),
+                'tanggal_items' => $request->tanggal_items ?? date('Y-m-d'),
+                'shift_items' => $request->shift_items,
+                'isActive' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
             ];
-
-            // Initialize arrays for multiple entries
+    
             $tanggal_items = [];
             $attendance_items = [];
             $nama_anak_asuh_items = [];
@@ -203,33 +208,37 @@ class AnakAsuhController extends Controller
             $skill_score_items = [];
             $attitude_score_items = [];
             $shift_items = [];
-
-            // Collect only filled data for each row
-            for ($i = 1; $i <= 10; $i++) {
-                $tanggal = $request->input("tanggal_$i");
-                $attendance = $request->input("attendance_$i");
-                $nama_anak_asuh = $request->input("nama_anak_asuh_$i");
-                $review_temuan = $request->input("review_temuan_$i");
-                $disiplin_score = $request->input("disiplin_score_$i");
-                $skill_score = $request->input("skill_score_$i");
-                $attitude_score = $request->input("attitude_score_$i");
-                $shift = $request->input("shift_$i");
-
-                // Only add to arrays if at least one field is filled
-                if ($tanggal || $attendance || $nama_anak_asuh || $review_temuan || 
-                    $disiplin_score || $skill_score || $attitude_score || $shift) {
-                    $tanggal_items[] = $tanggal;
-                    $attendance_items[] = $attendance;
-                    $nama_anak_asuh_items[] = $nama_anak_asuh;
-                    $review_temuan_items[] = $review_temuan;
-                    $disiplin_score_items[] = $disiplin_score;
-                    $skill_score_items[] = $skill_score;
-                    $attitude_score_items[] = $attitude_score;
-                    $shift_items[] = $shift;
+    
+            $maxRows = $request->row_count ?? 100;
+            
+            for ($i = 1; $i <= $maxRows; $i++) {
+                if ($request->has("nama_anak_asuh_$i")) {
+                    $nama_anak_asuh = $request->input("nama_anak_asuh_$i");
+                    
+                    if (!empty($nama_anak_asuh)) {
+                        $tanggal_items[] = $request->input("tanggal_$i");
+                        $attendance_items[] = $request->input("attendance_$i");
+                        $nama_anak_asuh_items[] = $nama_anak_asuh;
+                        $review_temuan_items[] = $request->input("review_temuan_$i");
+                        $disiplin_score_items[] = $request->input("disiplin_score_$i") ?: null;
+                        $skill_score_items[] = $request->input("skill_score_$i") ?: null;
+                        $attitude_score_items[] = $request->input("attitude_score_$i") ?: null; 
+                        $shift_items[] = $request->input("shift_$i");
+                    }
+                } else {
+                    break;
                 }
             }
-
-            // Add arrays to data
+    
+            if (empty($nama_anak_asuh_items)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Minimal satu data anak asuh harus diisi'
+                ], 422);
+            }
+    
+            Log::info('Processing ' . count($nama_anak_asuh_items) . ' rows of anak asuh data');
+    
             $data['tanggal_items'] = json_encode(array_values($tanggal_items));
             $data['attendance_items'] = json_encode(array_values($attendance_items));
             $data['nama_anak_asuh_items'] = json_encode(array_values($nama_anak_asuh_items));
@@ -238,17 +247,27 @@ class AnakAsuhController extends Controller
             $data['skill_score_items'] = json_encode(array_values($skill_score_items));
             $data['attitude_score_items'] = json_encode(array_values($attitude_score_items));
             $data['shift_items'] = json_encode(array_values($shift_items));
-
+    
+            DB::beginTransaction();
+    
             $id = DB::table('prod_anak_asuh_monitoring')->insertGetId($data);
-
+    
+            DB::commit();
+    
+            Log::info('Anak Asuh record created successfully. ID: ' . $id);
+    
             return response()->json([
                 'success' => true,
                 'message' => 'Data berhasil disimpan',
                 'id' => $id
             ]);
-
+    
         } catch (\Exception $e) {
+            DB::rollBack();
+            
             Log::error('Error in Store: ' . $e->getMessage());
+            Log::error('Stack trace: ' . $e->getTraceAsString());
+            
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to save record: ' . $e->getMessage()
@@ -265,7 +284,6 @@ class AnakAsuhController extends Controller
     public function UpdateAnakAsuh(Request $request)
     {
         try {
-            // Validate the request
             $validated = $request->validate([
                 'id' => 'required|exists:prod_anak_asuh_monitoring,id',
                 'name' => 'required|string|max:255',
@@ -275,18 +293,17 @@ class AnakAsuhController extends Controller
                 'created_by' => 'required|string|max:255',
             ]);
 
-            // Get the existing record to preserve the doc_number
             $existingRecord = DB::table('prod_anak_asuh_monitoring')
                 ->where('id', $validated['id'])
                 ->first();
                 
             if (!$existingRecord) {
-                return redirect()->back()
-                    ->with('error', 'Record not found')
-                    ->withInput();
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Record not found'
+                ], 404);
             }
-
-            // Initialize arrays for multiple entries
+    
             $tanggal_items = [];
             $attendance_items = [];
             $nama_anak_asuh_items = [];
@@ -295,23 +312,37 @@ class AnakAsuhController extends Controller
             $skill_score_items = [];
             $attitude_score_items = [];
             $shift_items = [];
-
-            // Collect data for each row (10 rows)
-            for ($i = 1; $i <= 10; $i++) {
-                $tanggal_items[] = $request->input("tanggal_$i");
-                $attendance_items[] = $request->input("attendance_$i");
-                $nama_anak_asuh_items[] = $request->input("nama_anak_asuh_$i");
-                $review_temuan_items[] = $request->input("review_temuan_$i");
-                $disiplin_score_items[] = $request->input("disiplin_score_$i");
-                $skill_score_items[] = $request->input("skill_score_$i");
-                $attitude_score_items[] = $request->input("attitude_score_$i");
-                $shift_items[] = $request->input("shift_$i");
+    
+            $maxRows = $request->row_count ?? 100;
+            
+            for ($i = 1; $i <= $maxRows; $i++) {
+                if ($request->has("nama_anak_asuh_$i")) {
+                    $nama_anak_asuh = $request->input("nama_anak_asuh_$i");
+                    
+                    if (!empty($nama_anak_asuh)) {
+                        $tanggal_items[] = $request->input("tanggal_$i");
+                        $attendance_items[] = $request->input("attendance_$i");
+                        $nama_anak_asuh_items[] = $nama_anak_asuh;
+                        $review_temuan_items[] = $request->input("review_temuan_$i");
+                        $disiplin_score_items[] = $request->input("disiplin_score_$i") ?: null;
+                        $skill_score_items[] = $request->input("skill_score_$i") ?: null;
+                        $attitude_score_items[] = $request->input("attitude_score_$i") ?: null;
+                        $shift_items[] = $request->input("shift_$i");
+                    }
+                } else {
+                    break;
+                }
             }
-
-            // Begin transaction for data integrity
+    
+            if (empty($nama_anak_asuh_items)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Minimal satu data anak asuh harus diisi'
+                ], 422);
+            }
+    
             DB::beginTransaction();
-
-            // Update the record
+    
             DB::table('prod_anak_asuh_monitoring')
                 ->where('id', $validated['id'])
                 ->update([
@@ -320,6 +351,7 @@ class AnakAsuhController extends Controller
                     'jabatan' => $validated['jabatan'],
                     'departemen' => $validated['departemen'],
                     'created_by' => $validated['created_by'],
+                    'site' => $request->site,
                     'tanggal_items' => json_encode($tanggal_items),
                     'attendance_items' => json_encode($attendance_items),
                     'nama_anak_asuh_items' => json_encode($nama_anak_asuh_items),
@@ -330,23 +362,35 @@ class AnakAsuhController extends Controller
                     'shift_items' => json_encode($shift_items),
                     'updated_at' => now()
                 ]);
-
-            // Commit the transaction
+    
             DB::commit();
-
+    
             Log::info('Anak Asuh record updated successfully. ID: ' . $validated['id']);
             
-            return redirect()->route('prod.anak-asuh.dashboard')
-                ->with('success', 'Record updated successfully');
-                
+            return response()->json([
+                'success' => true,
+                'message' => 'Record updated successfully',
+                'id' => $validated['id']
+            ]);
+                    
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            DB::rollBack();
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $e->errors()
+            ], 422);
         } catch (\Exception $e) {
-            // Rollback the transaction in case of error
             DB::rollBack();
             
             Log::error('Error updating Anak Asuh record: ' . $e->getMessage());
-            return redirect()->back()
-                ->with('error', 'Failed to update record: ' . $e->getMessage())
-                ->withInput();
+            Log::error('Stack trace: ' . $e->getTraceAsString());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update record: ' . $e->getMessage()
+            ], 500);
         }
     }
 
@@ -363,7 +407,6 @@ class AnakAsuhController extends Controller
                     ->with('error', 'Data tidak ditemukan');
             }
 
-            // Helper function to safely decode JSON
             $safeJsonDecode = function($value) {
                 if (is_string($value)) {
                     return json_decode($value);
@@ -373,7 +416,6 @@ class AnakAsuhController extends Controller
                 return null;
             };
 
-            // Decode JSON arrays safely
             $record->tanggal_items = $safeJsonDecode($record->tanggal_items);
             $record->attendance_items = $safeJsonDecode($record->attendance_items);
             $record->nama_anak_asuh_items = $safeJsonDecode($record->nama_anak_asuh_items);
@@ -383,7 +425,6 @@ class AnakAsuhController extends Controller
             $record->attitude_score_items = $safeJsonDecode($record->attitude_score_items);
             $record->shift_items = $safeJsonDecode($record->shift_items);
 
-            // Use Barryvdh\DomPDF\Facade\Pdf instead of PDF alias
             $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('smartform::production.anak_asuh.export-pdf', compact('record'));
             $pdf->setPaper('a4', 'portrait');
             
@@ -415,7 +456,7 @@ class AnakAsuhController extends Controller
             DB::table('prod_anak_asuh_monitoring')
                 ->where('id', $validated['id'])
                 ->update([
-                    'isActive' => false, // Set to false to mark as deleted
+                    'isActive' => false,
                     'updated_at' => now()
                 ]);
 
@@ -453,7 +494,6 @@ class AnakAsuhController extends Controller
             $today->format('m')
         );
         
-        // Find the highest existing number for this month and year
         $highestRecord = DB::table('prod_anak_asuh_monitoring')
             ->where('doc_number', 'like', $prefix . '%')
             ->orderByRaw('LEN(doc_number) DESC, doc_number DESC')
@@ -462,14 +502,12 @@ class AnakAsuhController extends Controller
         $nextNumber = 1;
         
         if ($highestRecord) {
-            // Extract the numeric part from the existing doc number
             $lastPart = substr($highestRecord->doc_number, strlen($prefix));
             if (is_numeric($lastPart)) {
                 $nextNumber = intval($lastPart) + 1;
             }
         }
         
-        // Format with leading zeros (3 digits)
         return $prefix . sprintf('%03d', $nextNumber);
     }
 }

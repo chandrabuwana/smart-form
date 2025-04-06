@@ -50,7 +50,7 @@ class LoginKaryawanController extends Controller
 
             $user = Auth::user();
             $nik = $user->username;
-            $dataUser = DB::connection('sqlsrv2')->select("SELECT TOP 1 Nama nama, KodeST, KodeDP  FROM TKaryawan where nik = '$nik'");
+            $dataUser = DB::connection('sqlsrv2')->select("SELECT TOP 1 Nama nama, KodeST, KodeDP, KodeJB  FROM TKaryawan where nik = '$nik'");
 
             $logOn = Carbon::now();
             $logOff = $logOn->copy()->addHours(2);
@@ -66,7 +66,8 @@ class LoginKaryawanController extends Controller
                 'user_id' => $user->username,
                 'username' => $dataUser[0]->nama,
                 'kode_site' => $dataUser[0]->KodeST,
-                'kode_department' => $dataUser[0]->KodeDP
+                'kode_department' => $dataUser[0]->KodeDP,
+                'kode_jabatan' => $dataUser[0]->KodeJB
             ]);
 
             $prevAuthRoute = $_COOKIE['prev_auth_route'] ?? '';

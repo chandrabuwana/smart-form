@@ -31,6 +31,7 @@ return new class extends Migration
             $table->text('skill_score_items');
             $table->text('attitude_score_items');
             $table->text('shift_items');
+            $table->text('site');
             $table->timestamps();
             $table->softDeletes();
         });

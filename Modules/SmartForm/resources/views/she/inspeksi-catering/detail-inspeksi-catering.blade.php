@@ -68,7 +68,6 @@
                             </a>
                             
                             @php
-                                // Check if all approvals are complete (all three positions are 'approved')
                                 $isFullyApproved = isset($data->status) && 
                                                   is_array($data->status) && 
                                                   count($data->status) >= 3 &&
@@ -111,9 +110,7 @@
                         </div>
                     </div>
 
-                    <<!-- Replace the inspection-data section with this complete code -->
                     <div class="inspection-data">
-                        <!-- Section A: Penerimaan -->
                         <div class="section-heading bg-warning text-white">
                             (A) Penerimaan NILAI (ACT/STD*10)
                         </div>
@@ -192,7 +189,6 @@
                             </table>
                         </div>
 
-                        <!-- Section B: Penyimpanan -->
                         <div class="section-heading bg-warning text-white mt-4">
                             (B) Penyimpanan NILAI (ACT/STD*10)
                         </div>
@@ -265,7 +261,6 @@
                             </table>
                         </div>
 
-                        <!-- Section C: Persiapan -->
                         <div class="section-heading bg-warning text-white mt-4">
                             (C) Persiapan NILAI (ACT/STD*10)
                         </div>
@@ -344,7 +339,6 @@
                             </table>
                         </div>
 
-                        <!-- Section D: Pengolahan -->
                         <div class="section-heading bg-warning text-white mt-4">
                             (D) Pengolahan NILAI (ACT/STD*10)
                         </div>
@@ -423,7 +417,6 @@
                             </table>
                         </div>
 
-                        <!-- Section E: Penggolongan Sampah -->
                         <div class="section-heading bg-warning text-white mt-4">
                             (E) Penggolongan Sampah NILAI (ACT/STD*10)
                         </div>
@@ -496,7 +489,6 @@
                             </table>
                         </div>
 
-                        <!-- Total Score Section -->
                         <div class="card mt-4">
                             <div class="card-header bg-warning text-white">
                                 <h5 class="mb-0 text-white">Hasil Penilaian</h5>
@@ -526,7 +518,6 @@
                                     <span class="approval-user">Diinspeksi Oleh 1:</span> 
                                     {{ $data->diinspeksi_oleh_1 ?? 'Belum ditentukan' }}
                                     @php
-                                        // Helper function to parse JSON status safely
                                         function parseStatus($statusJson) {
                                             if (empty($statusJson)) return [null, null, null];
                                             
@@ -536,16 +527,13 @@
                                                     return $status;
                                                 }
                                             } catch (\Exception $e) {
-                                                // Failed to parse JSON
+                                                return [null, null, null];
                                             }
                                             
-                                            return [null, null, null];
                                         }
                                         
-                                        // Parse status once
                                         $statusArray = parseStatus($data->status);
                                         
-                                        // Get individual approval statuses
                                         $diperiksa_status = $statusArray[0] ?? null;
                                         $diketahui_status = $statusArray[1] ?? null;
                                         $disetujui_status = $statusArray[2] ?? null;
@@ -587,7 +575,6 @@
                                     @endif
                                     
                                     <div class="mt-2">
-                                        <!-- Only show Diinspeksi 2 buttons if Diinspeksi 1 is approved -->
                                         @if($diperiksa_status === 'approved')
                                             <button type="button" class="btn btn-success btn-sm approve-btn"
                                                     data-id="{{ $data->id }}"
@@ -619,7 +606,6 @@
                                     @endif
                                     
                                     <div class="mt-2">
-                                        <!-- Only show Diinspeksi 3 buttons if both Diinspeksi 1 and 2 are approved -->
                                         @if($diperiksa_status === 'approved' && $diketahui_status === 'approved')
                                             <button type="button" class="btn btn-success btn-sm approve-btn"
                                                     data-id="{{ $data->id }}"
@@ -684,73 +670,71 @@
     <script>
         $(document).ready(function() {
             $('.approve-btn').on('click', function() {
-    const recordId = $(this).data('id');
-    const position = $(this).data('position');
-    
-    Swal.fire({
-        title: 'Approve Document',
-        text: "Apakah Anda yakin ingin menyetujui dokumen ini?",
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Ya, setuju!',
-        cancelButtonText: 'Batal'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // Show loading state
-            Swal.fire({
-                title: 'Processing...',
-                text: 'Mohon tunggu sebentar',
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-                allowEnterKey: false,
-                showConfirmButton: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
-            
-            axios.post("{{ route('bss-form.she-048.approve-inspeksi-catering') }}", {
-                _token: "{{ csrf_token() }}",
-                id: recordId,
-                position: position
-            })
-            .then(function(response) {
-                if (response.data.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Berhasil!',
-                        text: 'Dokumen berhasil disetujui',
-                    }).then(() => {
-                        // Reload the page to reflect changes
-                        window.location.reload();
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: response.data.message || 'Terjadi kesalahan',
-                    });
-                }
-            })
-            .catch(function(error) {
-                console.error('Error data:', error);
-                let errorMessage = 'Terjadi kesalahan dalam memproses permintaan';
-                
-                if (error.response && error.response.data && error.response.data.message) {
-                    errorMessage = error.response.data.message;
-                }
+                const recordId = $(this).data('id');
+                const position = $(this).data('position');
                 
                 Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: errorMessage,
+                    title: 'Approve Document',
+                    text: "Apakah Anda yakin ingin menyetujui dokumen ini?",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, setuju!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            title: 'Processing...',
+                            text: 'Mohon tunggu sebentar',
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            allowEnterKey: false,
+                            showConfirmButton: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+                        
+                        axios.post("{{ route('bss-form.she-048.approve-inspeksi-catering') }}", {
+                            _token: "{{ csrf_token() }}",
+                            id: recordId,
+                            position: position
+                        })
+                        .then(function(response) {
+                            if (response.data.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Berhasil!',
+                                    text: 'Dokumen berhasil disetujui',
+                                }).then(() => {
+                                    window.location.reload();
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: response.data.message || 'Terjadi kesalahan',
+                                });
+                            }
+                        })
+                        .catch(function(error) {
+                            console.error('Error data:', error);
+                            let errorMessage = 'Terjadi kesalahan dalam memproses permintaan';
+                            
+                            if (error.response && error.response.data && error.response.data.message) {
+                                errorMessage = error.response.data.message;
+                            }
+                            
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: errorMessage,
+                            });
+                        });
+                    }
                 });
             });
-        }
-    });
-});
             
             $('.reject-btn').on('click', function() {
                 const recordId = $(this).data('id');
@@ -779,7 +763,6 @@
                                     title: 'Berhasil!',
                                     text: 'Dokumen berhasil ditolak',
                                 }).then(() => {
-                                    // Reload the page to reflect changes
                                     window.location.reload();
                                 });
                             } else {
@@ -803,52 +786,50 @@
             });
             
             $('.reset-approval').on('click', function() {
-    const recordId = $(this).data('id');
-    
-    Swal.fire({
-        title: 'Reset Approval Status',
-        text: "Apakah Anda yakin ingin mereset status persetujuan dokumen ini?",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Ya, reset!',
-        cancelButtonText: 'Batal'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // Note: Use post method to match the route definition
-            axios.post("{{ route('bss-form.she-048.reset-inspeksi-catering', ['id' => ':id']) }}".replace(':id', recordId), {
-                _token: "{{ csrf_token() }}"
-            })
-            .then(function(response) {
-                if (response.data.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Berhasil!',
-                        text: 'Status persetujuan berhasil direset',
-                    }).then(() => {
-                        // Reload the page to reflect changes
-                        window.location.reload();
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: response.data.message || 'Terjadi kesalahan',
-                    });
-                }
-            })
-            .catch(function(error) {
-                console.error(error);
+                const recordId = $(this).data('id');
+                
                 Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Terjadi kesalahan dalam memproses permintaan',
+                    title: 'Reset Approval Status',
+                    text: "Apakah Anda yakin ingin mereset status persetujuan dokumen ini?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, reset!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        axios.post("{{ route('bss-form.she-048.reset-inspeksi-catering', ['id' => ':id']) }}".replace(':id', recordId), {
+                            _token: "{{ csrf_token() }}"
+                        })
+                        .then(function(response) {
+                            if (response.data.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Berhasil!',
+                                    text: 'Status persetujuan berhasil direset',
+                                }).then(() => {
+                                    window.location.reload();
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: response.data.message || 'Terjadi kesalahan',
+                                });
+                            }
+                        })
+                        .catch(function(error) {
+                            console.error(error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Terjadi kesalahan dalam memproses permintaan',
+                            });
+                        });
+                    }
                 });
             });
-        }
-    });
-});
             
             $('.delete-btn').on('click', function() {
                 const recordId = $(this).data('id');
@@ -875,7 +856,6 @@
                                     title: 'Berhasil!',
                                     text: 'Data berhasil dihapus',
                                 }).then(() => {
-                                    // Redirect to dashboard
                                     window.location.href = "{{ route('bss-form.she-048.inspeksi-catering.dashboard') }}";
                                 });
                             } else {
