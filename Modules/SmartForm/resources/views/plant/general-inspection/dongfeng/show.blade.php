@@ -247,13 +247,13 @@
                                                                                 name="inspection[{{ $category }}][{{ $item['activity'] }}][pre_inspect]"
                                                                                 class="form-control" role="button">
                                                                                 <option value=""
-                                                                                    {{ $preInspect === null ? 'selected' : null }}>
+                                                                                    {{ $preInspect == null ? 'selected' : null }}>
                                                                                     N/A</option>
                                                                                 <option value="1"
-                                                                                    {{ $preInspect === 1 ? 'selected' : null }}>
+                                                                                    {{ $preInspect == 1 ? 'selected' : null }}>
                                                                                     Good</option>
                                                                                 <option value="0"
-                                                                                    {{ $preInspect === 0 ? 'selected' : null }}>
+                                                                                    {{ $preInspect == 0 ? 'selected' : null }}>
                                                                                     Broken</option>
                                                                             </select>
                                                                         </div>
@@ -264,13 +264,13 @@
                                                                                 name="inspection[{{ $category }}][{{ $item['activity'] }}][final_inspect]"
                                                                                 class="form-control" role="button">
                                                                                 <option value=""
-                                                                                    {{ $finalInspect === null ? 'selected' : null }}>
+                                                                                    {{ $finalInspect == null ? 'selected' : null }}>
                                                                                     N/A</option>
                                                                                 <option value="1"
-                                                                                    {{ $finalInspect === 1 ? 'selected' : null }}>
+                                                                                    {{ $finalInspect == 1 ? 'selected' : null }}>
                                                                                     Good</option>
                                                                                 <option value="0"
-                                                                                    {{ $finalInspect === 0 ? 'selected' : null }}>
+                                                                                    {{ $finalInspect == 0 ? 'selected' : null }}>
                                                                                     Broken</option>
                                                                             </select>
                                                                         </div>
@@ -281,13 +281,13 @@
                                                                                 name="inspection[{{ $category }}][{{ $item['activity'] }}][delivery_inspect]"
                                                                                 class="form-control" role="button">
                                                                                 <option value=""
-                                                                                    {{ $deliveryInspect === null ? 'selected' : null }}>
+                                                                                    {{ $deliveryInspect == null ? 'selected' : null }}>
                                                                                     N/A</option>
                                                                                 <option value="1"
-                                                                                    {{ $deliveryInspect === 1 ? 'selected' : null }}>
+                                                                                    {{ $deliveryInspect == 1 ? 'selected' : null }}>
                                                                                     Good</option>
                                                                                 <option value="0"
-                                                                                    {{ $deliveryInspect === 0 ? 'selected' : null }}>
+                                                                                    {{ $deliveryInspect == 0 ? 'selected' : null }}>
                                                                                     Broken</option>
                                                                             </select>
                                                                         </div>

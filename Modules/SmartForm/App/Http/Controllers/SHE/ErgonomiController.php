@@ -17,6 +17,27 @@ class ErgonomiController extends Controller
     public function Dashboard(Request $request)
     {
         $query = DB::table('she_027_ergonomi')
+            ->select(
+                'id',
+                'employee_name',
+                'job_position',
+                'reviewer_name',
+                'reviewer_nik',
+                'paramedic_name',
+                'paramedic_nik',
+                'doctor_name',
+                'doctor_nik',
+                'dept_head_name',
+                'dept_head_nik',
+                'total_employee',
+                DB::raw('CONVERT(varchar, evaluation_date, 23) as evaluation_date'),
+                'approval_status',
+                'reviewer_status',
+                'paramedic_status',
+                'doctor_status',
+                'dept_head_status',
+                'created_at'
+            )
             ->whereNull('deleted_at');
 
         // Apply filters
@@ -173,8 +194,10 @@ class ErgonomiController extends Controller
                 // Optional fields
                 'job_position' => $request->job_position,
                 'evaluation_date' => $request->evaluation_date,
-                'employee_id' => $request->employee_id,
-                'reviewer_id' => $request->reviewer_id,
+                'reviewer_nik' => $request->reviewer_nik,
+                'paramedic_nik' => $request->paramedic_nik,
+                'doctor_nik' => $request->doctor_nik,
+                'dept_head_nik' => $request->dept_head_nik,
                 
                 // Checklist items
                 'item_1' => $request->has('item_1'),
@@ -256,7 +279,13 @@ class ErgonomiController extends Controller
     public function Show($id)
     {
         try {
+            // Use DB::raw to format the dates in SQL Server
             $data = DB::table('she_027_ergonomi')
+                ->select(
+                    '*',
+                    DB::raw("FORMAT(evaluation_date, 'yyyy-MM-dd') as formatted_evaluation_date"),
+                    DB::raw("FORMAT(review_date, 'yyyy-MM-dd') as formatted_review_date")
+                )
                 ->where('id', $id)
                 ->first();
 
@@ -266,12 +295,22 @@ class ErgonomiController extends Controller
                     ->with('error', 'Record not found.');
             }
 
-            // Convert stdClass to array to make it easier to work with in the view
-            $data = json_decode(json_encode($data), true);
+            // Convert the formatted dates to the actual date fields for display
+            if (isset($data->formatted_evaluation_date)) {
+                $data->evaluation_date = $data->formatted_evaluation_date;
+            }
+            
+            if (isset($data->formatted_review_date)) {
+                $data->review_date = $data->formatted_review_date;
+            }
+
+            // Get approval list for dropdowns using HrdHelper
+            $approvalList = HrdHelper::getApprovalList();
 
             return view('smartform::she/ergonomi/form', [
                 'isShowDetail' => true,
-                'data' => (object)$data // Convert back to object for view compatibility
+                'data' => $data,
+                'approvalList' => $approvalList
             ]);
 
         } catch (\Exception $e) {
@@ -339,215 +378,345 @@ class ErgonomiController extends Controller
         }
     }
 
+    /**
+     * Show the edit form for a specific record
+     */
+    public function EditForm(Request $request, $id)
+    {
+        try {
+            $data = DB::table('she_027_ergonomi')
+                ->select(
+                    '*',
+                    DB::raw('CONVERT(varchar, evaluation_date, 23) as evaluation_date'),
+                    DB::raw('CONVERT(varchar, review_date, 23) as review_date')
+                )
+                ->whereNull('deleted_at')
+                ->where('id', $id)
+                ->first();
+
+            if (!$data) {
+                return redirect()
+                    ->route('she.ergonomi.dashboard')
+                    ->with('error', 'Record not found.');
+            }
+
+            // Check if the current user is the creator of the record
+            if (!session('username') || $data->employee_name != session('username')) {
+                return redirect()->route('she.ergonomi.dashboard')
+                    ->with('error', 'You are not authorized to edit this record');
+            }
+
+            // Check if the record has an approval status that allows editing
+            if (isset($data->approval_status) && $data->approval_status == 'approved') {
+                return redirect()->route('she.ergonomi.dashboard')
+                    ->with('error', 'Approved records cannot be edited');
+            }
+
+            // Get approval list for dropdowns using HrdHelper
+            $approvalList = HrdHelper::getApprovalList();
+
+            return view('smartform::she/ergonomi/edit', [
+                'data' => $data,
+                'approvalList' => $approvalList
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error in EditForm: ' . $e->getMessage());
+            return redirect()->route('she.ergonomi.dashboard')
+                ->with('error', 'Failed to load edit form: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Update an existing record
+     */
     public function UpdateForm(Request $request)
     {
         try {
             $validator = Validator::make($request->all(), [
                 'id' => 'required|exists:she_027_ergonomi,id',
                 'total_employee' => 'required|integer',
-                'employee_name' => 'required|string',
-                'reviewer_name' => 'required|string',
-                'paramedic_name' => 'required|string',
-                'doctor_name' => 'required|string',
-                'dept_head_name' => 'required|string',
-                'review_date' => 'required|date'
             ]);
 
             if ($validator->fails()) {
-                throw new ValidationException($validator);
+                return response()->json([
+                    'success' => false,
+                    'errors' => $validator->errors()
+                ], 422);
             }
 
+            // Get the record
+            $record = DB::table('she_027_ergonomi')
+                ->where('id', $request->id)
+                ->first();
+
+            if (!$record) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Record not found'
+                ], 404);
+            }
+
+            // Check if the current user is the creator of the record
+            if (!session('username') || $record->employee_name != session('username')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'You are not authorized to update this record'
+                ], 403);
+            }
+
+            // Check if the record has an approval status that allows editing
+            if (isset($record->approval_status) && $record->approval_status == 'approved') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Approved records cannot be edited'
+                ], 403);
+            }
+
+            // Prepare the data for update
             $data = [
-                // Required fields
+                'job_position' => $request->job_position,
+                'evaluation_date' => $request->evaluation_date ? Carbon::createFromFormat('Y-m-d', $request->evaluation_date)->format('Y-m-d') : null,
+                'reviewer_nik' => $request->reviewer_nik,
+                'paramedic_nik' => $request->paramedic_nik,
+                'doctor_nik' => $request->doctor_nik,
+                'dept_head_nik' => $request->dept_head_nik,
                 'total_employee' => $request->total_employee,
                 'employee_name' => $request->employee_name,
                 'reviewer_name' => $request->reviewer_name,
                 'paramedic_name' => $request->paramedic_name,
                 'doctor_name' => $request->doctor_name,
                 'dept_head_name' => $request->dept_head_name,
-                'review_date' => $request->review_date,
-                
-                // Optional fields
-                'job_position' => $request->job_position,
-                'evaluation_date' => $request->evaluation_date,
-                'employee_id' => $request->employee_id,
-                'reviewer_id' => $request->reviewer_id,
-                
-                // Checklist items
-                'item_1' => $request->has('item_1'),
-                'item_2' => $request->has('item_2'),
-                'item_3' => $request->has('item_3'),
-                'item_4' => $request->has('item_4'),
-                'item_5' => $request->has('item_5'),
-                'item_6' => $request->has('item_6'),
-                'item_7' => $request->has('item_7'),
-                'item_8' => $request->has('item_8'),
-                'item_9' => $request->has('item_9'),
-                'item_10' => $request->has('item_10'),
-                'item_11' => $request->has('item_11'),
-                'item_12' => $request->has('item_12'),
-                'item_13' => $request->has('item_13'),
-                'item_14' => $request->has('item_14'),
-                
-                // Item observations
-                'item_1_observation' => $request->item_1_observation,
-                'item_2_observation' => $request->item_2_observation,
-                'item_3_observation' => $request->item_3_observation,
-                'item_4_observation' => $request->item_4_observation,
-                'item_5_observation' => $request->item_5_observation,
-                'item_6_observation' => $request->item_6_observation,
-                'item_7_observation' => $request->item_7_observation,
-                'item_8_observation' => $request->item_8_observation,
-                'item_9_observation' => $request->item_9_observation,
-                'item_10_observation' => $request->item_10_observation,
-                'item_11_observation' => $request->item_11_observation,
-                'item_12_observation' => $request->item_12_observation,
-                'item_13_observation' => $request->item_13_observation,
-                'item_14_observation' => $request->item_14_observation,
-                
-                // Additional data for each item
-                'organ_tubuh_1' => $request->organ_tubuh_1,
-                'faktor_resiko_1' => $request->faktor_resiko_1,
-                'kombinasi_dengan_1' => $request->kombinasi_dengan_1,
-                'durasi_1' => $request->durasi_1,
-                'visualisasi_1' => $request->visualisasi_1,
-                
-                'organ_tubuh_2' => $request->organ_tubuh_2,
-                'faktor_resiko_2' => $request->faktor_resiko_2,
-                'kombinasi_dengan_2' => $request->kombinasi_dengan_2,
-                'durasi_2' => $request->durasi_2,
-                'visualisasi_2' => $request->visualisasi_2,
-                
-                'organ_tubuh_3' => $request->organ_tubuh_3,
-                'faktor_resiko_3' => $request->faktor_resiko_3,
-                'kombinasi_dengan_3' => $request->kombinasi_dengan_3,
-                'durasi_3' => $request->durasi_3,
-                'visualisasi_3' => $request->visualisasi_3,
-                
-                'organ_tubuh_4' => $request->organ_tubuh_4,
-                'faktor_resiko_4' => $request->faktor_resiko_4,
-                'kombinasi_dengan_4' => $request->kombinasi_dengan_4,
-                'durasi_4' => $request->durasi_4,
-                'visualisasi_4' => $request->visualisasi_4,
-                
-                'organ_tubuh_5' => $request->organ_tubuh_5,
-                'faktor_resiko_5' => $request->faktor_resiko_5,
-                'kombinasi_dengan_5' => $request->kombinasi_dengan_5,
-                'durasi_5' => $request->durasi_5,
-                'visualisasi_5' => $request->visualisasi_5,
-                
-                'organ_tubuh_6' => $request->organ_tubuh_6,
-                'faktor_resiko_6' => $request->faktor_resiko_6,
-                'kombinasi_dengan_6' => $request->kombinasi_dengan_6,
-                'durasi_6' => $request->durasi_6,
-                'visualisasi_6' => $request->visualisasi_6,
-                
-                'organ_tubuh_7' => $request->organ_tubuh_7,
-                'faktor_resiko_7' => $request->faktor_resiko_7,
-                'kombinasi_dengan_7' => $request->kombinasi_dengan_7,
-                'durasi_7' => $request->durasi_7,
-                'visualisasi_7' => $request->visualisasi_7,
-                
-                'organ_tubuh_8' => $request->organ_tubuh_8,
-                'faktor_resiko_8' => $request->faktor_resiko_8,
-                'kombinasi_dengan_8' => $request->kombinasi_dengan_8,
-                'durasi_8' => $request->durasi_8,
-                'visualisasi_8' => $request->visualisasi_8,
-                
-                'organ_tubuh_9' => $request->organ_tubuh_9,
-                'faktor_resiko_9' => $request->faktor_resiko_9,
-                'kombinasi_dengan_9' => $request->kombinasi_dengan_9,
-                'durasi_9' => $request->durasi_9,
-                'visualisasi_9' => $request->visualisasi_9,
-                
-                'organ_tubuh_10' => $request->organ_tubuh_10,
-                'faktor_resiko_10' => $request->faktor_resiko_10,
-                'kombinasi_dengan_10' => $request->kombinasi_dengan_10,
-                'durasi_10' => $request->durasi_10,
-                'visualisasi_10' => $request->visualisasi_10,
-                
-                'organ_tubuh_11' => $request->organ_tubuh_11,
-                'faktor_resiko_11' => $request->faktor_resiko_11,
-                'kombinasi_dengan_11' => $request->kombinasi_dengan_11,
-                'durasi_11' => $request->durasi_11,
-                'visualisasi_11' => $request->visualisasi_11,
-                
-                'organ_tubuh_12' => $request->organ_tubuh_12,
-                'faktor_resiko_12' => $request->faktor_resiko_12,
-                'kombinasi_dengan_12' => $request->kombinasi_dengan_12,
-                'durasi_12' => $request->durasi_12,
-                'visualisasi_12' => $request->visualisasi_12,
-                
-                'organ_tubuh_13' => $request->organ_tubuh_13,
-                'faktor_resiko_13' => $request->faktor_resiko_13,
-                'kombinasi_dengan_13' => $request->kombinasi_dengan_13,
-                'durasi_13' => $request->durasi_13,
-                'visualisasi_13' => $request->visualisasi_13,
-                
-                'organ_tubuh_14' => $request->organ_tubuh_14,
-                'faktor_resiko_14' => $request->faktor_resiko_14,
-                'kombinasi_dengan_14' => $request->kombinasi_dengan_14,
-                'durasi_14' => $request->durasi_14,
-                'visualisasi_14' => $request->visualisasi_14,
-                
-                // Recommendations and additional notes
-                'recommendations' => $request->recommendations,
-                'additional_notes' => $request->additional_notes,
-                
-                // Update timestamp
-                'updated_at' => now()
+                'review_date' => $request->review_date ? Carbon::createFromFormat('Y-m-d', $request->review_date)->format('Y-m-d') : null,
+                'updated_at' => now(),
             ];
+
+            // Add all the checklist items
+            for ($i = 1; $i <= 14; $i++) {
+                $data['item_' . $i] = $request->has('item_' . $i) ? true : false;
+                $data['item_' . $i . '_observation'] = $request->{'item_' . $i . '_observation'};
+            }
+
+            // Add WMSD checkbox values
+            $wmsdFields = [
+                'wmsd_bahu_1', 'wmsd_bahu_2', 'wmsd_leher', 
+                'wmsd_punggung_1', 'wmsd_punggung_2', 
+                'wmsd_tangan_kuat_1', 'wmsd_tangan_kuat_2', 'wmsd_tangan_kuat_3',
+                'wmsd_berulang_1', 'wmsd_berulang_2'
+            ];
+            
+            foreach ($wmsdFields as $field) {
+                $data[$field] = $request->has($field) ? true : false;
+            }
+            
+            // Add observation fields
+            $observationFields = [
+                'posture_observation', 'force_observation', 
+                'impact_observation', 'vibration_observation',
+                'kesimpulan_penilai', 'komentar_berulang'
+            ];
+            
+            foreach ($observationFields as $field) {
+                if ($request->has($field)) {
+                    $data[$field] = $request->{$field};
+                }
+            }
 
             // Update the record
             DB::table('she_027_ergonomi')
                 ->where('id', $request->id)
                 ->update($data);
 
-            return redirect()->route('she.ergonomi.dashboard')
-                ->with('success', 'Ergonomi record updated successfully');
+            return response()->json([
+                'success' => true,
+                'message' => 'Ergonomi record updated successfully'
+            ]);
         } catch (ValidationException $e) {
-            return redirect()->back()
-                ->withErrors($e->validator)
-                ->withInput();
+            return response()->json([
+                'success' => false,
+                'errors' => $e->errors()
+            ], 422);
         } catch (\Exception $e) {
             Log::error('Error in UpdateForm: ' . $e->getMessage());
-            return redirect()->back()
-                ->with('error', 'Failed to update record: ' . $e->getMessage())
-                ->withInput();
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update record: ' . $e->getMessage()
+            ], 500);
         }
     }
 
-    public function Delete(Request $request)
+    /**
+     * Delete a record
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function Delete(Request $request, $id)
     {
         try {
-            $validator = Validator::make($request->all(), [
-                'id' => 'required|exists:she_027_ergonomi,id'
-            ]);
+            // Get the record
+            $record = DB::table('she_027_ergonomi')
+                ->where('id', $id)
+                ->first();
 
-            if ($validator->fails()) {
+            if (!$record) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Validation failed',
-                    'errors' => $validator->errors()
-                ], 422);
+                    'message' => 'Record not found.'
+                ], 404);
             }
 
-            // Soft delete by updating deleted_at
+            // Check if the current user is the creator of the record
+            if (!session('username') || $record->employee_name != session('username')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'You are not authorized to delete this record.'
+                ], 403);
+            }
+
+            // Check if the record has an approval status that allows deletion
+            if (isset($record->approval_status) && $record->approval_status == 'approved') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Approved records cannot be deleted.'
+                ], 403);
+            }
+
+            // Soft delete the record
             DB::table('she_027_ergonomi')
-                ->where('id', $request->id)
+                ->where('id', $id)
                 ->update([
                     'deleted_at' => now()
                 ]);
 
             return response()->json([
                 'success' => true,
-                'message' => 'Record deleted successfully'
+                'message' => 'Record deleted successfully.'
             ]);
+
         } catch (\Exception $e) {
             Log::error('Error in Delete: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to delete record: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Approve or reject a record
+     */
+    public function Approve($id, $role, Request $request)
+    {
+        try {
+            // Validate the role
+            if (!in_array($role, ['reviewer', 'paramedic', 'doctor', 'dept_head'])) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid role specified'
+                ], 422);
+            }
+
+            // Get the record
+            $record = DB::table('she_027_ergonomi')
+                ->where('id', $id)
+                ->first();
+
+            if (!$record) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Record not found'
+                ], 404);
+            }
+
+            // Check if the current user is authorized to approve this record
+            $currentUserId = session('user_id');
+            
+            // Verify that the current user is the assigned approver for this role
+            $roleToNikMap = [
+                'reviewer' => 'reviewer_nik',
+                'paramedic' => 'paramedic_nik',
+                'doctor' => 'doctor_nik',
+                'dept_head' => 'dept_head_nik'
+            ];
+            
+            // Check if the current user's ID matches the assigned approver's NIK
+            if ($record->{$roleToNikMap[$role]} != $currentUserId) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'You are not authorized to approve this record as ' . ucfirst($role)
+                ], 403);
+            }
+
+            // Get the approval status (approved or rejected)
+            $approvalStatus = $request->input('approval_status', 'approved');
+            
+            // If rejecting, we don't need to check the approval sequence
+            if ($approvalStatus == 'approved') {
+                // Check if the approval sequence is valid
+                $isSequenceValid = true;
+                $message = '';
+                
+                switch ($role) {
+                    case 'paramedic':
+                        if ($record->reviewer_status !== 'approved') {
+                            $isSequenceValid = false;
+                            $message = 'Reviewer must approve first';
+                        }
+                        break;
+                    case 'doctor':
+                        if ($record->reviewer_status !== 'approved' || $record->paramedic_status !== 'approved') {
+                            $isSequenceValid = false;
+                            $message = 'Reviewer and Paramedic must approve first';
+                        }
+                        break;
+                    case 'dept_head':
+                        if ($record->reviewer_status !== 'approved' || $record->paramedic_status !== 'approved' || $record->doctor_status !== 'approved') {
+                            $isSequenceValid = false;
+                            $message = 'Reviewer, Paramedic, and Doctor must approve first';
+                        }
+                        break;
+                }
+                
+                if (!$isSequenceValid) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => $message
+                    ], 400);
+                }
+            }
+
+            // Update the approval status
+            $updateData = [
+                $role . '_status' => $approvalStatus,
+                'updated_at' => now()
+            ];
+            
+            // If this is the final approval (dept_head) and status is approved, update the overall approval status
+            if ($role === 'dept_head' && $approvalStatus == 'approved') {
+                $updateData['approval_status'] = 'approved';
+            }
+            
+            // If rejecting, update the overall approval status to rejected
+            if ($approvalStatus == 'rejected') {
+                $updateData['approval_status'] = 'rejected';
+            }
+            
+            DB::table('she_027_ergonomi')
+                ->where('id', $id)
+                ->update($updateData);
+
+            $actionText = $approvalStatus == 'approved' ? 'approved' : 'rejected';
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Record ' . $actionText . ' successfully'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error in Approve: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to process record: ' . $e->getMessage()
             ], 500);
         }
     }

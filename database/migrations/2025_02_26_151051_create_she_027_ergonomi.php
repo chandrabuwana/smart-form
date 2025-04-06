@@ -13,18 +13,30 @@ return new class extends Migration
     {
         Schema::create('she_027_ergonomi', function (Blueprint $table) {
             $table->id();
-            // Header Information
             $table->string('job_position')->nullable(); // Posisi yang dievaluasi (optional)
             $table->date('evaluation_date')->nullable(); // Tanggal (optional)
             $table->integer('total_employee')->nullable(); // Jumlah Pekerja pada pekerjaan ini
             $table->string('employee_name')->nullable(); // Nama Karyawan
-            $table->string('employee_id')->nullable(); // ID Karyawan
+
+            // Audit Information
             $table->string('reviewer_name')->nullable(); // Nama Peninjau
-            $table->string('reviewer_id')->nullable(); // ID Peninjau
+            $table->string('reviewer_nik')->nullable();
             $table->string('paramedic_name')->nullable(); // Paramedic name
+            $table->string('paramedic_nik')->nullable();
             $table->string('doctor_name')->nullable(); // Doctor name
+            $table->string('doctor_nik')->nullable();
             $table->string('dept_head_name')->nullable(); // Department Head name
+            $table->string('dept_head_nik')->nullable();
             $table->date('review_date')->nullable(); // Review date
+
+            // Individual approval statuses
+            $table->enum('reviewer_status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->enum('paramedic_status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->enum('doctor_status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->enum('dept_head_status', ['pending', 'approved', 'rejected'])->default('pending');
+
+            // Overall approval status
+            $table->enum('approval_status', ['pending', 'in_progress', 'approved', 'rejected'])->default('pending');
 
             // Checklist Items with Observations
             // Postur Tubuh Janggal / Awkward Posture

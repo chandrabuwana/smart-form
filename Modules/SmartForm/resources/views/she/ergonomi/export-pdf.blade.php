@@ -106,7 +106,7 @@
             <td>{{ $data->job_position ?? '-' }}</td>
             <td>{{ isset($data->evaluation_date) ? Carbon\Carbon::parse($data->evaluation_date)->format('d F Y') : '-' }}</td>
             <td>{{ $data->total_employee ?? '-' }}</td>
-            <td>{{ $data->employee_name ?? '-' }}<br/>{{ $data->employee_id ?? '-' }}</td>
+            <td>{{ $data->employee_name ?? '-' }}<br/>{{ $data->employee_id ?? null }}</td>
             <td>{{ $data->reviewer_name ?? '-' }}<br/>{{ $data->reviewer_id ?? '-' }}</td>
         </tr>
     </table>
@@ -394,12 +394,12 @@
             </td>
         </tr>
         <tr>
-            <td colspan="3" class="yellow-header">
-                Postur Tubuh Janggal / <span class="text-primary">Awkward Posture</span>
+            <td colspan="3" style="width: 70%; text-align: left;">
+                Untuk setiap 'Zona Perhatian' yang teridentifikasi, temukan setiap factor fisik menggunakan checklist berikut ini. Tentukan setiap kondisi yang ada di tempat kerja.
+                Jika ada, bahaya WMSD harus direduksi sampai pada level aman atau pada derajat yang memungkinkan secara teknologi dan ekonomi
             </td>
-            <td colspan="2" class="yellow-header">
-                Komentar Observasi / <span class="text-primary">Comments Observation</span>
-            </td>
+            <td style="width: 20%; text-align: left;">Jika terdapat bahaya WMSD, beri pada kotak</td>
+            <td class="check">✓</td>
         </tr>
     </table>
 
