@@ -123,11 +123,11 @@
                                     </th>
                                     <th data-field="tgldibuat" data-align="center" data-halign="center">Date</th>
                                     <th data-field="dibuat_oleh" data-align="center" data-halign="center">Dibuat oleh</th>
-                                    <th data-field="fuel" data-align="left" data-halign="center">No Fuel Station</th>
-                                    <th data-field="total" data-align="left" data-halign="center">Total Pemakaian</th>
-                                    <th data-field="approval" data-align="left" data-halign="center">Approval</th>
-                                    <th data-field="is_active" data-align="left" data-formatter="statusActive" data-halign="text-center" data-sortable="true">Is Active?</th>
-                                    <th data-field="status" data-align="left" data-formatter="statusFormater" data-halign="text-center" data-sortable="true">Status</th>
+                                    <th data-field="fuel" data-align="center" data-halign="center">No Fuel Station</th>
+                                    <th data-field="total" data-align="center" data-halign="center">Total Pemakaian</th>
+                                    <th data-field="approval" data-align="center" data-halign="center">Approval</th>
+                                    <th data-field="is_active" data-align="center" data-formatter="statusActive" data-halign="text-center" data-sortable="true">Is Active?</th>
+                                    <th data-field="status" data-align="center" data-formatter="statusFormater" data-halign="text-center" data-sortable="true">Status</th>
                                     <th data-field="action" data-formatter="actionFormatter" >Actions</th>
                                 </tr>
                             </thead>
