@@ -60,6 +60,65 @@
                         <h6 class="text-white text-capitalize ps-3">Dashboard Form Pemakaian Solar</h6>
                     </div>
                 </div>
+                <!-- Start Statistics Cards -->
+                <div class="row mx-3 mt-4">
+                    <div class="col-xl-3 col-sm-6 mb-4">
+                        <div class="card stats-card">
+                            <div class="card-header p-3 pt-2">
+                                <div class="icon icon-lg icon-shape bg-gradient-primary shadow-primary text-center border-radius-xl mt-n4 position-absolute">
+                                    <i class="material-icons opacity-10">inventory_2</i>
+                                </div>
+                                <div class="text-end pt-1">
+                                    <p class="text-sm mb-0 text-capitalize">Total Records</p>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-sm-6 mb-4">
+                        <div class="card stats-card">
+                            <div class="card-header p-3 pt-2">
+                                <div class="icon icon-lg icon-shape bg-gradient-warning shadow-warning text-center border-radius-xl mt-n4 position-absolute">
+                                    <i class="material-icons opacity-10">build</i>
+                                </div>
+                                <div class="text-end pt-1">
+                                    <p class="text-sm mb-0 text-capitalize">Broken Components</p>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-sm-6 mb-4">
+                        <div class="card stats-card">
+                            <div class="card-header p-3 pt-2">
+                                <div class="icon icon-lg icon-shape bg-gradient-success shadow-success text-center border-radius-xl mt-n4 position-absolute">
+                                    <i class="material-icons opacity-10">calendar_month</i>
+                                </div>
+                                <div class="text-end pt-1">
+                                    <p class="text-sm mb-0 text-capitalize">This Month</p>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-sm-6 mb-4">
+                        <div class="card stats-card">
+                            <div class="card-header p-3 pt-2">
+                                <div class="icon icon-lg icon-shape bg-gradient-info shadow-info text-center border-radius-xl mt-n4 position-absolute">
+                                    <i class="material-icons opacity-10">task_alt</i>
+                                </div>
+                                <div class="text-end pt-1">
+                                    <p class="text-sm mb-0 text-capitalize">Completion Rate</p>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Statistics Cards -->
                 <div class="card-body px-0 pb-2">
                     <div class="d-flex align-items-center">
                         <a href="{{ route('bss-form.log.form-pemakaian-solar') }}">

@@ -36,12 +36,23 @@ class FuelController extends Controller {
     ];
     public function FuelDashboard(Request $req)
     {
+        $TABLE_REQUEST_FUEL = "FM_LOG_022_PERMINTAAN_PENGISIAN_FUEL";
         $nik_session = $req->session()->get('user_id', '');
         $name_session = $req->session()->get('username', '');
         $siteOptions = SiteHelper::renderSiteSelect('filterSite', null, false, false, 'filterSite');
+        $currentMonth = now()->month;
+        $currentYear = now()->year;
+        $totalRecords = DB::table($TABLE_REQUEST_FUEL)->count();
+        $totalThisMonth = DB::table($TABLE_REQUEST_FUEL)
+            ->whereMonth('tanggal', $currentMonth)
+            ->whereYear('tanggal', $currentYear)
+            ->where('is_active', 1)
+            ->count();
 
         return view('SmartForm::LOG/request-fuel/dashboard-request-fuel', [
             'nik_session' => $nik_session,
+            'totalRecords' => $totalRecords,
+            'totalThisMonth' => $totalThisMonth,
             'name_session' => $name_session,
             'siteOptions' => $siteOptions
         ]);
@@ -88,7 +99,7 @@ class FuelController extends Controller {
                 $master->skip($offset)->limit($limit);
             }
             $document = $master->get();
-
+            
             $response['message'] = "Ok";
             $response['isSuccess'] = true;
             $response['data'] = [
@@ -286,7 +297,7 @@ class FuelController extends Controller {
                     ->select('*')
                     ->where('id', $request->id)
                     ->update([
-                            'is_active' => "2",
+                            'is_active' => "0",
                             ]);
         return view('SmartForm::LOG/request-fuel/dashboard-request-fuel', [
             'nik_session' => $nik_session,
