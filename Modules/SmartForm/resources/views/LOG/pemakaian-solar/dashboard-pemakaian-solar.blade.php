@@ -218,11 +218,12 @@
         }
 
         function actionFormatter(value, row, index) {
-            var btn = '<a type="button" class="btn btn-secondary btn-sm me-1" href="/bss-form/log/get-pemakaian-solar-detail?no_doc=' + row.no_doc + '">Lihat</a>';
+            var btn = '<a type="button" class="btn btn-secondary btn-sm me-1" style="--bs-btn-font-size: .60rem;" href="/bss-form/log/get-pemakaian-solar-detail?no_doc=' + row.no_doc + '">Lihat</a>';
             if(row.status = "Need Approval" || row.status == null) {
                 if(row.dibuat_oleh == users_nik && (row.editable == 0 || row.editable == null)) {
-                    btn = btn + '<a type="button" class="btn btn-info btn-sm me-1" href="/bss-form/log/edit-pemakaian-solar?no_doc=' + row.no_doc + '">Edit</a>'
-                         + '<a class="btn btn-primary btn-action btn-sm" href="/bss-form/log/pdf-pemakaian-solar?no_doc=' + row.no_doc + '">Pdf</a>';
+                    btn = btn + '<a type="button" class="btn btn-info btn-sm me-1" style="--bs-btn-font-size: .60rem;" href="/bss-form/log/edit-pemakaian-solar?no_doc=' + row.no_doc + '">Edit</a>'
+                         + '<a class="btn btn-primary btn-action btn-sm" style="--bs-btn-font-size: .60rem;" href="/bss-form/log/pdf-pemakaian-solar?no_doc=' + row.no_doc + '">Pdf</a>'
+                         + '<a class="btn btn-danger btn-action btn-sm me-1" style="--bs-btn-font-size: .60rem;" href="/bss-form/sm/delete-pemakaian-solar?no_doc=' + row.no_doc + '">Delete</a>';
                 }
             }
             return btn;
