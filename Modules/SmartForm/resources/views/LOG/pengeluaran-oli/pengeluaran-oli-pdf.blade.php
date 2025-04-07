@@ -126,77 +126,76 @@ table.atas td {
     </table>
 
     <div class="margin-top">
-                    <table class="products">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>UNIT</th>
-                                <th>TIME</th>
-                                <th>HM</th>
-                                <th>JENIS</th>
-                                <th>MERK</th>
-                                <th>AWAL</th>
-                                <th>AKHIR</th>
-                                <th>QTY</th>
-                                <th>COMPONENT</th>
-                                <th>REMARK</th>
-                                <th>PIC(NAMA)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($data_detail as $item)
-                            <tr>
-                                <td>{{ $item->nomor }}</td>
-                                <td>{{ $item->unit }}</td>
-                                <td>{{ $item->time }}</td>
-                                <td>{{ $item->hm }}</td>
-                                <td>{{ $item->jenis }}</td>
-                                <td>{{ $item->merk }}</td>
-                                <td>{{ $item->awal }}</td>
-                                <td>{{ $item->akhir }}</td>
-                                <td>{{ $item->qty }}</td>
-                                <td>{{ $item->component }}</td>
-                                <td>{{ $item->remark }}</td>
-                                <td>{{ $item->pic }}</td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+        <table class="products">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>UNIT</th>
+                    <th>TIME</th>
+                    <th>HM</th>
+                    <th>JENIS</th>
+                    <th>MERK</th>
+                    <th>AWAL</th>
+                    <th>AKHIR</th>
+                    <th>QTY</th>
+                    <th>COMPONENT</th>
+                    <th>REMARK</th>
+                    <th>PIC(NAMA)</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($data_detail as $item)
+                <tr>
+                    <td>{{ $item->nomor }}</td>
+                    <td>{{ $item->unit }}</td>
+                    <td>{{ $item->time }}</td>
+                    <td>{{ $item->hm }}</td>
+                    <td>{{ $item->jenis }}</td>
+                    <td>{{ $item->merk }}</td>
+                    <td>{{ $item->awal }}</td>
+                    <td>{{ $item->akhir }}</td>
+                    <td>{{ $item->qty }}</td>
+                    <td>{{ $item->component }}</td>
+                    <td>{{ $item->remark }}</td>
+                    <td>{{ $item->pic }}</td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
 
     <div class="margin-top">
         <table class="w-full">
             <tr  class="approval">
                 <td>
-                    <div>Diketahui Oleh,</div>
-                </td>
-                <td>
                     <div>Dilaporkan Oleh,</div>
                 </td>
-            </tr>
-            <tr class="approval">
-                <td></td>
-            </tr>
-            <tr class="approval">
-                <td></td>
-            </tr>
-            <tr class="approval">
                 <td>
-                    <div>(__________)</div>
-                    <div>{{ $data['mengetahui'] }}</div>
+                    <div>Diketahui Oleh,</div>
                 </td>
+            </tr>
+            <tr class="approval">
+                <td></td>
+            </tr>
+            <tr class="approval">
+                <td></td>
+            </tr>
+            <tr class="approval">
                 <td>
                     <div>(_______________)</div>
                     <div>{{ $data['pelapor'] }}</div>
                 </td>
+                <td>
+                    <div>(__________)</div>
+                    <div>{{ $data['mengetahui'] }}</div>
+                </td>
             </tr>
         </table>
     </div>
- 
+    
     <div class="footer">
         
     </div>
-    </table>
 </body>
 
 </html>

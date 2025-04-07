@@ -215,15 +215,7 @@
                                     <div class="col-2">
                                       <div class="input-group input-group-static mb-4">
                                         <label>Pic / Nama</label>
-                                        <select class="form-control" id="iPic" name="iPic">
-                                            @forelse($users as $user)
-                                                <option value="{{ $user->nama ?? '' }}">
-                                                    {{ $user->nama ?? 'Nama tidak tersedia' }}
-                                                </option>
-                                            @empty
-                                                <option>Data karyawan tidak ditemukan</option>
-                                            @endforelse
-                                         </select>
+                                        <input type="text" class="form-control" id="iPic" name="iPic" value="{{ old('created_by', $record->created_by ?? session('username')) }}" required>
                                       </div>
                                     </div>
                                     
@@ -394,6 +386,7 @@
 @section('custom-js')
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         var tglNow = new Date()
         var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -467,27 +460,28 @@
         function validateRange() {
             const awal = parseFloat(iAwal.val()) || 0;
             const akhir = parseFloat(iAkhir.val()) || 0;
-            const awalError = $('#awalError');
-            const akhirError = $('#akhirError');
             
-            // Clear previous errors
             iAwal.removeClass('is-invalid');
             iAkhir.removeClass('is-invalid');
-            awalError.addClass('d-none');
-            akhirError.addClass('d-none');
+            $('.invalid-feedback').remove();
             
-            // Validate only if both fields have values
             if (iAwal.val() && iAkhir.val()) {
-                if (awal >= akhir) {
+                if (awal <= akhir) {
                     iAwal.addClass('is-invalid');
                     iAkhir.addClass('is-invalid');
-                    awalError.removeClass('d-none').text('Awal harus lebih kecil dari Akhir');
-                    akhirError.removeClass('d-none').text('Akhir harus lebih besar dari Awal');
+                    iAwal.after('<div class="invalid-feedback">Awal harus lebih besar dari Akhir</div>');
+                    iAkhir.after('<div class="invalid-feedback">Akhir tidak boleh lebih besar dari Awal</div>');
+                    
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Validasi Error',
+                        text: 'Nilai Awal harus lebih besar dari nilai Akhir!'
+                    });
+                    
                     return false;
                 }
                 
-                // Update Qty display if valid
-                totalQty.text(akhir - awal);
+                totalQty.text(awal - akhir);
             }
             return true;
         }
@@ -804,25 +798,29 @@
             }
 
             $buttonTambah.click(function (e) {
-                e.preventDefault()
-                var errorValidate = validateItem()
-
-                if(validateItem()) {
-                    $table.bootstrapTable('append', {
+                e.preventDefault();
+                
+                if (!validateRange()) {
+                    return;
+                }
+                
+                if (validateItem()) {
+                    var item = {
                         unit: iUnit.val(),
                         time: iTime.val(),
                         hm: iHm.val(),
                         jenis: iJenis.val(),
                         merk: iMerk.val(),
-                        awal: iAwal.val(),
-                        akhir: iAkhir.val(),
-                        qty: totalQty.text(),
+                        awal: parseInt(iAwal.val()),
+                        akhir: parseInt(iAkhir.val()),
+                        qty: parseInt(iAwal.val()) - parseInt(iAkhir.val()),
                         compo: iCompo.val(),
                         remark: iRemark.val(),
                         pic: iPic.val()
-                    });
+                    };
                     
-                    // Clear form after successful addition
+                    $table.bootstrapTable('append', item);
+                    
                     iUnit.val('');
                     iTime.val('');
                     iHm.val('');
@@ -832,13 +830,9 @@
                     iAkhir.val('');
                     iCompo.val('');
                     iRemark.val('');
-                    iPic.val('');
-                    totalQty.text('-');
-                    
-                    $table.bootstrapTable('scrollTo', 'bottom');
+                    totalQty.text('0');
                 }
-                
-            })
+            });
 
             btnSubmitPengeluaranOli.click(function(e) {
                 e.preventDefault();
@@ -901,10 +895,21 @@
                 }
                 
             })
+
+            iAwal.on('change', validateRange);
+            iAkhir.on('change', validateRange);
+
+            iAwal.on('input', function() {
+                if (parseFloat(this.value) < 0) {
+                    this.value = 0;
+                }
+            });
+            iAkhir.on('input', function() {
+                if (parseFloat(this.value) < 0) {
+                    this.value = 0;
+                }
+            });
         })
 
-
-
-      
     </script>
 @endsection
