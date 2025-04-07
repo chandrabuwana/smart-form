@@ -678,4 +678,20 @@ class PemakaianSolarController extends Controller {
 
         return false;
     }
+
+    public function DeletePemakaianSolar(Request $request)
+    {
+        $nik_session = $request->session()->get('user_id', '');
+        $name_session = $request->session()->get('username', '');
+        $TABLE_MASTER = "FM_LOG_037_PEMAKAIAN_SOLAR";
+        $data = DB::table($TABLE_MASTER)
+                    ->select('*')
+                    ->where('no_doc', $request->no_doc)
+                    ->update([
+                            'is_active' => "0",
+                            ]);
+        return view('SmartForm::LOG/pemakaian-solar/dashboard-pemakaian-solar', [
+            'nik_session' => $nik_session,
+            'name_session' => $name_session]);
+    }
 }
