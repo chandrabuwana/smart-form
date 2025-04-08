@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('nama');
             $table->string('nik');
             $table->string('dept');
-            $table->enum('site', ['agm', 'mbl', 'mme', 'mas', 'pmss', 'taj', 'bssr', 'tdm', 'msj']);
+            $table->string('site');
 
             // status
             $table->boolean('isActive')->default(true);
