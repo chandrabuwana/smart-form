@@ -118,9 +118,9 @@ class SheMessController extends Controller
                     $dateStr = trim($dateStr);
                     
                     if (strpos($dateStr, 'AM') !== false || strpos($dateStr, 'PM') !== false) {
-                        $record->survey_date = Carbon::createFromFormat('M d Y h:i:s A', $dateStr)->format('Y-m-d');
+                        $record->survey_date = date('Y-m-d', strtotime($dateStr));
                     } else {
-                        $record->survey_date = Carbon::parse($dateStr)->format('Y-m-d');
+                        $record->survey_date = date('Y-m-d', strtotime($record->survey_date));
                     }
                 } catch (\Exception $e) {
                     Log::error('Date parsing error for survey_date: ' . $e->getMessage() . ' | Original value: ' . $record->survey_date);
@@ -134,9 +134,9 @@ class SheMessController extends Controller
                         $dateStr = trim($dateStr);
                         
                         if (strpos($dateStr, 'AM') !== false || strpos($dateStr, 'PM') !== false) {
-                            $record->completion_date = Carbon::createFromFormat('M d Y h:i:s A', $dateStr)->format('Y-m-d');
+                            $record->completion_date = date('Y-m-d', strtotime($dateStr));
                         } else {
-                            $record->completion_date = Carbon::parse($dateStr)->format('Y-m-d');
+                            $record->completion_date = date('Y-m-d', strtotime($record->completion_date));
                         }
                     }
                 } catch (\Exception $e) {
@@ -152,9 +152,9 @@ class SheMessController extends Controller
                             $dateStr = trim($dateStr);
                             
                             if (strpos($dateStr, 'AM') !== false || strpos($dateStr, 'PM') !== false) {
-                                $record->$dateField = Carbon::createFromFormat('M d Y h:i:s A', $dateStr)->format('Y-m-d');
+                                $record->$dateField = date('Y-m-d', strtotime($dateStr));
                             } else {
-                                $record->$dateField = Carbon::parse($record->$dateField)->format('Y-m-d');
+                                $record->$dateField = date('Y-m-d', strtotime($record->$dateField));
                             }
                         }
                     } catch (\Exception $e) {
@@ -170,9 +170,9 @@ class SheMessController extends Controller
                         $dateStr = trim($dateStr);
                         
                         if (strpos($dateStr, 'AM') !== false || strpos($dateStr, 'PM') !== false) {
-                            $record->acknowledgment_date = Carbon::createFromFormat('M d Y h:i:s A', $dateStr)->format('Y-m-d');
+                            $record->acknowledgment_date = date('Y-m-d', strtotime($dateStr));
                         } else {
-                            $record->acknowledgment_date = Carbon::parse($record->acknowledgment_date)->format('Y-m-d');
+                            $record->acknowledgment_date = date('Y-m-d', strtotime($record->acknowledgment_date));
                         }
                     }
                 } catch (\Exception $e) {
@@ -300,7 +300,7 @@ class SheMessController extends Controller
             foreach (['survey_date', 'completion_date', 'inspection_date', 'inspection_date2', 'inspection_date3', 'acknowledgment_date'] as $dateField) {
                 try {
                     if (!empty($record->$dateField)) {
-                        $record->$dateField = Carbon::parse($record->$dateField)->format('Y-m-d');
+                        $record->$dateField = date('Y-m-d', strtotime($record->$dateField));
                     }
                 } catch (\Exception $e) {
                     Log::error("Date parsing error for {$dateField}: " . $e->getMessage() . " | Original value: " . $record->$dateField);
@@ -427,6 +427,48 @@ class SheMessController extends Controller
                 return redirect()->back()->with('error', 'Record not found');
             }
 
+            // Directly query the database again to get the raw date values
+            $rawDates = DB::select("SELECT 
+                CONVERT(VARCHAR, inspection_date, 120) as raw_inspection_date,
+                CONVERT(VARCHAR, acknowledgment_date, 120) as raw_acknowledgment_date,
+                CONVERT(VARCHAR, survey_date, 120) as raw_survey_date,
+                CONVERT(VARCHAR, inspection_date2, 120) as raw_inspection_date2,
+                CONVERT(VARCHAR, inspection_date3, 120) as raw_inspection_date3
+                FROM she_mess_survey WHERE id = ?", [$id]);
+            
+            if (count($rawDates) > 0) {
+                $rawDate = $rawDates[0];
+                Log::info('Raw dates from direct SQL query:', [
+                    'raw_inspection_date' => $rawDate->raw_inspection_date,
+                    'raw_acknowledgment_date' => $rawDate->raw_acknowledgment_date,
+                    'raw_survey_date' => $rawDate->raw_survey_date
+                ]);
+                
+                // Format dates using the raw values from SQL
+                $record->formatted_inspection_date = !empty($rawDate->raw_inspection_date) ? 
+                    date('d/m/Y', strtotime($rawDate->raw_inspection_date)) : '-';
+                $record->formatted_acknowledgment_date = !empty($rawDate->raw_acknowledgment_date) ? 
+                    date('d/m/Y', strtotime($rawDate->raw_acknowledgment_date)) : '-';
+                $record->formatted_survey_date = !empty($rawDate->raw_survey_date) ? 
+                    date('d/m/Y', strtotime($rawDate->raw_survey_date)) : '-';
+                $record->formatted_inspection_date2 = !empty($rawDate->raw_inspection_date2) ? 
+                    date('d/m/Y', strtotime($rawDate->raw_inspection_date2)) : '-';
+                $record->formatted_inspection_date3 = !empty($rawDate->raw_inspection_date3) ? 
+                    date('d/m/Y', strtotime($rawDate->raw_inspection_date3)) : '-';
+            } else {
+                // Fallback to direct formatting if SQL query fails
+                $record->formatted_inspection_date = $record->inspection_date ? 
+                    date('d/m/Y', strtotime($record->inspection_date)) : '-';
+                $record->formatted_acknowledgment_date = $record->acknowledgment_date ? 
+                    date('d/m/Y', strtotime($record->acknowledgment_date)) : '-';
+                $record->formatted_survey_date = $record->survey_date ? 
+                    date('d/m/Y', strtotime($record->survey_date)) : '-';
+                $record->formatted_inspection_date2 = $record->inspection_date2 ? 
+                    date('d/m/Y', strtotime($record->inspection_date2)) : '-';
+                $record->formatted_inspection_date3 = $record->inspection_date3 ? 
+                    date('d/m/Y', strtotime($record->inspection_date3)) : '-';
+            }
+            
             // Decode and validate JSON fields
             try {
                 $record->checklist_items = is_string($record->checklist_items) ? 
@@ -442,22 +484,7 @@ class SheMessController extends Controller
                 Log::error('Error decoding checklist items: ' . $e->getMessage());
                 $record->checklist_items = [];
             }
-
-            // Format dates for display with error handling
-            try {
-                $record->formatted_inspection_date = $record->inspection_date ? 
-                    Carbon::parse($record->inspection_date)->format('d/m/Y') : '';
-                $record->formatted_acknowledgment_date = $record->acknowledgment_date ? 
-                    Carbon::parse($record->acknowledgment_date)->format('d/m/Y') : '';
-                $record->formatted_survey_date = $record->survey_date ? 
-                    Carbon::parse($record->survey_date)->format('d/m/Y') : '';
-            } catch (\Exception $e) {
-                Log::error('Error formatting dates: ' . $e->getMessage());
-                $record->formatted_inspection_date = '';
-                $record->formatted_acknowledgment_date = '';
-                $record->formatted_survey_date = '';
-            }
-
+            
             // Ensure all necessary fields are present
             $record->site_name = $record->site_name ?? '';
             $record->work_location = $record->work_location ?? '';
