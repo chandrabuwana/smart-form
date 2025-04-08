@@ -291,6 +291,7 @@
 
 @section('custom-js')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Initialize tooltips
@@ -381,22 +382,14 @@
                     confirmButtonText: 'Yes, ' + (approvalStatus == 'approved' ? 'approve' : 'reject') + ' it!'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // Create the approval URL with the record ID and role
-                        const approvalUrl = '{{ url("bss-form/she-ergonomi/approve") }}/' + recordId + '/' + role;
-                        
                         // Send approval request
-                        fetch(approvalUrl, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            },
-                            body: JSON.stringify({
-                                approval_status: approvalStatus
-                            })
+                        axios.post('{{ route("she.ergonomi.approve") }}', {
+                            id: recordId,
+                            role: role,
+                            approval_status: approvalStatus
                         })
-                        .then(response => response.json())
-                        .then(data => {
+                        .then(response => {
+                            const data = response.data;
                             if (data.success) {
                                 Swal.fire(
                                     (approvalStatus == 'approved' ? 'Approved' : 'Rejected') + '!',
@@ -416,9 +409,15 @@
                         })
                         .catch(error => {
                             console.error('Error:', error);
+                            let errorMessage = 'There was a problem with the approval operation.';
+                            
+                            if (error.response && error.response.data && error.response.data.message) {
+                                errorMessage = error.response.data.message;
+                            }
+                            
                             Swal.fire(
                                 'Error!',
-                                'There was a problem with the approval operation.',
+                                errorMessage,
                                 'error'
                             );
                         });

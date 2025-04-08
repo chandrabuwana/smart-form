@@ -368,7 +368,7 @@ class ErgonomiController extends Controller
                 'data' => (object)$data // Convert back to object for view compatibility
             ]);
 
-            return $pdf->stream('ergonomi-survey.pdf');
+            return $pdf->download('ergonomi-survey.pdf');
 
         } catch (\Exception $e) {
             Log::error('Error in Export: ' . $e->getMessage());
@@ -606,9 +606,26 @@ class ErgonomiController extends Controller
     /**
      * Approve or reject a record
      */
-    public function Approve($id, $role, Request $request)
+    public function Approve(Request $request)
     {
         try {
+            // Validate the request
+            $validator = Validator::make($request->all(), [
+                'id' => 'required|integer',
+                'role' => 'required|string|in:reviewer,paramedic,doctor,dept_head'
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $id = $request->id;
+            $role = $request->role;
+
             // Validate the role
             if (!in_array($role, ['reviewer', 'paramedic', 'doctor', 'dept_head'])) {
                 return response()->json([
