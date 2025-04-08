@@ -28,7 +28,7 @@ return new class extends Migration
             $table->string('user_name');
             $table->string('user_nik');
             $table->string('user_dept');
-            $table->enum('user_site', ['agm', 'mbl', 'mme', 'mas', 'pmss', 'taj', 'bssr', 'tdm', 'msj']);
+            $table->string('user_site');
             $table->string('user_no_asset')->nullable();
             
             // status
