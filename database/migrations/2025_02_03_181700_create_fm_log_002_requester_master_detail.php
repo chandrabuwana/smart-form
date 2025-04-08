@@ -32,6 +32,9 @@ return new class extends Migration
             $table->string('req')->nullable();
             $table->date('date')->nullable();
             $table->string('site')->nullable();
+			
+			$table->string('purchasing_group', 255)->nullable();
+            $table->string('serial_number', 255)->nullable();
         });
     }
 
