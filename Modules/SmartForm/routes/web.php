@@ -462,7 +462,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('form', [CoalGettingController::class, 'AddForm'])->name('prod.coal.form');
             Route::get('form/edit/{id}', [CoalGettingController::class, 'EditForm'])->name('prod.coal.form.edit');
             Route::post('store', [CoalGettingController::class, 'Store'])->name('prod.coal.store');
-            Route::post('update', [CoalGettingController::class, 'Update'])->name('prod.coal.update');
+            Route::post('update/{id}', [CoalGettingController::class, 'Update'])->name('prod.coal.form.update');
             Route::post('delete', [CoalGettingController::class, 'Delete'])->name('prod.coal.delete');
             Route::post('/update-status', [CoalGettingController::class, 'updateStatus'])->name('prod.coal.update-status');
         });
