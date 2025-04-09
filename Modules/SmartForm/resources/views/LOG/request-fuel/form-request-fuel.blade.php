@@ -187,7 +187,7 @@
                             </td>
                             <td>Diterima Oleh/Received by, :</td>
                             <td>
-                                <select name="dDiterima" class="form-control text-center" required>
+                                <select name="dDiterima" id="dDiterima" class="form-control text-center" required>
                                     <option value="">-- Pilih Penerima --</option>
                                     @foreach($approvalList as $user)
                                         <option value="{{ $user->nama }}">
@@ -198,7 +198,7 @@
                             </td>
                             <td>Disetujui Oleh/Approved by, :</td>
                             <td>
-                                <select name="dApproved" class="form-control text-center" required>
+                                <select name="dApproved" id="dApproved" class="form-control text-center" required>
                                     <option value="">-- Pilih Approver --</option>
                                     @foreach($approvalList as $user)
                                         <option value="{{ $user->nama }}">
@@ -230,6 +230,10 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script>
+        $(document).ready(function() {
+            $('#dApproved').select2();
+            $('#dDiterima').select2();
+        });
         var tglNow = new Date()
         var mudof = new Date();
         var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
