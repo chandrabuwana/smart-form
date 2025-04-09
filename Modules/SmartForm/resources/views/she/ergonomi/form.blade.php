@@ -535,7 +535,7 @@
                                         </tr>
                                         <tr class="text-center">
                                             <td class="text-wrap px-2 border">Gerakan mengangkat tangan berulang diatas kepala atau siku diatas bahu lebih dari sekali per menit</td>
-                                            <td class="text-wrap px-2 border">Lebih dari 4 jam total per hari</td>
+                                            <td class="text-wrap px-2 border">Lebih dari 4 Jam total per hari</td>
                                             <td class="text-center border">
                                                 <img src="{{ asset('img/form-she-ergonomi/organ2.png') }}" class="img-fluid" style="max-height: 100px">
                                             </td>
@@ -776,6 +776,181 @@
                                         </tr>
                                     </tbody>
                                 </table>
+                            </div>
+
+                            <!-- Body Mapping Checklist Section -->
+                            <div class="table-responsive mb-4">
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <td style="width: 5%" class="bg-warning fw-bold text-center">C</td>
+                                        <td class="bg-warning text-center fw-bold">
+                                            LAMPIRAN PEMERIKSAAN<br/>
+                                            <span class="text-primary">APPENDIX OF EXAMINATION</span>
+                                        </td>
+                                    </tr>
+                                </table>
+                                
+                                <table class="table table-bordered mt-2">
+                                    <tr class="bg-info text-white">
+                                        <td class="text-center">
+                                            Daftar Pemeriksaan Peta Tubuh<br/>
+                                            <span class="text-primary fw-bold">Body Mapping Checklist</span>
+                                        </td>
+                                    </tr>
+                                </table>
+                                
+                                <div class="row g-0">
+                                    <div class="col-md-4 border p-2">
+                                        <div class="text-center">
+                                            <img src="{{ asset('img/form-she-ergonomi/body-mapping.png') }}" class="img-fluid" style="max-height: 1000px;">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input type="hidden" id="body_mapping_json" name="body_mapping_json" value="{{ $isShowDetail && isset($data->body_mapping_data) ? $data->body_mapping_data : '{}' }}">
+                                        <table class="table table-bordered m-0">
+                                            <thead>
+                                                <tr class="bg-info text-white">
+                                                    <th style="width: 8%" class="text-center">No<br/>Nr</th>
+                                                    <th style="width: 52%" class="text-center">Jenis Keluhan<br/><span class="text-primary">Sign Type</span></th>
+                                                    <th style="width: 40%" class="text-center" colspan="4">Keluhan / <span class="text-primary">Sign</span></th>
+                                                </tr>
+                                                <tr class="bg-light">
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th class="text-center">A</th>
+                                                    <th class="text-center">B</th>
+                                                    <th class="text-center">C</th>
+                                                    <th class="text-center">D</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @php
+                                                $bodyParts = [
+                                                    'Sakit/Kaku di leher bagian atas',
+                                                    'Sakit/Kaku di leher bagian bawah',
+                                                    'Sakit di bahu kiri',
+                                                    'Sakit di bahu kanan',
+                                                    'Sakit pada lengan atas kiri',
+                                                    'Sakit pada punggung',
+                                                    'Sakit pada lengan atas kanan',
+                                                    'Sakit pada pinggang',
+                                                    'Sakit pada bokong',
+                                                    'Sakit pada pantat',
+                                                    'Sakit pada siku kiri',
+                                                    'Sakit pada siku kanan',
+                                                    'Sakit pada lengan bawah kiri',
+                                                    'Sakit pada lengan bawah kanan',
+                                                    'Sakit pada pergelangan tangan kiri',
+                                                    'Sakit pada pergelangan tangan kanan',
+                                                    'Sakit pada telapak tangan kanan',
+                                                    'Sakit pada telapak tangan kiri',
+                                                    'Sakit pada paha kiri',
+                                                    'Sakit pada paha kanan',
+                                                    'Sakit pada lutut kiri',
+                                                    'Sakit pada lutut kanan',
+                                                    'Sakit pada betis kiri',
+                                                    'Sakit pada betis kanan',
+                                                    'Sakit pada pergelangan kaki kiri',
+                                                    'Sakit pada pergelangan kaki kanan',
+                                                    'Sakit pada telapak kaki kiri',
+                                                    'Sakit pada telapak kaki kanan'
+                                                ];
+                                                @endphp
+                                                
+                                                @foreach($bodyParts as $index => $part)
+                                                <tr>
+                                                    <td class="text-center">{{ $index }}</td>
+                                                    <td>{{ $part }}</td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-flex justify-content-center">
+                                                            <input class="form-check-input" type="radio" name="body_pain_display[{{ $index }}]" value="A" id="pain_{{ $index }}_a" 
+                                                                {{ $isShowDetail && isset($data->body_mapping_data) && ($bodyPainData = json_decode($data->body_mapping_data, true)) && isset($bodyPainData[$index]) && $bodyPainData[$index] === 'A' ? 'checked' : '' }}
+                                                                {{ $isShowDetail ? 'disabled' : '' }}>
+                                                            <input type="hidden" name="body_mapping_json" value="{{ $isShowDetail && isset($data->body_mapping_data) ? $data->body_mapping_data : '{}' }}">
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-flex justify-content-center">
+                                                            <input class="form-check-input" type="radio" name="body_pain_display[{{ $index }}]" value="B" id="pain_{{ $index }}_b" 
+                                                                {{ $isShowDetail && isset($data->body_mapping_data) && ($bodyPainData = json_decode($data->body_mapping_data, true)) && isset($bodyPainData[$index]) && $bodyPainData[$index] === 'B' ? 'checked' : '' }}
+                                                                {{ $isShowDetail ? 'disabled' : '' }}>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-flex justify-content-center">
+                                                            <input class="form-check-input" type="radio" name="body_pain_display[{{ $index }}]" value="C" id="pain_{{ $index }}_c" 
+                                                                {{ $isShowDetail && isset($data->body_mapping_data) && ($bodyPainData = json_decode($data->body_mapping_data, true)) && isset($bodyPainData[$index]) && $bodyPainData[$index] === 'C' ? 'checked' : '' }}
+                                                                {{ $isShowDetail ? 'disabled' : '' }}>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-flex justify-content-center">
+                                                            <input class="form-check-input" type="radio" name="body_pain_display[{{ $index }}]" value="D" id="pain_{{ $index }}_d" 
+                                                                {{ $isShowDetail && isset($data->body_mapping_data) && ($bodyPainData = json_decode($data->body_mapping_data, true)) && isset($bodyPainData[$index]) && $bodyPainData[$index] === 'D' ? 'checked' : '' }}
+                                                                {{ $isShowDetail ? 'disabled' : '' }}>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                        
+                                        <script>
+                                            // Function to update the body mapping JSON data
+                                            function updateBodyMappingJson() {
+                                                var bodyPainData = {};
+                                                
+                                                // Collect all checked radio buttons
+                                                document.querySelectorAll('input[name^="body_pain_display["]:checked').forEach(function(radio) {
+                                                    // Extract the index from the name attribute (body_pain_display[X])
+                                                    var nameMatch = radio.name.match(/body_pain_display\[(\d+)\]/);
+                                                    if (nameMatch && nameMatch[1]) {
+                                                        var index = nameMatch[1];
+                                                        bodyPainData[index] = radio.value;
+                                                    }
+                                                });
+                                                
+                                                // Update the hidden input with the JSON data
+                                                document.getElementById('body_mapping_json').value = JSON.stringify(bodyPainData);
+                                            }
+                                            
+                                            // Add event listeners to all body pain radio buttons
+                                            document.addEventListener('DOMContentLoaded', function() {
+                                                document.querySelectorAll('input[name^="body_pain_display["]').forEach(function(radio) {
+                                                    radio.addEventListener('change', updateBodyMappingJson);
+                                                });
+                                                
+                                                // Update the form before submission
+                                                document.querySelector('form').addEventListener('submit', function() {
+                                                    updateBodyMappingJson();
+                                                });
+                                            });
+                                        </script>
+                                        
+                                        <div class="mt-3 p-2">
+                                            <p class="mb-2 fw-bold">KETERANGAN :</p>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <p class="mb-1">A : Tidak Sakit / <span class="text-primary">Painless</span></p>
+                                                    <p class="mb-1">B : Agak Sakit / <span class="text-primary">Rather ill</span></p>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <p class="mb-1">C : Sakit / <span class="text-primary">Pain</span></p>
+                                                    <p class="mb-1">D : Sangat Sakit / <span class="text-primary">Very ill</span></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mt-3 p-2 border-top">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <p class="mb-1">Mohon untuk mengisi menggunakan tanda ✓</p>
+                                                    <p class="mb-1 text-primary">Please for fulfillment that Checklist using sign ✓</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
                             <!-- Kesimpulan Penilai -->
@@ -1202,22 +1377,19 @@
                                     // Reload the page to reflect the updated status
                                     window.location.reload();
                                 });
-                            } else {
-                                Swal.fire({
-                                    title: 'Error',
-                                    text: response.data.message,
-                                    icon: 'error',
-                                    confirmButtonText: 'OK'
-                                });
                             }
                         })
                         .catch(function(error) {
                             let errorMessage = 'Failed to process approval';
                             
-                            if (error.response && error.response.data && error.response.data.message) {
-                                errorMessage = error.response.data.message;
+                            if (error.response) {
+                                if (error.response.data.errors) {
+                                    errorMessage = Object.values(error.response.data.errors).flat().join('\n');
+                                } else if (error.response.data.message) {
+                                    errorMessage = error.response.data.message;
+                                }
                             }
-                            
+
                             Swal.fire({
                                 title: 'Error',
                                 text: errorMessage,

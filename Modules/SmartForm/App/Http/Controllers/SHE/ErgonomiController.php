@@ -231,6 +231,9 @@ class ErgonomiController extends Controller
                 'item_13_observation' => $request->item_13_observation,
                 'item_14_observation' => $request->item_14_observation,
                 
+                // Body Mapping Data
+                'body_mapping_data' => json_encode($request->body_pain_display ?? []),
+                
                 // WMSD checkboxes
                 'wmsd_bahu_1' => $request->has('wmsd_bahu_1'),
                 'wmsd_bahu_2' => $request->has('wmsd_bahu_2'),
@@ -255,6 +258,65 @@ class ErgonomiController extends Controller
                 'updated_at' => now()
             ];
 
+            // Process body mapping data - store in both JSON field and individual columns
+            if ($request->has('body_pain_display')) {
+                // Log the incoming body pain data for debugging
+                Log::info('Body pain display data: ' . json_encode($request->body_pain_display));
+                
+                // Filter to only valid values (A, B, C, D)
+                $validBodyPainData = [];
+                foreach ($request->body_pain_display as $index => $value) {
+                    if (in_array($value, ['A', 'B', 'C', 'D'])) {
+                        $validBodyPainData[$index] = $value;
+                        // Add individual column values for each body part
+                        $data['body_pain_' . $index] = $value;
+                    } else {
+                        Log::warning("Invalid value for body_pain_display_{$index}: {$value}");
+                    }
+                }
+                
+                // Store in the JSON field
+                $data['body_mapping_data'] = json_encode($validBodyPainData);
+                
+                // Ensure all body_pain_0 to body_pain_27 columns have valid values
+                // The database constraint requires these to be one of A, B, C, D (not NULL)
+                for ($i = 0; $i <= 27; $i++) {
+                    if (!isset($data['body_pain_' . $i]) || $data['body_pain_' . $i] === null) {
+                        $data['body_pain_' . $i] = 'A'; // Default to 'A' (Tidak Sakit/Painless) if not set
+                    }
+                }
+            } else if ($request->has('body_mapping_json') && !empty($request->body_mapping_json)) {
+                // Use the existing JSON data if provided
+                $data['body_mapping_data'] = $request->body_mapping_json;
+                
+                // Also set individual column values from the JSON data
+                $bodyMappingData = json_decode($request->body_mapping_json, true);
+                if (is_array($bodyMappingData)) {
+                    foreach ($bodyMappingData as $index => $value) {
+                        if (in_array($value, ['A', 'B', 'C', 'D'])) {
+                            $data['body_pain_' . $index] = $value;
+                        }
+                    }
+                }
+                
+                // Ensure all body_pain_0 to body_pain_27 columns have valid values
+                // The database constraint requires these to be one of A, B, C, D (not NULL)
+                for ($i = 0; $i <= 27; $i++) {
+                    if (!isset($data['body_pain_' . $i]) || $data['body_pain_' . $i] === null) {
+                        $data['body_pain_' . $i] = 'A'; // Default to 'A' (Tidak Sakit/Painless) if not set
+                    }
+                }
+            } else {
+                $data['body_mapping_data'] = json_encode([]);
+                
+                // Ensure all body_pain_0 to body_pain_27 columns have valid values
+                // The database constraint requires these to be one of A, B, C, D (not NULL)
+                for ($i = 0; $i <= 27; $i++) {
+                    $data['body_pain_' . $i] = 'A'; // Default to 'A' (Tidak Sakit/Painless)
+                }
+            }
+            
+            // Insert the data into the database using the full data array including body_pain_* fields
             DB::table('she_027_ergonomi')->insert($data);
 
             return response()->json([
@@ -522,6 +584,64 @@ class ErgonomiController extends Controller
                 }
             }
 
+            // Process body mapping data - store in both JSON field and individual columns
+            if ($request->has('body_pain_display')) {
+                // Log the incoming body pain data for debugging
+                Log::info('Body pain display data: ' . json_encode($request->body_pain_display));
+                
+                // Filter to only valid values (A, B, C, D)
+                $validBodyPainData = [];
+                foreach ($request->body_pain_display as $index => $value) {
+                    if (in_array($value, ['A', 'B', 'C', 'D'])) {
+                        $validBodyPainData[$index] = $value;
+                        // Add individual column values for each body part
+                        $data['body_pain_' . $index] = $value;
+                    } else {
+                        Log::warning("Invalid value for body_pain_display_{$index}: {$value}");
+                    }
+                }
+                
+                // Store in the JSON field
+                $data['body_mapping_data'] = json_encode($validBodyPainData);
+                
+                // Ensure all body_pain_0 to body_pain_27 columns have valid values
+                // The database constraint requires these to be one of A, B, C, D (not NULL)
+                for ($i = 0; $i <= 27; $i++) {
+                    if (!isset($data['body_pain_' . $i]) || $data['body_pain_' . $i] === null) {
+                        $data['body_pain_' . $i] = 'A'; // Default to 'A' (Tidak Sakit/Painless) if not set
+                    }
+                }
+            } else if ($request->has('body_mapping_json') && !empty($request->body_mapping_json)) {
+                // Use the existing JSON data if provided
+                $data['body_mapping_data'] = $request->body_mapping_json;
+                
+                // Also set individual column values from the JSON data
+                $bodyMappingData = json_decode($request->body_mapping_json, true);
+                if (is_array($bodyMappingData)) {
+                    foreach ($bodyMappingData as $index => $value) {
+                        if (in_array($value, ['A', 'B', 'C', 'D'])) {
+                            $data['body_pain_' . $index] = $value;
+                        }
+                    }
+                }
+                
+                // Ensure all body_pain_0 to body_pain_27 columns have valid values
+                // The database constraint requires these to be one of A, B, C, D (not NULL)
+                for ($i = 0; $i <= 27; $i++) {
+                    if (!isset($data['body_pain_' . $i]) || $data['body_pain_' . $i] === null) {
+                        $data['body_pain_' . $i] = 'A'; // Default to 'A' (Tidak Sakit/Painless) if not set
+                    }
+                }
+            } else {
+                $data['body_mapping_data'] = json_encode([]);
+                
+                // Ensure all body_pain_0 to body_pain_27 columns have valid values
+                // The database constraint requires these to be one of A, B, C, D (not NULL)
+                for ($i = 0; $i <= 27; $i++) {
+                    $data['body_pain_' . $i] = 'A'; // Default to 'A' (Tidak Sakit/Painless)
+                }
+            }
+            
             // Update the record
             DB::table('she_027_ergonomi')
                 ->where('id', $request->id)

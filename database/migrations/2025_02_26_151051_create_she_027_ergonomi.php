@@ -138,24 +138,11 @@ return new class extends Migration
             $table->boolean('item_12')->default(false); // Mengangkat >12kg diatas bahu
             $table->text('item_12_observation')->nullable(); // Observasi untuk mengangkat beban di atas bahu
 
-            // Getaran Sedang s.d. Tinggi pada Tangan-Lengan
-            $table->string('organ_tubuh_13')->nullable();
-            $table->string('faktor_resiko_13')->nullable();
-            $table->string('kombinasi_dengan_13')->nullable();
-            $table->string('durasi_13')->nullable();
-            $table->string('visualisasi_13')->nullable();
-            $table->boolean('item_13')->default(false); // Menggunakan Impact Wrenches
-            $table->text('item_13_observation')->nullable(); // Observasi untuk penggunaan impact wrenches
-
-            $table->string('organ_tubuh_14')->nullable();
-            $table->string('faktor_resiko_14')->nullable();
-            $table->string('kombinasi_dengan_14')->nullable();
-            $table->string('durasi_14')->nullable();
-            $table->string('visualisasi_14')->nullable();
-            $table->boolean('item_14')->default(false); // Menggunakan gerinda
-            $table->text('item_14_observation')->nullable(); // Observasi untuk penggunaan gerinda
-
-            // WMSD Checkboxes
+            // Body Mapping Data
+            // JSON column to store all body mapping pain levels
+            $table->json('body_mapping_data')->nullable()->comment('JSON data for body mapping pain levels');
+            
+            // WMSD checkboxes
             $table->boolean('wmsd_bahu_1')->default(false);
             $table->boolean('wmsd_bahu_2')->default(false);
             $table->boolean('wmsd_leher')->default(false);
@@ -174,6 +161,23 @@ return new class extends Migration
             $table->text('vibration_observation')->nullable();
             $table->text('kesimpulan_penilai')->nullable();
             $table->text('komentar_berulang')->nullable();
+
+            // Getaran Sedang s.d. Tinggi pada Tangan-Lengan
+            $table->string('organ_tubuh_13')->nullable();
+            $table->string('faktor_resiko_13')->nullable();
+            $table->string('kombinasi_dengan_13')->nullable();
+            $table->string('durasi_13')->nullable();
+            $table->string('visualisasi_13')->nullable();
+            $table->boolean('item_13')->default(false); // Menggunakan Impact Wrenches
+            $table->text('item_13_observation')->nullable(); // Observasi untuk penggunaan impact wrenches
+
+            $table->string('organ_tubuh_14')->nullable();
+            $table->string('faktor_resiko_14')->nullable();
+            $table->string('kombinasi_dengan_14')->nullable();
+            $table->string('durasi_14')->nullable();
+            $table->string('visualisasi_14')->nullable();
+            $table->boolean('item_14')->default(false); // Menggunakan gerinda
+            $table->text('item_14_observation')->nullable(); // Observasi untuk penggunaan gerinda
 
             $table->timestamps();
             $table->softDeletes();
