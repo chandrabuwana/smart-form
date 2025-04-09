@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Storage;
 
 class PemakaianSolarController extends Controller {
 
+    private const TABLE_SITES = 'tsite';
     private const TABLE_MASTER = 'FM_LOG_037_PEMAKAIAN_SOLAR';
     private const TABLE_DETAIL = 'FM_LOG_037_PEMAKAIAN_SOLAR_DETAIL';
     private $user_sm = [ '1008491', '1008492', '1008493', '1008494', '1008526' ];
@@ -265,7 +266,9 @@ class PemakaianSolarController extends Controller {
 
     function formPemakaianSolar( Request $req ) {
         $nik_session = $req->session()->get( 'user_id', '' );
+        $sites = DB::connection('sqlsrv2')->table(self::TABLE_SITES)->select(columns: 'KodeST')->get();
         return view( 'SmartForm::LOG/pemakaian-solar/form-pemakaian-solar', [
+            'sites' => $sites,
             'nik_session' => $nik_session,
             'isShowDetail' => true,
             'approvalList' => HrdHelper::getApprovalList()

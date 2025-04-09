@@ -15,6 +15,9 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Modules\SmartForm\helpers\HrdHelper;
 
 class InspeksiCateringController extends Controller {
+    private const TABLE_SITES = 'tsite';
+    private const TABLE_KARYAWAN = 'TKaryawan';
+    private const TABLE_DEPARTEMENT = 'tdepartement';
 
     public function download() {
         $pdf = Pdf::loadView('pdf');
@@ -188,8 +191,13 @@ class InspeksiCateringController extends Controller {
     }
 
     function FormInspeksiCatering() {
+        $sites = DB::connection('sqlsrv2')->table(self::TABLE_SITES)->select(columns: 'KodeST')->get();
+        $dept = DB::connection('sqlsrv2')->table(self::TABLE_DEPARTEMENT)->select(columns: 'Nama')->get();
+
         return view('SmartForm::she/inspeksi-catering/form-inspeksi-catering', [
                     'isShowDetail' => true,
+                    'sites' => $sites,
+                    'dept' => $dept,
                     'approvalList' => HrdHelper::getApprovalList()
                 ]);
     }

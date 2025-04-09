@@ -71,7 +71,7 @@
                                                 <td class="fw-bold">Shift</td>
                                                 <td>
                                                     <select class="form-select form-select-sm input-text" aria-label="Default select example" id="iShift" name="iShift">
-                                                  
+                                                        <option disabled selected>-- select shift --</option>
                                                         @forelse($shifts as $code => $value)
                                                             <option value="{{ $code }}">
                                                                 {{ $value }}
@@ -391,6 +391,7 @@
         $(document).ready(function() {
             $('#iForeman').select2();
             $('#dDiterima').select2();
+            $('#iJobSite').select2();
         });
         var tglNow = new Date()
         var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];

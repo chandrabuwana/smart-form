@@ -116,13 +116,13 @@
                                         <td>Departemen</td>
                                         <td>
                                             <select class="form-select form-select-sm input-text" aria-label="Default select example" id="i_departemen" name="i_departemen">
-                                            <option disabled selected>-- select site --</option>
+                                            <option disabled selected>-- select departemen --</option>
                                                 @forelse($dept as $dept)
                                                     <option value="{{ $dept->Nama ?? '' }}">
-                                                        {{ $dept->Nama ?? 'Departement tidak tersedia' }}
+                                                        {{ $dept->Nama ?? 'Departemen tidak tersedia' }}
                                                     </option>
                                                 @empty
-                                                    <option>Data Departement tidak ditemukan</option>
+                                                    <option>Data Departemen tidak ditemukan</option>
                                                 @endforelse
                                             </select>
                                     </td>
