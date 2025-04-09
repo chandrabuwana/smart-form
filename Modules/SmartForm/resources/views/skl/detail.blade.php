@@ -96,7 +96,7 @@
                                 </div>
                                 <div class="col-md-8">
                                     <select class="form-select input-text" aria-label="Default select example" id="inputDepartement" name="inputDepartement">
-                                        <option value="{{ $formMaster->KodeDepartement }}" selected disabled>{{ $formMaster->KodeDepartement }}</option>
+                                        <option value="{{ $formMaster->NamaDP }}" selected disabled>{{ $formMaster->NamaDP }}</option>
                                     </select>
                                 </div>
                             </div>

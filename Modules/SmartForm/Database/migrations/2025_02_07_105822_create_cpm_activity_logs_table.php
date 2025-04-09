@@ -1,0 +1,34 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('cpm_activity_logs', function (Blueprint $table) {
+            $table->id();
+            $table->bigInteger('id_m_cpm');
+            $table->string('changed_type', 50);
+            $table->text('changed_dtl')->nullable();
+            $table->string('created_by', 20)->nullable();
+            $table->string('updated_by', 20)->nullable();
+            $table->integer('revisi_ke')->default(0);
+            $table->timestamps();
+            $table->foreign('id_m_cpm')->on('cpm_m_form')->references('id');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('cpm_activity_logs');
+    }
+};

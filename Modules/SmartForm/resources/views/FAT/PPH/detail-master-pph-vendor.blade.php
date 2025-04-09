@@ -98,7 +98,7 @@
             <div class="card my-4">
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                     <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                        <h6 class="text-white text-capitalize ps-3">Form Induksi Karyawan</h6>
+                        <h6 class="text-white text-capitalize ps-3">View Data Potong</h6>
                     </div>
                 </div>
                 <div class="card-body my-1">
@@ -245,9 +245,9 @@
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="input-group input-group-static my-4">
-                                            <label for="pc_document_update" class="ms-0">Upload Data ZIP </label>
+                                            <label for="pc_document_update" class="ms-0">Upload Data PDF </label>
                                             <input type="file" class="form-control" name="pc_document_update"
-                                                id="pc_document_update" />
+                                                id="pc_document_update" accept="application/pdf" />
                                             <small id="fileError" style="color:red; display:none;">Please upload a valid
                                                 PDF file.</small>
                                         </div>
@@ -405,15 +405,15 @@
 
         function FormaterActionDocumentUploaded(value, row, index) {
             return `
-                    <a class="like" href="javascript:void(0)" onclick="ccccc(this)" title="Like">
-                        <i class="fa fa-eye"></i> View
-                    </a> 
-                    <a class="like" href="javascript:void(0)" onclick="openModalUpdateDocument(this)" title="Like">
-                        <i class="fa fa-pen"></i> Update
+                    <a class="like" href="/bss-form/fat/pph/view-document/${row.id}" title="Like">
+                        <i class="fa fa-eye text-dark fw-bold"></i> View
+                    </a>
+                    <a class="like mx-2" href="javascript:void(0)" onclick="openModalUpdateDocument(this)" title="Like">
+                        <i class="fa fa-pen text-warning fw-bold"></i> Update
                     </a>
                     <a class="like" href="javascript:void(0)" onclick="DeletedDataDocumentUploaded(this)" title="Like">
-                        <i class="fa fa-trash"></i> Hapus
-                    </a> 
+                        <i class="fa fa-trash text-danger fw-bold"></i> Hapus
+                    </a>
                 `
         }
 

@@ -197,6 +197,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         Modules\SmartForm\App\Providers\SmartFormServiceProvider::class,
+        Modules\DokumenMutu\App\Providers\DokumenMutuServiceProvider::class
 
     ],
 
