@@ -99,7 +99,6 @@
                                                 <td  class="fw-bold">Site</td>
                                                 <td>
                                                     <select class="form-select form-select-sm input-text" id="iSite" name="iSite">
-                                                      
                                                         <option disabled selected>-- select site --</option>
                                                         @forelse($sites as $site)
                                                             <option value="{{ $site->KodeST ?? '' }}">

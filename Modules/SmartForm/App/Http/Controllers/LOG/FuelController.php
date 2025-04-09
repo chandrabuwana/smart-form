@@ -15,6 +15,9 @@ use Modules\SmartForm\helpers\HrdHelper;
 use Modules\SmartForm\helpers\SiteHelper;
 
 class FuelController extends Controller {
+    private const TABLE_SITES = 'tsite';
+    private const TABLE_KARYAWAN = 'TKaryawan';
+    private const TABLE_DEPARTEMENT = 'tdepartement';
     private const LIST_DEPT = [
         '' => '--- Pilih Departmen ---',
         'ENG' => 'ENGINEERING',
@@ -120,11 +123,13 @@ class FuelController extends Controller {
     }
 
     public function FormFuel() {
-        $siteOptions = SiteHelper::renderSiteSelect('i_site', null, false, true, 'i_site');
+        $sites = DB::connection('sqlsrv2')->table(self::TABLE_SITES)->select(columns: 'KodeST')->get();
+        $dept = DB::connection('sqlsrv2')->table(self::TABLE_DEPARTEMENT)->select(columns: 'Nama')->get();
 
         return view('SmartForm::LOG/request-fuel/form-request-fuel', [
             'approvalList' => HrdHelper::getApprovalList(),
-            'siteOptions' => $siteOptions,
+            'sites' => $sites,
+            'dept' => $dept,
         ]);
     }
 

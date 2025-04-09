@@ -91,12 +91,21 @@
                                     </tr>
                                     <tr>
                                         <td>NIK</td>
-                                        <td><input type="text" class="input-text w-full" id="i_nik" value="{{ session('user_id') }}" disabled></td>
+                                        <td><input type="text" class="input-text w-full" aria-label="Default select example" id="i_nik" value="{{ session('user_id') }}" disabled></td>
                                     </tr>
                                     <tr>
-                                        <td>Site</td>
+                                        <td style="width: 90px;">Site</td>
                                         <td>
-                                        {!! $siteOptions !!}
+                                            <select class="input-text w-full" id="iSite" name="iSite">
+                                                <option disabled selected>-- select site --</option>
+                                                @forelse($sites as $site)
+                                                    <option value="{{ $site->KodeST ?? '' }}">
+                                                        {{ $site->KodeST ?? 'Site tidak tersedia' }}
+                                                    </option>
+                                                @empty
+                                                    <option>Data site tidak ditemukan</option>
+                                                @endforelse
+                                            </select>
                                         </td>
                                     </tr>
                                 </table>
@@ -107,28 +116,15 @@
                                         <td>Departemen</td>
                                         <td>
                                             <select class="form-select form-select-sm input-text" aria-label="Default select example" id="i_departemen" name="i_departemen">
-                                            <option value="" selected>-- Pilih Departemen --</option>
-                                                <option value="ENG">ENGINEERING</option>
-                                                <option value="SHE">SHE</option>
-                                                <option value="PRD">PRODUKSI</option>
-                                                <option value="SM">SM</option>
-                                                <option value="IC">IC</option>
-                                                <option value="GS">GS</option>
-                                                <option value="RM">PLANT</option>
-                                                <option value="BDV">BUSDEV</option>
-                                                <option value="FIN">FINANCE</option>
-                                                <option value="ATA">Accounting & Tax</option>
-                                                <option value="DTC">DATA CENTER</option>
-                                                <option value="MM">LOGISTIK</option>
-                                                <option value="OPR">OPERATION</option>
-                                                <option value="LEG">LEGAL</option>
-                                                <option value="OD">ORGANIZATION DEVELOPMENT</option>
-                                                <option value="Z001">ASSESSMENT CENTER</option>
-                                                <option value="Z002">LABOR SUPPLY</option>
-                                                <option value="Z003">MANAGEMENT CONSULTANT</option>
-                                                <option value="Z004">SERTIFIKASI</option>
-                                                <option value="TC">TRAINING CENTER</option>
-                                        </select>
+                                            <option disabled selected>-- select site --</option>
+                                                @forelse($dept as $dept)
+                                                    <option value="{{ $dept->Nama ?? '' }}">
+                                                        {{ $dept->Nama ?? 'Departement tidak tersedia' }}
+                                                    </option>
+                                                @empty
+                                                    <option>Data Departement tidak ditemukan</option>
+                                                @endforelse
+                                            </select>
                                     </td>
                                     </tr>
                                     <tr>
@@ -233,6 +229,8 @@
         $(document).ready(function() {
             $('#dApproved').select2();
             $('#dDiterima').select2();
+            $('#iSite').select2();
+            $('#i_departemen').select2();
         });
         var tglNow = new Date()
         var mudof = new Date();
