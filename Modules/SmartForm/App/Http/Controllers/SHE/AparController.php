@@ -15,6 +15,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Modules\SmartForm\helpers\HrdHelper;
 
 class AparController extends Controller {
+    private const TABLE_KARYAWAN = 'TKaryawan';
 
     private $user_sm = [ '1008491', '1008492', '1008493', '1008494', '1008526' ];
     private const LIST_DEPT = [
@@ -135,7 +136,9 @@ class AparController extends Controller {
     }
 
     function formInspeksiApar() {
-        return view("SmartForm::she/inspeksi-apar/form-inspeksi-apar");
+        return view('SmartForm::she/inspeksi-apar/form-inspeksi-apar', [
+        'approvalList' => HrdHelper::getApprovalList(),
+        ]);
     }
 
     function SubmitFormInspeksiApar(Request $req) {

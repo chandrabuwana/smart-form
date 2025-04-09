@@ -285,22 +285,22 @@ table.atas td {
             <table class="approval">
                 <tr>
                     <td style="font-size: 0.8rem; width:20%">Dibuat Oleh</td>
-                    <td>: {{ $data['dibuat'] }}</td>
-                    <td>NIK :</td>
+                    <td>:</td>
+                    <td>NIK : {{ $data['dibuat'] }}</td>
                     <td>TTD :</td>
                     <td>TGL :</td>
                 </tr>
                 <tr>
                     <td>Diperiksa Oleh</td>
-                    <td>: {{ $data['dibuat'] }}</td>
-                    <td>NIK :</td>
+                    <td>:</td>
+                    <td>NIK : {{ $data['dibuat'] }}</td>
                     <td>TTD :</td>
                     <td>TGL :</td>
                 </tr>
                 <tr>
                     <td>Diketahui Oleh</td>
-                    <td>: {{ $data['mengetahui'] }}</td>
-                    <td>NIK :</td>
+                    <td>:</td>
+                    <td>NIK : {{ $data['mengetahui'] }}</td>
                     <td>TTD :</td>
                     <td>TGL :</td>
                 </tr>
