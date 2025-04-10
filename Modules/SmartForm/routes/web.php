@@ -426,7 +426,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/form/export/{id}', [AirMinumController::class, 'ExportForm'])->name('she.air-minum.export');
             Route::get('/form', [AirMinumController::class, 'AddForm'])->name('she.air-minum.form');
             Route::post('/store', [AirMinumController::class, 'Store'])->name('she.air-minum.store');
-            Route::put('/form/{id}', [AirMinumController::class, 'Update'])->name('she.air-minum.form.update');
+            Route::post('/form/{id}', [AirMinumController::class, 'Update'])->name('she.air-minum.form.update');
             Route::get('/approve/{id}/{role}', [AirMinumController::class, 'UpdateApprovalStatus'])->name('she.air-minum.approve');
             Route::post('/update-approval', [AirMinumController::class, 'UpdateApprovalStatus'])->name('she.air-minum.update-approval');
             Route::delete('/delete/{id}', [AirMinumController::class, 'Delete'])->name('she.air-minum.delete');
