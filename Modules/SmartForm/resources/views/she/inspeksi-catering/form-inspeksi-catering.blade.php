@@ -91,6 +91,7 @@
                                         <td>
                                             <!-- <input type="text" class="input-text w-full" id="tNamaSite" name="tNamaSite"> -->
                                             <select class="form-select form-select-sm input-text" id="tNamaSite" name="tNamaSite">
+                                                <option disabled selected>-- select Site --</option>
                                                 @forelse($sites as $site)
                                                     <option value="{{ $site->KodeST ?? '' }}">
                                                         {{ $site->KodeST ?? 'Site tidak tersedia' }}
