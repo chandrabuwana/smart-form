@@ -40,7 +40,7 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="site_name" class="ms-0">Site Name</label>
-                                        <select class="form-control" name="site_name" id="site_name" required
+                                        <select class="form-control select2" name="site_name" id="site_name" required
                                             {{ $isShowDetail ? 'disabled' : '' }}>
                                             <option value="agm"
                                                 {{ old('site_name', $record->site_name ?? '') == 'agm' ? 'selected' : '' }}>
@@ -76,7 +76,7 @@
 
                                     <div class="input-group input-group-static mb-3">
                                         <label for="jenis_instalasi" class="ms-0">Jenis Instalasi</label>
-                                        <select class="form-control" name="jenis_instalasi" id="jenis_instalasi" required
+                                        <select class="form-control select2" name="jenis_instalasi" id="jenis_instalasi" required
                                             {{ $isShowDetail ? 'disabled' : '' }}>
                                             <option value="Instalasi Tetap"
                                                 {{ old('jenis_instalasi', $record->jenis_instalasi ?? '') == 'Instalasi Tetap' ? 'selected' : '' }}>
@@ -91,7 +91,7 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="lokasi" class="ms-0">Lokasi</label>
-                                        <select class="form-control" name="location" id="location" required
+                                        <select class="form-control select2" name="location" id="location" required
                                             {{ $isShowDetail ? 'disabled' : '' }}>
 
                                             <option value="Workshop"
@@ -142,7 +142,7 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="pemeriksa" class="ms-0">Nama Pemeriksa</label>
-                                            <select name="pemeriksa" id="pemeriksa" class="form-control" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                            <select name="pemeriksa" id="pemeriksa" class="form-control select2" required {{ $isShowDetail ? 'disabled' : '' }}>
                                                 <option disabled {{ optional($record)->pemeriksa == '' ? 'selected' : '' }}>-- Select Pemeriksa --</option>
                                                 @foreach ($approvalList as $user)
                                                     <option value="{{ $user->nik }}" {{ optional($record)->pemeriksa == $user->nik ? 'selected' : '' }}>
@@ -163,7 +163,7 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="atasan" class="ms-0">Nama Atasan Langsung</label>
-                                        <select name="atasan" id="atasan" class="form-control" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                        <select name="atasan" id="atasan" class="form-control select2" required {{ $isShowDetail ? 'disabled' : '' }}>
                                                 <option disabled {{ optional($record)->atasan == '' ? 'selected' : '' }}>-- Select Atasan --</option>
                                                 @foreach ($approvalList as $user)
                                                     <option value="{{ $user->nik }}" {{ optional($record)->atasan == $user->nik ? 'selected' : '' }}>
@@ -542,8 +542,11 @@
 @section('custom-js')
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script>
         $(function() {
+        $('.select2').select2();
             var form = $("#weldingForm");
             var submitBtn = form.find('button[type="submit"]');
 

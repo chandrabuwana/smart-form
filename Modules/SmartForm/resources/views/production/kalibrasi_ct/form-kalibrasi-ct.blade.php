@@ -98,7 +98,7 @@
                                                             <div class="col-md-4">
                                                                 <div class="input-group input-group-static mb-3">
                                                                     <label for="shift_hauler" class="ms-0">Shift</label>
-                                                                    <select name="shift_hauler" class="form-control" {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                    <select name="shift_hauler" class="form-control select2" {{ $isShowDetail ? 'disabled' : '' }}>
                                                                         {!! $shift_hauler !!}
                                                                     </select>
                                                                 </div>
@@ -406,7 +406,7 @@
                                                             <div class="col-md-4">
                                                                 <div class="input-group input-group-static mb-3">
                                                                     <label for="alat_support_hauler" class="ms-0">Nama Pembuat</label>
-                                                                    <select name="dibuat_hauler" id="dibuat_hauler" class="form-control" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                    <select name="dibuat_hauler" id="dibuat_hauler" class="form-control select2" required {{ $isShowDetail ? 'disabled' : '' }}>
                                                                         <option disabled {{ optional($record)->dibuat_hauler == '' ? 'selected' : '' }}>-- Select Pembuat --</option>
                                                                         @foreach ($approvalList as $user)
                                                                             <option value="{{ $user->nik }}" {{ optional($record)->dibuat_hauler == $user->nik ? 'selected' : '' }}>
@@ -420,7 +420,7 @@
                                                             <div class="col-md-4">
                                                                 <div class="input-group input-group-static mb-3">
                                                                     <label for="jabatan_dibuat_hauler" class="ms-0">Jabatan</label>
-                                                                    <select class="form-control" name="jabatan_dibuat_hauler" id="jabatan_dibuat_hauler" required
+                                                                    <select class="form-control select2" name="jabatan_dibuat_hauler" id="jabatan_dibuat_hauler" required
                                                                         {{ $isShowDetail ? 'disabled' : '' }}>
                                                                         <option value="LH"
                                                                             {{ old('jabatan_dibuat_hauler', $record->jabatan_dibuat_hauler ?? '') == 'LH' ? 'selected' : '' }}>
@@ -443,7 +443,7 @@
                                                             <div class="col-md-4">
                                                                 <div class="input-group input-group-static mb-3">
                                                                     <label for="alat_support_hauler" class="ms-0">Nama Pemeriksa</label>
-                                                                    <select name="mengetahui_hauler" id="mengetahui_hauler" class="form-control" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                    <select name="mengetahui_hauler" id="mengetahui_hauler" class="form-control select2" required {{ $isShowDetail ? 'disabled' : '' }}>
                                                                         <option disabled {{ optional($record)->mengetahui_hauler == '' ? 'selected' : '' }}>-- Select Pemeriksa --</option>
                                                                         @foreach ($approvalList as $user)
                                                                             <option value="{{ $user->nik }}" {{ optional($record)->mengetahui_hauler == $user->nik ? 'selected' : '' }}>
@@ -457,7 +457,7 @@
                                                             <div class="col-md-4">
                                                                 <div class="input-group input-group-static mb-3">
                                                                     <label for="jabatan_mengetahui_hauler" class="ms-0">Jabatan</label>
-                                                                    <select class="form-control" name="jabatan_mengetahui_hauler" id="jabatan_mengetahui_hauler" required
+                                                                    <select class="form-control select2" name="jabatan_mengetahui_hauler" id="jabatan_mengetahui_hauler" required
                                                                         {{ $isShowDetail ? 'disabled' : '' }}>
                                                                         <option value="Spv. Prod"
                                                                             {{ old('jabatan_mengetahui_hauler', $record->jabatan_mengetahui_hauler ?? '') == 'Spv. Prod' ? 'selected' : '' }}>
@@ -501,7 +501,7 @@
                                                             <div class="col-md-4">
                                                                 <div class="input-group input-group-static mb-3">
                                                                     <label for="shift_loader" class="ms-0">Shift Kerja</label>
-                                                                    <select name="shift_loader" class="form-control" {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                    <select name="shift_loader" class="form-control select2" {{ $isShowDetail ? 'disabled' : '' }}>
                                                                         {!! $shift_loader !!}
                                                                     </select>
                                                                 </div>
@@ -691,7 +691,7 @@
                                                             <div class="col-md-4">
                                                                 <div class="input-group input-group-static mb-3">
                                                                     <label for="alat_support_hauler" class="ms-0">Nama Pembuat</label>
-                                                                    <select name="dibuat_loader" id="dibuat_loader" class="form-control" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                    <select name="dibuat_loader" id="dibuat_loader" class="form-control select2" required {{ $isShowDetail ? 'disabled' : '' }}>
                                                                         <option disabled {{ optional($record)->dibuat_loader == '' ? 'selected' : '' }}>-- Select Pembuat --</option>
                                                                         @foreach ($approvalList as $user)
                                                                             <option value="{{ $user->nik }}" {{ optional($record)->dibuat_loader == $user->nik ? 'selected' : '' }}>
@@ -705,7 +705,7 @@
                                                             <div class="col-md-4">
                                                                 <div class="input-group input-group-static mb-3">
                                                                     <label for="jabatan_dibuat_loader" class="ms-0">Jabatan</label>
-                                                                    <select class="form-control" name="jabatan_dibuat_loader" id="jabatan_dibuat_loader" required
+                                                                    <select class="form-control select2" name="jabatan_dibuat_loader" id="jabatan_dibuat_loader" required
                                                                         {{ $isShowDetail ? 'disabled' : '' }}>
                                                                         <option value="Foreman"
                                                                             {{ old('jabatan_dibuat_loader', $record->jabatan_dibuat_loader ?? '') == 'Foreman' ? 'selected' : '' }}>
@@ -725,7 +725,7 @@
                                                             <div class="col-md-4">
                                                                 <div class="input-group input-group-static mb-3">
                                                                     <label for="alat_support_hauler" class="ms-0">Nama Pemeriksa</label>
-                                                                    <select name="mengetahui_loader" id="mengetahui_loader" class="form-control" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                    <select name="mengetahui_loader" id="mengetahui_loader" class="form-control select2" required {{ $isShowDetail ? 'disabled' : '' }}>
                                                                         <option disabled {{ optional($record)->mengetahui_loader == '' ? 'selected' : '' }}>-- Select Pemeriksa --</option>
                                                                         @foreach ($approvalList as $user)
                                                                             <option value="{{ $user->nik }}" {{ optional($record)->mengetahui_loader == $user->nik ? 'selected' : '' }}>
@@ -739,7 +739,7 @@
                                                             <div class="col-md-4">
                                                                 <div class="input-group input-group-static mb-3">
                                                                     <label for="jabatan_mengetahui_loader" class="ms-0">Jabatan</label>
-                                                                    <select class="form-control" name="jabatan_mengetahui_loader" id="jabatan_mengetahui_loader" required
+                                                                    <select class="form-control select2" name="jabatan_mengetahui_loader" id="jabatan_mengetahui_loader" required
                                                                         {{ $isShowDetail ? 'disabled' : '' }}>
                                                                         <option value="Spv. Prod"
                                                                             {{ old('jabatan_mengetahui_loader', $record->jabatan_mengetahui_loader ?? '') == 'Spv. Prod' ? 'selected' : '' }}>
@@ -780,7 +780,7 @@
                                                             <div class="col-md-4">
                                                                 <div class="input-group input-group-static mb-3">
                                                                     <label for="shift_dozer" class="ms-0">Shift Kerja</label>
-                                                                    <select name="shift_dozer" class="form-control" {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                    <select name="shift_dozer" class="form-control select2" {{ $isShowDetail ? 'disabled' : '' }}>
                                                                         {!! $shift_dozer !!}
                                                                     </select>
                                                                 </div>
@@ -963,7 +963,7 @@
                                                             <div class="col-md-4">
                                                                 <div class="input-group input-group-static mb-3">
                                                                     <label for="alat_support_hauler" class="ms-0">Nama Pembuat</label>
-                                                                    <select name="dibuat_dozer" id="dibuat_dozer" class="form-control" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                    <select name="dibuat_dozer" id="dibuat_dozer" class="form-control select2" required {{ $isShowDetail ? 'disabled' : '' }}>
                                                                         <option disabled {{ optional($record)->dibuat_dozer == '' ? 'selected' : '' }}>-- Select Pembuat --</option>
                                                                         @foreach ($approvalList as $user)
                                                                             <option value="{{ $user->nik }}" {{ optional($record)->dibuat_dozer == $user->nik ? 'selected' : '' }}>
@@ -977,7 +977,7 @@
                                                             <div class="col-md-4">
                                                                 <div class="input-group input-group-static mb-3">
                                                                     <label for="jabatan_dibuat_dozer" class="ms-0">Jabatan</label>
-                                                                    <select class="form-control" name="jabatan_dibuat_dozer" id="jabatan_dibuat_dozer" required
+                                                                    <select class="form-control select2" name="jabatan_dibuat_dozer" id="jabatan_dibuat_dozer" required
                                                                         {{ $isShowDetail ? 'disabled' : '' }}>
                                                                         <option value="LH Produksi"
                                                                             {{ old('jabatan_dibuat_dozer', $record->jabatan_dibuat_dozer ?? '') == 'LH Produksi' ? 'selected' : '' }}>
@@ -997,7 +997,7 @@
                                                             <div class="col-md-4">
                                                                 <div class="input-group input-group-static mb-3">
                                                                     <label for="alat_support_hauler" class="ms-0">Nama Pemeriksa</label>
-                                                                    <select name="mengetahui_dozer" id="mengetahui_dozer" class="form-control" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                    <select name="mengetahui_dozer" id="mengetahui_dozer" class="form-control select2" required {{ $isShowDetail ? 'disabled' : '' }}>
                                                                         <option disabled {{ optional($record)->mengetahui_dozer == '' ? 'selected' : '' }}>-- Select Pemeriksa --</option>
                                                                         @foreach ($approvalList as $user)
                                                                             <option value="{{ $user->nik }}" {{ optional($record)->mengetahui_dozer == $user->nik ? 'selected' : '' }}>
@@ -1011,7 +1011,7 @@
                                                             <div class="col-md-4">
                                                                 <div class="input-group input-group-static mb-3">
                                                                     <label for="jabatan_mengetahui_dozer" class="ms-0">Jabatan</label>
-                                                                    <select class="form-control" name="jabatan_mengetahui_dozer" id="jabatan_mengetahui_dozer" required
+                                                                    <select class="form-control select2" name="jabatan_mengetahui_dozer" id="jabatan_mengetahui_dozer" required
                                                                         {{ $isShowDetail ? 'disabled' : '' }}>
                                                                         <option value="Spv. Prod"
                                                                             {{ old('jabatan_mengetahui_dozer', $record->jabatan_mengetahui_dozer ?? '') == 'Spv. Prod' ? 'selected' : '' }}>
@@ -1183,14 +1183,23 @@ function convertToTimeFormat(totalSeconds) {
             transform: scale(1.5);
             cursor: pointer;
         }
+        .select2-container {
+            width: 100% !important;
+        }
+        .select2-selection {
+            height: auto !important;
+        }
     </style>
 @endsection
 
 @section('custom-js')
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script>
         $(function() {
+        $('.select2').select2();
             var form = $("#kalibrasiForm");
             var submitBtn = form.find('button[type="submit"]');
 
@@ -1238,5 +1247,6 @@ function convertToTimeFormat(totalSeconds) {
                     });
             });
         });
+        
     </script>
 @endsection

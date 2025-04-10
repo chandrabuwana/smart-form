@@ -70,7 +70,7 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="shift" class="ms-0">Shift</label>
-                                        <select name="shift" class="form-control" {{ $isShowDetail ? 'disabled' : '' }}>
+                                        <select name="shift" class="form-control select2" {{ $isShowDetail ? 'disabled' : '' }}>
                                             {!! $shift !!}
                                         </select>
                                     </div>
@@ -151,7 +151,7 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="hmawal2" class="ms-0">Operator</label>
-                                            <select name="operator" id="operator" class="form-control" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                            <select name="operator" id="operator" class="form-control select2" required {{ $isShowDetail ? 'disabled' : '' }}>
                                                 <option disabled {{ optional($record)->operator == '' ? 'selected' : '' }}>-- Select Operator --</option>
                                                 @foreach ($approvalList as $user)
                                                     <option value="{{ $user->nik }}" {{ optional($record)->operator == $user->nik ? 'selected' : '' }}>
@@ -172,7 +172,7 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="hmakhir2" class="ms-0">Pengawas</label>
-                                            <select name="pengawas" id="pengawas" class="form-control" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                            <select name="pengawas" id="pengawas" class="form-control select2" required {{ $isShowDetail ? 'disabled' : '' }}>
                                                 <option disabled {{ optional($record)->pengawas == '' ? 'selected' : '' }}>-- Select Pengawas --</option>
                                                 @foreach ($approvalList as $user)
                                                     <option value="{{ $user->nik }}" {{ optional($record)->pengawas == $user->nik ? 'selected' : '' }}>
@@ -197,7 +197,7 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="kondisi1" class="ms-0">Aplikasi Aktifitas Hauler</label>
-                                        <select class="form-control" name="kondisi1" id="kondisi1" required
+                                        <select class="form-control select2" name="kondisi1" id="kondisi1" required
                                             {{ $isShowDetail ? 'disabled' : '' }}>
                                             <option value="Baik"
                                                 {{ old('kondisi1', $record->kondisi1 ?? '') == 'Baik' ? 'selected' : '' }}>
@@ -211,7 +211,7 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="kondisi2" class="ms-0">Tablet 7"</label>
-                                        <select class="form-control" name="kondisi2" id="kondisi2" required
+                                        <select class="form-control select2" name="kondisi2" id="kondisi2" required
                                             {{ $isShowDetail ? 'disabled' : '' }}>
                                             <option value="Baik"
                                                 {{ old('kondisi2', $record->kondisi2 ?? '') == 'Baik' ? 'selected' : '' }}>
@@ -225,7 +225,7 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="kondisi3" class="ms-0">Bracker</label>
-                                        <select class="form-control" name="kondisi3" id="kondisi3" required
+                                        <select class="form-control select2" name="kondisi3" id="kondisi3" required
                                             {{ $isShowDetail ? 'disabled' : '' }}>
                                             <option value="Baik"
                                                 {{ old('kondisi3', $record->kondisi3 ?? '') == 'Baik' ? 'selected' : '' }}>
@@ -239,7 +239,7 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="kondisi4" class="ms-0">Charger/Cas Tablet</label>
-                                        <select class="form-control" name="kondisi4" id="kondisi4" required
+                                        <select class="form-control select2" name="kondisi4" id="kondisi4" required
                                             {{ $isShowDetail ? 'disabled' : '' }}>
                                             <option value="Baik"
                                                 {{ old('kondisi4', $record->kondisi4 ?? '') == 'Baik' ? 'selected' : '' }}>
@@ -253,7 +253,7 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="kondisi_unit" class="ms-0">Laporan Kondisi Unit</label>
-                                        <select class="form-control" name="kondisi_unit" id="kondisi_unit" required
+                                        <select class="form-control select2" name="kondisi_unit" id="kondisi_unit" required
                                             {{ $isShowDetail ? 'disabled' : '' }}>
                                             <option value="Siap"
                                                 {{ old('kondisi_unit', $record->kondisi_unit ?? '') == 'Siap' ? 'selected' : '' }}>
@@ -267,7 +267,7 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="kondisi_tubuh" class="ms-0">Kondisi Saya Saat Ini</label>
-                                        <select class="form-control" name="kondisi_tubuh" id="kondisi_tubuh" required
+                                        <select class="form-control select2" name="kondisi_tubuh" id="kondisi_tubuh" required
                                             {{ $isShowDetail ? 'disabled' : '' }}>
                                             <option value="Siap"
                                                 {{ old('kondisi_tubuh', $record->kondisi_tubuh ?? '') == 'Fit' ? 'selected' : '' }}>
@@ -1324,10 +1324,14 @@
 @section('custom-js')
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script>
         $(function() {
+        $('.select2').select2();
             var form = $("#a2bbaruForm");
             var submitBtn = form.find('button[type="submit"]');
+            
 
             form.submit(function(e) {
                 e.preventDefault();
