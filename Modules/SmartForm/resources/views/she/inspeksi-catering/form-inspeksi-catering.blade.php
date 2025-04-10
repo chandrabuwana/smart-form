@@ -88,7 +88,18 @@
                                     </tr>
                                     <tr>
                                         <td>Nama Site</td>
-                                        <td><input type="text" class="input-text w-full" id="tNamaSite" name="tNamaSite"></td>
+                                        <td>
+                                            <!-- <input type="text" class="input-text w-full" id="tNamaSite" name="tNamaSite"> -->
+                                            <select class="form-select form-select-sm input-text" id="tNamaSite" name="tNamaSite">
+                                                @forelse($sites as $site)
+                                                    <option value="{{ $site->KodeST ?? '' }}">
+                                                        {{ $site->KodeST ?? 'Site tidak tersedia' }}
+                                                    </option>
+                                                @empty
+                                                    <option>Data site tidak ditemukan</option>
+                                                @endforelse
+                                            </select>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Departemen</td>
@@ -789,6 +800,7 @@
         $(document).ready(function() {
             $('#dDept').select2();
             $('#dMengetahui').select2();
+            $('#tNamaSite').select2();
         });
         var tglNow = new Date()
         var mudof = new Date();
