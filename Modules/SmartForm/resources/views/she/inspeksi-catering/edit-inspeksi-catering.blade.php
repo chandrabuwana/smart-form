@@ -58,7 +58,9 @@
                             <table class="w-full">
                                 <tr>
                                     <td>Nama Site</td>
-                                    <td><input type="text" class="input-text w-full" id="tNamaSite" name="tNamaSite" value="{{ $data->nama_site }}"></td>
+                                    <td>
+                                        <input type="text" class="input-text w-full" id="tNamaSite" name="tNamaSite" value="{{ $data->nama_site }}">
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>Departemen</td>
@@ -75,9 +77,8 @@
                                     <td>
                                         <select class="form-select form-select-sm input-text" aria-label="Default select example" id="dShift" name="dShift">
                                             <option value="">-- Pilih Shift --</option>    
-                                            <option value="I" {{ $data->shift == 'I' ? 'selected' : '' }}>I</option>
-                                            <option value="II" {{ $data->shift == 'II' ? 'selected' : '' }}>II</option>
-                                            <option value="III" {{ $data->shift == 'III' ? 'selected' : '' }}>III</option>
+                                            <option value="DS" {{ $data->shift == 'DS' ? 'selected' : '' }}>DS</option>
+                                            <option value="NS" {{ $data->shift == 'NS' ? 'selected' : '' }}>NS</option>
                                         </select> 
                                     </td>
                                 </tr>
