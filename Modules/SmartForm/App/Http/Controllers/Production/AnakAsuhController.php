@@ -46,7 +46,7 @@ class AnakAsuhController extends Controller
                 ->select('departemen')
                 ->distinct()
                 ->whereNotNull('departemen')
-                ->pluck('deartemen');
+                ->pluck('departemen');
 
             $filter_options = (object)[
                 'departments' => $departments

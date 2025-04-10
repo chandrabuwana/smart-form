@@ -161,14 +161,14 @@ Sesuai dengan baku mutu/peraturan perundangan atau berdampak ke masyarakat di se
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style="background-color: #90EE90;" class="text-center">Risiko Rendah</td>
-                                    <td class="text-center">2 - 18</td>
-                                    <td style="white-space: pre-line;">
+                                    <td style="background-color: #90EE90;" class="text-center border">Risiko Rendah</td>
+                                    <td class="text-center border">2 - 18</td>
+                                    <td style="white-space: pre-line;" class="border">
                                         Ada Kerusakan dan Rp 0 - Rp 10 Juta
 
 Tidak ada peraturan yg berlaku atau berdampak kelingkungan perusahaan
                                     </td>
-                                    <td style="white-space: pre-line;">
+                                    <td style="white-space: pre-line;" class="border">
                                         Tidak diperlukan pengendalian tambahan.
 
                                         Diperlukan pemantauan untuk memastikan pengendalian yang ada dipelihara dan dilaksanakan.
@@ -215,10 +215,10 @@ Tidak ada peraturan yg berlaku atau berdampak kelingkungan perusahaan
                                     @endphp
 
                                     @foreach($checklistItems as $index => $item)
-                                    <tr>
-                                        <td class="text-center align-middle">{{ $index + 1 }}</td>
-                                        <td class="align-middle">{{ $item }}</td>
-                                        <td class="text-center align-middle">
+                                    <tr class="border">
+                                        <td class="text-center align-middle border">{{ $index + 1 }}</td>
+                                        <td class="align-middle border">{{ $item }}</td>
+                                        <td class="text-center align-middle border">
                                             <div class="d-flex justify-content-center gap-3">
                                                 @php
                                                     $checklist_value = isset($data) && is_array($data->checklist_items) ? 
@@ -301,7 +301,7 @@ Tidak ada peraturan yg berlaku atau berdampak kelingkungan perusahaan
 
                         <!-- Signatures -->
                         <table class="table table-bordered mb-4">
-                            <tr>
+                            <tr class="border">
                                 <td width="25%">Diinspeksi Oleh</td>
                                 <td width="25%">
                                     <select name="inspected_by_name" id="inspected_by_name" class="form-control text-center" required {{ $isShowDetail ? 'disabled' : '' }}>
@@ -324,7 +324,7 @@ Tidak ada peraturan yg berlaku atau berdampak kelingkungan perusahaan
                                             {{ ucfirst($data->inspected_by_status) }}
                                         </span>
                                     @else
-                                        <select name="inspected_by_status" class="form-control">
+                                        <select name="inspected_by_status" class="form-control" disabled>
                                             <option value="pending" {{ isset($data) && $data->inspected_by_status == 'pending' ? 'selected' : '' }}>Pending</option>
                                             <option value="approved" {{ isset($data) && $data->inspected_by_status == 'approved' ? 'selected' : '' }}>Approved</option>
                                             <option value="rejected" {{ isset($data) && $data->inspected_by_status == 'rejected' ? 'selected' : '' }}>Rejected</option>
@@ -338,7 +338,7 @@ Tidak ada peraturan yg berlaku atau berdampak kelingkungan perusahaan
                                            {{ $isShowDetail ? 'disabled' : '' }}>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr class="border">
                                 <td>Diinspeksi Oleh</td>
                                 <td>
                                     <select name="inspected_by2_name" id="inspected_by2_name" class="form-control text-center" {{ $isShowDetail ? 'disabled' : '' }}>
@@ -361,7 +361,7 @@ Tidak ada peraturan yg berlaku atau berdampak kelingkungan perusahaan
                                             {{ ucfirst($data->inspected_by2_status) }}
                                         </span>
                                     @else
-                                        <select name="inspected_by2_status" class="form-control">
+                                        <select name="inspected_by2_status" class="form-control" disabled>
                                             <option value="pending" {{ isset($data) && $data->inspected_by2_status == 'pending' ? 'selected' : '' }}>Pending</option>
                                             <option value="approved" {{ isset($data) && $data->inspected_by2_status == 'approved' ? 'selected' : '' }}>Approved</option>
                                             <option value="rejected" {{ isset($data) && $data->inspected_by2_status == 'rejected' ? 'selected' : '' }}>Rejected</option>
@@ -375,7 +375,7 @@ Tidak ada peraturan yg berlaku atau berdampak kelingkungan perusahaan
                                            {{ $isShowDetail ? 'disabled' : '' }}>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr class="border">
                                 <td>Diinspeksi Oleh</td>
                                 <td>
                                     <select name="inspected_by3_name" id="inspected_by3_name" class="form-control text-center" {{ $isShowDetail ? 'disabled' : '' }}>
@@ -398,7 +398,7 @@ Tidak ada peraturan yg berlaku atau berdampak kelingkungan perusahaan
                                             {{ ucfirst($data->inspected_by3_status) }}
                                         </span>
                                     @else
-                                        <select name="inspected_by3_status" class="form-control">
+                                        <select name="inspected_by3_status" class="form-control" disabled>
                                             <option value="pending" {{ isset($data) && $data->inspected_by3_status == 'pending' ? 'selected' : '' }}>Pending</option>
                                             <option value="approved" {{ isset($data) && $data->inspected_by3_status == 'approved' ? 'selected' : '' }}>Approved</option>
                                             <option value="rejected" {{ isset($data) && $data->inspected_by3_status == 'rejected' ? 'selected' : '' }}>Rejected</option>
@@ -412,9 +412,9 @@ Tidak ada peraturan yg berlaku atau berdampak kelingkungan perusahaan
                                            {{ $isShowDetail ? 'disabled' : '' }}>
                                 </td>
                             </tr>
-                            <tr>
-                                <td>Disetujui Oleh</td>
-                                <td>
+                            <tr class="border">
+                                <td class="border">Disetujui Oleh</td>
+                                <td class="border">
                                     <select name="acknowledged_by_name" id="acknowledged_by_name" class="form-control text-center" {{ $isShowDetail ? 'disabled' : '' }}>
                                         <option value="">-- Pilih Approver --</option>
                                         @foreach($approvalList as $user)
@@ -428,22 +428,22 @@ Tidak ada peraturan yg berlaku atau berdampak kelingkungan perusahaan
                                     <input type="hidden" name="acknowledged_by_nik" id="acknowledged_by_nik" 
                                            value="{{ $isShowDetail && isset($data->acknowledged_by_nik) ? $data->acknowledged_by_nik : '' }}">
                                 </td>
-                                <td>Status</td>
-                                <td>
+                                <td class="border">Status</td>
+                                <td class="border">
                                     @if($isShowDetail)
                                         <span class="badge bg-{{ $data->acknowledged_by_status == 'approved' ? 'success' : ($data->acknowledged_by_status == 'rejected' ? 'danger' : 'secondary') }}">
                                             {{ ucfirst($data->acknowledged_by_status) }}
                                         </span>
                                     @else
-                                        <select name="acknowledged_by_status" class="form-control">
+                                        <select name="acknowledged_by_status" class="form-control" disabled>
                                             <option value="pending" {{ isset($data) && $data->acknowledged_by_status == 'pending' ? 'selected' : '' }}>Pending</option>
                                             <option value="approved" {{ isset($data) && $data->acknowledged_by_status == 'approved' ? 'selected' : '' }}>Approved</option>
                                             <option value="rejected" {{ isset($data) && $data->acknowledged_by_status == 'rejected' ? 'selected' : '' }}>Rejected</option>
                                         </select>
                                     @endif
                                 </td>
-                                <td>Tanggal</td>
-                                <td>
+                                <td class="border">Tanggal</td>
+                                <td class="border">
                                     <input type="date" class="form-control" name="acknowledgment_date"
                                            value="{{ isset($data->acknowledgment_date) ? $data->acknowledgment_date : now()->format('Y-m-d') }}"
                                            {{ $isShowDetail ? 'disabled' : '' }}>

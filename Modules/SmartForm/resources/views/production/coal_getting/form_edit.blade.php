@@ -43,7 +43,6 @@
                 <div class="card-body px-0 pb-2">
                     <form method="POST" id="inspectionForm" action="{{ route('prod.coal.form.update', ['id' => $record->id]) }}">
                         @csrf
-                        @method('PUT')
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                         <div class="mx-3">
                             <!-- Basic Information -->

@@ -58,16 +58,33 @@
                             <table class="w-full">
                                 <tr>
                                     <td>Nama Site</td>
-                                    <td><input type="text" class="input-text w-full" id="tNamaSite" name="tNamaSite" value="{{ $data->nama_site }}"></td>
+                                    <td>
+                                        <!-- <input type="text" class="input-text w-full" id="tNamaSite" name="tNamaSite" value="{{ $data->nama_site }}"> -->
+                                        <select class="form-select form-select-sm input-text" id="tNamaSite" name="tNamaSite">
+                                        <option value="{{ $data->nama_site }}">{{ $data->nama_site }}</option>
+                                            @forelse($sites as $site)
+                                                <option value="{{ $site->KodeST ?? '' }}">
+                                                    {{ $site->KodeST ?? 'Site tidak tersedia' }}
+                                                </option>
+                                            @empty
+                                                <option>Data site tidak ditemukan</option>
+                                            @endforelse
+                                        </select>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>Departemen</td>
                                     <td>
                                         <select class="form-select form-select-sm input-text" aria-label="Default select example" id="dDept" name="dDept">
-                                            <option value="">-- Pilih Departemen --</option>
-                                            <option value="SHE" {{ $data->department == 'SHE' ? 'selected' : '' }}>SHE</option>
-                                            <option value="GS" {{ $data->department == 'GS' ? 'selected' : '' }}>GS</option>
-                                        </select>
+                                            <option value="{{ $data->department ?? '' }}">{{ $data->department}}</option>
+                                            @forelse($dept as $dept)
+                                                <option value="{{ $dept->Nama ?? '' }}">
+                                                        {{ $dept->Nama ?? 'Departement tidak tersedia' }}
+                                                </option>
+                                                @empty
+                                                    <option>Data Departement tidak ditemukan</option>
+                                                @endforelse
+                                            </select>
                                     </td>
                                 </tr>
                                 <tr>
@@ -75,9 +92,8 @@
                                     <td>
                                         <select class="form-select form-select-sm input-text" aria-label="Default select example" id="dShift" name="dShift">
                                             <option value="">-- Pilih Shift --</option>    
-                                            <option value="I" {{ $data->shift == 'I' ? 'selected' : '' }}>I</option>
-                                            <option value="II" {{ $data->shift == 'II' ? 'selected' : '' }}>II</option>
-                                            <option value="III" {{ $data->shift == 'III' ? 'selected' : '' }}>III</option>
+                                            <option value="DS" {{ $data->shift == 'DS' ? 'selected' : '' }}>DS</option>
+                                            <option value="NS" {{ $data->shift == 'NS' ? 'selected' : '' }}>NS</option>
                                         </select> 
                                     </td>
                                 </tr>
@@ -96,7 +112,7 @@
                                 <tr>
                                     <td>Mengetahui</td>
                                     <td>
-                                        <select name="dMengetahui" class="form-control text-center">
+                                        <select name="dMengetahui" id="dMengetahui" class="form-control text-center">
                                             <option value="">-- Pilih Mengetahui --</option>
                                             @foreach($approvalList as $user)
                                                 <option value="{{ $user->nama }}" {{ $data->mengetahui == $user->nama ? 'selected' : '' }}>
@@ -480,6 +496,11 @@
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <script>
+        $(document).ready(function() {
+            $('#dDept').select2();
+            $('#dMengetahui').select2();
+            $('#tNamaSite').select2();
+        });
         $(document).ready(function() {
             function stopLoading() {
                 $("body").css("overflow-y", "auto");

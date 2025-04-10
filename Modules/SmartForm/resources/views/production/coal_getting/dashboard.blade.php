@@ -218,16 +218,14 @@
                                                         <i class="fas fa-times me-1"></i> Reject
                                                     </button>
                                                 @endif
-                                                @if($record->approval_status === 'reject' && trim($record->created_by_nik) === trim($user->userid))
-                                                    <a href="{{ route('prod.coal.form.edit', ['id' => $record->id]) }}" class="btn btn-info btn-sm">
-                                                        <i class="fas fa-edit"></i> Edit
+                                                @if(trim($record->created_by_nik) === trim($user->userid))
+                                                    <a href="{{ route('prod.coal.form.edit', ['id' => $record->id]) }}" class="btn btn-info btn-sm d-inline-flex align-items-center justify-content-center">
+                                                        <i class="fas fa-edit me-1"></i> Edit
                                                     </a>
                                                     
-                                                @endif
-                                                @if(trim($record->created_by_nik) === trim($user->userid))
-                                                <button type="button" class="btn btn-danger btn-sm d-inline-flex align-items-center justify-content-center btn-delete" data-id="{{ $record->id }}">
-                                                    <i class="fas fa-trash me-1"></i> Delete
-                                                </button>
+                                                    <button type="button" class="btn btn-danger btn-sm d-inline-flex align-items-center justify-content-center btn-delete" data-id="{{ $record->id }}">
+                                                        <i class="fas fa-trash me-1"></i> Delete
+                                                    </button>
                                                 @endif
                                             </td>
                                         </tr>

@@ -119,7 +119,6 @@
                     </div>
                     <form id="airMinumForm" method="POST" action="{{ route('she.air-minum.form.update', $maintenanceRecord->id) }}">
                         @csrf
-                        @method('PUT')
                         <input type="hidden" name="inspection_date" value="{{ $maintenanceRecord->inspection_date }}">
                         <input type="hidden" name="id" value="{{ $maintenanceRecord->id }}">
                         <div class="mx-3">
@@ -131,7 +130,7 @@
                                         <select class="form-control" id="site_name" name="site_name" required>
                                             <option value="">-- Pilih Site --</option>
                                             @foreach(\Modules\SmartForm\helpers\SiteHelper::getAllSites() as $code => $name)
-                                                <option value="{{ strtolower($code) }}" {{ strtolower($maintenanceRecord->site_name) == strtolower($code) ? 'selected' : '' }}>{{ $name }}</option>
+                                                <option value="{{ strtoupper($code) }}" {{ strtoupper($maintenanceRecord->site_name) == strtoupper($code) ? 'selected' : '' }}>{{ $name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -401,10 +400,12 @@
                             </div>
 
                             <!-- Submit/Back Buttons -->
-                            <div class="row">
+                            <div class="row mt-4">
                                 <div class="col-12 text-end">
                                     <a href="{{ route('she.air-minum.dashboard') }}" class="btn btn-secondary">Kembali</a>
-                                    <button type="submit" class="btn btn-primary" id="submitBtn">Update</button>
+                                    <button type="submit" id="submitBtn" class="btn btn-primary">
+                                        <i class="fas fa-save me-1"></i> Update Data
+                                    </button>
                                 </div>
                             </div>
                         </div>

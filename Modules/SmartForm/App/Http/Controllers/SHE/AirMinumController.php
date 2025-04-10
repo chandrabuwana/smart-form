@@ -157,7 +157,7 @@ class AirMinumController extends Controller
                 $approvalList = HrdHelper::getApprovalList();
                 
                 // Check if this is a detail view or edit view
-                $isEditMode = $request->has('edit') && $request->edit === 'true';
+                $isEditMode = $request->has('edit') && ($request->edit === 'true' || $request->edit === '1' || $request->edit === 1);
                 $isShowDetail = true;
                 
                 // If it's a detail view (not edit mode), use the form view with read-only fields
@@ -451,26 +451,7 @@ class AirMinumController extends Controller
                 ], 404);
             }
 
-            // Check if the record has any approved status
-            if ($record->inspector_1_status === 'approved' || 
-                $record->inspector_2_status === 'approved' || 
-                $record->inspector_3_status === 'approved' || 
-                $record->acknowledged_status === 'approved') {
-                
-                Log::error('Cannot update Air Minum record with approved status', [
-                    'id' => $id,
-                    'inspector_1_status' => $record->inspector_1_status,
-                    'inspector_2_status' => $record->inspector_2_status,
-                    'inspector_3_status' => $record->inspector_3_status,
-                    'acknowledged_status' => $record->acknowledged_status
-                ]);
-                
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Cannot update record with approved status'
-                ], 400);
-            }
-
+            // Start transaction
             DB::beginTransaction();
 
             try {
@@ -661,7 +642,9 @@ class AirMinumController extends Controller
             }
             
             // Get the record
-            $record = DB::table('she_air_minum')->where('id', $id)->first();
+            $record = DB::table('she_air_minum')
+                ->where('id', $id)
+                ->first();
             
             if (!$record) {
                 return redirect()->route('she.air-minum.dashboard')
@@ -837,26 +820,6 @@ class AirMinumController extends Controller
                 return response()->json([
                     'success' => false,
                     'message' => 'Record not found'
-                ]);
-            }
-
-            // Check if the record has any approved status
-            if ($record->inspector_1_status === 'approved' || 
-                $record->inspector_2_status === 'approved' || 
-                $record->inspector_3_status === 'approved' || 
-                $record->acknowledged_status === 'approved') {
-                
-                Log::error('Cannot delete Air Minum record with approved status', [
-                    'id' => $id,
-                    'inspector_1_status' => $record->inspector_1_status,
-                    'inspector_2_status' => $record->inspector_2_status,
-                    'inspector_3_status' => $record->inspector_3_status,
-                    'acknowledged_status' => $record->acknowledged_status
-                ]);
-                
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Cannot delete record with approved status'
                 ]);
             }
 

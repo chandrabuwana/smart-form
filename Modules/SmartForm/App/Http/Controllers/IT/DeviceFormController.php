@@ -233,13 +233,13 @@ class DeviceFormController extends Controller
             'nama' => 'required|string',
             'nik' => 'required|string',
             'dept' => 'required|string',
-            'site' => 'required|in:agm,mbl,mme,mas,pmss,taj,bssr,tdm,msj',
+            'site' => 'required|string',
 
             // User Information
             'user_name' => 'required|string',
             'user_nik' => 'required|string',
             'user_dept' => 'required|string',
-            'user_site' => 'required|in:agm,mbl,mme,mas,pmss,taj,bssr,tdm,msj',
+            'user_site' => 'required|string',
             'user_no_asset' => 'required|string',
 
             // Device Information
