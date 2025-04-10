@@ -22,10 +22,8 @@ class PengeluaranOilController extends Controller {
     private const TABLE_KARYAWAN = 'TKaryawan';
 
     private const LIST_SHIFT = [
-        "" => "",
-        'I' => 'I',
-        'II' => 'II',
-        'III' => 'III',
+        'DS' => 'DS',
+        'NS' => 'NS',
     ];
 
     private const LIST_JENIS = [

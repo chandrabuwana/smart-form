@@ -687,15 +687,23 @@
                                 @case(27) Sakit pada telapak kaki kanan @break
                             @endswitch
                         </td>
-                        <td style="border: 1px solid #000; padding: 5px; text-align: center;" class="check">✓</td>
-                        <td style="border: 1px solid #000; padding: 5px; text-align: center;"></td>
-                        <td style="border: 1px solid #000; padding: 5px; text-align: center;"></td>
-                        <td style="border: 1px solid #000; padding: 5px; text-align: center;"></td>
+                        <td style="border: 1px solid #000; padding: 5px; text-align: center;" class="check">
+                            {!! isset($data->body_mapping_data) && ($bodyPainData = json_decode($data->body_mapping_data, true)) && isset($bodyPainData[$i]) && $bodyPainData[$i] === 'A' ? '✓' : '' !!}
+                        </td>
+                        <td style="border: 1px solid #000; padding: 5px; text-align: center;" class="check">
+                            {!! isset($data->body_mapping_data) && ($bodyPainData = json_decode($data->body_mapping_data, true)) && isset($bodyPainData[$i]) && $bodyPainData[$i] === 'B' ? '✓' : '' !!}
+                        </td>
+                        <td style="border: 1px solid #000; padding: 5px; text-align: center;" class="check">
+                            {!! isset($data->body_mapping_data) && ($bodyPainData = json_decode($data->body_mapping_data, true)) && isset($bodyPainData[$i]) && $bodyPainData[$i] === 'C' ? '✓' : '' !!}
+                        </td>
+                        <td style="border: 1px solid #000; padding: 5px; text-align: center;" class="check">
+                            {!! isset($data->body_mapping_data) && ($bodyPainData = json_decode($data->body_mapping_data, true)) && isset($bodyPainData[$i]) && $bodyPainData[$i] === 'D' ? '✓' : '' !!}
+                        </td>
                     </tr>
                 @endfor
             </table>
 
-            <div style="margin-top: 10px;">
+            <div style="margin-top: 10px; font-size: 10px;">
                 <p style="margin-bottom: 5px;">KETERANGAN :</p>
                 <table style="width: 100%;">
                     <tr>
@@ -717,7 +725,7 @@
                 </table>
             </div>
 
-            <div style="margin-top: 10px;">
+            <div style="margin-top: 5px; font-size: 10px;">
                 <table style="width: 100%;">
                     <tr>
                         <td style="width: 150px;">Dibuat Oleh / <span class="text-primary">Propose By</span></td>

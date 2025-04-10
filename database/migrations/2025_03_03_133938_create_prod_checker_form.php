@@ -46,6 +46,7 @@ return new class extends Migration
             $table->string('disposal');
             $table->string('checker');
             $table->string('pengawas');
+			$table->string('site')->nullable(); 
             $table->timestamps();
         });
     }

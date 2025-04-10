@@ -418,6 +418,132 @@
                                 </table>
                             </div>
 
+                            <!-- Body Mapping Checklist Section -->
+                            <div class="table-responsive mb-4">
+                                <div class="row g-0">
+                                    <div class="col-md-4 border p-2">
+                                        <div class="text-center">
+                                            <img src="{{ asset('img/form-she-ergonomi/body-mapping.png') }}" class="img-fluid" style="max-height: 1000px;">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input type="hidden" id="body_mapping_json" name="body_mapping_json" value="{{ isset($data->body_mapping_data) ? $data->body_mapping_data : '{}' }}">
+                                        <table class="table table-bordered m-0">
+                                            <thead>
+                                                <tr class="bg-info text-white">
+                                                    <th style="width: 8%" class="text-center">No<br/>Nr</th>
+                                                    <th style="width: 52%" class="text-center">Jenis Keluhan<br/><span class="text-primary">Sign Type</span></th>
+                                                    <th style="width: 40%" class="text-center" colspan="4">Keluhan / <span class="text-primary">Sign</span></th>
+                                                </tr>
+                                                <tr class="bg-light">
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th class="text-center">A</th>
+                                                    <th class="text-center">B</th>
+                                                    <th class="text-center">C</th>
+                                                    <th class="text-center">D</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @php
+                                                $bodyParts = [
+                                                    'Sakit/Kaku di leher bagian atas',
+                                                    'Sakit/Kaku di leher bagian bawah',
+                                                    'Sakit di bahu kiri',
+                                                    'Sakit di bahu kanan',
+                                                    'Sakit pada lengan atas kiri',
+                                                    'Sakit pada punggung',
+                                                    'Sakit pada lengan atas kanan',
+                                                    'Sakit pada pinggang',
+                                                    'Sakit pada bokong',
+                                                    'Sakit pada pantat',
+                                                    'Sakit pada siku kiri',
+                                                    'Sakit pada siku kanan',
+                                                    'Sakit pada lengan bawah kiri',
+                                                    'Sakit pada lengan bawah kanan',
+                                                    'Sakit pada pergelangan tangan kiri',
+                                                    'Sakit pada pergelangan tangan kanan',
+                                                    'Sakit pada telapak tangan kanan',
+                                                    'Sakit pada telapak tangan kiri',
+                                                    'Sakit pada paha kiri',
+                                                    'Sakit pada paha kanan',
+                                                    'Sakit pada lutut kiri',
+                                                    'Sakit pada lutut kanan',
+                                                    'Sakit pada betis kiri',
+                                                    'Sakit pada betis kanan',
+                                                    'Sakit pada pergelangan kaki kiri',
+                                                    'Sakit pada pergelangan kaki kanan',
+                                                    'Sakit pada telapak kaki kiri',
+                                                    'Sakit pada telapak kaki kanan'
+                                                ];
+                                                @endphp
+                                                
+                                                @foreach($bodyParts as $index => $part)
+                                                <tr>
+                                                    <td class="text-center">{{ $index }}</td>
+                                                    <td>{{ $part }}</td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-flex justify-content-center">
+                                                            <input class="form-check-input" type="radio" name="body_pain_display[{{ $index }}]" value="A" id="pain_{{ $index }}_a" 
+                                                                {{ isset($data->body_mapping_data) && ($bodyPainData = json_decode($data->body_mapping_data, true)) && isset($bodyPainData[$index]) && $bodyPainData[$index] === 'A' ? 'checked' : '' }}>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-flex justify-content-center">
+                                                            <input class="form-check-input" type="radio" name="body_pain_display[{{ $index }}]" value="B" id="pain_{{ $index }}_b" 
+                                                                {{ isset($data->body_mapping_data) && ($bodyPainData = json_decode($data->body_mapping_data, true)) && isset($bodyPainData[$index]) && $bodyPainData[$index] === 'B' ? 'checked' : '' }}>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-flex justify-content-center">
+                                                            <input class="form-check-input" type="radio" name="body_pain_display[{{ $index }}]" value="C" id="pain_{{ $index }}_c" 
+                                                                {{ isset($data->body_mapping_data) && ($bodyPainData = json_decode($data->body_mapping_data, true)) && isset($bodyPainData[$index]) && $bodyPainData[$index] === 'C' ? 'checked' : '' }}>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-flex justify-content-center">
+                                                            <input class="form-check-input" type="radio" name="body_pain_display[{{ $index }}]" value="D" id="pain_{{ $index }}_d" 
+                                                                {{ isset($data->body_mapping_data) && ($bodyPainData = json_decode($data->body_mapping_data, true)) && isset($bodyPainData[$index]) && $bodyPainData[$index] === 'D' ? 'checked' : '' }}>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                        
+                                        <script>
+                                            // Function to update the body mapping JSON data
+                                            function updateBodyMappingJson() {
+                                                var bodyPainData = {};
+                                                
+                                                // Gather all checked radio buttons
+                                                document.querySelectorAll('input[name^="body_pain_display["]:checked').forEach(function(radio) {
+                                                    // Extract the index from the name attribute (body_pain_display[X])
+                                                    var nameMatch = radio.name.match(/body_pain_display\[(\d+)\]/);
+                                                    if (nameMatch && nameMatch[1]) {
+                                                        var index = nameMatch[1];
+                                                        bodyPainData[index] = radio.value;
+                                                    }
+                                                });
+                                                
+                                                // Update the hidden input with the JSON data
+                                                document.getElementById('body_mapping_json').value = JSON.stringify(bodyPainData);
+                                            }
+                                            
+                                            // Add event listeners to all radio buttons
+                                            document.addEventListener('DOMContentLoaded', function() {
+                                                document.querySelectorAll('input[name^="body_pain_display["]').forEach(function(radio) {
+                                                    radio.addEventListener('change', updateBodyMappingJson);
+                                                });
+                                                
+                                                // Initialize the JSON data on page load
+                                                updateBodyMappingJson();
+                                            });
+                                        </script>
+                                    </div>
+                                </div>
+                            </div>
+
                             <!-- Faktor Resiko Tindak Lanjut Title -->
                             <div class="table-responsive mb-4">
                                 <table class="table table-bordered">

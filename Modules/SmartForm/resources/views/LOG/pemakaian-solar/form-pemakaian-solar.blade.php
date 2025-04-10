@@ -42,7 +42,7 @@
                                             <td>:</td>
                                             <td>
                                                 <select class="form-select form-select-sm input-text" aria-label="Default select example" id="iShift" name="iShift" required>
-                                                    <option value="" selected>-- Pilih Shift --</option>    
+                                                    <option value="" disabled selected>-- Pilih Shift --</option>    
                                                     <option value="DS">DS</option>
                                                     <option value="NS">NS</option>
                                                 </select> 
@@ -53,7 +53,7 @@
                                             <td>:</td>
                                             <td>
                                                 <select name="dApproved" id="dApproved" class="form-control text-center" required>
-                                                <option selected value="">-- Pilih Atasan Langsung --</option>
+                                                <option selected value="" disabled>-- Pilih Atasan Langsung --</option>
                                                 @foreach($approvalList as $user)
                                                     <option value="{{ $user->nama }}">{{ $user->nama }}
                                                     </option>
@@ -78,16 +78,14 @@
                                             <td>:</td>
                                             <td>
                                                 <select class="form-select form-select-sm input-text" id="iJobSite" name="iJobSite" required>
-                                                    <option selected value="">-- Pilih Job Site --</option>
-                                                    <option value="AGM">AGM</option>
-                                                    <option value="MBL">MBL</option>
-                                                    <option value="MME">MME</option>
-                                                    <option value="MAS">MAS</option>
-                                                    <option value="PMSS">PMSS</option>
-                                                    <option value="TAJ">TAJ</option>
-                                                    <option value="BSSR">BSSR</option>
-                                                    <option value="TDM">TDM</option>
-                                                    <option value="MSJ">MSJ</option>
+                                                    <option selected value="" disabled>-- Pilih site --</option>
+                                                    @forelse($sites as $site)
+                                                        <option value="{{ $site->KodeST ?? '' }}">
+                                                            {{ $site->KodeST ?? 'Site tidak tersedia' }}
+                                                        </option>
+                                                    @empty
+                                                        <option>Data site tidak ditemukan</option>
+                                                    @endforelse
                                                 </select>
                                             </td>
                                         </tr>
@@ -242,6 +240,10 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script>
+        $(document).ready(function() {
+            $('#dApproved').select2();
+            $('#iJobSite').select2();
+        });
         var tglNow = new Date()
         var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         var months_romawi = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];

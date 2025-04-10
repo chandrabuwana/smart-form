@@ -9,6 +9,44 @@
     .m-0 {
         margin: 0;
     }
+    .text-right {
+        text-align: right;
+    }
+    .approval-section {
+        margin-top: 2rem;
+        padding: 1rem;
+        border: 1px solid #eee;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+    .approval-badge {
+        display: inline-block;
+        padding: 0.25em 0.4em;
+        font-size: 75%;
+        font-weight: 700;
+        line-height: 1;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: baseline;
+        border-radius: 0.25rem;
+        margin-left: 0.5rem;
+    }
+    .approval-badge.approved {
+        background-color: #4caf50;
+        color: white;
+    }
+    .approval-badge.rejected {
+        background-color: #f44336;
+        color: white;
+    }
+    .approval-badge.pending {
+        background-color: #ffc107;
+        color: black;
+    }
+    .approval-user {
+        font-weight: bold;
+        margin-right: 0.5rem;
+    }
 </style>
 @endsection
 
@@ -200,6 +238,41 @@
                                 <input type="text" class="form-control" id="tCatatan" name="tCatatan">
                             </div>
                         </div>
+
+                    <div class="approval-section">
+                        <div class="row">
+                            <table style="width:100%" >
+                              <tr>
+                                <td>Dibuat oleh</td>
+                                <td>: {{ session('username') }} {{ session('user_id') }}
+                                </td>
+                                <td>Diperiksa oleh :</td>
+                                <td>
+                                    <select name="dDiperiksa" id="dDiperiksa" class="form-control text-center" required>
+                                        <option value="">-- Pilih Pemeriksa --</option>
+                                        @foreach($approvalList as $user)
+                                            <option value="{{ $user->nik }}">
+                                                {{ $user->nama }} ({{ $user->nik }})
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                                <td>Diketahui oleh :</td>
+                                <td>
+                                    <select name="dDiketahui" id="dDiketahui" class="form-control text-center" required>
+                                        <option value="">-- Pilih Mengetahui --</option>
+                                        @foreach($approvalList as $user)
+                                            <option value="{{ $user->nik }}">
+                                                {{ $user->nama }} ({{ $user->nik }})
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                              </tr>
+                            </table>
+                        </div>
+                    </div>
+
                     </form>
 
                     <div class="card-footer">
@@ -221,6 +294,10 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script>
+        $(document).ready(function() {
+            $('#dDiperiksa').select2();
+            $('#dDiketahui').select2();
+        });
         var tglNow = new Date()
         var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         var months_romawi = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
@@ -233,6 +310,8 @@
         var noDoc = $("#noDoc");
         var tglDoc = $("#tglDoc");
         var dLok1 = $("#dLok1")
+        var dDiperiksa = $("#dDiperiksa")
+        var dDiketahui = $("#dDiketahui")
         var tCatatan = $("#tCatatan")
         
         var dLok2 = $("#dLok2")
@@ -421,7 +500,10 @@
                     formName: dataInspeksiApar.formName,
                     noDoc: noDoc.text(),
                     lok1: dLok1.val(),
+                    diperiksa: dDiperiksa.val(),
+                    diketahui: dDiketahui.val(),
                     tglDoc: formatTgl(),
+
                     catatan: tCatatan.val()
                 }
                 let formData = new FormData();

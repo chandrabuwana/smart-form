@@ -501,7 +501,7 @@
                             </td>
                             <td>Diterima Oleh/Received by, :</td>
                             <td> 
-                                <select name="dDiterima" class="form-control text-center" required>
+                                <select name="dDiterima" id="dDiterima" class="form-control text-center" required>
                                     <option value="">-- Pilih Penerima --</option>
                                     @foreach($approvalList as $user)
                                         <option value="{{ $user->nama }}">
@@ -512,11 +512,10 @@
                             </td>
                             <td>Disetujui Oleh/Approved by, :</td>
                             <td>
-                                <select name="dApproved" class="form-control text-center" required>
-                                    <option value="">-- Pilih Approver --</option>
+                                <select name="dApproved" id="dApproved" class="form-control text-center" required>
+                                    <option disabled selected>-- Pilih Approver --</option>
                                     @foreach($approvalList as $user)
-                                        <option value="{{ $user->nama }}">
-                                            {{ $user->nama }} ({{ $user->nik }})
+                                        <option value="{{ $user->nama }}">{{ $user->nama }} ({{ $user->nik }})
                                         </option>
                                     @endforeach
                                 </select>
@@ -544,6 +543,10 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script>
+        $(document).ready(function() {
+            $('#dApproved').select2();
+            $('#dDiterima').select2();
+        });
         // PKP NON PKP
         $(document).ready(function(){
             $('input[name="rPkp"]').change(function () {

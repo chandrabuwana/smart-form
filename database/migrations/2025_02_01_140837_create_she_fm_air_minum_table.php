@@ -17,7 +17,7 @@ class CreateSheFmAirMinumTable extends Migration
             $table->string('revision')->default('01');
             
             // Basic Information
-            $table->enum('site_name', ['agm', 'mbl', 'mme', 'mas', 'pmss', 'taj', 'bssr', 'tdm', 'msj']);
+            $table->string('site_name');
             $table->string('department');
             $table->string('shift');
             $table->string('work_location');

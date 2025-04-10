@@ -94,19 +94,23 @@
                                         <td>Departemen</td>
                                         <td>
                                             <select class="form-select form-select-sm input-text" aria-label="Default select example" id="dDept" name="dDept">
-                                            <option value="" selected>-- Pilih Departemen --</option>
-                                                <option value="SHE">SHE</option>
-                                                <option value="GS">GS</option>
-                                        </select>
-                                    </td>
+                                            <option disabled selected>-- select Departemen --</option>
+                                                @forelse($dept as $dept)
+                                                    <option value="{{ $dept->Nama ?? '' }}">
+                                                        {{ $dept->Nama ?? 'Departement tidak tersedia' }}
+                                                    </option>
+                                                @empty
+                                                    <option>Data Departement tidak ditemukan</option>
+                                                @endforelse
+                                            </select>
+                                        </td>
                                     <tr>
                                         <td>Shift</td>
                                         <td>
                                             <select class="form-select form-select-sm input-text" aria-label="Default select example" id="dShift" name="dShift">
                                                 <option value="" selected>-- Pilih Shift --</option>    
-                                                <option value="I">I</option>
-                                                <option value="II">II</option>
-                                                <option value="III">III</option>
+                                                <option value="DS">DS</option>
+                                                <option value="NS">NS</option>
                                             </select> 
                                         </td>
                                     </tr>
@@ -129,7 +133,7 @@
                                     <tr>
                                         <td>Mengetahui</td>
                                         <td>
-                                            <select name="dMengetahui" class="form-control text-center">
+                                            <select name="dMengetahui" id="dMengetahui" class="form-control text-center">
                                                 <option value="">-- Pilih Mengetahui --</option>
                                                 @foreach($approvalList as $user)
                                                     <option value="{{ $user->nama }}">
@@ -782,6 +786,10 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script>
+        $(document).ready(function() {
+            $('#dDept').select2();
+            $('#dMengetahui').select2();
+        });
         var tglNow = new Date()
         var mudof = new Date();
         var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];

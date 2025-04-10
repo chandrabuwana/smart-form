@@ -68,8 +68,7 @@
                                                 <td class="fw-bold">Request Cataloging</td>
                                                 <td>
                                                     <select class="form-select form-select-sm input-text" id="idCataloging" name="idCataloging">
-                                                        
-                                                        <option value="">-- select user --</option>
+                                                        <option disabled selected>-- select user --</option>
                                                         @forelse($users as $catalog)
                                                             <option value="{{ $catalog->NIK ?? '' }}">
                                                                 {{ $catalog->nama ?? 'Nama tidak tersedia' }}
@@ -85,7 +84,7 @@
                                                 <td>
                                                     <select class="form-select form-select-sm input-text" id="iApproval" name="iApproval">
                                                         
-                                                        <option value="">-- select user --</option>
+                                                        <option disabled selected>-- select user --</option>
                                                         @forelse($users as $approved)
                                                             <option value="{{ $approved->NIK ?? '' }}">
                                                                 {{ $approved->nama ?? 'Nama tidak tersedia' }}
@@ -100,8 +99,7 @@
                                                 <td  class="fw-bold">Site</td>
                                                 <td>
                                                     <select class="form-select form-select-sm input-text" id="iSite" name="iSite">
-                                                      
-                                                        <option value="">-- select site --</option>
+                                                        <option disabled selected>-- select site --</option>
                                                         @forelse($sites as $site)
                                                             <option value="{{ $site->KodeST ?? '' }}">
                                                                 {{ $site->KodeST ?? 'Site tidak tersedia' }}
@@ -116,7 +114,7 @@
                                                 <td class="fw-bold">Kode Plant</td>
                                                 <td>
                                                     <select class="form-select form-select-sm input-text" id="iPlant" name="iPlant">
-                                                        <option value="">-- select kode plant --</option>
+                                                        <option disabled selected>-- select kode plant --</option>
                                                         @forelse($plants as $code => $value)
                                                             <option value="{{ $code }}">
                                                                 {{ $value }}
@@ -533,6 +531,13 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script>
+        $(document).ready(function() {
+            $('#idCataloging').select2();
+            $('#iApproval').select2();
+            $('#iSite').select2();
+            $('#iSite').select2();
+            $('#iPlant').select2();
+        });
         var tglNow = new Date()
         var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         var months_romawi = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
