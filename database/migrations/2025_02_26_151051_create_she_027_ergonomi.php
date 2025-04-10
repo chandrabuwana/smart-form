@@ -142,6 +142,11 @@ return new class extends Migration
             // JSON column to store all body mapping pain levels
             $table->json('body_mapping_data')->nullable()->comment('JSON data for body mapping pain levels');
             
+            // Individual body pain columns for each body part
+            for ($i = 0; $i <= 27; $i++) {
+                $table->enum('body_pain_' . $i, ['A', 'B', 'C', 'D'])->default('A')->nullable();
+            }
+            
             // WMSD checkboxes
             $table->boolean('wmsd_bahu_1')->default(false);
             $table->boolean('wmsd_bahu_2')->default(false);
