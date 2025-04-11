@@ -215,12 +215,12 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($record as $data)
-                                    @php
-                                        // Ubah JSON string menjadi array PHP terlebih dahulu
-                                        $arrayAlatMuat = json_decode($data->alat_muat, true);
-                                        // Kemudian gunakan implode
-                                        $alatMuat = '"' . implode('","', $arrayAlatMuat) . '"';
-                                    @endphp
+                                        @php
+                                            // Ubah JSON string menjadi array PHP terlebih dahulu
+                                            $arrayAlatMuat = json_decode($data->alat_muat, true);
+                                            // Kemudian gunakan implode
+                                            $alatMuat = '"' . implode('","', $arrayAlatMuat) . '"';
+                                        @endphp
                                         <tr>
                                             <td>
                                                 <div class="d-flex px-2 py-1">
@@ -272,25 +272,27 @@
                                             </td>
                                             <td>
                                                 @if ($session == $data->checker)
-                                                    <a href="{{ route('prod.form.checker.detail', ['id' => $data->id]) }}"
-                                                        class="btn btn-warning btn-sm mt-2">
-                                                        <i class="fas fa-edit"></i>
-                                                    </a>
-                                                    <button type="button" class="btn btn-danger btn-sm mt-2"
-                                                        onclick="deleteChecker('{{ $data->doc_num }}')">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
+                                                    @if ($data->status === 'Rejected' || $data->status === 'Draft')
+                                                        <a href="{{ route('prod.form.checker.detail', ['id' => $data->id]) }}"
+                                                            class="btn btn-warning btn-sm mt-2">
+                                                            <i class="fas fa-edit"></i>
+                                                        </a>
+                                                        <button type="button" class="btn btn-danger btn-sm mt-2"
+                                                            onclick="deleteChecker('{{ $data->doc_num }}')">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    @endif
                                                 @endif
                                                 <a href="{{ route('prod.form.checker.show', ['id' => $data->id]) }}"
                                                     class="btn btn-info btn-sm mt-2">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
 
-                                                    <a href="{{ route('prod.form.checker.export', ['id' => $data->id]) }}"
-                                                        class="btn btn-primary btn-sm mt-2">
-                                                        <i class="fas fa-download"></i>
-                                                    </a>
-                                                
+                                                <a href="{{ route('prod.form.checker.export', ['id' => $data->id]) }}"
+                                                    class="btn btn-primary btn-sm mt-2">
+                                                    <i class="fas fa-download"></i>
+                                                </a>
+
 
                                             </td>
                                         </tr>

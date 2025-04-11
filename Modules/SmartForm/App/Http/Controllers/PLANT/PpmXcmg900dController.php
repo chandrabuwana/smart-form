@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
 use Modules\SmartForm\helpers\HrdHelper;
+use Modules\SmartForm\helpers\SiteHelper;
 
 class PpmXcmg900dController extends Controller {
 
@@ -72,6 +73,7 @@ class PpmXcmg900dController extends Controller {
         $json = file_get_contents( resource_path( 'data/ppm-900d/ppm-900.json' ) );
         $list = json_decode( $json, true );
 
+      
 
         return view( 'smartform::plant.ppm_900d.form-900d', [ 'list' => $list,  'approvalList' => HrdHelper::getApprovalList() ] );
     }
@@ -427,7 +429,7 @@ class PpmXcmg900dController extends Controller {
             'message' => 'Data berhasil di Reject'
         ] );
     }
-    
+
     public function Delete( $id ) {
         try {
             $id = request()->id;

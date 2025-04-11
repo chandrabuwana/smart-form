@@ -144,36 +144,8 @@
                                             mb-3">
                                     <div class="input-group input-group-static mb-4 position-relative">
                                         <label for="location" class="ms-0">Site</label>
-                                        <select class="form-control" name="site" id="site">
-                                            <option disabled selected>-- Select Site --</option>
-                                            <option value="agm"
-                                                {{ isset($filters['site']) && $filters['site'] == 'agm' ? 'selected' : '' }}>
-                                                agm</option>
-                                            <option value="mbl"
-                                                {{ isset($filters['site']) && $filters['site'] == 'mbl' ? 'selected' : '' }}>
-                                                mbl</option>
-                                            <option value="mme"
-                                                {{ isset($filters['site']) && $filters['site'] == 'mme' ? 'selected' : '' }}>
-                                                mme</option>
-                                            <option value="mas"
-                                                {{ isset($filters['site']) && $filters['site'] == 'mas' ? 'selected' : '' }}>
-                                                mas</option>
-                                            <option value="pmss"
-                                                {{ isset($filters['site']) && $filters['site'] == 'pmss' ? 'selected' : '' }}>
-                                                pmss</option>
-                                            <option value="taj"
-                                                {{ isset($filters['site']) && $filters['site'] == 'taj' ? 'selected' : '' }}>
-                                                taj</option>
-                                            <option value="bssr"
-                                                {{ isset($filters['site']) && $filters['site'] == 'bssr' ? 'selected' : '' }}>
-                                                bssr</option>
-                                            <option value="tdm"
-                                                {{ isset($filters['site']) && $filters['site'] == 'tdm' ? 'selected' : '' }}>
-                                                tdm</option>
-                                            <option value="msj"
-                                                {{ isset($filters['site']) && $filters['site'] == 'msj' ? 'selected' : '' }}>
-                                                msj</option>
-                                        </select>
+                                        {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('site', strtolower($filters['site'])) !!}
+
 
                                     </div>
                                 </div>
@@ -288,9 +260,13 @@
 @endsection
 
 @section('custom-js')
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <script>
+        $(document).ready(function() {
+            $('#site').select2();
+        });
         $(function() {
 
             $('#btnClearFilter').click(function() {

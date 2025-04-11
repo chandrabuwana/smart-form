@@ -155,36 +155,9 @@
                                 <div class="col-md-3 mb-3">
                                     <div class="input-group input-group-static mb-4 position-relative">
                                         <label for="job" class="ms-0">Job Site</label>
-                                        <select class="form-control" name="job_site" id="job_site">
-                                            <option disabled selected>-- Select Site --</option>
-                                            <option value="agm"
-                                                {{ old('site', $filters['job_site'] ?? '') == 'agm' ? 'selected' : '' }}>
-                                                agm</option>
-                                            <option value="mbl"
-                                                {{ old('site', $filters['job_site'] ?? '') == 'mbl' ? 'selected' : '' }}>
-                                                mbl</option>
-                                            <option value="mme"
-                                                {{ old('site', $filters['job_site'] ?? '') == 'mme' ? 'selected' : '' }}>
-                                                mme</option>
-                                            <option value="mas"
-                                                {{ old('site', $filters['job_site'] ?? '') == 'mas' ? 'selected' : '' }}>
-                                                mas</option>
-                                            <option value="pmss"
-                                                {{ old('site', $filters['job_site'] ?? '') == 'pmss' ? 'selected' : '' }}>
-                                                pmss</option>
-                                            <option value="taj"
-                                                {{ old('site', $filters['job_site'] ?? '') == 'taj' ? 'selected' : '' }}>
-                                                taj</option>
-                                            <option value="bssr"
-                                                {{ old('site', $filters['job_site'] ?? '') == 'bssr' ? 'selected' : '' }}>
-                                                bssr</option>
-                                            <option value="tdm"
-                                                {{ old('site', $filters['job_site'] ?? '') == 'tdm' ? 'selected' : '' }}>
-                                                tdm</option>
-                                            <option value="msj"
-                                                {{ old('site', $filters['job_site'] ?? '') == 'msj' ? 'selected' : '' }}>
-                                                msj</option>
-                                        </select>
+                                        {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('job_site', strtolower($filters['job_site'])) !!}
+
+
                                     </div>
                                 </div>
                                 <div class="col-md-3
@@ -329,14 +302,16 @@
                                             </td>
                                             <td>
                                                 @if ($session == $data->creator)
-                                                    <a href="{{ route('plant.ppm.900d.detail', ['id' => $data->id]) }}"
-                                                        class="btn btn-warning btn-sm mt-3">
-                                                        <i class="fas fa-edit"></i>
-                                                    </a>
-                                                    <button type="button" class="btn btn-danger btn-sm mt-3"
-                                                        onclick="deleteXcmg900('{{ $data->doc_num }}')">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
+                                                    @if (collect($status)->contains(fn($s) => $s === 'rejected') || collect($status)->contains(fn($s) => $s === null))
+                                                        <a href="{{ route('plant.ppm.900d.detail', ['id' => $data->id]) }}"
+                                                            class="btn btn-warning btn-sm mt-3">
+                                                            <i class="fas fa-edit"></i>
+                                                        </a>
+                                                        <button type="button" class="btn btn-danger btn-sm mt-3"
+                                                            onclick="deleteXcmg900('{{ $data->doc_num }}')">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    @endif
                                                 @endif
                                                 <a href="{{ route('plant.ppm.900d.show', ['id' => $data->id]) }}"
                                                     class="btn btn-info btn-sm mt-3">
@@ -372,6 +347,7 @@
     <script>
         $(document).ready(function() {
             $('#approval').select2();
+            $('#job_site').select2();
         });
         $(function() {
             // Clear filter button
