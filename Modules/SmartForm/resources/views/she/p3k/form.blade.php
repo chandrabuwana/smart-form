@@ -278,7 +278,7 @@
                                                             {{ ucfirst($record->inspector_1_status) }}
                                                         </span>
                                                     @else
-                                                        <select name="inspector_1_status" class="form-control">
+                                                        <select name="inspector_1_status" class="form-control" disabled>
                                                             <option value="pending">Pending</option>
                                                             <option value="approved">Approved</option>
                                                             <option value="rejected">Rejected</option>
@@ -327,7 +327,7 @@
                                                             {{ ucfirst($record->inspector_2_status) }}
                                                         </span>
                                                     @else
-                                                        <select name="inspector_2_status" class="form-control">
+                                                        <select name="inspector_2_status" class="form-control" disabled>
                                                             <option value="pending">Pending</option>
                                                             <option value="approved">Approved</option>
                                                             <option value="rejected">Rejected</option>
@@ -376,7 +376,7 @@
                                                             {{ ucfirst($record->supervisor_status) }}
                                                         </span>
                                                     @else
-                                                        <select name="supervisor_status" class="form-control">
+                                                        <select name="supervisor_status" class="form-control" disabled>
                                                             <option value="pending">Pending</option>
                                                             <option value="approved">Approved</option>
                                                             <option value="rejected">Rejected</option>
@@ -425,7 +425,7 @@
                                                             {{ ucfirst($record->dh_status) }}
                                                         </span>
                                                     @else
-                                                        <select name="dh_status" class="form-control">
+                                                        <select name="dh_status" class="form-control" disabled>
                                                             <option value="pending">Pending</option>
                                                             <option value="approved">Approved</option>
                                                             <option value="rejected">Rejected</option>
@@ -474,7 +474,7 @@
                                                             {{ ucfirst($record->she_status) }}
                                                         </span>
                                                     @else
-                                                        <select name="she_status" class="form-control">
+                                                        <select name="she_status" class="form-control" disabled>
                                                             <option value="pending">Pending</option>
                                                             <option value="approved">Approved</option>
                                                             <option value="rejected">Rejected</option>

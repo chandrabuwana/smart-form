@@ -151,10 +151,13 @@ class AparController extends Controller {
         $tgl = now()->toDateTimeString();
         $requested_by = $req->session()->get('user_id');
         $data = $req->input();
-        
+        $diperiksa = DB::connection('sqlsrv2')->table(self::TABLE_KARYAWAN)
+                    ->select('Nama')
+                    ->where('NIK',$req->diperiksa);
         $data_insert = [
             'dibuat_oleh' => $requested_by,
             'diperiksa_oleh' => $data['diperiksa'] ?? null,
+            'diperiksa_oleh_nama' => $diperiksa,
             'diketahui_oleh' => $data['diketahui'] ?? null,
             'disetujui_oleh' => $data['disetujui'] ?? null,
             'status' => json_encode(array_values([null, null, null])),

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('plant_welding', function (Blueprint $table) {
             $table->increments('id');
             $table->string('doc_number')->unique();
-            $table->enum('site_name', ['agm', 'mbl', 'mme', 'mas', 'pmss', 'taj', 'bssr', 'tdm', 'msj']);
+            $table->string('site_name');
             $table->enum('location', ['Workshop', 'Pitstop', 'Service', 'Truck']);
             $table->string('month');
             $table->enum('jenis_instalasi', ['Instalasi Tetap', 'Troli Portable']);

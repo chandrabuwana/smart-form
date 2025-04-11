@@ -24,7 +24,7 @@
                 <!-- Card Header -->
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                     <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                        <h6 class="text-white text-capitalize ps-3">{{$isShowDetail ? 'Detail' : 'New'}} Ergonomi Survey</h6>
+                        <h6 class="text-white text-capitalize ps-3">{{$isShowDetail ? 'Detail' : 'New'}} Ergonomi Survey 1</h6>
                     </div>
                 </div>
 
@@ -914,15 +914,89 @@
                                                 document.getElementById('body_mapping_json').value = JSON.stringify(bodyPainData);
                                             }
                                             
+                                            // Function to validate body mapping is complete
+                                            function validateBodyMapping() {
+                                                // Get all unique body part indices
+                                                var bodyPartsCount = {{ count($bodyParts) }};
+                                                var uncheckedParts = [];
+                                                
+                                                // Check each body part to see if it has a selection
+                                                for (var i = 0; i < bodyPartsCount; i++) {
+                                                    var isChecked = document.querySelector('input[name="body_pain_display[' + i + ']"]:checked');
+                                                    if (!isChecked) {
+                                                        uncheckedParts.push(i);
+                                                    }
+                                                }
+                                                
+                                                // If any parts are unchecked, show error
+                                                if (uncheckedParts.length > 0) {
+                                                    // Highlight unchecked rows
+                                                    uncheckedParts.forEach(function(index) {
+                                                        var row = document.querySelector('input[name="body_pain_display[' + index + ']"]').closest('tr');
+                                                        row.style.backgroundColor = '#ffeeee';
+                                                    });
+                                                    
+                                                    alert('Mohon lengkapi seluruh Daftar Pemeriksaan Peta Tubuh (Body Mapping Checklist). Ada ' + uncheckedParts.length + ' bagian yang belum diisi.');
+                                                    
+                                                    // Scroll to the first unchecked item
+                                                    if (uncheckedParts.length > 0) {
+                                                        var firstUnchecked = document.querySelector('input[name="body_pain_display[' + uncheckedParts[0] + ']"]');
+                                                        firstUnchecked.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                                    }
+                                                    
+                                                    return false;
+                                                }
+                                                
+                                                // Reset background color for all rows
+                                                document.querySelectorAll('input[name^="body_pain_display["]').forEach(function(radio) {
+                                                    var row = radio.closest('tr');
+                                                    row.style.backgroundColor = '';
+                                                });
+                                                
+                                                return true;
+                                            }
+                                            
                                             // Add event listeners to all body pain radio buttons
                                             document.addEventListener('DOMContentLoaded', function() {
+                                                // Add a class to identify all body pain radio groups
                                                 document.querySelectorAll('input[name^="body_pain_display["]').forEach(function(radio) {
                                                     radio.addEventListener('change', updateBodyMappingJson);
                                                 });
                                                 
-                                                // Update the form before submission
-                                                document.querySelector('form').addEventListener('submit', function() {
-                                                    updateBodyMappingJson();
+                                                // Capture all forms on the page
+                                                var forms = document.querySelectorAll('form');
+                                                forms.forEach(function(form) {
+                                                    // Add submit event listener to each form
+                                                    form.addEventListener('submit', function(event) {
+                                                        updateBodyMappingJson();
+                                                        
+                                                        // Validate body mapping and prevent submission if invalid
+                                                        if (!validateBodyMapping()) {
+                                                            event.preventDefault();
+                                                            event.stopPropagation();
+                                                            return false;
+                                                        }
+                                                    });
+                                                });
+                                                
+                                                // Also capture all submit buttons
+                                                var submitButtons = document.querySelectorAll('button[type="submit"], input[type="submit"]');
+                                                submitButtons.forEach(function(button) {
+                                                    button.addEventListener('click', function(event) {
+                                                        if (!validateBodyMapping()) {
+                                                            event.preventDefault();
+                                                            event.stopPropagation();
+                                                            return false;
+                                                        }
+                                                    });
+                                                });
+                                                
+                                                // Add event listener to reset row background when a radio is selected
+                                                document.querySelectorAll('input[name^="body_pain_display["]').forEach(function(radio) {
+                                                    radio.addEventListener('change', function() {
+                                                        var row = this.closest('tr');
+                                                        row.style.backgroundColor = '';
+                                                    });
                                                 });
                                             });
                                         </script>
@@ -944,6 +1018,7 @@
                                         <div class="mt-3 p-2 border-top">
                                             <div class="row">
                                                 <div class="col-md-6">
+                                                    <p class="mb-1 fw-bold text-danger">* Wajib diisi untuk semua bagian tubuh</p>
                                                     <p class="mb-1">Mohon untuk mengisi menggunakan tanda ✓</p>
                                                     <p class="mb-1 text-primary">Please for fulfillment that Checklist using sign ✓</p>
                                                 </div>

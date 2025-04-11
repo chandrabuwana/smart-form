@@ -387,9 +387,13 @@ class InspeksiCateringController extends Controller {
             $user_id = session('user_id');
             
             $approvalList = HrdHelper::getApprovalList();
-            
+            $sites = DB::connection('sqlsrv2')->table(self::TABLE_SITES)->select(columns: 'KodeST')->get();
+            $dept = DB::connection('sqlsrv2')->table(self::TABLE_DEPARTEMENT)->select(columns: 'Nama')->get();
+
             return view('smartform::she.inspeksi-catering.edit-inspeksi-catering', [
                 'data' => $data,
+                'sites' => $sites,
+                'dept' => $dept,
                 'nik' => $user_id,
                 'approvalList' => $approvalList
             ]);
