@@ -43,12 +43,7 @@
                                     <tr>
                                         <td>Shift</td>
                                         <td>
-                                            <select class="form-select form-select-sm input-text" aria-label="Default select example" id="shift" name="shift">
-                                                <option value="" selected>-- Pilih Shift --</option>
-                                                <option value="I" {{ $lgmg->shift == 'I' ? 'selected' : '' }}>I</option>
-                                                <option value="II" {{ $lgmg->shift == 'II' ? 'selected' : '' }}>II</option>
-                                                <option value="III" {{ $lgmg->shift == 'III' ? 'selected' : '' }}>III</option>
-                                            </select>
+                                            {!! \Modules\SmartForm\helpers\ShiftHelper::renderShiftSelect('shift', $lgmg->shift ?? null, false, true, 'shift', 'form-select form-select-sm input-text') !!}
                                         </td>
                                     </tr>
                                 </div>
@@ -331,6 +326,7 @@
         });
 
         $(document).ready(function () {
+        $('#shift').select2();
         $('#btnSubmit').on('click', function (e) {
             e.preventDefault();
 
