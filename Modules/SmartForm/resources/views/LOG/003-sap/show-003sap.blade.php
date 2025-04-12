@@ -35,19 +35,8 @@
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <div class="input-group input-group-static mb-3">
-                                        <label for="plant" class="ms-0">PLANT</label>
-                                        <select class="form-control" name="plant" id="plant" required disabled>
-                                            <option disabled selected>-- Select Site --</option>
-                                            <option value="agm" {{ $data->plant == 'agm' ? 'selected' : '' }}>agm</option>
-                                            <option value="mbl" {{ $data->plant == 'mbl' ? 'selected' : '' }}>mbl</option>
-                                            <option value="mme" {{ $data->plant == 'mme' ? 'selected' : '' }}>mme</option>
-                                            <option value="mas" {{ $data->plant == 'mas' ? 'selected' : '' }}>mas</option>
-                                            <option value="pmss" {{ $data->plant == 'pmss' ? 'selected' : '' }}>pmss</option>
-                                            <option value="taj" {{ $data->plant == 'taj' ? 'selected' : '' }}>taj</option>
-                                            <option value="bssr" {{ $data->plant == 'bssr' ? 'selected' : '' }}>bssr</option>
-                                            <option value="tdm" {{ $data->plant == 'tdm' ? 'selected' : '' }}>tdm</option>
-                                            <option value="msj" {{ $data->plant == 'msj' ? 'selected' : '' }}>msj</option>
-                                        </select>
+                                        <label for="job_site" class="ms-0">Job Site</label>
+                                        {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('job_site', $data->plant ?? null, false, true, 'job_site', 'form-control') !!}
                                     </div>
                                 </div>
 
@@ -266,6 +255,13 @@
 
 @section('custom-js')
     <script>
+        $(document).ready(function() {
+            $('#dibuat_oleh').select2();
+            $('#checked_by').select2();
+            $('#job_site').select2({
+                disabled: true
+            });
+        });
         document.addEventListener("DOMContentLoaded", function () {
             const tableBody = document.querySelector("tbody");
 
