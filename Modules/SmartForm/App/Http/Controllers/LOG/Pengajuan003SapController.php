@@ -221,6 +221,11 @@ class Pengajuan003SapController extends Controller {
         // if ($data->tanggal) {
         //     $data->tanggal = Carbon::parse($data->tanggal)->format('Y-m-d');
         // }
+        if ($data->tanggal instanceof Carbon) {
+            $data->tanggal = $data->tanggal->format('Y-m-d');
+        } else {
+            $data->tanggal = Carbon::parse($data->tanggal)->format('Y-m-d');
+        }
 
         return view('SmartForm::LOG/003-sap/detail-003sap', [
             'data' => $data,
@@ -308,7 +313,13 @@ class Pengajuan003SapController extends Controller {
         ->where( 'pengajuan_pr_003sap_id', $id )
         ->get();
 
-        if ($data->tanggal) {
+        // if ($data->tanggal) {
+        //     $data->tanggal = Carbon::parse($data->tanggal)->format('Y-m-d');
+        // }
+
+        if ($data->tanggal instanceof Carbon) {
+            $data->tanggal = $data->tanggal->format('Y-m-d');
+        } else {
             $data->tanggal = Carbon::parse($data->tanggal)->format('Y-m-d');
         }
 
