@@ -218,13 +218,17 @@ class Pengajuan003SapController extends Controller {
         ->where( 'pengajuan_pr_003sap_id', $id )
         ->get();
 
-        // if ($data->tanggal) {
-        //     $data->tanggal = Carbon::parse($data->tanggal)->format('Y-m-d');
-        // }
-        if ($data->tanggal instanceof Carbon) {
-            $data->tanggal = $data->tanggal->format('Y-m-d');
-        } else {
-            $data->tanggal = Carbon::parse($data->tanggal)->format('Y-m-d');
+        if ($data->tanggal) {
+            $tanggalString = $data->tanggal;
+            $tanggalString = str_replace(':AM', ' AM', $tanggalString);
+            $tanggalString = str_replace(':PM', ' PM', $tanggalString);
+
+            try {
+                $data->tanggal = Carbon::parse($tanggalString)->format('Y-m-d');
+            } catch (\Exception $e) {
+                dd($e);
+                $data->tanggal = 'Format tanggal salah';
+            }
         }
 
         return view('SmartForm::LOG/003-sap/detail-003sap', [
@@ -313,14 +317,17 @@ class Pengajuan003SapController extends Controller {
         ->where( 'pengajuan_pr_003sap_id', $id )
         ->get();
 
-        // if ($data->tanggal) {
-        //     $data->tanggal = Carbon::parse($data->tanggal)->format('Y-m-d');
-        // }
+        if ($data->tanggal) {
+            $tanggalString = $data->tanggal;
+            $tanggalString = str_replace(':AM', ' AM', $tanggalString);
+            $tanggalString = str_replace(':PM', ' PM', $tanggalString);
 
-        if ($data->tanggal instanceof Carbon) {
-            $data->tanggal = $data->tanggal->format('Y-m-d');
-        } else {
-            $data->tanggal = Carbon::parse($data->tanggal)->format('Y-m-d');
+            try {
+                $data->tanggal = Carbon::parse($tanggalString)->format('Y-m-d');
+            } catch (\Exception $e) {
+                dd($e);
+                $data->tanggal = 'Format tanggal salah';
+            }
         }
 
         return view('SmartForm::LOG/003-sap/show-003sap', [
