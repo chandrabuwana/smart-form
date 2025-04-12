@@ -54,6 +54,38 @@
         .mouse-click {
             cursor: pointer;
         }
+        .select2-container {
+            box-sizing: border-box;
+            display: block;
+            margin: 0;
+            position: relative;
+            width: 500px !important;
+        }
+
+        .select2-selection {
+            background-color: white;
+            border: 1px solid #aaa;
+            border-radius: 4px;
+            box-sizing: border-box;
+            cursor: pointer;
+            display: block;
+            height: 32px;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .select2-selection__rendered {
+            line-height: 30px;
+        }
+
+        .select2-results__option {
+            padding: 6px 12px;
+        }
+
+        .select2-results__option--highlighted {
+            background-color: #3875d7;
+            color: white;
+        }
     </style>
 
 @endsection
@@ -90,7 +122,7 @@
                                     </tr>
                                     <tr>
                                         <td>Nama Site</td>
-                                        <td><input type="text" class="input-text w-full" id="nama_site" value="{{ $data->nama_site }}" name="nama_site"></td>
+                                        <td>{!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('job_site', $data->nama_site ?? null, false, true, 'job_site', 'form-control') !!}</td>
                                     </tr>
                                     <tr>
                                         <td>Departemen</td>
@@ -104,12 +136,7 @@
                                     <tr>
                                         <td>Shift</td>
                                         <td>
-                                            <select class="form-select form-select-sm input-text" value="{{ $data->shift }}" aria-label="Default select example" id="shift" name="shift">
-                                                <option value="" selected>-- Pilih Shift --</option>
-                                                <option value="I" {{ $data->shift == 'I' ? 'selected' : '' }}>I</option>
-                                                <option value="II" {{ $data->shift == 'II' ? 'selected' : '' }}>II</option>
-                                                <option value="III" {{ $data->shift == 'III' ? 'selected' : '' }}>III</option>
-                                            </select>
+                                            {!! \Modules\SmartForm\helpers\ShiftHelper::renderShiftSelect('shift', $data->shift ?? null, false, true, 'shift', 'form-select form-select-sm input-text') !!}
                                         </td>
                                     </tr>
                                     <tr>
@@ -180,7 +207,7 @@
                         <div class="row mt-5">
                             <div class="col-6 ">
                                 <div class="input-group input-group-static mb-3">
-                                    <label for="dibuat" class="ms-0">Diperiksa oleh</label>
+                                    <label for="dibuat" class="ms-0" style="width: 150px;">Diperiksa oleh</label>
                                     <select name="checked_by" id="checked_by" class="form-control" required>
                                         <option disabled selected>-- Select Checked --</option>
                                         @foreach ($approvalList as $user)
@@ -194,7 +221,7 @@
                             </div>
                             <div class="col-6">
                                 <div class="input-group input-group-static mb-3">
-                                    <label for="diperiksa" class="ms-0">Diperiksa ulang oleh</label>
+                                    <label for="diperiksa" class="ms-0" style="width: 150px;">Diperiksa ulang oleh</label>
                                     <select name="validated_by" id="validated_by" class="form-control" required>
                                         <option disabled selected>-- Select Approval --</option>
                                         @foreach ($approvalList as $user)
@@ -207,7 +234,7 @@
                             </div>
                             <div class="col-6">
                                 <div class="input-group input-group-static mb-3">
-                                    <label for="diperiksa" class="ms-0">Mengetahui</label>
+                                    <label for="diperiksa" class="ms-0" style="width: 150px;">Mengetahui</label>
                                     <select name="mengetahui" id="mengetahui" class="form-control" required>
                                         <option disabled selected>-- Select Approval --</option>
                                         @foreach ($approvalList as $user)
@@ -237,16 +264,25 @@
     </div>
 @endsection
 @section('custom-js')
+<script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
 <script>
     $(document).ready(function () {
+        $('#job_site').select2({width: '100%'});
+        $('#shift').select2({width: '100%'});
+        $('#dept').select2({width: '100%'});
+        $('#checked_by').select2({width: '100%'});
+        $('#validated_by').select2({width: '100%'});
+        $('#mengetahui').select2({width: '100%'});
         $('#btnSubmit').on('click', function (e) {
             e.preventDefault();
 
             let inspeksiId = $('#inspeksi_id').val(); // Ambil ID inspeksi
             let formData = {
                 inspeksi_id: inspeksiId,
-                nama_site: $('#nama_site').val(),
+                nama_site: $('#job_site').val(),
                 dept: $('#dept').val(),
                 shift: $('#shift').val(),
                 loker: $('#loker').val(),
@@ -309,6 +345,18 @@
                     alert('Data berhasil diperbarui!');
                     // window.location.href = response.redirect;
                     window.location.href = "{{ route('dashboard-wc') }}";
+                },
+                success: function (response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: 'Data berhasil disimpan!',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        if (response.redirect) {
+                            window.location.href = response.redirect;
+                        }
+                    });
                 },
                 error: function (xhr) {
                     console.log('Error Response:', xhr.responseJSON);
