@@ -203,6 +203,7 @@ class LgmgController extends Controller {
 
         $lgmg = DB::table('lgmg')->where('id', $id)->first();
         $lgmg_id = $lgmg->id;
+        // dd($lgmg_id);
 
         $lgmg_detail = DB::table('lgmg_detail')->where('lgmg_id', $lgmg_id)->get();
 
@@ -266,7 +267,7 @@ class LgmgController extends Controller {
                 'redirect' => route('lgmg.dashboard')
             ]);
         } catch (\Exception $e) {
-            // dd($e);
+            dd($e);
             DB::rollBack();
             return back()->with('error', 'Gagal mengupdate data: ' . $e->getMessage());
         }
