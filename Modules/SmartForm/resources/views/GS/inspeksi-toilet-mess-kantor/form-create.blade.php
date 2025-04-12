@@ -54,6 +54,38 @@
         .mouse-click {
             cursor: pointer;
         }
+        .select2-container {
+            box-sizing: border-box;
+            display: block;
+            margin: 0;
+            position: relative;
+            width: 500px !important;
+        }
+
+        .select2-selection {
+            background-color: white;
+            border: 1px solid #aaa;
+            border-radius: 4px;
+            box-sizing: border-box;
+            cursor: pointer;
+            display: block;
+            height: 32px;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .select2-selection__rendered {
+            line-height: 30px;
+        }
+
+        .select2-results__option {
+            padding: 6px 12px;
+        }
+
+        .select2-results__option--highlighted {
+            background-color: #3875d7;
+            color: white;
+        }
     </style>
 
 @endsection
@@ -83,12 +115,15 @@
                                         <input type="text" class="input-text w-full" id="iKupon" name="iKupon" hidden>
                                     </td>
                                     <tr>
-                                        <!-- <td>Date</td> -->
                                         <td><input type="text" class="input-text w-full" id="tglDoc" name="tglDoc" hidden></td>
                                     </tr>
                                     <tr>
                                         <td>Nama Site</td>
-                                        <td><input type="text" class="input-text w-full" id="nama_site" name="nama_site"></td>
+                                        <td>
+                                            {{-- <div class="input-group input-group-static mb-3"> --}}
+                                                {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('job_site', null, false, true, 'job_site', 'form-control') !!}
+                                            {{-- </div> --}}
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Departemen</td>
@@ -102,12 +137,7 @@
                                     <tr>
                                         <td>Shift</td>
                                         <td>
-                                            <select class="form-select form-select-sm input-text" aria-label="Default select example" id="shift" name="shift">
-                                                <option value="" selected>-- Pilih Shift --</option>
-                                                <option value="I">I</option>
-                                                <option value="II">II</option>
-                                                <option value="III">III</option>
-                                            </select>
+                                            {!! \Modules\SmartForm\helpers\ShiftHelper::renderShiftSelect('shift', null, false, true, 'shift', 'form-select form-select-sm input-text') !!}
                                         </td>
                                     </tr>
                                     <tr>
@@ -200,85 +230,100 @@
     </div>
 @endsection
 @section('custom-js')
+<script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
 <script>
     $(document).ready(function () {
-    $('#btnSubmit').on('click', function (e) {
-        e.preventDefault();
+        $('#job_site').select2({width: '100%'});
+        $('#shift').select2({width: '100%'});
+        $('#dept').select2({width: '100%'});
+        $('[name="Diinspeksi"]').select2({width: '100%'});
+        $('[name="DiinspeksiUlang"]').select2({width: '100%'});
+        $('[name="Mengetahui"]').select2({width: '100%'});
+        $('#btnSubmit').on('click', function (e) {
+            e.preventDefault();
 
-        let formData = {
-            nama_site: $('#nama_site').val(),
-            dept: $('#dept').val(),
-            shift: $('#shift').val(),
-            loker: $('#loker').val(),
-            jml_ins: $('#jml_ins').val(),
-            checked_by: $('[name="Diinspeksi"]').val(),
-            dalidated_by: $('[name="DiinspeksiUlang"]').val(),
-            mengetahui: $('[name="Mengetahui"]').val(),
-            pertanyaan_id: [],
-            jawaban: [],
-            resiko: [],
-            keterangan: [],
-            category: []
-        };
+            let formData = {
+                nama_site: $('#job_site').val(),
+                dept: $('#dept').val(),
+                shift: $('#shift').val(),
+                loker: $('#loker').val(),
+                jml_ins: $('#jml_ins').val(),
+                checked_by: $('[name="Diinspeksi"]').val(),
+                validated_by: $('[name="DiinspeksiUlang"]').val(),
+                mengetahui: $('[name="Mengetahui"]').val(),
+                pertanyaan_id: [],
+                jawaban: [],
+                resiko: [],
+                keterangan: [],
+                category: []
+            };
 
-        let tglDoc = $('#tglDoc').val();
-        if (tglDoc) {
-            formData.tgl_doc = tglDoc;
-        }
-
-        $("table tr").each(function () {
-            let radioInput = $(this).find("input[type=radio]").first();
-            if (!radioInput.length) return;
-
-            let questionID = radioInput.attr("name")?.replace("q", "");
-            let jawaban = $("input[name=q" + questionID + "]:checked").val() || null;
-            let resiko = $("#q" + questionID + "_resiko").val() || null;
-            let keterangan = $("#q" + questionID + "_keterangan").val() || null;
-            let category = $("#q" + questionID + "_category").val() || null;
-
-            if (questionID) {
-                formData.pertanyaan_id.push(questionID);
-                formData.jawaban.push(jawaban);
-                formData.resiko.push(resiko);
-                formData.keterangan.push(keterangan);
-                formData.category.push(category);
+            let tglDoc = $('#tglDoc').val();
+            if (tglDoc) {
+                formData.tgl_doc = tglDoc;
             }
-        });
 
-        console.log(formData);
+            $("table tr").each(function () {
+                let radioInput = $(this).find("input[type=radio]").first();
+                if (!radioInput.length) return;
 
-        $.ajax({
-            url: "{{ route('store-wc') }}",
-            type: "POST",
-            data: JSON.stringify(formData),
-            contentType: "application/json",
-            processData: false,
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            beforeSend: function () {
-                $('#btnSubmit').prop('disabled', true).text('Menyimpan...');
-            },
-            success: function (response) {
-                console.log('meta : ' + $('meta[name="csrf-token"]').attr('content'));
-                // console.log(response)
-                alert('Data berhasil disimpan!');
-                // location.reload();
-            },
-            error: function (xhr) {
-                let errors = xhr.responseJSON.errors;
-                let errorMessage = "Terjadi kesalahan:\n";
-                for (let field in errors) {
-                    errorMessage += `- ${errors[field][0]}\n`;
+                let questionID = radioInput.attr("name")?.replace("q", "");
+                let jawaban = $("input[name=q" + questionID + "]:checked").val() || null;
+                let resiko = $("#q" + questionID + "_resiko").val() || null;
+                let keterangan = $("#q" + questionID + "_keterangan").val() || null;
+                let category = $("#q" + questionID + "_category").val() || null;
+
+                if (questionID) {
+                    formData.pertanyaan_id.push(questionID);
+                    formData.jawaban.push(jawaban);
+                    formData.resiko.push(resiko);
+                    formData.keterangan.push(keterangan);
+                    formData.category.push(category);
                 }
-                alert(errorMessage);
-            },
-            complete: function () {
-                $('#btnSubmit').prop('disabled', false).text('Submit Form');
-            }
+            });
+
+            console.log(formData);
+
+            $.ajax({
+                url: "{{ route('store-wc') }}",
+                type: "POST",
+                data: JSON.stringify(formData),
+                contentType: "application/json",
+                processData: false,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                beforeSend: function () {
+                    $('#btnSubmit').prop('disabled', true).text('Menyimpan...');
+                },
+                success: function (response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: 'Data berhasil disimpan!',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        if (response.redirect) {
+                            window.location.href = response.redirect;
+                        }
+                    });
+                },
+                error: function (xhr) {
+                    let errors = xhr.responseJSON.errors;
+                    let errorMessage = "Terjadi kesalahan:\n";
+                    for (let field in errors) {
+                        errorMessage += `- ${errors[field][0]}\n`;
+                    }
+                    alert(errorMessage);
+                },
+                complete: function () {
+                    $('#btnSubmit').prop('disabled', false).text('Submit Form');
+                }
+            });
         });
     });
-});
 </script>
 @endsection

@@ -89,7 +89,7 @@
                                     </tr>
                                     <tr>
                                         <td>Nama Site</td>
-                                        <td><input type="text" class="input-text w-full" id="nama_site" value="{{ $data->nama_site }}" name="nama_site" disabled></td>
+                                        <td>{!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('job_site', $data->nama_site ?? null, false, true, 'job_site', 'form-control') !!}</td>
                                     </tr>
                                     <tr>
                                         <td>Departemen</td>
@@ -103,12 +103,7 @@
                                     <tr>
                                         <td>Shift</td>
                                         <td>
-                                            <select class="form-select form-select-sm input-text" value="{{ $data->shift }}" aria-label="Default select example" disabled id="shift" name="shift">
-                                                <option value="" selected>-- Pilih Shift --</option>
-                                                <option value="I" {{ $data->shift == 'I' ? 'selected' : '' }}>I</option>
-                                                <option value="II" {{ $data->shift == 'II' ? 'selected' : '' }}>II</option>
-                                                <option value="III" {{ $data->shift == 'III' ? 'selected' : '' }}>III</option>
-                                            </select>
+                                            {!! \Modules\SmartForm\helpers\ShiftHelper::renderShiftSelect('shift', $data->shift ?? null, false, true, 'shift', 'form-select form-select-sm input-text') !!}
                                         </td>
                                     </tr>
                                     <tr>
@@ -227,8 +222,12 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <script>
         $(document).ready(function() {
-            $('#dibuat_oleh').select2();
-            $('#diperiksa').select2();
+            $('#job_site').select2({width: '100%', disabled:true});
+            $('#shift').select2({width: '100%', disabled:true});
+            $('#dept').select2({width: '100%', disabled:true});
+            $('#checked_by').select2({width: '100%', disabled:true});
+            $('#validated_by').select2({width: '100%', disabled:true});
+            $('#mengetahui').select2({width: '100%', disabled:true});
         });
         document.addEventListener("DOMContentLoaded", function() {
             const headers = document.querySelectorAll(".accordion-header");
