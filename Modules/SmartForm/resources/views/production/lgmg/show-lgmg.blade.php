@@ -43,12 +43,7 @@
                                     <tr>
                                         <td>Shift</td>
                                         <td>
-                                            <select disabled class="form-select form-select-sm input-text" aria-label="Default select example" id="shift" name="shift">
-                                                <option value="" selected>-- Pilih Shift --</option>
-                                                <option value="I" {{ $data->shift == 'I' ? 'selected' : '' }}>I</option>
-                                                <option value="II" {{ $data->shift == 'II' ? 'selected' : '' }}>II</option>
-                                                <option value="III" {{ $data->shift == 'III' ? 'selected' : '' }}>III</option>
-                                            </select>
+                                            {!! \Modules\SmartForm\helpers\ShiftHelper::renderShiftSelect('shift', $data->shift ?? null, false, true, 'shift', 'form-select form-select-sm input-text') !!}
                                         </td>
                                     </tr>
                                 </div>
@@ -394,6 +389,9 @@
         $(document).ready(function() {
             $('#diisi_oleh').select2();
             $('#checked_by').select2();
+            $('#shift').select2({
+                disabled: true
+            });
         });
         document.addEventListener("DOMContentLoaded", function() {
             const headers = document.querySelectorAll(".accordion-header");

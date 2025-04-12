@@ -241,10 +241,20 @@ class LgmgController extends Controller {
                 'status' => json_encode(array_values([null, null]))
             ]);
 
+            $oldDetails = DB::table('lgmg_detail')->where('lgmg_id', $id)->get();
+            $oldDetailData = [];
+            foreach ($oldDetails as $detail) {
+                $oldDetailData[$detail->pertanyaan_id] = [
+                    'created_at' => $detail->created_at,
+                    'created_by' => $detail->created_by,
+                ];
+            }
+
             DB::table('lgmg_detail')->where('lgmg_id', $id)->delete();
 
             $detailData = [];
             $keterangan = json_encode($request->keterangan);
+            $userId = $request->session()->get('user_id', '');
 
             foreach ($request->pertanyaan_id as $index => $pertanyaan_id) {
                 $detailData[] = [
@@ -252,6 +262,8 @@ class LgmgController extends Controller {
                     'pertanyaan_id' => $pertanyaan_id,
                     'jawaban' => $request->jawaban[$pertanyaan_id] ?? null,
                     'category' => $request->category[$index] ?? null,
+                    'created_at' => $oldDetailData[$pertanyaan_id]['created_at'] ?? DB::raw('GETDATE()'),
+                    'created_by' => $oldDetailData[$pertanyaan_id]['created_by'] ?? $userId,
                     'updated_at' => DB::raw('GETDATE()'),
                     'keterangan' => $keterangan,
                     'updated_by' => $request->session()->get('user_id', ''),
@@ -267,7 +279,7 @@ class LgmgController extends Controller {
                 'redirect' => route('lgmg.dashboard')
             ]);
         } catch (\Exception $e) {
-            dd($e);
+            // dd($e);
             DB::rollBack();
             return back()->with('error', 'Gagal mengupdate data: ' . $e->getMessage());
         }
