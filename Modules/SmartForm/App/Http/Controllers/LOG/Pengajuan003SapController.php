@@ -85,7 +85,7 @@ class Pengajuan003SapController extends Controller {
             ]);
 
             $headerData = [
-                'plant' => $request->input('plant'),
+                'plant' => $request->input('job_site'),
                 'tanggal' => $request->input('date'),
                 'dibuat_oleh' => $request->input('dibuat_oleh'),
                 // 'diperiksa_oleh' => $request->input('validated'),
@@ -218,9 +218,9 @@ class Pengajuan003SapController extends Controller {
         ->where( 'pengajuan_pr_003sap_id', $id )
         ->get();
 
-        if ($data->tanggal) {
-            $data->tanggal = Carbon::parse($data->tanggal)->format('Y-m-d');
-        }
+        // if ($data->tanggal) {
+        //     $data->tanggal = Carbon::parse($data->tanggal)->format('Y-m-d');
+        // }
 
         return view('SmartForm::LOG/003-sap/detail-003sap', [
             'data' => $data,
@@ -241,7 +241,7 @@ class Pengajuan003SapController extends Controller {
             ]);
 
             $headerData = [
-                'plant' => $request->input('plant'),
+                'plant' => $request->input('job_site'),
                 'tanggal' => $request->input('date'),
                 'dibuat_oleh' => $request->input('dibuat_oleh'),
                 // 'diperiksa_oleh' => $request->input('validated'),
