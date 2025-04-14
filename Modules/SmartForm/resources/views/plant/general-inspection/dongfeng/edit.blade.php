@@ -145,14 +145,7 @@
                                     <div class="col-12">
                                         <div class="input-group input-group-static">
                                             <label>Site</label>
-                                            <select name="site" class="form-control">
-                                                @foreach ($sites as $site)
-                                                    <option value="{{ $site }}"
-                                                        {{ $site == $inspection['site'] ? 'selected' : '' }}>
-                                                        {{ $site }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
+                                            {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('site', strtolower($inspection['site'])) !!}
                                         </div>
                                     </div>
                                     <div class="col-12 col-lg-4 mt-4">
@@ -197,8 +190,7 @@
                                                     <i class="fa fa-circle-arrow-up fa-lg"></i>
                                                 </div>
                                             </a>
-                                            <div class="card-body pt-2 collapse show"
-                                                id="{{ 'category-' . $loop->index }}">
+                                            <div class="card-body pt-2 collapse show" id="{{ 'category-' . $loop->index }}">
                                                 <div class="accordion-body table-responsive">
                                                     <table class="table table-bordered">
                                                         <thead>
@@ -430,6 +422,7 @@
             $('#diketahui').select2();
             $('#dilakukan1').select2();
             $('#dilakukan2').select2();
+            $('#site').select2();
         });
         document.addEventListener("DOMContentLoaded", function() {
             document.querySelectorAll(".toggle-switch").forEach(function(toggle) {

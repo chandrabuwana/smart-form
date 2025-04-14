@@ -155,14 +155,7 @@
                                     <div class="col-12">
                                         <div class="input-group input-group-static">
                                             <label>Site</label>
-                                            <select name="site" class="form-control" disabled>
-                                                @foreach ($sites as $site)
-                                                    <option value="{{ $site }}"
-                                                        {{ $site == $inspection['site'] ? 'selected' : '' }}>
-                                                        {{ $site }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
+                                            {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('site', strtolower($inspection['site'])) !!}
                                         </div>
                                     </div>
                                     <div class="col-12 col-lg-4 mt-4">
@@ -499,6 +492,7 @@
         $(document).ready(function() {
             $('#diperiksa').select2();
             $('#diketahui').select2();
+            $('#site').select2();
         });
         document.addEventListener("DOMContentLoaded", function() {
             document.querySelectorAll(".toggle-switch").forEach(function(toggle) {
