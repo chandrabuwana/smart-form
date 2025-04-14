@@ -35,19 +35,8 @@
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <div class="input-group input-group-static mb-3">
-                                        <label for="plant" class="ms-0">PLANT</label>
-                                        <select class="form-control" name="plant" id="plant" required>
-                                            <option disabled selected>-- Select Site --</option>
-                                            <option value="agm">agm</option>
-                                            <option value="mbl">mbl</option>
-                                            <option value="mme">mme</option>
-                                            <option value="mas">mas</option>
-                                            <option value="pmss">pmss</option>
-                                            <option value="taj">taj</option>
-                                            <option value="bssr">bssr</option>
-                                            <option value="tdm">tdm</option>
-                                            <option value="msj">msj</option>
-                                        </select>
+                                        <label for="job_site" class="ms-0">Job Site</label>
+                                        {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('job_site', null, false, true, 'job_site', 'form-control') !!}
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -269,6 +258,11 @@
 
 @section('custom-js')
     <script>
+        $(document).ready(function() {
+            $('#dibuat_oleh').select2();
+            $('#diperiksa').select2();
+            $('#job_site').select2();
+        });
         document.addEventListener("DOMContentLoaded", function () {
             const tableBody = document.querySelector("tbody");
 

@@ -253,25 +253,28 @@
                                             <td>
 
                                                 @if ($session == $data->creator)
-                                                    <a href="{{ route('log.ogc.detail', ['id' => $data->id]) }}"
-                                                        class="btn btn-warning btn-sm mt-3">
-                                                        <i class="fas fa-edit"></i>
-                                                    </a>
-                                                    <button type="button" class="btn btn-danger btn-sm mt-3"
-                                                        onclick="deleteOGC('{{ $data->doc_num }}')">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
+                                                    @if (collect($status)->contains(fn($s) => $s === 'rejected') ||
+                                                            collect($status)->contains(fn($s) => $s === 'null' || $s === null))
+                                                        <a href="{{ route('log.ogc.detail', ['id' => $data->id]) }}"
+                                                            class="btn btn-warning btn-sm mt-3">
+                                                            <i class="fas fa-edit"></i>
+                                                        </a>
+                                                        <button type="button" class="btn btn-danger btn-sm mt-3"
+                                                            onclick="deleteOGC('{{ $data->doc_num }}')">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    @endif
                                                 @endif
                                                 <a href="{{ route('log.ogc.show', ['id' => $data->id]) }}"
                                                     class="btn btn-info btn-sm mt-3">
                                                     <i class="far fa-check-circle " style="font-size:12px;"></i>
                                                 </a>
-                                                @if (collect($status)->every(fn($s) => $s === 'approved'))
-                                                    <a href="{{ route('log.ogc.export', ['id' => $data->id]) }}"
-                                                        class="btn btn-primary btn-sm mt-3">
-                                                        <i class="fas fa-download"></i>
-                                                    </a>
-                                                @endif
+
+                                                <a href="{{ route('log.ogc.export', ['id' => $data->id]) }}"
+                                                    class="btn btn-primary btn-sm mt-3">
+                                                    <i class="fas fa-download"></i>
+                                                </a>
+
 
                                             </td>
                                         </tr>

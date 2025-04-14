@@ -85,7 +85,7 @@ class Pengajuan003SapController extends Controller {
             ]);
 
             $headerData = [
-                'plant' => $request->input('plant'),
+                'plant' => $request->input('job_site'),
                 'tanggal' => $request->input('date'),
                 'dibuat_oleh' => $request->input('dibuat_oleh'),
                 // 'diperiksa_oleh' => $request->input('validated'),
@@ -219,7 +219,16 @@ class Pengajuan003SapController extends Controller {
         ->get();
 
         if ($data->tanggal) {
-            $data->tanggal = Carbon::parse($data->tanggal)->format('Y-m-d');
+            $tanggalString = $data->tanggal;
+            $tanggalString = str_replace(':AM', ' AM', $tanggalString);
+            $tanggalString = str_replace(':PM', ' PM', $tanggalString);
+
+            try {
+                $data->tanggal = Carbon::parse($tanggalString)->format('Y-m-d');
+            } catch (\Exception $e) {
+                dd($e);
+                $data->tanggal = 'Format tanggal salah';
+            }
         }
 
         return view('SmartForm::LOG/003-sap/detail-003sap', [
@@ -241,7 +250,7 @@ class Pengajuan003SapController extends Controller {
             ]);
 
             $headerData = [
-                'plant' => $request->input('plant'),
+                'plant' => $request->input('job_site'),
                 'tanggal' => $request->input('date'),
                 'dibuat_oleh' => $request->input('dibuat_oleh'),
                 // 'diperiksa_oleh' => $request->input('validated'),
@@ -309,7 +318,16 @@ class Pengajuan003SapController extends Controller {
         ->get();
 
         if ($data->tanggal) {
-            $data->tanggal = Carbon::parse($data->tanggal)->format('Y-m-d');
+            $tanggalString = $data->tanggal;
+            $tanggalString = str_replace(':AM', ' AM', $tanggalString);
+            $tanggalString = str_replace(':PM', ' PM', $tanggalString);
+
+            try {
+                $data->tanggal = Carbon::parse($tanggalString)->format('Y-m-d');
+            } catch (\Exception $e) {
+                dd($e);
+                $data->tanggal = 'Format tanggal salah';
+            }
         }
 
         return view('SmartForm::LOG/003-sap/show-003sap', [

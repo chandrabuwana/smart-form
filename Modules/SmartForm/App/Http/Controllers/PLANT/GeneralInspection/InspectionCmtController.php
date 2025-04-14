@@ -604,6 +604,7 @@ class InspectionCmtController extends Controller
             'performance' => $inspectionResultData,
             'remark'      => $remarkData
         ];
+
         $result['approvalList'] = HrdHelper::getApprovalList();
 
 

@@ -94,37 +94,7 @@
                                     <div class="col-md-4">
                                         <div class="input-group input-group-static mb-3">
                                             <label for="job_site" class="ms-0">Job Site</label>
-                                            <select class="form-control" name="job_site" id="job_site" disabled
-                                                required>
-                                                <option disabled selected>-- Select Site --</option>
-                                                <option value="agm"
-                                                    {{ old('job_site', $data->job_site ?? '') == 'agm' ? 'selected' : '' }}>
-                                                    agm</option>
-                                                <option value="mbl"
-                                                    {{ old('job_site', $data->job_site ?? '') == 'mbl' ? 'selected' : '' }}>
-                                                    mbl</option>
-                                                <option value="mme"
-                                                    {{ old('job_site', $data->job_site ?? '') == 'mme' ? 'selected' : '' }}>
-                                                    mme</option>
-                                                <option value="mas"
-                                                    {{ old('job_site', $data->job_site ?? '') == 'mas' ? 'selected' : '' }}>
-                                                    mas</option>
-                                                <option value="pmss"
-                                                    {{ old('job_site', $data->job_site ?? '') == 'pmss' ? 'selected' : '' }}>
-                                                    pmss</option>
-                                                <option value="taj"
-                                                    {{ old('job_site', $data->job_site ?? '') == 'taj' ? 'selected' : '' }}>
-                                                    taj</option>
-                                                <option value="bssr"
-                                                    {{ old('job_site', $data->job_site ?? '') == 'bssr' ? 'selected' : '' }}>
-                                                    bssr</option>
-                                                <option value="tdm"
-                                                    {{ old('job_site', $data->job_site ?? '') == 'tdm' ? 'selected' : '' }}>
-                                                    tdm</option>
-                                                <option value="msj"
-                                                    {{ old('job_site', $data->job_site ?? '') == 'msj' ? 'selected' : '' }}>
-                                                    msj</option>
-                                            </select>
+                                            {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('job_site', $data->job_site ?? null, false, true, 'job_site', 'form-control') !!}
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -812,6 +782,9 @@
         $(document).ready(function() {
             $('#dibuat_oleh').select2();
             $('#diperiksa').select2();
+            $('#job_site').select2({
+                disabled: true
+            });
         });
         document.addEventListener("DOMContentLoaded", function() {
             const headers = document.querySelectorAll(".accordion-header");

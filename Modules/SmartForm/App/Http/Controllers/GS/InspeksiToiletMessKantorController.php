@@ -125,9 +125,10 @@ class InspeksiToiletMessKantorController extends Controller
     }
 
     public function storeForm(Request $request) {
+        // dd($request);
 
         $request->validate([
-            'nama_site' => 'required|string',
+            // 'job_site' => 'required|string',
             'dept' => 'required|string',
             'shift' => 'required|string',
             'loker' => 'required|string',
@@ -446,8 +447,8 @@ class InspeksiToiletMessKantorController extends Controller
             DB::commit();
 
             return response()->json([
-                'message' => 'Data inspeksi berhasil diupdate!'
-
+                'message' => 'Data inspeksi berhasil diupdate!',
+                'redirect' => route('dashboard-wc')
             ]);
         } catch (\Exception $e) {
             // dd($e);

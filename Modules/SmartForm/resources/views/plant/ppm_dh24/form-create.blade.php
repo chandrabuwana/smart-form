@@ -34,6 +34,12 @@
                             <div class="row mb-3">
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
+                                        <label for="unit_model" class="ms-0">Unit Model</label>
+                                        <input type="text" class="form-control" id="unit_model" name="unit_model" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="input-group input-group-static mb-3">
                                         <label for="unit_sn" class="ms-0">Unit S/N</label>
                                         <input type="text" class="form-control" id="unit_sn" name="unit_sn" required>
                                     </div>
@@ -44,6 +50,9 @@
                                         <input type="text" class="form-control" id="unit_cn" name="unit_cn" required>
                                     </div>
                                 </div>
+                            </div>
+
+                            <div class="row mb-3">
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="engine_model" class="ms-0">Engine Model</label>
@@ -51,9 +60,6 @@
                                             required>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="row mb-3">
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="engine_sn" class="ms-0">Engine S/N</label>
@@ -66,33 +72,22 @@
                                         <input type="text" class="form-control" id="att_front" name="att_front" required>
                                     </div>
                                 </div>
+                            </div>
+
+                            <div class="row mb-3">
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="att_rear" class="ms-0">Attachment Rear</label>
                                         <input type="text" class="form-control" id="att_rear" name="att_rear" required>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row mb-3">
-
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="job_site" class="ms-0">Job Site</label>
-                                        <select class="form-control" name="job_site" id="job_site" required>
-                                            <option disabled selected>-- Select Site --</option>
-                                            <option value="agm">agm</option>
-                                            <option value="mbl">mbl</option>
-                                            <option value="mme">mme</option>
-                                            <option value="mas">mas</option>
-                                            <option value="pmss">pmss</option>
-                                            <option value="taj">taj</option>
-                                            <option value="bssr">bssr</option>
-                                            <option value="tdm">tdm</option>
-                                            <option value="msj">msj</option>
-                                        </select>
+                                        {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('job_site', null, false, true, 'job_site', 'form-control') !!}
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="location" class="ms-0">Location</label>
                                         <select class="form-control" name="location" id="location" required>
@@ -105,6 +100,7 @@
                                     </div>
                                 </div>
                             </div>
+
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <div class="input-group input-group-static mb-3">
@@ -530,6 +526,7 @@
         $(document).ready(function() {
             $('#dibuat_oleh').select2();
             $('#diperiksa').select2();
+            $('#job_site').select2();
         });
         $(function() {
             var form = $("#formSH24");

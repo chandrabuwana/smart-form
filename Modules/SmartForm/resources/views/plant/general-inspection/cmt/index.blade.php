@@ -91,12 +91,7 @@
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-3">
-                                <select id="searchSite" class="form-control">
-                                    <option value="">Filter by Site</option>
-                                    @foreach ($sites as $site)
-                                        <option value="{{ $site }}">{{ $site }}</option>
-                                    @endforeach
-                                </select>
+                                {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('searchSite') !!}
                             </div>
                             <div class="col-md-3">
                                 <select id="searchStatus" class="form-control">
@@ -185,14 +180,15 @@
 
             let printButton = '';
 
-                printButton = `
+            printButton = `
             <a class="btn btn-outline-secondary btn-sm" href="${printUrl}" target="_blank">
                 <i class="fa fa-print"></i>
             </a>
         `;
-            
+
             // Jika bukan creator, jangan tampilkan tombol Edit & Hapus
             if (row.creator !== currentUserId) {
+
                 return `
             <a class="btn btn-outline-info btn-sm" href="${showUrl}">
                 <i class="far fa-check-circle " style="font-size:12px;"></i>
@@ -202,14 +198,18 @@
         `;
             }
 
+
+
             // Jika creator, tampilkan semua tombol
-            return `
+            if (row.status !== 'Approved') {
+                return `
         <a class="btn btn-outline-warning btn-sm" href="${editUrl}">
             <i class="fa fa-pencil"></i>
         </a>
         <a class="btn btn-outline-info btn-sm" href="${showUrl}">
-            <i class="far fa-check-circle " style="font-size:12px;"></i>
+            <i class="far fa-check-circle" style="font-size:12px;"></i>
         </a>
+
         <form action="${deleteUrl}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure?');">
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
             <input type="hidden" name="_method" value="DELETE">
@@ -217,6 +217,15 @@
         </form>
         ${printButton}
     `;
+            } else {
+                return `
+        <a class="btn btn-outline-info btn-sm" href="${showUrl}">
+            <i class="far fa-check-circle" style="font-size:12px;"></i>
+        </a>
+        ${printButton}
+    `;
+            }
+
         }
 
         function fetchData(params) {

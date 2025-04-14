@@ -16,7 +16,7 @@ return new class extends Migration
             $table->integer('lgmg_id');
             $table->integer('pertanyaan_id');
             $table->string('jawaban')->nullable();
-            $table->string('category');
+            $table->string('category')->nullable();
             $table->text('keterangan')->nullable();
             $table->string('updated_by')->nullable();
             $table->string('created_by')->nullable();
