@@ -218,7 +218,7 @@
                                                         <i class="fas fa-times me-1"></i> Reject
                                                     </button>
                                                 @endif
-                                                @if(trim($record->created_by_nik) === trim($user->userid))
+                                                @if(trim($record->created_by_nik) === trim($user->userid) && $record->approval_status === 'need approval')
                                                     <a href="{{ route('prod.coal.form.edit', ['id' => $record->id]) }}" class="btn btn-info btn-sm d-inline-flex align-items-center justify-content-center">
                                                         <i class="fas fa-edit me-1"></i> Edit
                                                     </a>
