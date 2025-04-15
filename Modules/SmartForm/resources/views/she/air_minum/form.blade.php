@@ -318,7 +318,7 @@
                                                             {{ ucfirst($maintenanceRecord->inspector_1_status ?? 'pending') }}
                                                         </span>
                                                     @else
-                                                        <select name="inspector_1_status" class="form-control">
+                                                        <select name="inspector_1_status" class="form-control text-center" disabled>
                                                             <option value="pending">Pending</option>
                                                             <option value="approved">Approved</option>
                                                             <option value="rejected">Rejected</option>
@@ -367,7 +367,7 @@
                                                             {{ ucfirst($maintenanceRecord->inspector_2_status ?? 'pending') }}
                                                         </span>
                                                     @else
-                                                        <select name="inspector_2_status" class="form-control">
+                                                        <select name="inspector_2_status" class="form-control text-center" disabled>
                                                             <option value="pending">Pending</option>
                                                             <option value="approved">Approved</option>
                                                             <option value="rejected">Rejected</option>
@@ -416,7 +416,7 @@
                                                             {{ ucfirst($maintenanceRecord->inspector_3_status ?? 'pending') }}
                                                         </span>
                                                     @else
-                                                        <select name="inspector_3_status" class="form-control">
+                                                        <select name="inspector_3_status" class="form-control text-center" disabled>
                                                             <option value="pending">Pending</option>
                                                             <option value="approved">Approved</option>
                                                             <option value="rejected">Rejected</option>
@@ -465,7 +465,7 @@
                                                             {{ ucfirst($maintenanceRecord->acknowledged_status ?? 'pending') }}
                                                         </span>
                                                     @else
-                                                        <select name="acknowledged_status" class="form-control">
+                                                        <select name="acknowledged_status" class="form-control text-center" disabled>
                                                             <option value="pending">Pending</option>
                                                             <option value="approved">Approved</option>
                                                             <option value="rejected">Rejected</option>
