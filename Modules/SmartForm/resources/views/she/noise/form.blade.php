@@ -431,7 +431,20 @@
         $('#acknowledged_by_select').select2({
             placeholder: '-- Pilih Mengetahui --',
             width: '100%'
+        }).on('select2:select', function (e) {
+            // Get the selected option's data-nik attribute
+            var selectedOption = $(this).find('option:selected');
+            var nik = selectedOption.data('nik');
+            
+            // Update the hidden NIK field
+            $('#acknowledged_by_nik').val(nik);
         });
+        
+        // Set initial NIK value if option is already selected
+        var initialOption = $('#acknowledged_by_select').find('option:selected');
+        if (initialOption.val()) {
+            $('#acknowledged_by_nik').val(initialOption.data('nik'));
+        }
     });
 </script>
 <script>

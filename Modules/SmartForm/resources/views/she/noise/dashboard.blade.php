@@ -255,7 +255,7 @@
                                                 <i class="fas fa-edit me-1"></i> Edit
                                             </a>
                                         @endif
-                                        @if(isset($record->inspected_by_nik) && isset($user->userid) && trim($record->inspected_by_nik) === trim($user->userid))
+                                        @if(isset($record->inspected_by_nik) && isset($user->userid) && trim($record->inspected_by_nik) === trim($user->userid) && $record->approval_status === 'need approval')
                                         <button type="button" class="btn btn-danger btn-sm d-inline-flex align-items-center justify-content-center btn-delete" data-id="{{ $record->id }}">
                                                 <i class="fas fa-trash me-1"></i> Delete
                                             </button>
