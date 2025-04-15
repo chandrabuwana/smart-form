@@ -211,14 +211,14 @@ class RegistrasiSupplierController extends Controller {
         $nik_session = $request->session()->get('user_id', '');
         $data = $this->getDetail($request, $id, $nik_session);
         Log::debug("Data edit : ". json_encode($data, JSON_PRETTY_PRINT));
-        if($data['data']['diisi_oleh'] != $nik_session) {
-            return abort(401, 'Unauthoried Request!');
-        } else {
+        // if($data['data']['diisi_oleh'] != $nik_session) {
+        //     return abort(401, 'Unauthoried Request!');
+        // } else {
             return view( 'SmartForm::SM/registrasi-supplier/approve-registrasi-supplier', 
                 $data,
                 ['approvalList' => HrdHelper::getApprovalList()] 
             );
-        }
+        // }
     }
 
     private function getDetail(Request $request, $id, $nik) {

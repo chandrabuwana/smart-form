@@ -531,6 +531,7 @@
                                     <i class="fas fa-save"></i>
                                     Update
                                 </button>
+                                <a href="{{url()->previous()}}" class="btn btn-success" style="margin:5px"><i class="fas fa-cancel"></i> Cancel</a>
                             </div>
                         </div>
                     </form>
