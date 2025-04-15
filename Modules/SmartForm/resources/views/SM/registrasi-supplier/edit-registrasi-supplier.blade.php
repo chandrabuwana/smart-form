@@ -527,11 +527,11 @@
                         
                         <div class="card-footer">
                             <div class="d-flex align-items-center">
-                                <button class="btn btn-primary ms-auto uploadBtn" type="submit">
+                                <button class="btn btn-primary ms-auto uploadBtn" type="submit" style="margin:3px">
                                     <i class="fas fa-save"></i>
                                     Update
                                 </button>
-                                <a href="{{url()->previous()}}" class="btn btn-success" style="margin:5px"><i class="fas fa-cancel"></i> Cancel</a>
+                                    <a href="{{url()->previous()}}" class="btn btn-success" style="margin:3px"><i class="fas fa-cancel"></i> Cancel</a>
                             </div>
                         </div>
                     </form>

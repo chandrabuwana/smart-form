@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Modules\SmartForm\helpers\HrdHelper;
+use Illuminate\Support\Facades\Storage;
 
 class RegistrasiSupplierController extends Controller {
 
@@ -113,8 +114,9 @@ class RegistrasiSupplierController extends Controller {
             foreach($request->file('filenames') as $file)
             {
                 $name = time().rand(1,100).'.'.$file->extension();
-                $file->move(public_path('images/SM/registrasi_supplier'), $name);  
-                $files[] = $name;  
+                // $file->move(public_path('images/SM/registrasi_supplier'), $name);  
+                $file->storeAs('images/SM/registrasi_supplier', $name);  
+                $files[] = $name;
             }
          }
 
@@ -450,6 +452,17 @@ class RegistrasiSupplierController extends Controller {
         }
 
         return response()->json( $response );
+    }
+
+    function DownloadNpwpSupplier($fileNpwp) {
+        // $filePath = storage_path("app/uploads/{$file->generated_name}");
+
+        // Log::info("download : ".' fileName ' . Storage::exists('uploads/' . $fileName));
+        if (Storage::exists('images/SM/registrasi_supplier/' . $fileNpwp)) {
+            return Storage::download('images/SM/registrasi_supplier/' . $fileNpwp);
+        } else {
+            abort(404, 'File not found');
+        }
     }
 
 }

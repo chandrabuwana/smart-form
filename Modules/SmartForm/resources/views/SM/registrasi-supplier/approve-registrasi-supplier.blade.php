@@ -305,6 +305,10 @@
                                                 <td>
                                                     {{$data['npwp']}}
                                                 </td>
+                                                <td>
+                                                    {{$data['file_npwp']}}
+                                                    <a href="/bss-form/sm/regis-supplier-download/{{$data['file_npwp']}}">Download</a>
+                                                        <!-- <img src="/public/images/SM/registrasi_supplier/{{$data['file_npwp']}}" class="img-thumbnail" style="width:800px"> -->
                                             </tr>
                                             <tr>
                                                 <td>SPPKP</td>
