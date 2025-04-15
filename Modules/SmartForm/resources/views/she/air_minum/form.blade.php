@@ -225,9 +225,9 @@
 
                                         @foreach($checkItems as $index => $item)
                                         <tr>
-                                            <td>{{ $index + 1 }}</td>
-                                            <td>{{ $item['label'] }}</td>
-                                            <td class="text-center">
+                                            <td class="border text-center">{{ $index + 1 }}</td>
+                                            <td class="border">{{ $item['label'] }}</td>
+                                            <td class="text-center border">
                                                 <div class="form-check d-inline">
                                                     <input class="form-check-input" type="radio" 
                                                         name="{{ $item['name'] }}" value="1" 
@@ -235,7 +235,7 @@
                                                         required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
                                                 </div>
                                             </td>
-                                            <td class="text-center">
+                                            <td class="text-center border">
                                                 <div class="form-check d-inline">
                                                     <input class="form-check-input" type="radio" 
                                                         name="{{ $item['name'] }}" value="0" 
@@ -285,7 +285,7 @@
                                             </tr>
                                             <tr>
                                                 <td class="border">
-                                                    <select name="inspector_1_name" id="inspector_1_name" class="form-control text-center" {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }} required>
+                                                    <select name="inspector_1_name" id="inspector_1_name" class="form-control text-center select2" {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }} required>
                                                         <option value="">-- Pilih Inspektor 1 --</option>
                                                         @foreach($approvalList as $user)
                                                             <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $isShowDetail && $maintenanceRecord->inspector_1_name == $user->nama ? 'selected' : '' }}>
@@ -334,7 +334,7 @@
                                             </tr>
                                             <tr>
                                                 <td class="border">
-                                                    <select name="inspector_2_name" id="inspector_2_name" class="form-control text-center" {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                                    <select name="inspector_2_name" id="inspector_2_name" class="form-control text-center select2" {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
                                                         <option value="">-- Pilih Inspektor 2 --</option>
                                                         @foreach($approvalList as $user)
                                                             <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $isShowDetail && $maintenanceRecord->inspector_2_name == $user->nama ? 'selected' : '' }}>
@@ -383,7 +383,7 @@
                                             </tr>
                                             <tr>
                                                 <td class="border">
-                                                    <select name="inspector_3_name" id="inspector_3_name" class="form-control text-center" {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                                    <select name="inspector_3_name" id="inspector_3_name" class="form-control text-center select2" {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
                                                         <option value="">-- Pilih Inspektor 3 --</option>
                                                         @foreach($approvalList as $user)
                                                             <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $isShowDetail && $maintenanceRecord->inspector_3_name == $user->nama ? 'selected' : '' }}>
@@ -432,7 +432,7 @@
                                             </tr>
                                             <tr>
                                                 <td class="border">
-                                                    <select name="acknowledged_by_name" id="acknowledged_by_name" class="form-control text-center" {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                                    <select name="acknowledged_by_name" id="acknowledged_by_name" class="form-control text-center select2" {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
                                                         <option value="">-- Pilih Penanggung Jawab --</option>
                                                         @foreach($approvalList as $user)
                                                             <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $isShowDetail && $maintenanceRecord->acknowledged_by_name == $user->nama ? 'selected' : '' }}>
@@ -568,6 +568,7 @@
 
 @section('custom-js')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
 <script>
 $(document).ready(function() {
     console.log('Document ready - initializing form handlers');
@@ -675,6 +676,14 @@ $(document).ready(function() {
         });
     });
     @endif
+    
+    // Initialize Select2
+    $(function() {
+        $('#inspector_1_name, #inspector_2_name, #inspector_3_name, #acknowledged_by_name').select2({
+            placeholder: '-- Pilih Nama --',
+            width: '100%'
+        });
+    });
 });
 </script>
 @endsection
