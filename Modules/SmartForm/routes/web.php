@@ -199,7 +199,10 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/delete-supplier', [RegistrasiSupplierController::class, 'DeleteSupplier'])->name('bss-form.sm.delete-supplier');
             Route::get('/pdf-registrasi-supplier', [RegistrasiSupplierController::class, 'PdfRegSupplier'])->name('bss-form.sm.pdf-registrasi-supplier');
             Route::get('/get-supplier-detail', [RegistrasiSupplierController::class, 'SupplierDetailById'])->name("bss-form.sm.supplier-detail-by-id");
-            Route::get('/regis-supplier-download/{fileNpwp}', [RegistrasiSupplierController::class, 'DownloadNpwpSupplier'])->name("bss-form.sm.asset-request-download");
+
+            Route::get('/file-npwp-supplier-download/{fileNpwp}', [RegistrasiSupplierController::class, 'DownloadNpwpSupplier'])->name("bss-form.sm.file-npwp-supplier-download");
+            Route::get('/file-sppkp-supplier-download/{fileSppkp}', [RegistrasiSupplierController::class, 'DownloadSppkpSupplier'])->name("bss-form.sm.file-sppkp-supplier-download");
+            Route::get('/file-nib-supplier-download/{fileNib}', [RegistrasiSupplierController::class, 'DownloadNibSupplier'])->name("bss-form.sm.file-nib-supplier-download");
 
             Route::post('/submit-approve-supplier', [RegistrasiSupplierController::class, 'SubmitApproveSupplier'])->name("bss-form.sm.submit-approve-supplier");
             Route::post('/submit-reject-supplier', [RegistrasiSupplierController::class, 'SubmitRejectSupplier'])->name("bss-form.sm.submit-reject-supplier");

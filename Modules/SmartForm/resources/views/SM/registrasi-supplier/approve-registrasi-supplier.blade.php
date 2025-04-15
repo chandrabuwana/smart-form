@@ -305,10 +305,14 @@
                                                 <td>
                                                     {{$data['npwp']}}
                                                 </td>
+                                                @if (($data['file_npwp']) != "Tidak ada")
                                                 <td>
                                                     {{$data['file_npwp']}}
-                                                    <a href="/bss-form/sm/regis-supplier-download/{{$data['file_npwp']}}">Download</a>
-                                                        <!-- <img src="/public/images/SM/registrasi_supplier/{{$data['file_npwp']}}" class="img-thumbnail" style="width:800px"> -->
+                                                    <a href="/bss-form/sm/file-npwp-supplier-download/{{$data['file_npwp']}}">Download</a>
+                                                </td>
+                                                @else
+                                                <td>-</td>
+                                                @endif
                                             </tr>
                                             <tr>
                                                 <td>SPPKP</td>
@@ -316,6 +320,14 @@
                                                 <td>
                                                     {{$data['sppkp']}}
                                                 </td>
+                                                @if (($data['file_sppkp']) != "Tidak ada")
+                                                <td>
+                                                    {{$data['file_sppkp']}}
+                                                    <a href="/bss-form/sm/file-sppkp-supplier-download/{{$data['file_sppkp']}}">Download</a>
+                                                </td>
+                                                @else
+                                                <td>-</td>
+                                                @endif
                                             </tr>
                                             <tr>
                                                 <td>NIB / SIUP</td>
@@ -323,6 +335,14 @@
                                                 <td>
                                                     {{$data['nib_siup']}}
                                                 </td>
+                                                @if (($data['file_nib_siup']) != "Tidak ada")
+                                                <td>
+                                                    {{$data['file_nib_siup']}}
+                                                    <a href="/bss-form/sm/file-nib-supplier-download/{{$data['file_nib_siup']}}">Download</a>
+                                                </td>
+                                                @else
+                                                <td>-</td>
+                                                @endif
                                             </tr>
                                             <tr>
                                                 <td>Akta Perusahaan</td>
