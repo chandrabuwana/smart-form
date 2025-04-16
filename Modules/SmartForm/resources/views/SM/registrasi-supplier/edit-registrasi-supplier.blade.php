@@ -316,8 +316,13 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fNpwp" required>{{$data['file_npwp']}}
-                                                    <div class="invalid-feedback">Lampiran NPWP</div>
+                                                    @if (($data['file_npwp']) != "Tidak ada")
+                                                        <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fNpwp">{{$data['file_npwp']}}
+                                                        <div class="invalid-feedback">Lampiran NPWP</div>
+                                                    @else
+                                                        <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fNpwp" required>
+                                                        <div class="invalid-feedback">Lampiran NPWP</div>
+                                                    @endif
                                                 </td>
                                             </tr>
                                             <tr>
@@ -337,8 +342,12 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fSppkp" required>
-                                                    <div class="invalid-feedback">Lampiran SPPKP</div>
+                                                    @if (($data['file_sppkp']) != "Tidak ada")
+                                                        <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fSppkp">{{$data['file_sppkp']}}
+                                                        <div class="invalid-feedback">Lampiran SPPKP</div>
+                                                    @else
+                                                        <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fSppkp" required>
+                                                    @endif
                                                 </td>
                                             </tr>
                                             <tr>
@@ -358,8 +367,12 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fNib" required>
-                                                    <div class="invalid-feedback">Lampiran NIB/SIUP</div>
+                                                    @if (($data['file_nib_siup']) != "Tidak ada")
+                                                        <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fNib">{{$data['file_nib_siup']}}
+                                                        <div class="invalid-feedback">Lampiran NIB/SIUP</div>
+                                                    @else
+                                                        <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fNib" required>
+                                                    @endif
                                                 </td>
                                             </tr>
                                             <tr>
