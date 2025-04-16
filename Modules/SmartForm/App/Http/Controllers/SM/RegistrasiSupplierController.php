@@ -262,6 +262,12 @@ class RegistrasiSupplierController extends Controller {
             'file_npwp' => '',
             'file_sppkp' => '',
             'file_nib_siup' => '',
+            'file_akta_perusahaan' => '',
+            'file_pakta_integritas' => '',
+            'file_ident_direk' => '',
+            'file_struktur_org' => '',
+            'file_profile_per' => '',
+            'file_lain' => '',
             'status_pajak_pkp' => '',
             'metode_pembayaran' => '',
             'npwp' => '',
@@ -281,7 +287,8 @@ class RegistrasiSupplierController extends Controller {
                     'id','nama_vendor','diisi_oleh','no_npwp','bidang_usaha','syarat_pembayaran','ppn','pph',
                     'nama_rekening_1','nomor_rekening_1','nama_bank_1','alamat_bank_1','nama_rekening_2','nomor_rekening_2','nama_bank_2','alamat_bank_2',
                     'alamat_kantor','kota','telepon','pj_1','pj_2','kode_pos','email','tlp_1','tlp_2','jabatan_1','jabatan_2','jabatan_1_email',
-                    'jabatan_2_email','diterima_oleh','disetujui_oleh','file_npwp','file_sppkp','file_nib_siup','status_pajak_pkp','metode_pembayaran',
+                    'jabatan_2_email','diterima_oleh','disetujui_oleh','file_npwp','file_sppkp','file_nib_siup','file_akta_perusahaan','file_pakta_integritas',
+                    'file_ident_direk','file_struktur_org','file_profile_per','file_lain','status_pajak_pkp','metode_pembayaran',
                     'npwp','sppkp','nib_siup','akta_perusahaan','pakta_integritas','kartu_identitas_direktur','struktur_organisasi','profile_perusahaan','surat_lainnya'
                 )
                 ->where('id', $id)
@@ -329,6 +336,12 @@ class RegistrasiSupplierController extends Controller {
                 $data_master['file_npwp'] = $data->file_npwp;
                 $data_master['file_sppkp'] = $data->file_sppkp;
                 $data_master['file_nib_siup'] = $data->file_nib_siup;
+                $data_master['file_akta_perusahaan'] = $data->file_akta_perusahaan;
+                $data_master['file_pakta_integritas'] = $data->file_pakta_integritas;
+                $data_master['file_ident_direk'] = $data->file_ident_direk;
+                $data_master['file_struktur_org'] = $data->file_struktur_org;
+                $data_master['file_profile_per'] = $data->file_profile_per;
+                $data_master['file_lain'] = $data->file_lain;
                 $data_master['status_pajak_pkp'] = $data->status_pajak_pkp;
                 $data_master['metode_pembayaran'] = $data->metode_pembayaran;
                 $data_master['npwp'] = $data->npwp;
@@ -481,9 +494,6 @@ class RegistrasiSupplierController extends Controller {
     }
 
     function DownloadNibSupplier($fileNib) {
-        // $filePath = storage_path("app/uploads/{$file->generated_name}");
-
-        // Log::info("download : ".' fileName ' . Storage::exists('uploads/' . $fileName));
         if (Storage::exists('images/SM/registrasi_supplier/' . $fileNib)) {
             return Storage::download('images/SM/registrasi_supplier/' . $fileNib);
         } else {
