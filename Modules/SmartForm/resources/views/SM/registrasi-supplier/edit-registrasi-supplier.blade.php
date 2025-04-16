@@ -317,7 +317,7 @@
                                                 </td>
                                                 <td>
                                                     <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fNpwp" required>{{$data['file_npwp']}}
-                                                    <div class="invalid-feedback">Lampiran NPWP belum dipilih</div>
+                                                    <div class="invalid-feedback">Lampiran NPWP</div>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -338,7 +338,7 @@
                                                 </td>
                                                 <td>
                                                     <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fSppkp" required>
-                                                    <div class="invalid-feedback">Lampiran SPPKP belum dipilih</div>
+                                                    <div class="invalid-feedback">Lampiran SPPKP</div>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -359,7 +359,7 @@
                                                 </td>
                                                 <td>
                                                     <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fNib" required>
-                                                    <div class="invalid-feedback">Lampiran NIB/SIUP belum dipilih</div>
+                                                    <div class="invalid-feedback">Lampiran NIB/SIUP</div>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -380,7 +380,7 @@
                                                 </td>
                                                 <td>
                                                     <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fAkta" required>
-                                                    <div class="invalid-feedback">Lampiran Akta Perusahaan belum dipilih</div>
+                                                    <div class="invalid-feedback">Lampiran Akta Perusahaan</div>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -401,7 +401,7 @@
                                                 </td>
                                                 <td>
                                                     <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fPakta" required>
-                                                    <div class="invalid-feedback">Lampiran Pakta Integritas belum dipilih</div>
+                                                    <div class="invalid-feedback">Lampiran Pakta Integritas</div>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -422,7 +422,7 @@
                                                 </td>
                                                 <td>
                                                     <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fKartu" required>
-                                                    <div class="invalid-feedback">Lampiran Kartu Identitas Direktur belum dipilih</div>
+                                                    <div class="invalid-feedback">Lampiran Kartu Identitas Direktur</div>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -443,7 +443,7 @@
                                                 </td>
                                                 <td>
                                                     <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fStruktur" required>
-                                                    <div class="invalid-feedback">Lampiran Struktur Organisasi belum dipilih</div>
+                                                    <div class="invalid-feedback">Lampiran Struktur Organisasi</div>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -464,7 +464,7 @@
                                                 </td>
                                                 <td>
                                                     <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fProfile" required>
-                                                    <div class="invalid-feedback">Lampiran Profile Perusahaan belum dipilih</div>
+                                                    <div class="invalid-feedback">Lampiran Profile Perusahaan</div>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -485,7 +485,7 @@
                                                 </td>
                                                 <td>
                                                     <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fSurat" required>
-                                                    <div class="invalid-feedback">Lampiran lainnya belum dipilih</div>
+                                                    <div class="invalid-feedback">Lampiran lainnya</div>
                                                 </td>
                                             </tr>
                                         </table>
