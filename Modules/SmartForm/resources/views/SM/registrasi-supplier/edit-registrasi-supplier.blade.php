@@ -392,8 +392,12 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fAkta" required>
-                                                    <div class="invalid-feedback">Lampiran Akta Perusahaan</div>
+                                                    @if (($data['file_akta_perusahaan']) != "Tidak ada")
+                                                        <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fAkta">{{$data['file_akta_perusahaan']}}
+                                                        <div class="invalid-feedback">Lampiran Akta Perusahaan</div>
+                                                    @else
+                                                        <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fAkta" required>
+                                                    @endif
                                                 </td>
                                             </tr>
                                             <tr>
@@ -413,8 +417,12 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fPakta" required>
-                                                    <div class="invalid-feedback">Lampiran Pakta Integritas</div>
+                                                    @if (($data['file_pakta_integritas']) != "Tidak ada")
+                                                        <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fPakta">{{$data['file_pakta_integritas']}}
+                                                        <div class="invalid-feedback">Lampiran Pakta Integritas</div>
+                                                    @else
+                                                        <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fPakta" required>
+                                                    @endif
                                                 </td>
                                             </tr>
                                             <tr>
@@ -434,8 +442,12 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fKartu" required>
-                                                    <div class="invalid-feedback">Lampiran Kartu Identitas Direktur</div>
+                                                    @if (($data['file_ident_direk']) != "Tidak ada")
+                                                        <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fKartu">{{$data['file_ident_direk']}}
+                                                        <div class="invalid-feedback">Lampiran Kartu Identitas Direktur</div>
+                                                    @else
+                                                        <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fKartu" required>
+                                                    @endif
                                                 </td>
                                             </tr>
                                             <tr>
@@ -455,8 +467,12 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fStruktur" required>
-                                                    <div class="invalid-feedback">Lampiran Struktur Organisasi</div>
+                                                    @if (($data['file_struktur_org']) != "Tidak ada")
+                                                        <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fStruktur">{{$data['file_struktur_org']}}
+                                                        <div class="invalid-feedback">Lampiran Struktur Organisasi</div>
+                                                    @else
+                                                        <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fStruktur" required>
+                                                    @endif
                                                 </td>
                                             </tr>
                                             <tr>
@@ -476,8 +492,12 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fProfile" required>
-                                                    <div class="invalid-feedback">Lampiran Profile Perusahaan</div>
+                                                    @if (($data['file_profile_per']) != "Tidak ada")
+                                                        <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fProfile">{{$data['file_profile_per']}}
+                                                        <div class="invalid-feedback">Lampiran Profile Perusahaan</div>
+                                                    @else
+                                                        <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fProfile" required>
+                                                    @endif
                                                 </td>
                                             </tr>
                                             <tr>
@@ -497,8 +517,12 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fSurat" required>
-                                                    <div class="invalid-feedback">Lampiran lainnya</div>
+                                                    @if (($data['file_lain']) != "Tidak ada")
+                                                        <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fSurat">{{$data['file_lain']}}
+                                                        <div class="invalid-feedback">Lampiran lainnya</div>
+                                                    @else
+                                                        <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fSurat" required>
+                                                    @endif
                                                 </td>
                                             </tr>
                                         </table>
