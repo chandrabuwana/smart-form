@@ -95,30 +95,30 @@
                                             @if(is_array($item))
                                                 <!-- Parent item with subitems -->
                                                 <tr>
-                                                    <td class="text-center">{{ $index + 1 }}</td>
-                                                    <td>{{ $item['title'] }}</td>
+                                                    <td class="text-center border">{{ $index + 1 }}</td>
+                                                    <td class="border">{{ $item['title'] }}</td>
                                                     <td colspan="2"></td>
                                                     <td></td>
                                                 </tr>
                                                 @foreach($item['subitems'] as $subIndex => $subitem)
                                                     <tr>
-                                                        <td></td>
-                                                        <td style="padding-left: 20px;">{{ $subitem }}</td>
-                                                        <td class="text-center">
+                                                        <td class="border"></td>
+                                                        <td style="padding-left: 20px;" class="border">{{ $subitem }}</td>
+                                                        <td class="text-center border">
                                                             <div class="form-check d-flex justify-content-center">
                                                                 <input class="form-check-input" type="radio" name="checklist[{{ $index }}][{{ $subIndex }}]" value="1" 
                                                                     {{ isset($record->checklist_items[$index][$subIndex]['value']) && $record->checklist_items[$index][$subIndex]['value'] == '1' ? 'checked' : '' }}
                                                                     {{ $isShowDetail ? 'disabled' : '' }}>
                                                             </div>
                                                         </td>
-                                                        <td class="text-center">
+                                                        <td class="text-center border">
                                                             <div class="form-check d-flex justify-content-center">
                                                                 <input class="form-check-input" type="radio" name="checklist[{{ $index }}][{{ $subIndex }}]" value="0"
                                                                     {{ isset($record->checklist_items[$index][$subIndex]['value']) && $record->checklist_items[$index][$subIndex]['value'] == '0' ? 'checked' : '' }}
                                                                     {{ $isShowDetail ? 'disabled' : '' }}>
                                                             </div>
                                                         </td>
-                                                        <td>
+                                                        <td class="border">
                                                             <input type="text" class="form-control" name="notes[{{ $index }}][{{ $subIndex }}]" 
                                                                 value="{{ isset($record->checklist_items[$index][$subIndex]['notes']) ? $record->checklist_items[$index][$subIndex]['notes'] : '' }}"
                                                                 {{ $isShowDetail ? 'readonly' : '' }}>
@@ -128,23 +128,23 @@
                                             @else
                                                 <!-- Regular item -->
                                                 <tr>
-                                                    <td class="text-center">{{ $index + 1 }}</td>
-                                                    <td>{{ $item }}</td>
-                                                    <td class="text-center">
+                                                    <td class="text-center border">{{ $index + 1 }}</td>
+                                                    <td class="border">{{ $item }}</td>
+                                                    <td class="text-center border">
                                                         <div class="form-check d-flex justify-content-center">
                                                             <input class="form-check-input" type="radio" name="checklist[{{ $index }}]" value="1"
                                                                 {{ isset($record->checklist_items[$index]['value']) && $record->checklist_items[$index]['value'] == '1' ? 'checked' : '' }}
                                                                 {{ $isShowDetail ? 'disabled' : '' }}>
                                                         </div>
                                                     </td>
-                                                    <td class="text-center">
+                                                    <td class="text-center border">
                                                         <div class="form-check d-flex justify-content-center">
                                                             <input class="form-check-input" type="radio" name="checklist[{{ $index }}]" value="0"
                                                                 {{ isset($record->checklist_items[$index]['value']) && $record->checklist_items[$index]['value'] == '0' ? 'checked' : '' }}
                                                                 {{ $isShowDetail ? 'disabled' : '' }}>
                                                         </div>
                                                     </td>
-                                                    <td>
+                                                    <td class="border">
                                                         <input type="text" class="form-control" name="notes[{{ $index }}]" 
                                                             value="{{ isset($record->checklist_items[$index]['notes']) ? $record->checklist_items[$index]['notes'] : '' }}"
                                                             {{ $isShowDetail ? 'readonly' : '' }}>
@@ -174,7 +174,7 @@
                                     <h6>Diketahui oleh</h6>
                                     
                                     <div class="mb-3">
-                                        <select name="acknowledged_by_name" class="form-control text-left" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                        <select name="acknowledged_by_name" id="acknowledged_by_name" class="form-control text-left" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
                                             <option value="">-- Pilih Pengawas --</option>
                                             @foreach($approvalList as $user)
                                                 <option value="{{ $user->nama }}" {{ $isShowDetail && $record->acknowledged_by_name == $user->nama ? 'selected' : '' }}>
@@ -234,6 +234,15 @@
 @section('custom-js')
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    <script>
+        $(function() {
+            $('#acknowledged_by_name').select2({
+                placeholder: '-- Pilih Pengawas --',
+                width: '50%'
+            });
+        });
+    </script>
     <script>
     $(function() {
         // Handle supervisor selection

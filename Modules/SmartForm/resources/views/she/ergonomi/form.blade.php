@@ -1289,6 +1289,33 @@
 @section('custom-js')
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    <script>
+        $(function() {
+            $('#reviewer_name').select2({
+                placeholder: '-- Pilih Reviewer --',
+                width: '100%'
+            });
+        });
+        $(function() {
+            $('#paramedic_name').select2({
+                placeholder: '-- Pilih Paramedic --',
+                width: '100%'
+            });
+        });
+        $(function() {
+            $('#doctor_name').select2({
+                placeholder: '-- Pilih Dokter --',
+                width: '100%'
+            });
+        });
+        $(function() {
+            $('#dept_head_name').select2({
+                placeholder: '-- Pilih Department Head --',
+                width: '100%'
+            });
+        });
+    </script>
     <script>
     $(function() {
         var form = $("form");

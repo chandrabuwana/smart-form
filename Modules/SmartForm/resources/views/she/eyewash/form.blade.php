@@ -103,9 +103,9 @@
                                             $monthData = $isShowDetail ? ($maintenanceRecord->monthly_data[$month] ?? null) : null;
                                         @endphp
                                         <tr>
-                                            <td class="text-center align-middle">{{ $index + 1 }}</td>
-                                            <td class="align-middle">{{ $month }}</td>
-                                            <td>
+                                            <td class="text-center align-middle border">{{ $index + 1 }}</td>
+                                            <td class="align-middle border">{{ $month }}</td>
+                                            <td class="border">
                                                 <select name="kondisi_tangki_{{ $month }}" class="form-control form-select" {{ $isShowDetail ? 'disabled' : '' }}>
                                                     <option value="">Pilih</option>
                                                     @foreach($conditions as $condition)
@@ -115,7 +115,7 @@
                                                     @endforeach
                                                 </select>
                                             </td>
-                                            <td>
+                                            <td class="border">
                                                 <select name="penutup_tangki_{{ $month }}" class="form-control form-select" {{ $isShowDetail ? 'disabled' : '' }}>
                                                     <option value="">Pilih</option>
                                                     @foreach($conditions as $condition)
@@ -125,7 +125,7 @@
                                                     @endforeach
                                                 </select>
                                             </td>
-                                            <td>
+                                            <td class="border">
                                                 <select name="warna_air_{{ $month }}" class="form-control form-select" {{ $isShowDetail ? 'disabled' : '' }}>
                                                     <option value="">Pilih</option>
                                                     @foreach($waterColors as $color)
@@ -135,7 +135,7 @@
                                                     @endforeach
                                                 </select>
                                             </td>
-                                            <td>
+                                            <td class="border">
                                                 <select name="bau_air_{{ $month }}" class="form-control form-select" {{ $isShowDetail ? 'disabled' : '' }}>
                                                     <option value="">Pilih</option>
                                                     @foreach($waterSmells as $smell)
@@ -145,7 +145,7 @@
                                                     @endforeach
                                                 </select>
                                             </td>
-                                            <td>
+                                            <td class="border">
                                                 <select name="volume_air_{{ $month }}" class="form-control form-select" {{ $isShowDetail ? 'disabled' : '' }}>
                                                     <option value="">Pilih</option>
                                                     @foreach($volumes as $volume)
@@ -155,7 +155,7 @@
                                                     @endforeach
                                                 </select>
                                             </td>
-                                            <td>
+                                            <td class="border">
                                                 <select name="kebersihan_tangki_{{ $month }}" class="form-control form-select" {{ $isShowDetail ? 'disabled' : '' }}>
                                                     <option value="">Pilih</option>
                                                     @foreach($cleanConditions as $condition)
@@ -165,7 +165,7 @@
                                                     @endforeach
                                                 </select>
                                             </td>
-                                            <td>
+                                            <td class="border">
                                                 <select name="fungsi_eyewash_{{ $month }}" class="form-control form-select" {{ $isShowDetail ? 'disabled' : '' }}>
                                                     <option value="">Pilih</option>
                                                     @foreach($conditions as $condition)
@@ -175,7 +175,7 @@
                                                     @endforeach
                                                 </select>
                                             </td>
-                                            <td class="align-middle text-center">
+                                            <td class="align-middle text-center border">
                                                 <input type="checkbox" name="paraf_{{ $month }}" {{ $isShowDetail ? 'disabled' : '' }} {{ $monthData && $monthData['paraf'] ? 'checked' : '' }}>
                                             </td>
                                         </tr>
@@ -236,7 +236,7 @@
                                                             {{ ucfirst($maintenanceRecord->hygiene_status) }}
                                                         </span>
                                                     @else
-                                                        <select name="hygiene_status" class="form-control">
+                                                        <select name="hygiene_status" class="form-control text-center" disabled>
                                                             <option value="pending">Pending</option>
                                                             <option value="approved">Approved</option>
                                                             <option value="rejected">Rejected</option>
@@ -342,7 +342,7 @@
                                             </tr>
                                             <tr>
                                                 <td class="border">
-                                                    <select name="dh_terkait_name" id="dh_terkait_name" class="form-control text-center" {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                                    <select name="dh_terkait_name" id="dh_terkait_name" class="form-control text-center select2" {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
                                                         <option value="">-- Pilih DH Terkait --</option>
                                                         @foreach($approvalList as $user)
                                                             <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $isShowDetail && $maintenanceRecord->dh_terkait_name == $user->nama ? 'selected' : '' }}>
@@ -418,6 +418,7 @@
 @section('custom-css')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css">
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
     <style>
         .table th {
             background-color: #4472C4;
@@ -433,6 +434,7 @@
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
     <script>
     $(function() {
         // Initialize datepicker
@@ -504,6 +506,20 @@
         $('#dh_terkait_name').on('change', function() {
             var nik = $(this).find('option:selected').data('nik');
             $('#dh_terkait_nik').val(nik);
+        });
+
+        // Initialize Select2 for dh_terkait_name
+        $('#dh_terkait_name').select2({
+            placeholder: '-- Pilih DH Terkait --',
+            width: '100%'
+        });
+        $('#dh_name').select2({
+            placeholder: '-- Pilih DH --',
+            width: '100%'
+        });
+        $('#supervisor_name').select2({
+            placeholder: '-- Pilih Supervisor --',
+            width: '100%'
         });
     });
     </script>
