@@ -191,20 +191,20 @@
                                                     </td>
                                                     <td class="border text-center">
                                                         <div class="form-check">
-                                                            <input class="form-check-input" type="radio" 
+                                                            <input class="form-check-input cursor-pointer" type="radio" 
                                                                 name="activities[{{ $index }}][status]" value="below_nab" 
                                                                 {{ $isShowDetail && $activityData && ($activityData['status'] ?? '') === 'below_nab' ? 'checked' : '' }}
                                                                 {{ $isShowDetail ? 'disabled' : '' }}>
-                                                            <label class="form-check-label">< NAB</label>
+                                                            <label class="cursor-default">< NAB</label>
                                                         </div>
                                                     </td>
                                                     <td class="border text-center">
                                                         <div class="form-check">
-                                                            <input class="form-check-input" type="radio" 
+                                                            <input class="form-check-input cursor-pointer" type="radio" 
                                                                 name="activities[{{ $index }}][status]" value="above_nab" 
                                                                 {{ $isShowDetail && $activityData && ($activityData['status'] ?? '') === 'above_nab' ? 'checked' : '' }}
                                                                 {{ $isShowDetail ? 'disabled' : '' }}>
-                                                            <label class="form-check-label">> NAB</label>
+                                                            <label class="cursor-default">> NAB</label>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -266,24 +266,24 @@
                                                     </td>
                                                     <td class="border text-center">
                                                         <div class="form-check">
-                                                            <input class="form-check-input" type="radio" 
+                                                            <input class="form-check-input cursor-pointer" type="radio" 
                                                                 name="work_areas[{{ $index }}][status]" value="below_nab"
                                                                 @if($isShowDetail)
                                                                     {{ isset($areaData['status']) && $areaData['status'] === 'below_nab' ? 'checked' : '' }}
                                                                     disabled
                                                                 @endif>
-                                                            <label class="form-check-label">< NAB</label>
+                                                            <label class="cursor-default">< NAB</label>
                                                         </div>
                                                     </td>
                                                     <td class="border text-center">
                                                         <div class="form-check">
-                                                            <input class="form-check-input" type="radio" 
+                                                            <input class="form-check-input cursor-pointer" type="radio" 
                                                                 name="work_areas[{{ $index }}][status]" value="above_nab"
                                                                 @if($isShowDetail)
                                                                     {{ isset($areaData['status']) && $areaData['status'] === 'above_nab' ? 'checked' : '' }}
                                                                     disabled
                                                                 @endif>
-                                                            <label class="form-check-label">> NAB</label>
+                                                            <label class="cursor-default">> NAB</label>
                                                         </div>
                                                     </td>
                                                 </tr>
