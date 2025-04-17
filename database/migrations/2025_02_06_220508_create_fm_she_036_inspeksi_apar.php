@@ -19,9 +19,13 @@ return new class extends Migration
             $table->string('halaman');
             $table->string('lokasi_inspeksi');
             $table->string('dibuat_oleh')->nullable();
+            $table->string('dibuat_oleh_nama')->nullable();
             $table->string('diperiksa_oleh')->nullable()->after('dibuat_oleh');
+            $table->string('diperiksa_oleh_nama')->nullable()->after('diperiksa_oleh');
             $table->string('diketahui_oleh')->nullable()->after('diperiksa_oleh');
+            $table->string('diketahui_oleh_nama')->nullable()->after('diketahui_oleh');
             $table->string('disetujui_oleh')->nullable()->after('diketahui_oleh');
+            $table->string('disetujui_oleh_nama')->nullable()->after('disetujui_oleh');
             $table->text('status')->nullable()->after('disetujui_oleh');
             $table->string('catatan')->nullable();
         });

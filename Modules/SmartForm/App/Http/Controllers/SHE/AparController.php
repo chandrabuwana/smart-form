@@ -151,15 +151,31 @@ class AparController extends Controller {
         $tgl = now()->toDateTimeString();
         $requested_by = $req->session()->get('user_id');
         $data = $req->input();
-        $diperiksa = DB::connection('sqlsrv2')->table(self::TABLE_KARYAWAN)
+        $dibuat_nama = DB::connection('sqlsrv2')->table(self::TABLE_KARYAWAN)
                     ->select('Nama')
-                    ->where('NIK',$req->diperiksa);
+                    ->where('NIK', $requested_by)
+                    ->value('Nama');
+        $diperiksa_nama = DB::connection('sqlsrv2')->table(self::TABLE_KARYAWAN)
+                    ->select('Nama')
+                    ->where('NIK', $req->diperiksa)
+                    ->value('Nama');
+        $diketahui_nama = DB::connection('sqlsrv2')->table(self::TABLE_KARYAWAN)
+                    ->select('Nama')
+                    ->where('NIK', $req->diketahui)
+                    ->value('Nama');
+        $disetujui_nama = DB::connection('sqlsrv2')->table(self::TABLE_KARYAWAN)
+                    ->select('Nama')
+                    ->where('NIK', $req->disetujui)
+                    ->value('Nama');
         $data_insert = [
             'dibuat_oleh' => $requested_by,
+            'dibuat_oleh_nama' => $dibuat_nama,
             'diperiksa_oleh' => $data['diperiksa'] ?? null,
-            'diperiksa_oleh_nama' => $diperiksa,
+            'diperiksa_oleh_nama' => $diperiksa_nama,
             'diketahui_oleh' => $data['diketahui'] ?? null,
+            'diketahui_oleh_nama' => $diketahui_nama,
             'disetujui_oleh' => $data['disetujui'] ?? null,
+            'disetujui_oleh_nama' => $disetujui_nama,
             'status' => json_encode(array_values([null, null, null])),
             'lokasi_inspeksi' => $data['lok1'],
             'no_dok' => $data['noDoc'],
@@ -559,7 +575,7 @@ class AparController extends Controller {
         );
         try {
             $data = DB::table($TABLE_MASTER)
-            ->select('id','tanggal as tgl','lokasi_inspeksi as lok1','dibuat_oleh as dibuat','diketahui_oleh as mengetahui','disetujui_oleh as approval','catatan')
+            ->select('id','tanggal as tgl','lokasi_inspeksi as lok1','dibuat_oleh as dibuat','diketahui_oleh as mengetahui','diketahui_oleh_nama as mengetahui_nama','disetujui_oleh as approval','catatan','dibuat_oleh_nama as dibuat_nama','diperiksa_oleh as diperiksa','diperiksa_oleh_nama as diperiksa_nama')
             ->where('id', $id)
             ->first();
             
@@ -576,7 +592,11 @@ class AparController extends Controller {
             $data_master['id'] = $data->id;
             $data_master['tgl'] = $data->tgl;
             $data_master['dibuat'] = $data->dibuat;
+            $data_master['dibuat_nama'] = $data->dibuat_nama;
+            $data_master['diperiksa'] = $data->diperiksa;
+            $data_master['diperiksa_nama'] = $data->diperiksa_nama;
             $data_master['mengetahui'] = $data->mengetahui;
+            $data_master['mengetahui_nama'] = $data->mengetahui_nama;
             $data_master['lok1'] = $data->lok1;
             $data_master['catatan'] = $data->catatan;
         } catch (Exception $ex) {
