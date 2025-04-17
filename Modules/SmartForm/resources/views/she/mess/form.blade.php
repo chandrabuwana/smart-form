@@ -514,6 +514,23 @@ Tidak ada peraturan yg berlaku atau berdampak kelingkungan perusahaan
 @endsection
 
 @section('custom-js')
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    $(function() {
+        $('#inspected_by_name').select2({
+            width: '100%'
+        })
+        $('#inspected_by2_name').select2({
+            width: '100%'
+        })
+        $('#inspected_by3_name').select2({
+            width: '100%'
+        })
+        $('#acknowledged_by_name').select2({
+            width: '100%'
+        })
+    });
+</script>
 <script>
     $(document).ready(function() {
         // Initialize the form
