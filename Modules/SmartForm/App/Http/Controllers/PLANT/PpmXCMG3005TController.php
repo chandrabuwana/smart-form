@@ -114,6 +114,7 @@ public function detail( $id ) {
     $data->fin_remark =  json_decode( $detail->fin_remark ) ;
 
 
+
     return view( 'smartform::plant.ppm_3005T.show-3005T', [ 'data' => $data, 'list' => $list, 'approvalList' => HrdHelper::getApprovalList()] );
 }
 
@@ -294,28 +295,28 @@ public function show( Request $request,$id){
     $data->eng_result = json_decode( $detail->eng_result );
     $data->eng_pr = json_decode( $detail->eng_pr );
     $data->eng_taggal = json_decode( $detail->eng_taggal );
-    $data->eng_remark = json_decode( $detail->eng_remark );
+    $data->eng_remark =  $detail->eng_remark ;
 
     $data->hyd_actual = json_decode( $detail->hyd_actual );
     $data->hyd_correction_made = json_decode( $detail->hyd_correction_made );
     $data->hyd_result = json_decode( $detail->hyd_result );
     $data->hyd_pr = json_decode( $detail->hyd_pr );
     $data->hyd_taggal = json_decode( $detail->hyd_taggal );
-    $data->hyd_remark = json_decode( $detail->hyd_remark );
+    $data->hyd_remark = $detail->hyd_remark ;
 
     $data->wo_actual = json_decode( $detail->wo_actual );
     $data->wo_correction_made = json_decode( $detail->wo_correction_made );
     $data->wo_result = json_decode( $detail->wo_result );
     $data->wo_pr = json_decode( $detail->wo_pr );
     $data->wo_taggal = json_decode( $detail->wo_taggal );
-    $data->wo_remark = json_decode( $detail->wo_remark );
+    $data->wo_remark =  $detail->wo_remark ;
 
     $data->fin_actual = json_decode( $detail->fin_actual );
     $data->fin_correction_made = json_decode( $detail->fin_correction_made );
     $data->fin_result = json_decode( $detail->fin_result );
     $data->fin_pr = json_decode( $detail->fin_pr );
     $data->fin_taggal = json_decode( $detail->fin_taggal );
-    $data->fin_remark = json_decode( $detail->fin_remark );
+    $data->fin_remark = $detail->fin_remark ;
 
     return view( 'smartform::plant.ppm_3005T.detail-3005T', [ 'data' => $data, 'nik' =>$nik_session, 'list' => $list, 'approvalList' => HrdHelper::getApprovalList() ] );
 }
