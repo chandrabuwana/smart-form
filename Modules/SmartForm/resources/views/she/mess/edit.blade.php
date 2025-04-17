@@ -268,81 +268,81 @@
                         <!-- Approval Section -->
                         <table class="table table-bordered mb-4">
                             <tr>
-                                <td width="15%">Diinspeksi Oleh</td>
-                                <td width="25%">
+                                <td width="15%" class="border">Diinspeksi Oleh</td>
+                                <td width="25%" class="border">
                                     {{ isset($data) ? $data->inspected_by_name : '' }}
                                     <input type="hidden" name="inspected_by_name" value="{{ isset($data) ? $data->inspected_by_name : '' }}">
                                     <input type="hidden" name="inspected_by_nik" value="{{ isset($data) ? $data->inspected_by_nik : '' }}">
                                 </td>
-                                <td width="10%">Status</td>
-                                <td width="15%">
+                                <td width="10%" class="border">Status</td>
+                                <td width="15%" class="border">
                                     <span class="badge bg-{{ isset($data) && $data->inspected_by_status == 'approved' ? 'success' : (isset($data) && $data->inspected_by_status == 'rejected' ? 'danger' : 'secondary') }}">
                                         {{ isset($data) ? ucfirst($data->inspected_by_status) : 'Pending' }}
                                     </span>
                                     <input type="hidden" name="inspected_by_status" value="{{ isset($data) ? $data->inspected_by_status : 'pending' }}">
                                 </td>
-                                <td width="10%">Tanggal</td>
-                                <td width="25%">
+                                <td width="10%" class="border">Tanggal</td>
+                                <td width="25%" class="border">
                                     {{ isset($data) && $data->inspection_date ? date('d/m/Y', strtotime($data->inspection_date)) : date('d/m/Y') }}
                                     <input type="hidden" name="inspection_date" value="{{ isset($data) ? $data->inspection_date : now()->format('Y-m-d') }}">
                                 </td>
                             </tr>
                             <tr>
-                                <td>Diinspeksi Oleh</td>
-                                <td>
+                                <td width="15%" class="border">Diinspeksi Oleh</td>
+                                <td width="25%" class="border">
                                     {{ isset($data) ? $data->inspected_by2_name : '' }}
                                     <input type="hidden" name="inspected_by2_name" value="{{ isset($data) ? $data->inspected_by2_name : '' }}">
                                     <input type="hidden" name="inspected_by2_nik" value="{{ isset($data) ? $data->inspected_by2_nik : '' }}">
                                 </td>
-                                <td>Status</td>
-                                <td>
+                                <td width="10%" class="border">Status</td>
+                                <td width="15%" class="border">
                                     <span class="badge bg-{{ isset($data) && $data->inspected_by2_status == 'approved' ? 'success' : (isset($data) && $data->inspected_by2_status == 'rejected' ? 'danger' : 'secondary') }}">
                                         {{ isset($data) ? ucfirst($data->inspected_by2_status) : 'Pending' }}
                                     </span>
                                     <input type="hidden" name="inspected_by2_status" value="{{ isset($data) ? $data->inspected_by2_status : 'pending' }}">
                                 </td>
-                                <td>Tanggal</td>
-                                <td>
+                                <td width="10%" class="border">Tanggal</td>
+                                <td width="25%" class="border">
                                     {{ isset($data) && $data->inspection_date2 ? date('d/m/Y', strtotime($data->inspection_date2)) : date('d/m/Y') }}
                                     <input type="hidden" name="inspection_date2" value="{{ isset($data) ? $data->inspection_date2 : now()->format('Y-m-d') }}">
                                 </td>
                             </tr>
                             <tr>
-                                <td>Diinspeksi Oleh</td>
-                                <td>
+                                <td width="15%" class="border">Diinspeksi Oleh</td>
+                                <td width="25%" class="border">
                                     {{ isset($data) ? $data->inspected_by3_name : '' }}
                                     <input type="hidden" name="inspected_by3_name" value="{{ isset($data) ? $data->inspected_by3_name : '' }}">
                                     <input type="hidden" name="inspected_by3_nik" value="{{ isset($data) ? $data->inspected_by3_nik : '' }}">
                                 </td>
-                                <td>Status</td>
-                                <td>
+                                <td width="10%" class="border">Status</td>
+                                <td width="15%" class="border">
                                     <span class="badge bg-{{ isset($data) && $data->inspected_by3_status == 'approved' ? 'success' : (isset($data) && $data->inspected_by3_status == 'rejected' ? 'danger' : 'secondary') }}">
                                         {{ isset($data) ? ucfirst($data->inspected_by3_status) : 'Pending' }}
                                     </span>
                                     <input type="hidden" name="inspected_by3_status" value="{{ isset($data) ? $data->inspected_by3_status : 'pending' }}">
                                 </td>
-                                <td>Tanggal</td>
-                                <td>
+                                <td width="10%" class="border">Tanggal</td>
+                                <td width="25%" class="border">
                                     {{ isset($data) && $data->inspection_date3 ? date('d/m/Y', strtotime($data->inspection_date3)) : date('d/m/Y') }}
                                     <input type="hidden" name="inspection_date3" value="{{ isset($data) ? $data->inspection_date3 : now()->format('Y-m-d') }}">
                                 </td>
                             </tr>
                             <tr>
-                                <td>Disetujui Oleh</td>
-                                <td>
+                                <td width="15%" class="border">Disetujui Oleh</td>
+                                <td width="25%" class="border">
                                     {{ isset($data) ? $data->acknowledged_by_name : '' }}
                                     <input type="hidden" name="acknowledged_by_name" value="{{ isset($data) ? $data->acknowledged_by_name : '' }}">
                                     <input type="hidden" name="acknowledged_by_nik" value="{{ isset($data) ? $data->acknowledged_by_nik : '' }}">
                                 </td>
-                                <td>Status</td>
-                                <td>
+                                <td width="10%" class="border">Status</td>
+                                <td width="15%" class="border">
                                     <span class="badge bg-{{ isset($data) && $data->acknowledged_by_status == 'approved' ? 'success' : (isset($data) && $data->acknowledged_by_status == 'rejected' ? 'danger' : 'secondary') }}">
                                         {{ isset($data) ? ucfirst($data->acknowledged_by_status) : 'Pending' }}
                                     </span>
                                     <input type="hidden" name="acknowledged_by_status" value="{{ isset($data) ? $data->acknowledged_by_status : 'pending' }}">
                                 </td>
-                                <td>Tanggal</td>
-                                <td>
+                                <td width="10%" class="border">Tanggal</td>
+                                <td width="25%" class="border">
                                     {{ isset($data) && $data->acknowledgment_date ? date('d/m/Y', strtotime($data->acknowledgment_date)) : date('d/m/Y') }}
                                     <input type="hidden" name="acknowledgment_date" value="{{ isset($data) ? $data->acknowledgment_date : now()->format('Y-m-d') }}">
                                 </td>
@@ -391,6 +391,23 @@
 @endsection
 
 @section('custom-js')
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    $(function() {
+        $('#inspected_by_name').select2({
+            width: '100%'
+        })
+        $('#inspected_by2_name').select2({
+            width: '100%'
+        })
+        $('#inspected_by3_name').select2({
+            width: '100%'
+        })
+        $('#acknowledged_by_name').select2({
+            width: '100%'
+        })
+    });
+</script>
 <script>
     $(document).ready(function() {
         // Initialize the form
