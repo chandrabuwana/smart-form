@@ -112,73 +112,13 @@ class SheMessController extends Controller
                     $record->checklist_items = [];
                 }
 
-                // Format survey_date
-                try {
-                    $dateStr = preg_replace(['/::/', '/\s+/'], [':', ' '], $record->survey_date);
-                    $dateStr = trim($dateStr);
-                    
-                    if (strpos($dateStr, 'AM') !== false || strpos($dateStr, 'PM') !== false) {
-                        $record->survey_date = date('Y-m-d', strtotime($dateStr));
-                    } else {
-                        $record->survey_date = date('Y-m-d', strtotime($record->survey_date));
-                    }
-                } catch (\Exception $e) {
-                    Log::error('Date parsing error for survey_date: ' . $e->getMessage() . ' | Original value: ' . $record->survey_date);
-                    $record->survey_date = now()->format('Y-m-d');
-                }
-
-                // Format completion_date
-                try {
-                    if ($record->completion_date) {
-                        $dateStr = preg_replace(['/::/', '/\s+/'], [':', ' '], $record->completion_date);
-                        $dateStr = trim($dateStr);
-                        
-                        if (strpos($dateStr, 'AM') !== false || strpos($dateStr, 'PM') !== false) {
-                            $record->completion_date = date('Y-m-d', strtotime($dateStr));
-                        } else {
-                            $record->completion_date = date('Y-m-d', strtotime($record->completion_date));
-                        }
-                    }
-                } catch (\Exception $e) {
-                    Log::error('Date parsing error for completion_date: ' . $e->getMessage() . ' | Original value: ' . $record->completion_date);
-                    $record->completion_date = null;
-                }
-
-                // Format inspection dates
-                foreach (['inspection_date', 'inspection_date2', 'inspection_date3'] as $dateField) {
-                    try {
-                        if ($record->$dateField) {
-                            $dateStr = preg_replace(['/::/', '/\s+/'], [':', ' '], $record->$dateField);
-                            $dateStr = trim($dateStr);
-                            
-                            if (strpos($dateStr, 'AM') !== false || strpos($dateStr, 'PM') !== false) {
-                                $record->$dateField = date('Y-m-d', strtotime($dateStr));
-                            } else {
-                                $record->$dateField = date('Y-m-d', strtotime($record->$dateField));
-                            }
-                        }
-                    } catch (\Exception $e) {
-                        Log::error("Date parsing error for {$dateField}: " . $e->getMessage() . " | Original value: " . $record->$dateField);
-                        $record->$dateField = null;
-                    }
-                }
-
-                // Format acknowledgment_date
-                try {
-                    if ($record->acknowledgment_date) {
-                        $dateStr = preg_replace(['/::/', '/\s+/'], [':', ' '], $record->acknowledgment_date);
-                        $dateStr = trim($dateStr);
-                        
-                        if (strpos($dateStr, 'AM') !== false || strpos($dateStr, 'PM') !== false) {
-                            $record->acknowledgment_date = date('Y-m-d', strtotime($dateStr));
-                        } else {
-                            $record->acknowledgment_date = date('Y-m-d', strtotime($record->acknowledgment_date));
-                        }
-                    }
-                } catch (\Exception $e) {
-                    Log::error('Date parsing error for acknowledgment_date: ' . $e->getMessage() . ' | Original value: ' . $record->acknowledgment_date);
-                    $record->acknowledgment_date = now()->format('Y-m-d');
-                }
+                // Format all date fields using the helper method
+                $this->formatDateField($record, 'survey_date');
+                $this->formatDateField($record, 'completion_date');
+                $this->formatDateField($record, 'inspection_date');
+                $this->formatDateField($record, 'inspection_date2');
+                $this->formatDateField($record, 'inspection_date3');
+                $this->formatDateField($record, 'acknowledgment_date');
 
                 return view('smartform::she.mess.form', [
                     'data' => $record,
@@ -296,17 +236,13 @@ class SheMessController extends Controller
                 $record->checklist_items = [];
             }
             
-            // Format dates for the form
-            foreach (['survey_date', 'completion_date', 'inspection_date', 'inspection_date2', 'inspection_date3', 'acknowledgment_date'] as $dateField) {
-                try {
-                    if (!empty($record->$dateField)) {
-                        $record->$dateField = date('Y-m-d', strtotime($record->$dateField));
-                    }
-                } catch (\Exception $e) {
-                    Log::error("Date parsing error for {$dateField}: " . $e->getMessage() . " | Original value: " . $record->$dateField);
-                    $record->$dateField = now()->format('Y-m-d');
-                }
-            }
+            // Format dates for the form using the helper method
+            $this->formatDateField($record, 'survey_date');
+            $this->formatDateField($record, 'completion_date');
+            $this->formatDateField($record, 'inspection_date');
+            $this->formatDateField($record, 'inspection_date2');
+            $this->formatDateField($record, 'inspection_date3');
+            $this->formatDateField($record, 'acknowledgment_date');
             
             // Return the edit form view with the record data
             return view('smartform::she.mess.edit', [
@@ -811,5 +747,48 @@ class SheMessController extends Controller
         }
 
         return sprintf("%s-%s-%03d", $prefix, $date, $sequence);
+    }
+
+    /**
+     * Helper method to format date fields
+     */
+    private function formatDateField(&$record, $fieldName)
+    {
+        if (empty($record->$fieldName)) {
+            return;
+        }
+
+        try {
+            // Clean up the date string
+            $dateStr = preg_replace(['/::/', '/\s+/'], [':', ' '], $record->$fieldName);
+            $dateStr = str_replace(':AM', ' AM', str_replace(':PM', ' PM', $dateStr));
+            $dateStr = trim($dateStr);
+            
+            if (strpos($dateStr, 'AM') !== false || strpos($dateStr, 'PM') !== false) {
+                // If it's in AM/PM format
+                try {
+                    $record->$fieldName = Carbon::createFromFormat('M d Y h:i:s A', $dateStr)->format('Y-m-d');
+                } catch (\Exception $e) {
+                    // Try another format
+                    try {
+                        $record->$fieldName = Carbon::parse($dateStr)->format('Y-m-d');
+                    } catch (\Exception $e2) {
+                        Log::error("Failed to parse $fieldName: " . $e2->getMessage());
+                        $record->$fieldName = now()->format('Y-m-d');
+                    }
+                }
+            } else {
+                // If it's in regular date format
+                try {
+                    $record->$fieldName = Carbon::parse($dateStr)->format('Y-m-d');
+                } catch (\Exception $e) {
+                    Log::error("Failed to parse $fieldName: " . $e->getMessage());
+                    $record->$fieldName = now()->format('Y-m-d');
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("Date parsing error for $fieldName: " . $e->getMessage() . ' | Original value: ' . $record->$fieldName);
+            $record->$fieldName = now()->format('Y-m-d');
+        }
     }
 }
