@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Modules\SmartForm\helpers\HrdHelper;
+use Illuminate\Support\Facades\Storage;
 
 class RegistrasiSupplierController extends Controller {
 
@@ -113,8 +114,9 @@ class RegistrasiSupplierController extends Controller {
             foreach($request->file('filenames') as $file)
             {
                 $name = time().rand(1,100).'.'.$file->extension();
-                $file->move(public_path('images/SM/registrasi_supplier'), $name);  
-                $files[] = $name;  
+                // $file->move(public_path('images/SM/registrasi_supplier'), $name);  
+                $file->storeAs('images/SM/registrasi_supplier', $name);  
+                $files[] = $name;
             }
          }
 
@@ -211,14 +213,14 @@ class RegistrasiSupplierController extends Controller {
         $nik_session = $request->session()->get('user_id', '');
         $data = $this->getDetail($request, $id, $nik_session);
         Log::debug("Data edit : ". json_encode($data, JSON_PRETTY_PRINT));
-        if($data['data']['diisi_oleh'] != $nik_session) {
-            return abort(401, 'Unauthoried Request!');
-        } else {
+        // if($data['data']['diisi_oleh'] != $nik_session) {
+        //     return abort(401, 'Unauthoried Request!');
+        // } else {
             return view( 'SmartForm::SM/registrasi-supplier/approve-registrasi-supplier', 
                 $data,
                 ['approvalList' => HrdHelper::getApprovalList()] 
             );
-        }
+        // }
     }
 
     private function getDetail(Request $request, $id, $nik) {
@@ -258,6 +260,14 @@ class RegistrasiSupplierController extends Controller {
             'diterima_oleh' => '',
             'disetujui_oleh' => '',
             'file_npwp' => '',
+            'file_sppkp' => '',
+            'file_nib_siup' => '',
+            'file_akta_perusahaan' => '',
+            'file_pakta_integritas' => '',
+            'file_ident_direk' => '',
+            'file_struktur_org' => '',
+            'file_profile_per' => '',
+            'file_lain' => '',
             'status_pajak_pkp' => '',
             'metode_pembayaran' => '',
             'npwp' => '',
@@ -277,7 +287,8 @@ class RegistrasiSupplierController extends Controller {
                     'id','nama_vendor','diisi_oleh','no_npwp','bidang_usaha','syarat_pembayaran','ppn','pph',
                     'nama_rekening_1','nomor_rekening_1','nama_bank_1','alamat_bank_1','nama_rekening_2','nomor_rekening_2','nama_bank_2','alamat_bank_2',
                     'alamat_kantor','kota','telepon','pj_1','pj_2','kode_pos','email','tlp_1','tlp_2','jabatan_1','jabatan_2','jabatan_1_email',
-                    'jabatan_2_email','diterima_oleh','disetujui_oleh','file_npwp','status_pajak_pkp','metode_pembayaran',
+                    'jabatan_2_email','diterima_oleh','disetujui_oleh','file_npwp','file_sppkp','file_nib_siup','file_akta_perusahaan','file_pakta_integritas',
+                    'file_ident_direk','file_struktur_org','file_profile_per','file_lain','status_pajak_pkp','metode_pembayaran',
                     'npwp','sppkp','nib_siup','akta_perusahaan','pakta_integritas','kartu_identitas_direktur','struktur_organisasi','profile_perusahaan','surat_lainnya'
                 )
                 ->where('id', $id)
@@ -323,6 +334,14 @@ class RegistrasiSupplierController extends Controller {
                 $data_master['diterima_oleh'] = $data->diterima_oleh;
                 $data_master['disetujui_oleh'] = $data->disetujui_oleh;
                 $data_master['file_npwp'] = $data->file_npwp;
+                $data_master['file_sppkp'] = $data->file_sppkp;
+                $data_master['file_nib_siup'] = $data->file_nib_siup;
+                $data_master['file_akta_perusahaan'] = $data->file_akta_perusahaan;
+                $data_master['file_pakta_integritas'] = $data->file_pakta_integritas;
+                $data_master['file_ident_direk'] = $data->file_ident_direk;
+                $data_master['file_struktur_org'] = $data->file_struktur_org;
+                $data_master['file_profile_per'] = $data->file_profile_per;
+                $data_master['file_lain'] = $data->file_lain;
                 $data_master['status_pajak_pkp'] = $data->status_pajak_pkp;
                 $data_master['metode_pembayaran'] = $data->metode_pembayaran;
                 $data_master['npwp'] = $data->npwp;
@@ -452,4 +471,33 @@ class RegistrasiSupplierController extends Controller {
         return response()->json( $response );
     }
 
+    function DownloadNpwpSupplier($fileNpwp) {
+        // $filePath = storage_path("app/uploads/{$file->generated_name}");
+
+        // Log::info("download : ".' fileName ' . Storage::exists('uploads/' . $fileName));
+        if (Storage::exists('images/SM/registrasi_supplier/' . $fileNpwp)) {
+            return Storage::download('images/SM/registrasi_supplier/' . $fileNpwp);
+        } else {
+            abort(404, 'File not found');
+        }
+    }
+
+    function DownloadSppkpSupplier($fileSppkp) {
+        // $filePath = storage_path("app/uploads/{$file->generated_name}");
+
+        // Log::info("download : ".' fileName ' . Storage::exists('uploads/' . $fileName));
+        if (Storage::exists('images/SM/registrasi_supplier/' . $fileSppkp)) {
+            return Storage::download('images/SM/registrasi_supplier/' . $fileSppkp);
+        } else {
+            abort(404, 'File not found');
+        }
+    }
+
+    function DownloadNibSupplier($fileNib) {
+        if (Storage::exists('images/SM/registrasi_supplier/' . $fileNib)) {
+            return Storage::download('images/SM/registrasi_supplier/' . $fileNib);
+        } else {
+            abort(404, 'File not found');
+        }
+    }
 }

@@ -305,6 +305,14 @@
                                                 <td>
                                                     {{$data['npwp']}}
                                                 </td>
+                                                @if (($data['file_npwp']) != "Tidak ada")
+                                                <td>
+                                                    {{$data['file_npwp']}}
+                                                    <a href="/bss-form/sm/file-npwp-supplier-download/{{$data['file_npwp']}}">Download</a>
+                                                </td>
+                                                @else
+                                                <td>-</td>
+                                                @endif
                                             </tr>
                                             <tr>
                                                 <td>SPPKP</td>
@@ -312,6 +320,14 @@
                                                 <td>
                                                     {{$data['sppkp']}}
                                                 </td>
+                                                @if (($data['file_sppkp']) != "Tidak ada")
+                                                <td>
+                                                    {{$data['file_sppkp']}}
+                                                    <a href="/bss-form/sm/file-sppkp-supplier-download/{{$data['file_sppkp']}}">Download</a>
+                                                </td>
+                                                @else
+                                                <td>-</td>
+                                                @endif
                                             </tr>
                                             <tr>
                                                 <td>NIB / SIUP</td>
@@ -319,6 +335,14 @@
                                                 <td>
                                                     {{$data['nib_siup']}}
                                                 </td>
+                                                @if (($data['file_nib_siup']) != "Tidak ada")
+                                                <td>
+                                                    {{$data['file_nib_siup']}}
+                                                    <a href="/bss-form/sm/file-nib-supplier-download/{{$data['file_nib_siup']}}">Download</a>
+                                                </td>
+                                                @else
+                                                <td>-</td>
+                                                @endif
                                             </tr>
                                             <tr>
                                                 <td>Akta Perusahaan</td>
@@ -326,6 +350,14 @@
                                                 <td>
                                                     {{$data['akta_perusahaan']}}
                                                 </td>
+                                                @if (($data['file_akta_perusahaan']) != "Tidak ada")
+                                                <td>
+                                                    {{$data['file_akta_perusahaan']}}
+                                                    <a href="/bss-form/sm/file-aktaper-supplier-download/{{$data['file_akta_perusahaan']}}">Download</a>
+                                                </td>
+                                                @else
+                                                <td>-</td>
+                                                @endif
                                             </tr>
                                             <tr>
                                                 <td>Pakta Integritas</td>
@@ -333,6 +365,14 @@
                                                 <td>
                                                     {{$data['pakta_integritas']}}
                                                 </td>
+                                                @if (($data['file_pakta_integritas']) != "Tidak ada")
+                                                <td>
+                                                    {{$data['file_pakta_integritas']}}
+                                                    <a href="/bss-form/sm/file-paktaint-supplier-download/{{$data['file_pakta_integritas']}}">Download</a>
+                                                </td>
+                                                @else
+                                                <td>-</td>
+                                                @endif
                                             </tr>
                                             <tr>
                                                 <td>Kartu Identitas Direktur</td>
@@ -340,6 +380,14 @@
                                                 <td>
                                                     {{$data['kartu_identitas_direktur']}}
                                                 </td>
+                                                @if (($data['file_ident_direk']) != "Tidak ada")
+                                                <td>
+                                                    {{$data['file_ident_direk']}}
+                                                    <a href="/bss-form/sm/file-identdir-supplier-download/{{$data['file_ident_direk']}}">Download</a>
+                                                </td>
+                                                @else
+                                                <td>-</td>
+                                                @endif
                                             </tr>
                                             <tr>
                                                 <td>Struktur Organisasi</td>
@@ -347,6 +395,14 @@
                                                 <td>
                                                     {{$data['struktur_organisasi']}}
                                                 </td>
+                                                @if (($data['file_struktur_org']) != "Tidak ada")
+                                                <td>
+                                                    {{$data['file_struktur_org']}}
+                                                    <a href="/bss-form/sm/file-strukturorg-supplier-download/{{$data['file_struktur_org']}}">Download</a>
+                                                </td>
+                                                @else
+                                                <td>-</td>
+                                                @endif
                                             </tr>
                                             <tr>
                                                 <td>Profile Perusahaan</td>
@@ -354,6 +410,14 @@
                                                 <td>
                                                     {{$data['profile_perusahaan']}}
                                                 </td>
+                                                @if (($data['file_profile_per']) != "Tidak ada")
+                                                <td>
+                                                    {{$data['file_profile_per']}}
+                                                    <a href="/bss-form/sm/file-profilper-supplier-download/{{$data['file_profile_per']}}">Download</a>
+                                                </td>
+                                                @else
+                                                <td>-</td>
+                                                @endif
                                             </tr>
                                             <tr>
                                                 <td>Surat Lainnya</td>
@@ -361,6 +425,14 @@
                                                 <td>
                                                     {{$data['surat_lainnya']}}
                                                 </td>
+                                                @if (($data['file_lain']) != "Tidak ada")
+                                                <td>
+                                                    {{$data['file_lain']}}
+                                                    <a href="/bss-form/sm/file-lain-supplier-download/{{$data['file_lain']}}">Download</a>
+                                                </td>
+                                                @else
+                                                <td>-</td>
+                                                @endif
                                             </tr>
                                         </table>
                                     </div>

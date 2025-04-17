@@ -165,10 +165,10 @@
 
                                                 @foreach($defaultActivities as $index => $activity)
                                                 <tr class="activity-row">
-                                                    <td>{{ $index + 1 }}</td>
-                                                    <td class="activity-name">{{ $activity }}</td>
-                                                    <td>< 85-100</td>
-                                                    <td>
+                                                    <td class="border text-center">{{ $index + 1 }}</td>
+                                                    <td class="activity-name border">{{ $activity }}</td>
+                                                    <td class="border text-center">< 85-100</td>
+                                                    <td class="border text-center">
                                                         @if($isShowDetail)
                                                             @php
                                                                 $activityData = null;
@@ -189,7 +189,7 @@
                                                                 value="{{ $activity }}">
                                                         @endif
                                                     </td>
-                                                    <td>
+                                                    <td class="border text-center">
                                                         <div class="form-check">
                                                             <input class="form-check-input" type="radio" 
                                                                 name="activities[{{ $index }}][status]" value="below_nab" 
@@ -198,7 +198,7 @@
                                                             <label class="form-check-label">< NAB</label>
                                                         </div>
                                                     </td>
-                                                    <td>
+                                                    <td class="border text-center">
                                                         <div class="form-check">
                                                             <input class="form-check-input" type="radio" 
                                                                 name="activities[{{ $index }}][status]" value="above_nab" 
@@ -247,10 +247,10 @@
 
                                                 @foreach($defaultWorkAreas as $index => $area)
                                                 <tr class="area-row">
-                                                    <td>{{ $index + 1 }}</td>
-                                                    <td class="area-name">{{ $area }}</td>
-                                                    <td>< 85-100</td>
-                                                    <td>
+                                                    <td class="border text-center">{{ $index + 1 }}</td>
+                                                    <td class="area-name border">{{ $area }}</td>
+                                                    <td class="border text-center">< 85-100</td>
+                                                    <td class="border text-center">
                                                         @if($isShowDetail)
                                                             @php
                                                                 $workAreasData = $maintenanceRecord->work_areas;
@@ -264,7 +264,7 @@
                                                                 value="{{ $area }}">
                                                         @endif
                                                     </td>
-                                                    <td>
+                                                    <td class="border text-center">
                                                         <div class="form-check">
                                                             <input class="form-check-input" type="radio" 
                                                                 name="work_areas[{{ $index }}][status]" value="below_nab"
@@ -275,7 +275,7 @@
                                                             <label class="form-check-label">< NAB</label>
                                                         </div>
                                                     </td>
-                                                    <td>
+                                                    <td class="border text-center">
                                                         <div class="form-check">
                                                             <input class="form-check-input" type="radio" 
                                                                 name="work_areas[{{ $index }}][status]" value="above_nab"
@@ -327,7 +327,7 @@
                                 <div class="col-md-6">
                                     <div class="input-group input-group-static mb-3">
                                         <label>Mengetahui</label>
-                                        <select name="acknowledged_by_name" id="acknowledged_by_select" class="form-control text-left" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                        <select name="acknowledged_by_name" id="acknowledged_by_select" class="form-control text-left px-5" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
                                             <option value="">-- Pilih Pengawas --</option>
                                             @foreach($approvalList as $user)
                                                 <option value="{{ $user->nama }}" 
@@ -425,6 +425,28 @@
 
 @section('custom-js')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    $(function() {
+        $('#acknowledged_by_select').select2({
+            placeholder: '-- Pilih Mengetahui --',
+            width: '100%'
+        }).on('select2:select', function (e) {
+            // Get the selected option's data-nik attribute
+            var selectedOption = $(this).find('option:selected');
+            var nik = selectedOption.data('nik');
+            
+            // Update the hidden NIK field
+            $('#acknowledged_by_nik').val(nik);
+        });
+        
+        // Set initial NIK value if option is already selected
+        var initialOption = $('#acknowledged_by_select').find('option:selected');
+        if (initialOption.val()) {
+            $('#acknowledged_by_nik').val(initialOption.data('nik'));
+        }
+    });
+</script>
 <script>
 $(document).ready(function() {
     // Form submission handling

@@ -316,7 +316,7 @@
                                                 </td>
                                                 <td>
                                                     <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fNpwp" required>
-                                                    <div class="invalid-feedback">Lampiran NPWP belum dipilih</div>
+                                                    <div class="invalid-feedback">Lampiran NPWP</div>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -337,7 +337,7 @@
                                                 </td>
                                                 <td>
                                                     <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fSppkp" required>
-                                                    <div class="invalid-feedback">Lampiran SPPKP belum dipilih</div>
+                                                    <div class="invalid-feedback">Lampiran SPPKP</div>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -358,7 +358,7 @@
                                                 </td>
                                                 <td>
                                                     <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fNib" required>
-                                                    <div class="invalid-feedback">Lampiran NIB/SIUP belum dipilih</div>
+                                                    <div class="invalid-feedback">Lampiran NIB/SIUP</div>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -379,7 +379,7 @@
                                                 </td>
                                                 <td>
                                                     <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fAkta" required>
-                                                    <div class="invalid-feedback">Lampiran Akta Perusahaan belum dipilih</div>
+                                                    <div class="invalid-feedback">Lampiran Akta Perusahaan</div>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -400,7 +400,7 @@
                                                 </td>
                                                 <td>
                                                     <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fPakta" required>
-                                                    <div class="invalid-feedback">Lampiran Pakta Integritas belum dipilih</div>
+                                                    <div class="invalid-feedback">Lampiran Pakta Integritas</div>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -421,7 +421,7 @@
                                                 </td>
                                                 <td>
                                                     <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fKartu" required>
-                                                    <div class="invalid-feedback">Lampiran Kartu Identitas Direktur belum dipilih</div>
+                                                    <div class="invalid-feedback">Lampiran Kartu Identitas Direktur</div>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -442,7 +442,7 @@
                                                 </td>
                                                 <td>
                                                     <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fStruktur" required>
-                                                    <div class="invalid-feedback">Lampiran Struktur Organisasi belum dipilih</div>
+                                                    <div class="invalid-feedback">Lampiran Struktur Organisasi</div>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -463,7 +463,7 @@
                                                 </td>
                                                 <td>
                                                     <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fProfile" required>
-                                                    <div class="invalid-feedback">Lampiran Profile Perusahaan belum dipilih</div>
+                                                    <div class="invalid-feedback">Lampiran Profile Perusahaan</div>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -484,7 +484,7 @@
                                                 </td>
                                                 <td>
                                                     <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fSurat" required>
-                                                    <div class="invalid-feedback">Lampiran lainnya belum dipilih</div>
+                                                    <div class="invalid-feedback">Lampiran lainnya</div>
                                                 </td>
                                             </tr>
                                         </table>
@@ -525,10 +525,11 @@
                         
                         <div class="card-footer">
                             <div class="d-flex align-items-center">
-                                <button class="btn btn-primary ms-auto uploadBtn" type="submit">
+                                <button class="btn btn-primary ms-auto uploadBtn" type="submit" style="margin:5px">
                                     <i class="fas fa-save"></i>
                                     Submit Form
                                 </button>
+                                <a href="{{url()->previous()}}" class="btn btn-success" style="margin:5px"><i class="fas fa-cancel"></i> Cancel</a>
                             </div>
                         </div>
                     </form>
@@ -563,7 +564,7 @@
                 if($(this).val() =='Ada') {
                     $('#fNpwp').prop('required',true);
                 } else {
-                    $('#fNpwp').prop('required',false);
+                    $('#fNpwp').prop('hidden',true);
                 }
             });
         });
@@ -573,17 +574,17 @@
                 if($(this).val() =='Ada') {
                     $('#fSppkp').prop('required',true);
                 } else {
-                    $('#fSppkp').prop('required',false);
+                    $('#fSppkp').prop('hidden',true);
                 }
             });
         });
-        // NIB/SIP
+        // NIB/SIUP
         $(document).ready(function(){
             $('input[name="rNib"]').change(function () {
                 if($(this).val() =='Ada') {
                     $('#fNib').prop('required',true);
                 } else {
-                    $('#fNib').prop('required',false);
+                    $('#fNib').prop('hidden',true);
                 }
             });
         });
@@ -593,7 +594,7 @@
                 if($(this).val() =='Ada') {
                     $('#fAkta').prop('required',true);
                 } else {
-                    $('#fAkta').prop('required',false);
+                    $('#fAkta').prop('hidden',true);
                 }
             });
         });
@@ -603,7 +604,7 @@
                 if($(this).val() =='Ada') {
                     $('#fPakta').prop('required',true);
                 } else {
-                    $('#fPakta').prop('required',false);
+                    $('#fPakta').prop('hidden',true);
                 }
             });
         });
@@ -613,7 +614,7 @@
                 if($(this).val() =='Ada') {
                     $('#fKartu').prop('required',true);
                 } else {
-                    $('#fKartu').prop('required',false);
+                    $('#fKartu').prop('hidden',true);
                 }
             });
         });
@@ -623,7 +624,7 @@
                 if($(this).val() =='Ada') {
                     $('#fStruktur').prop('required',true);
                 } else {
-                    $('#fStruktur').prop('required',false);
+                    $('#fStruktur').prop('hidden',true);
                 }
             });
         });
@@ -633,7 +634,7 @@
                 if($(this).val() =='Ada') {
                     $('#fProfile').prop('required',true);
                 } else {
-                    $('#fProfile').prop('required',false);
+                    $('#fProfile').prop('hidden',true);
                 }
             });
         });
@@ -643,7 +644,7 @@
                 if($(this).val() =='Ada') {
                     $('#fSurat').prop('required',true);
                 } else {
-                    $('#fSurat').prop('required',false);
+                    $('#fSurat').prop('hidden',true);
                 }
             });
         });
