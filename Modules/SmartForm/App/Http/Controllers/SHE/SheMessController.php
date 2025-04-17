@@ -45,25 +45,26 @@ class SheMessController extends Controller
             // Get records
             $records = $query->orderBy('created_at', 'desc')->get();
 
-            // Format dates using Carbon
+            // Format dates using the helper method
             $records->transform(function($record) {
-                // Handle survey_date
-                if (isset($record->survey_date)) {
-                    try {
-                        // For SQL Server, we need to handle dates differently
-                        // Convert to timestamp first if it's not already a valid date
-                        if (strtotime($record->survey_date) <= 0) {
-                            // This is likely a SQL Server date format issue
-                            Log::info('Invalid date detected: ' . $record->survey_date);
-                            // Default to current date if we can't parse it
-                            $record->survey_date = now()->format('Y-m-d');
-                        } else {
-                            $record->survey_date = date('Y-m-d', strtotime($record->survey_date));
-                        }
-                    } catch (\Exception $e) {
-                        Log::error('Date parsing error: ' . $e->getMessage());
-                        $record->survey_date = now()->format('Y-m-d');
-                    }
+                // Format survey_date using the helper method
+                $this->formatDateField($record, 'survey_date');
+                
+                // Format other date fields if they exist
+                if (isset($record->completion_date)) {
+                    $this->formatDateField($record, 'completion_date');
+                }
+                if (isset($record->inspection_date)) {
+                    $this->formatDateField($record, 'inspection_date');
+                }
+                if (isset($record->inspection_date2)) {
+                    $this->formatDateField($record, 'inspection_date2');
+                }
+                if (isset($record->inspection_date3)) {
+                    $this->formatDateField($record, 'inspection_date3');
+                }
+                if (isset($record->acknowledgment_date)) {
+                    $this->formatDateField($record, 'acknowledgment_date');
                 }
                 
                 return $record;
