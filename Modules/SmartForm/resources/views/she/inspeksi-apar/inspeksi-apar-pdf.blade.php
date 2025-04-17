@@ -288,21 +288,21 @@ table.atas td {
                     <td>: {{ $data['dibuat_nama'] }}</td>
                     <td>NIK : {{ $data['dibuat'] }}</td>
                     <td>TTD :</td>
-                    <td>TGL :</td>
+                    <td>TGL : {{ $data['tgl'] }}</td>
                 </tr>
                 <tr>
                     <td>Diperiksa Oleh</td>
                     <td>: {{ $data['diperiksa_nama'] }}</td>
                     <td>NIK : {{ $data['diperiksa'] }}</td>
                     <td>TTD :</td>
-                    <td>TGL :</td>
+                    <td>TGL : {{ $data['tgl_diperiksa'] }}</td>
                 </tr>
                 <tr>
                     <td>Diketahui Oleh</td>
                     <td>: {{ $data['mengetahui_nama'] }}</td>
                     <td>NIK : {{ $data['mengetahui'] }}</td>
                     <td>TTD :</td>
-                    <td>TGL :</td>
+                    <td>TGL : {{ $data['tgl_diketahui'] }}</td>
                 </tr>
             </table>
         </div>
