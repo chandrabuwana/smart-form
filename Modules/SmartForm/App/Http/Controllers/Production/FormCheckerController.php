@@ -152,7 +152,7 @@ class FormCheckerController extends Controller {
         $users = HrdHelper::getApprovalList();
         $sites = DB::connection('sqlsrv2')->table('tsite')->select(columns: 'KodeST')->get();
 
-        return view( 'smartform::production.form_checker.detail-form-checker', [
+        return view( 'smartform::production.form_checker.detail-form-checker', [ 'isShowDetail' => true,
             'record' => $record, 'dataDS' => $dataDS, 'dataNS' => $dataNS, 'nik'=>$nik_session, 'time_details' => $time_details, 'nonNullCounts' => $nonNullCounts,  'approvalList' => $users, 'users' => $users, 'sites' => $sites
 
         ] );
@@ -191,10 +191,23 @@ class FormCheckerController extends Controller {
 
         }
 
+        $alat_angkut = DB::table( 'alat_angkut_data' )->get();
+       
         $users = HrdHelper::getApprovalList();
         $sites = DB::connection('sqlsrv2')->table('tsite')->select(columns: 'KodeST')->get();
 
-        return view( 'smartform::production.form_checker.form-checker', ['dataDS' => $dataDS, 'nik'=>$nik_session, 'dataNS'=> $dataNS,  'approvalList' => $users, 'users' => $users, 'sites' => $sites] );
+        return view( 'smartform::production.form_checker.form-checker', ['alat_angkut'=>$alat_angkut,'dataDS' => $dataDS, 'nik'=>$nik_session, 'dataNS'=> $dataNS,  'approvalList' => $users, 'users' => $users, 'sites' => $sites] );
+    }
+
+    public function getAlatBySite(Request $request) {
+        $site = $request->get('site');
+
+        $alat = DB::table('alat_angkut_data')
+            ->where('site', $site)
+            ->select('no_lambung')
+            ->get();
+    
+        return response()->json($alat);
     }
 
     public function detail($id, Request $request) {
@@ -546,7 +559,7 @@ class FormCheckerController extends Controller {
 
             return response()->json( [
                 'success' => false,
-                'message' => 'Data gagal disimpan'
+                'message' => $e->getMessage(),
             ] );
 
         }

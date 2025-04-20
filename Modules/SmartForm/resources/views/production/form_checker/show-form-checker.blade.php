@@ -95,10 +95,12 @@
                                         <label for="operator_load" class="ms-0">Nama Operator Loader</label>
                                         {{-- <input type="text" class="form-control" id="operator_load"
                                             value="{{ $record->operator_leader }}" name="operator_load"> --}}
-                                        <select class="form-control form-select" id="operator_load" name="operator_load" required>
+                                        <select class="form-control form-select" id="operator_load" name="operator_load"
+                                            required>
                                             <option disabled>-- Select Nama Operator --</option>
                                             @forelse($users as $user)
-                                                <option value="{{ $user->nik ?? '' }}" {{ $record->operator_leader == $user->nik ? 'selected' : '' }}>
+                                                <option value="{{ $user->nik ?? '' }}"
+                                                    {{ $record->operator_leader == $user->nik ? 'selected' : '' }}>
                                                     {{ $user->nama ?? 'User tidak tersedia' }}
                                                 </option>
                                             @empty
@@ -119,17 +121,7 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="site" class="ms-0">Site</label>
-                                        <select class="form-control form-select" id="site" name="site" required>
-                                            <option disabled>-- Select Site --</option>
-                                            @forelse($sites as $site)
-                                                <option value="{{ $site->KodeST ?? '' }}" {{ $record->site == $site->KodeST ? 'selected' : '' }}>
-                                                    {{ $site->KodeST ?? 'Site tidak tersedia' }}
-                                                </option>
-                                            @empty
-                                                <option>Data site tidak ditemukan</option>
-                                            @endforelse
-                                        </select>
-
+                                        {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('site', strtolower($record->site)) !!}
                                     </div>
                                 </div>
                             </div>
@@ -156,17 +148,19 @@
                                                         style="text-align: center; background-color: #eee7e8; color: rgb(11, 10, 10);"
                                                         placeholder="Input Nama Operator"
                                                         value="{{ $record->nama_operator[$index] }}"> --}}
-                                                        <select class="form-control form-select" name="nama_operator" required
-                                                            style="text-align: center; background-color: #eee7e8; color: rgb(11, 10, 10);">
-                                                            <option disabled>-- Select Nama Operator --</option>
-                                                            @forelse($users as $user)
-                                                                <option value="{{ $user->nik ?? '' }}" {{ $record->nama_operator[$index] == $user->nik ? 'selected' : '' }}>
-                                                                    {{ $user->nama ?? 'User tidak tersedia' }}
-                                                                </option>
-                                                            @empty
-                                                                <option>Data karyawan tidak ditemukan</option>
-                                                            @endforelse
-                                                        </select>
+                                                    <select class="form-control form-select" name="nama_operator"
+                                                        id="nama_operator" required
+                                                        style="text-align: center; background-color: #eee7e8; color: rgb(11, 10, 10);">
+                                                        <option disabled>-- Select Nama Operator --</option>
+                                                        @forelse($users as $user)
+                                                            <option value="{{ $user->nik ?? '' }}"
+                                                                {{ $record->nama_operator[$index] == $user->nik ? 'selected' : '' }}>
+                                                                {{ $user->nama ?? 'User tidak tersedia' }}
+                                                            </option>
+                                                        @empty
+                                                            <option>Data karyawan tidak ditemukan</option>
+                                                        @endforelse
+                                                    </select>
                                                 </th>
                                                 <th>RITASI</th>
                                             </tr>
@@ -473,7 +467,13 @@
 
         idcounter = 1;
 
-
+        $(document).ready(function() {
+            $('#dibuat_oleh').select2();
+            $('#diperiksa').select2();
+            $('#site').select2();
+            $('#operator_load').select2();
+            $('#nama_operator').select2();
+        });
         document.getElementById('addNewAlatAngkut').addEventListener('click', function() {
             var mainTable = document.getElementById('mainTable');
             var newTable = mainTable.cloneNode(true);

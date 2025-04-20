@@ -86,7 +86,8 @@
                                         <label for="operator_load" class="ms-0">Nama Operator Loader</label>
                                         {{-- <input type="text" class="form-control" id="operator_load" name="operator_load"
                                             required> --}}
-                                        <select class="form-control form-select" id="operator_load" name="operator_load" required>
+                                        <select class="form-control form-select" id="operator_load" name="operator_load"
+                                            required>
                                             <option disabled selected>-- Select Nama Operator --</option>
                                             @forelse($users as $user)
                                                 <option value="{{ $user->nik ?? '' }}">
@@ -111,18 +112,16 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="site" class="ms-0">Site</label>
-                                        <select class="form-control form-select" id="site" name="site" required>
-                                            <option disabled selected>-- Select Site --</option>
-                                            @forelse($sites as $site)
-                                                <option value="{{ $site->KodeST ?? '' }}">
-                                                    {{ $site->KodeST ?? 'Site tidak tersedia' }}
-                                                </option>
-                                            @empty
-                                                <option>Data site tidak ditemukan</option>
-                                            @endforelse
-                                        </select>
+                                        {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('site') !!}
 
                                     </div>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <select class="form-control form-select" id="multiple_angkut"
+                                        name="multiple_angkut[]" multiple>
+                                    </select>
                                 </div>
                             </div>
                             <a class="btn btn-primary" id="addNewAlatAngkut">+ New Alat Angkut</a>
@@ -133,9 +132,10 @@
                                             <th>Alat Angkut</th>
                                             <th>CN</th>
                                             <th colspan="4" style="text-align: center;">
-                                                <input class="form-control" type="text" name="alat_angkut" required
-                                                    placeholder="Input Alat Angkut"
-                                                    style="text-align: center; background-color: #eee7e8; color: rgb(11, 10, 10);">
+                                                <select class="form-control" name="alat_angkut" id="alat_angkut"
+                                                    style=" background-color: #eee7e8; color: rgb(11, 10, 10);" required>
+                                                    <option value="">-- Pilih Alat Angkut --</option>
+                                                </select>
                                             </th>
 
                                             <th rowspan="2" style="text-align: center; vertical-align: middle;">
@@ -145,11 +145,10 @@
                                         <tr>
                                             <th>Nama Operator</th>
                                             <th colspan="5" style="text-align: center;">
-                                                {{-- <input class="form-control" type="text" name="nama_operator" required
-                                                    style="text-align: center; background-color: #eee7e8; color: rgb(11, 10, 10);"
-                                                    placeholder="Input Nama Operator"> --}}
-                                                <select class="form-control form-select" name="nama_operator" required
-                                                    style="text-align: center; background-color: #eee7e8; color: rgb(11, 10, 10);">
+
+                                                <select class="form-control form-select" name="nama_operator"
+                                                    id="nama_operator" required
+                                                    style=" background-color: #eee7e8; color: rgb(11, 10, 10);">
                                                     <option disabled selected>-- Select Nama Operator --</option>
                                                     @forelse($users as $user)
                                                         <option value="{{ $user->nik ?? '' }}">
@@ -270,7 +269,8 @@
                                 <div class="col-6">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="diperiksa" class="ms-0">Diperiksa Oleh</label>
-                                        <select name="diperiksa_oleh" id="diperiksa" class="form-control form-select" required>
+                                        <select name="diperiksa_oleh" id="diperiksa" class="form-control form-select"
+                                            required>
                                             <option disabled selected>-- Select Approval --</option>
                                             @foreach ($approvalList as $data)
                                                 <option value="{{ $data->nik }}">{{ $data->nama }}</option>
@@ -422,10 +422,60 @@
             });
         });
 
+        $(document).ready(function() {
+            $('#site').on('change', function() {
+                var selectedSite = $(this).val();
 
+                $.ajax({
+                    url: '{{ route('get.alat.by.site') }}', // Ganti sesuai route kamu
+                    type: 'GET',
+                    data: {
+                        site: selectedSite
+                    },
+                    success: function(data) {
+                        $('#multiple_angkut').empty(); // kosongkan dulu
+
+                        if (data.length > 0) {
+                            $.each(data, function(index, item) {
+                                $('#multiple_angkut').append(
+                                    `<option value="${item.no_lambung}">${item.no_lambung}</option>`
+                                );
+                            });
+                        }
+                    },
+                    error: function(xhr) {
+                        console.log(xhr.responseText);
+                    }
+                });
+            });
+        });
         $(document).ready(function() {
             $('#dibuat_oleh').select2();
             $('#diperiksa').select2();
+            $('#site').select2();
+            $('#alat_angkut').select2();
+            $('#operator_load').select2();
+            $('#nama_operator').select2();
+            $('#multiple_angkut').select2({
+                placeholder: "Pilih kategori",
+                allowClear: true,
+                maximumSelectionLength: 6
+            });
+            $('#multiple_angkut').on('change', function() {
+                let selectedValues = $(this).val();
+                let $alatDropdown = $('#alat_angkut');
+
+                $alatDropdown.empty();
+
+                if (selectedValues && selectedValues.length > 0) {
+                    $alatDropdown.append('<option value="">-- Pilih Alat Angkut --</option>');
+                    selectedValues.forEach(function(val) {
+                        $alatDropdown.append('<option value="' + val + '">' + val + '</option>');
+                    });
+                } else {
+                    $alatDropdown.append('<option value="">-- Tidak ada pilihan --</option>');
+                }
+            });
         });
 
         document.getElementById('shiftSelector').addEventListener('change', function() {
