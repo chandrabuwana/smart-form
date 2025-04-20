@@ -479,6 +479,15 @@
 @endsection
 
 @section('custom-js')
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<script>
+    $(function() {
+        $('#inspector_1_name, #inspector_2_name, #inspector_3_name, #acknowledged_by_name').select2({
+            placeholder: '-- Pilih Nama --',
+            width: '100%'
+        });
+    });
+</script>
 <script>
     $(document).ready(function() {
         // Helper function to format dates properly
