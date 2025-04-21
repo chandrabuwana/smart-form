@@ -249,16 +249,20 @@
                                             </tr>
                                             <tr>
                                                 <td class="border">
-                                                    <input type="text" name="inspector_1_name" class="form-control text-center" 
-                                                    placeholder="Nama Lengkap"
-                                                    value="{{ $isShowDetail ? $record->inspector_1_name : session('username') }}"
-                                                    {{ $isShowDetail ? 'disabled' : '' }} required>
+                                                    <select name="inspector_1_name" id="inspector_1_name" class="form-control text-center" {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                                        <option value="">-- Pilih Pengawas 1 --</option>
+                                                        @foreach($approvalList as $user)
+                                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $isShowDetail && $record->inspector_1_name == $user->nama ? 'selected' : '' }}>
+                                                                {{ $user->nama }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
                                                 </td>
                                                 <td class="border">
-                                                    <input type="text" name="inspector_1_nik" class="form-control text-center" 
+                                                    <input type="text" name="inspector_1_nik" id="inspector_1_nik" class="form-control text-center" 
                                                     placeholder="NIK"
-                                                    value="{{ $isShowDetail ? $record->inspector_1_nik : session('user_id') }}"
-                                                    {{ $isShowDetail ? 'disabled' : '' }} required>
+                                                    value="{{ $isShowDetail ? $record->inspector_1_nik : '' }}"
+                                                    {{ $isShowDetail ? 'disabled' : '' }} readonly>
                                                 </td>
                                                 <td class="border">
                                                     @if($isShowDetail)
@@ -603,6 +607,10 @@
         $('#she_name').on('change', function() {
             var nik = $(this).find('option:selected').data('nik');
             $('#she_nik').val(nik);
+        });
+        $('#inspector_1_name').on('change', function() {
+            var nik = $(this).find('option:selected').data('nik');
+            $('#inspector_1_nik').val(nik);
         });
     });
     </script>
