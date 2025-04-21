@@ -43,7 +43,19 @@
                                         <div class="card col-md-6 was-validated">
                                         <table class="w-full">
                                             <tr>
-                                                <td style="width:40%">Nama Vendor (CV/PT)</td>
+                                                <td style="width:40%">Jenis Badan Usaha</td>
+                                                <td>:</td>
+                                                <td>
+                                                    <select class="form-select form-select-sm input-text" aria-label="Default select example" id="dJenisUsaha" name="dJenisUsaha" required>
+                                                        <option value="{{ $data['jenis_badan_usaha'] }}" selected>{{ $data['jenis_badan_usaha'] }}</option>    
+                                                        <option value="CV">CV</option>
+                                                        <option value="PT">PT</option>
+                                                        <option value="Perorangan">Perorangan</option>
+                                                    </select> 
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="width:40%">Nama Vendor (CV/PT/Perorangan)</td>
                                                 <td>:</td>
                                                 <td>
                                                     <input type="text" style="text-transform:uppercase" class="form-control" id="tVendorName" name="tVendorName" value="{{$data['nama_vendor']}}" required>

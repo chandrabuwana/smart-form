@@ -38,12 +38,28 @@
                         {{ csrf_field() }}
                         <div class="my-3">
                             <div class="mb-1">
-                                <label class="form-label">Informasi Umum Vendor / Vendor Information:</label>
+                                <label class="form-label fw-bold">Informasi Umum Vendor / Vendor Information:</label>
                                 <div class="row mb-2">
                                         <div class="card col-md-6 was-validated">
                                         <table class="w-full">
                                             <tr>
-                                                <td style="width:40%">Nama Vendor (CV/PT)</td>
+                                                <td style="width:40%">Jenis Badan Usaha</td>
+                                                <td>:</td>
+                                                <td>
+                                                    <select class="form-select form-select-sm input-text" aria-label="Default select example" id="dJenisUsaha" name="dJenisUsaha" required>
+                                                        <option value="" disabled selected>-- select Jenis Badan Usaha --</option>
+                                                        @forelse($jenisbu as $code => $value)
+                                                            <option value="{{ $code }}">
+                                                                {{ $value }}
+                                                            </option>
+                                                        @empty
+                                                            <option>Data jenis badan usaha tidak ditemukan</option>
+                                                        @endforelse
+                                                    </select> 
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="width:40%">Nama Vendor (CV/PT/Perorangan)</td>
                                                 <td>:</td>
                                                 <td>
                                                     <input type="text" style="text-transform:uppercase" class="form-control" id="tVendorName" name="tVendorName" placeholder="Vendor's Name" required>
@@ -86,7 +102,7 @@
                             </div>
 
                             <div class="mb-1">
-                                <label class="form-label">Informasi Referensi Transaksi Pembayaran/ Payment Reference :</label>
+                                <label class="form-label fw-bold">Informasi Referensi Transaksi Pembayaran/ Payment Reference :</label>
                                 <div class="row mb-2">
                                         <div class="card col-md-6 was-validated">
                                         <table class="w-full">
@@ -114,7 +130,14 @@
                                                 <td style="width:40%">Syarat Pembayaran (hari)</td>
                                                 <td>:</td>
                                                 <td>
-                                                    <input type="number" onkeypress="return event.charCode >= 48" min="1" class="form-control" id="tSyaratPemb" name="tSyaratPemb" placeholder="Terms of Payment (day)" required>
+                                                    <select class="form-select form-select-sm input-text" aria-label="Default select example" id="tSyaratPemb" name="tSyaratPemb" required>
+                                                        <option value="" selected>-- Pilih Syarat Pembayaran --</option>
+                                                        <option value="0">0</option>
+                                                        <option value="14">14</option>
+                                                        <option value="30">30</option>
+                                                        <option value="45">45</option>
+                                                        <option value="60">60</option>
+                                                    </select>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -193,7 +216,7 @@
                             </div>
 
                             <div class="mb-1">
-                                <label class="form-label">Informasi Alamat dan Kontak / Address and Contact Information :</label>
+                                <label class="form-label fw-bold">Informasi Alamat dan Kontak / Address and Contact Information :</label>
                                 <div class="row mb-2">
                                         <div class="card col-md-6 was-validated">
                                         <table class="w-full">
@@ -294,7 +317,7 @@
                             </div>
 
                             <div class="mb-1">
-                                <label class="form-label">Lampiran Dokumen /Attached Documents :</label>
+                                <label class="form-label fw-bold">Lampiran Dokumen /Attached Documents :</label>
                                 <div class="row mb-2">
                                         <div class="card col-md-12 was-validated">
                                         <table class="w-full">
@@ -496,8 +519,8 @@
 
                         <table style="width:100%" >
                           <tr>
-                            <td>Diisi Oleh/Filled by,</td>
-                            <td>: {{ session('username') }} {{ session('user_id') }}
+                            <td>Diisi Oleh/Filled by, :</td>
+                            <td><input type="text" style="text-transform:uppercase" class="form-control" id="tFiller" name="tFiller" placeholder="Filler Name" required>
                             </td>
                             <td>Diterima Oleh/Received by, :</td>
                             <td> 
@@ -510,7 +533,7 @@
                                     @endforeach
                                 </select>
                             </td>
-                            <td>Disetujui Oleh/Approved by, :</td>
+                            <!-- <td>Disetujui Oleh/Approved by, :</td>
                             <td>
                                 <select name="dApproved" id="dApproved" class="form-control text-center" required>
                                     <option disabled selected>-- Pilih Approver --</option>
@@ -519,7 +542,7 @@
                                         </option>
                                     @endforeach
                                 </select>
-                            </td>
+                            </td> -->
                           </tr>
                         </table>
                         
@@ -574,7 +597,7 @@
                 if($(this).val() =='Ada') {
                     $('#fSppkp').prop('required',true);
                 } else {
-                    $('#fSppkp').prop('hidden',true);
+                    $('#fSppkp').prop('required',false);
                 }
             });
         });
@@ -584,7 +607,7 @@
                 if($(this).val() =='Ada') {
                     $('#fNib').prop('required',true);
                 } else {
-                    $('#fNib').prop('hidden',true);
+                    $('#fNib').prop('required',false);
                 }
             });
         });
@@ -594,7 +617,7 @@
                 if($(this).val() =='Ada') {
                     $('#fAkta').prop('required',true);
                 } else {
-                    $('#fAkta').prop('hidden',true);
+                    $('#fAkta').prop('required',false);
                 }
             });
         });
@@ -604,7 +627,7 @@
                 if($(this).val() =='Ada') {
                     $('#fPakta').prop('required',true);
                 } else {
-                    $('#fPakta').prop('hidden',true);
+                    $('#fPakta').prop('required',false);
                 }
             });
         });
@@ -614,7 +637,7 @@
                 if($(this).val() =='Ada') {
                     $('#fKartu').prop('required',true);
                 } else {
-                    $('#fKartu').prop('hidden',true);
+                    $('#fKartu').prop('required',false);
                 }
             });
         });
@@ -624,7 +647,7 @@
                 if($(this).val() =='Ada') {
                     $('#fStruktur').prop('required',true);
                 } else {
-                    $('#fStruktur').prop('hidden',true);
+                    $('#fStruktur').prop('required',false);
                 }
             });
         });
@@ -634,7 +657,7 @@
                 if($(this).val() =='Ada') {
                     $('#fProfile').prop('required',true);
                 } else {
-                    $('#fProfile').prop('hidden',true);
+                    $('#fProfile').prop('required',false);
                 }
             });
         });
@@ -644,7 +667,7 @@
                 if($(this).val() =='Ada') {
                     $('#fSurat').prop('required',true);
                 } else {
-                    $('#fSurat').prop('hidden',true);
+                    $('#fSurat').prop('required',false);
                 }
             });
         });

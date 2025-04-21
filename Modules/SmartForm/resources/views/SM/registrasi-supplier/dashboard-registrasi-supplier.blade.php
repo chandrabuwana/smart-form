@@ -119,6 +119,7 @@
                                 <tr>
                                     <th data-field="id" data-align="left" data-halign="text-center" data-sortable="true">Unik ID</th>
                                     <th data-field="diisi_oleh" data-align="left" data-halign="text-center" data-sortable="true">Dibuat Oleh</th>
+                                    <th data-field="created_at" data-align="left" data-halign="text-center" data-sortable="true">Tgl Dibuat</th>
                                     <th data-field="nama_vendor" data-align="left" data-halign="text-center" data-sortable="true">Nama Supplier</th>
                                     <!-- <th data-field="no_npwp" data-align="left" data-halign="text-center" data-sortable="true">No NPWP</th> -->
                                     <!-- <th data-field="bidang_usaha" data-align="left" data-halign="text-center" data-sortable="true">Bidang Usaha</th> -->
