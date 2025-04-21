@@ -193,9 +193,11 @@
                                 <div class="col-12 text-end">
                                     @if($isShowDetail)
                                         <a href="{{ route('prod.coal.dashboard') }}" class="btn btn-secondary">Back</a>
-                                        <a href="{{ route('prod.coal.export', ['id' => $record->id]) }}" class="btn btn-primary">
-                                            <i class="fas fa-file-export"></i> Export
-                                        </a>
+                                        @if(isset($record->approval_status) && $record->approval_status == 'approved')
+                                            <a href="{{ route('prod.coal.export', ['id' => $record->id]) }}" class="btn btn-primary">
+                                                <i class="fas fa-file-export"></i> Export
+                                            </a>
+                                        @endif
                                     @else
                                     <div class="row mt-4">
                                         <div class="col-12 d-flex justify-content-between align-items-center">

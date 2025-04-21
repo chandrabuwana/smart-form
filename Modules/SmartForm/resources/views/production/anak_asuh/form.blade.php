@@ -380,9 +380,11 @@
                                 <div class="col-12 text-end">
                                     @if($isShowDetail)
                                         <a href="{{ route('prod.anak-asuh.dashboard') }}" class="btn btn-secondary">Back</a>
-                                        <a href="{{ route('prod.anak-asuh.export', ['id' => $record->id]) }}" class="btn btn-primary">
-                                            <i class="material-icons">download</i> Export PDF
-                                        </a>
+                                        @if(isset($record->approval_status) && $record->approval_status == 'approved')
+                                            <a href="{{ route('prod.anak-asuh.export', ['id' => $record->id]) }}" class="btn btn-primary">
+                                                <i class="material-icons">download</i> Export PDF
+                                            </a>
+                                        @endif
                                     @elseif(isset($isEdit) && $isEdit)
                                         <a href="{{ route('prod.anak-asuh.dashboard') }}" class="btn btn-secondary">Cancel</a>
                                         <button type="submit" class="btn btn-primary">Update</button>

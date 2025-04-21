@@ -351,7 +351,7 @@
                             <!-- Form Actions -->
                             <div class="row">
                                 <div class="col-12 text-end">
-                                    @if($isShowDetail)
+                                    @if($isShowDetail && isset($record->approval_status) && $record->approval_status == 'approved')
                                         <a href="{{ route('she.noise.dashboard') }}" class="btn btn-secondary">Back</a>
                                         <a href="{{ route('she.noise.export', $maintenanceRecord->id) }}" class="btn btn-primary">
                                             <i class="material-icons">download</i> Export
@@ -362,9 +362,11 @@
                                             <div>
                                                 <a href="{{ route('she.noise.dashboard') }}" class="btn btn-secondary">Back</a>
                                             </div>
-                                            <div>
-                                                <button type="submit" class="btn btn-primary">Submit</button>
-                                            </div>
+                                            @if(!$isShowDetail)
+                                                <div>
+                                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                                </div>
+                                            @endif
                                         </div>
                                     </div>
                                     @endif
