@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::table('prod_checker_form', function (Blueprint $table) {
             $table->string('site')->nullable(); 
+            $table->date('tgl_diperiksa')->nullable(); 
+            $table->date('tgl_diketahui')->nullable(); 
         });
     }
 
@@ -23,6 +25,8 @@ return new class extends Migration
     {
         Schema::table('prod_checker_form', function (Blueprint $table) {
             $table->dropColumn('site');
+            $table->dropColumn('tgl_diperiksa');
+            $table->dropColumn('tgl_diketahui');
         });
     }
 };

@@ -521,6 +521,23 @@
 @section('custom-js')
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(function() {
+            $('#inspector_2_name').select2({
+                width: '100%'
+            })
+            $('#supervisor_name').select2({
+                width: '100%'
+            })
+            $('#dh_name').select2({
+                width: '100%'
+            })
+            $('#she_name').select2({
+                width: '100%'
+            })
+        });
+    </script>
     <script>
     $(function() {
         var form = $("#maintenanceForm");

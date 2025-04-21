@@ -733,7 +733,7 @@
         $(document).ready(function() {
             $('#dibuat_oleh').select2();
             $('#diperiksa').select2();
-            $('#job_site').select2()
+            $('#job_site').select2();
         });
         $(function() {
             var form = $("#formXCMG3005");
