@@ -494,22 +494,24 @@
                             <!-- Submit/Back Buttons -->
                             <div class="row">
                                 <div class="col-12 text-end">
-                                    @if($isShowDetail)
+                                    @if($isShowDetail && isset($record->approval_status) && $record->approval_status == 'approved')
                                         <a href="{{ route('she-p3k.dashboard') }}" class="btn btn-secondary">Back</a>
                                         <a href="{{ route('she-p3k.export', $record->id) }}" class="btn btn-primary">
                                             <i class="fas fa-file-export"></i> Export
                                         </a>
                                     @else
-                                    <div class="row mt-4">
-                                        <div class="col-12 d-flex justify-content-between align-items-center">
-                                            <div>
-                                                <a href="{{ route('she-p3k.dashboard') }}" class="btn btn-secondary">Back</a>
-                                            </div>
-                                            <div>
-                                                <button type="submit" class="btn btn-primary">Submit</button>
+                                        <div class="row mt-4">
+                                            <div class="col-12 d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <a href="{{ route('she-p3k.dashboard') }}" class="btn btn-secondary">Back</a>
+                                                </div>
+                                                @if(!$isShowDetail)
+                                                    <div>
+                                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                                    </div>
+                                                @endif
                                             </div>
                                         </div>
-                                    </div>
                                     @endif
                                 </div>
                             </div>
