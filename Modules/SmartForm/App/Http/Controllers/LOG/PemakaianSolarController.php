@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Storage;
 
 class PemakaianSolarController extends Controller {
 
+    private const TABLE_KARYAWAN = 'TKaryawan';
     private const TABLE_SITES = 'tsite';
     private const TABLE_MASTER = 'FM_LOG_037_PEMAKAIAN_SOLAR';
     private const TABLE_DETAIL = 'FM_LOG_037_PEMAKAIAN_SOLAR_DETAIL';
@@ -401,6 +402,11 @@ class PemakaianSolarController extends Controller {
                 $detail->nomor = $nomor;
                 $nomor++;
             }
+            
+            $dibuat_nama = DB::connection('sqlsrv2')->table(self::TABLE_KARYAWAN)
+                    ->select('Nama')
+                    ->where('NIK', $data->dibuat)
+                    ->value('Nama');
 
             $data_master[ 'id' ] = $data->id;
             $data_master[ 'no_doc' ] = $data->no_doc;
@@ -409,7 +415,7 @@ class PemakaianSolarController extends Controller {
             $data_master[ 'tanggal' ] = $data->tanggal;
             $data_master[ 'revisi' ] = $data->revisi;
             $data_master[ 'halaman' ] = $data->halaman;
-            $data_master[ 'dibuat' ] = $data->dibuat;
+            $data_master[ 'dibuat' ] = $dibuat_nama;
             $data_master[ 'nofuel' ] = $data->nofuel;
             $data_master[ 'total_pemakaian' ] = $data->total_pemakaian;
             $data_master[ 'shift' ] = $data->shift;
