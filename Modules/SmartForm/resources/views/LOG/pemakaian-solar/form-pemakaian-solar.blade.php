@@ -493,8 +493,11 @@
             }
 
             $buttonTambah.click(function (e) {
+                
                 e.preventDefault()
                 var errorValidate = validateItem()
+                
+                document.getElementById("iAwal").value = document.getElementById("iAkhir").value;
                 
                 var msg = "";
                 if(errorValidate.length > 0) {
