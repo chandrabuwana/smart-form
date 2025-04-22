@@ -9,7 +9,7 @@
     .m-0 {
         margin: 0;
     }
-    #npwp {
+    .preview {
          width: 100px;
          height: 150px;
       }
@@ -339,7 +339,7 @@
                                                 </td>
                                                 <td>
                                                     <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fNpwp" accept="image/*" onchange="previewImage(event)">
-                                                    <img id="npwp" alt="NPWP">
+                                                    <img class="preview" id="npwp" alt="NPWP">
                                                 </td>
                                             </tr>
                                             <tr>
