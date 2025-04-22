@@ -111,6 +111,10 @@ p.thick {
             <tr> 
                 <table class="w-full">
                     <tr>
+                        <td style="width:150;font-size: 0.875rem;">Jenis Badan Usaha</td>
+                        <td class="w-half">: {{$data->jenis_badan_usaha}}</td>
+                    </tr>
+                    <tr>
                         <td style="width:150;font-size: 0.875rem;">Nama Vendor (CV/PT)</td>
                         <td class="w-half">: {{$data->nama_vendor}}</td>
                     </tr>

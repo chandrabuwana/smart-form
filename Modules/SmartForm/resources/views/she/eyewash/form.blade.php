@@ -387,7 +387,7 @@
                             <!-- Submit/Back Buttons -->
                             <div class="row">
                                 <div class="col-12 text-end">
-                                    @if($isShowDetail)
+                                @if($isShowDetail && isset($record->approval_status) && $record->approval_status == 'approved')
                                         <a href="{{ route('she-inspeksi.dashboard') }}" class="btn btn-secondary">Back</a>
                                         <a href="{{ route('she-inspeksi.form.export', ['id' => $maintenanceRecord->id]) }}" class="btn btn-primary">
                                             <i class="fas fa-file-export"></i> Export
@@ -398,9 +398,11 @@
                                             <div>
                                                 <a href="{{ route('she-inspeksi.dashboard') }}" class="btn btn-secondary">Back</a>
                                             </div>
-                                            <div>
-                                                <button type="submit" class="btn btn-primary">Submit</button>
-                                            </div>
+                                            @if(!$isShowDetail)
+                                                <div>
+                                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                                </div>
+                                            @endif
                                         </div>
                                     </div>
                                     @endif

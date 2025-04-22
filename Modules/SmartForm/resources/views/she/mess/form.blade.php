@@ -454,7 +454,7 @@ Tidak ada peraturan yg berlaku atau berdampak kelingkungan perusahaan
                         <!-- Form Actions -->
                         <div class="row">
                             <div class="col-12 text-end">
-                                @if($isShowDetail)
+                            @if($isShowDetail && isset($record->approval_status) && $record->approval_status == 'approved')
                                     <a href="{{ route('she.mess.dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
                                     <a href="{{ route('she.mess.export', ['id' => $data->id]) }}" class="btn btn-primary">Export PDF</a>
                                 @else
