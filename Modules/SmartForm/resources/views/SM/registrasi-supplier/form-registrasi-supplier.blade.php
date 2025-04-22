@@ -9,6 +9,10 @@
     .m-0 {
         margin: 0;
     }
+    #npwp {
+         width: 100px;
+         height: 150px;
+      }
 </style>
 @endsection
 
@@ -334,8 +338,8 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fNpwp">
-                                                    <div class="invalid-feedback">Lampiran NPWP</div>
+                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fNpwp" accept="image/*" onchange="previewImage(event)">
+                                                    <img id="npwp" alt="NPWP">
                                                 </td>
                                             </tr>
                                             <tr>
@@ -563,6 +567,17 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script>
+        function previewImage(event) {
+         var input = event.target;
+         var image = document.getElementById('npwp');
+         if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+               image.src = e.target.result;
+            }
+            reader.readAsDataURL(input.files[0]);
+         }
+      }
         $(document).ready(function() {
             $('#dApproved').select2();
             $('#dDiterima').select2();
