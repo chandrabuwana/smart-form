@@ -12,7 +12,7 @@ use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
 use Modules\SmartForm\helpers\HrdHelper;
-use Modules\SmartForm\helpers\SiteHelper;
+
 
 class FormCheckerController extends Controller {
     public function dashboard(Request $request) {
@@ -191,12 +191,11 @@ class FormCheckerController extends Controller {
 
         }
 
-        $alat_angkut = DB::table( 'alat_angkut_data' )->get();
-       
+
         $users = HrdHelper::getApprovalList();
         $sites = DB::connection('sqlsrv2')->table('tsite')->select(columns: 'KodeST')->get();
 
-        return view( 'smartform::production.form_checker.form-checker', ['alat_angkut'=>$alat_angkut,'dataDS' => $dataDS, 'nik'=>$nik_session, 'dataNS'=> $dataNS,  'approvalList' => $users, 'users' => $users, 'sites' => $sites] );
+        return view( 'smartform::production.form_checker.form-checker', ['dataDS' => $dataDS, 'nik'=>$nik_session, 'dataNS'=> $dataNS,  'approvalList' => $users, 'users' => $users, 'sites' => $sites] );
     }
 
     public function getAlatBySite(Request $request) {
@@ -206,7 +205,7 @@ class FormCheckerController extends Controller {
             ->where('site', $site)
             ->select('no_lambung')
             ->get();
-    
+
         return response()->json($alat);
     }
 
@@ -300,9 +299,13 @@ class FormCheckerController extends Controller {
             }
         }
 
+
+
         $users = HrdHelper::getApprovalList();
         $sites = DB::connection('sqlsrv2')->table('tsite')->select(columns: 'KodeST')->get();
 
+
+        $record->operator_leader =  $findUser = DB::connection('sqlsrv2')->table('TKaryawan')->where('NIK',  $record->operator_leader)->first()->Nama;
         return view( 'smartform::production.form_checker.show-form-checker', [
             'record' => $record, 'dataDS' => $dataDS, 'dataNS' => $dataNS, 'nik'=>$nik_session, 'time_details' => $time_details, 'nonNullCounts' => $nonNullCounts,  'approvalList' => $users, 'users' => $users, 'sites' => $sites
 
@@ -312,81 +315,103 @@ class FormCheckerController extends Controller {
     public function Update( Request $request ) {
 
 
+     
         try {
+            $alatAngkutIds = json_decode($request->alat_angkut_all, true);
+
+
+            $kendala = [];
+            $waktuMulai = [];
+            $waktuSelesai = [];
+            $keterangan = [];
+            $namaOperator = [];
+            $alat = [];
+            $time = [];
+            $material = [];
+
+
+            foreach ($alatAngkutIds as $alatId) {
+
+                $kendala[] = $request->{"kendala_" . $alatId};
+                $waktuMulai[] = $request->{"waktu_mulai_" . $alatId};
+                $waktuSelesai[] = $request->{"waktu_selesai_" . $alatId};
+                $keterangan[] = $request->{"keterangan_" . $alatId};
+
+
+                $namaOperator[] = $request->{"nama_operator_" . $alatId};
+                $alat[] = $alatId;
+
+                $timeForAlat = [];
+                $materialForAlat = [];
+
+
+                for ($i = 1; $i <= 12; $i++) {
+                    $timeRowData = [];
+
+
+                    for ($j = 1; $j <= 5; $j++) {
+                        $timeKey = "time_{$alatId}_{$i}_{$j}";
+                        $timeRowData[] = $request->{$timeKey};
+                    }
+
+                    $timeForAlat[] = $timeRowData;
+                    $materialKey = "material_{$alatId}_{$i}";
+                    $materialForAlat[] = $request->{$materialKey};
+                }
+
+                $time[] = $timeForAlat;
+                $material[] = $materialForAlat;
+            }
+
+
             $data = [
-                'doc_num' => $request->doc_num,
+                'doc_num' => $this->generateDocNumber(),
                 'tanggal' => $request->date,
-                'alat_muat' => json_encode( array_values( [ $request->alat_pc, $request->alat_x ] ) ),
+                'alat_muat' => json_encode(array_values([$request->alat_pc, $request->alat_x])),
                 'start_loading' => $request->start_load,
-                'stop_loading' => $request->stop_load ,
+                'stop_loading' => $request->stop_load,
                 'shift' => $request->shift,
                 'operator_leader' => $request->operator_load,
                 'pic_area' => $request->nama_pic,
+                'status' => 'Draft',
                 'loading_point' => $request->loading_point,
                 'jarak' => $request->jarak,
-                'status' => $request->status,
                 'disposal' => $request->disposal,
                 'checker' => $request->dibuat_oleh,
-                'pengawas' => $request->diperiksa_oleh,
-                'waktu_mulai' => json_encode( array_values( $request->waktu_mulai ) ),
-                'waktu_selesai' =>json_encode( array_values( $request->waktu_selesai ) ),
-                'keterangan' =>json_encode( array_values( $request->keterangan ) ),
-                'kendala' => json_encode( array_values( $request->kendala ) ),
+                'pengawas' => $request->diperiksa_oleh ,
+                'waktu_mulai' => json_encode(array_values($waktuMulai)),
+                'waktu_selesai' => json_encode(array_values($waktuSelesai)),
+                'keterangan' => json_encode(array_values($keterangan)),
+                'kendala' => json_encode(array_values($kendala)),
+                'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
+                'material' => json_encode(array_values($material)),
+                'alat_angkut' => json_encode(array_values($alat)),
+                'nama_operator' => json_encode(array_values($namaOperator)),
                 'site' => $request->site,
-
             ];
 
 
-            $alat = [];
-            $time = [];
-            $operator = [];
+            if ($request->shift == 'DS' || $request->shift == 'NS') {
 
-            // insert to array alat angkut, nama operator, time detail, material
-            foreach ( $request->all() as $key => $value ) {
+                for ($i = 0; $i < 12; $i++) {
+                    $time_detail_key = 'time_detail' . ($i + 1);
+                    $time_detail_values = [];
 
-                if ( stripos( $key, 'alat_angkut' ) !== false ) {
-                    $alat[] =  $value ;
-                }
-                if ( stripos( $key, 'nama_operator' ) !== false ) {
-                    $operator[] =  $value;
-                }
-                if ( stripos( $key, 'time' ) !== false ) {
-                    $time[] =  $value ;
-                }
-                if ( stripos( $key, 'material' ) !== false ) {
-                    $data[ 'material' ][] =  $value;
+                    foreach ($time as $alatTimeData) {
+
+                        if (isset($alatTimeData[$i])) {
+                            $time_detail_values[] = $alatTimeData[$i];
+                        } else {
+                            $time_detail_values[] = [null, null, null, null, null];
+                        }
+                    }
+
+                    $data[$time_detail_key] = json_encode(array_values($time_detail_values));
                 }
             }
 
-            $data[ 'alat_angkut' ] = json_encode( array_values( $alat ) );
-            $data[ 'nama_operator' ] = json_encode( array_values( $operator ) );
-
-
-                    $filteredTime = [];
-                    $filteredMaterial = [];
-                    foreach ($time as $array) {
-                    $filteredTime[] = array_slice($array, 0, 12);
-                    }
-                    foreach ($data[ 'material' ] as $mat) {
-                        $filteredMaterial[] = array_slice($mat, 0, 12);
-                    }
-
-
-            $time = $filteredTime ;
-            $data[ 'material' ] = json_encode( array_values( $filteredMaterial ) );
-            for ( $i = 0; $i < count( $time[ 0 ] );
-            $i++ ) {
-                $time_detail_key = 'time_detail' . ( $i + 1 );
-                $time_detail_values = [];
-
-                foreach ( $time as $detail_array ) {
-                    $time_detail_values[] = $detail_array[ $i ];
-                }
-
-                $data[ $time_detail_key ] = json_encode( array_values( $time_detail_values ) );
-            }
-
+            
             DB::table( 'prod_checker_form' )
             ->where( 'doc_num', $request->doc_num )
             ->update( $data );
@@ -457,14 +482,63 @@ class FormCheckerController extends Controller {
         ] );
     }
 
-    public function StoreChecker( Request $request ) {
+    public function StoreChecker(Request $request) {
+
         try {
+
+            $alatAngkutIds = json_decode($request->alat_angkut_all, true);
+
+
+            $kendala = [];
+            $waktuMulai = [];
+            $waktuSelesai = [];
+            $keterangan = [];
+            $namaOperator = [];
+            $alat = [];
+            $time = [];
+            $material = [];
+
+
+            foreach ($alatAngkutIds as $alatId) {
+
+                $kendala[] = $request->{"kendala_" . $alatId};
+                $waktuMulai[] = $request->{"waktu_mulai_" . $alatId};
+                $waktuSelesai[] = $request->{"waktu_selesai_" . $alatId};
+                $keterangan[] = $request->{"keterangan_" . $alatId};
+
+
+                $namaOperator[] = $request->{"nama_operator_" . $alatId};
+                $alat[] = $alatId;
+
+                $timeForAlat = [];
+                $materialForAlat = [];
+
+
+                for ($i = 1; $i <= 12; $i++) {
+                    $timeRowData = [];
+
+
+                    for ($j = 1; $j <= 5; $j++) {
+                        $timeKey = "time_{$alatId}_{$i}_{$j}";
+                        $timeRowData[] = $request->{$timeKey};
+                    }
+
+                    $timeForAlat[] = $timeRowData;
+                    $materialKey = "material_{$alatId}_{$i}";
+                    $materialForAlat[] = $request->{$materialKey};
+                }
+
+                $time[] = $timeForAlat;
+                $material[] = $materialForAlat;
+            }
+
+
             $data = [
                 'doc_num' => $this->generateDocNumber(),
                 'tanggal' => $request->date,
-                'alat_muat' => json_encode( array_values( [ $request->alat_pc, $request->alat_x ] ) ),
+                'alat_muat' => json_encode(array_values([$request->alat_pc, $request->alat_x])),
                 'start_loading' => $request->start_load,
-                'stop_loading' => $request->stop_load ,
+                'stop_loading' => $request->stop_load,
                 'shift' => $request->shift,
                 'operator_leader' => $request->operator_load,
                 'pic_area' => $request->nama_pic,
@@ -473,97 +547,55 @@ class FormCheckerController extends Controller {
                 'jarak' => $request->jarak,
                 'disposal' => $request->disposal,
                 'checker' => $request->dibuat_oleh,
-                'pengawas' => $request->diperiksa_oleh,
-                'waktu_mulai' => json_encode( array_values( $request->waktu_mulai ) ),
-                'waktu_selesai' =>json_encode( array_values( $request->waktu_selesai ) ),
-                'keterangan' =>json_encode( array_values( $request->keterangan ) ),
-                'kendala' => json_encode( array_values( $request->kendala ) ),
+                'pengawas' => $request->diperiksa_oleh ,
+                'waktu_mulai' => json_encode(array_values($waktuMulai)),
+                'waktu_selesai' => json_encode(array_values($waktuSelesai)),
+                'keterangan' => json_encode(array_values($keterangan)),
+                'kendala' => json_encode(array_values($kendala)),
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
+                'material' => json_encode(array_values($material)),
+                'alat_angkut' => json_encode(array_values($alat)),
+                'nama_operator' => json_encode(array_values($namaOperator)),
                 'site' => $request->site,
-
             ];
 
 
-            $alat = [];
-            $time = [];
-            $operator = [];
+            if ($request->shift == 'DS' || $request->shift == 'NS') {
 
-            // insert to array alat angkut, nama operator, time detail, material
-            foreach ( $request->all() as $key => $value ) {
+                for ($i = 0; $i < 12; $i++) {
+                    $time_detail_key = 'time_detail' . ($i + 1);
+                    $time_detail_values = [];
 
-                if ( stripos( $key, 'alat_angkut' ) !== false ) {
-                    $alat[] =  $value ;
-                }
-                if ( stripos( $key, 'nama_operator' ) !== false ) {
-                    $operator[] =  $value;
-                }
-                if ( stripos( $key, 'time' ) !== false ) {
-                    $time[] =  $value ;
-                }
-                if ( stripos( $key, 'material' ) !== false ) {
-                    $data[ 'material' ][] =  $value;
+                    foreach ($time as $alatTimeData) {
+
+                        if (isset($alatTimeData[$i])) {
+                            $time_detail_values[] = $alatTimeData[$i];
+                        } else {
+                            $time_detail_values[] = [null, null, null, null, null];
+                        }
+                    }
+
+                    $data[$time_detail_key] = json_encode(array_values($time_detail_values));
                 }
             }
 
-            $data[ 'alat_angkut' ] = json_encode( array_values( $alat ) );
-            $data[ 'nama_operator' ] = json_encode( array_values( $operator ) );
 
-                if ($request->shift == 'DS') {
-                    $filteredTime = [];
-                    $filteredMaterial = [];
-                    foreach ($time as $array) {
-                    $filteredTime[] = array_slice($array, 0, 12);
-                    }
-                    foreach ($data[ 'material' ] as $mat) {
-                        $filteredMaterial[] = array_slice($mat, 0, 12);
-                    }
-                } elseif ($request->shift == 'NS') {
-                    $filteredMaterial = [];
-                    $filteredTime = [];
-                    foreach ($time as $index => $array) {
-                     $filteredTime[] = array_slice($array, 12, 12);
-                    }
-                    foreach ($data[ 'material' ] as $mat) {
-                        $filteredMaterial[] = array_slice($mat, 12, 12);
-                    }
-                } else {
-                    $filteredMaterial = [];
-                    $filteredTime = [];
-                }
+            DB::table('prod_checker_form')->insert($data);
 
-            $time = $filteredTime ;
-            $data[ 'material' ] = json_encode( array_values( $filteredMaterial ) );
-            for ( $i = 0; $i < count( $time[ 0 ] );
-            $i++ ) {
-                $time_detail_key = 'time_detail' . ( $i + 1 );
-                $time_detail_values = [];
-
-                foreach ( $time as $detail_array ) {
-                    $time_detail_values[] = $detail_array[ $i ];
-                }
-
-                $data[ $time_detail_key ] = json_encode( array_values( $time_detail_values ) );
-            }
-
-
-            DB::table( 'prod_checker_form' )->insert( $data );
-            return response()->json( [
+            return response()->json([
                 'success' => true,
                 'message' => 'Data berhasil disimpan'
-            ] );
+            ]);
 
+        } catch (QueryException $e) {
+            Log::error('Error in Store: ' . $e->getMessage());
 
-        } catch ( QueryException $e ) {
-            Log::error( 'Error in Store: ' . $e->getMessage() );
-
-            return response()->json( [
+            return response()->json([
                 'success' => false,
                 'message' => $e->getMessage(),
-            ] );
-
+            ]);
         }
-
     }
 
     public function Delete( $id ) {
@@ -696,6 +728,8 @@ class FormCheckerController extends Controller {
                     $sumRitasi += $value;
                 }
             }
+
+
 
             $record->operator_leader =  $findUser = DB::connection('sqlsrv2')->table('TKaryawan')->where('NIK',  $record->operator_leader)->first()->Nama;
 
