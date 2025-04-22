@@ -23,10 +23,11 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('prod_checker_form', function (Blueprint $table) {
-            $table->dropColumn('site');
-            $table->dropColumn('tgl_diperiksa');
-            $table->dropColumn('tgl_diketahui');
-        });
+        // Schema::table('prod_checker_form', function (Blueprint $table) {
+        //     $table->dropColumn('site');
+        //     $table->dropColumn('tgl_diperiksa');
+        //     $table->dropColumn('tgl_diketahui');
+        // });
+        Schema::dropIfExists('prod_checker_form');
     }
 };
