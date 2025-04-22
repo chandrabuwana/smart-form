@@ -235,7 +235,8 @@
 @endsection
 
 @section('custom-css')
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
     <style>
         .table> :not(caption)>*>* {
             padding: 0.5rem;
@@ -308,7 +309,7 @@
 
 @section('custom-js')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <script>
@@ -364,12 +365,12 @@
                 var selectedSite = $(this).val();
 
                 $.ajax({
-                    url: '{{ route('get.alat.by.site') }}', 
+                    url: '{{ route('get.alat.by.site') }}',
                     data: {
                         site: selectedSite
                     },
                     success: function(data) {
-                        $('#multiple_angkut').empty(); 
+                        $('#multiple_angkut').empty();
 
                         if (data.length > 0) {
                             $.each(data, function(index, item) {
@@ -500,7 +501,7 @@
                 operatorRow.classList.add('operator-row', `operator-${alat}`);
                 operatorRow.style.display = 'none';
                 $(`#nama_operator_${alat}`).select2();
-                
+
                 setTimeout(() => {
                     const operatorSelect = operatorRow.querySelector(
                         `select[name="nama_operator_${alat}"]`);
@@ -516,7 +517,7 @@
                 } else if (selectedShift === 'NS') {
                     dataToShow = dataNS;
                 } else {
-                    dataToShow = combinedData; 
+                    dataToShow = combinedData;
                 }
 
                 dataToShow.forEach(data => {
@@ -546,7 +547,7 @@
                     id++;
                 });
 
-              
+
                 let additionalSection = document.createElement('tr');
                 additionalSection.classList.add('additional-section', `alat-row-${alat}`);
                 additionalSection.style.display = 'none';
@@ -623,7 +624,7 @@
                 }
             });
 
-            
+
             const kendalaInput = document.querySelector(`input[name="kendala_${currentAlat}"]`)?.value;
             if (kendalaInput !== undefined) {
                 values[`kendala_${currentAlat}`] = kendalaInput;
@@ -650,7 +651,7 @@
         function onAlatAngkutChange() {
             const selected = document.getElementById('alat_angkut').value;
 
-           
+
             document.querySelectorAll('.operator-row').forEach(row => {
                 row.style.display = 'none';
             });
@@ -660,13 +661,13 @@
             });
 
             if (selected) {
-               
+
                 const operatorRow = document.querySelector(`.operator-${selected}`);
                 if (operatorRow) {
                     operatorRow.style.display = 'table-row';
                 }
 
-          
+
                 document.querySelectorAll(`.alat-row-${selected}`).forEach(row => {
                     row.style.display = 'table-row';
                 });
@@ -674,7 +675,7 @@
         }
 
         function onShiftChange() {
-         
+
             const selected = document.getElementById('alat_angkut').value;
             if (selected) {
                 renderAlatAngkutTable(JSON.stringify([selected]));
