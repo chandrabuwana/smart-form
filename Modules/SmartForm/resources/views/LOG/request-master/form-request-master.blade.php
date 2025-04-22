@@ -216,13 +216,23 @@
                                     <div class="col-md-4 col-lg-2">
                                         <div class="input-group input-group-static mb-4">
                                             <label for="iMrp">MRP Type</label>
-                                            <input type="text" class="form-control" id="iMrp" name="iMrp">
+                                            <select class="form-control form-select" id="iMrp" name="iMrp">
+                                                <option value="" selected disabled>-- Select MRP Type --</option>
+                                                <option value="ND">ND - No Planning</option>
+                                                <option value="PD">PD - MRP</option>
+                                                <option value="V1">V1 - Manual Reorder Point w. ext.reqs</option>
+                                                <option value="ZB">ZB - BSS Automatic Reorder Point Plng</option>
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-lg-2">
                                         <div class="input-group input-group-static mb-4">
                                             <label for="iScrap">SCRAP</label>
-                                            <input type="text" class="form-control" id="iScrap" name="iScrap">
+                                            <select class="form-control form-select" id="iScrap" name="iScrap">
+                                                <option value="" selected disabled>-- Select Scrap --</option>
+                                                <option value="Y">Yes</option>
+                                                <option value="N">No</option>
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-lg-2">
@@ -421,7 +431,15 @@
                                             <div class="col-6">
                                                 <div class="input-group input-group-static mb-4">
                                                     <label for="iMrp">MRP Type</label>
-                                                    <input type="text" class="form-control" id="editMrpType" name="iMrp">
+                                                    <select class="form-control form-select" id="editMrpType" name="iMrp">
+                                                        <option value="" selected disabled>-- Select MRP Type --</option>
+                                                        <option value="ND">ND - Not Planned</option>
+                                                        <option value="PD">PD - MRP</option>
+                                                        <option value="VB">VB - Manual Reorder Point</option>
+                                                        <option value="VV">VV - Automatic Reorder Point</option>
+                                                        <option value="X1">X1 - Project Planning</option>
+                                                        <option value="R1">R1 - Time-Phased Planning</option>
+                                                    </select>
                                                 </div>
                                             </div>
                                             <div class="col-6">
