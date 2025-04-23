@@ -444,7 +444,7 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fKartu" onchange="previewImageKartuIden(event)">
+                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fKartu" accept="image/*" onchange="previewImageKartuIden(event)">
                                                     <img class="preview" id="kartuiden" alt="Kartu Identitas Direktur">
                                                 </td>
                                             </tr>
@@ -465,7 +465,7 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fStruktur" onchange="previewImageStruktur(event)">
+                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fStruktur" accept="image/*" onchange="previewImageStruktur(event)">
                                                     <img class="preview" id="strukturorg" alt="Struktur Organisasi">
                                                 </td>
                                             </tr>
@@ -486,8 +486,8 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fProfile">
-                                                    <div class="invalid-feedback">Lampiran Profile Perusahaan</div>
+                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fProfile" accept="image/*" onchange="previewImageProfile(event)">
+                                                    <img class="preview" id="profileper" alt="Profile Perusahaan">
                                                 </td>
                                             </tr>
                                             <tr>
@@ -507,8 +507,8 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fSurat">
-                                                    <div class="invalid-feedback">Lampiran lainnya</div>
+                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fSurat" accept="image/*" onchange="previewImageSurat(event)">
+                                                    <img class="preview" id="suratlain" alt="Surat Lainnya">
                                                 </td>
                                             </tr>
                                         </table>
@@ -648,6 +648,30 @@
             var reader = new FileReader();
                 reader.onload = function(e) {
                     strukturorg.src = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        //PREVIEW IMAGE PROFILE PERUSAHAAN
+        function previewImageProfile(event) {
+            var input = event.target;
+            var profileper = document.getElementById('profileper');
+            if (input.files && input.files[0]) {
+            var reader = new FileReader();
+                reader.onload = function(e) {
+                    profileper.src = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        //PREVIEW IMAGE SURAT LAINNYA
+        function previewImageSurat(event) {
+            var input = event.target;
+            var suratlain = document.getElementById('suratlain');
+            if (input.files && input.files[0]) {
+            var reader = new FileReader();
+                reader.onload = function(e) {
+                    suratlain.src = e.target.result;
                 }
                 reader.readAsDataURL(input.files[0]);
             }
