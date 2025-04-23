@@ -100,7 +100,7 @@
                                     <tr>
                                         <td>Site</td>
                                         <td>
-                                        {!! $siteOptions !!}
+                                            {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('site', $data['site'] ?? null) !!}
                                         </td>
                                     </tr>
                                 </table>
@@ -110,29 +110,7 @@
                                     <tr>
                                         <td>Departemen</td>
                                         <td>
-                                            <select class="form-select form-select-sm input-text" aria-label="Default select example" name="i_departemen">
-                                            <option value="{{$data['departemen']}}" selected>{{$data['departemen']}}</option>
-                                                <option value="ENG">ENGINEERING</option>
-                                                <option value="SHE">SHE</option>
-                                                <option value="PRD">PRODUKSI</option>
-                                                <option value="SM">SM</option>
-                                                <option value="IC">IC</option>
-                                                <option value="GS">GS</option>
-                                                <option value="RM">PLANT</option>
-                                                <option value="BDV">BUSDEV</option>
-                                                <option value="FIN">FINANCE</option>
-                                                <option value="ATA">Accounting & Tax</option>
-                                                <option value="DTC">DATA CENTER</option>
-                                                <option value="MM">LOGISTIK</option>
-                                                <option value="OPR">OPERATION</option>
-                                                <option value="LEG">LEGAL</option>
-                                                <option value="OD">ORGANIZATION DEVELOPMENT</option>
-                                                <option value="Z001">ASSESSMENT CENTER</option>
-                                                <option value="Z002">LABOR SUPPLY</option>
-                                                <option value="Z003">MANAGEMENT CONSULTANT</option>
-                                                <option value="Z004">SERTIFIKASI</option>
-                                                <option value="TC">TRAINING CENTER</option>
-                                        </select>
+                                            {!! \Modules\SmartForm\helpers\DepartmentHelper::renderDepartmentSelect('i_departemen', $data['departemen'] ?? null, false, true, 'i_departemen') !!}
                                     </td>
                                     </tr>
                                     <tr>
@@ -141,11 +119,25 @@
                                     </tr>
                                     <tr>
                                         <td>No Lambung</td>
-                                        <td><input type="text" class="input-text w-full" name="i_no_lambung" value="{{$data['no_lambung']}}"></td>
+                                        <td>
+                                            <select class="input-text w-full" id="i_no_lambung" name="i_no_lambung">
+                                                <option value="">-- Pilih No Lambung --</option>
+                                                @if(isset($data['no_lambung']))
+                                                    <option value="{{ $data['no_lambung'] }}" selected>{{ $data['no_lambung'] }}</option>
+                                                @endif
+                                            </select>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Jenis Kendaraan</td>
-                                        <td><input type="text" class="input-text w-full" name="i_jenis_kendaraan" value="{{$data['jenis_kendaraan']}}"></td>
+                                        <td>
+                                            <select class="input-text w-full" id="i_jenis_kendaraan" name="i_jenis_kendaraan">
+                                                <option value="">-- Pilih Jenis Kendaraan --</option>
+                                                @if(isset($data['jenis_kendaraan']))
+                                                    <option value="{{ $data['jenis_kendaraan'] }}" selected>{{ $data['jenis_kendaraan'] }}</option>
+                                                @endif
+                                            </select>
+                                        </td>
                                     </tr>
                                 </table>
                             </div>
@@ -234,6 +226,145 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script>
+        $('#site').select2();
+        $('#i_departemen').select2();
+        $('#i_no_lambung').select2();
+        $('#i_jenis_kendaraan').select2();
+
+        $(document).ready(function() {
+
+        function populateNoLambung(siteId, selectedNoLambung = null) {
+            if (siteId) {
+                $.ajax({
+                    url: '{{ route('fuel-get.alat.by.site') }}',
+                    data: {
+                        site: siteId
+                    },
+                    success: function(data) {
+                        $('#i_no_lambung').empty().append('<option value="">-- Pilih No Lambung --</option>').trigger('change');
+
+                        if (data && data.length > 0) {
+                            $.each(data, function(index, item) {
+                                $('#i_no_lambung').append(
+                                    `<option value="${item.no_lambung}">${item.no_lambung}</option>`
+                                );
+                            });
+                            if (selectedNoLambung) {
+                                $('#i_no_lambung').val(selectedNoLambung).trigger('change');
+                            }
+                        } else {
+                            $('#i_no_lambung').append('<option value="">-- Data Tidak Ada --</option>').trigger('change');
+                        }
+                    },
+                    error: function(xhr) {
+                        console.log(xhr.responseText);
+                        $('#i_no_lambung').empty().append('<option value="">-- Error --</option>').trigger('change');
+                    }
+                });
+            } else {
+                $('#i_no_lambung').empty().append('<option value="">-- Pilih No Lambung --</option>').trigger('change');
+            }
+        }
+
+        // Fungsi untuk mengisi dropdown Jenis Kendaraan berdasarkan No Lambung
+        function populateJenisKendaraan(noLambung, selectedJenisKendaraan = null) {
+            if (noLambung) {
+                $.ajax({
+                    url: '{{ route('fuel-get.model.by.site') }}',
+                    data: {
+                        no_lambung: noLambung
+                    },
+                    success: function(data) {
+                        $('#i_jenis_kendaraan').empty().append('<option value="">-- Pilih Jenis Kendaraan --</option>').trigger('change');
+
+                        if (data && data.length > 0) {
+                            $.each(data, function(index, item) {
+                                $('#i_jenis_kendaraan').append(
+                                    `<option value="${item.model}">${item.model}</option>`
+                                );
+                            });
+                            if (selectedJenisKendaraan) {
+                                $('#i_jenis_kendaraan').val(selectedJenisKendaraan).trigger('change');
+                            }
+                        } else {
+                            $('#i_jenis_kendaraan').append('<option value="">-- Data Tidak Ada --</option>').trigger('change');
+                        }
+                    },
+                    error: function(xhr) {
+                        console.log(xhr.responseText);
+                        $('#i_jenis_kendaraan').empty().append('<option value="">-- Error --</option>').trigger('change');
+                    }
+                });
+            } else {
+                $('#i_jenis_kendaraan').empty().append('<option value="">-- Pilih Jenis Kendaraan --</option>').trigger('change();');
+            }
+        }
+
+        // Saat halaman edit dimuat, jika ada nilai site, no_lambung, dan jenis_kendaraan, isi dropdown
+        @if(isset($data['site']))
+            var initialSite = '{{ $data['site'] }}';
+            $('#site').val(initialSite).trigger('change');
+
+            @if(isset($data['no_lambung']))
+                var initialNoLambung = '{{ $data['no_lambung'] }}';
+                // Tunggu sebentar agar dropdown No Lambung terisi sebelum memilih
+                setTimeout(function() {
+                    populateNoLambung(initialSite, initialNoLambung);
+                    @if(isset($data['jenis_kendaraan']))
+                        var initialJenisKendaraan = '{{ $data['jenis_kendaraan'] }}';
+                        // Tunggu sebentar agar dropdown Jenis Kendaraan terisi sebelum memilih
+                        setTimeout(function() {
+                            populateJenisKendaraan(initialNoLambung, initialJenisKendaraan);
+                        }, 500); // Tambah delay jika perlu
+                    @endif
+                }, 500); // Tambah delay jika perlu
+            @endif
+        @endif
+
+        // Event handler untuk perubahan pada dropdown Site
+        $('#site').on('change', function() {
+            var selectedSite = $(this).val();
+            populateNoLambung(selectedSite);
+            $('#i_jenis_kendaraan').empty().append('<option value="">-- Pilih Jenis Kendaraan --</option>').trigger('change'); // Reset jenis kendaraan saat site berubah
+        });
+
+        // Event handler untuk perubahan pada dropdown No Lambung
+        $('#i_no_lambung').on('change', function() {
+            var selectedNoLambung = $(this).val();
+
+            $.ajax({
+                url: '{{ route('fuel-get.model.by.site') }}',
+                data: {
+                    no_lambung: selectedNoLambung
+                },
+                success: function(data) {
+                    $('#i_jenis_kendaraan').empty().append('<option value="">-- Pilih Jenis Kendaraan --</option>').trigger('change');
+
+                    if (data && data.length === 1) { // Jika hanya ada satu data yang kembali
+                        $('#i_jenis_kendaraan').append(
+                            `<option value="${data[0].model}" selected>${data[0].model}</option>`
+                        ).trigger('change'); // Langsung pilih dan trigger change
+                    } else if (data && data.length > 1) { // Jika ada lebih dari satu data (kemungkinan error di asumsi 1:1)
+                        $.each(data, function(index, item) {
+                            $('#i_jenis_kendaraan').append(
+                                `<option value="${item.model}">${item.model}</option>`
+                            );
+                        });
+                        // Jika ada data jenis kendaraan yang sudah tersimpan, coba pilih
+                        @if(isset($data['jenis_kendaraan']))
+                            $('#i_jenis_kendaraan').val('{{ $data['jenis_kendaraan'] }}').trigger('change');
+                        @endif
+                    } else {
+                        $('#i_jenis_kendaraan').append('<option value="">-- Data Tidak Ada --</option>').trigger('change');
+                    }
+                },
+                error: function(xhr) {
+                    console.log(xhr.responseText);
+                    $('#i_jenis_kendaraan').empty().append('<option value="">-- Error --</option>').trigger('change');
+                }
+            });
+        });
+    });
 
     </script>
 @endsection

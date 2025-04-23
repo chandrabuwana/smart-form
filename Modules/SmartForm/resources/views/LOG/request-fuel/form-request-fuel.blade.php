@@ -96,16 +96,7 @@
                                     <tr>
                                         <td style="width: 90px;">Site</td>
                                         <td>
-                                            <select class="input-text w-full" id="iSite" name="iSite">
-                                                <option disabled selected>-- select site --</option>
-                                                @forelse($sites as $site)
-                                                    <option value="{{ $site->KodeST ?? '' }}">
-                                                        {{ $site->KodeST ?? 'Site tidak tersedia' }}
-                                                    </option>
-                                                @empty
-                                                    <option>Data site tidak ditemukan</option>
-                                                @endforelse
-                                            </select>
+                                            {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('site') !!}
                                         </td>
                                     </tr>
                                 </table>
@@ -115,16 +106,7 @@
                                     <tr>
                                         <td>Departemen</td>
                                         <td>
-                                            <select class="form-select form-select-sm input-text" aria-label="Default select example" id="i_departemen" name="i_departemen">
-                                            <option disabled selected>-- select departemen --</option>
-                                                @forelse($dept as $dept)
-                                                    <option value="{{ $dept->Nama ?? '' }}">
-                                                        {{ $dept->Nama ?? 'Departemen tidak tersedia' }}
-                                                    </option>
-                                                @empty
-                                                    <option>Data Departemen tidak ditemukan</option>
-                                                @endforelse
-                                            </select>
+                                            {!! \Modules\SmartForm\helpers\DepartmentHelper::renderDepartmentSelect('i_departemen', null, false, true, 'i_departemen') !!}
                                     </td>
                                     </tr>
                                     <tr>
@@ -133,11 +115,18 @@
                                     </tr>
                                     <tr>
                                         <td>No Lambung</td>
-                                        <td><input type="text" class="input-text w-full" id="i_no_lambung" name="i_no_lambung"></td>
+                                        <td>
+                                            <select class="input-text w-full" id="i_no_lambung" name="i_no_lambung">
+                                                <option value="">-- Pilih No Lambung --</option> </select>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Jenis Kendaraan</td>
-                                        <td><input type="text" class="input-text w-full" id="i_jenis_kendaraan" name="i_jenis_kendaraan"></td>
+                                        <td>
+                                            <select class="input-text w-full" id="i_jenis_kendaraan" name="i_jenis_kendaraan">
+                                                <option value="">-- Pilih Jenis Kendaraan --</option>
+                                            </select>
+                                        </td>
                                     </tr>
                                 </table>
                             </div>
@@ -229,8 +218,10 @@
         $(document).ready(function() {
             $('#dApproved').select2();
             $('#dDiterima').select2();
-            $('#iSite').select2();
+            $('#site').select2();
             $('#i_departemen').select2();
+            $('#i_no_lambung').select2();
+            $('#i_jenis_kendaraan').select2();
         });
         var tglNow = new Date()
         var mudof = new Date();
@@ -327,6 +318,62 @@
                     title: 'Oops!',
                     text: 'Gagal menyimpan Form Permintaan Fuel'
                 });
+            });
+        });
+
+        $(document).ready(function() {
+            $('#site').on('change', function() {
+                var selectedSite = $(this).val();
+
+                $.ajax({
+                    url: '{{ route('fuel-get.alat.by.site') }}',
+                    data: {
+                        site: selectedSite
+                    },
+                    success: function(data) {
+                        $('#i_no_lambung').empty();
+
+                        if (data.length > 0) {
+                            $.each(data, function(index, item) {
+                                $('#i_no_lambung').append(
+                                    `<option value="${item.no_lambung}">${item.no_lambung}</option>`
+                                );
+                            });
+                        }
+                    },
+                    error: function(xhr) {
+                        console.log(xhr.responseText);
+                    }
+                });
+            });
+        });
+
+        $('#i_no_lambung').on('change', function() {
+            var selectedNoLambung = $(this).val();
+
+            $.ajax({
+                url: '{{ route('fuel-get.model.by.site') }}',
+                data: {
+                    no_lambung: selectedNoLambung
+                },
+                success: function(data) {
+                    $('#i_jenis_kendaraan').empty().trigger('change');
+
+                    if (data && data.length > 0) {
+                        $.each(data, function(index, item) {
+                            $('#i_jenis_kendaraan').append(
+                                `<option value="${item.model}">${item.model}</option>`
+                            );
+                        });
+                        $('#i_jenis_kendaraan').trigger('change');
+                    } else {
+                        $('#i_jenis_kendaraan').append('<option value="">-- Data Tidak Ditemukan --</option>').trigger('change');
+                    }
+                },
+                error: function(xhr) {
+                    console.log(xhr.responseText);
+                    $('#i_jenis_kendaraan').empty().append('<option value="">-- Error --</option>').trigger('change');
+                }
             });
         });
 
