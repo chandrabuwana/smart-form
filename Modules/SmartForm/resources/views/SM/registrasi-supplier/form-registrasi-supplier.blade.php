@@ -359,8 +359,9 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fSppkp">
-                                                    <div class="invalid-feedback">Lampiran SPPKP</div>
+                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fSppkp" accept="image/*" onchange="previewImageSkpp(event)">
+                                                    <!-- <div class="invalid-feedback">Lampiran SPPKP</div> -->
+                                                    <img class="preview" id="skpp" alt="SKPP">
                                                 </td>
                                             </tr>
                                             <tr>
@@ -567,17 +568,30 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script>
+        //PREVIEW IMAGE NPWP
         function previewImage(event) {
-         var input = event.target;
-         var npwp = document.getElementById('npwp');
-         if (input.files && input.files[0]) {
+            var input = event.target;
+            var npwp = document.getElementById('npwp');
+            if (input.files && input.files[0]) {
             var reader = new FileReader();
-            reader.onload = function(e) {
-               npwp.src = e.target.result;
+                reader.onload = function(e) {
+                    npwp.src = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
             }
-            reader.readAsDataURL(input.files[0]);
-         }
-      }
+        }
+        //PREVIEW IMAGE SKPP
+        function previewImageSkpp(event) {
+            var input = event.target;
+            var skpp = document.getElementById('skpp');
+            if (input.files && input.files[0]) {
+            var reader = new FileReader();
+                reader.onload = function(e) {
+                    skpp.src = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
         $(document).ready(function() {
             $('#dApproved').select2();
             $('#dDiterima').select2();
