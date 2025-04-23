@@ -381,8 +381,8 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fNib">
-                                                    <div class="invalid-feedback">Lampiran NIB/SIUP</div>
+                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fNib" accept="image/*" onchange="previewImageNib(event)">
+                                                    <img class="preview" id="nibsiup" alt="NIB / SIUP">
                                                 </td>
                                             </tr>
                                             <tr>
@@ -592,6 +592,19 @@
                 reader.readAsDataURL(input.files[0]);
             }
         }
+        //PREVIEW IMAGE NIB / SIUP
+        function previewImageNib(event) {
+            var input = event.target;
+            var nibsiup = document.getElementById('nibsiup');
+            if (input.files && input.files[0]) {
+            var reader = new FileReader();
+                reader.onload = function(e) {
+                nibsiup.src = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        // DROPDOWN SEARCH FIELD
         $(document).ready(function() {
             $('#dApproved').select2();
             $('#dDiterima').select2();
