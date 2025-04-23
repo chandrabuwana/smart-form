@@ -16,6 +16,12 @@ use Illuminate\Support\Facades\Storage;
 
 class RegistrasiSupplierController extends Controller {
 
+    private const LIST_BU = [
+        'CV' => 'CV',
+        'PT' => 'PT',
+        'Perorangan' => 'Perorangan',
+    ];
+
     public function download() {
         $pdf = Pdf::loadView('pdf');
  
@@ -49,7 +55,7 @@ class RegistrasiSupplierController extends Controller {
         $filter = $request->query('filter', null); // Default limit
         try {
             $master = DB::table($TABLE_MASTER)
-                ->select('id','nama_vendor','status','no_npwp','bidang_usaha','kota','diisi_oleh','is_active','disetujui_oleh');
+                ->select('id','nama_vendor','status','no_npwp','bidang_usaha','kota','diisi_oleh','is_active','disetujui_oleh','created_at');
             
             if($filterTanggal == null || $filterTanggal == 'null') {
             } else {
@@ -98,14 +104,17 @@ class RegistrasiSupplierController extends Controller {
     }
 
     function FormRegistrasiSupplier() {
+        $jenisbu = self::LIST_BU;
         return view('SmartForm::SM/registrasi-supplier/form-registrasi-supplier', [
                     'isShowDetail' => true,
+                    'jenisbu' => $jenisbu,
                     'approvalList' => HrdHelper::getApprovalList()
                 ]);
     }
     
     public function CreateRegisSupplier(Request $request)
     {    
+        $today = Carbon::now()->isoFormat( 'D MMMM Y' );
         $requested_by = $request->session()->get('user_id');
         $files = [];
         if($request->hasfile('filenames'))
@@ -125,6 +134,7 @@ class RegistrasiSupplierController extends Controller {
                 'revisi_form' => "0",
                 'tanggal_form' => "04-Aug-24",
                 'halaman_form' => "1 of 1",
+                'jenis_badan_usaha' => $request->dJenisUsaha,
                 'nama_vendor' => $request->tVendorName,
                 'status_pajak_pkp' => $request->rPkp,
                 'no_npwp' => $request->tNoNpwp,
@@ -174,9 +184,10 @@ class RegistrasiSupplierController extends Controller {
 	    	    'struktur_organisasi' => $request->rStruktur,
 	    	    'profile_perusahaan' => $request->rProfile,
 	    	    'surat_lainnya' => $request->rSurat,
-                'diisi_oleh' => $requested_by,
+                'diisi_oleh' => $request->tFiller,
                 'diterima_oleh' => $request->dDiterima,
                 'status' => "3",
+                'created_at' => $today,
                 'disetujui_oleh' => $request->dApproved
 
             ]);
@@ -230,6 +241,7 @@ class RegistrasiSupplierController extends Controller {
         // $this->user_sm = $this->getUserSM();
         $data_master = array(
             'id' => '',
+            'jenis_badan_usaha' => '',
             'nama_vendor' => '',
             'no_npwp' => '',
             'bidang_usaha' => '',
@@ -284,7 +296,7 @@ class RegistrasiSupplierController extends Controller {
         try {
             $data = DB::table($TABLE_MASTER)
                 ->select(
-                    'id','nama_vendor','diisi_oleh','no_npwp','bidang_usaha','syarat_pembayaran','ppn','pph',
+                    'id','jenis_badan_usaha','nama_vendor','diisi_oleh','no_npwp','bidang_usaha','syarat_pembayaran','ppn','pph',
                     'nama_rekening_1','nomor_rekening_1','nama_bank_1','alamat_bank_1','nama_rekening_2','nomor_rekening_2','nama_bank_2','alamat_bank_2',
                     'alamat_kantor','kota','telepon','pj_1','pj_2','kode_pos','email','tlp_1','tlp_2','jabatan_1','jabatan_2','jabatan_1_email',
                     'jabatan_2_email','diterima_oleh','disetujui_oleh','file_npwp','file_sppkp','file_nib_siup','file_akta_perusahaan','file_pakta_integritas',
@@ -303,6 +315,7 @@ class RegistrasiSupplierController extends Controller {
                     ->first();
 
                 $data_master['diisi_oleh'] = $data_user->nik;
+                $data_master['jenis_badan_usaha'] = $data->jenis_badan_usaha;
                 $data_master['nama_vendor'] = $data->nama_vendor;
                 $data_master['id'] = $data->id;
                 $data_master['no_npwp'] = $data->no_npwp;

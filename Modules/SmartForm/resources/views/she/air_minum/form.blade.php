@@ -126,9 +126,11 @@
                         <div class="row mb-3">
                             <div class="col-12 text-end">
                                 <a href="{{ route('she.air-minum.dashboard') }}" class="btn btn-secondary">Back</a>
-                                <a href="{{ route('she.air-minum.export', $maintenanceRecord->id) }}" class="btn btn-primary">
-                                    <i class="fas fa-file-export"></i> Export
-                                </a>
+                                @if($isShowDetail && isset($record->approval_status) && $record->approval_status == 'approved')
+                                    <a href="{{ route('she.air-minum.export', $maintenanceRecord->id) }}" class="btn btn-primary">
+                                        <i class="fas fa-file-export"></i> Export
+                                    </a>
+                                @endif
                             </div>
                         </div>
                         <fieldset disabled>

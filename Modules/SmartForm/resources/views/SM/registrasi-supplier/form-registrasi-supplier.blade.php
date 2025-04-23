@@ -38,12 +38,24 @@
                         {{ csrf_field() }}
                         <div class="my-3">
                             <div class="mb-1">
-                                <label class="form-label">Informasi Umum Vendor / Vendor Information:</label>
+                                <label class="form-label fw-bold">Informasi Umum Vendor / Vendor Information:</label>
                                 <div class="row mb-2">
                                         <div class="card col-md-6 was-validated">
                                         <table class="w-full">
                                             <tr>
-                                                <td style="width:40%">Nama Vendor (CV/PT)</td>
+                                                <td style="width:40%">Jenis Badan Usaha</td>
+                                                <td>:</td>
+                                                <td>
+                                                    <select class="form-select form-select-sm input-text" aria-label="Default select example" id="dJenisUsaha" name="dJenisUsaha" required>
+                                                        <option value="" selected>-- Pilih Jenis Badan Usaha --</option>
+                                                        <option value="CV">CV</option>
+                                                        <option value="PT">PT</option>
+                                                        <option value="Perorangan">Perorangan</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="width:40%">Nama Vendor (CV/PT/Perorangan)</td>
                                                 <td>:</td>
                                                 <td>
                                                     <input type="text" style="text-transform:uppercase" class="form-control" id="tVendorName" name="tVendorName" placeholder="Vendor's Name" required>
@@ -86,7 +98,7 @@
                             </div>
 
                             <div class="mb-1">
-                                <label class="form-label">Informasi Referensi Transaksi Pembayaran/ Payment Reference :</label>
+                                <label class="form-label fw-bold">Informasi Referensi Transaksi Pembayaran/ Payment Reference :</label>
                                 <div class="row mb-2">
                                         <div class="card col-md-6 was-validated">
                                         <table class="w-full">
@@ -114,7 +126,14 @@
                                                 <td style="width:40%">Syarat Pembayaran (hari)</td>
                                                 <td>:</td>
                                                 <td>
-                                                    <input type="number" onkeypress="return event.charCode >= 48" min="1" class="form-control" id="tSyaratPemb" name="tSyaratPemb" placeholder="Terms of Payment (day)" required>
+                                                    <select class="form-select form-select-sm input-text" aria-label="Default select example" id="tSyaratPemb" name="tSyaratPemb" required>
+                                                        <option value="" selected>-- Pilih Syarat Pembayaran --</option>
+                                                        <option value="0">0</option>
+                                                        <option value="14">14</option>
+                                                        <option value="30">30</option>
+                                                        <option value="45">45</option>
+                                                        <option value="60">60</option>
+                                                    </select>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -193,7 +212,7 @@
                             </div>
 
                             <div class="mb-1">
-                                <label class="form-label">Informasi Alamat dan Kontak / Address and Contact Information :</label>
+                                <label class="form-label fw-bold">Informasi Alamat dan Kontak / Address and Contact Information :</label>
                                 <div class="row mb-2">
                                         <div class="card col-md-6 was-validated">
                                         <table class="w-full">
@@ -294,28 +313,28 @@
                             </div>
 
                             <div class="mb-1">
-                                <label class="form-label">Lampiran Dokumen /Attached Documents :</label>
+                                <label class="form-label fw-bold">Lampiran Dokumen /Attached Documents :</label>
                                 <div class="row mb-2">
                                         <div class="card col-md-12 was-validated">
                                         <table class="w-full">
-                                            <tr>
+                                            <tr class="cvpt">
                                                 <td style="width:20%">NPWP</td>
                                                 <td>:</td>
                                                 <td>
                                                     <div class="form-check">
-                                                      <input class="form-check-input" type="radio" value="Ada" name="rNpwp1" id="rNpwp1" required>
+                                                      <input class="form-check-input" type="radio" value="Ada" name="rNpwp1" id="rNpwp1">
                                                       <label class="form-check-label" for="rPkp">
                                                         Ada
                                                       </label>
                                                     
-                                                      <input class="form-check-input" type="radio" value="Tidak" name="rNpwp1" id="rNpwp1" required>
+                                                      <input class="form-check-input" type="radio" value="Tidak" name="rNpwp1" id="rNpwp1">
                                                       <label class="form-check-label" for="rNonPkp">
                                                         Tidak
                                                       </label>
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fNpwp" required>
+                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fNpwp">
                                                     <div class="invalid-feedback">Lampiran NPWP</div>
                                                 </td>
                                             </tr>
@@ -324,19 +343,19 @@
                                                 <td>:</td>
                                                 <td>
                                                     <div class="form-check">
-                                                      <input class="form-check-input" type="radio" value="Ada" name="rSppkp" id="rSppkp" required>
+                                                      <input class="form-check-input" type="radio" value="Ada" name="rSppkp" id="rSppkp">
                                                       <label class="form-check-label" for="rPkp">
                                                         Ada
                                                       </label>
                                                     
-                                                      <input class="form-check-input" type="radio" value="Tidak" name="rSppkp" id="rNonSppkp" required>
+                                                      <input class="form-check-input" type="radio" value="Tidak" name="rSppkp" id="rSppkp">
                                                       <label class="form-check-label" for="rNonPkp">
                                                         Tidak
                                                       </label>
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fSppkp" required>
+                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fSppkp">
                                                     <div class="invalid-feedback">Lampiran SPPKP</div>
                                                 </td>
                                             </tr>
@@ -345,19 +364,19 @@
                                                 <td>:</td>
                                                 <td>
                                                     <div class="form-check">
-                                                      <input class="form-check-input" type="radio" value="Ada" name="rNib" id="rNib" required>
+                                                      <input class="form-check-input" type="radio" value="Ada" name="rNib" id="rNib">
                                                       <label class="form-check-label" for="rPkp">
                                                         Ada
                                                       </label>
                                                     
-                                                      <input class="form-check-input" type="radio" value="Tidak" name="rNib" id="rNibNo" required>
+                                                      <input class="form-check-input" type="radio" value="Tidak" name="rNib" id="rNib">
                                                       <label class="form-check-label" for="rNonPkp">
                                                         Tidak
                                                       </label>
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fNib" required>
+                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fNib">
                                                     <div class="invalid-feedback">Lampiran NIB/SIUP</div>
                                                 </td>
                                             </tr>
@@ -366,19 +385,19 @@
                                                 <td>:</td>
                                                 <td>
                                                     <div class="form-check">
-                                                      <input class="form-check-input" type="radio" value="Ada" name="rAkta" id="rAkta" required>
+                                                      <input class="form-check-input" type="radio" value="Ada" name="rAkta" id="rAkta">
                                                       <label class="form-check-label" for="rPkp">
                                                         Ada
                                                       </label>
                                                     
-                                                      <input class="form-check-input" type="radio" value="Tidak" name="rAkta" id="rAktraNo" required>
+                                                      <input class="form-check-input" type="radio" value="Tidak" name="rAkta" id="rAkta">
                                                       <label class="form-check-label" for="rNonPkp">
                                                         Tidak
                                                       </label>
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fAkta" required>
+                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fAkta">
                                                     <div class="invalid-feedback">Lampiran Akta Perusahaan</div>
                                                 </td>
                                             </tr>
@@ -387,19 +406,19 @@
                                                 <td>:</td>
                                                 <td>
                                                     <div class="form-check">
-                                                      <input class="form-check-input" type="radio" value="Ada" name="rPakta" id="rPakta" required>
+                                                      <input class="form-check-input" type="radio" value="Ada" name="rPakta" id="rPakta">
                                                       <label class="form-check-label" for="rPkp">
                                                         Ada
                                                       </label>
                                                     
-                                                      <input class="form-check-input" type="radio" value="Tidak" name="rPakta" id="rPaktaNo" required>
+                                                      <input class="form-check-input" type="radio" value="Tidak" name="rPakta" id="rPakta">
                                                       <label class="form-check-label" for="rNonPkp">
                                                         Tidak
                                                       </label>
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fPakta" required>
+                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fPakta">
                                                     <div class="invalid-feedback">Lampiran Pakta Integritas</div>
                                                 </td>
                                             </tr>
@@ -408,19 +427,19 @@
                                                 <td>:</td>
                                                 <td>
                                                     <div class="form-check">
-                                                      <input class="form-check-input" type="radio" value="Ada" name="rKartu" id="rIden" required>
+                                                      <input class="form-check-input" type="radio" value="Ada" name="rKartu" id="rIden">
                                                       <label class="form-check-label" for="rPkp">
                                                         Ada
                                                       </label>
                                                     
-                                                      <input class="form-check-input" type="radio" value="Tidak" name="rKartu" id="rIdenNo" required>
+                                                      <input class="form-check-input" type="radio" value="Tidak" name="rKartu" id="rIden">
                                                       <label class="form-check-label" for="rNonPkp">
                                                         Tidak
                                                       </label>
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fKartu" required>
+                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fKartu">
                                                     <div class="invalid-feedback">Lampiran Kartu Identitas Direktur</div>
                                                 </td>
                                             </tr>
@@ -429,19 +448,19 @@
                                                 <td>:</td>
                                                 <td>
                                                     <div class="form-check">
-                                                      <input class="form-check-input" type="radio" value="Ada" name="rStruktur" id="rStruktur" required>
+                                                      <input class="form-check-input" type="radio" value="Ada" name="rStruktur" id="rStruktur">
                                                       <label class="form-check-label" for="rPkp">
                                                         Ada
                                                       </label>
                                                     
-                                                      <input class="form-check-input" type="radio" value="Tidak" name="rStruktur" id="rStrukturNo" required>
+                                                      <input class="form-check-input" type="radio" value="Tidak" name="rStruktur" id="rStruktur">
                                                       <label class="form-check-label" for="rNonPkp">
                                                         Tidak
                                                       </label>
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fStruktur" required>
+                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fStruktur">
                                                     <div class="invalid-feedback">Lampiran Struktur Organisasi</div>
                                                 </td>
                                             </tr>
@@ -450,19 +469,19 @@
                                                 <td>:</td>
                                                 <td>
                                                     <div class="form-check">
-                                                      <input class="form-check-input" type="radio" value="Ada" name="rProfile" id="rProfile" required>
+                                                      <input class="form-check-input" type="radio" value="Ada" name="rProfile" id="rProfile">
                                                       <label class="form-check-label" for="rPkp">
                                                         Ada
                                                       </label>
                                                     
-                                                      <input class="form-check-input" type="radio" value="Tidak" name="rProfile" id="rProfile" required>
+                                                      <input class="form-check-input" type="radio" value="Tidak" name="rProfile" id="rProfile">
                                                       <label class="form-check-label" for="rNonPkp">
                                                         Tidak
                                                       </label>
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fProfile" required>
+                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fProfile">
                                                     <div class="invalid-feedback">Lampiran Profile Perusahaan</div>
                                                 </td>
                                             </tr>
@@ -471,19 +490,19 @@
                                                 <td>:</td>
                                                 <td>
                                                     <div class="form-check">
-                                                      <input class="form-check-input" type="radio" value="Ada" name="rSurat" id="rSuratLain" required>
+                                                      <input class="form-check-input" type="radio" value="Ada" name="rSurat" id="rSuratLain">
                                                       <label class="form-check-label" for="rPkp">
                                                         Ada
                                                       </label>
                                                     
-                                                      <input class="form-check-input" type="radio" value="Tidak" name="rSurat" id="rSuratLainNo" required>
+                                                      <input class="form-check-input" type="radio" value="Tidak" name="rSurat" id="rSuratLainNo">
                                                       <label class="form-check-label" for="rNonPkp">
                                                         Tidak
                                                       </label>
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fSurat" required>
+                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fSurat">
                                                     <div class="invalid-feedback">Lampiran lainnya</div>
                                                 </td>
                                             </tr>
@@ -496,8 +515,8 @@
 
                         <table style="width:100%" >
                           <tr>
-                            <td>Diisi Oleh/Filled by,</td>
-                            <td>: {{ session('username') }} {{ session('user_id') }}
+                            <td>Diisi Oleh/Filled by, :</td>
+                            <td><input type="text" style="text-transform:uppercase" class="form-control" id="tFiller" name="tFiller" placeholder="Filler Name" required>
                             </td>
                             <td>Diterima Oleh/Received by, :</td>
                             <td> 
@@ -510,7 +529,7 @@
                                     @endforeach
                                 </select>
                             </td>
-                            <td>Disetujui Oleh/Approved by, :</td>
+                            <!-- <td>Disetujui Oleh/Approved by, :</td>
                             <td>
                                 <select name="dApproved" id="dApproved" class="form-control text-center" required>
                                     <option disabled selected>-- Pilih Approver --</option>
@@ -519,7 +538,7 @@
                                         </option>
                                     @endforeach
                                 </select>
-                            </td>
+                            </td> -->
                           </tr>
                         </table>
                         
@@ -548,6 +567,38 @@
             $('#dApproved').select2();
             $('#dDiterima').select2();
         });
+        // JENIS BADAN USAHA CV/PT/PERORANGAN
+        $(document).ready(function(){
+            $('#dJenisUsaha').change(function () {
+                if($(this).val() ==='Perorangan') {
+                    $('#rIden').prop('required',true);
+                    $('#fKartu').prop('required',true);
+
+                    $('#rPakta').prop('required',true);
+                    $('#fPakta').prop('required',true);
+                } else {
+                    //NPWP
+                    $('#rNpwp1').prop('required',true);
+                    $('#fNpwp').prop('required',true);
+                    //SPPKP
+                    $('#rSppkp').prop('required',true);
+                    $('#fSppkp').prop('required',true);
+                    //NIB / SIUP
+                    $('#rNib').prop('required',true);
+                    $('#fNib').prop('required',true);
+                    //AKTA PERUSAHAAN
+                    $('#rAkta').prop('required',true);
+                    $('#fAkta').prop('required',true);
+                    //PAKTA INT
+                    $('#rPakta').prop('required',true);
+                    $('#fPakta').prop('required',true);
+                    //KARTU IDENTITAS DIR
+                    $('#rIden').prop('required',true);
+                    $('#fKartu').prop('required',true);
+                }
+            });
+        });
+        
         // PKP NON PKP
         $(document).ready(function(){
             $('input[name="rPkp"]').change(function () {
@@ -574,7 +625,7 @@
                 if($(this).val() =='Ada') {
                     $('#fSppkp').prop('required',true);
                 } else {
-                    $('#fSppkp').prop('hidden',true);
+                    $('#fSppkp').prop('required',false);
                 }
             });
         });
@@ -584,7 +635,7 @@
                 if($(this).val() =='Ada') {
                     $('#fNib').prop('required',true);
                 } else {
-                    $('#fNib').prop('hidden',true);
+                    $('#fNib').prop('required',false);
                 }
             });
         });
@@ -594,7 +645,7 @@
                 if($(this).val() =='Ada') {
                     $('#fAkta').prop('required',true);
                 } else {
-                    $('#fAkta').prop('hidden',true);
+                    $('#fAkta').prop('required',false);
                 }
             });
         });
@@ -604,7 +655,7 @@
                 if($(this).val() =='Ada') {
                     $('#fPakta').prop('required',true);
                 } else {
-                    $('#fPakta').prop('hidden',true);
+                    $('#fPakta').prop('required',false);
                 }
             });
         });
@@ -614,7 +665,7 @@
                 if($(this).val() =='Ada') {
                     $('#fKartu').prop('required',true);
                 } else {
-                    $('#fKartu').prop('hidden',true);
+                    $('#fKartu').prop('required',false);
                 }
             });
         });
@@ -624,7 +675,7 @@
                 if($(this).val() =='Ada') {
                     $('#fStruktur').prop('required',true);
                 } else {
-                    $('#fStruktur').prop('hidden',true);
+                    $('#fStruktur').prop('required',false);
                 }
             });
         });
@@ -634,7 +685,7 @@
                 if($(this).val() =='Ada') {
                     $('#fProfile').prop('required',true);
                 } else {
-                    $('#fProfile').prop('hidden',true);
+                    $('#fProfile').prop('required',false);
                 }
             });
         });
@@ -644,7 +695,7 @@
                 if($(this).val() =='Ada') {
                     $('#fSurat').prop('required',true);
                 } else {
-                    $('#fSurat').prop('hidden',true);
+                    $('#fSurat').prop('required',false);
                 }
             });
         });

@@ -27,7 +27,7 @@
                             <h6 class="text-white text-capitalize ps-3"> Form Checker Production</h6>
                         </div>
                     </div>
-
+                    {{-- id="postForm" --}}
                     <form id="postForm" method="POST" style="margin-top: 2rem;">
                         @csrf
                         <div class="mx-3">
@@ -71,7 +71,8 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="shift" class="ms-0">Shift</label>
-                                        <select class="form-control" name="shift" id="shiftSelector" required>
+                                        <select class="form-control" name="shift" id="shiftSelector" required
+                                            onchange="onShiftChange()">
                                             <option disabled selected>-- Select Shift --</option>
                                             <option value="DS">DS</option>
                                             <option value="NS">NS</option>
@@ -84,9 +85,8 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="operator_load" class="ms-0">Nama Operator Loader</label>
-                                        {{-- <input type="text" class="form-control" id="operator_load" name="operator_load"
-                                            required> --}}
-                                        <select class="form-control form-select" id="operator_load" name="operator_load" required>
+                                        <select class="form-control form-select" id="operator_load" name="operator_load"
+                                            required>
                                             <option disabled selected>-- Select Nama Operator --</option>
                                             @forelse($users as $user)
                                                 <option value="{{ $user->nik ?? '' }}">
@@ -111,126 +111,63 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="site" class="ms-0">Site</label>
-                                        <select class="form-control form-select" id="site" name="site" required>
-                                            <option disabled selected>-- Select Site --</option>
-                                            @forelse($sites as $site)
-                                                <option value="{{ $site->KodeST ?? '' }}">
-                                                    {{ $site->KodeST ?? 'Site tidak tersedia' }}
-                                                </option>
-                                            @empty
-                                                <option>Data site tidak ditemukan</option>
-                                            @endforelse
-                                        </select>
+                                        {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('site') !!}
 
                                     </div>
                                 </div>
                             </div>
-                            <a class="btn btn-primary" id="addNewAlatAngkut">+ New Alat Angkut</a>
-                            <div class="table-responsive mt-4" id="tablesContainer">
-                                <table class="table table-bordered" id="mainTable">
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <select class="form-control form-select" id="multiple_angkut"
+                                        name="multiple_angkut[]" multiple>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="table-responsive mt-4">
+
+
+
+                                <table class="table table-bordered">
                                     <thead class="bg-success text-white">
                                         <tr>
                                             <th>Alat Angkut</th>
                                             <th>CN</th>
-                                            <th colspan="4" style="text-align: center;">
-                                                <input class="form-control" type="text" name="alat_angkut" required
-                                                    placeholder="Input Alat Angkut"
-                                                    style="text-align: center; background-color: #eee7e8; color: rgb(11, 10, 10);">
-                                            </th>
-
-                                            <th rowspan="2" style="text-align: center; vertical-align: middle;">
-                                                Material
-                                            </th>
-                                        </tr>
-                                        <tr>
-                                            <th>Nama Operator</th>
-                                            <th colspan="5" style="text-align: center;">
-                                                {{-- <input class="form-control" type="text" name="nama_operator" required
-                                                    style="text-align: center; background-color: #eee7e8; color: rgb(11, 10, 10);"
-                                                    placeholder="Input Nama Operator"> --}}
-                                                <select class="form-control form-select" name="nama_operator" required
-                                                    style="text-align: center; background-color: #eee7e8; color: rgb(11, 10, 10);">
-                                                    <option disabled selected>-- Select Nama Operator --</option>
-                                                    @forelse($users as $user)
-                                                        <option value="{{ $user->nik ?? '' }}">
-                                                            {{ $user->nama ?? 'User tidak tersedia' }}
-                                                        </option>
-                                                    @empty
-                                                        <option>Data karyawan tidak ditemukan</option>
-                                                    @endforelse
+                                            <th colspan="5" class="text-center">
+                                                <select class="form-control" name="alat_angkut" id="alat_angkut"
+                                                    style="background-color: #eee7e8; color: rgb(11, 10, 10);" required
+                                                    onchange="onAlatAngkutChange()">
+                                                    <option value="">-- Pilih Alat Angkut --</option>
                                                 </select>
                                             </th>
-
+                                            <th rowspan="2" class="text-center align-middle">Material</th>
+                                        </tr>
+                                        <tr>
+                                            <th colspan="2">Nama Operator</th>
+                                            <th class="text-center">Jam 1</th>
+                                            <th class="text-center">Jam 2</th>
+                                            <th class="text-center">Jam 3</th>
+                                            <th class="text-center">Jam 4</th>
+                                            <th class="text-center">Jam 5</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        @php
-                                            $id = 1;
-                                            $combinedData = collect($dataDS)->merge(collect($dataNS));
-                                        @endphp
-                                        @foreach ($combinedData as $data)
-                                            @php
 
-                                                $shift = in_array($data, $dataDS) ? 'DS' : 'NS';
-                                            @endphp
-                                            <tr class="shift-row {{ $shift }}" style="display: none;"
-                                                id="row{{ $id }}">
-                                                <td>{{ $data }}</td>
-                                                @for ($i = 1; $i <= 5; $i++)
-                                                    <td><input type="time" class=" form-control"
-                                                            name="time[{{ $id }}][{{ $i }}]">
-                                                    </td>
-                                                @endfor
-
-                                                <td>
-                                                    <textarea class="form-control" name="material[]" cols="5"></textarea>
-                                                </td>
-                                            </tr>
-                                            @php
-                                                $id++;
-                                            @endphp
-                                        @endforeach
+                                    <tbody id="alatangkut-container">
 
 
                                     </tbody>
+
                                 </table>
+                                <!-- Letakkan input hidden di luar table -->
+                                <input type="hidden" name="alat_angkut_all" id="alat_angkut_all">
+
+
+
+
+
                             </div>
 
-                            <div class="bg-gradient-success rounded p-2">
-                                <div id="row-container">
-                                    <h6 class="custom-text-color">IDENTIFIKASI TINDAKAN YANG DILAKUKAN</h6>
-                                    <div class="row input-row">
-                                        <div class="col-3 mt-4">
-                                            <div class="input-group input-group-static mb-3">
-                                                <label class="custom-text-color">Kendala / Lokasi</label>
-                                                <input type="text" class="form-control" name="kendala[]" required>
-                                            </div>
-                                        </div>
-                                        <div class="col-3 mt-4">
-                                            <div class="input-group input-group-static mb-3">
-                                                <label class="custom-text-color">Waktu Mulai</label>
-                                                <input type="time" class="form-control" name="waktu_mulai[]" required>
-                                            </div>
-                                        </div>
-                                        <div class="col-3 mt-4">
-                                            <div class="input-group input-group-static mb-3">
-                                                <label class="custom-text-color">Waktu Selesai</label>
-                                                <input type="time" class="form-control" name="waktu_selesai[]"
-                                                    required>
-                                            </div>
-                                        </div>
-                                        <div class="col-3 mt-4">
-                                            <div class="input-group input-group-static mb-3">
-                                                <label class="custom-text-color">Keterangan</label>
-                                                <input type="text" class="form-control" name="keterangan[]" required>
-                                            </div>
 
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <a class="btn btn-primary" id="addRowButton">Add Row</a>
-                            </div>
                             <div class="row">
                                 <div class="col-3 mt-4">
                                     <div class="input-group input-group-static mb-3">
@@ -270,7 +207,8 @@
                                 <div class="col-6">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="diperiksa" class="ms-0">Diperiksa Oleh</label>
-                                        <select name="diperiksa_oleh" id="diperiksa" class="form-control form-select" required>
+                                        <select name="diperiksa_oleh" id="diperiksa" class="form-control form-select"
+                                            required>
                                             <option disabled selected>-- Select Approval --</option>
                                             @foreach ($approvalList as $data)
                                                 <option value="{{ $data->nik }}">{{ $data->nama }}</option>
@@ -297,7 +235,8 @@
 @endsection
 
 @section('custom-css')
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
     <style>
         .table> :not(caption)>*>* {
             padding: 0.5rem;
@@ -370,7 +309,7 @@
 
 @section('custom-js')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <script>
@@ -421,17 +360,71 @@
 
             });
         });
+        $(document).ready(function() {
+            $('#site').on('change', function() {
+                var selectedSite = $(this).val();
 
+                $.ajax({
+                    url: '{{ route('get.alat.by.site') }}',
+                    data: {
+                        site: selectedSite
+                    },
+                    success: function(data) {
+                        $('#multiple_angkut').empty();
+
+                        if (data.length > 0) {
+                            $.each(data, function(index, item) {
+                                $('#multiple_angkut').append(
+                                    `<option value="${item.no_lambung}">${item.no_lambung}</option>`
+                                );
+                            });
+                        }
+                    },
+                    error: function(xhr) {
+                        console.log(xhr.responseText);
+                    }
+                });
+            });
+        });
 
         $(document).ready(function() {
             $('#dibuat_oleh').select2();
             $('#diperiksa').select2();
+            $('#site').select2();
+            $('#alat_angkut').select2();
+            $('#operator_load').select2();
+            $('#nama_operator').select2();
+            $('#multiple_angkut').select2({
+                placeholder: "Pilih kategori",
+                allowClear: true,
+                maximumSelectionLength: 5
+            });
+
+            $('#multiple_angkut').on('change', function() {
+                let selectedValues = $(this).val() || [];
+                let $alatDropdown = $('#alat_angkut');
+                let $alatHiddenInput = $('#alat_angkut_all');
+
+                $alatDropdown.empty();
+
+                if (selectedValues.length > 0) {
+                    $alatDropdown.append('<option value="">-- Pilih Alat Angkut --</option>');
+                    selectedValues.forEach(function(val) {
+                        $alatDropdown.append(`<option value="${val}">${val}</option>`);
+                    });
+                    renderAlatAngkutTable(JSON.stringify(selectedValues));
+                    $alatHiddenInput.val(JSON.stringify(selectedValues));
+                } else {
+                    $alatDropdown.append('<option value="">-- Tidak ada pilihan --</option>');
+                    $alatHiddenInput.val('');
+                }
+            });
+
+
         });
 
         document.getElementById('shiftSelector').addEventListener('change', function() {
             var selectedShift = this.value;
-
-
             var rows = document.querySelectorAll('.shift-row');
             rows.forEach(function(row) {
                 row.style.display = 'none';
@@ -450,79 +443,243 @@
                 });
             }
         });
+    </script>
+    <script>
+        let globalSavedValues = {};
 
-        idcounter = 1;
+        function renderAlatAngkutTable(selectedValuesJson) {
+            let users = @json($users);
+            let dataDS = @json($dataDS);
+            let dataNS = @json($dataNS);
+            let combinedData = [...dataDS, ...dataNS];
+
+            const container = document.getElementById('alatangkut-container');
 
 
-        document.getElementById('addNewAlatAngkut').addEventListener('click', function() {
-            var mainTable = document.getElementById('mainTable');
-            var newTable = mainTable.cloneNode(true);
-            newTable.id = 'newTable' + idcounter;
+            const currentAlat = document.getElementById('alat_angkut')?.value;
+            if (currentAlat) {
+                const currentValues = saveCurrentValues();
+
+                Object.assign(globalSavedValues, currentValues);
+            }
+
+            container.innerHTML = '';
 
 
-            var inputs = newTable.querySelectorAll('input');
-            inputs.forEach((input) => {
+            const shiftSelector = document.getElementById('shiftSelector');
+            const selectedShift = shiftSelector ? shiftSelector.value : '';
 
-                input.value = '';
-                input.name = idcounter + input.name;
+            let alatangkut = JSON.parse(selectedValuesJson || '[]');
+
+            alatangkut.forEach((alat, index) => {
+                let id = 1;
+
+
+                let section = document.createElement('div');
+                section.id = `section-${alat}`;
+                section.className = 'alat-section';
+                section.style.display = 'none';
+
+
+
+                let operatorRow = document.createElement('tr');
+                operatorRow.innerHTML = `
+                    <td colspan="2"><strong>Nama Operator</strong></td>
+                    <td colspan="5" class="text-center">
+                        <select class="form-control form-select" name="nama_operator_${alat}" id="nama_operator_${alat}" required style="background-color: #eee7e8; color: rgb(11, 10, 10); width: 100%;">
+                            <option disabled selected>-- Select Nama Operator --</option>
+                            ${
+                                users.length > 0
+                                ? users.map(user => `<option value="${user.nik ?? ''}">${user.nama ?? 'User tidak tersedia'}</option>`).join('')
+                                : '<option>Data karyawan tidak ditemukan</option>'
+                            }
+                        </select>
+                    </td>
+                    <td></td>
+                `;
+                container.appendChild(operatorRow);
+                operatorRow.classList.add('operator-row', `operator-${alat}`);
+                operatorRow.style.display = 'none';
+                $(`#nama_operator_${alat}`).select2();
+
+                setTimeout(() => {
+                    const operatorSelect = operatorRow.querySelector(
+                        `select[name="nama_operator_${alat}"]`);
+                    if (operatorSelect && globalSavedValues[`operator_${alat}`]) {
+                        operatorSelect.value = globalSavedValues[`operator_${alat}`];
+
+                    }
+                }, 0);
+
+                let dataToShow = [];
+                if (selectedShift === 'DS') {
+                    dataToShow = dataDS;
+                } else if (selectedShift === 'NS') {
+                    dataToShow = dataNS;
+                } else {
+                    dataToShow = combinedData;
+                }
+
+                dataToShow.forEach(data => {
+                    let shift = dataDS.includes(data) ? 'DS' : 'NS';
+                    let row = document.createElement('tr');
+                    row.classList.add('shift-row', shift, `alat-row-${alat}`);
+                    row.id = `row-${id}`;
+                    row.style.display = 'none';
+
+                    let timeInputs = '';
+                    for (let i = 1; i <= 5; i++) {
+                        const inputName = `time_${alat}_${id}_${i}`;
+                        const savedValue = globalSavedValues[`${alat}_time_${id}_${i}`] || '';
+                        timeInputs +=
+                            `<td><input type="time" class="form-control" name="${inputName}" value="${savedValue}"></td>`;
+                    }
+
+                    const materialName = `material_${alat}_${id}`;
+                    const savedMaterial = globalSavedValues[`${alat}_${materialName}`] || '';
+
+                    row.innerHTML = `
+                        <td colspan="2">${data}</td>
+                        ${timeInputs}
+                        <td><textarea class="form-control" name="${materialName}" rows="1">${savedMaterial}</textarea></td>
+                    `;
+                    container.appendChild(row);
+                    id++;
+                });
+
+
+                let additionalSection = document.createElement('tr');
+                additionalSection.classList.add('additional-section', `alat-row-${alat}`);
+                additionalSection.style.display = 'none';
+                additionalSection.innerHTML = `
+                    <td colspan="8" style="padding: 10px;">
+                        <div class="bg-gradient-success rounded p-2">
+                            <div id="row-container-${alat}">
+                                <h6 class="custom-text-color">IDENTIFIKASI TINDAKAN YANG DILAKUKAN</h6>
+                                <div class="row input-row">
+                                    <div class="col-3 mt-4">
+                                        <div class="input-group input-group-static mb-3">
+                                            <label class="custom-text-color">Kendala / Lokasi</label>
+                                            <input type="text" class="form-control" name="kendala_${alat}" value="${globalSavedValues[`kendala_${alat}`] || ''}" >
+                                        </div>
+                                    </div>
+                                    <div class="col-3 mt-4">
+                                        <div class="input-group input-group-static mb-3">
+                                            <label class="custom-text-color">Waktu Mulai</label>
+                                            <input type="time" class="form-control" name="waktu_mulai_${alat}" value="${globalSavedValues[`waktu_mulai_${alat}`] || ''}" >
+                                        </div>
+                                    </div>
+                                    <div class="col-3 mt-4">
+                                        <div class="input-group input-group-static mb-3">
+                                            <label class="custom-text-color">Waktu Selesai</label>
+                                            <input type="time" class="form-control" name="waktu_selesai_${alat}" value="${globalSavedValues[`waktu_selesai_${alat}`] || ''}" >
+                                        </div>
+                                    </div>
+                                    <div class="col-3 mt-4">
+                                        <div class="input-group input-group-static mb-3">
+                                            <label class="custom-text-color">Keterangan</label>
+                                            <input type="text" class="form-control" name="keterangan_${alat}" value="${globalSavedValues[`keterangan_${alat}`] || ''}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                `;
+                container.appendChild(additionalSection);
             });
 
-            var textareas = newTable.querySelectorAll('textarea');
-            textareas.forEach((textarea) => {
-                textarea.value = '';
-                textarea.name = idcounter + textarea.name;
+
+            onAlatAngkutChange();
+        }
+
+
+        function saveCurrentValues() {
+            const values = {};
+
+
+            const currentAlat = document.getElementById('alat_angkut')?.value;
+            if (!currentAlat) return values;
+
+
+            const operatorSelect = document.querySelector(
+                `.operator-${currentAlat} select[name="nama_operator_${currentAlat}"]`);
+            if (operatorSelect) {
+                values[`operator_${currentAlat}`] = operatorSelect.value;
+            }
+
+
+            const timeInputs = document.querySelectorAll(`.alat-row-${currentAlat} input[type="time"]`);
+            timeInputs.forEach(input => {
+                if (input.name && input.value) {
+                    values[`${currentAlat}_${input.name}`] = input.value;
+                }
             });
 
 
-            document.getElementById('tablesContainer').appendChild(newTable);
-
-
-            idcounter++;
-
-
-
-            var removeButton = document.createElement('button');
-            removeButton.innerText = 'Remove Table';
-            removeButton.classList.add('removeButton', 'btn', 'btn-danger', 'mt-3');
-
-            removeButton.addEventListener('click', function() {
-                newTable.remove();
-            });
-
-            newTable.appendChild(removeButton);
-        });
-
-
-
-        document.getElementById('addRowButton').addEventListener('click', function() {
-            const rowContainer = document.getElementById('row-container');
-            const row = document.querySelector('.input-row');
-            const newRow = row.cloneNode(true);
-
-
-            const inputs = newRow.querySelectorAll('input');
-            inputs.forEach(input => input.value = '');
-
-
-            const removeButton = document.createElement('a');
-            removeButton.href = "#";
-            removeButton.innerHTML = '<i class="fas fa-trash-alt fa-2x text-primary"></i>';
-            removeButton.classList.add('removeRowButton');
-
-
-            const colRemove = document.createElement('div');
-            colRemove.classList.add('col-3', 'mb-1');
-            colRemove.appendChild(removeButton);
-
-            newRow.appendChild(colRemove);
-
-            removeButton.addEventListener('click', function(event) {
-                event.preventDefault();
-                newRow.remove();
+            const materialTextareas = document.querySelectorAll(`.shift-row textarea[name^="material_"]`);
+            materialTextareas.forEach(textarea => {
+                if (textarea.name && textarea.value) {
+                    values[`${currentAlat}_${textarea.name}`] = textarea.value;
+                }
             });
 
 
-            rowContainer.appendChild(newRow);
-        });
+            const kendalaInput = document.querySelector(`input[name="kendala_${currentAlat}"]`)?.value;
+            if (kendalaInput !== undefined) {
+                values[`kendala_${currentAlat}`] = kendalaInput;
+            }
+
+            const waktuMulaiInput = document.querySelector(`input[name="waktu_mulai_${currentAlat}"]`)?.value;
+            if (waktuMulaiInput !== undefined) {
+                values[`waktu_mulai_${currentAlat}`] = waktuMulaiInput;
+            }
+
+            const waktuSelesaiInput = document.querySelector(`input[name="waktu_selesai_${currentAlat}"]`)?.value;
+            if (waktuSelesaiInput !== undefined) {
+                values[`waktu_selesai_${currentAlat}`] = waktuSelesaiInput;
+            }
+
+            const keteranganInput = document.querySelector(`input[name="keterangan_${currentAlat}"]`)?.value;
+            if (keteranganInput !== undefined) {
+                values[`keterangan_${currentAlat}`] = keteranganInput;
+            }
+
+            return values;
+        }
+
+        function onAlatAngkutChange() {
+            const selected = document.getElementById('alat_angkut').value;
+
+
+            document.querySelectorAll('.operator-row').forEach(row => {
+                row.style.display = 'none';
+            });
+
+            document.querySelectorAll('.shift-row, .additional-section').forEach(row => {
+                row.style.display = 'none';
+            });
+
+            if (selected) {
+
+                const operatorRow = document.querySelector(`.operator-${selected}`);
+                if (operatorRow) {
+                    operatorRow.style.display = 'table-row';
+                }
+
+
+                document.querySelectorAll(`.alat-row-${selected}`).forEach(row => {
+                    row.style.display = 'table-row';
+                });
+            }
+        }
+
+        function onShiftChange() {
+
+            const selected = document.getElementById('alat_angkut').value;
+            if (selected) {
+                renderAlatAngkutTable(JSON.stringify([selected]));
+            }
+        }
     </script>
 @endsection

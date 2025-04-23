@@ -46,7 +46,9 @@ return new class extends Migration
             $table->string('disposal');
             $table->string('checker');
             $table->string('pengawas');
-			$table->string('site')->nullable(); 
+			$table->string('site')->nullable();
+            $table->date('tgl_diperiksa')->nullable();
+            $table->date('tgl_diketahui')->nullable();
             $table->timestamps();
         });
     }

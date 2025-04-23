@@ -30,7 +30,7 @@
         td {
             border: 1px solid black;
             font-size: 8px;
-            padding: 5px;
+            padding: 4px;
             text-align: left;
         }
 
@@ -138,9 +138,9 @@
                     <tr>
                         <td>{{ $alat }}</td>
                         @for ($i = 0; $i < 6; $i++)
-                            @for ($j = 1; $j < 6; $j++)
-                                @if (isset($time_details[$counts][$i]->{$j}))
-                                    <td>{{ $time_details[$counts][$i]->{$j} }}</td>
+                            @for ($j = 0; $j < 5; $j++)
+                                @if (isset($time_details[$counts][$i][$j]))
+                                    <td>{{ $time_details[$counts][$i][$j] }}</td>
                                 @else
                                     <td></td>
                                 @endif

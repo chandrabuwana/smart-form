@@ -73,7 +73,8 @@
                             <div class="col-md-4">
                                 <div class="input-group input-group-static mb-3">
                                     <label for="shift" class="ms-0">Shift</label>
-                                    <select class="form-control" name="shift" id="shiftSelector" disabled>
+                                    <select class="form-control" name="shift" id="shiftSelector"
+                                        onchange="onShiftChange()" disabled>
                                         <option disabled selected>-- Select Shift --</option>
                                         <option value="DS"
                                             {{ old('shift', $record->shift ?? '') == 'DS' ? 'selected' : '' }}>
@@ -90,12 +91,13 @@
                             <div class="col-md-4">
                                 <div class="input-group input-group-static mb-3">
                                     <label for="operator_load" class="ms-0">Nama Operator Loader</label>
-                                    {{-- <input type="text" class="form-control" id="operator_load"
-                                        value="{{ $record->operator_leader }}" name="operator_load" disabled> --}}
-                                    <select class="form-control form-select" id="operator_load" name="operator_load" disabled>
+
+                                    <select class="form-control form-select" id="operator_load" name="operator_load"
+                                        disabled>
                                         <option disabled selected>-- Select Nama Operator --</option>
                                         @forelse($users as $user)
-                                            <option value="{{ $user->nik ?? '' }}" {{ $record->operator_leader == $user->nik ? 'selected' : '' }}>
+                                            <option value="{{ $user->nik ?? '' }}"
+                                                {{ $record->operator_leader == $user->nik ? 'selected' : '' }}>
                                                 {{ $user->nama ?? 'User tidak tersedia' }}
                                             </option>
                                         @empty
@@ -115,137 +117,52 @@
                             <div class="col-md-4">
                                 <div class="input-group input-group-static mb-3">
                                     <label for="site" class="ms-0">Site</label>
-                                    <select class="form-control form-select" id="site" name="site" disabled>
-                                        <option disabled>-- Select Site --</option>
-                                        @forelse($sites as $site)
-                                            <option value="{{ $site->KodeST ?? '' }}" {{ $record->site == $site->KodeST ? 'selected' : '' }}>
-                                                {{ $site->KodeST ?? 'Site tidak tersedia' }}
-                                            </option>
-                                        @empty
-                                            <option>Data site tidak ditemukan</option>
-                                        @endforelse
-                                    </select>
-
+                                    {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('site', strtolower($record->site), $isShowDetail) !!}
                                 </div>
                             </div>
                         </div>
 
-                        <div class="table-responsive mt-4" id="tablesContainer">
-                            @foreach ($record->alat_angkut as $index => $alat)
-                                <table class="table table-bordered" id="mainTable">
-                                    <thead class="bg-success text-white">
-                                        <tr>
-                                            <th>Alat Angkut</th>
-                                            <th>CN</th>
-                                            <th colspan="4" class="text-center">
-                                                <input class="form-control" type="text" name="alat_angkut"
-                                                    placeholder="Input Alat Angkut" disabled value="{{ $alat }}"
-                                                    style="text-align: center; background-color: #eee7e8; color: rgb(11, 10, 10);">
-                                            </th>
-                                            <th>∑</th>
-                                            <th rowspan="2" class="text-center align-middle">Material</th>
-                                        </tr>
-                                        <tr>
-                                            <th>Nama Operator</th>
-                                            <th colspan="5" class="text-center">
-                                                {{-- <input class="form-control" type="text" name="nama_operator"
-                                                    style="text-align: center; background-color: #eee7e8; color: rgb(11, 10, 10);"
-                                                    placeholder="Input Nama Operator"
-                                                    value="{{ $record->nama_operator[$index] }}" disabled> --}}
-
-                                                <select class="form-control form-select" name="nama_operator" disabled
-                                                    style="text-align: center; background-color: #eee7e8; color: rgb(11, 10, 10);">
-                                                    <option disabled>-- Select Nama Operator --</option>
-                                                    @forelse($users as $user)
-                                                        <option value="{{ $user->nik ?? '' }}" {{ $record->nama_operator[$index] == $user->nik ? 'selected' : '' }}>
-                                                            {{ $user->nama ?? 'User tidak tersedia' }}
-                                                        </option>
-                                                    @empty
-                                                        <option>Data karyawan tidak ditemukan</option>
-                                                    @endforelse
-                                                </select>
-                                            </th>
-                                            <th>RITASI</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @php
-
-                                            $alatAngkut = $record->shift == 'DS' ? $dataDS : $dataNS;
-                                            $counts = 1;
-                                        @endphp
-
-                                        @foreach ($alatAngkut as $id => $alat)
-                                            <tr>
-                                                <td>{{ $alat }}</td>
-                                                @for ($i = 1; $i <= 5; $i++)
-                                                    <td>
-                                                        <input type="time" class="time-input form-control"
-                                                            name="time[{{ $id }}][{{ $i }}]"
-                                                            value="{{ $time_details[$counts][$index]->{$i} }}" disabled>
-                                                    </td>
-                                                @endfor
-                                                <td>
-                                                    <input type="text" class="form-control text-center"
-                                                        value="{{ $nonNullCounts[$counts][$index] }}" disabled>
-                                                </td>
-                                                <td>
-                                                    <textarea class="form-control" name="material[]" cols="5" disabled>{{ $record->material[$index][$id] }}</textarea>
-                                                </td>
-                                            </tr>
-                                            @php
-                                                $counts++;
-                                            @endphp
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            @endforeach
-
-                        </div>
-
-
-
-
-                        <div class="bg-gradient-success rounded p-2">
-                            <div id="row-container">
-                                <h6 class="custom-text-color">IDENTIFIKASI TINDAKAN YANG DILAKUKAN</h6>
-                                @foreach ($record->kendala as $index => $kendala)
-                                    <div class="row input-row">
-                                        <div class="col-3 mt-4">
-                                            <div class="input-group input-group-static mb-3">
-                                                <label class="custom-text-color">Kendala / Lokasi</label>
-                                                <input type="text" class="form-control" value="{{ $kendala }}"
-                                                    name="kendala[]" disabled>
-                                            </div>
-                                        </div>
-                                        <div class="col-3 mt-4">
-                                            <div class="input-group input-group-static mb-3">
-                                                <label class="custom-text-color">Waktu Mulai</label>
-                                                <input type="time" class="form-control"
-                                                    value="{{ $record->waktu_mulai[$index] }}" name="waktu_mulai[]"
-                                                    disabled>
-                                            </div>
-                                        </div>
-                                        <div class="col-3 mt-4">
-                                            <div class="input-group input-group-static mb-3">
-                                                <label class="custom-text-color">Waktu Selesai</label>
-                                                <input type="time" class="form-control"
-                                                    value="{{ $record->waktu_selesai[$index] }}" name="waktu_selesai[]"
-                                                    disabled>
-                                            </div>
-                                        </div>
-                                        <div class="col-3 mt-4">
-                                            <div class="input-group input-group-static mb-3">
-                                                <label class="custom-text-color">Keterangan</label>
-                                                <input type="text" value="{{ $record->keterangan[$index] }}"
-                                                    class="form-control" name="keterangan[]" disabled>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                @endforeach
-
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <select class="form-control form-select" id="multiple_angkut" name="multiple_angkut[]"
+                                    multiple disabled>
+                                </select>
                             </div>
+                        </div>
+                        <div class="table-responsive mt-4" id="tablesContainer">
+
+                            <table class="table table-bordered" id="mainTable">
+                                <thead class="bg-success text-white">
+                                    <tr>
+                                        <th>Alat Angkut</th>
+                                        <th>CN</th>
+                                        <th colspan="4" class="text-center">
+                                            <select class="form-control" name="alat_angkut" id="alat_angkut"
+                                                onchange="onAlatAngkutChange()"
+                                                style="background-color: #eee7e8; color: rgb(11, 10, 10);" required>
+                                                <option value="">-- Pilih Alat Angkut --</option>
+                                            </select>
+
+                                        </th>
+
+                                        <th rowspan="2" class="text-center align-middle">Material</th>
+                                    </tr>
+                                    <tr>
+
+                                        <th>Nama Operator</th>
+                                        <th class="text-center">Jam 1</th>
+                                        <th class="text-center">Jam 2</th>
+                                        <th class="text-center">Jam 3</th>
+                                        <th class="text-center">Jam 4</th>
+                                        <th class="text-center">Jam 5</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody id="alatangkut-container">
+
+                                </tbody>
+                            </table>
+                            <input type="hidden" name="alat_angkut_all" id="alat_angkut_all">
 
                         </div>
                         <div class="row">
@@ -358,6 +275,7 @@
     @endsection
 
     @section('custom-css')
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
         <style>
             .table> :not(caption)>*>* {
                 padding: 0.5rem;
@@ -441,111 +359,125 @@
     @endsection
 
     @section('custom-js')
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
         <script>
-            // document.addEventListener("DOMContentLoaded", function() {
+            $(document).ready(function() {
+                $('#dibuat_oleh').select2();
+                $('#diperiksa').select2();
+                $('#site').select2();
+                $('#operator_load').select2();
+                $('#nama_operator').select2();
+                $('#alat_angkut').select2({
+                    placeholder: "Pilih alat angkut",
+                    allowClear: true
+                });
+                $('#multiple_angkut').select2({
+                    placeholder: "Pilih kategori",
+                    allowClear: true,
+                    maximumSelectionLength: 5
+                });
 
-            //     document.getElementById("btnCheckerApprove").addEventListener("click", function() {
-            //         let docNumber = this.getAttribute("data-doc");
-            //         let status = this.getAttribute('data-status');
+                $('#multiple_angkut').on('change', function() {
+                    let selectedValues = $(this).val() || [];
+                    let $alatDropdown = $('#alat_angkut');
+                    let $alatHiddenInput = $('#alat_angkut_all');
 
-            //         let nik = this.getAttribute("data-nik");
+                    $alatDropdown.empty();
 
-            //         axios.post('{ route('
-            //                 prod.form.checker.approve ') }}', {
-            //                     _token: "{{ csrf_token() }}",
-            //                     doc_num: docNumber,
+                    if (selectedValues.length > 0) {
+                        $alatDropdown.append('<option value="">-- Pilih Alat Angkut --</option>');
+                        selectedValues.forEach(function(val) {
+                            $alatDropdown.append(`<option value="${val}">${val}</option>`);
+                        });
+                        renderAlatAngkutTable(JSON.stringify(selectedValues));
+                        $alatHiddenInput.val(JSON.stringify(selectedValues));
+                    } else {
+                        $alatDropdown.append('<option value="">-- Tidak ada pilihan --</option>');
+                        $alatHiddenInput.val('');
+                    }
+                });
+            });
+            $(document).ready(function() {
 
-            //                     checked: nik == "{{ $record->pengawas }}" ? 'Approved' : status,
+                function updateAlatAngkutDropdown() {
+                    let selectedValues = $('#multiple_angkut').val() || [];
+                    let $alatDropdown = $('#alat_angkut');
+                    let $alatHiddenInput = $('#alat_angkut_all');
 
-            //                 })
-            //             .then(response => {
-            //                 if (response.data.success) {
-            //                     Swal.fire({
-            //                         icon: 'success',
-            //                         title: 'Success',
-            //                         text: response.data.message
-            //                     }).then((result) => {
-            //                         if (result.isConfirmed) {
-            //                             window.location.reload();
-            //                         }
-            //                     });
-            //                 }
-            //             })
-            //             .catch(error => {
-            //                 let errorMessage = 'Terjadi kesalahan pada sistem';
-            //                 console.log("Error respons:", error.response);
+                    $alatDropdown.empty();
 
-            //                 if (error.response) {
-            //                     if (error.response.data.errors) {
-            //                         errorMessage = Object.values(error.response.data.errors).flat().join(
-            //                             '\n');
-            //                     } else if (error.response.data.message) {
-            //                         errorMessage = error.response.data.message;
-            //                     }
-            //                 }
-
-            //                 Swal.fire({
-            //                     icon: 'error',
-            //                     title: 'Error',
-            //                     text: errorMessage
-            //                 });
-            //             });
-            //     });
-
-
-            //     document.getElementById("btnCheckerReject").addEventListener("click", function() {
-            //         let docNumber = this.getAttribute("data-doc");
-            //         let status = this.getAttribute('data-status');
-            //         let nik = this.getAttribute("data-nik");
-
-            //         axios.post('{{ route('prod.form.checker.reject') }}', {
-            //                 _token: "{{ csrf_token() }}",
-            //                 doc_num: docNumber,
-            //                 checked: nik == "{{ $record->pengawas }}" ? 'Rejected' : status,
-            //             })
-            //             .then(function(response) {
-            //                 console.log('Response:', response);
-            //                 if (response.data.success) {
-            //                     Swal.fire({
-            //                         icon: 'success',
-            //                         title: 'Success',
-            //                         text: response.data.message
-            //                     }).then(() => {
-            //                         location.reload();
-            //                     });
-            //                 } else {
-            //                     Swal.fire({
-            //                         icon: 'error',
-            //                         title: 'Error',
-            //                         text: 'Failed to reset the approval.'
-            //                     });
-            //                 }
-            //             })
-            //             .catch(error => {
-            //                 let errorMessage = 'Terjadi kesalahan pada sistem';
-            //                 console.log("Error respons:", error.response);
-
-            //                 if (error.response) {
-            //                     if (error.response.data.errors) {
-            //                         errorMessage = Object.values(error.response.data.errors).flat().join(
-            //                             '\n');
-            //                     } else if (error.response.data.message) {
-            //                         errorMessage = error.response.data.message;
-            //                     }
-            //                 }
-
-            //                 Swal.fire({
-            //                     icon: 'error',
-            //                     title: 'Error',
-            //                     text: errorMessage
-            //                 });
-            //             });
-            //     });
+                    if (selectedValues.length > 0) {
+                        $alatDropdown.append('<option value="">-- Pilih Alat Angkut --</option>');
+                        selectedValues.forEach(function(val) {
+                            $alatDropdown.append(`<option value="${val}">${val}</option>`);
+                        });
+                        renderAlatAngkutTable(JSON.stringify(selectedValues));
+                        $alatHiddenInput.val(JSON.stringify(selectedValues));
+                    } else {
+                        $alatDropdown.append('<option value="">-- Tidak ada pilihan --</option>');
+                        $alatHiddenInput.val('');
+                    }
+                }
 
 
-            // });
+                $('#multiple_angkut').on('change', function() {
+                    updateAlatAngkutDropdown();
+                });
+
+
+                $('#site').on('change', function() {
+                    loadAlatBySite($(this).val());
+                });
+
+
+                var initialSite = $('#site').val();
+                if (initialSite) {
+                    loadAlatBySite(initialSite);
+                }
+
+
+                function loadAlatBySite(selectedSite) {
+                    $.ajax({
+                        url: '{{ route('get.alat.by.site') }}',
+                        type: 'GET',
+                        data: {
+                            site: selectedSite
+                        },
+                        success: function(data) {
+                            $('#multiple_angkut').empty();
+
+
+                            var selectedValues = {!! json_encode($record->alat_angkut ?? []) !!};
+
+                            if (data.length > 0) {
+                                $.each(data, function(index, item) {
+
+                                    var isSelected = '';
+                                    if (selectedValues && selectedValues.includes(item
+                                            .no_lambung)) {
+                                        isSelected = ' selected';
+                                    }
+
+                                    $('#multiple_angkut').append(
+                                        `<option value="${item.no_lambung}"${isSelected}>${item.no_lambung}</option>`
+                                    );
+                                });
+                            }
+
+
+                            updateAlatAngkutDropdown();
+                        },
+                        error: function(xhr) {
+                            console.log(xhr.responseText);
+                        }
+                    });
+                }
+
+
+                updateAlatAngkutDropdown();
+            });
 
             function rejected(doc, status, nik, pengawas) {
                 axios.post('{{ route('prod.form.checker.reject') }}', {
@@ -700,77 +632,369 @@
             });
 
             idcounter = 1;
+        </script>
+        <script>
+            let globalSavedValues = {};
+
+            function renderAlatAngkutTable(selectedValuesJson) {
+                let users = @json($users);
+                let record = @json($record);
+                let dataDS = @json($dataDS);
+                let dataNS = @json($dataNS);
+                let ritase = @json($nonNullCounts);
+                console.log(record);
+                let combinedData = [...dataDS, ...dataNS];
+
+                const container = document.getElementById('alatangkut-container');
 
 
-            document.getElementById('addNewAlatAngkut').addEventListener('click', function() {
-                var mainTable = document.getElementById('mainTable');
-                var newTable = mainTable.cloneNode(true);
-                newTable.id = 'newTable' + idcounter;
+                const currentAlat = document.getElementById('alat_angkut')?.value;
+                if (currentAlat) {
+                    const currentValues = saveCurrentValues();
+                    Object.assign(globalSavedValues, currentValues);
+                }
+
+                container.innerHTML = '';
+
+                const shiftSelector = document.getElementById('shiftSelector');
+                const selectedShift = shiftSelector ? shiftSelector.value : '';
+
+                let alatangkut = JSON.parse(selectedValuesJson || '[]');
 
 
-                var inputs = newTable.querySelectorAll('input');
-                inputs.forEach((input) => {
+                if (record && typeof record === 'object' && !globalSavedValues.isRecordLoaded) {
+                    populateFromRecord(record);
+                    globalSavedValues.isRecordLoaded = true;
+                }
 
-                    input.value = '';
-                    input.name = idcounter + input.name;
+                alatangkut.forEach((alat, alatIndex) => {
+                    let id = 1;
+                    let section = document.createElement('div');
+                    section.id = `section-${alat}`;
+                    section.className = 'alat-section';
+                    section.style.display = 'none';
+
+
+                    let operatorRow = document.createElement('tr');
+                    operatorRow.innerHTML = `
+                <td colspan="2"><strong>Nama Operator</strong></td>
+                <td colspan="5" class="text-center">
+                    <select class="form-control form-select" name="nama_operator_${alat}" required style="background-color: #eee7e8; color: rgb(11, 10, 10); width: 100%;" disabled>
+                        <option disabled selected>-- Select Nama Operator --</option>
+                        ${
+                            users.length > 0
+                            ? users.map(user => `<option value="${user.nik ?? ''}">${user.nama ?? 'User tidak tersedia'}</option>`).join('')
+                            : '<option>Data karyawan tidak ditemukan</option>'
+                        }
+                    </select>
+                </td>
+                <td></td>
+            `;
+                    container.appendChild(operatorRow);
+                    operatorRow.classList.add('operator-row', `operator-${alat}`);
+                    operatorRow.style.display = 'none';
+
+
+                    setTimeout(() => {
+                        const operatorSelect = operatorRow.querySelector(
+                            `select[name="nama_operator_${alat}"]`);
+                        if (operatorSelect) {
+
+                            if (record && record.nama_operator && record.nama_operator[alatIndex]) {
+                                operatorSelect.value = record.nama_operator[alatIndex];
+                            } else if (globalSavedValues[`operator_${alat}`]) {
+                                operatorSelect.value = globalSavedValues[`operator_${alat}`];
+                            }
+                        }
+                    }, 0);
+
+
+                    let dataToShow = [];
+                    if (selectedShift === 'DS') {
+                        dataToShow = dataDS;
+                    } else if (selectedShift === 'NS') {
+                        dataToShow = dataNS;
+                    } else {
+                        dataToShow = combinedData;
+                    }
+
+                    dataToShow.forEach((data, dataIndex) => {
+                        let cn = 0;
+                        let shift = dataDS.includes(data) ? 'DS' : 'NS';
+                        let row = document.createElement('tr');
+                        row.classList.add('shift-row', shift, `alat-row-${alat}`);
+                        row.id = `row-${id}`;
+                        row.style.display = 'none';
+
+                        let timeInputs = '';
+                        for (let i = 1; i <= 5; i++) {
+                            const inputName = `time_${alat}_${id}_${i}`;
+
+
+                            let timeValue = '';
+                            if (record && record[`time_detail${id}`] &&
+                                record[`time_detail${id}`][alatIndex] &&
+                                record[`time_detail${id}`][alatIndex][i - 1] !== null) {
+                                timeValue = record[`time_detail${id}`][alatIndex][i - 1];
+                            } else if (globalSavedValues[`${alat}_time_${id}_${i}`]) {
+                                timeValue = globalSavedValues[`${alat}_time_${id}_${i}`];
+                            }
+
+                            timeInputs +=
+                                `<td><input type="time" class="form-control" name="${inputName}" value="${timeValue}" disabled></td>`;
+                        }
+
+
+                        let materialValue = '';
+                        if (record && record.material &&
+                            record.material[alatIndex] &&
+                            record.material[alatIndex][id - 1] !== null) {
+                            materialValue = record.material[alatIndex][id - 1];
+                        } else if (globalSavedValues[`${alat}_material_${alat}_${id}`]) {
+                            materialValue = globalSavedValues[`${alat}_material_${alat}_${id}`];
+                        }
+
+                        const materialName = `material_${alat}_${id}`;
+
+                        row.innerHTML = `
+                    <td>${data}</td>
+                    ${timeInputs}
+    
+                    <td><textarea class="form-control" name="${materialName}" rows="1" disabled>${materialValue}</textarea></td>
+                `;
+                        container.appendChild(row);
+                        id++;
+                        cn++;
+                    });
+
+
+                    let additionalSection = document.createElement('tr');
+                    additionalSection.classList.add('additional-section', `alat-row-${alat}`);
+                    additionalSection.style.display = 'none';
+
+
+                    let kendalaValue = '';
+                    let waktuMulaiValue = '';
+                    let waktuSelesaiValue = '';
+                    let keteranganValue = '';
+
+                    if (record) {
+                        if (record.kendala && record.kendala[alatIndex]) {
+                            kendalaValue = record.kendala[alatIndex];
+                        }
+                        if (record.waktu_mulai && record.waktu_mulai[alatIndex]) {
+                            waktuMulaiValue = record.waktu_mulai[alatIndex];
+                        }
+                        if (record.waktu_selesai && record.waktu_selesai[alatIndex]) {
+                            waktuSelesaiValue = record.waktu_selesai[alatIndex];
+                        }
+                        if (record.keterangan && record.keterangan[alatIndex]) {
+                            keteranganValue = record.keterangan[alatIndex];
+                        }
+                    } else {
+                        kendalaValue = globalSavedValues[`kendala_${alat}`] || '';
+                        waktuMulaiValue = globalSavedValues[`waktu_mulai_${alat}`] || '';
+                        waktuSelesaiValue = globalSavedValues[`waktu_selesai_${alat}`] || '';
+                        keteranganValue = globalSavedValues[`keterangan_${alat}`] || '';
+                    }
+
+                    additionalSection.innerHTML = `
+                <td colspan="8" style="padding: 10px;">
+                    <div class="bg-gradient-success rounded p-2">
+                        <div id="row-container-${alat}">
+                            <h6 class="custom-text-color">IDENTIFIKASI TINDAKAN YANG DILAKUKAN</h6>
+                            <div class="row input-row">
+                                <div class="col-3 mt-4">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label class="custom-text-color">Kendala / Lokasi</label>
+                                        <input type="text" class="form-control" name="kendala_${alat}" value="${kendalaValue}" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-3 mt-4">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label class="custom-text-color">Waktu Mulai</label>
+                                        <input type="time" class="form-control" name="waktu_mulai_${alat}" value="${waktuMulaiValue}" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-3 mt-4">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label class="custom-text-color">Waktu Selesai</label>
+                                        <input type="time" class="form-control" name="waktu_selesai_${alat}" value="${waktuSelesaiValue}" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-3 mt-4">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label class="custom-text-color">Keterangan</label>
+                                        <input type="text" class="form-control" name="keterangan_${alat}" value="${keteranganValue}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            `;
+                    container.appendChild(additionalSection);
                 });
 
-                var textareas = newTable.querySelectorAll('textarea');
-                textareas.forEach((textarea) => {
-                    textarea.value = '';
-                    textarea.name = idcounter + textarea.name;
+                onAlatAngkutChange();
+            }
+
+
+            function populateFromRecord(record) {
+                if (!record) return;
+
+
+                if (record.alat_angkut && Array.isArray(record.alat_angkut)) {
+                    record.alat_angkut.forEach((alat, alatIndex) => {
+
+                        if (record.nama_operator && record.nama_operator[alatIndex]) {
+                            globalSavedValues[`operator_${alat}`] = record.nama_operator[alatIndex];
+                        }
+
+                        if (record.kendala && record.kendala[alatIndex]) {
+                            globalSavedValues[`kendala_${alat}`] = record.kendala[alatIndex];
+                        }
+
+                        if (record.waktu_mulai && record.waktu_mulai[alatIndex]) {
+                            globalSavedValues[`waktu_mulai_${alat}`] = record.waktu_mulai[alatIndex];
+                        }
+
+                        if (record.waktu_selesai && record.waktu_selesai[alatIndex]) {
+                            globalSavedValues[`waktu_selesai_${alat}`] = record.waktu_selesai[alatIndex];
+                        }
+
+                        if (record.keterangan && record.keterangan[alatIndex]) {
+                            globalSavedValues[`keterangan_${alat}`] = record.keterangan[alatIndex];
+                        }
+
+
+                        if (record.material && record.material[alatIndex]) {
+                            for (let i = 0; i < record.material[alatIndex].length; i++) {
+                                if (record.material[alatIndex][i] !== null) {
+                                    globalSavedValues[`${alat}_material_${alat}_${i+1}`] = record.material[alatIndex][
+                                        i
+                                    ];
+                                }
+                            }
+                        }
+
+                        for (let i = 1; i <= 12; i++) {
+                            const timeDetailKey = `time_detail${i}`;
+                            if (record[timeDetailKey] && record[timeDetailKey][alatIndex]) {
+                                for (let j = 0; j < record[timeDetailKey][alatIndex].length; j++) {
+                                    if (record[timeDetailKey][alatIndex][j] !== null) {
+                                        globalSavedValues[`${alat}_time_${i}_${j+1}`] = record[timeDetailKey][alatIndex]
+                                            [j];
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+
+            function saveCurrentValues() {
+                const values = {};
+
+                const currentAlat = document.getElementById('alat_angkut')?.value;
+                if (!currentAlat) return values;
+
+
+                const operatorSelect = document.querySelector(
+                    `.operator-${currentAlat} select[name="nama_operator_${currentAlat}"]`);
+                if (operatorSelect) {
+                    values[`operator_${currentAlat}`] = operatorSelect.value;
+                }
+
+                const timeInputs = document.querySelectorAll(`.alat-row-${currentAlat} input[type="time"]`);
+                timeInputs.forEach(input => {
+                    if (input.name && input.value) {
+                        values[`${currentAlat}_${input.name}`] = input.value;
+                    }
                 });
 
 
-                document.getElementById('tablesContainer').appendChild(newTable);
-
-
-                idcounter++;
-
-
-
-                var removeButton = document.createElement('button');
-                removeButton.innerText = 'Remove Table';
-                removeButton.classList.add('removeButton', 'btn', 'btn-danger', 'mt-3');
-
-                removeButton.addEventListener('click', function() {
-                    newTable.remove();
+                const materialTextareas = document.querySelectorAll(`.shift-row textarea[name^="material_"]`);
+                materialTextareas.forEach(textarea => {
+                    if (textarea.name && textarea.value) {
+                        values[`${currentAlat}_${textarea.name}`] = textarea.value;
+                    }
                 });
 
-                newTable.appendChild(removeButton);
-            });
+                const kendalaInput = document.querySelector(`input[name="kendala_${currentAlat}"]`)?.value;
+                if (kendalaInput !== undefined) {
+                    values[`kendala_${currentAlat}`] = kendalaInput;
+                }
+
+                const waktuMulaiInput = document.querySelector(`input[name="waktu_mulai_${currentAlat}"]`)?.value;
+                if (waktuMulaiInput !== undefined) {
+                    values[`waktu_mulai_${currentAlat}`] = waktuMulaiInput;
+                }
+
+                const waktuSelesaiInput = document.querySelector(`input[name="waktu_selesai_${currentAlat}"]`)?.value;
+                if (waktuSelesaiInput !== undefined) {
+                    values[`waktu_selesai_${currentAlat}`] = waktuSelesaiInput;
+                }
+
+                const keteranganInput = document.querySelector(`input[name="keterangan_${currentAlat}"]`)?.value;
+                if (keteranganInput !== undefined) {
+                    values[`keterangan_${currentAlat}`] = keteranganInput;
+                }
+
+                return values;
+            }
+
+            function onAlatAngkutChange() {
+                const selected = document.getElementById('alat_angkut').value;
 
 
-
-            document.getElementById('addRowButton').addEventListener('click', function() {
-                const rowContainer = document.getElementById('row-container');
-                const row = document.querySelector('.input-row');
-                const newRow = row.cloneNode(true);
-
-
-                const inputs = newRow.querySelectorAll('input');
-                inputs.forEach(input => input.value = '');
-
-
-                const removeButton = document.createElement('a');
-                removeButton.href = "#";
-                removeButton.innerHTML = '<i class="fas fa-trash-alt fa-2x text-primary"></i>';
-                removeButton.classList.add('removeRowButton');
-
-
-                const colRemove = document.createElement('div');
-                colRemove.classList.add('col-3', 'mb-1');
-                colRemove.appendChild(removeButton);
-
-                newRow.appendChild(colRemove);
-
-                removeButton.addEventListener('click', function(event) {
-                    event.preventDefault();
-                    newRow.remove();
+                document.querySelectorAll('.operator-row').forEach(row => {
+                    row.style.display = 'none';
                 });
 
+                document.querySelectorAll('.shift-row, .additional-section').forEach(row => {
+                    row.style.display = 'none';
+                });
 
-                rowContainer.appendChild(newRow);
+                if (selected) {
+
+                    const operatorRow = document.querySelector(`.operator-${selected}`);
+                    if (operatorRow) {
+                        operatorRow.style.display = 'table-row';
+                    }
+
+
+                    document.querySelectorAll(`.alat-row-${selected}`).forEach(row => {
+                        row.style.display = 'table-row';
+                    });
+                }
+            }
+
+            function onShiftChange() {
+
+                const selected = document.getElementById('alat_angkut').value;
+                if (selected) {
+                    renderAlatAngkutTable(JSON.stringify([selected]));
+                }
+            }
+
+
+            function initializeFormWithRecord() {
+                let record = @json($record);
+                if (record && record.alat_angkut && Array.isArray(record.alat_angkut) && record.alat_angkut.length > 0) {
+
+                    const alatAngkutSelect = document.getElementById('alat_angkut');
+                    if (alatAngkutSelect) {
+                        alatAngkutSelect.value = record.alat_angkut[0];
+
+                        renderAlatAngkutTable(JSON.stringify([record.alat_angkut[0]]));
+                    }
+                }
+            }
+
+
+            document.addEventListener('DOMContentLoaded', function() {
+                initializeFormWithRecord();
             });
         </script>
     @endsection
