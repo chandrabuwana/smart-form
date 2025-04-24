@@ -12,6 +12,15 @@ use Illuminate\Support\Facades\Log;
 
 class Helper
 {
+    public static $NOTIFICATION_CATEGORY = [
+        'info' => 'info',
+        'warning' => 'warning',
+        'success' => 'success',
+        'error' => 'error',
+        'question' => 'question',
+    ];
+
+
     public static function isGrantPermission(string $username, string $moduleName)
     {
         // spesific action
@@ -144,6 +153,43 @@ class Helper
 
     public static function validateDateFormat($format, $date) {
         $dt = DateTime::createFromFormat($format, $date);
-        return $dt !== false && !array_sum($dt::getLastErrors());
+        return $dt !== false && ($dt::getLastErrors() === false || !array_sum($dt::getLastErrors()));
+    }
+
+    public static function SFNotification($nik, $message, $category, $link) {
+        try {
+            DB::table('pica_notification')->insert([
+                'nik' => $nik,
+                'message' => $message,
+                'category' => $category,
+                'link' => $link
+            ]);
+        } catch (Exception $ex) {
+            Log::error($ex->getMessage());
+            Log::error($ex->getTraceAsString());
+        }
+    }
+
+    public static function formatDurationAgoFS($durationInSeconds) {
+        $seconds = $durationInSeconds % 60;
+        $minutes = floor(($durationInSeconds / 60) % 60);
+        $hours = floor(($durationInSeconds / 3600) % 24);
+        $days = floor($durationInSeconds / 86400);
+
+        if ($days > 0) {
+            return "$days hari";
+        } elseif ($hours > 0) {
+            return "$hours jam";
+        } elseif ($minutes > 0) {
+            return "$minutes menit";
+        } else {
+            return "$seconds detik";
+        }
+    }
+
+    public static function getFileNameFromPath($path) {
+        $exploded = explode('/', $path);
+        $count = count($exploded);
+        return $exploded[ $count - 1 ];
     }
 }

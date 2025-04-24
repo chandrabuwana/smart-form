@@ -148,7 +148,7 @@
                                         data-halign="center" data-sortable="true" data-formatter="statusFormatter">
                                         Status
                                     </th>
-                                    <th data-field="action" data-formatter="actionFormatter">
+                                    <th data-formatter="actionFormatter">
                                         Actions
                                     </th>
                                 </tr>
@@ -168,6 +168,7 @@
     <script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.29.0/libs/jsPDF/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.23.2/dist/extensions/export/bootstrap-table-export.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
     <script type="text/javascript">
         var $table = $("#list-form");
         var filterNama = document.getElementById("filterNama")
@@ -200,7 +201,7 @@
         })
         btnFilterSubmit.addEventListener("click", function(e) {
             var searchQuery = {
-                tanggal: filterTanggal.value == '' ? null : c.value,
+                tanggal: filterTanggal.value == '' ? null : filterTanggal.value,
                 site: filterSite.value == '' ? null : filterSite.value,
                 departement: filterDepartement.value == '' ? null : filterDepartement.value,
                 status: filterStatus.value == '' ? null : filterStatus.value,
@@ -212,7 +213,7 @@
         $('#download-excel').click( function() {
             const url = `{{ route('bss-skl.download-excel') }}`;
             const searchQuery = {
-                tanggal: filterTanggal.value == '' ? '' : c.value,
+                tanggal: filterTanggal.value == '' ? '' : filterTanggal.value,
                 site: filterSite.value == '' ? '' : filterSite.value,
                 departement: filterDepartement.value == '' ? '' : filterDepartement.value,
                 status: filterStatus.value == '' ? '' : filterStatus.value,

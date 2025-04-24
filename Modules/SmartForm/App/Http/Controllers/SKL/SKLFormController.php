@@ -33,12 +33,11 @@ class SKLFormController extends Controller
             ->select('KodeDP', self::T_DEPARTEMENT . '.Nama AS NamaDepartement')->join(self::T_DEPARTEMENT, self::T_DEPARTEMENT . '.KodeDP', '=', self::T_MST_PEKERJAAN . '.KodeDepartement')
             ->orderBy('KodeDP', 'ASC')->get();
 
-        // $sites = DB::table(self::T_SITE)->select('KodeST', 'Nama')
-        //     ->orderBy('Nama', 'asc')->get();
+        $sites = DB::table(self::T_SITE)->select('KodeST')->orderBy('Nama', 'asc')->get();
 
         return view('SmartForm::skl/form', [
             'departements' => $departements,
-            // 'sites' => $sites
+            'sites' => $sites
         ]);
     }
 
@@ -47,14 +46,13 @@ class SKLFormController extends Controller
         $kodeDP = $request->get('KodeDP');
         $kodeST = $request->get('KodeST');
 
-        return DB::table(self::T_KARYAWAN)->select('NIK AS id', 'Panggilan AS text', self::T_JABATAN . '.Nama AS jabatan')
+        return DB::table(self::T_KARYAWAN)->select('NIK AS id', self::T_KARYAWAN . '.Nama AS text', self::T_JABATAN . '.Nama AS jabatan')
             ->distinct('NIK')
             ->join(self::T_JABATAN, self::T_JABATAN . '.KodeJB', '=', self::T_KARYAWAN . '.KodeJB')
             ->when(!empty($kodeDP), fn($q) => $q->where('KodeDP', $kodeDP))
             ->when(!empty($kodeST), fn($q) => $q->where('KodeST', $kodeST))
-            ->where('Panggilan', '!=', '')
             ->where('AKTIF', '0')
-            ->orderBy('Panggilan', 'ASC')->get();
+            ->orderBy(self::T_KARYAWAN . '.Nama', 'ASC')->get();
     }
 
     public function getKategoriPekerjaan(Request $request)
@@ -130,7 +128,9 @@ class SKLFormController extends Controller
         $requestAll = $request->all();
         $NoForm = $this->_genNoForm($request);
 
+        DB::beginTransaction();
         try {
+
             DB::table(self::T_FORM_MST)->insert([
                 'NoForm' => $NoForm,
                 'NoDok' => $request->noDok,
@@ -207,12 +207,13 @@ class SKLFormController extends Controller
                     'Diwakilkan' => $isRepresent ? 1 : 0
                 ]);
 
-                $atasan = DB::table(self::T_KARYAWAN)->select('Panggilan')->where('NIK', $nikAtasan)->first();
+                $atasan = DB::table(self::T_KARYAWAN)->select(['Nama', 'Telp'])->where('NIK', $nikAtasan)
+                    ->where('STS', '0')->first();
                 $url = url('skl/detail') . '?NoForm=' . $NoForm;
-                // $message = "'Kepada YTH Bapak/Ibu {$atasan->Panggilan}, terdapat pengajuan lembur baru dengan nomor : {$NoForm}. Silakan klik link dibawah ini untuk menyetujui pengajuan berikut :' + CHAR(13) + CHAR(10) + '{$url}'";
+                // $message = "'Kepada YTH Bapak/Ibu {$atasan->Nama}, terdapat pengajuan lembur baru dengan nomor : {$NoForm}. Silakan klik link dibawah ini untuk menyetujui pengajuan berikut :' + CHAR(13) + CHAR(10) + '{$url}'";
                 // DB::statement("INSERT INTO " . self::T_ALARM . " (NIK, Message) VALUES ('{$nikAtasan}', {$message})");
 
-                $message = "Kepada YTH Bapak/Ibu {$atasan->Panggilan}, terdapat pengajuan lembur baru dengan nomor : {$NoForm}. Silakan klik link dibawah ini untuk menyetujui pengajuan berikut :\n\n{$url}";
+                $message = "Kepada YTH Bapak/Ibu {$atasan->Nama}, terdapat pengajuan lembur baru dengan nomor : {$NoForm}. Silakan klik link dibawah ini untuk menyetujui pengajuan berikut :\n\n{$url}";
                 $alarmAPIService = new AlarmAPIService();
                 $alarmAPIService->sendMessage($atasan->Telp, $message);
             }
