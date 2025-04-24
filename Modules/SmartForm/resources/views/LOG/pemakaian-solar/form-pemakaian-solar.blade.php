@@ -497,8 +497,6 @@
                 e.preventDefault()
                 var errorValidate = validateItem()
                 
-                document.getElementById("iAwal").value = document.getElementById("iAkhir").value;
-                
                 var msg = "";
                 if(errorValidate.length > 0) {
                     for (var listErr of errorValidate) {
@@ -523,6 +521,13 @@
                         ket: iKet.val()
                     })
                     $table.bootstrapTable('scrollTo', 'bottom')
+                    document.getElementById("iAwal").value = document.getElementById("iAkhir").value;
+                    document.getElementById("iKodeUnit").value=''
+                    document.getElementById("iJam").value=''
+                    document.getElementById("iAkhir").value=''
+                    document.getElementById("iNamaOperator").value=''
+                    document.getElementById("iKm").value=''
+                    document.getElementById("iHm").value=''
                 }
             })
 

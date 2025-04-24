@@ -62,20 +62,6 @@
                         </div>
                     </div>
 
-                    <!-- <div class="col-xl-3 col-sm-6 mb-4">
-                        <div class="card stats-card">
-                            <div class="card-header p-3 pt-2">
-                                <div class="icon icon-lg icon-shape bg-gradient-warning shadow-warning text-center border-radius-xl mt-n4 position-absolute">
-                                    <i class="material-icons opacity-10">build</i>
-                                </div>
-                                <div class="text-end pt-1">
-                                    <p class="text-sm mb-0 text-capitalize">Broken Components</p>
-                                    <h4 class="mb-0">{!! $totalRecords !!}</h4>
-                                </div>
-                            </div>
-                        </div>
-                    </div> -->
-
                     <div class="col-xl-3 col-sm-6 mb-4">
                         <div class="card stats-card">
                             <div class="card-header p-3 pt-2">
@@ -98,7 +84,7 @@
                                 </div>
                                 <div class="text-end pt-1">
                                     <p class="text-sm mb-0 text-capitalize">Completion Rate</p>
-                                    
+
                                 </div>
                             </div>
                         </div>

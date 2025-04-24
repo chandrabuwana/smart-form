@@ -102,7 +102,7 @@ class FuelController extends Controller {
                 $master->skip($offset)->limit($limit);
             }
             $document = $master->get();
-            
+
             $response['message'] = "Ok";
             $response['isSuccess'] = true;
             $response['data'] = [
@@ -167,7 +167,7 @@ class FuelController extends Controller {
                 'nama' => session("username"),
                 'jabatan' => $requestData['i_jabatan'],
                 'dibuat_oleh' => session("user_id"),
-                'site' => $requestData['i_site'],
+                'site' => $requestData['site'],
                 'departemen' =>  $requestData['i_departemen'],
                 'tanggal' =>  $requestData['tglDoc'],
                 'no_lambung' =>  $requestData['i_no_lambung'],
@@ -329,7 +329,7 @@ class FuelController extends Controller {
                     ->update([
                             'jabatan' => $request->i_jabatan,
                             'departemen' => $request->i_departemen,
-                            'site' => $request->i_site,
+                            'site' => $request->site,
                             'no_lambung' => $request->i_no_lambung,
                             'jenis_kendaraan' => $request->i_jenis_kendaraan,
                             'jam' => $request->iJam,
@@ -343,10 +343,34 @@ class FuelController extends Controller {
                             'diterima_oleh' => $request->dDiterima,
                             ]);
 
-        return view('SmartForm::LOG/request-fuel/dashboard-request-fuel', [
-            'nik_session' => $nik_session,
-            'name_session' => $name_session,
-            'siteOptions' => $siteOptions
-        ]);
+        // return view('SmartForm::LOG/request-fuel/dashboard-request-fuel', [
+        //     'nik_session' => $nik_session,
+        //     'name_session' => $name_session,
+        //     'siteOptions' => $siteOptions
+        // ]);
+        return redirect()->route('bss-form.log.fuel.dashboard');
+    }
+
+    public function getNoBySite(Request $request) {
+        $site = $request->get('site');
+
+        $alat = DB::table('alat_angkut_data')
+            ->where('site', $site)
+            ->select('no_lambung')
+            ->get();
+
+        return response()->json($alat);
+    }
+
+    public function getModelByNo(Request $request) {
+        // dd($request);
+        $no_lambung = $request->get('no_lambung');
+
+        $jenis_kendaraan = DB::table('alat_angkut_data')
+            ->where('no_lambung', $no_lambung)
+            ->select('model')
+            ->get();
+
+        return response()->json($jenis_kendaraan);
     }
 }

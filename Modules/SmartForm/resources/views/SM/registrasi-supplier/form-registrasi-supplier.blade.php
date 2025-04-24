@@ -9,6 +9,10 @@
     .m-0 {
         margin: 0;
     }
+    .preview {
+         width: 100px;
+         height: 150px;
+      }
 </style>
 @endsection
 
@@ -334,8 +338,8 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fNpwp">
-                                                    <div class="invalid-feedback">Lampiran NPWP</div>
+                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fNpwp" accept="image/*" onchange="previewImage(event)">
+                                                    <img class="preview" id="npwp" alt="NPWP">
                                                 </td>
                                             </tr>
                                             <tr>
@@ -355,8 +359,9 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fSppkp">
-                                                    <div class="invalid-feedback">Lampiran SPPKP</div>
+                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fSppkp" accept="image/*" onchange="previewImageSkpp(event)">
+                                                    <!-- <div class="invalid-feedback">Lampiran SPPKP</div> -->
+                                                    <img class="preview" id="skpp" alt="SKPP">
                                                 </td>
                                             </tr>
                                             <tr>
@@ -376,8 +381,8 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fNib">
-                                                    <div class="invalid-feedback">Lampiran NIB/SIUP</div>
+                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fNib" accept="image/*" onchange="previewImageNib(event)">
+                                                    <img class="preview" id="nibsiup" alt="NIB / SIUP">
                                                 </td>
                                             </tr>
                                             <tr>
@@ -397,8 +402,8 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fAkta">
-                                                    <div class="invalid-feedback">Lampiran Akta Perusahaan</div>
+                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fAkta" accept="image/*" onchange="previewImageAkta(event)">
+                                                    <img class="preview" id="aktaper" alt="Akta Perusahaan">
                                                 </td>
                                             </tr>
                                             <tr>
@@ -418,8 +423,8 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fPakta">
-                                                    <div class="invalid-feedback">Lampiran Pakta Integritas</div>
+                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fPakta" accept="image/*" onchange="previewImagePakta(event)">
+                                                    <img class="preview" id="pakta" alt="Pakta Integritas">
                                                 </td>
                                             </tr>
                                             <tr>
@@ -439,8 +444,8 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fKartu">
-                                                    <div class="invalid-feedback">Lampiran Kartu Identitas Direktur</div>
+                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fKartu" accept="image/*" onchange="previewImageKartuIden(event)">
+                                                    <img class="preview" id="kartuiden" alt="Kartu Identitas Direktur">
                                                 </td>
                                             </tr>
                                             <tr>
@@ -460,8 +465,8 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fStruktur">
-                                                    <div class="invalid-feedback">Lampiran Struktur Organisasi</div>
+                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fStruktur" accept="image/*" onchange="previewImageStruktur(event)">
+                                                    <img class="preview" id="strukturorg" alt="Struktur Organisasi">
                                                 </td>
                                             </tr>
                                             <tr>
@@ -481,8 +486,8 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fProfile">
-                                                    <div class="invalid-feedback">Lampiran Profile Perusahaan</div>
+                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fProfile" accept="image/*" onchange="previewImageProfile(event)">
+                                                    <img class="preview" id="profileper" alt="Profile Perusahaan">
                                                 </td>
                                             </tr>
                                             <tr>
@@ -502,8 +507,8 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fSurat">
-                                                    <div class="invalid-feedback">Lampiran lainnya</div>
+                                                    <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fSurat" accept="image/*" onchange="previewImageSurat(event)">
+                                                    <img class="preview" id="suratlain" alt="Surat Lainnya">
                                                 </td>
                                             </tr>
                                         </table>
@@ -563,6 +568,115 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script>
+        //PREVIEW IMAGE NPWP
+        function previewImage(event) {
+            var input = event.target;
+            var npwp = document.getElementById('npwp');
+            if (input.files && input.files[0]) {
+            var reader = new FileReader();
+                reader.onload = function(e) {
+                    npwp.src = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        //PREVIEW IMAGE SKPP
+        function previewImageSkpp(event) {
+            var input = event.target;
+            var skpp = document.getElementById('skpp');
+            if (input.files && input.files[0]) {
+            var reader = new FileReader();
+                reader.onload = function(e) {
+                    skpp.src = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        //PREVIEW IMAGE NIB / SIUP
+        function previewImageNib(event) {
+            var input = event.target;
+            var nibsiup = document.getElementById('nibsiup');
+            if (input.files && input.files[0]) {
+            var reader = new FileReader();
+                reader.onload = function(e) {
+                nibsiup.src = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        //PREVIEW IMAGE AKTA PERUSAHAAN
+        function previewImageAkta(event) {
+            var input = event.target;
+            var aktaper = document.getElementById('aktaper');
+            if (input.files && input.files[0]) {
+            var reader = new FileReader();
+                reader.onload = function(e) {
+                    aktaper.src = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        //PREVIEW IMAGE PAKTA INTEGRITAS
+        function previewImagePakta(event) {
+            var input = event.target;
+            var pakta = document.getElementById('pakta');
+            if (input.files && input.files[0]) {
+            var reader = new FileReader();
+                reader.onload = function(e) {
+                   pakta.src = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        //PREVIEW IMAGE KARTU IDENTITAS DIREKTUR
+        function previewImageKartuIden(event) {
+            var input = event.target;
+            var kartuiden = document.getElementById('kartuiden');
+            if (input.files && input.files[0]) {
+            var reader = new FileReader();
+                reader.onload = function(e) {
+                    kartuiden.src = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        //PREVIEW IMAGE STRUKTUR ORGANISASI
+        function previewImageStruktur(event) {
+            var input = event.target;
+            var strukturorg = document.getElementById('strukturorg');
+            if (input.files && input.files[0]) {
+            var reader = new FileReader();
+                reader.onload = function(e) {
+                    strukturorg.src = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        //PREVIEW IMAGE PROFILE PERUSAHAAN
+        function previewImageProfile(event) {
+            var input = event.target;
+            var profileper = document.getElementById('profileper');
+            if (input.files && input.files[0]) {
+            var reader = new FileReader();
+                reader.onload = function(e) {
+                    profileper.src = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        //PREVIEW IMAGE SURAT LAINNYA
+        function previewImageSurat(event) {
+            var input = event.target;
+            var suratlain = document.getElementById('suratlain');
+            if (input.files && input.files[0]) {
+            var reader = new FileReader();
+                reader.onload = function(e) {
+                    suratlain.src = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        // DROPDOWN SEARCH FIELD
         $(document).ready(function() {
             $('#dApproved').select2();
             $('#dDiterima').select2();
