@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('ppm_dh24', function (Blueprint $table) {
             $table->id();
-            $table->string('doc_number')->nullable();
+            $table->string('doc_num')->nullable();
             $table->string('unit_model')->nullable();
             $table->string('unit_sn')->nullable();
             $table->string('unit_cn')->nullable();

@@ -14,21 +14,22 @@ return new class extends Migration
         Schema::create('ppm_xcmg_xe1250', function (Blueprint $table) {
             $table->id();
             $table->string('doc_num')->unique();
-            $table->string('unit_model');
-            $table->string('unit_sn');
-            $table->string('unit_cn');
-            $table->string('engine_model');
-            $table->string('engine_sn');
-            $table->string('att_front');
-            $table->string('att_rear');
-            $table->string('job_site');
-            $table->string('job_location');
-            $table->string('at_inspection');
-            $table->string('date');
-            $table->string('status');
-            $table->string('creator');
-            $table->string('checked_by');
-            $table->string('validated_by');
+            $table->string('unit_model')->nullable();
+            $table->string('unit_sn')>nullable();
+            $table->string('unit_cn')>nullable();
+            $table->string('engine_model')>nullable();
+            $table->string('engine_sn')>nullable();
+            $table->string('att_front')>nullable();
+            $table->string('att_rear')>nullable();
+            $table->string('job_site')>nullable();
+            $table->string('job_location')>nullable();
+            $table->string('at_inspection')>nullable();
+            $table->string('date')>nullable();
+            $table->string('status')>nullable();
+            $table->string('creator')>nullable();
+            $table->string('checked_by')>nullable();
+            $table->string('validated_by')>nullable();
+            $table->integer('delete_status')->nullable();
             $table->timestamps();
         });
     }
