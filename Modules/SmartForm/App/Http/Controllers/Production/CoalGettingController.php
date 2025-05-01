@@ -203,9 +203,11 @@ class CoalGettingController extends Controller
                 // Transform checklist items
                 $checklistItems = [];
                 foreach ($request->checklist as $key => $value) {
+                    $notes = isset($request->notes[$key]) ? $request->notes[$key] : '';
                     $checklistItems[] = [
                         'item' => $key,
-                        'value' => $value
+                        'value' => $value,
+                        'notes' => $notes
                     ];
                 }
 
@@ -264,9 +266,11 @@ class CoalGettingController extends Controller
                 // Transform checklist items
                 $checklistItems = [];
                 foreach ($request->checklist as $key => $value) {
+                    $notes = isset($request->notes[$key]) ? $request->notes[$key] : '';
                     $checklistItems[] = [
                         'item' => $key,
-                        'value' => $value
+                        'value' => $value,
+                        'notes' => $notes
                     ];
                 }
 
