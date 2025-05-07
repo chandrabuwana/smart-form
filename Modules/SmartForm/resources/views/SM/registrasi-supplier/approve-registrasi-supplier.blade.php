@@ -307,7 +307,7 @@
                                                 </td>
                                                 @if (($data['file_npwp']) != "Tidak ada")
                                                 <td>
-                                                    {{$data['file_npwp']}}
+                                                    <img src="{{asset('storage/images/sm/registrasi_supplier/' .$data['file_npwp'])}}" style="width:200px"/>
                                                     <a href="/bss-form/sm/file-npwp-supplier-download/{{$data['file_npwp']}}">Download</a>
                                                 </td>
                                                 @else
@@ -322,7 +322,7 @@
                                                 </td>
                                                 @if (($data['file_sppkp']) != "Tidak ada")
                                                 <td>
-                                                    {{$data['file_sppkp']}}
+                                                    <img src="{{asset('storage/images/sm/registrasi_supplier/' .$data['file_npwp'])}}" style="width:200px"/>
                                                     <a href="/bss-form/sm/file-sppkp-supplier-download/{{$data['file_sppkp']}}">Download</a>
                                                 </td>
                                                 @else
@@ -337,7 +337,7 @@
                                                 </td>
                                                 @if (($data['file_nib_siup']) != "Tidak ada")
                                                 <td>
-                                                    {{$data['file_nib_siup']}}
+                                                    <img src="{{asset('storage/images/sm/registrasi_supplier/' .$data['file_npwp'])}}" style="width:200px"/>
                                                     <a href="/bss-form/sm/file-nib-supplier-download/{{$data['file_nib_siup']}}">Download</a>
                                                 </td>
                                                 @else
@@ -352,7 +352,7 @@
                                                 </td>
                                                 @if (($data['file_akta_perusahaan']) != "Tidak ada")
                                                 <td>
-                                                    {{$data['file_akta_perusahaan']}}
+                                                    <img src="{{asset('storage/images/sm/registrasi_supplier/' .$data['file_npwp'])}}" style="width:200px"/>
                                                     <a href="/bss-form/sm/file-aktaper-supplier-download/{{$data['file_akta_perusahaan']}}">Download</a>
                                                 </td>
                                                 @else
@@ -367,7 +367,7 @@
                                                 </td>
                                                 @if (($data['file_pakta_integritas']) != "Tidak ada")
                                                 <td>
-                                                    {{$data['file_pakta_integritas']}}
+                                                    <img src="{{asset('storage/images/sm/registrasi_supplier/' .$data['file_npwp'])}}" style="width:200px"/>
                                                     <a href="/bss-form/sm/file-paktaint-supplier-download/{{$data['file_pakta_integritas']}}">Download</a>
                                                 </td>
                                                 @else
@@ -382,7 +382,7 @@
                                                 </td>
                                                 @if (($data['file_ident_direk']) != "Tidak ada")
                                                 <td>
-                                                    {{$data['file_ident_direk']}}
+                                                    <img src="{{asset('storage/images/sm/registrasi_supplier/' .$data['file_npwp'])}}" style="width:200px"/>
                                                     <a href="/bss-form/sm/file-identdir-supplier-download/{{$data['file_ident_direk']}}">Download</a>
                                                 </td>
                                                 @else
@@ -397,7 +397,7 @@
                                                 </td>
                                                 @if (($data['file_struktur_org']) != "Tidak ada")
                                                 <td>
-                                                    {{$data['file_struktur_org']}}
+                                                    <img src="{{asset('storage/images/sm/registrasi_supplier/' .$data['file_npwp'])}}" style="width:200px"/>
                                                     <a href="/bss-form/sm/file-strukturorg-supplier-download/{{$data['file_struktur_org']}}">Download</a>
                                                 </td>
                                                 @else
@@ -412,7 +412,7 @@
                                                 </td>
                                                 @if (($data['file_profile_per']) != "Tidak ada")
                                                 <td>
-                                                    {{$data['file_profile_per']}}
+                                                    <img src="{{asset('storage/images/sm/registrasi_supplier/' .$data['file_npwp'])}}" style="width:200px"/>
                                                     <a href="/bss-form/sm/file-profilper-supplier-download/{{$data['file_profile_per']}}">Download</a>
                                                 </td>
                                                 @else
@@ -427,7 +427,7 @@
                                                 </td>
                                                 @if (($data['file_lain']) != "Tidak ada")
                                                 <td>
-                                                    {{$data['file_lain']}}
+                                                    <img src="{{asset('storage/images/sm/registrasi_supplier/' .$data['file_npwp'])}}" style="width:200px"/>
                                                     <a href="/bss-form/sm/file-lain-supplier-download/{{$data['file_lain']}}">Download</a>
                                                 </td>
                                                 @else
@@ -452,9 +452,9 @@
                                     <i class="fas fa-close"></i>
                                     Reject
                                 </button>
-                                <a href="{{url()->previous()}}" class="btn btn-success" style="margin:5px"><i class="fas fa-cancel"></i> Cancel</a>
+                                <a href="{{url()->previous()}}" class="btn btn-success" style="margin:5px"><i class="fas fa-cancel"></i> Back</a>
                             @else
-                                <a href="{{url()->previous()}}" class="btn btn-success" style="margin:5px"><i class="fas fa-cancel"></i> Cancel</a>
+                                <a href="{{url()->previous()}}" class="btn btn-success" style="margin:5px"><i class="fas fa-cancel"></i> Back</a>
                             @endif
                         </div>
                     </div>

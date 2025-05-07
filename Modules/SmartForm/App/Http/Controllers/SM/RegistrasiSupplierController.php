@@ -124,7 +124,7 @@ class RegistrasiSupplierController extends Controller {
             {
                 $name = time().rand(1,100).'.'.$file->extension();
                 // $file->move(public_path('images/SM/registrasi_supplier'), $name);  
-                $file->storeAs('images/SM/registrasi_supplier', $name);  
+                $file->storeAs('images/sm/registrasi_supplier', $name);  
                 $files[] = $name;
             }
          }
