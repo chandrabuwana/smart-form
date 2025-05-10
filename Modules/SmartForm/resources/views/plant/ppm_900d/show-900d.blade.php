@@ -33,25 +33,41 @@
                         <div class="mx-3">
                             <input type="hidden" name="doc_num" value="{{ $data->doc_num }}">
                             <div class="row mb-3">
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="input-group input-group-static mb-3">
-                                        <label for="unit_model" class="ms-0">Unit Model</label>
-                                        <input type="text" class="form-control" id="unit_model" name="unit_model"
-                                            value="{{ $data->unit_model }}" required>
+                                        <label for="unit_cn" class="ms-0">Unit C/N</label>
+
+                                        <select name="unit_cn" class="form-control" id="unit_cn" required>
+                                            <option value="" disabled selected>-- Select Unit C/N --</option>
+                                            @foreach ($cn as $cn_unit)
+                                                <option value="{{ $cn_unit->no_lambung }}"
+                                                    {{ old('unit_cn', $data->unit_cn ?? '') == $cn_unit->no_lambung ? 'selected' : '' }}>
+                                                    {{ $cn_unit->no_lambung }}
+                                                </option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label for="unit_model" class="ms-0">Unit Model</label>
+                                        <input type="text" class="form-control uppercase" id="unit_model"
+                                            name="unit_model" value="{{ $data->unit_model }}" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="unit_sn" class="ms-0">Unit S/N</label>
-                                        <input type="text" class="form-control" id="unit_sn" name="unit_sn"
+                                        <input type="text" class="form-control uppercase" id="unit_sn" name="unit_sn"
                                             value="{{ $data->unit_sn }}" required>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+
+                                <div class="col-md-3">
                                     <div class="input-group input-group-static mb-3">
-                                        <label for="unit_cn" class="ms-0">Unit C/N</label>
-                                        <input type="text" class="form-control" id="unit_cn"
-                                            value="{{ $data->unit_cn }}" name="unit_cn" required>
+                                        <label for="engine_model" class="ms-0">Engine Model</label>
+                                        <input type="text" class="form-control uppercase" id="engine_model"
+                                            name="engine_model" value="{{ $data->engine_model }}" required>
                                     </div>
                                 </div>
 
@@ -59,534 +75,565 @@
                             <div class="row mb-3">
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
-                                        <label for="engine_model" class="ms-0">Engine Model</label>
-                                        <input type="text" class="form-control" id="engine_model" name="engine_model"
-                                            value="{{ $data->engine_model }}" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="input-group input-group-static mb-3">
                                         <label for="engine_sn" class="ms-0">Engine S/N</label>
-                                        <input type="text" class="form-control" id="engine_sn" name="engine_sn"
+                                        <input type="text" class="form-control uppercase" id="engine_sn" name="engine_sn"
                                             value="{{ $data->engine_sn }}" required>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
-                                        <label for="att_front" class="ms-0">Attachment Front</label>
-                                        <input type="text" class="form-control" id="att_front" name="att_front"
-                                            value="{{ $data->att_front }}" required>
+                                        <label for="brand" class="ms-0">Brand</label>
+                                        <input type="text" class="form-control uppercase" id="brand"
+                                            value="{{ $data->brand }}" name="brand" required>
                                     </div>
                                 </div>
 
-                                <div class="row mb-3">
-                                    <div class="col-md-4">
-                                        <div class="input-group input-group-static mb-3">
-                                            <label for="att_rear" class="ms-0">Attachment Rear</label>
-                                            <input type="text" class="form-control" id="att_rear" name="att_rear"
-                                                value="{{ $data->att_rear }}" required>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="input-group input-group-static mb-3">
-                                            <label for="job_site" class="ms-0">Job Site</label>
-                                            {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('job_site', strtolower($data->job_site)) !!}
+                                <div class="col-md-4">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label for="job_site" class="ms-0">Job Site</label>
+                                        {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('job_site', strtolower($data->job_site)) !!}
 
-                                        </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <div class="input-group input-group-static mb-3">
-                                            <label for="location" class="ms-0">Location</label>
-                                            <select class="form-control" name="location" id="location" required>
-                                                <option value="Workshop"
-                                                    {{ old('location', $data->job_location ?? '') == 'Workshop' ? 'selected' : '' }}>
-                                                    Workshop</option>
-                                                <option value="Pitstop"
-                                                    {{ old('location', $data->job_location ?? '') == 'Pitstop' ? 'selected' : '' }}>
-                                                    Pitstop</option>
-                                                <option value="Service"
-                                                    {{ old('location', $data->job_location ?? '') == 'Service' ? 'selected' : '' }}>
-                                                    Service</option>
-                                                <option value="Truck"
-                                                    {{ old('location', $data->job_location ?? '') == 'Truck' ? 'selected' : '' }}>
-                                                    Truck</option>
-                                            </select>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+
+                                <div class="col-md-4">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label for="location" class="ms-0">Location</label>
+                                        <select class="form-control uppercase" name="location" id="location" required>
+                                            <option value="Workshop"
+                                                {{ old('location', $data->job_location ?? '') == 'Workshop' ? 'selected' : '' }}>
+                                                Workshop</option>
+                                            <option value="Pitstop"
+                                                {{ old('location', $data->job_location ?? '') == 'Pitstop' ? 'selected' : '' }}>
+                                                Pitstop</option>
+                                            <option value="Service Pad Area"
+                                                {{ old('location', $data->job_location ?? '') == 'Service Pad Area' ? 'selected' : '' }}>
+                                                Service</option>
+
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label for="at_inspec" class="ms-0">SMR / HM At Inspection</label>
+                                        <input type="number" class="form-control uppercase" id="at_inspec"
+                                            name="at_inspec" step="0.0001" value="{{ $data->at_inspection }}" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label for="date" class="ms-0">SMR / HM Date</label>
+                                        <input type="date" class="form-control uppercase" id="date"
+                                            name="date" value="{{ $data->date }}" required>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="accordion">
+                                <div class="accordion-item">
+                                    <button type="button" class="accordion-header">ENGINE</button>
+                                    <div class="accordion-content">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th rowspan="2" style="vertical-align: middle;">
+                                                            ITEM</th>
+                                                        <th style="vertical-align: middle;" rowspan="2">
+                                                            CONDITION</th>
+                                                        <th style="vertical-align: middle;" rowspan="2">UNIT
+                                                        </th>
+                                                        <th style="vertical-align: middle;" rowspan="2">
+                                                            STANDARD STD/PMS</th>
+                                                        <th style="vertical-align: middle;"rowspan="2">ACTUAL</th>
+                                                        <th style="vertical-align: middle;" rowspan="2">
+                                                            CORRECTION MADE</th>
+                                                        <th style="vertical-align: middle;" rowspan="2">RESULT
+                                                        </th>
+
+                                                        <th style="vertical-align: middle;" rowspan="2">REMARKS
+                                                        </th>
+                                                    </tr>
+
+                                                </thead>
+                                                <tbody>
+                                                    @php
+                                                        $h = 0;
+                                                    @endphp
+                                                    @foreach ($list['ENGINE'] as $value)
+                                                        <tr>
+                                                            @if (isset($value['item']))
+                                                                @if ($value['item'] == 'Engine Speed')
+                                                                    <td class="align-middle" rowspan="8">
+                                                                        {!! $value['item'] !!}</td>
+                                                                @elseif ($value['item'] == 'Lub Oil Pressure')
+                                                                    <td class="align-middle" rowspan="2">
+                                                                        {!! $value['item'] !!}</td>
+                                                                @else
+                                                                    <td class="align-middle">
+                                                                        {!! $value['item'] !!}</td>
+                                                                @endif
+                                                            @endif
+                                                            @if (isset($value['condition']))
+                                                                <td class="align-middle">{!! $value['condition'] !!}
+                                                                </td>
+                                                            @endif
+                                                            @if (isset($value['unit']))
+                                                                @if ($value['unit'] == 'Rpm')
+                                                                    <td class="align-middle" rowspan="8">
+                                                                        {!! $value['unit'] !!}</td>
+                                                                @elseif ($value['unit'] == 'Kg/cm2')
+                                                                    <td class="align-middle" rowspan="2">
+                                                                        {!! $value['unit'] !!}</td>
+                                                                @else
+                                                                    <td class="align-middle">
+                                                                        {!! $value['unit'] !!}</td>
+                                                                @endif
+                                                            @endif
+                                                            @if (isset($value['standard']))
+                                                                <td class="align-middle">{!! $value['standard'] !!}
+                                                                </td>
+                                                            @endif
+                                                            <td><input type="number"
+                                                                    value="{{ $data->eng_actual[$h] ?? '' }}"
+                                                                    step="0.0001"
+                                                                    class="form-control text-center uppercase"
+                                                                    name="eng_actual[]">
+                                                            </td>
+                                                            <td><input type="text"
+                                                                    value="{{ $data->eng_correction_made[$h] ?? '' }}"
+                                                                    class="form-control text-center uppercase"
+                                                                    name="eng_correct[]">
+                                                            </td>
+                                                            <td><input type="text"
+                                                                    class="form-control text-center uppercase"
+                                                                    value="{{ $data->eng_result[$h] ?? '' }}"
+                                                                    name="eng_result[]"></td>
+                                                            <td><input value="{{ $data->eng_remark[$h] ?? '' }}"
+                                                                    type="text"
+                                                                    class="form-control text-center uppercase"
+                                                                    name="eng_remarks[]"></td>
+                                                        </tr>
+                                                        @php
+                                                            $h++;
+                                                        @endphp
+                                                    @endforeach
+
+
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row mb-3">
-                                    <div class="col-md-6">
-                                        <div class="input-group input-group-static mb-3">
-                                            <label for="at_inspec" class="ms-0">SMR / HM At Inspection</label>
-                                            <input type="text" class="form-control" id="at_inspec" name="at_inspec"
-                                                value="{{ $data->at_inspection }}" required>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="input-group input-group-static mb-3">
-                                            <label for="date" class="ms-0">SMR / HM Date</label>
-                                            <input type="date" class="form-control" id="date" name="date"
-                                                value="{{ $data->date }}" required>
-                                        </div>
-                                    </div>
 
+                                <div class="accordion-item">
+                                    <button type="button" class="accordion-header">HYDRAULIC PRESSURE</button>
+                                    <div class="accordion-content">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th rowspan="2" style="vertical-align: middle;">
+                                                            ITEM</th>
+                                                        <th style="vertical-align: middle;" rowspan="2">
+                                                            CONDITION</th>
+                                                        <th style="vertical-align: middle;" rowspan="2">UNIT
+                                                        </th>
+                                                        <th style="vertical-align: middle;" rowspan="2">
+                                                            STANDARD STD/PMS</th>
+                                                        <th style="vertical-align: middle;"rowspan="2">ACTUAL</th>
+                                                        <th style="vertical-align: middle;" rowspan="2">
+                                                            CORRECTION MADE</th>
+                                                        <th style="vertical-align: middle;" rowspan="2">RESULT
+                                                        </th>
+
+                                                        <th style="vertical-align: middle;" rowspan="2">REMARKS
+                                                        </th>
+                                                    </tr>
+
+                                                </thead>
+                                                <tbody>
+                                                    @php
+                                                        $i = 0;
+                                                    @endphp
+                                                    @foreach ($list['HYDRAULIC'] as $value)
+                                                        <tr>
+                                                            @if (isset($value['item']))
+                                                                @if ($value['item'] == 'Engine Speed')
+                                                                    <td class="align-middle" rowspan="8">
+                                                                        {!! $value['item'] !!}</td>
+                                                                @else
+                                                                    <td class="align-middle">
+                                                                        {!! $value['item'] !!}</td>
+                                                                @endif
+                                                            @endif
+                                                            @if (isset($value['condition']))
+                                                                @if ($value['condition'] == '1800 rpm (10th gear)')
+                                                                    <td class="align-middle" rowspan="8">
+                                                                        {!! $value['condition'] !!}</td>
+                                                                @else
+                                                                    <td class="align-middle">
+                                                                        {!! $value['unit'] !!}</td>
+                                                                @endif
+                                                            @endif
+                                                            @if (isset($value['unit']))
+                                                                @if ($value['unit'] == 'kg/cm³')
+                                                                    <td class="align-middle" rowspan="8">
+                                                                        {!! $value['unit'] !!}</td>
+                                                                @else
+                                                                    <td class="align-middle">
+                                                                        {!! $value['unit'] !!}</td>
+                                                                @endif
+                                                            @endif
+                                                            @if (isset($value['standard']))
+                                                                <td class="align-middle">{!! $value['standard'] !!}
+                                                                </td>
+                                                            @endif
+
+
+                                                            <td><input type="number"
+                                                                    class="form-control text-center uppercase"
+                                                                    name="hyd_actual[]" step="0.0001"
+                                                                    value="{{ $data->hyd_actual[$i] ?? '' }}">
+                                                            </td>
+                                                            <td><input type="text"
+                                                                    class="form-control text-center uppercase"
+                                                                    name="hyd_correct[]"
+                                                                    value="{{ $data->hyd_correction_made[$i] ?? '' }}">
+                                                            </td>
+                                                            <td><input type="text"
+                                                                    class="form-control text-center uppercase"
+                                                                    name="hyd_result[]"
+                                                                    value="{{ $data->hyd_result[$i] ?? '' }}">
+                                                            </td>
+
+                                                            <td><input type="text"
+                                                                    class="form-control text-center uppercase"
+                                                                    value="{{ $data->hyd_remark[$i] ?? '' }}"
+                                                                    name="hyd_remarks[]"></td>
+
+                                                        </tr>
+                                                        @php
+                                                            $i++;
+                                                        @endphp
+                                                    @endforeach
+
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="accordion">
-                                    <div class="accordion-item">
-                                        <button type="button" class="accordion-header">ENGINE</button>
-                                        <div class="accordion-content">
-                                            <div class="table-responsive">
-                                                <table class="table table-bordered">
-                                                    <thead>
+
+                                <div class="accordion-item">
+                                    <button type="button" class="accordion-header">WORKING SPEED</button>
+                                    <div class="accordion-content">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th rowspan="2" style="vertical-align: middle;">
+                                                            ITEM</th>
+                                                        <th style="vertical-align: middle;" rowspan="2">
+                                                            CONDITION</th>
+                                                        <th style="vertical-align: middle;" rowspan="2">UNIT
+                                                        </th>
+                                                        <th style="vertical-align: middle;" rowspan="2">
+                                                            STANDARD STD/PMS</th>
+                                                        <th style="vertical-align: middle;"rowspan="2">ACTUAL</th>
+                                                        <th style="vertical-align: middle;" rowspan="2">
+                                                            CORRECTION MADE</th>
+                                                        <th style="vertical-align: middle;" rowspan="2">RESULT
+                                                        </th>
+
+                                                        <th style="vertical-align: middle;" rowspan="2">REMARKS
+                                                        </th>
+                                                    </tr>
+
+                                                </thead>
+                                                <tbody>
+                                                    @php
+                                                        $j = 0;
+                                                    @endphp
+                                                    @foreach ($list['WORKING SPEED'] as $value)
                                                         <tr>
-                                                            <th rowspan="2" style="vertical-align: middle;">
-                                                                ITEM</th>
-                                                            <th style="vertical-align: middle;" rowspan="2">
-                                                                CONDITION</th>
-                                                            <th style="vertical-align: middle;" rowspan="2">UNIT
-                                                            </th>
-                                                            <th style="vertical-align: middle;" rowspan="2">
-                                                                STANDARD STD/PMS</th>
-                                                            <th style="vertical-align: middle;"rowspan="2">ACTUAL</th>
-                                                            <th style="vertical-align: middle;" rowspan="2">
-                                                                CORRECTION MODE</th>
-                                                            <th style="vertical-align: middle;" rowspan="2">RESULT
-                                                            </th>
-                                                            <th style="vertical-align: middle;" colspan="2">
-                                                                RECOMENDED PARTS</th>
-                                                            <th style="vertical-align: middle;" rowspan="2">REMARKS
-                                                            </th>
+                                                            @if (isset($value['item']))
+                                                                <td class="align-middle">{!! $value['item'] !!}
+                                                                </td>
+                                                            @endif
+                                                            @if (isset($value['condition']))
+                                                                @if ($value['condition'] == '1800 rpm (10th gear)')
+                                                                    <td class="align-middle" rowspan="10">
+                                                                        {!! $value['condition'] !!}</td>
+                                                                @else
+                                                                    <td class="align-middle">
+                                                                        {!! $value['condition'] !!}</td>
+                                                                @endif
+                                                            @endif
+                                                            @if (isset($value['unit']))
+                                                                @if ($value['unit'] == 'Sec')
+                                                                    <td class="align-middle" rowspan="10">
+                                                                        {!! $value['unit'] !!}</td>
+                                                                @else
+                                                                    <td class="align-middle">
+                                                                        {!! $value['unit'] !!}</td>
+                                                                @endif
+                                                            @endif
+                                                            @if (isset($value['standard']))
+                                                                @if ($value['standard'] == '28 ± 4 (3 round calculated after 1 round not calculated)')
+                                                                    <td class="align-middle" rowspan="2">
+                                                                        {!! $value['standard'] !!}</td>
+                                                                @else
+                                                                    <td class="align-middle">
+                                                                        {!! $value['standard'] !!}</td>
+                                                                @endif
+                                                            @endif
+
+
+                                                            <td><input type="number"
+                                                                    class="form-control text-center uppercase"
+                                                                    name="wo_actual[]" step="0.0001"
+                                                                    value="{{ $data->wo_actual[$j] ?? '' }}">
+                                                            </td>
+                                                            <td><input type="text"
+                                                                    value="{{ $data->wo_correction_made[$j] ?? '' }}"
+                                                                    class="form-control text-center uppercase"
+                                                                    name="wo_correct[]">
+                                                            </td>
+                                                            <td><input value="{{ $data->wo_result[$j] ?? '' }}"
+                                                                    type="text"
+                                                                    class="form-control text-center uppercase"
+                                                                    name="wo_result[]"></td>
+                                                            <td><input value="{{ $data->wo_remark[$j] ?? '' }}"
+                                                                    type="text"
+                                                                    class="form-control text-center uppercase"
+                                                                    name="wo_remarks[]"></td>
                                                         </tr>
-                                                        <tr>
-                                                            <th>PR.NO</th>
-                                                            <th>TANGGAL</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
                                                         @php
-                                                            $h = 0;
+                                                            $j++;
                                                         @endphp
-                                                        @foreach ($list['ENGINE'] as $value)
-                                                            <tr>
-                                                                @if (isset($value['item']))
-                                                                    @if ($value['item'] == 'Engine Speed')
-                                                                        <td class="align-middle" rowspan="8">
-                                                                            {!! $value['item'] !!}</td>
-                                                                    @elseif ($value['item'] == 'Lub Oil Pressure')
-                                                                        <td class="align-middle" rowspan="2">
-                                                                            {!! $value['item'] !!}</td>
-                                                                    @else
-                                                                        <td class="align-middle">
-                                                                            {!! $value['item'] !!}</td>
-                                                                    @endif
-                                                                @endif
-                                                                @if (isset($value['condition']))
-                                                                    <td class="align-middle">{!! $value['condition'] !!}
-                                                                    </td>
-                                                                @endif
-                                                                @if (isset($value['unit']))
-                                                                    @if ($value['unit'] == 'Rpm')
-                                                                        <td class="align-middle" rowspan="8">
-                                                                            {!! $value['unit'] !!}</td>
-                                                                    @elseif ($value['unit'] == 'Kg/cm2')
-                                                                        <td class="align-middle" rowspan="2">
-                                                                            {!! $value['unit'] !!}</td>
-                                                                    @else
-                                                                        <td class="align-middle">
-                                                                            {!! $value['unit'] !!}</td>
-                                                                    @endif
-                                                                @endif
-                                                                @if (isset($value['standard']))
-                                                                    <td class="align-middle">{!! $value['standard'] !!}
-                                                                    </td>
-                                                                @endif
-                                                                <td><input type="text"
-                                                                        value="{{ $data->eng_actual[$h] ?? '' }}"
-                                                                        class="form-control" name="eng_actual[]"></td>
-                                                                <td><input type="text"
-                                                                        value="{{ $data->eng_correction_made[$h] ?? '' }}"
-                                                                        class="form-control" name="eng_correct[]"></td>
-                                                                <td><input type="text" class="form-control"
-                                                                        value="{{ $data->eng_result[$h] ?? '' }}"
-                                                                        name="eng_result[]"></td>
-                                                                <td><input type="text"
-                                                                        value="{{ $data->eng_pr[$h] ?? '' }}"
-                                                                        class="form-control" name="eng_pr_no[]"></td>
-                                                                <td><input type="date"
-                                                                        value="{{ $data->eng_taggal[$h] ?? '' }}"
-                                                                        class="form-control" name="eng_tanggal[]"></td>
-                                                                <td><input value="{{ $data->eng_remark[$h] ?? '' }}"
-                                                                        type="text" class="form-control"
-                                                                        name="eng_remarks[]"></td>
-                                                            </tr>
-                                                            @php
-                                                                $h++;
-                                                            @endphp
-                                                        @endforeach
+                                                    @endforeach
 
 
-                                                    </tbody>
-                                                </table>
-                                            </div>
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <button type="button" class="btn-primary accordion-header">FINAL
+                                        DRIVE</button>
+                                    <div class="accordion-content">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th rowspan="2" style="vertical-align: middle;">
+                                                            ITEM</th>
+                                                        <th style="vertical-align: middle;" rowspan="2">
+                                                            CONDITION</th>
+                                                        <th style="vertical-align: middle;" rowspan="2">UNIT
+                                                        </th>
+                                                        <th style="vertical-align: middle;" rowspan="2">
+                                                            STANDARD STD/PMS</th>
+                                                        <th style="vertical-align: middle;"rowspan="2">ACTUAL</th>
+                                                        <th style="vertical-align: middle;" rowspan="2">
+                                                            CORRECTION MADE</th>
+                                                        <th style="vertical-align: middle;" rowspan="2">RESULT
+                                                        </th>
 
-                                    <div class="accordion-item">
-                                        <button type="button" class="accordion-header">HYDRAULIC PRESSURE</button>
-                                        <div class="accordion-content">
-                                            <div class="table-responsive">
-                                                <table class="table table-bordered">
-                                                    <thead>
+                                                        <th style="vertical-align: middle;" rowspan="2">REMARKS
+                                                        </th>
+                                                    </tr>
+
+                                                </thead>
+                                                <tbody>
+                                                    @php
+                                                        $k = 0;
+                                                    @endphp
+                                                    @foreach ($list['Final'] as $value)
                                                         <tr>
-                                                            <th rowspan="2" style="vertical-align: middle;">
-                                                                ITEM</th>
-                                                            <th style="vertical-align: middle;" rowspan="2">
-                                                                CONDITION</th>
-                                                            <th style="vertical-align: middle;" rowspan="2">UNIT
-                                                            </th>
-                                                            <th style="vertical-align: middle;" rowspan="2">
-                                                                STANDARD STD/PMS</th>
-                                                            <th style="vertical-align: middle;"rowspan="2">ACTUAL</th>
-                                                            <th style="vertical-align: middle;" rowspan="2">
-                                                                CORRECTION MODE</th>
-                                                            <th style="vertical-align: middle;" rowspan="2">RESULT
-                                                            </th>
-                                                            <th style="vertical-align: middle;" colspan="2">
-                                                                RECOMENDED PARTS</th>
-                                                            <th style="vertical-align: middle;" rowspan="2">REMARKS
-                                                            </th>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>PR.NO</th>
-                                                            <th>TANGGAL</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @php
-                                                            $i = 0;
-                                                        @endphp
-                                                        @foreach ($list['HYDRAULIC'] as $value)
-                                                            <tr>
-                                                                @if (isset($value['item']))
-                                                                    @if ($value['item'] == 'Engine Speed')
-                                                                        <td class="align-middle" rowspan="8">
-                                                                            {!! $value['item'] !!}</td>
-                                                                    @else
-                                                                        <td class="align-middle">
-                                                                            {!! $value['item'] !!}</td>
-                                                                    @endif
-                                                                @endif
-                                                                @if (isset($value['condition']))
-                                                                    @if ($value['condition'] == '1800 rpm (10th gear)')
-                                                                        <td class="align-middle" rowspan="8">
-                                                                            {!! $value['condition'] !!}</td>
-                                                                    @else
-                                                                        <td class="align-middle">
-                                                                            {!! $value['unit'] !!}</td>
-                                                                    @endif
-                                                                @endif
-                                                                @if (isset($value['unit']))
-                                                                    @if ($value['unit'] == 'kg/cm³')
-                                                                        <td class="align-middle" rowspan="8">
-                                                                            {!! $value['unit'] !!}</td>
-                                                                    @else
-                                                                        <td class="align-middle">
-                                                                            {!! $value['unit'] !!}</td>
-                                                                    @endif
-                                                                @endif
-                                                                @if (isset($value['standard']))
-                                                                    <td class="align-middle">{!! $value['standard'] !!}
-                                                                    </td>
-                                                                @endif
-
-
-                                                                <td><input type="text" class="form-control"
-                                                                        name="hyd_actual[]"
-                                                                        value="{{ $data->hyd_actual[$i] ?? '' }}">
+                                                            @if (isset($value['item']))
+                                                                <td class="align-middle">{!! $value['item'] !!}
                                                                 </td>
-                                                                <td><input type="text" class="form-control"
-                                                                        name="hyd_correct[]"
-                                                                        value="{{ $data->hyd_correction_made[$i] ?? '' }}">
-                                                                </td>
-                                                                <td><input type="text" class="form-control"
-                                                                        name="hyd_result[]"
-                                                                        value="{{ $data->hyd_result[$i] ?? '' }}">
-                                                                </td>
-                                                                <td><input type="text" class="form-control"
-                                                                        name="hyd_pr_no[]"
-                                                                        value="{{ $data->hyd_pr[$i] ?? '' }}">
-                                                                </td>
-                                                                <td><input type="date" class="form-control"
-                                                                        name="hyd_tanggal[]"
-                                                                        value="{{ $data->hyd_taggal[$i] ?? '' }}">
-                                                                </td>
-                                                                <td><input type="text" class="form-control"
-                                                                        value="{{ $data->hyd_remark[$i] ?? '' }}"
-                                                                        name="hyd_remarks[]"></td>
-
-                                                            </tr>
-                                                            @php
-                                                                $i++;
-                                                            @endphp
-                                                        @endforeach
-
-
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="accordion-item">
-                                        <button type="button" class="accordion-header">WORKING SPEED</button>
-                                        <div class="accordion-content">
-                                            <div class="table-responsive">
-                                                <table class="table table-bordered">
-                                                    <thead>
-                                                        <tr>
-                                                            <th rowspan="2" style="vertical-align: middle;">
-                                                                ITEM</th>
-                                                            <th style="vertical-align: middle;" rowspan="2">
-                                                                CONDITION</th>
-                                                            <th style="vertical-align: middle;" rowspan="2">UNIT
-                                                            </th>
-                                                            <th style="vertical-align: middle;" rowspan="2">
-                                                                STANDARD STD/PMS</th>
-                                                            <th style="vertical-align: middle;"rowspan="2">ACTUAL</th>
-                                                            <th style="vertical-align: middle;" rowspan="2">
-                                                                CORRECTION MODE</th>
-                                                            <th style="vertical-align: middle;" rowspan="2">RESULT
-                                                            </th>
-                                                            <th style="vertical-align: middle;" colspan="2">
-                                                                RECOMENDED PARTS</th>
-                                                            <th style="vertical-align: middle;" rowspan="2">REMARKS
-                                                            </th>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>PR.NO</th>
-                                                            <th>TANGGAL</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @php
-                                                            $j = 0;
-                                                        @endphp
-                                                        @foreach ($list['WORKING SPEED'] as $value)
-                                                            <tr>
-                                                                @if (isset($value['item']))
-                                                                    <td class="align-middle">{!! $value['item'] !!}
-                                                                    </td>
+                                                            @endif
+                                                            @if (isset($value['condition']))
+                                                                @if ($value['condition'] == 'Visual Check (Eng. Stop)')
+                                                                    <td class="align-middle" rowspan="2">
+                                                                        {!! $value['condition'] !!}</td>
+                                                                @else
+                                                                    <td class="align-middle">
+                                                                        {!! $value['condition'] !!}</td>
                                                                 @endif
-                                                                @if (isset($value['condition']))
-                                                                    @if ($value['condition'] == '1800 rpm (10th gear)')
-                                                                        <td class="align-middle" rowspan="10">
-                                                                            {!! $value['condition'] !!}</td>
-                                                                    @else
-                                                                        <td class="align-middle">
-                                                                            {!! $value['condition'] !!}</td>
-                                                                    @endif
-                                                                @endif
-                                                                @if (isset($value['unit']))
-                                                                    @if ($value['unit'] == 'Sec')
-                                                                        <td class="align-middle" rowspan="10">
-                                                                            {!! $value['unit'] !!}</td>
-                                                                    @else
-                                                                        <td class="align-middle">
-                                                                            {!! $value['unit'] !!}</td>
-                                                                    @endif
-                                                                @endif
-                                                                @if (isset($value['standard']))
-                                                                    @if ($value['standard'] == '28 ± 4 (3 round calculated after 1 round not calculated)')
-                                                                        <td class="align-middle" rowspan="2">
-                                                                            {!! $value['standard'] !!}</td>
-                                                                    @else
-                                                                        <td class="align-middle">
-                                                                            {!! $value['standard'] !!}</td>
-                                                                    @endif
-                                                                @endif
-
-
-                                                                <td><input type="text" class="form-control"
-                                                                        name="wo_actual[]"
-                                                                        value="{{ $data->wo_actual[$j] ?? '' }}">
+                                                            @endif
+                                                            <td></td>
+                                                            @if (isset($value['standard']))
+                                                                <td class="align-middle">{!! $value['standard'] !!}
                                                                 </td>
-                                                                <td><input type="text"
-                                                                        value="{{ $data->wo_correction_made[$j] ?? '' }}"
-                                                                        class="form-control" name="wo_correct[]">
-                                                                </td>
-                                                                <td><input value="{{ $data->wo_result[$j] ?? '' }}"
-                                                                        type="text" class="form-control"
-                                                                        name="wo_result[]"></td>
-                                                                <td><input value="{{ $data->wo_pr[$j] ?? '' }}"
-                                                                        type="text" class="form-control"
-                                                                        name="wo_pr_no[]"></td>
-                                                                <td><input value="{{ $data->wo_taggal[$j] ?? '' }}"
-                                                                        type="date" class="form-control"
-                                                                        name="wo_tanggal[]"></td>
-                                                                <td><input value="{{ $data->wo_remark[$j] ?? '' }}"
-                                                                        type="text" class="form-control"
-                                                                        name="wo_remarks[]"></td>
-                                                            </tr>
-                                                            @php
-                                                                $j++;
-                                                            @endphp
-                                                        @endforeach
-
-
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-item">
-                                        <button type="button" class="btn-primary accordion-header">FINAL
-                                            DRIVE</button>
-                                        <div class="accordion-content">
-                                            <div class="table-responsive">
-                                                <table class="table table-bordered">
-                                                    <thead>
-                                                        <tr>
-                                                            <th rowspan="2" style="vertical-align: middle;">
-                                                                ITEM</th>
-                                                            <th style="vertical-align: middle;" rowspan="2">
-                                                                CONDITION</th>
-                                                            <th style="vertical-align: middle;" rowspan="2">UNIT
-                                                            </th>
-                                                            <th style="vertical-align: middle;" rowspan="2">
-                                                                STANDARD STD/PMS</th>
-                                                            <th style="vertical-align: middle;"rowspan="2">ACTUAL</th>
-                                                            <th style="vertical-align: middle;" rowspan="2">
-                                                                CORRECTION MODE</th>
-                                                            <th style="vertical-align: middle;" rowspan="2">RESULT
-                                                            </th>
-                                                            <th style="vertical-align: middle;" colspan="2">
-                                                                RECOMENDED PARTS</th>
-                                                            <th style="vertical-align: middle;" rowspan="2">REMARKS
-                                                            </th>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>PR.NO</th>
-                                                            <th>TANGGAL</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @php
-                                                            $k = 0;
-                                                        @endphp
-                                                        @foreach ($list['Final'] as $value)
-                                                            <tr>
-                                                                @if (isset($value['item']))
-                                                                    <td class="align-middle">{!! $value['item'] !!}
-                                                                    </td>
-                                                                @endif
-                                                                @if (isset($value['condition']))
-                                                                    @if ($value['condition'] == 'Visual Check (Eng. Stop)')
-                                                                        <td class="align-middle" rowspan="2">
-                                                                            {!! $value['condition'] !!}</td>
-                                                                    @else
-                                                                        <td class="align-middle">
-                                                                            {!! $value['condition'] !!}</td>
-                                                                    @endif
-                                                                @endif
+                                                            @else
                                                                 <td></td>
-                                                                @if (isset($value['standard']))
-                                                                    <td class="align-middle">{!! $value['standard'] !!}
+                                                            @endif
+
+                                                            @if ($value['item'] == 'Drain Plug')
+                                                                <td
+                                                                    style="width: 10%; text-align: center; vertical-align: middle;">
+                                                                    <div style="display: inline-block; width: 100%;"
+                                                                        class="form-control uppercase">
+                                                                        <select name="final_actual{{ $k }}"
+                                                                            style="width: 100%;"
+                                                                            class="form-control text-center uppercase">
+                                                                            <option value="">--select--</option>
+                                                                            <option value="A"
+                                                                                {{ old('fin_actual' . $k, $data->fin_actual[$k] ?? '') == 'A' ? 'selected' : '' }}>
+                                                                                A
+                                                                            </option>
+                                                                            <option value="B"
+                                                                                {{ old('fin_actual' . $k, $data->fin_actual[$k] ?? '') == 'B' ? 'selected' : '' }}>
+                                                                                B
+                                                                            </option>
+                                                                            <option value="C"
+                                                                                {{ old('fin_actual' . $k, $data->fin_actual[$k] ?? '') == 'C' ? 'selected' : '' }}>
+                                                                                C
+                                                                            </option>
+                                                                            <option value="X"
+                                                                                {{ old('fin_actual' . $k, $data->fin_actual[$k] ?? '') == 'X' ? 'selected' : '' }}>
+                                                                                X
+                                                                            </option>
+                                                                        </select>
+                                                                    </div>
+                                                                </td>
+                                                            @elseif ($value['item'] == 'Oil Leak')
+                                                                <td
+                                                                    style="width: 10%; text-align: center; vertical-align: middle;">
+                                                                    <div style="display: inline-block; width: 100%;">
+                                                                        <select name="final_actual{{ $k }}"
+                                                                            style="width: 100%;"
+                                                                            class="form-control text-center uppercase">
+                                                                            <option value="">--select--</option>
+                                                                            <option value="Leak"
+                                                                                {{ old('fin_actual' . $k, $data->fin_actual[$k] ?? '') == 'Leak' ? 'selected' : '' }}>
+                                                                                Leak
+                                                                            </option>
+                                                                            <option value="No Leak"
+                                                                                {{ old('fin_actual' . $k, $data->fin_actual[$k] ?? '') == 'No Leak' ? 'selected' : '' }}>
+                                                                                No Leak
+                                                                            </option>
+
+                                                                        </select>
+                                                                    </div>
+                                                                </td>
+                                                            @else
+                                                                <td><input type="text"
+                                                                        class="form-control text-center uppercase"
+                                                                        name="final_actual{{ $k }}"
+                                                                        value="{{ $data->fin_actual[$k] }}">
+                                                                </td>
+                                                            @endif
+                                                            <td>
+                                                                <input type="text"
+                                                                    class="form-control uppercase text-center"
+                                                                    name="final_correct{{ $k }}"
+                                                                    value="{{ $data->fin_correction_made[$k] }}">
+                                                            </td>
+                                                            <td>
+                                                                <input type="text"
+                                                                    class="form-control uppercase text-center"
+                                                                    name="final_result{{ $k }}"
+                                                                    value="{{ $data->fin_result[$k] }}">
+                                                            </td>
+
+                                                            @if (isset($value['condition']))
+                                                                @if ($value['condition'] == 'Visual Check (Eng. Stop)')
+                                                                    <td rowspan="2"><input type="text"
+                                                                            value="{{ $data->fin_remark[0] ?? '' }}"
+                                                                            class="form-control text-center uppercase"
+                                                                            name="final_remarks[]">
+                                                                    </td>
+                                                                @elseif ($value['condition'] == 'Function Check')
+                                                                    <td rowspan="2"><input type="text"
+                                                                            value="{{ $data->fin_remark[1] ?? '' }}"
+                                                                            class="form-control text-center uppercase"
+                                                                            name="final_remarks[]">
                                                                     </td>
                                                                 @else
-                                                                    <td></td>
+                                                                    <td rowspan="2"><input type="text"
+                                                                            value="{{ $data->fin_remark[2] ?? '' }}"
+                                                                            class="form-control text-center uppercase"
+                                                                            name="final_remarks[]">
+                                                                    </td>
                                                                 @endif
+                                                            @endif
 
-                                                                <td>
-                                                                    <input type="checkbox" class="custom-checkbox"
-                                                                        name="final_actual{{ $k }}" value=1
-                                                                        {{ isset($data->fin_actual[$k]) && (int) $data->fin_actual[$k] == 1 ? 'checked' : '' }}>
-                                                                </td>
-                                                                <td>
-                                                                    <input type="checkbox" class="custom-checkbox"
-                                                                        name="final_correct{{ $k }}" value=1
-                                                                        {{ isset($data->fin_correction_made[$k]) && (int) $data->fin_correction_made[$k] == 1 ? 'checked' : '' }}>
-                                                                </td>
-                                                                <td>
-                                                                    <input type="checkbox" class="custom-checkbox"
-                                                                        name="final_result{{ $k }}" value=1
-                                                                        {{ isset($data->fin_result[$k]) && (int) $data->fin_result[$k] == 1 ? 'checked' : '' }}>
-                                                                </td>
+                                                        </tr>
+                                                        @php
+                                                            $k++;
+                                                        @endphp
+                                                    @endforeach
+                                                </tbody>
 
-                                                                <td><input type="text"
-                                                                        value="{{ $data->fin_pr[$k] ?? '' }}"
-                                                                        class="form-control" name="final_pr_no[]"></td>
-                                                                <td><input type="date"
-                                                                        value="{{ $data->fin_taggal[$k] ?? '' }}"
-                                                                        class="form-control" name="final_tanggal[]"></td>
-                                                                @if (isset($value['condition']))
-                                                                    @if ($value['condition'] == 'Visual Check (Eng. Stop)')
-                                                                        <td rowspan="2"><input type="text"
-                                                                                value="{{ $data->fin_remark[0] ?? '' }}"
-                                                                                class="form-control"
-                                                                                name="final_remarks[]"></td>
-                                                                    @elseif ($value['condition'] == 'Function Check')
-                                                                        <td><input type="text"
-                                                                                value="{{ $data->fin_remark[1] ?? '' }}"
-                                                                                class="form-control"
-                                                                                name="final_remarks[]"></td>
-                                                                    @else
-                                                                        <td><input type="text"
-                                                                                value="{{ $data->fin_remark[2] ?? '' }}"
-                                                                                class="form-control"
-                                                                                name="final_remarks[]"></td>
-                                                                    @endif
-                                                                @endif
-
-                                                            </tr>
-                                                            @php
-                                                                $k++;
-                                                            @endphp
-                                                        @endforeach
-                                                    </tbody>
-
-                                                </table>
-                                            </div>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row mt-5">
-                                    <div class="col-6 ">
-                                        <div class="input-group input-group-static mb-3">
-                                            <label for="dibuat" class="ms-0">Checked By</label>
-                                            <select name="checked" id="dibuat_oleh" class="form-control" required>
-                                                <option disabled selected>-- Select Checked --</option>
-                                                @foreach ($approvalList as $user)
-                                                    <option value="{{ $user->nik }}"
-                                                        {{ old('checked', $data->checked_by ?? '') == $user->nik ? 'selected' : '' }}>
-                                                        {{ $user->nama }}</option>
-                                                @endforeach
+                            </div>
+                            <div class="row mt-5">
+                                <div class="col-12">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label for="note" class="ms-0">Note/Catatan</label>
+                                        <textarea name="note" id="note" class="form-control uppercase" cols="30" rows="1">{{ $data->note }}</textarea>
+                                    </div>
+                                </div>
+                                <div class="col-4 ">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label for="dibuat" class="ms-0">Checked By1</label>
+                                        <input type="hidden" name="checked1" value="{{ $data->creator }}">
+                                        <input type="text" name="view_checked1" class="form-control"
+                                            value="{{ optional(collect($approvalList)->firstWhere('nik', $data->creator))->nama ?? '' }}"
+                                            readonly>
 
-                                            </select>
-                                        </div>
                                     </div>
-                                    <div class="col-6">
-                                        <div class="input-group input-group-static mb-3">
-                                            <label for="diperiksa" class="ms-0">Validated By</label>
-                                            <select name="validated" id="diperiksa" class="form-control" required>
-                                                <option disabled selected>-- Select Approval --</option>
-                                                @foreach ($approvalList as $user)
-                                                    <option value="{{ $user->nik }}"
-                                                        {{ old('validated', $data->validated_by ?? '') == $user->nik ? 'selected' : '' }}>
-                                                        {{ $user->nama }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
+                                </div>
+                                <div class="col-4 ">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label for="dibuat" class="ms-0">Checked By2</label>
+                                        <select name="checked2" id="created2" class="form-control uppercase" required>
+                                            <option disabled selected>-- Select Checked --</option>
+                                            @foreach ($approvalList as $user)
+                                                <option value="{{ $user->nik }}"
+                                                    {{ old('checked2', $data->checked_by ?? '') == $user->nik ? 'selected' : '' }}>
+                                                    {{ $user->nama }}</option>
+                                            @endforeach
+
+                                        </select>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <div class="form-actions">
-                                                <a href="{{ route('plant.ppm.900d.dashboard') }}"
-                                                    class="btn btn-secondary">Cancel</a>
-                                                <button type='submit' class="btn btn-primary">Update</button>
-                                            </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label for="diperiksa" class="ms-0">Validated By</label>
+                                        <select name="validated" id="diperiksa" class="form-control uppercase" required>
+                                            <option disabled selected>-- Select Approval --</option>
+                                            @foreach ($approvalList as $user)
+                                                <option value="{{ $user->nik }}"
+                                                    {{ old('validated', $data->validated_by ?? '') == $user->nik ? 'selected' : '' }}>
+                                                    {{ $user->nama }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="form-actions">
+                                            <a href="{{ route('plant.ppm.900d.dashboard') }}"
+                                                class="btn btn-secondary">Cancel</a>
+                                            <button type='submit' class="btn btn-primary">Update</button>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
                     </form>
 
                 </div>
@@ -598,6 +645,16 @@
 @section('custom-css')
     <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
     <style>
+        .uppercase {
+            text-transform: uppercase;
+        }
+
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
         .accordion {
             width: 100%;
 
@@ -690,9 +747,40 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <script>
         $(document).ready(function() {
-            $('#dibuat_oleh').select2();
+            $('#created1').select2();
+            $('#created2').select2();
             $('#diperiksa').select2();
             $('#job_site').select2();
+            $('#unit_cn').select2();
+        });
+        $(document).ready(function() {
+
+            const engineModelMap = {
+                @foreach ($cn as $cn_unit)
+                    "{{ $cn_unit->no_lambung }}": {
+                        "engineModel": "{{ $cn_unit->model_engine }}",
+                        "unitSn": "{{ $cn_unit->sn_unit }}",
+                        "unitModel": "{{ $cn_unit->model }}",
+                        "engineSn": "{{ $cn_unit->sn_engine }}"
+                    },
+                @endforeach
+            };
+
+            $('#unit_cn').change(function() {
+                const selectedCn = $(this).val();
+                if (engineModelMap[selectedCn]) {
+                    const unitData = engineModelMap[selectedCn];
+                    $('#engine_model').val(unitData.engineModel);
+                    $('#unit_model').val(unitData.unitModel);
+                    $('#unit_sn').val(unitData.unitSn);
+                    $('#engine_sn').val(unitData.engineSn);
+                } else {
+                    $('#engine_model').val('');
+                    $('#unit_model').val('');
+                    $('#unit_sn').val('');
+                    $('#engine_sn').val('');
+                }
+            });
         });
         document.addEventListener("DOMContentLoaded", function() {
             const headers = document.querySelectorAll(".accordion-header");

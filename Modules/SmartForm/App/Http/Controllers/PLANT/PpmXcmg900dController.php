@@ -28,13 +28,13 @@ class PpmXcmg900dController extends Controller {
                 $query->where( function( $q ) use ( $searchTerm ) {
                     $q->where( 'doc_num', 'like', '%' . $searchTerm . '%' )
                     ->orWhere( 'unit_model', 'like', '%' . $searchTerm . '%' )
-                    ->orWhere( 'engine_model', 'like', '%' . $searchTerm . '%' )
+                    ->orWhere( 'unit_cn', 'like', '%' . $searchTerm . '%' )
                     ->orWhere( 'job_site', 'like', '%' . $searchTerm . '%' );
                 }
             );
         }
-        if ( $request->has( 'engine_model' ) && $request->engine_model ) {
-            $query->where( 'engine_model', $request->engine_model );
+        if ( $request->has( 'unit_cn' ) && $request->unit_cn ) {
+            $query->where( 'unit_cn', $request->unit_cn );
         }
 
         if ( $request->has( 'job_site' ) && $request->job_site ) {
@@ -51,14 +51,14 @@ class PpmXcmg900dController extends Controller {
             ->whereMonth( 'created_at', now()->month )
             ->whereYear( 'created_at', now()->year )
             ->count(),
-            'engine_model' => DB::table( 'ppm_xcmg_900d' )->distinct()->count( 'engine_model' ),
+            'unit_cn' => DB::table( 'ppm_xcmg_900d' )->distinct()->count( 'unit_cn' ),
             'job_site' => DB::table( 'ppm_xcmg_900d' )->distinct()->count( 'job_site' ),
         ];
-
+            $cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','sn_unit','model','model_engine','sn_engine')->get();
             $records = $query->paginate( 5 );
-            return view( 'smartform::plant.ppm_900d.dashboard-900d', [ 'record' => $records, 'session'=>$nik_session, 'user'=> HrdHelper::getApprovalList(), 'statistics'=>$statistics, 'filters' => [
+            return view( 'smartform::plant.ppm_900d.dashboard-900d', [ 'record' => $records,"cn"=>$cn_data, 'session'=>$nik_session, 'user'=> HrdHelper::getApprovalList(), 'statistics'=>$statistics, 'filters' => [
             'search' => $request->search,
-            'engine_model' => $request->engine_model,
+            'unit_cn' => $request->unit_cn,
             'job_site' => $request->job_site,
             'approval' => $request->approval
         ] ] );
@@ -69,13 +69,15 @@ class PpmXcmg900dController extends Controller {
 
     }
 
-    public function Add() {
+    public function Add(Request $request) {
+        $nik_session = $request->session()->get( 'user_id', '' );
         $json = file_get_contents( resource_path( 'data/ppm-900d/ppm-900.json' ) );
         $list = json_decode( $json, true );
 
-      
+       $cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','sn_unit','model','model_engine','sn_engine')->get();
 
-        return view( 'smartform::plant.ppm_900d.form-900d', [ 'list' => $list,  'approvalList' => HrdHelper::getApprovalList() ] );
+
+        return view( 'smartform::plant.ppm_900d.form-900d', [ 'list' => $list,'nik'=>$nik_session,'cn'=>$cn_data, 'approvalList' => HrdHelper::getApprovalList() ] );
     }
 
     public function detail($id){
@@ -92,61 +94,54 @@ class PpmXcmg900dController extends Controller {
         $data->eng_actual = json_decode( $detail->eng_actual );
         $data->eng_correction_made = json_decode( $detail->eng_correction_made );
         $data->eng_result = json_decode( $detail->eng_result );
-        $data->eng_pr = json_decode( $detail->eng_pr );
-        $data->eng_taggal = json_decode( $detail->eng_taggal );
         $data->eng_remark = json_decode( $detail->eng_remark );
 
         $data->hyd_actual = json_decode( $detail->hyd_actual );
         $data->hyd_correction_made = json_decode( $detail->hyd_correction_made );
         $data->hyd_result = json_decode( $detail->hyd_result );
-        $data->hyd_pr = json_decode( $detail->hyd_pr );
-        $data->hyd_taggal = json_decode( $detail->hyd_taggal );
         $data->hyd_remark = json_decode( $detail->hyd_remark );
 
         $data->wo_actual = json_decode( $detail->wo_actual );
         $data->wo_correction_made = json_decode( $detail->wo_correction_made );
         $data->wo_result = json_decode( $detail->wo_result );
-        $data->wo_pr = json_decode( $detail->wo_pr );
-        $data->wo_taggal = json_decode( $detail->wo_taggal );
         $data->wo_remark = json_decode( $detail->wo_remark );
 
         $data->fin_actual = json_decode( $detail->fin_actual );
         $data->fin_correction_made = json_decode( $detail->fin_correction_made );
         $data->fin_result = json_decode( $detail->fin_result );
-        $data->fin_pr = json_decode( $detail->fin_pr );
-        $data->fin_taggal = json_decode( $detail->fin_taggal );
         $data->fin_remark = json_decode( $detail->fin_remark );
 
 
+$cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','sn_unit','model','model_engine','sn_engine')->get();
 
-
-        return view( 'smartform::plant.ppm_900d.show-900d', [ 'data' => $data, 'list' => $list, 'approvalList' => HrdHelper::getApprovalList() ] );
+        return view( 'smartform::plant.ppm_900d.show-900d', [ 'data' => $data, 'cn'=>$cn_data, 'list' => $list, 'approvalList' => HrdHelper::getApprovalList() ] );
     }
 
     public function Store( Request $request ) {
-
         $data = [
             'doc_num' => $this->generateDocNumber(),
-            'unit_model' => "XCMG 900D",
+            'unit_model' =>$request->unit_model,
             'unit_sn' =>$request->unit_sn,
             'unit_cn' => $request->unit_cn,
             'engine_model' => $request->engine_model ,
             'engine_sn' => $request->engine_sn,
-            'att_front' => $request->att_front,
-            'att_rear' => $request->att_rear,
+            'brand' => $request->brand,
             'job_site' => $request->job_site,
             'job_location' => $request->location,
             'at_inspection' => $request->at_inspec,
             'date' => $request->date,
-            'creator' => $request->session()->get( 'user_id', '' ),
-            'status' => json_encode( array_values( [ null, null] ) ),
-            'checked_by' => $request->checked,
+            'creator' => $request->checked1,
+            'status' =>  "draft",
+            'checked_by' => $request->checked2,
             'validated_by' =>$request->validated,
+            "note" => $request->note,
+            'date_created' => Carbon::now(),
+            'date_validated' => null,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now()
 
         ];
-        for ( $i = 0; $i <= 3; $i++ ) {
+        for ( $i = 0; $i <= 2; $i++ ) {
             $final_actual[] = $request->input( "final_actual$i" ) ?? 0;
             $final_correct[] = $request->input( "final_correct$i" ) ?? 0;
             $final_result[] = $request->input( "final_result$i" ) ?? 0;
@@ -158,26 +153,18 @@ class PpmXcmg900dController extends Controller {
             'eng_actual' =>json_encode( array_values( $request->eng_actual ) ),
             'eng_correction_made' =>json_encode( array_values( $request->eng_correct ) ),
             'eng_result' => json_encode( array_values( $request->eng_result ) ),
-            'eng_pr' =>json_encode( array_values( $request->eng_pr_no ) ),
-            'eng_taggal' =>json_encode( array_values( $request->eng_tanggal ) ),
             'eng_remark' => json_encode( array_values( $request->eng_remarks ) ),
             'hyd_actual' => json_encode( array_values( $request->hyd_actual ) ),
             'hyd_correction_made' =>json_encode( array_values( $request->hyd_correct ) ),
             'hyd_result' => json_encode( array_values( $request->hyd_result ) ),
-            'hyd_pr' => json_encode( array_values( $request->hyd_pr_no ) ) ,
-            'hyd_taggal' => json_encode( array_values( $request->hyd_tanggal ) ),
             'hyd_remark' => json_encode( array_values( $request->hyd_remarks ) ),
             'wo_actual' => json_encode( array_values( $request->wo_actual ) ),
             'wo_correction_made' =>json_encode( array_values( $request->wo_correct ) ),
             'wo_result' => json_encode( array_values( $request->wo_result ) ),
-            'wo_pr' => json_encode( array_values( $request->wo_pr_no ) ) ,
-            'wo_taggal' => json_encode( array_values( $request->wo_tanggal ) ),
             'wo_remark' =>json_encode( array_values( $request->wo_remarks ) ),
             'fin_actual' => json_encode( array_values( $final_actual ) ),
             'fin_correction_made' =>json_encode( array_values( $final_correct ) ),
             'fin_result' => json_encode( array_values($final_result ) ),
-            'fin_pr' => json_encode( array_values( $request->final_pr_no ) ) ,
-            'fin_taggal' => json_encode( array_values( $request->final_tanggal ) ),
             'fin_remark' => json_encode( array_values( $request->final_remarks ) ),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now()
@@ -209,29 +196,25 @@ class PpmXcmg900dController extends Controller {
         $data->eng_actual = json_decode( $detail->eng_actual );
         $data->eng_correction_made = json_decode( $detail->eng_correction_made );
         $data->eng_result = json_decode( $detail->eng_result );
-        $data->eng_pr = json_decode( $detail->eng_pr );
-        $data->eng_taggal = json_decode( $detail->eng_taggal );
+    
         $data->eng_remark = json_decode( $detail->eng_remark );
 
         $data->hyd_actual = json_decode( $detail->hyd_actual );
         $data->hyd_correction_made = json_decode( $detail->hyd_correction_made );
         $data->hyd_result = json_decode( $detail->hyd_result );
-        $data->hyd_pr = json_decode( $detail->hyd_pr );
-        $data->hyd_taggal = json_decode( $detail->hyd_taggal );
+      
         $data->hyd_remark = json_decode( $detail->hyd_remark );
 
         $data->wo_actual = json_decode( $detail->wo_actual );
         $data->wo_correction_made = json_decode( $detail->wo_correction_made );
         $data->wo_result = json_decode( $detail->wo_result );
-        $data->wo_pr = json_decode( $detail->wo_pr );
-        $data->wo_taggal = json_decode( $detail->wo_taggal );
+      
         $data->wo_remark = json_decode( $detail->wo_remark );
 
         $data->fin_actual = json_decode( $detail->fin_actual );
         $data->fin_correction_made = json_decode( $detail->fin_correction_made );
         $data->fin_result = json_decode( $detail->fin_result );
-        $data->fin_pr = json_decode( $detail->fin_pr );
-        $data->fin_taggal = json_decode( $detail->fin_taggal );
+      
         $data->fin_remark = json_decode( $detail->fin_remark );
         $pdf = PDF::loadView( 'smartform::plant.ppm_900d.export-pdf', [
             'data' => $data, 'list' => $list, 'approvalList' => HrdHelper::getApprovalList()
@@ -241,6 +224,7 @@ class PpmXcmg900dController extends Controller {
 
         return $pdf->download( 'PPM XCMG 900D - ' . $data->doc_num .'.pdf' );
 
+      
     } catch ( \Exception $e ) {
         Log::error( 'Error in ExportForm: ' . $e->getMessage() );
         return redirect()
@@ -257,14 +241,15 @@ class PpmXcmg900dController extends Controller {
             'unit_cn' => $request->unit_cn,
             'engine_model' => $request->engine_model ,
             'engine_sn' => $request->engine_sn,
-            'att_front' => $request->att_front,
-            'att_rear' => $request->att_rear,
+            'brand' => $request->brand,
             'job_site' => $request->job_site,
             'job_location' => $request->location,
             'at_inspection' => $request->at_inspec,
             'date' => $request->date,
-            'checked_by' => $request->checked,
+            'creator' => $request->checked1,
+            'checked_by' => $request->checked2,
             'validated_by' =>$request->validated,
+            "note" => $request->note,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now()
 
@@ -272,7 +257,7 @@ class PpmXcmg900dController extends Controller {
 
 
 
-        for ( $i = 0; $i <= 3; $i++ ) {
+        for ( $i = 0; $i <= 2; $i++ ) {
             $final_actual[] = $request->input( "final_actual$i" ) ?? 0;
             $final_correct[] = $request->input( "final_correct$i" ) ?? 0;
             $final_result[] = $request->input( "final_result$i" ) ?? 0;
@@ -284,26 +269,18 @@ class PpmXcmg900dController extends Controller {
             'eng_actual' =>json_encode( array_values( $request->eng_actual ) ),
             'eng_correction_made' =>json_encode( array_values( $request->eng_correct ) ),
             'eng_result' => json_encode( array_values( $request->eng_result ) ),
-            'eng_pr' =>json_encode( array_values( $request->eng_pr_no ) ),
-            'eng_taggal' =>json_encode( array_values( $request->eng_tanggal ) ),
             'eng_remark' => json_encode( array_values( $request->eng_remarks ) ),
             'hyd_actual' => json_encode( array_values( $request->hyd_actual ) ),
             'hyd_correction_made' =>json_encode( array_values( $request->hyd_correct ) ),
             'hyd_result' => json_encode( array_values( $request->hyd_result ) ),
-            'hyd_pr' => json_encode( array_values( $request->hyd_pr_no ) ) ,
-            'hyd_taggal' => json_encode( array_values( $request->hyd_tanggal ) ),
             'hyd_remark' => json_encode( array_values( $request->hyd_remarks ) ),
             'wo_actual' => json_encode( array_values( $request->wo_actual ) ),
             'wo_correction_made' =>json_encode( array_values( $request->wo_correct ) ),
             'wo_result' => json_encode( array_values( $request->wo_result ) ),
-            'wo_pr' => json_encode( array_values( $request->wo_pr_no ) ) ,
-            'wo_taggal' => json_encode( array_values( $request->wo_tanggal ) ),
             'wo_remark' =>json_encode( array_values( $request->wo_remarks ) ),
             'fin_actual' => json_encode( array_values( $final_actual ) ),
             'fin_correction_made' =>json_encode( array_values( $final_correct ) ),
             'fin_result' => json_encode( array_values($final_result ) ),
-            'fin_pr' => json_encode( array_values( $request->final_pr_no ) ) ,
-            'fin_taggal' => json_encode( array_values( $request->final_tanggal ) ),
             'fin_remark' => json_encode( array_values( $request->final_remarks ) ),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now()
@@ -326,10 +303,8 @@ class PpmXcmg900dController extends Controller {
     public function Approve( Request $request ) {
 
         $data = [
-            'status' => json_encode( array_values( [
-                $request->checked,
-                $request->validated,
-            ] ) ),
+            'status' =>  $request->validated,
+            'date_validated' => Carbon::now(),
             'updated_at' => Carbon::now()
         ];
 
@@ -356,34 +331,32 @@ class PpmXcmg900dController extends Controller {
         $json = file_get_contents( resource_path( 'data/ppm-900d/ppm-900.json' ) );
         $list = json_decode( $json, true );
 
-        $data->status = json_decode( $data->status );
+       
         $data->eng_actual = json_decode( $detail->eng_actual );
         $data->eng_correction_made = json_decode( $detail->eng_correction_made );
         $data->eng_result = json_decode( $detail->eng_result );
-        $data->eng_pr = json_decode( $detail->eng_pr );
-        $data->eng_taggal = json_decode( $detail->eng_taggal );
+
         $data->eng_remark = json_decode( $detail->eng_remark );
 
         $data->hyd_actual = json_decode( $detail->hyd_actual );
         $data->hyd_correction_made = json_decode( $detail->hyd_correction_made );
         $data->hyd_result = json_decode( $detail->hyd_result );
-        $data->hyd_pr = json_decode( $detail->hyd_pr );
-        $data->hyd_taggal = json_decode( $detail->hyd_taggal );
+
         $data->hyd_remark = json_decode( $detail->hyd_remark );
 
         $data->wo_actual = json_decode( $detail->wo_actual );
         $data->wo_correction_made = json_decode( $detail->wo_correction_made );
         $data->wo_result = json_decode( $detail->wo_result );
-        $data->wo_pr = json_decode( $detail->wo_pr );
-        $data->wo_taggal = json_decode( $detail->wo_taggal );
+
         $data->wo_remark = json_decode( $detail->wo_remark );
 
         $data->fin_actual = json_decode( $detail->fin_actual );
         $data->fin_correction_made = json_decode( $detail->fin_correction_made );
         $data->fin_result = json_decode( $detail->fin_result );
-        $data->fin_pr = json_decode( $detail->fin_pr );
-        $data->fin_taggal = json_decode( $detail->fin_taggal );
+
         $data->fin_remark = json_decode( $detail->fin_remark );
+        
+     
 
         return view( 'smartform::plant.ppm_900d.detail-900d', [ 'data' => $data, 'nik' =>$nik_session, 'list' => $list, 'approvalList' => HrdHelper::getApprovalList() ] );
     }
@@ -391,10 +364,8 @@ class PpmXcmg900dController extends Controller {
     public function Reset( $id ) {
 
         $data = [
-            'status' => json_encode( array_values( [
-                null,
-                null
-            ] ) ),
+            'status' =>'draft',
+            'date_validated' =>null,
             'updated_at' => Carbon::now()
         ];
 
@@ -411,11 +382,8 @@ class PpmXcmg900dController extends Controller {
 
     public function Reject( Request $request ) {
         $data = [
-            'status' => json_encode( array_values( [
-                $request->checked,
-                $request->validated,
-
-            ] ) ),
+            'status' =>  $request->validated,
+            'date_validated' => Carbon::now(),
             'updated_at' => Carbon::now()
         ];
         ;

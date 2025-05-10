@@ -16,6 +16,9 @@ return new class extends Migration
             $table->string('no_lambung');
             $table->string('site');
             $table->string('model');
+            $table->string('sn_unit');
+            $table->string('model_engine');
+            $table->string('sn_engine');
             $table->timestamps();
         });
     }

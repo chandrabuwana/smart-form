@@ -14,33 +14,25 @@ return new class extends Migration
         Schema::create('report_ppm_xcmg_900d', function (Blueprint $table) {
             $table->id();
             $table->string('doc_num_id');
-            $table->string('eng_actual');
-            $table->string('eng_correction_made');
-            $table->string('eng_result');
-            $table->string('eng_pr');
-            $table->string('eng_taggal');
-            $table->string('eng_remark');
+            $table->string('eng_actual')->nullable();
+            $table->string('eng_correction_made')->nullable();
+            $table->string('eng_result')->nullable();
+            $table->string('eng_remark')->nullable();
 
-            $table->string('hyd_actual');
-            $table->string('hyd_correction_made');
-            $table->string('hyd_result');
-            $table->string('hyd_pr');
-            $table->string('hyd_taggal');
-            $table->string('hyd_remark');
+            $table->string('hyd_actual')->nullable();
+            $table->string('hyd_correction_made')->nullable();
+            $table->string('hyd_result')->nullable();
+            $table->string('hyd_remark')->nullable();
 
-            $table->string('wo_actual');
-            $table->string('wo_correction_made');
-            $table->string('wo_result');
-            $table->string('wo_pr');
-            $table->string('wo_taggal');
-            $table->string('wo_remark');
+            $table->string('wo_actual')->nullable();
+            $table->string('wo_correction_made')->nullable();
+            $table->string('wo_result')->nullable();
+            $table->string('wo_remark')->nullable();
 
-            $table->string('fin_actual');
-            $table->string('fin_correction_made');
-            $table->string('fin_result');
-            $table->string('fin_pr');
-            $table->string('fin_taggal');
-            $table->string('fin_remark');
+            $table->string('fin_actual')->nullable();
+            $table->string('fin_correction_made')->nullable();
+            $table->string('fin_result')->nullable();
+            $table->string('fin_remark')->nullable();
             $table->foreign('doc_num_id')->references('doc_num')->on('ppm_xcmg_900d')->onDelete('cascade');
             $table->timestamps();
         });

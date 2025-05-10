@@ -23,32 +23,32 @@ return new class extends Migration
             $table->string('dilaporkan_oleh')->nullable();
             $table->string('diketahui_oleh')->nullable();
 			
-			$table->string('status_req', 255)
-                  ->nullable()
-                  ->comment('Status request pengeluaran oli');
+			// $table->string('status_req', 255)
+            //       ->nullable()
+            //       ->comment('Status request pengeluaran oli');
                   
-            $table->string('remark', 500)
-                  ->nullable()
-                  ->comment('Keterangan tambahan');
+            // $table->string('remark', 500)
+            //       ->nullable()
+            //       ->comment('Keterangan tambahan');
                   
-            $table->string('updated_by', 255)
-                  ->nullable()
-                  ->comment('User yang melakukan update terakhir');
+            // $table->string('updated_by', 255)
+            //       ->nullable()
+            //       ->comment('User yang melakukan update terakhir');
                   
-            $table->dateTime('updated_at')
-                  ->nullable()
-                  ->comment('Waktu update terakhir');
+            // $table->dateTime('updated_at')
+            //       ->nullable()
+            //       ->comment('Waktu update terakhir');
                   
-            $table->string('deleted_by', 255)
-                  ->nullable()
-                  ->comment('User yang melakukan soft delete');
+            // $table->string('deleted_by', 255)
+            //       ->nullable()
+            //       ->comment('User yang melakukan soft delete');
                   
-            $table->dateTime('deleted_at')
-                  ->nullable()
-                  ->comment('Waktu soft delete');
+            // $table->dateTime('deleted_at')
+            //       ->nullable()
+            //       ->comment('Waktu soft delete');
             
-            // Tambahkan kolom created_at yang nullable
-            $table->date('created_at')->nullable();
+            // // Tambahkan kolom created_at yang nullable
+            // $table->date('created_at')->nullable();
         });
     }
 
