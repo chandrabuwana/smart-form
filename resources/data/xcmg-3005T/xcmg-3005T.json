@@ -151,7 +151,7 @@
             "standard": "No Oil Leak"
         },
         {
-            "item": "Electrical Function",
+            "item": "Error Code",
             "condition": "Function Check",
             "standard": "No DTC (Diagnostic Trouble Code) Detected"
         },

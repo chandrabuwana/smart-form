@@ -24,6 +24,10 @@
             margin-bottom: 10px;
         }
 
+        .ttd {
+            width: 40px;
+        }
+
         .logo {
             width: 70px;
         }
@@ -96,17 +100,17 @@
             <th colspan="2" rowspan="4" style="border-bottom: none; ">
                 <img src="{{ public_path('img/logo.png') }}" class="logo">
             </th>
-            <th colspan="10" style="height:10px; background-color: #3cbeca91;"></th>
+            <th colspan="8" style="height:10px; background-color: #3cbeca91;"></th>
 
         </tr>
         <tr>
-            <th colspan="8" style=" text-align: center; font-weight: bold; font-size:8px;">Form</th>
+            <th colspan="6" style=" text-align: center; font-weight: bold; font-size:8px;">Form</th>
             <th>No Document</th>
             <th>FRM-PLA-04-073</th>
 
         </tr>
         <tr>
-            <th colspan="8" rowspan="2" style=" text-align: center;  font-size:8px;">
+            <th colspan="6" rowspan="2" style=" text-align: center;  font-size:8px;">
                 PPM (Program Pengecekan Mesin)
             </th>
 
@@ -127,9 +131,9 @@
             <td colspan="2">
                 ENGINE
             </td>
-            <td colspan="2">ATTACHMENT
+            <td colspan="2">BRAND
             </td>
-            <td colspan="5" style="border: none">
+            <td colspan="3" style="border: none">
             </td>
         </tr>
         <tr>
@@ -146,13 +150,8 @@
             <td>
                 S/N
             </td>
-            <td>
-                Front
-            </td>
-            <td>
-                Rear
-            </td>
-            <td colspan="5" style="border: none"></td>
+            <td colspan="2" rowspan="2">{{ $data->brand }}</td>
+            <td colspan="3" style="border: none"></td>
         </tr>
         <tr>
             <td style="font-weight:bold;">
@@ -162,18 +161,18 @@
             <td>{{ $data->unit_cn }}</td>
             <td>{{ $data->engine_model }}</td>
             <td>{{ $data->engine_sn }}</td>
-            <td>{{ $data->att_front }}</td>
-            <td>{{ $data->att_rear }}</td>
-            <td colspan="5" style="border: none; padding:4px;"></td>
+
+
+            <td colspan="3" style="border: none; padding:4px;"></td>
         </tr>
         <tr>
-            <td colspan="12" style="border:none;"></td>
+            <td colspan="10" style="border:none;"></td>
         </tr>
         <tr>
-            <td colspan="4">PT BINA SARANA SUKSES</td>
-            <td style="border:none;"></td>
+            <td colspan="3">PT BINA SARANA SUKSES</td>
+            <td colspan="2" style="border:none;"></td>
             <td colspan="2">SMR / HM</td>
-            <td colspan="3" style="border:none;"></td>
+            <td style="border:none;"></td>
             <td rowspan="2" colspan="2" style="border: none; background-color:bisque; font-weight:bold;">XCMG
                 GR3005T Series</td>
         </tr>
@@ -183,7 +182,7 @@
             <td style="border:none;"></td>
             <td>At Inspection</td>
             <td>Date</td>
-            <td colspan="5" style="border:none;"></td>
+            <td colspan="3" style="border:none;"></td>
 
         </tr>
         <tr>
@@ -192,31 +191,28 @@
             <td style="border:none;"></td>
             <td>{{ $data->at_inspection }}</td>
             <td>{{ $data->date }}</td>
-            <td colspan="5" style="border:none;"></td>
+            <td colspan="3" style="border:none;"></td>
         </tr>
         <tr>
-            <td style="border:none;" colspan="12"></td>
+            <td style="border:none;" colspan="10"></td>
         </tr>
 
         <tr style=" font-weight:bold; font-size:6px;">
-            <th rowspan="2">ITEM</th>
-            <th rowspan="2" colspan="2">CONDITION</th>
-            <th rowspan="2">UNIT</th>
-            <th rowspan="2">STANDARD STD / PMS</th>
-            <th rowspan="2">ACTUAL</th>
-            <th rowspan="2">CORRECTION MADE</th>
-            <th rowspan="2">RESULT</th>
-            <th colspan="2">RECOMMENDED PARTS</th>
-            <th colspan="2" rowspan="2">REMARKS</th>
+            <th>ITEM</th>
+            <th colspan="2">CONDITION</th>
+            <th>UNIT</th>
+            <th>STANDARD STD / PMS</th>
+            <th>ACTUAL</th>
+            <th>CORRECTION MADE</th>
+            <th>RESULT</th>
+
+            <th colspan="2">REMARKS</th>
         </tr>
-        <tr>
-            <td>PR. NO</td>
-            <td>Tanggal</td>
-        </tr>
+
         </thead>
         <tbody>
             <tr>
-                <td colspan="12" style="text-align: left; font-weight:bold; font-size:6px;">ENGINE</td>
+                <td colspan="10" style="text-align: left; font-weight:bold; font-size:6px;">ENGINE</td>
             </tr>
             @php
                 $i = 0;
@@ -258,10 +254,7 @@
                     <td>{{ $data->eng_correction_made[$i] ?? '' }}</td>
                     <td>{{ $data->eng_result[$i] ?? '' }}
                     </td>
-                    <td>{{ $data->eng_pr[$i] ?? '' }}
-                    </td>
-                    <td>{{ $data->eng_taggal[$i] ?? '' }}
-                    </td>
+
                     @if ($i === 0)
                         <td colspan="2" rowspan="13">{{ $data->eng_remark }}</td>
                     @endif
@@ -272,7 +265,7 @@
             @endforeach
 
             <tr>
-                <td colspan="12" style="text-align: left;  font-weight:bold; font-size:6px;">TRANSMISSION</td>
+                <td colspan="10" style="text-align: left;  font-weight:bold; font-size:6px;">TRANSMISSION</td>
             </tr>
             @php
                 $k = 0;
@@ -293,10 +286,7 @@
                     <td>{{ $data->wo_correction_made[$k] ?? '' }}</td>
                     <td>{{ $data->wo_result[$k] ?? '' }}
                     </td>
-                    <td>{{ $data->wo_pr[$k] ?? '' }}
-                    </td>
-                    <td>{{ $data->wo_taggal[$k] ?? '' }}
-                    </td>
+
                     <td colspan="2">{{ $data->wo_remark }}</td>
                 </tr>
                 @php
@@ -305,7 +295,7 @@
             @endforeach
 
             <tr>
-                <td colspan="12" style="text-align: left;  font-weight:bold; font-size:6px;">HYDRAULIC PRESSURE</td>
+                <td colspan="10" style="text-align: left;  font-weight:bold; font-size:6px;">HYDRAULIC PRESSURE</td>
             </tr>
             @php
                 $j = 0;
@@ -340,10 +330,7 @@
                     <td>{{ $data->hyd_correction_made[$j] ?? '' }}</td>
                     <td>{{ $data->hyd_result[$j] ?? '' }}
                     </td>
-                    <td>{{ $data->hyd_pr[$j] ?? '' }}
-                    </td>
-                    <td>{{ $data->hyd_taggal[$j] ?? '' }}
-                    </td>
+
                     @if ($j === 0)
                         <td colspan="2" rowspan="9">{{ $data->hyd_remark }}</td>
                     @endif
@@ -356,26 +343,23 @@
 
 
             <tr style=" font-weight:bold; font-size:6px;">
-                <th rowspan="2">ITEM</th>
-                <th rowspan="2" colspan="2">CONDITION</th>
-                <th rowspan="2">UNIT</th>
-                <th rowspan="2">STANDARD STD / PMS</th>
-                <th rowspan="2">ACTUAL</th>
-                <th rowspan="2">CORRECTION MADE</th>
-                <th rowspan="2">RESULT</th>
-                <th colspan="2">RECOMMENDED PARTS</th>
-                <th colspan="2" rowspan="2">REMARKS</th>
+                <th>ITEM</th>
+                <th colspan="2">CONDITION</th>
+                <th>UNIT</th>
+                <th>STANDARD STD / PMS</th>
+                <th>ACTUAL</th>
+                <th>CORRECTION MADE</th>
+                <th>RESULT</th>
+
+                <th colspan="2">REMARKS</th>
             </tr>
-            <tr>
-                <td>PR. NO</td>
-                <td>Tanggal</td>
-            </tr>
+
 
             @php
                 $l = 0;
             @endphp
             <tr>
-                <td colspan="12" style="text-align: left; font-weight:bold; font-size:6px;">
+                <td colspan="10" style="text-align: left; font-weight:bold; font-size:6px;">
                     FINAL DRIVE
                 </td>
             </tr>
@@ -391,8 +375,7 @@
                     {{ $data->fin_correction_made[0] === '1' ? '✓' : '' }}</td>
                 <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">
                     {{ $data->fin_result[0] === '1' ? '✓' : '' }}</td>
-                <td>{{ $data->fin_pr[0] }}</td>
-                <td>{{ $data->fin_taggal[0] }}</td>
+
                 <td colspan="2" rowspan="2">
                     {{ $data->fin_remark[0] }}
                 </td>
@@ -406,12 +389,11 @@
                     {{ $data->fin_correction_made[1] === '1' ? '✓' : '' }}</td>
                 <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">
                     {{ $data->fin_result[1] === '1' ? '✓' : '' }}</td>
-                <td>{{ $data->fin_pr[1] }}</td>
-                <td>{{ $data->fin_taggal[1] }}</td>
+
 
             </tr>
             <tr>
-                <td colspan="12" style="text-align: left; font-weight:bold; font-size:6px;">
+                <td colspan="10" style="text-align: left; font-weight:bold; font-size:6px;">
                     TANDEM
                 </td>
             </tr>
@@ -428,8 +410,7 @@
                     {{ $data->fin_correction_made[2] === '1' ? '✓' : '' }}</td>
                 <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">
                     {{ $data->fin_result[2] === '1' ? '✓' : '' }}</td>
-                <td>{{ $data->fin_pr[2] }}</td>
-                <td>{{ $data->fin_taggal[2] }}</td>
+
                 <td colspan="2" rowspan="2">
                     {{ $data->fin_remark[1] }}
                 </td>
@@ -443,8 +424,7 @@
                     {{ $data->fin_correction_made[3] === '1' ? '✓' : '' }}</td>
                 <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">
                     {{ $data->fin_result[3] === '1' ? '✓' : '' }}</td>
-                <td>{{ $data->fin_pr[3] }}</td>
-                <td>{{ $data->fin_taggal[3] }}</td>
+
             </tr>
             <tr>
                 <td rowspan="2" class="align-middle">Oil Leak</td>
@@ -456,8 +436,7 @@
                     {{ $data->fin_correction_made[4] === '1' ? '✓' : '' }}</td>
                 <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">
                     {{ $data->fin_result[4] === '1' ? '✓' : '' }}</td>
-                <td>{{ $data->fin_pr[4] }}</td>
-                <td>{{ $data->fin_taggal[4] }}</td>
+
                 <td colspan="2" rowspan="2">
                     {{ $data->fin_remark[2] }}
                 </td>
@@ -473,12 +452,11 @@
                     {{ $data->fin_correction_made[5] === '1' ? '✓' : '' }}</td>
                 <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">
                     {{ $data->fin_result[5] === '1' ? '✓' : '' }}</td>
-                <td>{{ $data->fin_pr[5] }}</td>
-                <td>{{ $data->fin_taggal[5] }}</td>
+
 
             </tr>
             <tr>
-                <td colspan="12" style="text-align: left; font-weight:bold; font-size:6px;">
+                <td colspan="10" style="text-align: left; font-weight:bold; font-size:6px;">
                     ELECTRICAL
                 </td>
             </tr>
@@ -495,14 +473,13 @@
                     {{ $data->fin_correction_made[6] === '1' ? '✓' : '' }}</td>
                 <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">
                     {{ $data->fin_result[6] === '1' ? '✓' : '' }}</td>
-                <td>{{ $data->fin_pr[6] }}</td>
-                <td>{{ $data->fin_taggal[6] }}</td>
+
                 <td colspan="2">
                     {{ $data->fin_remark[3] }}
                 </td>
             </tr>
             <tr>
-                <td colspan="12" style="text-align: left; font-weight:bold; font-size:6px;">
+                <td colspan="10" style="text-align: left; font-weight:bold; font-size:6px;">
                     OPTIONAL
                 </td>
             </tr>
@@ -516,8 +493,7 @@
                     {{ $data->fin_correction_made[7] === '1' ? '✓' : '' }}</td>
                 <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">
                     {{ $data->fin_result[7] === '1' ? '✓' : '' }}</td>
-                <td>{{ $data->fin_pr[7] }}</td>
-                <td>{{ $data->fin_taggal[7] }}</td>
+
                 <td colspan="2">
                     {{ $data->fin_remark[4] }}
                 </td>
@@ -527,30 +503,53 @@
     <div style="margin-top: 10px;">
         <table style="width: 80%; border-collapse: collapse;">
             <tr>
-                <td colspan="2" style="border-top: none; border: 1px solid black;">Checked By</td>
-                <td colspan="2" style="border-top: none; border: 1px solid black;">Validated By</td>
-                <td style="border-top: none; border: 1px solid black; width: 20%;">Date</td>
+                <td colspan="2" style="border-top: none; border: 1px solid black;">Checked By 1</td>
+                <td colspan="2" style="border-top: none; border: 1px solid black;">Checked By 2</td>
+                <td colspan="2" style="border-top: none; border: 1px solid black; width: 20%;">Validated By</td>
                 <td colspan="8" style="border: none;"></td>
             </tr>
             <tr>
-                <td colspan="2" style="height: 30px; border-bottom: none;"></td>
-                <td colspan="2" style="height: 30px; border-bottom: none;"></td>
-                <td style="height: 30px; border-bottom: none;">{{ $data->created_at }}</td>
-                <td colspan="8" style="border: none;"></td>
+                <td colspan="2" style="height: 30px; border-bottom: none;"> <img
+                        src="{{ public_path('img/checked.png') }}" class="ttd"></td>
+                <td colspan="2" style="height: 30px; border-bottom: none;"> <img
+                        src="{{ public_path('img/checked.png') }}" class="ttd"></td>
+                @if ($data->status == 'approved')
+                    <td colspan="2" style="height: 30px; border-bottom: none; width: 20%;"> <img
+                            src="{{ public_path('img/validated.png') }}" class="ttd">
+                    </td>
+                @else
+                    <td colspan="2" style="height: 30px; border-bottom: none; width: 20%;"></td>
+                @endif
+
+                <td colspan="8" style="border: none"></td>
             </tr>
             <tr>
+                <td colspan="2" style="border-top: none;">
+                    {{ optional(collect($approvalList)->firstWhere('nik', $data->creator))->nama ?? '' }}</td>
                 <td colspan="2" style="border-top: none;">
                     {{ optional(collect($approvalList)->firstWhere('nik', $data->checked_by))->nama ?? '' }}</td>
-                <td colspan="2" style="border-top: none;">
+                <td colspan="2"style="border-top: none;">
                     {{ optional(collect($approvalList)->firstWhere('nik', $data->validated_by))->nama ?? '' }}</td>
-                <td style="border-top: none;"></td>
-                <td colspan="8" style="border: none;"></td>
+                <td colspan="8" style="border: none"></td>
             </tr>
             <tr>
                 <td colspan="2" style="border-top: none;">Mechanic</td>
+                <td colspan="2" style="border-top: none;">Mechanic</td>
                 <td colspan="2" style="border-top: none;">Foreman</td>
-                <td style="border-top: none;">Date</td>
+
                 <td colspan="8" style="border: none;"></td>
+            </tr>
+            <tr>
+                <td colspan="2"> {{ \Carbon\Carbon::parse($data->date_checked)->translatedFormat('d -m Y') }}
+                </td>
+                <td colspan="2">{{ \Carbon\Carbon::parse($data->date_checked)->translatedFormat('d -m Y') }}
+                </td>
+                </td>
+                <td colspan="2">
+                    {{ $data->date_validated ? \Carbon\Carbon::parse($data->date_validated)->translatedFormat('d - m - Y') : '-' }}
+                </td>
+                </td>
+                <td colspan="8" style="border: none"></td>
             </tr>
         </table>
 

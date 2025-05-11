@@ -136,12 +136,11 @@
                     <div class="mx-4 row">
                         <form action="" method="GET" id="filterForm">
                             <div class="row align-items-center">
-                                <div class="col-md-2 mb-3">
+                                <div class="col-md-3 mb-3">
                                     <div class="input-group input-group-static mb-4 position-relative">
                                         <label>Search</label>
                                         <input type="text" name="search" class="form-control"
-                                            placeholder="Search by doc number or name"
-                                            value="{{ $filters['search'] ?? '' }}">
+                                            placeholder="Search by doc number" value="{{ $filters['search'] ?? '' }}">
                                     </div>
                                 </div>
                                 <div class="col-md-3
@@ -258,19 +257,17 @@
                                             <td>
                                                 <span class="text-xs font-weight-bold">{{ $data->date }}</span>
                                             </td>
-                                            @php
-                                                $status = json_decode($data->status, true);
-                                            @endphp
+
                                             <td>
 
 
-                                                @if ($status[0] === 'approved')
+                                                @if ($data->status === 'approved')
                                                     <span
                                                         class="badge bg-success">{{ optional(collect($user)->firstWhere('nik', $data->checked_by))->nama ?? '' }}</span>
-                                                @elseif ($status[0] === 'rejected')
+                                                @elseif ($data->status === 'rejected')
                                                     <span
                                                         class="badge bg-danger">{{ optional(collect($user)->firstWhere('nik', $data->checked_by))->nama ?? '' }}</span>
-                                                @elseif ($status[0] === null)
+                                                @elseif ($data->status === 'draft')
                                                     <span
                                                         class="badge bg-info">{{ optional(collect($user)->firstWhere('nik', $data->checked_by))->nama ?? '' }}</span>
                                                 @endif
@@ -278,13 +275,13 @@
                                             </td>
                                             <td>
                                                 <span class="text-xs font-weight-bold">
-                                                    @if ($status[1] === 'approved')
+                                                    @if ($data->status === 'approved')
                                                         <span
                                                             class="badge bg-success">{{ optional(collect($user)->firstWhere('nik', $data->validated_by))->nama ?? '' }}</span>
-                                                    @elseif ($status[1] === 'rejected')
+                                                    @elseif ($data->status === 'rejected')
                                                         <span
                                                             class="badge bg-danger">{{ optional(collect($user)->firstWhere('nik', $data->validated_by))->nama ?? '' }}</span>
-                                                    @elseif ($status[1] == null)
+                                                    @elseif ($data->status == 'draft')
                                                         <span
                                                             class="badge bg-info">{{ optional(collect($user)->firstWhere('nik', $data->validated_by))->nama ?? '' }}</span>
                                                     @endif
@@ -292,18 +289,18 @@
                                             </td>
                                             <td>
                                                 <span class="text-xs font-weight-bold">
-                                                    @if (collect($status)->every(fn($s) => $s === 'approved'))
+                                                    @if ($data->status === 'approved')
                                                         <span class="badge bg-success">Approved</span>
-                                                    @elseif (collect($status)->contains(fn($s) => $s === 'rejected'))
+                                                    @elseif ($data->status === 'rejected')
                                                         <span class="badge bg-danger">Rejected</span>
-                                                    @elseif (collect($status)->contains(fn($s) => $s === null))
-                                                        <span class="badge bg-info">Draf</span>
+                                                    @elseif ($data->status === 'draft')
+                                                        <span class="badge bg-info">Menunggu validasi Foreman</span>
                                                     @endif
                                                 </span>
                                             </td>
                                             <td>
                                                 @if ($session == $data->creator)
-                                                    @if (collect($status)->contains(fn($s) => $s === 'rejected') || collect($status)->contains(fn($s) => $s === null))
+                                                    @if ($data->status === 'rejected' || $data->status === 'draft')
                                                         <a href="{{ route('plant.ppm.3005.detail', ['id' => $data->id]) }}"
                                                             class="btn btn-warning btn-sm mt-3">
                                                             <i class="fas fa-edit"></i>

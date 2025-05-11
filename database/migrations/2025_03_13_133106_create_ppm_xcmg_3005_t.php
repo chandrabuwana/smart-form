@@ -19,8 +19,7 @@ return new class extends Migration
             $table->string('unit_cn');
             $table->string('engine_model');
             $table->string('engine_sn');
-            $table->string('att_front');
-            $table->string('att_rear');
+            $table->string('brand');
             $table->string('job_site');
             $table->string('job_location');
             $table->string('at_inspection');
@@ -29,6 +28,8 @@ return new class extends Migration
             $table->string('creator');
             $table->string('checked_by');
             $table->string('validated_by');
+            $table->string('date_checked');
+            $table->string('date_validated')->nullable();
             $table->timestamps();
         });
     }

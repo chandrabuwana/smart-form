@@ -33,23 +33,40 @@
                         <div class="mx-3">
 
                             <div class="row mb-3">
-                                <div class="col-md-4">
-                                    <div class="input-group input-group-static mb-3">
-                                        <label for="unit_sn" class="ms-0">Unit S/N</label>
-                                        <input type="text" class="form-control" id="unit_sn" name="unit_sn" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="unit_cn" class="ms-0">Unit C/N</label>
-                                        <input type="text" class="form-control" id="unit_cn" name="unit_cn" required>
+                                        <select name="unit_cn" class="form-control uppercase" id="unit_cn" required>
+                                            <option value="" disabled selected>-- Select Unit C/N --</option>
+                                            @foreach ($cn as $cn_unit)
+                                                <option value="{{ $cn_unit->no_lambung }}">
+                                                    {{ $cn_unit->no_lambung }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label for="unit_sn" class="ms-0">Unit S/N</label>
+                                        <input type="text" class="form-control uppercase" id="unit_sn" name="unit_sn"
+                                            required>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label for="unit_model" class="ms-0">Unit Model</label>
+                                        <input type="text" class="form-control uppercase" id="unit_model"
+                                            name="unit_model" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="engine_model" class="ms-0">Engine Model</label>
-                                        <input type="text" class="form-control" id="engine_model" name="engine_model"
-                                            required>
+                                        <input type="text" class="form-control uppercase" id="engine_model"
+                                            name="engine_model" required>
                                     </div>
                                 </div>
                             </div>
@@ -58,60 +75,53 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="engine_sn" class="ms-0">Engine S/N</label>
-                                        <input type="text" class="form-control" id="engine_sn" name="engine_sn" required>
+                                        <input type="text" class="form-control uppercase" id="engine_sn" name="engine_sn"
+                                            required>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
-                                        <label for="att_front" class="ms-0">Attachment Front</label>
-                                        <input type="text" class="form-control" id="att_front" name="att_front" required>
+                                        <label for="brand" class="ms-0">Brand</label>
+                                        <input type="text" class="form-control uppercase" id="brand" name="brand"
+                                            required>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
-                                        <label for="att_rear" class="ms-0">Attachment Rear</label>
-                                        <input type="text" class="form-control" id="att_rear" name="att_rear" required>
+                                        <label for="job_site" class="ms-0">Job Site</label>
+                                        {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('job_site') !!}
                                     </div>
                                 </div>
                             </div>
 
                             <div class="row mb-3">
 
-                                <div class="col-md-6">
-                                    <div class="input-group input-group-static mb-3">
-                                        <label for="job_site" class="ms-0">Job Site</label>
-                                        {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('job_site') !!}
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="location" class="ms-0">Location</label>
                                         <select class="form-control" name="location" id="location" required>
                                             <option disabled selected>-- Select Location --</option>
                                             <option value="Workshop">Workshop</option>
                                             <option value="Pitstop">Pitstop</option>
-                                            <option value="Service">Service</option>
-                                            <option value="Truck">Truck</option>
+                                            <option value="Service Pad Area">Service Pad Area</option>
+
                                         </select>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="at_inspec" class="ms-0">SMR / HM At Inspection</label>
-                                        <input type="text" class="form-control" id="at_inspec" name="at_inspec"
-                                            required>
+                                        <input type="number" step="0.0001" class="form-control uppercase" id="at_inspec"
+                                            name="at_inspec">
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="date" class="ms-0">SMR / HM Date</label>
-                                        <input type="date" class="form-control" id="date" name="date"
-                                            required>
+                                        <input type="date" class="form-control uppercase" id="date"
+                                            name="date" required>
                                     </div>
                                 </div>
-
                             </div>
                             <div class="accordion">
                                 <div class="accordion-item">
@@ -131,18 +141,14 @@
                                                             STANDARD STD/PMS</th>
                                                         <th style="vertical-align: middle;"rowspan="2">ACTUAL</th>
                                                         <th style="vertical-align: middle;" rowspan="2">
-                                                            CORRECTION MODE</th>
+                                                            CORRECTION MADE</th>
                                                         <th style="vertical-align: middle;" rowspan="2">RESULT
                                                         </th>
-                                                        <th style="vertical-align: middle;" colspan="2">
-                                                            RECOMENDED PARTS</th>
+
                                                         <th style="vertical-align: middle;" rowspan="2">REMARKS
                                                         </th>
                                                     </tr>
-                                                    <tr>
-                                                        <th>PR.NO</th>
-                                                        <th>TANGGAL</th>
-                                                    </tr>
+
                                                 </thead>
                                                 <tbody>
                                                     @php
@@ -181,16 +187,16 @@
                                                                 <td class="align-middle">{!! $value['standard'] !!}
                                                                 </td>
                                                             @endif
-                                                            <td><input type="text" class="form-control"
+                                                            <td><input type="text"
+                                                                    class="form-control uppercase text-center"
                                                                     name="eng_actual[]"></td>
-                                                            <td><input type="text" class="form-control"
+                                                            <td><input type="text"
+                                                                    class="form-control uppercase text-center"
                                                                     name="eng_correct[]"></td>
-                                                            <td><input type="text" class="form-control"
+                                                            <td><input type="text"
+                                                                    class="form-control uppercase text-center"
                                                                     name="eng_result[]"></td>
-                                                            <td><input type="text" class="form-control"
-                                                                    name="eng_pr_no[]"></td>
-                                                            <td><input type="date" class="form-control"
-                                                                    name="eng_tanggal[]"></td>
+
                                                             @if ($index === 0)
                                                                 <td rowspan="13">
                                                                     <textarea class="form-control" rows="30" name="eng_remarks"></textarea>
@@ -227,18 +233,14 @@
                                                             STANDARD STD/PMS</th>
                                                         <th style="vertical-align: middle;"rowspan="2">ACTUAL</th>
                                                         <th style="vertical-align: middle;" rowspan="2">
-                                                            CORRECTION MODE</th>
+                                                            CORRECTION MADE</th>
                                                         <th style="vertical-align: middle;" rowspan="2">RESULT
                                                         </th>
-                                                        <th style="vertical-align: middle;" colspan="2">
-                                                            RECOMENDED PARTS</th>
+
                                                         <th style="vertical-align: middle;" rowspan="2">REMARKS
                                                         </th>
                                                     </tr>
-                                                    <tr>
-                                                        <th>PR.NO</th>
-                                                        <th>TANGGAL</th>
-                                                    </tr>
+
                                                 </thead>
                                                 <tbody>
                                                     @php
@@ -256,21 +258,19 @@
                                                                 {!! $value['unit'] !!}</td>
                                                             <td class="align-middle">
                                                                 {!! $value['standard'] !!}</td>
-                                                            <td><input type="text" class="form-control"
+                                                            <td><input type="text"
+                                                                    class="form-control uppercase text-center"
                                                                     name="wo_actual[]">
                                                             </td>
-                                                            <td><input type="text" class="form-control"
+                                                            <td><input type="text"
+                                                                    class="form-control uppercase text-center"
                                                                     name="wo_correct[]">
                                                             </td>
-                                                            <td><input type="text" class="form-control"
+                                                            <td><input type="text"
+                                                                    class="form-control uppercase text-center"
                                                                     name="wo_result[]">
                                                             </td>
-                                                            <td><input type="text" class="form-control"
-                                                                    name="wo_pr_no[]">
-                                                            </td>
-                                                            <td><input type="date" class="form-control"
-                                                                    name="wo_tanggal[]">
-                                                            </td>
+
                                                             @if ($i === 0)
                                                                 <td>
                                                                     <textarea class="form-control" rows="2" name="wo_remarks"></textarea>
@@ -307,18 +307,14 @@
                                                             STANDARD STD/PMS</th>
                                                         <th style="vertical-align: middle;"rowspan="2">ACTUAL</th>
                                                         <th style="vertical-align: middle;" rowspan="2">
-                                                            CORRECTION MODE</th>
+                                                            CORRECTION MADE</th>
                                                         <th style="vertical-align: middle;" rowspan="2">RESULT
                                                         </th>
-                                                        <th style="vertical-align: middle;" colspan="2">
-                                                            RECOMENDED PARTS</th>
+
                                                         <th style="vertical-align: middle;" rowspan="2">REMARKS
                                                         </th>
                                                     </tr>
-                                                    <tr>
-                                                        <th>PR.NO</th>
-                                                        <th>TANGGAL</th>
-                                                    </tr>
+
                                                 </thead>
                                                 <tbody>
                                                     @php
@@ -350,21 +346,19 @@
                                                                 <td class="align-middle">{!! $value['standard'] !!}
                                                                 </td>
                                                             @endif
-                                                            <td><input type="text" class="form-control"
+                                                            <td><input type="text"
+                                                                    class="form-control uppercase text-center"
                                                                     name="hyd_actual[]">
                                                             </td>
-                                                            <td><input type="text" class="form-control"
+                                                            <td><input type="text"
+                                                                    class="form-control  uppercase text-center"
                                                                     name="hyd_correct[]">
                                                             </td>
-                                                            <td><input type="text" class="form-control"
+                                                            <td><input type="text"
+                                                                    class="form-control  uppercase text-center"
                                                                     name="hyd_result[]">
                                                             </td>
-                                                            <td><input type="text" class="form-control"
-                                                                    name="hyd_pr_no[]">
-                                                            </td>
-                                                            <td><input type="date" class="form-control"
-                                                                    name="hyd_tanggal[]">
-                                                            </td>
+
                                                             @if ($p === 0)
                                                                 <td rowspan="9">
                                                                     <textarea class="form-control" rows="20" name="hyd_remarks"></textarea>
@@ -402,18 +396,13 @@
                                                             STANDARD STD/PMS</th>
                                                         <th style="vertical-align: middle;"rowspan="2">ACTUAL</th>
                                                         <th style="vertical-align: middle;" rowspan="2">
-                                                            CORRECTION MODE</th>
+                                                            CORRECTION MADE</th>
                                                         <th style="vertical-align: middle;" rowspan="2">RESULT
                                                         </th>
-                                                        <th style="vertical-align: middle;" colspan="2">
-                                                            RECOMENDED PARTS</th>
                                                         <th style="vertical-align: middle;" rowspan="2">REMARKS
                                                         </th>
                                                     </tr>
-                                                    <tr>
-                                                        <th>PR.NO</th>
-                                                        <th>TANGGAL</th>
-                                                    </tr>
+
                                                 </thead>
                                                 <tbody>
 
@@ -429,16 +418,27 @@
                                                         </td>
                                                         <td rowspan="2" class="align-middle"></td>
                                                         <td class="align-middle">No Excressive, Metalic Powder</td>
-                                                        <td><input type="checkbox" class="custom-checkbox"
-                                                                name="final_actual0" value=1></td>
-                                                        <td><input type="checkbox" class="custom-checkbox"
-                                                                name="final_correct0" value=1></td>
-                                                        <td><input type="checkbox" class="custom-checkbox"
-                                                                name="final_result0" value=1></td>
-                                                        <td><input type="text" class="form-control"
-                                                                name="final_pr_no[]"></td>
-                                                        <td><input type="date" class="form-control"
-                                                                name="final_tanggal[]"></td>
+                                                        <td
+                                                            style="width: 10%; text-align: center; vertical-align: middle;">
+                                                            <div style="display: inline-block; width: 100%;"
+                                                                class="form-control uppercase">
+                                                                <select name="final_actual0" style="width: 100%;"
+                                                                    class="form-control text-center uppercase">
+                                                                    <option value="">--select--</option>
+                                                                    <option value="A">A</option>
+                                                                    <option value="B">B</option>
+                                                                    <option value="C">C</option>
+                                                                    <option value="X">X</option>
+                                                                </select>
+                                                            </div>
+                                                        </td>
+                                                        <td><input type="text"
+                                                                class="form-control uppercase text-center"
+                                                                name="final_correct0"></td>
+                                                        <td><input type="text"
+                                                                class="form-control uppercase text-center"
+                                                                name="final_result0"></td>
+
                                                         <td rowspan="2">
                                                             <textarea type="text" rows="4" class="form-control" name="final_remarks[]"></textarea>
                                                         </td>
@@ -448,16 +448,25 @@
 
 
                                                         <td class="align-middle">No Excressive, Metalic Powder</td>
-                                                        <td><input type="checkbox" class="custom-checkbox"
-                                                                name="final_actual1" value=1></td>
-                                                        <td><input type="checkbox" class="custom-checkbox"
-                                                                name="final_correct1" value=1></td>
-                                                        <td><input type="checkbox" class="custom-checkbox"
-                                                                name="final_result1" value=1></td>
-                                                        <td><input type="text" class="form-control"
-                                                                name="final_pr_no[]"></td>
-                                                        <td><input type="date" class="form-control"
-                                                                name="final_tanggal[]"></td>
+                                                        <td
+                                                            style="width: 10%; text-align: center; vertical-align: middle;">
+                                                            <div style="display: inline-block; width: 100%;">
+                                                                <select name="final_actual1" style="width: 100%;"
+                                                                    class="form-control text-center uppercase">
+                                                                    <option value="">--select--</option>
+                                                                    <option value="Leak">Leak</option>
+                                                                    <option value="No Leak">No Leak</option>
+
+                                                                </select>
+                                                            </div>
+                                                        </td>
+                                                        <td><input type="text"
+                                                                class="form-control uppercase text-center"
+                                                                name="final_correct1"></td>
+                                                        <td><input type="text"
+                                                                class="form-control uppercase text-center"
+                                                                name="final_result1"></td>
+
 
                                                     </tr>
                                                     <tr>
@@ -473,16 +482,27 @@
                                                         <td class="align-middle">RH</td>
                                                         <td rowspan="2" class="align-middle">No Excressive, Metalic
                                                             Powder</td>
-                                                        <td><input type="checkbox" class="custom-checkbox"
-                                                                name="final_actual2" value=1></td>
-                                                        <td><input type="checkbox" class="custom-checkbox"
-                                                                name="final_correct2" value=1></td>
-                                                        <td><input type="checkbox" class="custom-checkbox"
-                                                                name="final_result2" value=1></td>
-                                                        <td><input type="text" class="form-control"
-                                                                name="final_pr_no[]"></td>
-                                                        <td><input type="date" class="form-control"
-                                                                name="final_tanggal[]"></td>
+                                                        <td
+                                                            style="width: 10%; text-align: center; vertical-align: middle;">
+                                                            <div style="display: inline-block; width: 100%;"
+                                                                class="form-control uppercase">
+                                                                <select name="final_actual2" style="width: 100%;"
+                                                                    class="form-control text-center uppercase">
+                                                                    <option value="">--select--</option>
+                                                                    <option value="A">A</option>
+                                                                    <option value="B">B</option>
+                                                                    <option value="C">C</option>
+                                                                    <option value="X">X</option>
+                                                                </select>
+                                                            </div>
+                                                        </td>
+                                                        <td><input type="text"
+                                                                class="form-control uppercase text-center"
+                                                                name="final_correct2"></td>
+                                                        <td><input type="text"
+                                                                class="form-control uppercase text-center"
+                                                                name="final_result2"></td>
+
                                                         <td rowspan="2">
                                                             <textarea type="text" rows="4" class="form-control" name="final_remarks[]"></textarea>
                                                         </td>
@@ -490,31 +510,51 @@
                                                     <tr>
 
                                                         <td>LH</td>
-                                                        <td><input type="checkbox" class="custom-checkbox"
-                                                                name="final_actual3" value=1></td>
-                                                        <td><input type="checkbox" class="custom-checkbox"
-                                                                name="final_correct3" value=1></td>
-                                                        <td><input type="checkbox" class="custom-checkbox"
-                                                                name="final_result3" value=1></td>
-                                                        <td><input type="text" class="form-control"
-                                                                name="final_pr_no[]"></td>
-                                                        <td><input type="date" class="form-control"
-                                                                name="final_tanggal[]"></td>
+                                                        <td
+                                                            style="width: 10%; text-align: center; vertical-align: middle;">
+                                                            <div style="display: inline-block; width: 100%;"
+                                                                class="form-control uppercase">
+                                                                <select name="final_actual3" style="width: 100%;"
+                                                                    class="form-control text-center uppercase">
+                                                                    <option value="">--select--</option>
+                                                                    <option value="A">A</option>
+                                                                    <option value="B">B</option>
+                                                                    <option value="C">C</option>
+                                                                    <option value="X">X</option>
+                                                                </select>
+                                                            </div>
+                                                        </td>
+                                                        <td><input type="text"
+                                                                class="form-control uppercase text-center"
+                                                                name="final_correct3"></td>
+                                                        <td><input type="text"
+                                                                class="form-control uppercase text-center"
+                                                                name="final_result3"></td>
+
                                                     </tr>
                                                     <tr>
                                                         <td rowspan="2" class="align-middle">Oil Leak</td>
                                                         <td class="align-middle">RH</td>
                                                         <td class="align-middle">No Oil Leak</td>
-                                                        <td><input type="checkbox" class="custom-checkbox"
-                                                                name="final_actual4" value=1></td>
-                                                        <td><input type="checkbox" class="custom-checkbox"
-                                                                name="final_correct4" value=1></td>
-                                                        <td><input type="checkbox" class="custom-checkbox"
-                                                                name="final_result4" value=1></td>
-                                                        <td><input type="text" class="form-control"
-                                                                name="final_pr_no[]"></td>
-                                                        <td><input type="date" class="form-control"
-                                                                name="final_tanggal[]"></td>
+                                                        <td
+                                                            style="width: 10%; text-align: center; vertical-align: middle;">
+                                                            <div style="display: inline-block; width: 100%;">
+                                                                <select name="final_actual4" style="width: 100%;"
+                                                                    class="form-control text-center uppercase">
+                                                                    <option value="">--select--</option>
+                                                                    <option value="Leak">Leak</option>
+                                                                    <option value="No Leak">No Leak</option>
+
+                                                                </select>
+                                                            </div>
+                                                        </td>
+                                                        <td><input type="text"
+                                                                class="form-control uppercase text-center"
+                                                                name="final_correct4"></td>
+                                                        <td><input type="text"
+                                                                class="form-control uppercase text-center"
+                                                                name="final_result4"></td>
+
                                                         <td rowspan="2">
                                                             <textarea type="text" rows="4" class="form-control" name="final_remarks[]"></textarea>
                                                         </td>
@@ -524,16 +564,25 @@
 
                                                         <td>LH</td>
                                                         <td class="align-middle">No Oil Leak</td>
-                                                        <td><input type="checkbox" class="custom-checkbox"
-                                                                name="final_actual5" value=1></td>
-                                                        <td><input type="checkbox" class="custom-checkbox"
-                                                                name="final_correct5" value=1></td>
-                                                        <td><input type="checkbox" class="custom-checkbox"
-                                                                name="final_result5" value=1></td>
-                                                        <td><input type="text" class="form-control"
-                                                                name="final_pr_no[]"></td>
-                                                        <td><input type="date" class="form-control"
-                                                                name="final_tanggal[]"></td>
+                                                        <td
+                                                            style="width: 10%; text-align: center; vertical-align: middle;">
+                                                            <div style="display: inline-block; width: 100%;">
+                                                                <select name="final_actual5" style="width: 100%;"
+                                                                    class="form-control text-center uppercase">
+                                                                    <option value="">--select--</option>
+                                                                    <option value="Leak">Leak</option>
+                                                                    <option value="No Leak">No Leak</option>
+
+                                                                </select>
+                                                            </div>
+                                                        </td>
+                                                        <td><input type="text"
+                                                                class="form-control uppercase text-center"
+                                                                name="final_correct5"></td>
+                                                        <td><input type="text"
+                                                                class="form-control uppercase text-center"
+                                                                name="final_result5"></td>
+
                                                     </tr>
                                                     <tr>
                                                         <td colspan="12"
@@ -542,22 +591,22 @@
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td class="align-middle">Electrical Function</td>
+                                                        <td class="align-middle">Error Code</td>
                                                         <td class="align-middle">Function Check
                                                         </td>
                                                         <td class="align-middle"></td>
                                                         <td class="align-middle">No DTC (Diagnostic Trouble Code) Detected
                                                         </td>
-                                                        <td><input type="checkbox" class="custom-checkbox"
-                                                                name="final_actual6" value=1></td>
-                                                        <td><input type="checkbox" class="custom-checkbox"
-                                                                name="final_correct6" value=1></td>
-                                                        <td><input type="checkbox" class="custom-checkbox"
-                                                                name="final_result6" value=1></td>
-                                                        <td><input type="text" class="form-control"
-                                                                name="final_pr_no[]"></td>
-                                                        <td><input type="date" class="form-control"
-                                                                name="final_tanggal[]"></td>
+                                                        <td><input type="text"
+                                                                class="form-control uppercase text-center"
+                                                                name="final_actual6"></td>
+                                                        <td><input type="text"
+                                                                class="form-control uppercase text-center"
+                                                                name="final_correct6"></td>
+                                                        <td><input type="text"
+                                                                class="form-control uppercase text-center"
+                                                                name="final_result6"></td>
+
                                                         <td>
                                                             <textarea type="text" rows="1" class="form-control" name="final_remarks[]"></textarea>
                                                         </td>
@@ -572,16 +621,16 @@
                                                         <td class="align-middle">Attacthment Frame</td>
                                                         <td colspan="3" class="align-middle">Crack Detection
                                                         </td>
-                                                        <td><input type="checkbox" class="custom-checkbox"
-                                                                name="final_actual7" value=1></td>
-                                                        <td><input type="checkbox" class="custom-checkbox"
-                                                                name="final_correct7" value=1></td>
-                                                        <td><input type="checkbox" class="custom-checkbox"
-                                                                name="final_result7" value=1></td>
-                                                        <td><input type="text" class="form-control"
-                                                                name="final_pr_no[]"></td>
-                                                        <td><input type="date" class="form-control"
-                                                                name="final_tanggal[]"></td>
+                                                        <td><input type="text"
+                                                                class="form-control uppercase text-center"
+                                                                name="final_actual7"></td>
+                                                        <td><input type="text"
+                                                                class="form-control uppercase text-center"
+                                                                name="final_correct7"></td>
+                                                        <td><input type="text "
+                                                                class="form-control uppercase text-center"
+                                                                name="final_result7"></td>
+
                                                         <td>
                                                             <textarea type="text" rows="1" class="form-control" name="final_remarks[]"></textarea>
                                                         </td>
@@ -594,10 +643,25 @@
                                 </div>
                             </div>
                             <div class="row mt-5">
-                                <div class="col-6 ">
+                                <div class="col-4 ">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label for="dibuat" class="ms-0">Checked By1</label>
+                                        <select name="checked1_display" class="form-control uppercase" disabled>
+                                            @foreach ($approvalList as $user)
+                                                <option value="{{ $user->nik }}"
+                                                    {{ old('checked1', $nik ?? '') == $user->nik ? 'selected' : '' }}>
+                                                    {{ $user->nama }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+
+                                        <input type="hidden" name="checked1" value="{{ old('checked1', $nik ?? '') }}">
+                                    </div>
+                                </div>
+                                <div class="col-4 ">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="dibuat" class="ms-0">Checked By</label>
-                                        <select name="checked" id="dibuat_oleh" class="form-control" required>
+                                        <select name="checked2" id="checked2" class="form-control" required>
                                             <option disabled selected>-- Select Creator --</option>
                                             @foreach ($approvalList as $user)
                                                 <option value="{{ $user->nik }}">{{ $user->nama }}</option>
@@ -605,7 +669,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-6">
+                                <div class="col-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="diperiksa" class="ms-0">Validated By</label>
                                         <select name="validated" id="diperiksa" class="form-control" required>
@@ -637,6 +701,16 @@
 @section('custom-css')
     <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
     <style>
+        .uppercase {
+            text-transform: uppercase;
+        }
+
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
         .accordion {
             width: 100%;
 
@@ -731,9 +805,39 @@
 
     <script>
         $(document).ready(function() {
-            $('#dibuat_oleh').select2();
+            $('#checked2').select2();
             $('#diperiksa').select2();
             $('#job_site').select2();
+            $('#unit_cn').select2();
+        });
+        $(document).ready(function() {
+
+            const engineModelMap = {
+                @foreach ($cn as $cn_unit)
+                    "{{ $cn_unit->no_lambung }}": {
+                        "engineModel": "{{ $cn_unit->model_engine }}",
+                        "unitSn": "{{ $cn_unit->sn_unit }}",
+                        "unitModel": "{{ $cn_unit->model }}",
+                        "engineSn": "{{ $cn_unit->sn_engine }}"
+                    },
+                @endforeach
+            };
+
+            $('#unit_cn').change(function() {
+                const selectedCn = $(this).val();
+                if (engineModelMap[selectedCn]) {
+                    const unitData = engineModelMap[selectedCn];
+                    $('#engine_model').val(unitData.engineModel);
+                    $('#unit_model').val(unitData.unitModel);
+                    $('#unit_sn').val(unitData.unitSn);
+                    $('#engine_sn').val(unitData.engineSn);
+                } else {
+                    $('#engine_model').val('');
+                    $('#unit_model').val('');
+                    $('#unit_sn').val('');
+                    $('#engine_sn').val('');
+                }
+            });
         });
         $(function() {
             var form = $("#formXCMG3005");
