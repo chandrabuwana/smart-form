@@ -19,20 +19,22 @@ return new class extends Migration
             $table->string('unit_cn');
             $table->string('engine_model');
             $table->string('engine_sn');
-            $table->string('att_front');
-            $table->string('att_rear');
+            $table->string('brand');
             $table->string('job_site');
             $table->string('job_location');
             $table->string('at_inspection');
             $table->string('date');
             $table->string('status');
             $table->string('creator');
+            $table->string('note')->nullable();
             $table->string('checked_by');
             $table->string('validated_by');
+            $table->string('date_created');
+            $table->string('date_validated')->nullable();
             $table->timestamps();
         });
     }
-
+ 
     /**
      * Reverse the migrations.
      */

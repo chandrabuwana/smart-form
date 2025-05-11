@@ -36,7 +36,6 @@
                                 <div class="col-md-3">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="unit_cn" class="ms-0">Unit C/N</label>
-
                                         <select name="unit_cn" class="form-control" id="unit_cn" required>
                                             <option value="" disabled selected>-- Select Unit C/N --</option>
                                             @foreach ($cn as $cn_unit)

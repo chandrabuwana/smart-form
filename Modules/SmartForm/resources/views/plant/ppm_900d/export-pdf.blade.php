@@ -119,7 +119,6 @@
 
         </tr>
         <tr>
-
             <th>Revisi</th>
             <th>A/00</th>
         </tr>
@@ -144,7 +143,7 @@
                 C/N
             </td>
             <td>
-                Model
+                MODEL
             </td>
             <td>
                 S/N
