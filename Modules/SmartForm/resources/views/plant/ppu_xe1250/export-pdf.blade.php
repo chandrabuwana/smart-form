@@ -17,6 +17,10 @@
 
         }
 
+        .ttd {
+            width: 40px;
+        }
+
         .custom-height {
             height: 30px;
         }
@@ -125,7 +129,7 @@
                 </td>
                 <th colspan="2">Inspection Date :</th>
                 <th colspan="2">UNIT MODAL</th>
-                <th colspan="2">S/N Unit</th>
+                <th colspan="2">C/N Unit</th>
                 <th colspan="2">SMR / Hm</th>
                 <th colspan="2">Work Operation</th>
                 <th colspan="2">Ground Condition</th>
@@ -134,7 +138,7 @@
             <tr>
                 <td colspan="2" style="height: 10px;">{{ $data->inspection_date }}</td>
                 <td colspan="2" style="height: 10px;">{{ $data->unit_model }}</td>
-                <td colspan="2" style="height: 10px;">{{ $data->sn_unit }}</td>
+                <td colspan="2" style="height: 10px;">{{ $data->cn_unit }}</td>
                 <td colspan="2" style="height: 10px;">{{ $data->smr_hm }}</td>
                 <td colspan="2" style="height: 10px;">{{ $data->work_operation }}</td>
                 <td colspan="2" style="height: 10px;">{{ $data->ground_condition }}</td>
@@ -541,22 +545,46 @@
                 <td colspan="10" style="border: none"></td>
             </tr>
             <tr>
-                <td colspan="3" style="height: 30px; border-bottom: none;"></td>
-                <td colspan="3" style="height: 30px; border-bottom: none;"></td>
-                <td colspan="3" style="height: 30px; border-bottom: none; width: 20%;">
+                <td colspan="3" style="height: 30px; border-bottom: none;"><img
+                        src="{{ public_path('img/checked.png') }}" class="ttd"></td>
+                </td>
+
+                @if ($data->status == 'approved')
+                    <td colspan="3" style="height: 30px; border-bottom: none; width: 20%;"> <img
+                            src="{{ public_path('img/validated.png') }}" class="ttd">
+                    </td>
+                @else
+                    <td colspan="3" style="height: 30px; border-bottom: none; width: 20%;"></td>
+                @endif
+                <td colspan="3" style="height: 30px; border-bottom: none;"><img
+                        src="{{ public_path('img/checked.png') }}" class="ttd"></td>
                 </td>
                 <td colspan="10" style="border: none"></td>
             </tr>
             <tr>
-                <td colspan="3" style="border-top: none;">{{ optional(collect($approvalList)->firstWhere('nik', $data->checked_1))->nama ?? '' }}</td>
-                <td colspan="3" style="border-top: none;">{{ optional(collect($approvalList)->firstWhere('nik', $data->validated))->nama ?? '' }}</td>
-                <td colspan="3"style="border-top: none;">{{ optional(collect($approvalList)->firstWhere('nik', $data->checked_2))->nama ?? '' }}</td>
+                <td colspan="3" style="border-top: none;">
+                    {{ optional(collect($approvalList)->firstWhere('nik', $data->checked_1))->nama ?? '' }}</td>
+                <td colspan="3" style="border-top: none;">
+                    {{ optional(collect($approvalList)->firstWhere('nik', $data->validated))->nama ?? '' }}</td>
+                <td colspan="3"style="border-top: none;">
+                    {{ optional(collect($approvalList)->firstWhere('nik', $data->checked_2))->nama ?? '' }}</td>
                 <td colspan="10" style="border: none"></td>
             </tr>
             <tr>
                 <td colspan="3">(Mechanic)</td>
                 <td colspan="3">(Foreman)</td>
                 <td colspan="3">(Mechanic)</td>
+                <td colspan="10" style="border: none"></td>
+            </tr>
+            <tr>
+                <td colspan="3"> {{ \Carbon\Carbon::parse($data->date_checked)->translatedFormat('d -m Y') }}
+                </td>
+                <td colspan="3">
+                    {{ $data->date_validated ? \Carbon\Carbon::parse($data->date_validated)->translatedFormat('d - m - Y') : '-' }}
+                </td>
+                <td colspan="3">{{ \Carbon\Carbon::parse($data->date_checked)->translatedFormat('d -m Y') }}
+                </td>
+
                 <td colspan="10" style="border: none"></td>
             </tr>
 

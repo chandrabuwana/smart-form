@@ -25,21 +25,22 @@ class PpuXE1250Controller extends Controller {
 
             if ( $request->has( 'search' ) ) {
                 $searchTerm = $request->search;
-                $query->where( function( $q ) use ( $searchTerm ) {
+                $query->where( function ( $q ) use ( $searchTerm ) {
                     $q->where( 'doc_number', 'like', '%' . $searchTerm . '%' )
-                    ->orWhere( 'sn_unit', 'like', '%' . $searchTerm . '%' )
-                    ->orWhere( 'smr_hm', 'like', '%' . $searchTerm . '%' )
-                    ->orWhere( 'work_operation', 'like', '%' . $searchTerm . '%' )
-                    ->orWhere( 'inspection_date', 'like', '%' . $searchTerm . '%' );
+                    ->orWhere( 'cn_unit', 'like', '%' . $searchTerm . '%' )
+                    ->orWhere( 'smr_hm', 'like', '%' . $searchTerm . '%' );
+
                 }
             );
         }
-        if ( $request->has( 'sn_unit' ) && $request->sn_unit ) {
-            $query->where( 'sn_unit', $request->sn_unit );
+        if ( $request->has( 'cn_unit' ) && $request->cn_unit ) {
+            $query->where( 'cn_unit', $request->cn_unit );
         }
-        if ( $request->has( 'approval' ) && $request->approval ) {
-            $query->where( 'checked_1', $request->approval )->orwhere( 'checked_2', $request->approval )->orwhere( 'validated', $request->approval );
-            ;
+        if ( $request->has( 'validated' ) && $request->validated ) {
+            $query->where( 'validated', $request->validated );
+        }
+        if ( $request->has( 'job_site' ) && $request->job_site ) {
+            $query->where( 'job_site',  $request->job_site );
         }
 
         $statistics = ( object )[
@@ -49,13 +50,14 @@ class PpuXE1250Controller extends Controller {
             ->whereYear( 'created_at', now()->year )
             ->count(),
         ];
-
+        $cn_data = DB::table( 'alat_angkut_data' )->select( 'no_lambung', 'sn_unit', 'model', 'model_engine', 'sn_engine' )->get();
         $records = $query->paginate( 5 );
 
-        return view( 'smartform::plant.ppu_xe1250.dashboard-ppu1250', [ 'record' => $records, 'statistics'=>$statistics, 'session'=>$nik_session, 'user'=> HrdHelper::getApprovalList(), 'filters' => [
+        return view( 'smartform::plant.ppu_xe1250.dashboard-ppu1250', [ 'cn'=>$cn_data, 'record' => $records, 'statistics'=>$statistics, 'session'=>$nik_session, 'user'=> HrdHelper::getApprovalList(), 'filters' => [
             'search' => $request->search,
-            'sn_unit' => $request->sn_unit,
-            'approval' => $request->approval
+            'cn_unit' => $request->cn_unit,
+            'job_site' => $request->job_site,
+            'approval' => $request->validated
         ], ] );
     } catch( \Exception $e ) {
         Log::error( 'Error in Dashboard: ' . $e->getMessage() );
@@ -64,9 +66,10 @@ class PpuXE1250Controller extends Controller {
 
 }
 
-public function Add() {
-
-    return view( 'smartform::plant.ppu_xe1250.form-ppu1250', [ 'approvalList' => HrdHelper::getApprovalList() ] );
+public function Add( Request $request ) {
+    $nik_session = $request->session()->get( 'user_id', '' );
+    $cn_data = DB::table( 'alat_angkut_data' )->select( 'no_lambung', 'sn_unit', 'model', 'model_engine', 'sn_engine' )->get();
+    return view( 'smartform::plant.ppu_xe1250.form-ppu1250', [ 'cn'=>$cn_data, 'nik'=>$nik_session, 'approvalList' => HrdHelper::getApprovalList() ] );
 }
 
 public function Store( Request $request ) {
@@ -75,7 +78,8 @@ public function Store( Request $request ) {
         'doc_number' => $this->generateDocNumber(),
         'unit_model' => 'XCMG XE1250',
         'inspection_date' =>$request->ins_date,
-        'sn_unit' => $request->unit_sn,
+        'cn_unit' => $request->cn_unit,
+        'job_site' => $request->job_site,
         'smr_hm' => $request->smr ,
         'work_operation' => $request->work_op,
         'ground_condition' => $request->ground_condition,
@@ -85,7 +89,9 @@ public function Store( Request $request ) {
         'checked_2' => $request->checked2,
         'validated' => $request->validated,
         'creator' => $request->session()->get( 'user_id', '' ),
-        'status' => json_encode( array_values( [ null, null, null ] ) ),
+        'status' =>  'draft',
+        'date_checked' => Carbon::now(),
+        'date_validated' => null,
         'created_at' => Carbon::now(),
         'updated_at' => Carbon::now()
 
@@ -153,16 +159,15 @@ public function detail( $id ) {
     $data->tem_sprocket = json_decode( $detail->tem_sprocket );
     $data->tem_carrier_roller = json_decode( $detail->tem_carrier_roller );
     $data->tem_track_roller = json_decode( $detail->tem_track_roller );
-    return view( 'smartform::plant.ppu_xe1250.show-ppu1250', [ 'data' => $data,  'approvalList' => HrdHelper::getApprovalList() ] );
+
+    $cn_data = DB::table( 'alat_angkut_data' )->select( 'no_lambung', 'sn_unit', 'model', 'model_engine', 'sn_engine' )->get();
+    return view( 'smartform::plant.ppu_xe1250.show-ppu1250', [ 'data' => $data, 'cn'=>$cn_data, 'approvalList' => HrdHelper::getApprovalList() ] );
 }
 
 public function Approve( Request $request ) {
     $data = [
-        'status' => json_encode( array_values( [
-            $request->checked1,
-            $request->validated,
-            $request->checked2
-        ] ) ),
+        'status' => $request->validated,
+        'date_validated'=> Carbon::now(),
         'updated_at' => Carbon::now()
     ];
 
@@ -180,11 +185,8 @@ public function Approve( Request $request ) {
 public function Reset( $id ) {
 
     $data = [
-        'status' => json_encode( array_values( [
-            null,
-            null,
-            null
-        ] ) ),
+        'status' => 'draft',
+        'date_validated'=> null,
         'updated_at' => Carbon::now()
     ];
 
@@ -201,11 +203,8 @@ public function Reset( $id ) {
 
 public function Reject( Request $request ) {
     $data = [
-        'status' => json_encode( array_values( [
-            $request->checked1,
-            $request->validated,
-            $request->checked2
-        ] ) ),
+        'status' => $request->validated,
+        'date_validated'=> Carbon::now(),
         'updated_at' => Carbon::now()
     ];
     ;
@@ -231,7 +230,6 @@ public function show( Request $request, $id ) {
     ->where( 'doc_number_id', $data->doc_number )
     ->first();
 
-    $data->status = json_decode( $data->status );
     $data->link_pitch = json_decode( $detail->link_pitch );
     $data->link_height = json_decode( $detail->link_height );
     $data->link_bushing = json_decode( $detail->link_bushing );
@@ -306,7 +304,8 @@ public function Export( $id ) {
             'doc_number' => $request->doc_number,
             'unit_model' => $request->unit_model,
             'inspection_date' =>$request->ins_date,
-            'sn_unit' => $request->unit_sn,
+            'cn_unit' => $request->cn_unit,
+            'job_site' => $request->job_site,
             'smr_hm' => $request->smr ,
             'work_operation' => $request->work_op,
             'ground_condition' => $request->ground_condition,

@@ -457,9 +457,14 @@
                         src="{{ public_path('img/checked.png') }}" class="ttd"></td>
                 <td colspan="2" style="height: 30px; border-bottom: none;"> <img
                         src="{{ public_path('img/checked.png') }}" class="ttd"></td>
-                <td colspan="2" style="height: 30px; border-bottom: none; width: 20%;"> <img
-                        src="{{ public_path('img/validated.png') }}" class="ttd">
-                </td>
+                @if ($data->status == 'approved')
+                    <td colspan="2" style="height: 30px; border-bottom: none; width: 20%;"> <img
+                            src="{{ public_path('img/validated.png') }}" class="ttd">
+                    </td>
+                @else
+                    <td colspan="2" style="height: 30px; border-bottom: none; width: 20%;"></td>
+                @endif
+
                 <td colspan="5" style="border: none"></td>
             </tr>
             <tr>
@@ -484,7 +489,8 @@
                 <td colspan="2">{{ \Carbon\Carbon::parse($data->date_created)->translatedFormat('d -m Y') }}
                 </td>
                 </td>
-                <td colspan="2">{{ \Carbon\Carbon::parse($data->date_validated)->translatedFormat('d -m Y') }}
+                <td colspan="2">
+                    {{ $data->date_validated ? \Carbon\Carbon::parse($data->date_validated)->translatedFormat('d - m - Y') : '-' }}
                 </td>
                 </td>
                 <td colspan="5" style="border: none"></td>

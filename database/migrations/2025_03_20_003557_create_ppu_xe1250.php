@@ -16,8 +16,9 @@ return new class extends Migration
         $table->string('doc_number')->unique(); // Ensure doc_number is unique
         $table->string('inspection_date');
         $table->string('unit_model');
-        $table->string('sn_unit');
+        $table->string('cn_unit');
         $table->string('smr_hm');
+        $table->string('job_site');
         $table->string('work_operation');
         $table->string('ground_condition');
         $table->string('condition_area');
@@ -27,6 +28,8 @@ return new class extends Migration
         $table->string('checked_1');
         $table->string('checked_2');
         $table->string('validated');
+        $table->string('date_checked');
+        $table->string('date_validated')->nullable();
         $table->timestamps();
     });
 }

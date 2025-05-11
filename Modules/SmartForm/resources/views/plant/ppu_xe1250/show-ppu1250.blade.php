@@ -61,35 +61,59 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="input-group input-group-static mb-3">
-                                        <label for="unit_sn" class="ms-0">S/N Unit</label>
-                                        <input type="text" class="form-control" id="unit_sn" name="unit_sn"
-                                            value="{{ $data->sn_unit }}" required>
+
+                                        <label for="cn_unit" class="ms-0">C/N Unit</label>
+                                        <select name="cn_unit" class="form-control" id="cn_unit" required>
+                                            <option value="" disabled selected>-- Select Unit C/N --</option>
+                                            @foreach ($cn as $cn_unit)
+                                                <option value="{{ $cn_unit->no_lambung }}"
+                                                    {{ $cn_unit->no_lambung == $data->cn_unit ? 'selected' : '' }}>
+                                                    {{ $cn_unit->no_lambung }}
+                                                </option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="smr" class="ms-0">SMR HM</label>
-                                        <input type="text" class="form-control" id="smr"
+                                        <input type="number" step="0.0001" class="form-control" id="smr"
                                             value="{{ $data->smr_hm }}" name="smr" required>
                                     </div>
                                 </div>
                             </div>
                             <div class="row mb-3">
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="input-group input-group-static mb-3">
-                                        <label for="work_op" class="ms-0">Work Operation</label>
-                                        <input type="text" class="form-control" id="work_op" name="work_op"
-                                            value="{{ $data->work_operation }}" required>
+                                        <label for="job_site" class="ms-0">Job Site</label>
+                                        {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('job_site', strtolower($data->job_site)) !!}
+
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label for="work_op" class="ms-0">Work Operation</label>
+                                        <select name="work_op" id="work_op" class="form-control" required>
+                                            <option value="" disabled
+                                                {{ old('work_op', $data->work_operation ?? '') == '' ? 'selected' : '' }}>
+                                                -- Select Work Operation --</option>
+                                            <option value="OB"
+                                                {{ old('work_op', $data->work_operation ?? '') == 'OB' ? 'selected' : '' }}>
+                                                OB</option>
+                                            <option value="Coal"
+                                                {{ old('work_op', $data->work_operation ?? '') == 'Coal' ? 'selected' : '' }}>
+                                                Coal</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="ground_condition" class="ms-0">Ground Condition</label>
                                         <input type="text" class="form-control" id="ground_condition"
                                             name="ground_condition" value="{{ $data->ground_condition }}" required>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="condition_area" class="ms-0">Condition Area Frame</label>
                                         <input type="text" class="form-control" id="condition_area"
@@ -140,27 +164,48 @@
                                     </tr>
                                     <tr>
                                         <th>Right Side</th>
-                                        <td colspan="2"><input type="text"
+                                        <td colspan="2"><input type="number" step="0.0001" min="281"
+                                                max="284" style="background-color: #c3bdbf;text-align: center;"
+                                                class="form-control" name="link_pitch[]"
+                                                value="{{ $data->link_pitch[0] }}"
+                                                oninput="this.setCustomValidity(parseFloat(this.value) < 281 ? 'Value must be at least 281' : 
+                                                parseFloat(this.value) > 284 ? 'Value must not exceed 284' : ''); 
+                                                this.reportValidity();"
+                                                required></td>
+                                        <td colspan="2"><input type="number" step="0.0001"
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 181 ? 'Value must not exceed 181' : ''); 
+                                                this.reportValidity();"
+                                                max="181" style="background-color: #c3bdbf;text-align: center;"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="link_pitch[]" value="{{ $data->link_pitch[0] }}"></td>
-                                        <td colspan="2"><input type="text"
+                                                name="link_Height[]" value="{{ $data->link_height[0] }}" required></td>
+                                        <td colspan="2"><input type="number" step="0.0001" max="99"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="link_Height[]" value="{{ $data->link_height[0] }}"></td>
-                                        <td colspan="2"><input type="text"
-                                                style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="link_bushing[]" value="{{ $data->link_bushing[0] }}"></td>
+                                                name="link_bushing[]" value="{{ $data->link_bushing[0] }}"
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 99 ? 'Value must not exceed 99' : ''); 
+                                                this.reportValidity();"
+                                                required></td>
                                     </tr>
                                     <tr>
                                         <th>Left Side</th>
-                                        <td colspan="2"><input type="text"
+                                        <td colspan="2"><input type="number" step="0.0001" min="281"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="link_pitch[]" value="{{ $data->link_pitch[1] }}"></td>
-                                        <td colspan="2"><input type="text"
+                                                name="link_pitch[]" value="{{ $data->link_pitch[1] }}"
+                                                oninput="this.setCustomValidity(parseFloat(this.value) < 281 ? 'Value must be at least 281' : 
+                                                parseFloat(this.value) > 284 ? 'Value must not exceed 284' : ''); 
+                                                this.reportValidity();"
+                                                required></td>
+                                        <td colspan="2"><input type="number" step="0.0001" max="181"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="link_Height[]" value="{{ $data->link_height[1] }}"></td>
-                                        <td colspan="2"><input type="text"
+                                                name="link_Height[]" value="{{ $data->link_height[1] }}"
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 181 ? 'Value must not exceed 181' : ''); 
+                                                this.reportValidity();"
+                                                required></td>
+                                        <td colspan="2"><input type="number" step="0.0001" max="99"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="link_bushing[]" value="{{ $data->link_bushing[1] }}"></td>
+                                                name="link_bushing[]" value="{{ $data->link_bushing[1] }}"
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 99 ? 'Value must not exceed 99' : ''); 
+                                                this.reportValidity();"
+                                                required></td>
                                     </tr>
                                 </table>
                             </div>
@@ -205,30 +250,50 @@
                                     </tr>
                                     <tr>
                                         <th>Right Side</th>
-                                        <td colspan="2"><input type="text"
+                                        <td colspan="2"><input type="number" step="0.0001" max="50"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="grouser_height[]" value="{{ $data->grouser_height[0] }}"></td>
-                                        <td colspan="2"><input type="text"
-                                                style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="idler[]" value="{{ $data->idler[0] }}">
+                                                name="grouser_height[]" value="{{ $data->grouser_height[0] }}"
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 50 ? 'Value must not exceed 50' : ''); 
+                                                this.reportValidity();"
+                                                required></td>
+                                        <td colspan="2"><input type="number" step="0.0001" min="23"
+                                                max="29" style="background-color: #c3bdbf;text-align: center;"
+                                                class="form-control" name="idler[]" value="{{ $data->idler[0] }}"
+                                                oninput="this.setCustomValidity(parseFloat(this.value) < 23? 'Value must be at least 23' : 
+                                                parseFloat(this.value) > 29 ? 'Value must not exceed 29' : ''); 
+                                                this.reportValidity();"
+                                                required>
                                         </td>
-                                        <td colspan="2"><input type="text"
+                                        <td colspan="2"><input type="number" step="0.0001" max="423"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="sprocket[]" value="{{ $data->sprocket[0] }}">
+                                                name="sprocket[]" value="{{ $data->sprocket[0] }}"
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 423 ? 'Value must not exceed 423' : ''); 
+                                                this.reportValidity();"
+                                                required>
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>Left Side</th>
-                                        <td colspan="2"><input type="text"
+                                        <td colspan="2"><input type="number" step="0.0001" max="50"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="grouser_height[]" value="{{ $data->grouser_height[1] }}"></td>
-                                        <td colspan="2"><input type="text"
-                                                style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="idler[]" value="{{ $data->idler[1] }}">
+                                                name="grouser_height[]" value="{{ $data->grouser_height[1] }}"
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 50 ? 'Value must not exceed 50' : ''); 
+                                                this.reportValidity();"
+                                                required></td>
+                                        <td colspan="2"><input type="number" step="0.0001" min="23"
+                                                max="29" style="background-color: #c3bdbf;text-align: center;"
+                                                class="form-control" name="idler[]" value="{{ $data->idler[1] }}"
+                                                oninput="this.setCustomValidity(parseFloat(this.value) < 23? 'Value must be at least 23' : 
+                                                parseFloat(this.value) > 29 ? 'Value must not exceed 29' : ''); 
+                                                this.reportValidity();"
+                                                required>
                                         </td>
-                                        <td colspan="2"><input type="text"
+                                        <td colspan="2"><input type="number" step="0.0001" max="423"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="sprocket[]" value="{{ $data->sprocket[1] }}">
+                                                name="sprocket[]" value="{{ $data->sprocket[1] }}"
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 423 ? 'Value must not exceed 423' : ''); 
+                                                this.reportValidity();"
+                                                required>
                                         </td>
                                     </tr>
                                 </table>
@@ -274,30 +339,48 @@
                                     </tr>
                                     <tr>
                                         <th>Right Side</th>
-                                        <td colspan="2"><input type="text"
+                                        <td colspan="2"><input type="number" step="0.0001" max="210"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="carrier_roller1[]" value="{{ $data->carrier_roller1[0] }}"></td>
-                                        <td colspan="2"><input type="text"
+                                                name="carrier_roller1[]" value="{{ $data->carrier_roller1[0] }}"
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 210 ? 'Value must not exceed 210' : ''); 
+                                                this.reportValidity();"
+                                                required></td>
+                                        <td colspan="2"><input type="number" step="0.0001" max="210"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="carrier_roller2[]" value="{{ $data->carrier_roller2[0] }}">
+                                                name="carrier_roller2[]" value="{{ $data->carrier_roller2[0] }}"
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 210 ? 'Value must not exceed 210' : ''); 
+                                                this.reportValidity();"
+                                                required>
                                         </td>
-                                        <td colspan="2"><input type="text"
+                                        <td colspan="2"><input type="number" step="0.0001" max="210"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="carrier_roller3[]"value="{{ $data->carrier_roller3[0] }}">
+                                                name="carrier_roller3[]"value="{{ $data->carrier_roller3[0] }}"
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 210 ? 'Value must not exceed 210' : ''); 
+                                                this.reportValidity();"
+                                                required>
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>Left Side</th>
-                                        <td colspan="2"><input type="text"
+                                        <td colspan="2"><input type="number" step="0.0001" max="210"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="carrier_roller1[]" value="{{ $data->carrier_roller1[1] }}"></td>
-                                        <td colspan="2"><input type="text"
+                                                name="carrier_roller1[]" value="{{ $data->carrier_roller1[1] }}"
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 210 ? 'Value must not exceed 210' : ''); 
+                                                this.reportValidity();"
+                                                required></td>
+                                        <td colspan="2"><input type="number" step="0.0001" max="210"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="carrier_roller2[]" value="{{ $data->carrier_roller2[1] }}">
+                                                name="carrier_roller2[]" value="{{ $data->carrier_roller2[1] }}"
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 210 ? 'Value must not exceed 210' : ''); 
+                                                this.reportValidity();"
+                                                required>
                                         </td>
-                                        <td colspan="2"><input type="text"
+                                        <td colspan="2"><input type="number" step="0.0001" max="210"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="carrier_roller3[]" value="{{ $data->carrier_roller3[1] }}">
+                                                name="carrier_roller3[]" value="{{ $data->carrier_roller3[1] }}"
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 210 ? 'Value must not exceed 210' : ''); 
+                                                this.reportValidity();"
+                                                required>
                                         </td>
                                     </tr>
                                 </table>
@@ -313,7 +396,7 @@
                                     </tr>
                                     <tr>
                                         <th>Component</th>
-                                        <th colspan="19">Track Troller</th>
+                                        <th colspan="19">Track Roller</th>
                                     </tr>
                                     <tr>
                                         <th>Tools</th>
@@ -343,20 +426,26 @@
                                     <tr>
                                         <th>Right Side</th>
                                         @for ($i = 0; $i < 9; $i++)
-                                            <td colspan="2"><input type="text"
+                                            <td colspan="2"><input type="number" step="0.0001" max="291"
                                                     style="background-color: #c3bdbf;text-align: center;"
                                                     class="form-control" name="track_roller[]"
-                                                    value="{{ $data->track_roller[$i] }}"></td>
+                                                    value="{{ $data->track_roller[$i] }}"
+                                                    oninput="this.setCustomValidity(parseFloat(this.value) > 291 ? 'Value must not exceed 291' : ''); 
+                                                this.reportValidity();"
+                                                    required></td>
                                         @endfor
 
                                     </tr>
                                     <tr>
                                         <th>Left Side</th>
                                         @for ($i = 1; $i < 10; $i++)
-                                            <td colspan="2"><input type="text"
+                                            <td colspan="2"><input type="number" step="0.0001" max="291"
                                                     style="background-color: #c3bdbf;text-align: center;"
                                                     class="form-control" name="track_roller[]"
-                                                    value="{{ $data->track_roller[8 + $i] }}"></td>
+                                                    value="{{ $data->track_roller[8 + $i] }}"
+                                                    oninput="this.setCustomValidity(parseFloat(this.value) > 291 ? 'Value must not exceed 291' : ''); 
+                                                this.reportValidity();"
+                                                    required></td>
                                         @endfor
 
                                     </tr>
@@ -371,7 +460,7 @@
                                                 <th colspan="2">Temuan</th>
                                             </tr>
                                             <tr>
-                                                <th rowspan="2">Burshing Link</th>
+                                                <th rowspan="2">Bushing Link</th>
                                                 <td colspan="2">
                                                     <textarea name="tem_link_bushing[]" class="form-control" placeholder="Right:" id="tem_link_bushing" rows="1">{{ $data->tem_link_bushing[0] }}</textarea>
                                                 </td>
@@ -470,7 +559,7 @@
                                             </tr>
 
                                             <tr>
-                                                <th rowspan="2">Truck Roller</th>
+                                                <th rowspan="2">Track Roller</th>
                                                 <td colspan="2">
                                                     <textarea name="tem_track_roller[]" class="form-control" placeholder="Right:" id="tem_track_roller" rows="1">{{ $data->tem_track_roller[0] }} </textarea>
                                                 </td>
@@ -663,12 +752,23 @@
                             <div class="row mt-5">
                                 <div class="col-4 ">
                                     <div class="input-group input-group-static mb-3">
-                                        <label for="dibuat" class="ms-0">Checked By</label>
-                                        <select name="checked1" id="dibuat_oleh" class="form-control" required>
+                                        <label for="dibuat" class="ms-0">Checked By1</label>
+                                        <input type="hidden" name="checked1" value="{{ $data->creator }}">
+                                        <input type="text" name="view_checked1" class="form-control"
+                                            value="{{ optional(collect($approvalList)->firstWhere('nik', $data->creator))->nama ?? '' }}"
+                                            readonly>
+
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-4 ">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label for="dibuat" class="ms-0">Checked By2</label>
+                                        <select name="checked2" id="dibuat_oleh2" class="form-control" required>
                                             <option disabled selected>-- Select Creator --</option>
                                             @foreach ($approvalList as $user)
                                                 <option value="{{ $user->nik }}"
-                                                    {{ old('checked1', $data->checked_1 ?? '') == $user->nik ? 'selected' : '' }}>
+                                                    {{ old('checked2', $data->checked_2 ?? '') == $user->nik ? 'selected' : '' }}>
                                                     {{ $user->nama }}</option>
                                             @endforeach
 
@@ -689,20 +789,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-4 ">
-                                    <div class="input-group input-group-static mb-3">
-                                        <label for="dibuat" class="ms-0">Checked By</label>
-                                        <select name="checked2" id="dibuat_oleh2" class="form-control" required>
-                                            <option disabled selected>-- Select Creator --</option>
-                                            @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nik }}"
-                                                    {{ old('checked2', $data->checked_2 ?? '') == $user->nik ? 'selected' : '' }}>
-                                                    {{ $user->nama }}</option>
-                                            @endforeach
 
-                                        </select>
-                                    </div>
-                                </div>
                                 <div class="row">
                                     <div class="col-12">
                                         <div class="form-actions">
@@ -724,6 +811,12 @@
 @section('custom-css')
     <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
     <style>
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
         .accordion {
             width: 100%;
 
@@ -819,6 +912,8 @@
             $('#dibuat_oleh').select2();
             $('#dibuat_oleh2').select2();
             $('#diperiksa').select2();
+            $('#job_site').select2();
+            $('#cn_unit').select2();
         });
         document.addEventListener("DOMContentLoaded", function() {
             const headers = document.querySelectorAll(".accordion-header");

@@ -44,22 +44,37 @@
                                 </div>
                             </div>
                             <div class="row mb-3">
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="ins_date" class="ms-0">Inspection Date</label>
                                         <input type="Date" class="form-control" id="ins_date" name="ins_date" required>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="input-group input-group-static mb-3">
-                                        <label for="unit_sn" class="ms-0">S/N Unit</label>
-                                        <input type="text" class="form-control" id="unit_sn" name="unit_sn" required>
+                                        <label for="cn_unit" class="ms-0">C/N Unit</label>
+                                        <select name="cn_unit" class="form-control" id="cn_unit" required>
+                                            <option value="" disabled selected>-- Select Unit C/N --</option>
+                                            @foreach ($cn as $cn_unit)
+                                                <option value="{{ $cn_unit->no_lambung }}">
+                                                    {{ $cn_unit->no_lambung }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="smr" class="ms-0">SMR HM</label>
-                                        <input type="text" class="form-control" id="smr" name="smr" required>
+                                        <input type="number" step="0.0001" class="form-control" id="smr"
+                                            name="smr" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label for="job_site" class="ms-0">Job Site</label>
+                                        {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('job_site') !!}
                                     </div>
                                 </div>
                             </div>
@@ -67,7 +82,12 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="work_op" class="ms-0">Work Operation</label>
-                                        <input type="text" class="form-control" id="work_op" name="work_op" required>
+                                        <select name="work_op" id="work_op" class="form-control" required>
+                                            <option value="" disabled selected>-- Select Work Operation --</option>
+                                            <option value="OB">OB</option>
+                                            <option value="Coal">Coal</option>
+                                        </select>
+
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -128,27 +148,50 @@
                                     </tr>
                                     <tr>
                                         <th>Right Side</th>
-                                        <td colspan="2"><input type="text"
+                                        <td colspan="2">
+                                            <input type="number" step="0.0001" id="link_pitch"
+                                                style="background-color: #c3bdbf; text-align: center;"
+                                                class="form-control" name="link_pitch[]" min="281" max="284"
+                                                required
+                                                oninput="this.setCustomValidity(parseFloat(this.value) < 281 ? 'Value must be at least 281' : 
+                                                parseFloat(this.value) > 284 ? 'Value must not exceed 284' : ''); 
+                                                this.reportValidity();">
+                                        </td>
+                                        <td colspan="2"><input type="number" step="0.0001" max="181"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="link_pitch[]"></td>
-                                        <td colspan="2"><input type="text"
+                                                name="link_Height[]"
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 181 ? 'Value must not exceed 181' : ''); 
+                                                this.reportValidity();"
+                                                required></td>
+                                        <td colspan="2"><input type="number" step="0.0001" max="99"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="link_Height[]"></td>
-                                        <td colspan="2"><input type="text"
-                                                style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="link_bushing[]"></td>
+                                                name="link_bushing[]"
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 99 ? 'Value must not exceed 99' : ''); 
+                                                this.reportValidity();"
+                                                required></td>
                                     </tr>
                                     <tr>
                                         <th>Left Side</th>
-                                        <td colspan="2"><input type="text"
+                                        <td colspan="2"><input type="number" step="0.0001" min="281"
+                                                max="284" style="background-color: #c3bdbf;text-align: center;"
+                                                class="form-control" name="link_pitch[]"
+                                                oninput="this.setCustomValidity(parseFloat(this.value) < 281 ? 'Value must be at least 281' : 
+                                                parseFloat(this.value) > 284 ? 'Value must not exceed 284' : ''); 
+                                                this.reportValidity();"
+                                                required>
+                                        </td>
+                                        <td colspan="2"><input type="number" step="0.0001" max="181"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="link_pitch[]"></td>
-                                        <td colspan="2"><input type="text"
+                                                name="link_Height[]"
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 181 ? 'Value must not exceed 181' : ''); 
+                                                this.reportValidity();"
+                                                required></td>
+                                        <td colspan="2"><input type="number" step="0.0001" max="99"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="link_Height[]"></td>
-                                        <td colspan="2"><input type="text"
-                                                style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="link_bushing[]"></td>
+                                                name="link_bushing[]"
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 99 ? 'Value must not exceed 99' : ''); 
+                                                this.reportValidity();"
+                                                required></td>
                                     </tr>
                                 </table>
                             </div>
@@ -193,30 +236,50 @@
                                     </tr>
                                     <tr>
                                         <th>Right Side</th>
-                                        <td colspan="2"><input type="text"
+                                        <td colspan="2"><input type="number" step="0.0001" max="50"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="grouser_height[]"></td>
-                                        <td colspan="2"><input type="text"
+                                                name="grouser_height[]"
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 50 ? 'Value must not exceed 50' : ''); 
+                                                this.reportValidity();"
+                                                required></td>
+                                        <td colspan="2"><input type="number" step="0.0001"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="idler[]">
+                                                name="idler[]" min="23" max="29"
+                                                oninput="this.setCustomValidity(parseFloat(this.value) < 23? 'Value must be at least 23' : 
+                                                parseFloat(this.value) > 29 ? 'Value must not exceed 29' : ''); 
+                                                this.reportValidity();"
+                                                required>
                                         </td>
-                                        <td colspan="2"><input type="text"
+                                        <td colspan="2"><input type="number" step="0.0001" max="423"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="sprocket[]">
+                                                name="sprocket[]"
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 423 ? 'Value must not exceed 423' : ''); 
+                                                this.reportValidity();"
+                                                required>
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>Left Side</th>
-                                        <td colspan="2"><input type="text"
+                                        <td colspan="2"><input type="number" step="0.0001" max="50"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="grouser_height[]"></td>
-                                        <td colspan="2"><input type="text"
-                                                style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="idler[]">
+                                                name="grouser_height[]"
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 50 ? 'Value must not exceed 50' : ''); 
+                                                this.reportValidity();"
+                                                required></td>
+                                        <td colspan="2"><input type="number" step="0.0001" min="23"
+                                                max="29" style="background-color: #c3bdbf;text-align: center;"
+                                                class="form-control" name="idler[]"
+                                                oninput="this.setCustomValidity(parseFloat(this.value) < 23? 'Value must be at least 23' : 
+                                                parseFloat(this.value) > 29 ? 'Value must not exceed 29' : ''); 
+                                                this.reportValidity();"
+                                                required>
                                         </td>
-                                        <td colspan="2"><input type="text"
+                                        <td colspan="2"><input type="number" step="0.0001" max="423"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="sprocket[]">
+                                                name="sprocket[]"
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 423 ? 'Value must not exceed 423' : ''); 
+                                                this.reportValidity();"
+                                                required>
                                         </td>
                                     </tr>
                                 </table>
@@ -262,30 +325,48 @@
                                     </tr>
                                     <tr>
                                         <th>Right Side</th>
-                                        <td colspan="2"><input type="text"
+                                        <td colspan="2"><input type="number" step="0.0001" max="210"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="carrier_roller1[]"></td>
-                                        <td colspan="2"><input type="text"
+                                                name="carrier_roller1[]"
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 210 ? 'Value must not exceed 210' : ''); 
+                                                this.reportValidity();"
+                                                required></td>
+                                        <td colspan="2"><input type="number" step="0.0001" max="210"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="carrier_roller2[]">
+                                                name="carrier_roller2[]"
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 210 ? 'Value must not exceed 210' : ''); 
+                                                this.reportValidity();"
+                                                required>
                                         </td>
-                                        <td colspan="2"><input type="text"
+                                        <td colspan="2"><input type="number" step="0.0001" max="210"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="carrier_roller3[]">
+                                                name="carrier_roller3[]"
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 210 ? 'Value must not exceed 210' : ''); 
+                                                this.reportValidity();"
+                                                required>
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>Left Side</th>
-                                        <td colspan="2"><input type="text"
+                                        <td colspan="2"><input type="number" step="0.0001" max="210"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="carrier_roller1[]"></td>
-                                        <td colspan="2"><input type="text"
+                                                name="carrier_roller1[]"
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 210 ? 'Value must not exceed 210' : ''); 
+                                                this.reportValidity();"
+                                                required></td>
+                                        <td colspan="2"><input type="number" step="0.0001" max="210"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="carrier_roller2[]">
+                                                name="carrier_roller2[]"
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 210 ? 'Value must not exceed 210' : ''); 
+                                                this.reportValidity();"
+                                                required>
                                         </td>
-                                        <td colspan="2"><input type="text"
+                                        <td colspan="2"><input type="number" step="0.0001" max="210"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
-                                                name="carrier_roller3[]">
+                                                name="carrier_roller3[]"
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 210 ? 'Value must not exceed 210' : ''); 
+                                                this.reportValidity();"
+                                                required>
                                         </td>
                                     </tr>
                                 </table>
@@ -301,7 +382,7 @@
                                     </tr>
                                     <tr>
                                         <th>Component</th>
-                                        <th colspan="19">Track Troller</th>
+                                        <th colspan="19">Track Roller</th>
                                     </tr>
                                     <tr>
                                         <th>Tools</th>
@@ -331,18 +412,24 @@
                                     <tr>
                                         <th>Right Side</th>
                                         @for ($i = 0; $i < 9; $i++)
-                                            <td colspan="2"><input type="text"
+                                            <td colspan="2"><input type="number" step="0.0001" max="291"
                                                     style="background-color: #c3bdbf;text-align: center;"
-                                                    class="form-control" name="track_roller[]"></td>
+                                                    class="form-control" name="track_roller[]"
+                                                    oninput="this.setCustomValidity(parseFloat(this.value) > 291 ? 'Value must not exceed 291' : ''); 
+                                                this.reportValidity();"
+                                                    required></td>
                                         @endfor
 
                                     </tr>
                                     <tr>
                                         <th>Left Side</th>
                                         @for ($i = 0; $i < 9; $i++)
-                                            <td colspan="2"><input type="text"
+                                            <td colspan="2"><input type="number" step="0.0001" max="291"
                                                     style="background-color: #c3bdbf;text-align: center;"
-                                                    class="form-control" name="track_roller[]"></td>
+                                                    class="form-control" name="track_roller[]"
+                                                    oninput="this.setCustomValidity(parseFloat(this.value) > 291 ? 'Value must not exceed 291' : ''); 
+                                                this.reportValidity();"
+                                                    required></td>
                                         @endfor
 
                                     </tr>
@@ -357,28 +444,29 @@
                                                 <th colspan="2">Temuan</th>
                                             </tr>
                                             <tr>
-                                                <th rowspan="2">Burshing Link</th>
+                                                <th rowspan="2">Bushing Link</th>
                                                 <td colspan="2">
-                                                    <textarea name="tem_link_bushing[]" class="form-control" placeholder="Right:" id="tem_link_bushing" rows="1"></textarea>
+                                                    <textarea name="tem_link_bushing[]" rows="2" class="form-control" placeholder="Right:"
+                                                        id="tem_link_bushingr"></textarea>
                                                 </td>
 
                                             </tr>
                                             <tr>
                                                 <td colspan="2">
-                                                    <textarea name="tem_link_bushing[]" class="form-control" placeholder="Left:" id="tem_link_bushing" rows="1"></textarea>
+                                                    <textarea rows="2" name="tem_link_bushing[]" class="form-control" placeholder="Left:" id="tem_link_bushingl"></textarea>
                                                 </td>
 
                                             </tr>
                                             <tr>
                                                 <th rowspan="2">Link Height</th>
                                                 <td colspan="2">
-                                                    <textarea name="tem_link_height[]" class="form-control" placeholder="Right:" id="tem_link_height" rows="1"></textarea>
+                                                    <textarea rows="2" name="tem_link_height[]" class="form-control" placeholder="Right:" id="tem_link_heightr"></textarea>
                                                 </td>
 
                                             </tr>
                                             <tr>
                                                 <td colspan="2">
-                                                    <textarea name="tem_link_height[]" class="form-control" placeholder="Left:" id="tem_link_height" rows="1"></textarea>
+                                                    <textarea rows="2" name="tem_link_height[]" class="form-control" placeholder="Left:" id="tem_link_heightl"></textarea>
                                                 </td>
 
                                             </tr>
@@ -386,28 +474,27 @@
                                             <tr>
                                                 <th rowspan="2">Link Pitch</th>
                                                 <td colspan="2">
-                                                    <textarea name="tem_link_pitch[]" class="form-control" placeholder="Right:" id="tem_link_pitch" rows="1"></textarea>
+                                                    <textarea rows="" name="tem_link_pitch[]" class="form-control" placeholder="Right:" id="tem_link_pitchr"></textarea>
                                                 </td>
 
                                             </tr>
                                             <tr>
                                                 <td colspan="2">
-                                                    <textarea name="tem_link_pitch[]" class="form-control" placeholder="Left:" id="tem_link_pitch" rows="1"></textarea>
+                                                    <textarea rows="2" name="tem_link_pitch[]" class="form-control" placeholder="Left:" id="tem_link_pitchl"></textarea>
                                                 </td>
 
                                             </tr>
                                             <tr>
                                                 <th rowspan="2">Grouser Height</th>
                                                 <td colspan="2">
-                                                    <textarea name="tem_grouser_height[]" class="form-control" placeholder="Right:" id="tem_grouser_height"
-                                                        rows="2"></textarea>
+                                                    <textarea name="tem_grouser_height[]" class="form-control" placeholder="Right:" id="tem_grouser_heightr"></textarea>
                                                 </td>
 
                                             </tr>
                                             <tr>
                                                 <td colspan="2">
-                                                    <textarea name="tem_grouser_height[]" class="form-control" placeholder="Left:" id="tem_grouser_height"
-                                                        rows="2"></textarea>
+                                                    <textarea rows="2" name="tem_grouser_height[]" class="form-control" placeholder="Left:"
+                                                        id="tem_grouser_heightl"></textarea>
                                                 </td>
 
                                             </tr>
@@ -415,28 +502,28 @@
                                             <tr>
                                                 <th rowspan="2">Idler</th>
                                                 <td colspan="2">
-                                                    <textarea name="tem_idler[]" class="form-control" placeholder="Right:" id="tem_idler" rows="1"></textarea>
+                                                    <textarea rows="2" name="tem_idler[]" class="form-control" placeholder="Right:" id="tem_idlerr"></textarea>
                                                 </td>
 
                                             </tr>
                                             <tr>
                                                 <td colspan="2">
-                                                    <textarea name="tem_idler[]" class="form-control" placeholder="Left:" id="tem_idler" rows="1"></textarea>
+                                                    <textarea rows="2" name="tem_idler[]" class="form-control" placeholder="Left:" id="tem_idlerl"></textarea>
                                                 </td>
 
                                             </tr>
                                             <tr>
                                                 <th rowspan="2">Carrier Roller</th>
                                                 <td colspan="2">
-                                                    <textarea name="tem_carrier_roller[]" class="form-control" placeholder="Right:" id="tem_carrier_roller"
-                                                        rows="2"></textarea>
+                                                    <textarea rows="2" name="tem_carrier_roller[]" class="form-control" placeholder="Right:"
+                                                        id="tem_carrier_rollerr"></textarea>
                                                 </td>
 
                                             </tr>
                                             <tr>
                                                 <td colspan="2">
-                                                    <textarea name="tem_carrier_roller[]" class="form-control" placeholder="Left:" id="tem_carrier_roller"
-                                                        rows="2"></textarea>
+                                                    <textarea name="tem_carrier_roller[]" rows="2" class="form-control" placeholder="Left:"
+                                                        id="tem_carrier_rollerl"></textarea>
                                                 </td>
 
                                             </tr>
@@ -444,27 +531,29 @@
                                             <tr>
                                                 <th rowspan="2">Segment / Sprocket</th>
                                                 <td colspan="2">
-                                                    <textarea name="tem_sprocket[]" class="form-control" placeholder="Right:" id="tem_sprocket" rows="1"></textarea>
+                                                    <textarea rows="2" name="tem_sprocket[]" class="form-control" placeholder="Right:" id="tem_sprocketr"></textarea>
                                                 </td>
 
                                             </tr>
                                             <tr>
                                                 <td colspan="2">
-                                                    <textarea name="tem_sprocket[]" class="form-control" placeholder="Left:" id="tem_sprocket" rows="1"></textarea>
+                                                    <textarea rows="2" name="tem_sprocket[]" class="form-control" placeholder="Left:" id="tem_sprocketl"></textarea>
                                                 </td>
 
                                             </tr>
 
                                             <tr>
-                                                <th rowspan="2">Truck Roller</th>
+                                                <th rowspan="2">Track Roller</th>
                                                 <td colspan="2">
-                                                    <textarea name="tem_track_roller[]" class="form-control" placeholder="Right:" id="tem_track_roller" rows="2"></textarea>
+                                                    <textarea rows="2" name="tem_track_roller[]" class="form-control" placeholder="Right:"
+                                                        id="tem_track_rollerr"></textarea>
                                                 </td>
 
                                             </tr>
                                             <tr>
                                                 <td colspan="2">
-                                                    <textarea name="tem_track_roller[]" class="form-control" placeholder="Left:" id="tem_track_roller" rows="2"></textarea>
+                                                    <textarea rows="2" t name="tem_track_roller[]" class="form-control" placeholder="Left:"
+                                                        id="tem_track_rollerl"></textarea>
                                                 </td>
 
                                             </tr>
@@ -649,8 +738,23 @@
                             <div class="row mt-5">
                                 <div class="col-4 ">
                                     <div class="input-group input-group-static mb-3">
-                                        <label for="dibuat" class="ms-0">Checked By</label>
-                                        <select name="checked1" id="dibuat_oleh" class="form-control" required>
+                                        <label for="dibuat" class="ms-0">Checked By1</label>
+                                        <select name="checked1_display" class="form-control uppercase" disabled>
+                                            @foreach ($approvalList as $user)
+                                                <option value="{{ $user->nik }}"
+                                                    {{ old('checked1', $nik ?? '') == $user->nik ? 'selected' : '' }}>
+                                                    {{ $user->nama }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+
+                                        <input type="hidden" name="checked1" value="{{ old('checked1', $nik ?? '') }}">
+                                    </div>
+                                </div>
+                                <div class="col-4 ">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label for="dibuat" class="ms-0">Checked By2</label>
+                                        <select name="checked2" id="dibuat_oleh2" class="form-control" required>
                                             <option disabled selected>-- Select Creator --</option>
                                             @foreach ($approvalList as $user)
                                                 <option value="{{ $user->nik }}">{{ $user->nama }}</option>
@@ -670,18 +774,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-4 ">
-                                    <div class="input-group input-group-static mb-3">
-                                        <label for="dibuat" class="ms-0">Checked By</label>
-                                        <select name="checked2" id="dibuat_oleh2" class="form-control" required>
-                                            <option disabled selected>-- Select Creator --</option>
-                                            @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nik }}">{{ $user->nama }}</option>
-                                            @endforeach
 
-                                        </select>
-                                    </div>
-                                </div>
                                 <div class="row">
                                     <div class="col-12">
                                         <div class="form-actions">
@@ -703,6 +796,12 @@
 @section('custom-css')
     <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
     <style>
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
         .accordion {
             width: 100%;
 
@@ -795,10 +894,9 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
     <script>
         $(document).ready(function() {
-            $('#dibuat_oleh').select2();
-            $('#dibuat_oleh2').select2();
-            $('#diperiksa').select2();
+            $('#dibuat_oleh, #dibuat_oleh2, #diperiksa, #cn_unit, #job_site').select2();
         });
+
         $(function() {
             var form = $("#formPPU1250");
             var submitBtn = form.find('button[type="submit"]');

@@ -447,7 +447,7 @@
                                                                             class="form-control text-center uppercase">
                                                                             <option value="">--select--</option>
                                                                             <option value="Leak">Leak</option>
-                                                                            <option value="B">No Leak</option>
+                                                                            <option value="No Leak">No Leak</option>
 
                                                                         </select>
                                                                     </div>

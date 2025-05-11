@@ -66,9 +66,9 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="input-group input-group-static mb-3">
-                                        <label for="unit_sn" class="ms-0">S/N Unit</label>
+                                        <label for="unit_sn" class="ms-0">C/N Unit</label>
                                         <input type="text" class="form-control" id="unit_sn" name="unit_sn"
-                                            value="{{ $data->sn_unit }}" disabled>
+                                            value="{{ $data->cn_unit }}" disabled>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -80,21 +80,28 @@
                                 </div>
                             </div>
                             <div class="row mb-3">
-                                <div class="col-md-4">
+                                <div class="col-md-3">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label for="job_site" class="ms-0">Job Site</label>
+                                        {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('job_site', strtolower($data->job_site)) !!}
+
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="work_op" class="ms-0">Work Operation</label>
                                         <input type="text" class="form-control" id="work_op" name="work_op"
                                             value="{{ $data->work_operation }}" disabled>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="ground_condition" class="ms-0">Ground Condition</label>
                                         <input type="text" class="form-control" id="ground_condition"
                                             name="ground_condition" value="{{ $data->ground_condition }}" disabled>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="condition_area" class="ms-0">Condition Area Frame</label>
                                         <input type="text" class="form-control" id="condition_area"
@@ -326,7 +333,7 @@
                                     </tr>
                                     <tr>
                                         <th>Component</th>
-                                        <th colspan="19">Track Troller</th>
+                                        <th colspan="19">Track Roller</th>
                                     </tr>
                                     <tr>
                                         <th>Tools</th>
@@ -384,7 +391,7 @@
                                                 <th colspan="2">Temuan</th>
                                             </tr>
                                             <tr>
-                                                <th rowspan="2">Burshing Link</th>
+                                                <th rowspan="2">Bushing Link</th>
                                                 <td colspan="2">
                                                     <textarea name="tem_link_bushing[]" class="form-control" id="tem_link_bushing1" disabled rows="1">Right: {{ $data->tem_link_bushing[0] }}</textarea>
                                                 </td>
@@ -479,7 +486,7 @@
                                             </tr>
 
                                             <tr>
-                                                <th rowspan="2">Truck Roller</th>
+                                                <th rowspan="2">Track Roller</th>
                                                 <td colspan="2">
                                                     <textarea name="tem_track_roller[]" class="form-control" disabled id="tem_track_roller1" rows="1">Right: {{ $data->tem_track_roller[0] }} </textarea>
                                                 </td>
@@ -672,12 +679,26 @@
                             <div class="row mt-5">
                                 <div class="col-4 ">
                                     <div class="input-group input-group-static mb-3">
-                                        <label for="dibuat" class="ms-0">Checked By</label>
+                                        <label for="dibuat" class="ms-0">Checked By1</label>
                                         <select name="checked1" id="dibuat_oleh" class="form-control" disabled>
                                             <option disabled selected>-- Select Creator --</option>
                                             @foreach ($approvalList as $user)
                                                 <option
                                                     {{ old('checked1', $data->checked_1 ?? '') == $user->nik ? 'selected' : '' }}>
+                                                    {{ $user->nama }}</option>
+                                            @endforeach
+
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-4 ">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label for="dibuat" class="ms-0">Checked By2</label>
+                                        <select name="checked2" id="dibuat_oleh2" class="form-control" disabled>
+                                            <option disabled selected>-- Select Creator --</option>
+                                            @foreach ($approvalList as $user)
+                                                <option value="{{ $user->nik }}"
+                                                    {{ old('checked2', $data->checked_2 ?? '') == $user->nik ? 'selected' : '' }}>
                                                     {{ $user->nama }}</option>
                                             @endforeach
 
@@ -697,64 +718,60 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-4 ">
-                                    <div class="input-group input-group-static mb-3">
-                                        <label for="dibuat" class="ms-0">Checked By</label>
-                                        <select name="checked2" id="dibuat_oleh2" class="form-control" disabled>
-                                            <option disabled selected>-- Select Creator --</option>
-                                            @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nik }}"
-                                                    {{ old('checked2', $data->checked_2 ?? '') == $user->nik ? 'selected' : '' }}>
-                                                    {{ $user->nama }}</option>
-                                            @endforeach
 
-                                        </select>
-                                    </div>
-                                </div>
                                 <div class="row">
                                     @for ($i = 0; $i < 3; $i++)
-                                        @if ($i == 0 || $i == 2)
-                                            @if ($data->status[$i] == 'rejected')
+                                        @if ($i < 2)
+                                            <div class="col-4 ty">
+                                                <img src="{{ asset('img/checked.png') }}" class="img-app"
+                                                    alt="">
+                                            </div>
+                                        @elseif($i == 2)
+                                            @if ($data->status === 'rejected')
                                                 <div class="col-4 ty">
                                                     <img src="{{ asset('img/rejected.png') }}" class="img-app"
                                                         alt="">
                                                 </div>
-                                            @elseif ($data->status[$i] == 'approved')
-                                                <div class="col-4 ty">
-                                                    <img src="{{ asset('img/checked.png') }}" class="img-app"
-                                                        alt="">
-                                                </div>
-                                            @elseif ($data->status[$i] == null)
-                                                <div class="col-4 ty">
-
-                                                </div>
-                                            @endif
-                                        @else
-                                            @if ($data->status[$i] == 'rejected')
-                                                <div class="col-4 ty">
-                                                    <img src="{{ asset('img/rejected.png') }}" class="img-app"
-                                                        alt="">
-                                                </div>
-                                            @elseif ($data->status[$i] == 'approved')
+                                            @elseif ($data->status === 'approved')
                                                 <div class="col-4 ty">
                                                     <img src="{{ asset('img/validated.png') }}" class="img-app"
                                                         alt="">
                                                 </div>
-                                            @elseif ($data->status[$i] == null)
+                                            @elseif ($data->status === 'draft')
                                                 <div class="col-4 ty">
-
+                                                    <p class="badge bg-danger mt-3">Menunggu validasi Foreman</p>
                                                 </div>
                                             @endif
                                         @endif
                                     @endfor
 
                                 </div>
-
+                                <div class="row">
+                                    <div class="col-4 mt-2">
+                                        <p class="text-center">
+                                            {{ \Carbon\Carbon::parse($data->date_checked)->translatedFormat('l, d F Y') }}
+                                        </p>
+                                    </div>
+                                    <div class="col-4 mt-2">
+                                        <p class="text-center">
+                                            {{ \Carbon\Carbon::parse($data->date_checked)->translatedFormat('l, d F Y') }}
+                                        </p>
+                                    </div>
+                                    <div class="col-4 mt-2">
+                                        <p class="text-center">
+                                            @if ($data->date_validated)
+                                                {{ \Carbon\Carbon::parse($data->date_validated)->translatedFormat('l, d F Y') }}
+                                            @else
+                                                --
+                                            @endif
+                                        </p>
+                                    </div>
+                                </div>
                                 <div class="row">
                                     <div class="col-12">
                                         <div class="form-actions">
-                                            @if ($nik == $data->checked_1 || $nik == $data->checked_2 || $nik == $data->validated)
-                                                <button class="btn btn-primary btn-sm uploadBtn" id="btnApprove"
+                                            @if ($nik == $data->validated)
+                                                <button class="btn btn-success btn-sm uploadBtn" id="btnApprove"
                                                     data-doc="{{ $data->doc_number }}"
                                                     data-status='@json($data->status)'
                                                     data-nik="{{ $nik }}">
@@ -769,7 +786,7 @@
                                                 </button>
                                             @endif
 
-                                            @if (collect($data->status)->contains(fn($s) => $s === 'rejected'))
+                                            @if ($data->status === 'rejected')
                                                 @if ($nik == $data->creator)
                                                     <button type="button" class="btn btn-primary btn-sm"
                                                         onclick="resetApproval('{{ $data->doc_number }}')">
@@ -903,6 +920,7 @@
             $('#dibuat_oleh').select2();
             $('#dibuat_oleh2').select2();
             $('#diperiksa').select2();
+            $('#job_site').select2();
         });
         document.addEventListener("DOMContentLoaded", function() {
             const headers = document.querySelectorAll(".accordion-header");
@@ -942,9 +960,9 @@
                         _token: "{{ csrf_token() }}",
                         doc_number: docNumber,
 
-                        checked1: nik == "{{ $data->checked_1 }}" ? 'approved' : status[0],
-                        validated: nik == "{{ $data->validated }}" ? 'approved' : status[1],
-                        checked2: nik == "{{ $data->checked_2 }}" ? 'approved' : status[2]
+
+                        validated: nik == "{{ $data->validated }}" ? 'approved' : status,
+
                     })
                     .then(response => {
                         if (response.data.success) {
@@ -990,9 +1008,9 @@
                 axios.post("{{ route('plant.ppu.xe1250.reject') }}", {
                         _token: "{{ csrf_token() }}",
                         doc_number: docNumber,
-                        checked1: nik == "{{ $data->checked_1 }}" ? 'rejected' : status[0],
-                        validated: nik == "{{ $data->validated }}" ? 'rejected' : status[1],
-                        checked2: nik == "{{ $data->checked_2 }}" ? 'rejected' : status[2]
+
+                        validated: nik == "{{ $data->validated }}" ? 'rejected' : status,
+
                     })
                     .then(response => {
                         if (response.data.success) {

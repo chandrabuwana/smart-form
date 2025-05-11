@@ -106,7 +106,7 @@
                     <div class="mx-4 row">
                         <form action="" method="GET" id="filterForm">
                             <div class="row align-items-center">
-                                <div class="col-md-2 mb-3">
+                                <div class="col-md-3 mb-3">
                                     <div class="input-group input-group-static mb-4 position-relative">
                                         <label>Search</label>
                                         <input type="text" name="search" class="form-control"
@@ -117,9 +117,16 @@
                                 <div class="col-md-3
                                             mb-3">
                                     <div class="input-group input-group-static mb-4 position-relative">
-                                        <label for="sn_unit" class="ms-0">SN Unit</label>
-                                        <input type="text" class="form-control" id="sn_unit" name="sn_unit"
-                                            value="{{ $filters['sn_unit'] ?? '' }}">
+                                        <label for="cn_unit" class="ms-0">C/N Unit</label>
+                                        <select name="cn_unit" class="form-control" id="cn_unit">
+                                            <option value="" disabled selected>-- Select Unit C/N --</option>
+                                            @foreach ($cn as $cn_unit)
+                                                <option value="{{ $cn_unit->no_lambung }}"
+                                                    {{ $cn_unit->no_lambung == $filters['cn_unit'] ? 'selected' : '' }}>
+                                                    {{ $cn_unit->no_lambung }}
+                                                </option>
+                                            @endforeach
+                                        </select>
 
                                     </div>
                                 </div>
@@ -128,7 +135,7 @@
                                 mb-3">
                                     <div class="input-group input-group-static mb-4 position-relative">
                                         <label for="approval" class="ms-0">Approval</label>
-                                        <select name="approval" id="approval" class="form-control">
+                                        <select name="validated" id="approval" class="form-control">
                                             <option disabled selected>-- Select Approval --</option>
                                             @foreach ($user as $appUser)
                                                 <option value="{{ $appUser->nik }}"
@@ -138,6 +145,19 @@
                                             @endforeach
 
                                         </select>
+
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <div class="input-group input-group-static mb-4 position-relative">
+                                        <label for="job" class="ms-0">Job Site</label>
+                                        {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect(
+                                            'job_site',
+                                            strtolower($filters['job_site']),
+                                            $isDisabled = false,
+                                            $isRequired = false,
+                                        ) !!}
+
 
                                     </div>
                                 </div>
@@ -179,23 +199,20 @@
                                             Number</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            SN_Unit</th>
+                                            CN_Unit</th>
 
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            Job Site</th>
+                                        <th
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Inspection Date</th>
-                                        <th
-                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Checker 1</th>
-                                        <th
-                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Checker 2</th>
 
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Validate</th>
                                         <th
-                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Status</th>
 
 
@@ -210,58 +227,32 @@
                                             <td>
                                                 <div class="d-flex px-2 py-1">
                                                     <div class="d-flex flex-column justify-content-center">
-                                                        <p class="text-xs font-weight-bold mb-0">{{ $data->doc_number }}</p>
+                                                        <p class="text-xs font-weight-bold mb-0">{{ $data->doc_number }}
+                                                        </p>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td>
-                                                <p class="text-xs font-weight-bold mb-0">{{ $data->sn_unit }}</p>
+                                                <p class="text-xs font-weight-bold mb-0">{{ $data->cn_unit }}</p>
+                                            </td>
+                                            <td>
+                                                <p class="text-xs font-weight-bold mb-0">{{ $data->job_site }}</p>
                                             </td>
 
                                             <td>
                                                 <span class="text-xs font-weight-bold">{{ $data->inspection_date }}</span>
                                             </td>
-                                            @php
-                                                $status = json_decode($data->status, true);
-                                            @endphp
-                                            <td>
 
 
-                                                @if ($status[0] === 'approved')
-                                                    <span
-                                                        class="badge bg-success">{{ optional(collect($user)->firstWhere('nik', $data->checked_1))->nama ?? '' }}</span>
-                                                @elseif ($status[0] === 'rejected')
-                                                    <span
-                                                        class="badge bg-danger">{{ optional(collect($user)->firstWhere('nik', $data->checked_1))->nama ?? '' }}</span>
-                                                @elseif ($status[0] === null)
-                                                    <span
-                                                        class="badge bg-info">{{ optional(collect($user)->firstWhere('nik', $data->checked_1))->nama ?? '' }}</span>
-                                                @endif
-
-                                            </td>
                                             <td>
                                                 <span class="text-xs font-weight-bold">
-                                                    @if ($status[2] === 'approved')
-                                                        <span
-                                                            class="badge bg-success">{{ optional(collect($user)->firstWhere('nik', $data->checked_2))->nama ?? '' }}</span>
-                                                    @elseif ($status[2] === 'rejected')
-                                                        <span
-                                                            class="badge bg-danger">{{ optional(collect($user)->firstWhere('nik', $data->checked_2))->nama ?? '' }}</span>
-                                                    @elseif ($status[2] == null)
-                                                        <span
-                                                            class="badge bg-info">{{ optional(collect($user)->firstWhere('nik', $data->checked_2))->nama ?? '' }}</span>
-                                                    @endif
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <span class="text-xs font-weight-bold">
-                                                    @if ($status[1] === 'approved')
+                                                    @if ($data->status === 'approved')
                                                         <span
                                                             class="badge bg-success">{{ optional(collect($user)->firstWhere('nik', $data->validated))->nama ?? '' }}</span>
-                                                    @elseif ($status[1] === 'rejected')
+                                                    @elseif ($data->status === 'rejected')
                                                         <span
                                                             class="badge bg-danger">{{ optional(collect($user)->firstWhere('nik', $data->validated))->nama ?? '' }}</span>
-                                                    @elseif ($status[1] == null)
+                                                    @elseif ($data->status == 'draft')
                                                         <span
                                                             class="badge bg-info">{{ optional(collect($user)->firstWhere('nik', $data->validated))->nama ?? '' }}</span>
                                                     @endif
@@ -271,18 +262,18 @@
 
                                             <td>
                                                 <span class="text-xs font-weight-bold">
-                                                    @if (collect($status)->every(fn($s) => $s === 'approved'))
+                                                    @if ($data->status === 'approved')
                                                         <span class="badge bg-success">Approved</span>
-                                                    @elseif (collect($status)->contains(fn($s) => $s === 'rejected'))
+                                                    @elseif ($data->status === 'rejected')
                                                         <span class="badge bg-danger">Rejected</span>
-                                                    @elseif (collect($status)->contains(fn($s) => $s === null))
-                                                        <span class="badge bg-info">Draf</span>
+                                                    @elseif ($data->status === 'draft')
+                                                        <span class="badge bg-info">Menunggu validasi Foreman</span>
                                                     @endif
                                                 </span>
                                             </td>
                                             <td>
                                                 @if ($session == $data->creator)
-                                                    @if (collect($status)->contains(fn($s) => $s === 'rejected') || collect($status)->contains(fn($s) => $s === null))
+                                                    @if ($data->status === 'rejected' || $data->status === 'draft')
                                                         <a href="{{ route('plant.ppu.xe1250.detail', ['id' => $data->id]) }}"
                                                             class="btn btn-warning btn-sm mt-3">
                                                             <i class="fas fa-edit"></i>
@@ -328,6 +319,8 @@
     <script>
         $(document).ready(function() {
             $('#approval').select2();
+            $('#cn_unit').select2();
+            $('#job_site').select2();
         });
         $(function() {
             // Clear filter button
