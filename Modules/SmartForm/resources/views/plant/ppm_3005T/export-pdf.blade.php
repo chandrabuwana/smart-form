@@ -369,12 +369,12 @@
                 </td>
                 <td rowspan="2" class="align-middle"></td>
                 <td class="align-middle">No Excressive, Metalic Powder</td>
-                <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">
-                    {{ $data->fin_actual[0] === '1' ? '✓' : '' }}</td>
-                <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">
-                    {{ $data->fin_correction_made[0] === '1' ? '✓' : '' }}</td>
-                <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">
-                    {{ $data->fin_result[0] === '1' ? '✓' : '' }}</td>
+                <td style="text-align: center;">
+                    {{ $data->fin_actual[0] }}</td>
+                <td style="text-align: center; ">
+                    {{ $data->fin_correction_made[0] }}</td>
+                <td style="text-align: center;">
+                    {{ $data->fin_result[0] }}</td>
 
                 <td colspan="2" rowspan="2">
                     {{ $data->fin_remark[0] }}
@@ -383,12 +383,12 @@
             <tr>
                 <td class="align-middle">Oil Leak</td>
                 <td class="align-middle">No Excressive, Metalic Powder</td>
-                <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">
-                    {{ $data->fin_actual[1] === '1' ? '✓' : '' }}</td>
-                <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">
-                    {{ $data->fin_correction_made[1] === '1' ? '✓' : '' }}</td>
-                <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">
-                    {{ $data->fin_result[1] === '1' ? '✓' : '' }}</td>
+                <td style="text-align: center; ">
+                    {{ $data->fin_actual[1] }}</td>
+                <td style="text-align: center; ">
+                    {{ $data->fin_correction_made[1] }}</td>
+                <td style="text-align: center; ">
+                    {{ $data->fin_result[1] }}</td>
 
 
             </tr>
@@ -404,12 +404,12 @@
                 <td class="align-middle">RH</td>
                 <td rowspan="2" class="align-middle">No Excressive, Metalic
                     Powder</td>
-                <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">
-                    {{ $data->fin_actual[2] === '1' ? '✓' : '' }}</td>
-                <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">
-                    {{ $data->fin_correction_made[2] === '1' ? '✓' : '' }}</td>
-                <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">
-                    {{ $data->fin_result[2] === '1' ? '✓' : '' }}</td>
+                <td style="text-align: center; ">
+                    {{ $data->fin_actual[2] }}</td>
+                <td style="text-align: center; ">
+                    {{ $data->fin_correction_made[2] }}</td>
+                <td style="text-align: center; ">
+                    {{ $data->fin_result[2] }}</td>
 
                 <td colspan="2" rowspan="2">
                     {{ $data->fin_remark[1] }}
@@ -418,24 +418,24 @@
             <tr>
 
                 <td>LH</td>
-                <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">
-                    {{ $data->fin_actual[3] === '1' ? '✓' : '' }}</td>
-                <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">
-                    {{ $data->fin_correction_made[3] === '1' ? '✓' : '' }}</td>
-                <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">
-                    {{ $data->fin_result[3] === '1' ? '✓' : '' }}</td>
+                <td style="text-align: center; ">
+                    {{ $data->fin_actual[3] }}</td>
+                <td style="text-align: center; ">
+                    {{ $data->fin_correction_made[3] }}</td>
+                <td style="text-align: center;">
+                    {{ $data->fin_result[3] }}</td>
 
             </tr>
             <tr>
                 <td rowspan="2" class="align-middle">Oil Leak</td>
                 <td class="align-middle">RH</td>
                 <td class="align-middle">No Oil Leak</td>
-                <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">
-                    {{ $data->fin_actual[4] === '1' ? '✓' : '' }}</td>
-                <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">
-                    {{ $data->fin_correction_made[4] === '1' ? '✓' : '' }}</td>
-                <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">
-                    {{ $data->fin_result[4] === '1' ? '✓' : '' }}</td>
+                <td style="text-align: center; ">
+                    {{ $data->fin_actual[4] }}</td>
+                <td style="text-align: center; ">
+                    {{ $data->fin_correction_made[4] }}</td>
+                <td style="text-align: center; ">
+                    {{ $data->fin_result[4] }}</td>
 
                 <td colspan="2" rowspan="2">
                     {{ $data->fin_remark[2] }}
@@ -446,12 +446,12 @@
 
                 <td>LH</td>
                 <td class="align-middle">No Oil Leak</td>
-                <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">
-                    {{ $data->fin_actual[5] === '1' ? '✓' : '' }}</td>
-                <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">
-                    {{ $data->fin_correction_made[5] === '1' ? '✓' : '' }}</td>
-                <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">
-                    {{ $data->fin_result[5] === '1' ? '✓' : '' }}</td>
+                <td style="text-align: center; ">
+                    {{ $data->fin_actual[5] }}</td>
+                <td style="text-align: center; ">
+                    {{ $data->fin_correction_made[5] }}</td>
+                <td style="text-align: center; ">
+                    {{ $data->fin_result[5] }}</td>
 
 
             </tr>
@@ -467,12 +467,12 @@
                 <td class="align-middle"></td>
                 <td class="align-middle">No DTC (Diagnostic Trouble Code) Detected
                 </td>
-                <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">
-                    {{ $data->fin_actual[6] === '1' ? '✓' : '' }}</td>
-                <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">
-                    {{ $data->fin_correction_made[6] === '1' ? '✓' : '' }}</td>
-                <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">
-                    {{ $data->fin_result[6] === '1' ? '✓' : '' }}</td>
+                <td style="text-align: center; ">
+                    {{ $data->fin_actual[6] }}</td>
+                <td style="text-align: center;">
+                    {{ $data->fin_correction_made[6] }}</td>
+                <td style="text-align: center; ">
+                    {{ $data->fin_result[6] }}</td>
 
                 <td colspan="2">
                     {{ $data->fin_remark[3] }}
@@ -487,12 +487,12 @@
                 <td class="align-middle">Attacthment Frame</td>
                 <td colspan="4" class="align-middle">Crack Detection
                 </td>
-                <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">
-                    {{ $data->fin_actual[7] === '1' ? '✓' : '' }}</td>
-                <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">
-                    {{ $data->fin_correction_made[7] === '1' ? '✓' : '' }}</td>
-                <td style="text-align: center; font-family: DejaVu Sans, sans-serif;">
-                    {{ $data->fin_result[7] === '1' ? '✓' : '' }}</td>
+                <td style="text-align: center; ">
+                    {{ $data->fin_actual[7] }}</td>
+                <td style="text-align: center; ">
+                    {{ $data->fin_correction_made[7] }}</td>
+                <td style="text-align: center; ">
+                    {{ $data->fin_result[7] }}</td>
 
                 <td colspan="2">
                     {{ $data->fin_remark[4] }}
