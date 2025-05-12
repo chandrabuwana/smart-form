@@ -91,9 +91,11 @@
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-3">
+                                <label for="searchSite">Site</label>
                                 {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('searchSite') !!}
                             </div>
                             <div class="col-md-3">
+                                <label for="searchStatus">Status</label>
                                 <select id="searchStatus" class="form-control">
                                     <option value="">Filter by Status</option>
                                     <option value="Approved">Approved</option>
@@ -102,7 +104,13 @@
                                 </select>
                             </div>
                             <div class="col-md-3">
+                                <label for="searchDate">Date</label>
                                 <input type="date" id="searchDate" class="form-control">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="searchModel">Model Unit</label>
+                                <input type="text" id="searchModel" class="form-control"
+                                    placeholder="Filter by Model Unit">
                             </div>
                             <div class="col-md-3">
                                 <button class="btn btn-primary" onclick="refreshTable()">Filter</button>
@@ -120,7 +128,9 @@
                                         <th data-field="model_unit" data-sortable="true">Model Unit</th>
                                         <th data-field="diperiksa" data-sortable="true">Diperiksa</th>
                                         <th data-field="diketahui" data-sortable="true">Diketahui</th>
-                                        <th data-field="status" data-sortable="true">Status</th>
+                                        <th data-field="status_form" data-sortable="true">Status Form</th>
+                                        <th class="text-center" data-field="status" data-sortable="true">Status Approval
+                                        </th>
                                         <th data-field="created_at" data-sortable="true">Date</th>
                                         <th data-formatter="actionFormatter">Actions</th>
                                     </tr>
@@ -152,6 +162,7 @@
                 sort: params.sort,
                 order: params.order,
                 site: document.getElementById("searchSite").value,
+                model: document.getElementById("searchModel").value,
                 status: document.getElementById("searchStatus").value,
                 date: document.getElementById("searchDate").value
             };
@@ -164,6 +175,7 @@
         function resetFilter() {
             $('#searchSite').val('').trigger('change');
             document.getElementById("searchStatus").value = "";
+            document.getElementById("searchModel").value = "";
             document.getElementById("searchDate").value = "";
             refreshTable();
         }

@@ -138,25 +138,41 @@
                                         {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('site') !!}
                                     </div>
                                 </div>
-                                <div class="col-12 col-lg-4 mt-4">
-                                    <div class="input-group input-group-static">
-                                        <label>Model Unit</label>
-                                        <input type="text" name="model_unit" class="form-control">
-                                    </div>
-                                </div>
-                                <div class="col-12 col-lg-4 mt-4">
+                                <div class="col-12 col-lg-3 mt-4">
                                     <div class="input-group input-group-static">
                                         <label>C/N</label>
-                                        <input type="text" name="cn" class="form-control">
+                                        <select name="cn" class="form-control" id="cn">
+                                            <option value="" disabled selected>-- Select Unit C/N --</option>
+                                            @foreach ($cn as $cn_unit)
+                                                <option value="{{ $cn_unit->no_lambung }}">
+                                                    {{ $cn_unit->no_lambung }}
+                                                </option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
-                                <div class="col-12 col-lg-4 mt-4">
+                                <div class="col-12 col-lg-3 mt-4">
+                                    <div class="input-group input-group-static">
+                                        <label>Model Unit</label>
+                                        <input type="text" name="model_unit" id="model_unit" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-lg-3 mt-4">
                                     <div class="input-group input-group-static">
                                         <label>HM</label>
                                         <input type="text" name="hm" class="form-control">
                                     </div>
                                 </div>
+                                <div class="col-12 col-lg-3 mt-4">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label for="date" class="ms-0">Inspection Date</label>
+                                        <input type="date" class="form-control" id="date" name="date" required>
+                                    </div>
+                                </div>
                             </div>
+
+
 
                             <div class="card-body border mt-4 rounded">
                                 <div class="d-flex justify-content-between align-items-center">
@@ -202,28 +218,33 @@
                                                                                 <option value="1">Good</option>
                                                                                 <option value="0">Broken</option>
                                                                             </select>
+
                                                                         </div>
                                                                     </td>
                                                                     <td>
                                                                         <div class="input-group input-group-static">
-                                                                            <select
+                                                                            <select disabled class="form-control"
+                                                                                role="button">
+                                                                                <option value="">N/A</option>
+                                                                                <option value="1">Good</option>
+                                                                                <option value="0">Broken</option>
+                                                                            </select>
+                                                                            <input type="hidden"
                                                                                 name="inspection[{{ $category }}][{{ $item['activity'] }}][final_inspect]"
-                                                                                class="form-control" role="button">
-                                                                                <option value="">N/A</option>
-                                                                                <option value="1">Good</option>
-                                                                                <option value="0">Broken</option>
-                                                                            </select>
+                                                                                value="">
                                                                         </div>
                                                                     </td>
                                                                     <td>
                                                                         <div class="input-group input-group-static">
-                                                                            <select
-                                                                                name="inspection[{{ $category }}][{{ $item['activity'] }}][delivery_inspect]"
-                                                                                class="form-control" role="button">
+                                                                            <select disabled class="form-control"
+                                                                                role="button">
                                                                                 <option value="">N/A</option>
                                                                                 <option value="1">Good</option>
                                                                                 <option value="0">Broken</option>
                                                                             </select>
+                                                                            <input type="hidden"
+                                                                                name="inspection[{{ $category }}][{{ $item['activity'] }}][delivery_inspect]"
+                                                                                value="">
                                                                         </div>
                                                                     </td>
                                                                 </tr>
@@ -249,7 +270,7 @@
                                                         <th class="align-middle" rowspan="2">COMPONENT</th>
                                                         <th class="align-middle" colspan="3">PERFORMANCE
                                                         </th>
-                                                        <th class="align-middle" rowspan="2">REMARK</th>
+                                                        {{-- <th class="align-middle" rowspan="2">REMARK</th> --}}
                                                     </tr>
                                                     <tr>
                                                         <th>BAGUS</th>
@@ -285,12 +306,12 @@
                                                                     <div class="radio-custom"></div>
                                                                 </label>
                                                             </td>
-                                                            <td>
+                                                            {{-- <td>
                                                                 <input type="text" name="remark[{{ $category }}]"
                                                                     value="{{ old('remark.' . $category) }}"
                                                                     class="input-remark"
                                                                     placeholder="Masukkan remark (opsional)">
-                                                            </td>
+                                                            </td> --}}
                                                         </tr>
                                                     @endforeach
                                                 </tbody>
@@ -299,22 +320,32 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="col-12 mt-2">
+                                        <label for="note">Note/Catatan</label>
+                                        <textarea name="note" id="note" class="form-control" cols="12" rows="2"></textarea>
+                                    </div>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-6 ">
                                     <div class="input-group input-group-static mb-3">
-                                        <label for="dilakukan1" class="ms-0">Dilakukan Oleh</label>
-                                        <select name="dilakukan1" id="dilakukan1" class="form-control" required>
+                                        <label for="dilakukan1" class="ms-0">Dilakukan Oleh 1</label>
+                                        <input type="hidden" name="dilakukan1" value="{{ $nik }}">
+                                        <select name="dilakukanview" id="dilakukan1" class="form-control" disabled>
                                             <option disabled selected>-- Select User --</option>
                                             @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nama }}">{{ $user->nama }}</option>
+                                                <option value="{{ $user->nik }}"
+                                                    {{ $user->nik == $nik ? 'selected' : '' }}>
+                                                    {{ $user->nama }}
+                                                </option>
                                             @endforeach
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="input-group input-group-static mb-3">
-                                        <label for="dilakukan2" class="ms-0">Dilakukan Oleh</label>
+                                        <label for="dilakukan2" class="ms-0">Dilakukan Oleh 2</label>
                                         <select name="dilakukan2" id="dilakukan2" class="form-control" required>
                                             <option disabled selected>-- Select User --</option>
                                             @foreach ($approvalList as $user)
@@ -348,7 +379,7 @@
                             </div>
 
                             <div class="d-flex justify-content-end">
-                                <button type="submit" class="btn btn-primary mt-3">Submit</button>
+                                <button type="submit" class="btn btn-primary mt-3">Draft</button>
                             </div>
                         </form>
                     </div>
@@ -363,11 +394,32 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
     <script>
         $(document).ready(function() {
+
+            const engineModelMap = {
+                @foreach ($cn as $cn_unit)
+                    "{{ $cn_unit->no_lambung }}": {
+                        "unitModel": "{{ $cn_unit->model }}",
+                    },
+                @endforeach
+            };
+
+            $('#cn').change(function() {
+                const selectedCn = $(this).val();
+                if (engineModelMap[selectedCn]) {
+                    const unitData = engineModelMap[selectedCn];
+                    $('#model_unit').val(unitData.unitModel);
+                } else {
+                    $('#model_unit').val('');
+                }
+            });
+        });
+        $(document).ready(function() {
             $('#diperiksa').select2();
             $('#diketahui').select2();
             $('#dilakukan1').select2();
             $('#dilakukan2').select2();
             $('#site').select2();
+            $('#cn').select2();
         });
         document.addEventListener("DOMContentLoaded", function() {
             document.querySelectorAll(".toggle-switch").forEach(function(toggle) {

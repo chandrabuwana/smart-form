@@ -158,25 +158,33 @@
                                             {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('site', strtolower($inspection['site'])) !!}
                                         </div>
                                     </div>
-                                    <div class="col-12 col-lg-4 mt-4">
-                                        <div class="input-group input-group-static">
-                                            <label>Model Unit</label>
-                                            <input type="text" name="model_unit" class="form-control" disabled
-                                                value="{{ old('model_unit', $inspection['model_unit']) }}">
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-lg-4 mt-4">
+                                    <div class="col-12 col-lg-3 mt-4">
                                         <div class="input-group input-group-static">
                                             <label>C/N</label>
                                             <input type="text" name="cn" class="form-control"
                                                 value="{{ old('cn', $inspection['cn']) }}" disabled>
                                         </div>
                                     </div>
-                                    <div class="col-12 col-lg-4 mt-4">
+                                    <div class="col-12 col-lg-3 mt-4">
+                                        <div class="input-group input-group-static">
+                                            <label>Model Unit</label>
+                                            <input type="text" name="model_unit" class="form-control" disabled
+                                                value="{{ old('model_unit', $inspection['model_unit']) }}">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-lg-3 mt-4">
                                         <div class="input-group input-group-static">
                                             <label>HM</label>
                                             <input type="text" name="hm" class="form-control"
                                                 value="{{ old('hm', $inspection['hm']) }}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-lg-3 mt-4">
+                                        <div class="input-group input-group-static mb-3">
+                                            <label for="date" class="ms-0">Inspection Date</label>
+                                            <input type="date" class="form-control" id="date" name="date"
+                                                value="{{ old('date', $inspection['date_inspection']) }}" disabled>
                                         </div>
                                     </div>
                                 </div>
@@ -240,10 +248,10 @@
                                                                                     {{ $preInspect == null ? 'selected' : null }}>
                                                                                     N/A</option>
                                                                                 <option value="1"
-                                                                                    {{ $preInspect == 1 ? 'selected' : null }}>
+                                                                                    {{ $preInspect == '1' ? 'selected' : null }}>
                                                                                     Good</option>
                                                                                 <option value="0"
-                                                                                    {{ $preInspect == 0 ? 'selected' : null }}>
+                                                                                    {{ $preInspect == '0' ? 'selected' : null }}>
                                                                                     Broken</option>
                                                                             </select>
                                                                         </div>
@@ -257,10 +265,10 @@
                                                                                     {{ $finalInspect == null ? 'selected' : null }}>
                                                                                     N/A</option>
                                                                                 <option value="1"
-                                                                                    {{ $finalInspect == 1 ? 'selected' : null }}>
+                                                                                    {{ $finalInspect == '1' ? 'selected' : null }}>
                                                                                     Good</option>
                                                                                 <option value="0"
-                                                                                    {{ $finalInspect == 0 ? 'selected' : null }}>
+                                                                                    {{ $finalInspect == '0' ? 'selected' : null }}>
                                                                                     Broken</option>
                                                                             </select>
                                                                         </div>
@@ -274,10 +282,10 @@
                                                                                     {{ $deliveryInspect == null ? 'selected' : null }}>
                                                                                     N/A</option>
                                                                                 <option value="1"
-                                                                                    {{ $deliveryInspect == 1 ? 'selected' : null }}>
+                                                                                    {{ $deliveryInspect == '1' ? 'selected' : null }}>
                                                                                     Good</option>
                                                                                 <option value="0"
-                                                                                    {{ $deliveryInspect == 0 ? 'selected' : null }}>
+                                                                                    {{ $deliveryInspect == '0' ? 'selected' : null }}>
                                                                                     Broken</option>
                                                                             </select>
                                                                         </div>
@@ -305,7 +313,7 @@
                                                         <th class="align-middle" rowspan="2">COMPONENT</th>
                                                         <th class="align-middle" colspan="3">PERFORMANCE
                                                         </th>
-                                                        <th class="align-middle" rowspan="2">REMARK</th>
+                                                        {{-- <th class="align-middle" rowspan="2">REMARK</th> --}}
                                                     </tr>
                                                     <tr>
                                                         <th>BAGUS</th>
@@ -344,13 +352,13 @@
                                                                     <div class="radio-custom"></div>
                                                                 </label>
                                                             </td>
-                                                            <td>
+                                                            {{-- <td>
                                                                 <input type="text" name="remark[{{ $category }}]"
                                                                     disabled
                                                                     value="{{ old("remark.$category", $inspection['remark'][$category] ?? '') }}"
                                                                     class="input-remark"
                                                                     placeholder="Masukkan remark (opsional)">
-                                                            </td>
+                                                            </td> --}}
                                                         </tr>
                                                     @endforeach
                                                 </tbody>
@@ -358,20 +366,38 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="col-12 mt-2">
+                                        <label for="note">Note/Catatan</label>
+                                        <textarea name="note" id="note" class="form-control" cols="12" rows="2" readonly>{{ $inspection['note'] }}</textarea>
+                                    </div>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-6 ">
                                     <div class="input-group input-group-static mb-3">
-                                        <label for="dibuat" class="ms-0">Dilakukan Oleh</label>
-                                        <input type="text" name="dilakukan1" value="{{ $inspection['dilakukan1'] }}"
-                                            class="form-control" disabled required>
+                                        <label for="dibuat" class="ms-0">Dilakukan Oleh 1</label>
+                                        <select name="dilakukan1" id="dilakukan1" class="form-control" disabled>
+                                            <option disabled selected>-- Select User --</option>
+                                            @foreach ($approvalList as $user)
+                                                <option value="{{ $user->nik }}"
+                                                    {{ old('dilakukan1', $inspection['dilakukan1'] ?? '') == $user->nik ? 'selected' : '' }}>
+                                                    {{ $user->nama }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="input-group input-group-static mb-3">
-                                        <label for="dibuat" class="ms-0">Dilakukan Oleh</label>
-                                        <input type="text" name="dilakukan2" value="{{ $inspection['dilakukan2'] }}"
-                                            class="form-control" disabled required>
+                                        <label for="dibuat" class="ms-0">Dilakukan Oleh 2</label>
+                                        <select name="dilakukan2" id="dilakukan2" class="form-control" disabled>
+                                            <option disabled selected>-- Select User --</option>
+                                            @foreach ($approvalList as $user)
+                                                <option value="{{ $user->nik }}"
+                                                    {{ old('dilakukan2', $inspection['dilakukan2'] ?? '') == $user->nama ? 'selected' : '' }}>
+                                                    {{ $user->nama }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
 
@@ -492,6 +518,8 @@
         $(document).ready(function() {
             $('#diperiksa').select2();
             $('#diketahui').select2();
+            $('#dilakukan1').select2();
+            $('#dilakukan2').select2();
             $('#site').select2();
         });
         document.addEventListener("DOMContentLoaded", function() {

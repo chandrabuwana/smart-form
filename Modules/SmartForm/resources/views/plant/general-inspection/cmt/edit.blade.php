@@ -148,25 +148,40 @@
                                             {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('site', strtolower($inspection['site'])) !!}
                                         </div>
                                     </div>
-                                    <div class="col-12 col-lg-4 mt-4">
+                                    <div class="col-12 col-lg-3 mt-4">
+                                        <div class="input-group input-group-static">
+                                            <label>C/N</label>
+                                            <select name="cn" class="form-control uppercase " id="cn">
+                                                <option value="" disabled selected>-- Select Unit C/N --</option>
+                                                @foreach ($cn as $cn_unit)
+                                                    <option value="{{ $cn_unit->no_lambung }}"
+                                                        {{ old('cn', $inspection['cn'] ?? '') == $cn_unit->no_lambung ? 'selected' : '' }}>
+                                                        {{ $cn_unit->no_lambung }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-lg-3 mt-4">
                                         <div class="input-group input-group-static">
                                             <label>Model Unit</label>
-                                            <input type="text" name="model_unit" class="form-control"
+                                            <input type="text" name="model_unit" id="model_unit" class="form-control"
                                                 value="{{ old('model_unit', $inspection['model_unit']) }}">
                                         </div>
                                     </div>
-                                    <div class="col-12 col-lg-4 mt-4">
-                                        <div class="input-group input-group-static">
-                                            <label>C/N</label>
-                                            <input type="text" name="cn" class="form-control"
-                                                value="{{ old('cn', $inspection['cn']) }}">
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-lg-4 mt-4">
+
+                                    <div class="col-12 col-lg-3 mt-4">
                                         <div class="input-group input-group-static">
                                             <label>HM</label>
                                             <input type="text" name="hm" class="form-control"
                                                 value="{{ old('hm', $inspection['hm']) }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-lg-3 mt-4">
+                                        <div class="input-group input-group-static mb-3">
+                                            <label for="date" class="ms-0">Inspection Date</label>
+                                            <input type="date" class="form-control" id="date" name="date"
+                                                value="{{ old('date', $inspection['date_inspection']) }}" required>
                                         </div>
                                     </div>
                                 </div>
@@ -190,7 +205,8 @@
                                                     <i class="fa fa-circle-arrow-up fa-lg"></i>
                                                 </div>
                                             </a>
-                                            <div class="card-body pt-2 collapse show" id="{{ 'category-' . $loop->index }}">
+                                            <div class="card-body pt-2 collapse show"
+                                                id="{{ 'category-' . $loop->index }}">
                                                 <div class="accordion-body table-responsive">
                                                     <table class="table table-bordered">
                                                         <thead>
@@ -217,57 +233,130 @@
                                                                         $inspection['activity'][$category][
                                                                             $item['activity']
                                                                         ]['delivery_inspect'];
+
                                                                 @endphp
                                                                 <tr>
                                                                     <td>{{ $item['activity'] }}</td>
                                                                     <td>{{ $item['critical_point'] }}</td>
                                                                     <td>
+
                                                                         <div class="input-group input-group-static">
                                                                             <select
                                                                                 name="inspection[{{ $category }}][{{ $item['activity'] }}][pre_inspect]"
                                                                                 class="form-control" role="button">
                                                                                 <option value=""
-                                                                                    {{ $preInspect == null ? 'selected' : null }}>
+                                                                                    {{ $preInspect == null ? 'selected' : '' }}>
                                                                                     N/A</option>
                                                                                 <option value="1"
-                                                                                    {{ $preInspect == 1 ? 'selected' : null }}>
+                                                                                    {{ $preInspect == '1' ? 'selected' : '' }}>
                                                                                     Good</option>
                                                                                 <option value="0"
-                                                                                    {{ $preInspect == 0 ? 'selected' : null }}>
+                                                                                    {{ $preInspect == '0' ? 'selected' : '' }}>
                                                                                     Broken</option>
                                                                             </select>
+
                                                                         </div>
                                                                     </td>
                                                                     <td>
-                                                                        <div class="input-group input-group-static">
-                                                                            <select
-                                                                                name="inspection[{{ $category }}][{{ $item['activity'] }}][final_inspect]"
-                                                                                class="form-control" role="button">
-                                                                                <option value=""
-                                                                                    {{ $finalInspect == null ? 'selected' : null }}>
-                                                                                    N/A</option>
-                                                                                <option value="1"
-                                                                                    {{ $finalInspect == 1 ? 'selected' : null }}>
-                                                                                    Good</option>
-                                                                                <option value="0"
-                                                                                    {{ $finalInspect == 0 ? 'selected' : null }}>
-                                                                                    Broken</option>
-                                                                            </select>
-                                                                        </div>
+                                                                        @if ($finalInspect == null)
+                                                                            <input type="hidden" name="status_form"
+                                                                                value="Final Inspeksi">
+                                                                            @if ($preInspect == '0')
+                                                                                <div class="input-group input-group-static">
+                                                                                    <select
+                                                                                        name="inspection[{{ $category }}][{{ $item['activity'] }}][final_inspect]"
+                                                                                        class="form-control" role="button">
+                                                                                        <option value=""
+                                                                                            {{ $preInspect == null ? 'selected' : '' }}>
+                                                                                            N/A</option>
+                                                                                        <option value="1"
+                                                                                            {{ $preInspect == '1' ? 'selected' : '' }}>
+                                                                                            Good</option>
+                                                                                        <option value="0"
+                                                                                            {{ $preInspect == '0' ? 'selected' : '' }}>
+                                                                                            Broken</option>
+                                                                                    </select>
+
+
+                                                                                </div>
+                                                                            @else
+                                                                                <div class="input-group input-group-static">
+                                                                                    <select class="form-control"
+                                                                                        role="button" disabled>
+                                                                                        <option value=""
+                                                                                            {{ $preInspect == null ? 'selected' : '' }}>
+                                                                                            N/A</option>
+                                                                                        <option value="1"
+                                                                                            {{ $preInspect == '1' ? 'selected' : '' }}>
+                                                                                            Good</option>
+                                                                                        <option value="0"
+                                                                                            {{ $preInspect == '0' ? 'selected' : '' }}>
+                                                                                            Broken</option>
+                                                                                    </select>
+
+                                                                                    <input type="hidden"
+                                                                                        name="inspection[{{ $category }}][{{ $item['activity'] }}][final_inspect]"
+                                                                                        value="{{ $preInspect }}">
+                                                                                </div>
+                                                                            @endif
+                                                                        @else
+                                                                            <input type="hidden" name="status_form"
+                                                                                value="Delivery inspeksi">
+                                                                            @if ($finalInspect == '0')
+                                                                                <div class="input-group input-group-static">
+                                                                                    <select
+                                                                                        name="inspection[{{ $category }}][{{ $item['activity'] }}][final_inspect]"
+                                                                                        class="form-control" role="button">
+                                                                                        <option value=""
+                                                                                            {{ $finalInspect == null ? 'selected' : '' }}>
+                                                                                            N/A</option>
+                                                                                        <option value="1"
+                                                                                            {{ $finalInspect == '1' ? 'selected' : '' }}>
+                                                                                            Good</option>
+                                                                                        <option value="0"
+                                                                                            {{ $finalInspect == '0' ? 'selected' : '' }}>
+                                                                                            Broken</option>
+                                                                                    </select>
+
+                                                                                </div>
+                                                                            @else
+                                                                                <div
+                                                                                    class="input-group input-group-static">
+                                                                                    <select class="form-control"
+                                                                                        role="button" disabled>
+                                                                                        <option value=""
+                                                                                            {{ $finalInspect == null ? 'selected' : '' }}>
+                                                                                            N/A</option>
+                                                                                        <option value="1"
+                                                                                            {{ $finalInspect == '1' ? 'selected' : '' }}>
+                                                                                            Good</option>
+                                                                                        <option value="0"
+                                                                                            {{ $finalInspect == '0' ? 'selected' : '' }}>
+                                                                                            Broken</option>
+                                                                                    </select>
+
+                                                                                    <input type="hidden"
+                                                                                        name="inspection[{{ $category }}][{{ $item['activity'] }}][final_inspect]"
+                                                                                        value="{{ $finalInspect }}">
+                                                                                </div>
+                                                                            @endif
+                                                                        @endif
+
                                                                     </td>
                                                                     <td>
+
                                                                         <div class="input-group input-group-static">
                                                                             <select
                                                                                 name="inspection[{{ $category }}][{{ $item['activity'] }}][delivery_inspect]"
                                                                                 class="form-control" role="button">
                                                                                 <option value=""
-                                                                                    {{ $deliveryInspect == null ? 'selected' : null }}>
+                                                                                    {{ $deliveryInspect == null ? 'selected' : '' }}>
                                                                                     N/A</option>
                                                                                 <option value="1"
-                                                                                    {{ $deliveryInspect == 1 ? 'selected' : null }}>
+                                                                                    {{ $deliveryInspect == '1' ? 'selected' : '' }}>
                                                                                     Good</option>
                                                                                 <option value="0"
-                                                                                    {{ $deliveryInspect == 0 ? 'selected' : null }}>
+                                                                                    {{ $deliveryInspect == '0' ? 'selected' : '' }}>
                                                                                     Broken</option>
                                                                             </select>
                                                                         </div>
@@ -295,7 +384,7 @@
                                                         <th class="align-middle" rowspan="2">COMPONENT</th>
                                                         <th class="align-middle" colspan="3">PERFORMANCE
                                                         </th>
-                                                        <th class="align-middle" rowspan="2">REMARK</th>
+                                                        {{-- <th class="align-middle" rowspan="2">REMARK</th> --}}
                                                     </tr>
                                                     <tr>
                                                         <th>BAGUS</th>
@@ -334,12 +423,12 @@
                                                                     <div class="radio-custom"></div>
                                                                 </label>
                                                             </td>
-                                                            <td>
+                                                            {{-- <td>
                                                                 <input type="text" name="remark[{{ $category }}]"
                                                                     value="{{ old("remark.$category", $inspection['remark'][$category] ?? '') }}"
                                                                     class="input-remark"
                                                                     placeholder="Masukkan remark (opsional)">
-                                                            </td>
+                                                            </td> --}}
                                                         </tr>
                                                     @endforeach
                                                 </tbody>
@@ -347,16 +436,25 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="col-12 mt-2">
+                                        <label for="note">Note/Catatan</label>
+                                        <textarea name="note" id="note" class="form-control" cols="12" rows="2">{{ $inspection['note'] }}</textarea>
+                                    </div>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-6 ">
                                     <div class="input-group input-group-static mb-3">
-                                        <label for="dibuat" class="ms-0">Dilakukan Oleh</label>
-                                        <select name="dilakukan1" id="dilakukan1" class="form-control" required>
+                                        <input type="text" name="dilakukan1" id="dibuat"
+                                            value="{{ old('dibuat', $inspection['dilakukan1'] ?? '') }}" hidden>
+
+                                        <label for="dibuat" class="ms-0">Dilakukan Oleh 1</label>
+                                        <select name="dilakukan1" id="dilakukan1" class="form-control" disabled>
                                             <option disabled selected>-- Select User --</option>
                                             @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nama }}"
-                                                    {{ old('dilakukan1', $inspection['dilakukan1'] ?? '') == $user->nama ? 'selected' : '' }}>
+                                                <option value="{{ $user->nik }}"
+                                                    {{ old('dilakukan1', $inspection['dilakukan1'] ?? '') == $user->nik ? 'selected' : '' }}>
                                                     {{ $user->nama }}</option>
                                             @endforeach
                                         </select>
@@ -364,7 +462,7 @@
                                 </div>
                                 <div class="col-6">
                                     <div class="input-group input-group-static mb-3">
-                                        <label for="dibuat" class="ms-0">Dilakukan Oleh</label>
+                                        <label for="dibuat" class="ms-0">Dilakukan Oleh 2</label>
                                         <select name="dilakukan2" id="dilakukan2" class="form-control" required>
                                             <option disabled selected>-- Select User --</option>
                                             @foreach ($approvalList as $user)
@@ -403,9 +501,16 @@
                                 </div>
                             </div>
 
-                            <div class="d-flex justify-content-end">
-                                <button type="submit" class="btn btn-primary mt-3">Update</button>
-                            </div>
+                            @if ($finalInspect == null)
+                                <div class="d-flex justify-content-end">
+                                    <button type="submit" class="btn btn-primary mt-3">draft</button>
+                                </div>
+                            @else
+                                <div class="d-flex justify-content-end">
+                                    <button type="submit" class="btn btn-primary mt-3">Submit</button>
+                                </div>
+                            @endif
+
                         </form>
                     </div>
                 </div>
@@ -424,6 +529,27 @@
             $('#dilakukan1').select2();
             $('#dilakukan2').select2();
             $('#site').select2();
+            $('#cn').select2();
+        });
+        $(document).ready(function() {
+
+            const engineModelMap = {
+                @foreach ($cn as $cn_unit)
+                    "{{ $cn_unit->no_lambung }}": {
+                        "unitModel": "{{ $cn_unit->model }}",
+                    },
+                @endforeach
+            };
+
+            $('#cn').change(function() {
+                const selectedCn = $(this).val();
+                if (engineModelMap[selectedCn]) {
+                    const unitData = engineModelMap[selectedCn];
+                    $('#model_unit').val(unitData.unitModel);
+                } else {
+                    $('#model_unit').val('');
+                }
+            });
         });
         document.addEventListener("DOMContentLoaded", function() {
             document.querySelectorAll(".toggle-switch").forEach(function(toggle) {
