@@ -47,8 +47,9 @@ class InspectionDongfengController extends Controller
             $site       = $request->query('site');
             $status  = $request->query('status');
             $date       = $request->query('date');
+            $model       = $request->query('model');
 
-            $inspectionDongfeng = InspectionDongfeng::select('id','diperiksa','creator','diketahui','status', 'site', 'model_unit', 'cn', 'hm', 'created_at')
+            $inspectionDongfeng = InspectionDongfeng::select('id','diperiksa','creator','diketahui','status','status_form', 'site', 'model_unit', 'cn', 'hm', 'created_at')
                 ->when($search, function ($query) use ($search) {
                     $query->where(function ($q) use ($search) {
                         $q->where('site', 'LIKE', "%$search%")
@@ -66,6 +67,9 @@ class InspectionDongfengController extends Controller
                 })
                 ->when($date, function ($query) use ($date) {
                     return $query->whereDate('created_at', $date);
+                })
+                 ->when($model, function ($query) use ($model) {
+                    return $query->where('model_unit','LIKE', "%$model%");
                 })
                 ->orderBy($sort, $order)
                 ->paginate(10);
@@ -108,10 +112,11 @@ class InspectionDongfengController extends Controller
         $json = file_get_contents(resource_path('data/general-inspection/dongfeng/activity-list.json'));
         $activityChecklistJson = json_decode($json, true);
 
+        $nik_session = request()->session()->get('user_id', '');
         $json = file_get_contents(resource_path('data/general-inspection/dongfeng/inspection-result.json'));
         $inspectionResultJson = json_decode($json, true);
-
-        return view('smartform::plant.general-inspection.dongfeng.create', [  'sites' => $sites,
+        $cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','model')->get();
+        return view('smartform::plant.general-inspection.dongfeng.create', ['nik'=>$nik_session, 'cn'=>$cn_data,  'sites' => $sites,
         'activityChecklistJson' => $activityChecklistJson,
         'inspectionResultJson' => $inspectionResultJson,
         'approvalList' => HrdHelper::getApprovalList(),
@@ -147,6 +152,9 @@ class InspectionDongfengController extends Controller
                 'model_unit' => $request->model_unit,
                 'cn'         => $request->cn,
                 'hm'         => $request->hm,
+                'note'       => $request->note,
+                'date_inspection' => $request->date,
+                'status_form' => 'Pre inspeksi',
                 'dilakukan1' => $request->dilakukan1,
                 'dilakukan2' => $request->dilakukan2,
                 'diperiksa'  => $request->diperiksa,
@@ -311,7 +319,9 @@ class InspectionDongfengController extends Controller
             'remark'      => $remarkData
         ];
 
+         $cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','model')->get();
         return view('smartform::plant.general-inspection.dongfeng.edit', [
+            'cn'=>$cn_data,
             'activityChecklistJson' => $activityChecklistJson,
             'inspectionResultJson' => $inspectionResultJson,
             'inspection' => $inspection,
@@ -353,6 +363,9 @@ class InspectionDongfengController extends Controller
                 'model_unit' => $request->model_unit,
                 'cn'         => $request->cn,
                 'hm'         => $request->hm,
+                'note'       => $request->note,
+                'date_inspection' => $request->date,
+                'status_form' => $request->status_form,
                 'dilakukan1' => $request->dilakukan1,
                 'dilakukan2' => $request->dilakukan2,
                 'diperiksa'  => $request->diperiksa,

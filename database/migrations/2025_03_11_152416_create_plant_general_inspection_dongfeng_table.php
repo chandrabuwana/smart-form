@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('cn');
             $table->string('hm');
             $table->string('date_inspection');
+            $table->string('status_form');
             $table->string('note')->nullable();
             $table->string('date_sign1')->nullable();
             $table->string('date_sign2')->nullable();

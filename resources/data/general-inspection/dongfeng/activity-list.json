@@ -98,7 +98,7 @@
         },
         {
             "activity": "Check Clutch Limit",
-            "critical_point": "....%"
+            "critical_point": "....mm"
         },
         {
             "activity": "Check Bracket Booster",

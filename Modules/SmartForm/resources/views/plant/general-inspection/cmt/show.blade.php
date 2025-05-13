@@ -172,7 +172,6 @@
                                                 value="{{ old('model_unit', $inspection['model_unit']) }}">
                                         </div>
                                     </div>
-
                                     <div class="col-12 col-lg-3 mt-4">
                                         <div class="input-group input-group-static">
                                             <label>HM</label>
@@ -352,13 +351,13 @@
                                                                     <div class="radio-custom"></div>
                                                                 </label>
                                                             </td>
-                                                            {{-- <td>
-                                                                <input type="text" name="remark[{{ $category }}]"
+                                                            <td>
+                                                                <input type="hidden" name="remark[{{ $category }}]"
                                                                     disabled
                                                                     value="{{ old("remark.$category", $inspection['remark'][$category] ?? '') }}"
                                                                     class="input-remark"
                                                                     placeholder="Masukkan remark (opsional)">
-                                                            </td> --}}
+                                                            </td>
                                                         </tr>
                                                     @endforeach
                                                 </tbody>

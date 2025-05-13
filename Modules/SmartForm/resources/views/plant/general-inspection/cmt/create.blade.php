@@ -306,12 +306,12 @@
                                                                     <div class="radio-custom"></div>
                                                                 </label>
                                                             </td>
-                                                            {{-- <td>
-                                                                <input type="text" name="remark[{{ $category }}]"
+                                                            <td>
+                                                                <input type="hidden" name="remark[{{ $category }}]"
                                                                     value="{{ old('remark.' . $category) }}"
                                                                     class="input-remark"
                                                                     placeholder="Masukkan remark (opsional)">
-                                                            </td> --}}
+                                                            </td>
                                                         </tr>
                                                     @endforeach
                                                 </tbody>

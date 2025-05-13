@@ -160,25 +160,33 @@
                                             {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('site', strtolower($inspection['site'])) !!}
                                         </div>
                                     </div>
-                                    <div class="col-12 col-lg-4 mt-4">
-                                        <div class="input-group input-group-static">
-                                            <label>Model Unit</label>
-                                            <input type="text" name="model_unit" class="form-control" disabled
-                                                value="{{ old('model_unit', $inspection['model_unit']) }}">
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-lg-4 mt-4">
+                                    <div class="col-12 col-lg-3 mt-4">
                                         <div class="input-group input-group-static">
                                             <label>C/N</label>
                                             <input type="text" name="cn" class="form-control" disabled
                                                 value="{{ old('cn', $inspection['cn']) }}">
                                         </div>
                                     </div>
-                                    <div class="col-12 col-lg-4 mt-4">
+                                    <div class="col-12 col-lg-3 mt-4">
+                                        <div class="input-group input-group-static">
+                                            <label>Model Unit</label>
+                                            <input type="text" name="model_unit" class="form-control" disabled
+                                                value="{{ old('model_unit', $inspection['model_unit']) }}">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-lg-3 mt-4">
                                         <div class="input-group input-group-static">
                                             <label>HM</label>
                                             <input type="text" name="hm" class="form-control" disabled
                                                 value="{{ old('hm', $inspection['hm']) }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-lg-3 mt-4">
+                                        <div class="input-group input-group-static mb-3">
+                                            <label for="date" class="ms-0">Inspection Date</label>
+                                            <input type="date" class="form-control" id="date" name="date"
+                                                value="{{ old('date', $inspection['date_inspection']) }}" disabled>
                                         </div>
                                     </div>
                                 </div>
@@ -233,266 +241,294 @@
                                                                 <tr>
                                                                     <td>{{ $item['activity'] }}</td>
                                                                     <td>{{ $item['critical_point'] }}</td>
-                                                                    <td>
-                                                                        <div class="input-group input-group-static">
-                                                                            <select disabled
-                                                                                name="inspection[{{ $category }}][{{ $item['activity'] }}][pre_inspect]"
-                                                                                class="form-control" role="button">
-                                                                                <option value=""
-                                                                                    {{ $preInspect == null ? 'selected' : null }}>
-                                                                                    N/A</option>
-                                                                                <option value="1"
-                                                                                    {{ $preInspect == 1 ? 'selected' : null }}>
-                                                                                    Good</option>
-                                                                                <option value="0"
-                                                                                    {{ $preInspect == 0 ? 'selected' : null }}>
-                                                                                    Broken</option>
-                                                                            </select>
-                                                                        </div>
-                                                                    </td>
-                                                                    <td>
-                                                                        <div class="input-group input-group-static">
-                                                                            <select disabled
-                                                                                name="inspection[{{ $category }}][{{ $item['activity'] }}][final_inspect]"
-                                                                                class="form-control" role="button">
-                                                                                <option value=""
-                                                                                    {{ $finalInspect == null ? 'selected' : null }}>
-                                                                                    N/A</option>
-                                                                                <option value="1"
-                                                                                    {{ $finalInspect == 1 ? 'selected' : null }}>
-                                                                                    Good</option>
-                                                                                <option value="0"
-                                                                                    {{ $finalInspect == 0 ? 'selected' : null }}>
-                                                                                    Broken</option>
-                                                                            </select>
-                                                                        </div>
-                                                                    </td>
-                                                                    <td>
-                                                                        <div class="input-group input-group-static">
-                                                                            <select disabled
-                                                                                name="inspection[{{ $category }}][{{ $item['activity'] }}][delivery_inspect]"
-                                                                                class="form-control" role="button">
-                                                                                <option value=""
-                                                                                    {{ $deliveryInspect == null ? 'selected' : null }}>
-                                                                                    N/A</option>
-                                                                                <option value="1"
-                                                                                    {{ $deliveryInspect == 1 ? 'selected' : null }}>
-                                                                                    Good</option>
-                                                                                <option value="0"
-                                                                                    {{ $deliveryInspect == 0 ? 'selected' : null }}>
-                                                                                    Broken</option>
-                                                                            </select>
-                                                                        </div>
-                                                                    </td>
+                                                                    @if ($item['activity'] == 'Check Clutch Limit')
+                                                                        <td>
+                                                                            <div class="input-group input-group-static">
+                                                                                <input type="text" readonly
+                                                                                    name="inspection[{{ $category }}][{{ $item['activity'] }}][pre_inspect]"
+                                                                                    class="form-control"
+                                                                                    placeholder="Masukkan hasil"
+                                                                                    value="{{ $preInspect }}">
+                                                                            </div>
+                                                                        </td>
+                                                                        <td>
+                                                                            <div class="input-group input-group-static">
+                                                                                <input type="text" readonly
+                                                                                    name="inspection[{{ $category }}][{{ $item['activity'] }}][final_inspect]"
+                                                                                    class="form-control"
+                                                                                    placeholder="Masukkan hasil"
+                                                                                    value="{{ $finalInspect }}">
+                                                                            </div>
+                                                                        </td>
+                                                                        <td>
+                                                                            <div class="input-group input-group-static">
+
+                                                                                <input type="text" readonly
+                                                                                    name="inspection[{{ $category }}][{{ $item['activity'] }}][delivery_inspect]"
+                                                                                    class="form-control"
+                                                                                    placeholder="Masukkan hasil"
+                                                                                    value="{{ $deliveryInspect }}">
+                                                                            </div>
+                                                                        </td>
+                                                                    @else
+                                                                        <td>
+                                                                            <div class="input-group input-group-static">
+                                                                                <select disabled
+                                                                                    name="inspection[{{ $category }}][{{ $item['activity'] }}][pre_inspect]"
+                                                                                    class="form-control" role="button">
+                                                                                    <option value=""
+                                                                                        {{ $preInspect == null ? 'selected' : null }}>
+                                                                                        N/A</option>
+                                                                                    <option value="1"
+                                                                                        {{ $preInspect == '1' ? 'selected' : null }}>
+                                                                                        Good</option>
+                                                                                    <option value="0"
+                                                                                        {{ $preInspect == '0' ? 'selected' : null }}>
+                                                                                        Broken</option>
+                                                                                </select>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td>
+                                                                            <div class="input-group input-group-static">
+                                                                                <select disabled
+                                                                                    name="inspection[{{ $category }}][{{ $item['activity'] }}][final_inspect]"
+                                                                                    class="form-control" role="button">
+                                                                                    <option value=""
+                                                                                        {{ $finalInspect == null ? 'selected' : null }}>
+                                                                                        N/A</option>
+                                                                                    <option value="1"
+                                                                                        {{ $finalInspect == '1' ? 'selected' : null }}>
+                                                                                        Good</option>
+                                                                                    <option value="0"
+                                                                                        {{ $finalInspect == '0' ? 'selected' : null }}>
+                                                                                        Broken</option>
+                                                                                </select>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td>
+                                                                            <div class="input-group input-group-static">
+                                                                                <select disabled
+                                                                                    name="inspection[{{ $category }}][{{ $item['activity'] }}][delivery_inspect]"
+                                                                                    class="form-control" role="button">
+                                                                                    <option value=""
+                                                                                        {{ $deliveryInspect == null ? 'selected' : null }}>
+                                                                                        N/A</option>
+                                                                                    <option value="1"
+                                                                                        {{ $deliveryInspect == '1' ? 'selected' : null }}>
+                                                                                        Good</option>
+                                                                                    <option value="0"
+                                                                                        {{ $deliveryInspect == '0' ? 'selected' : null }}>
+                                                                                        Broken</option>
+                                                                                </select>
+                                                                            </div>
+                                                                        </td>
                                                                 </tr>
-                                                            @endforeach
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
+                                                            @endif
                                     @endforeach
+                                    </tbody>
+                                    </table>
                                 </div>
                             </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
 
-                            <div class="card-body border mt-4 rounded">
-                                <h5>Analisa Hasil Inspeksi</h5>
-                                <div class="row">
-                                    <div class="col-12">
-                                        <div class="card-body table-responsive shadow border-radius-lg"
-                                            id="{{ 'analisa-hasil-inspeksi' }}">
-                                            <table class="table table-bordered">
-                                                <thead class="text-center">
-                                                    <tr>
-                                                        <th class="align-middle" rowspan="2">COMPONENT</th>
-                                                        <th class="align-middle" colspan="3">PERFORMANCE
-                                                        </th>
-                                                        <th class="align-middle" rowspan="2">REMARK</th>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>BAGUS</th>
-                                                        <th>CUKUP</th>
-                                                        <th>KURANG</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach ($inspectionResultJson as $category => $data)
-                                                        <tr>
-                                                            <td>{{ $category }}</td>
-                                                            <td class="text-center align-middle">
-                                                                <label class="radio-container">
-                                                                    <input type="radio" disabled
-                                                                        name="performance[{{ $category }}]"
-                                                                        value="bagus"
-                                                                        {{ old("performance.$category", $inspection['performance'][$category] ?? '') == 'bagus' ? 'checked' : '' }}>
-                                                                    <div class="radio-custom"></div>
-                                                                </label>
-                                                            </td>
-                                                            <td class="text-center align-middle">
-                                                                <label class="radio-container">
-                                                                    <input type="radio" disabled
-                                                                        name="performance[{{ $category }}]"
-                                                                        value="cukup"
-                                                                        {{ old("performance.$category", $inspection['performance'][$category] ?? '') == 'cukup' ? 'checked' : '' }}>
-                                                                    <div class="radio-custom"></div>
-                                                                </label>
-                                                            </td>
-                                                            <td class="text-center align-middle">
-                                                                <label class="radio-container">
-                                                                    <input type="radio" disabled
-                                                                        name="performance[{{ $category }}]"
-                                                                        value="kurang"
-                                                                        {{ old("performance.$category", $inspection['performance'][$category] ?? '') == 'kurang' ? 'checked' : '' }}>
-                                                                    <div class="radio-custom"></div>
-                                                                </label>
-                                                            </td>
-                                                            <td>
-                                                                <input type="text" name="remark[{{ $category }}]"
-                                                                    disabled
-                                                                    value="{{ old("remark.$category", $inspection['remark'][$category] ?? '') }}"
-                                                                    class="input-remark"
-                                                                    placeholder="Masukkan remark (opsional)">
-                                                            </td>
-                                                        </tr>
-                                                    @endforeach
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-6 ">
-                                    <div class="input-group input-group-static mb-3">
-                                        <label for="dilakukan1" class="ms-0">Dilakukan Oleh</label>
-                                        <select name="dilakukan1" id="dilakukan1" class="form-control" disabled required>
-                                            <option disabled selected>-- Select User --</option>
-                                            @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nama }}"
-                                                    {{ old('dilakukan1', $inspection['dilakukan1'] ?? '') == $user->nama ? 'selected' : '' }}>
-                                                    {{ $user->nama }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="input-group input-group-static mb-3">
-                                        <label for="dilakukan2" class="ms-0">Dilakukan Oleh</label>
-                                        <select name="dilakukan2" id="dilakukan2" class="form-control" disabled required>
-                                            <option disabled selected>-- Select User --</option>
-                                            @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nama }}"
-                                                    {{ old('dilakukan2', $inspection['dilakukan2'] ?? '') == $user->nama ? 'selected' : '' }}>
-                                                    {{ $user->nama }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-6 mt-2">
-                                    <div class="input-group input-group-static mb-3">
-                                        <label for="diperiksa" class="ms-0">Diperiksa Oleh</label>
-                                        <select name="diperiksa" id="diperiksa" class="form-control" disabled required>
-                                            <option disabled selected>-- Select User --</option>
-                                            @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nik }}"
-                                                    {{ old('diperiksa', $inspection['diperiksa'] ?? '') == $user->nik ? 'selected' : '' }}>
-                                                    {{ $user->nama }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-6 mt-2">
-                                    <div class="input-group input-group-static mb-3">
-                                        <label for="diketahui" class="ms-0">Diketahui Oleh</label>
-                                        <select name="diketahui" id="diketahui" class="form-control" disabled required>
-                                            <option disabled selected>-- Select User --</option>
-                                            @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nik }}"
-                                                    {{ old('diketahui', $inspection['diketahui'] ?? '') == $user->nik ? 'selected' : '' }}>
-                                                    {{ $user->nama }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                @for ($i = 0; $i < 2; $i++)
-                                    @if ($i == 0)
-                                        @if ($status[$i] == 'Rejected')
-                                            <div class="col-6 ty">
-                                                <img src="{{ asset('img/rejected.png') }}" class="img-app"
-                                                    alt="">
-                                            </div>
-                                        @elseif ($status[$i] == 'Approved')
-                                            <div class="col-6 ty">
-                                                <img src="{{ asset('img/checked.png') }}" class="img-app"
-                                                    alt="">
-                                            </div>
-                                        @elseif ($status[$i] == 'Draft')
-                                            <div class="col-6 ty">
-
-                                            </div>
-                                        @endif
-                                    @else
-                                        @if ($status[$i] == 'Rejected')
-                                            <div class="col-6 ty">
-                                                <img src="{{ asset('img/rejected.png') }}" class="img-app"
-                                                    alt="">
-                                            </div>
-                                        @elseif ($status[$i] == 'Approved')
-                                            <div class="col-6 ty">
-                                                <img src="{{ asset('img/validated.png') }}" class="img-app"
-                                                    alt="">
-                                            </div>
-                                        @elseif ($status[$i] == 'Draft')
-                                            <div class="col-6 ty">
-
-                                            </div>
-                                        @endif
-                                    @endif
-                                @endfor
-
-                            </div>
-                            @php
-                                $statusJson = json_encode($status); // Konversi ke JSON string
-                            @endphp
-                            <div class="d-flex justify-content-end mt-3">
-                                <div class="row">
-                                    <div class="col-12">
-                                        <div class="form-actions">
-                                            @if ($nik == $inspection['diketahui'] || $nik == $inspection['diperiksa'])
-                                                <button type="button" class="btn btn-success btn-sm"
-                                                    onclick="approved('{{ $inspection['id'] }}', '{{ $statusJson }}', '{{ $nik }}')">
-                                                    <i class="fas fa-check"></i> Approve
-                                                </button>
-                                                <button type="button" class="btn btn-warning btn-sm"
-                                                    onclick="rejected('{{ $inspection['id'] }}', '{{ $statusJson }}', '{{ $nik }}')">
-                                                    <i class="fas fa-close"></i> Reject
-                                                </button>
-                                            @endif
-
-                                            @if (collect($status)->contains(fn($s) => $s === 'Rejected'))
-                                                @if ($nik == $inspection['creator'])
-                                                    <button type="button" class="btn btn-primary btn-sm"
-                                                        onclick="resetApproval('{{ $inspection['id'] }}')">
-                                                        <i class="fas fa-undo"></i> Reset
-                                                    </button>
-                                                @endif
-                                            @endif
-
-                                            <a href="{{ route('bss-form.plant.general-inspection.dongfeng.dashboard') }}"
-                                                class="btn btn-secondary btn-sm" id="btn-back">
-                                                Cancel</a>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
+            <div class="card-body border mt-4 rounded">
+                <h5>Analisa Hasil Inspeksi</h5>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card-body table-responsive shadow border-radius-lg"
+                            id="{{ 'analisa-hasil-inspeksi' }}">
+                            <table class="table table-bordered">
+                                <thead class="text-center">
+                                    <tr>
+                                        <th class="align-middle" rowspan="2">COMPONENT</th>
+                                        <th class="align-middle" colspan="3">PERFORMANCE
+                                        </th>
+                                        {{-- <th class="align-middle" rowspan="2">REMARK</th> --}}
+                                    </tr>
+                                    <tr>
+                                        <th>BAGUS</th>
+                                        <th>CUKUP</th>
+                                        <th>KURANG</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($inspectionResultJson as $category => $data)
+                                        <tr>
+                                            <td>{{ $category }}</td>
+                                            <td class="text-center align-middle">
+                                                <label class="radio-container">
+                                                    <input type="radio" disabled
+                                                        name="performance[{{ $category }}]" value="bagus"
+                                                        {{ old("performance.$category", $inspection['performance'][$category] ?? '') == 'bagus' ? 'checked' : '' }}>
+                                                    <div class="radio-custom"></div>
+                                                </label>
+                                            </td>
+                                            <td class="text-center align-middle">
+                                                <label class="radio-container">
+                                                    <input type="radio" disabled
+                                                        name="performance[{{ $category }}]" value="cukup"
+                                                        {{ old("performance.$category", $inspection['performance'][$category] ?? '') == 'cukup' ? 'checked' : '' }}>
+                                                    <div class="radio-custom"></div>
+                                                </label>
+                                            </td>
+                                            <td class="text-center align-middle">
+                                                <label class="radio-container">
+                                                    <input type="radio" disabled
+                                                        name="performance[{{ $category }}]" value="kurang"
+                                                        {{ old("performance.$category", $inspection['performance'][$category] ?? '') == 'kurang' ? 'checked' : '' }}>
+                                                    <div class="radio-custom"></div>
+                                                </label>
+                                            </td>
+                                            <td>
+                                                <input type="hidden" name="remark[{{ $category }}]" disabled
+                                                    value="{{ old("remark.$category", $inspection['remark'][$category] ?? '') }}"
+                                                    class="input-remark" placeholder="Masukkan remark (opsional)">
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 mt-2">
+                        <label for="note">Note/Catatan</label>
+                        <textarea name="note" id="note" class="form-control" cols="12" rows="2" readonly>{{ $inspection['note'] }}</textarea>
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-6 ">
+                    <div class="input-group input-group-static mb-3">
+                        <label for="dilakukan1" class="ms-0">Dilakukan Oleh 1</label>
+                        <select name="dilakukan1" id="dilakukan1" class="form-control" disabled required>
+                            <option disabled selected>-- Select User --</option>
+                            @foreach ($approvalList as $user)
+                                <option value="{{ $user->nama }}"
+                                    {{ old('dilakukan1', $inspection['dilakukan1'] ?? '') == $user->nik ? 'selected' : '' }}>
+                                    {{ $user->nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="input-group input-group-static mb-3">
+                        <label for="dilakukan2" class="ms-0">Dilakukan Oleh 2</label>
+                        <select name="dilakukan2" id="dilakukan2" class="form-control" disabled required>
+                            <option disabled selected>-- Select User --</option>
+                            @foreach ($approvalList as $user)
+                                <option value="{{ $user->nama }}"
+                                    {{ old('dilakukan2', $inspection['dilakukan2'] ?? '') == $user->nama ? 'selected' : '' }}>
+                                    {{ $user->nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="col-6 mt-2">
+                    <div class="input-group input-group-static mb-3">
+                        <label for="diperiksa" class="ms-0">Diperiksa Oleh</label>
+                        <select name="diperiksa" id="diperiksa" class="form-control" disabled required>
+                            <option disabled selected>-- Select User --</option>
+                            @foreach ($approvalList as $user)
+                                <option value="{{ $user->nik }}"
+                                    {{ old('diperiksa', $inspection['diperiksa'] ?? '') == $user->nik ? 'selected' : '' }}>
+                                    {{ $user->nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="col-6 mt-2">
+                    <div class="input-group input-group-static mb-3">
+                        <label for="diketahui" class="ms-0">Diketahui Oleh</label>
+                        <select name="diketahui" id="diketahui" class="form-control" disabled required>
+                            <option disabled selected>-- Select User --</option>
+                            @foreach ($approvalList as $user)
+                                <option value="{{ $user->nik }}"
+                                    {{ old('diketahui', $inspection['diketahui'] ?? '') == $user->nik ? 'selected' : '' }}>
+                                    {{ $user->nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                @for ($i = 0; $i < 2; $i++)
+                    @if ($i == 0)
+                        @if ($status[$i] == 'Rejected')
+                            <div class="col-6 ty">
+                                <img src="{{ asset('img/rejected.png') }}" class="img-app" alt="">
+                            </div>
+                        @elseif ($status[$i] == 'Approved')
+                            <div class="col-6 ty">
+                                <img src="{{ asset('img/checked.png') }}" class="img-app" alt="">
+                            </div>
+                        @elseif ($status[$i] == 'Draft')
+                            <div class="col-6 ty">
+
+                            </div>
+                        @endif
+                    @else
+                        @if ($status[$i] == 'Rejected')
+                            <div class="col-6 ty">
+                                <img src="{{ asset('img/rejected.png') }}" class="img-app" alt="">
+                            </div>
+                        @elseif ($status[$i] == 'Approved')
+                            <div class="col-6 ty">
+                                <img src="{{ asset('img/validated.png') }}" class="img-app" alt="">
+                            </div>
+                        @elseif ($status[$i] == 'Draft')
+                            <div class="col-6 ty">
+
+                            </div>
+                        @endif
+                    @endif
+                @endfor
+
+            </div>
+            @php
+                $statusJson = json_encode($status); // Konversi ke JSON string
+            @endphp
+            <div class="d-flex justify-content-end mt-3">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-actions">
+                            @if ($nik == $inspection['diketahui'] || $nik == $inspection['diperiksa'])
+                                <button type="button" class="btn btn-success btn-sm"
+                                    onclick="approved('{{ $inspection['id'] }}', '{{ $statusJson }}', '{{ $nik }}')">
+                                    <i class="fas fa-check"></i> Approve
+                                </button>
+                                <button type="button" class="btn btn-warning btn-sm"
+                                    onclick="rejected('{{ $inspection['id'] }}', '{{ $statusJson }}', '{{ $nik }}')">
+                                    <i class="fas fa-close"></i> Reject
+                                </button>
+                            @endif
+
+                            @if (collect($status)->contains(fn($s) => $s === 'Rejected'))
+                                @if ($nik == $inspection['creator'])
+                                    <button type="button" class="btn btn-primary btn-sm"
+                                        onclick="resetApproval('{{ $inspection['id'] }}')">
+                                        <i class="fas fa-undo"></i> Reset
+                                    </button>
+                                @endif
+                            @endif
+
+                            <a href="{{ route('bss-form.plant.general-inspection.dongfeng.dashboard') }}"
+                                class="btn btn-secondary btn-sm" id="btn-back">
+                                Cancel</a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            </form>
         </div>
+    </div>
+    </div>
+    </div>
     </div>
 @endsection
 

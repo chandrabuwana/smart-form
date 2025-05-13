@@ -17,9 +17,9 @@ return new class extends Migration
             $table->string('category');
             $table->string('activity');
             $table->string('critical_point');
-            $table->boolean('pre_inspect')->nullable();
-            $table->boolean('final_inspect')->nullable();
-            $table->boolean('delivery_inspect')->nullable();
+            $table->string('pre_inspect')->nullable();
+            $table->string('final_inspect')->nullable();
+            $table->string('delivery_inspect')->nullable();
         });
     }
 

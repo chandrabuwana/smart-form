@@ -134,7 +134,7 @@
                     </tr>
                 </table>
             </td>
-            <td style="text-align: center">GENERAL INSPECTION</td>
+            <td rowspan="2" style="text-align: center">GENERAL INSPECTION DONGFENG</td>
             <td>
                 <span>C / N</span>
             </td>
@@ -143,11 +143,11 @@
             <td>A-/00</td>
         </tr>
         <tr>
-            <td style="text-align: center">DONGFENG DUMPTRUCK</td>
+
             <td><span>HM</span></td>
             <td>{{ $inspection['hm'] }}</td>
-            <td></td>
-            <td></td>
+            <td>Inspection Date</td>
+            <td>{{ $inspection['date_inspection'] }}</td>
         </tr>
     </table>
 
@@ -186,15 +186,21 @@
                         <td>{{ $index + 1 }}</td>
                         <td>{{ $activityKey }}</td>
                         <td>{{ $item['critical_point'] }}</td>
+
                         @foreach ($inspectionTypes as $type)
                             @php
                                 $status = $inspectionData[$type] ?? null;
                                 $isGood = !empty($status);
                                 $isBroken = $status !== null && !$status;
                             @endphp
-                            <td style="text-align: center">{{ $isGood ? '✔' : '' }}</td>
-                            <td style="text-align: center">{{ $isBroken ? '✔' : '' }}</td>
+                            @if ($activityKey == 'Check Clutch Limit')
+                                <td colspan="2" style="text-align: center">{{ $inspectionData[$type] }}</td>
+                            @else
+                                <td style="text-align: center">{{ $isGood ? '✔' : '' }}</td>
+                                <td style="text-align: center">{{ $isBroken ? '✔' : '' }}</td>
+                            @endif
                         @endforeach
+
                     </tr>
                 @endforeach
             @endforeach
@@ -255,7 +261,7 @@
             <tr>
                 <td rowspan="2">COMPONENT</td>
                 <td colspan="3" style="text-align: center">PERFORMANCE</td>
-                <td rowspan="2" style="text-align: center">REMARK</td>
+                {{-- <td rowspan="2" style="text-align: center">REMARK</td> --}}
             </tr>
             <tr>
                 <td style="text-align: center">BAGUS</td>
@@ -271,16 +277,20 @@
                         {{ ($inspection['performance'][$category] ?? '') == 'cukup' ? '✔' : '' }}</td>
                     <td style="text-align: center">
                         {{ ($inspection['performance'][$category] ?? '') == 'kurang' ? '✔' : '' }}</td>
-                    <td style="text-align: center">{{ $inspection['remark'][$category] ?? '' }}</td>
+                    {{-- <td style="text-align: center">{{ $inspection['remark'][$category] ?? '' }}</td> --}}
                 </tr>
             @endforeach
+            <tr>
+                <td>Note/Catatan</td>
+                <td colspan='4'>{{ $inspection['note'] }}</td>
+            </tr>
         </table>
 
         <table style="margin-top: 12px">
             <tr>
                 <td rowspan="2">COMPONENT</td>
                 <td colspan="3" style="text-align: center">PERFORMANCE</td>
-                <td rowspan="2" style="text-align: center">REMARK</td>
+                {{-- <td rowspan="2" style="text-align: center">REMARK</td> --}}
             </tr>
             <tr>
                 <td style="text-align: center">BAGUS</td>
@@ -296,9 +306,13 @@
                         {{ ($inspection['performance'][$category] ?? '') == 'cukup' ? '✔' : '' }}</td>
                     <td style="text-align: center">
                         {{ ($inspection['performance'][$category] ?? '') == 'kurang' ? '✔' : '' }}</td>
-                    <td style="text-align: center">{{ $inspection['remark'][$category] ?? '' }}</td>
+                    {{-- <td style="text-align: center">{{ $inspection['remark'][$category] ?? '' }}</td> --}}
                 </tr>
             @endforeach
+            <tr>
+                <td colspan="5"></td>
+
+            </tr>
         </table>
     </div>
 
@@ -314,7 +328,7 @@
             </div>
             <div style="display: flex; justify-content: space-around;">
                 <div class="name">
-                    <p>{{ $inspection['dilakukan1'] }}
+                    <p>{{ optional(collect($approvalList)->firstWhere('nik', $inspection['dilakukan1']))->nama ?? '' }}
                     </p>
                     <p>(Mechanic)</p>
                 </div>

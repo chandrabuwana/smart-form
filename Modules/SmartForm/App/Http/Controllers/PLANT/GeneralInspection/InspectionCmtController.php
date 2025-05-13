@@ -38,7 +38,7 @@ class InspectionCmtController extends Controller
         }
     }
 
-    public function getData(InspectionCmt $cmt,  Request $request)
+    public function getData( Request $request)
     {
         try {
             $search = $request->query('search');
