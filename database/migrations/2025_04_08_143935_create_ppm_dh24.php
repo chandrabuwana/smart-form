@@ -19,12 +19,12 @@ return new class extends Migration
             $table->string('unit_cn')->nullable();
             $table->string('engine_model')->nullable();
             $table->string('engine_sn')->nullable();
-            $table->string('att_front')->nullable();
-            $table->string('att_rear')->nullable();
+            $table->string('brand')->nullable();
             $table->string('job_site')->nullable();
             $table->string('job_location')->nullable();
             $table->string('at_inspection')->nullable();
             $table->date('date')->nullable();
+            $table->string('note')->nullable();
             $table->string('checked_by')->nullable();
             $table->string('validated_by')->nullable();
             $table->integer('delete_status')->nullable();

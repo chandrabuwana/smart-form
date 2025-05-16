@@ -53,13 +53,13 @@ class PpmShantuiDH24Controller extends Controller {
                 $query->where(function($q) use ($searchTerm) {
                     $q->where('doc_num', 'like', '%'.$searchTerm.'%')
                       ->orWhere('unit_model', 'like', '%'.$searchTerm.'%')
-                      ->orWhere('engine_model', 'like', '%'.$searchTerm.'%')
+                      ->orWhere('unit_cn', 'like', '%'.$searchTerm.'%')
                       ->orWhere('job_site', 'like', '%'.$searchTerm.'%');
                 });
             }
 
-            if ($request->has('engine_model') && $request->engine_model) {
-                $query->where('engine_model', $request->engine_model);
+            if ($request->has('unit_cn') && $request->unit_cn) {
+                $query->where('unit_cn', $request->unit_cn);
             }
 
             if ($request->has('job_site') && $request->job_site) {
@@ -77,18 +77,21 @@ class PpmShantuiDH24Controller extends Controller {
                     ->whereMonth('created_at', now()->month)
                     ->whereYear('created_at', now()->year)
                     ->count(),
-                'engine_model' => DB::table('ppm_dh24')->distinct()->count('engine_model'),
+                'unit_cn' => DB::table('ppm_dh24')->distinct()->count('unit_cn'),
                 'job_site' => DB::table('ppm_dh24')->distinct()->count('job_site'),
             ];
 
+            $cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','sn_unit','model','model_engine','sn_engine')->get();
             $records = $query->paginate(5);
+
             return view('SmartForm::plant.ppm_dh24.dashboard', [
+                'cn'=>$cn_data,
                 'record' => $records,
                 'statistics' => $statistics,
                 'session'=>$nik_session,
                 'user'=> HrdHelper::getApprovalList(), 'statistics'=>$statistics, 'filters' => [
                 'search' => $request->search,
-                'engine_model' => $request->engine_model,
+                'unit_cn' => $request->unit_cn,
                 'job_site' => $request->job_site,
                 'approval' => $request->approval,
 
@@ -101,11 +104,16 @@ class PpmShantuiDH24Controller extends Controller {
     }
 
 
-    public function Add() {
+    public function Add(Request $request) {
 
+        $nik_session = $request->session()->get( 'user_id', '' );
         $json = file_get_contents( resource_path( 'data/ppm-dh24/ppm-dh24.json' ) );
         $list = json_decode( $json, true );
-        return view( 'SmartForm::plant.ppm_dh24.form-create', [ 'list' => $list,  'approvalList' => HrdHelper::getApprovalList() ] );
+        $cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','sn_unit','model','model_engine','sn_engine')->get();
+        return view( 'SmartForm::plant.ppm_dh24.form-create', [
+            'list' => $list,  'cn'=>$cn_data, 'approvalList' => HrdHelper::getApprovalList(),
+            'nik'=>$nik_session
+        ]);
     }
 
     public function Store(Request $request) {
@@ -117,17 +125,17 @@ class PpmShantuiDH24Controller extends Controller {
             'unit_cn' => $request->unit_cn,
             'engine_model' => $request->engine_model ,
             'engine_sn' => $request->engine_sn,
-            'att_front' => $request->att_front,
-            'att_rear' => $request->att_rear,
+            'brand' => $request->brand,
             'job_site' => $request->job_site,
             'job_location' => $request->location,
             'at_inspection' => $request->at_inspec,
             'date' => $request->date,
-            'checked_by' => $request->checked,
+            'creator' => $request->checked1,
+            'checked_by' => $request->checked2,
             'validated_by' =>$request->validated,
+            'note' => $request->note,
             'created_at' => DB::raw('GETDATE()'),
             'updated_at' => DB::raw('GETDATE()'),
-            'creator' => $request->session()->get( 'user_id', '' ),
             'status' => json_encode( array_values( [ null, null] ) )
         ];
 
@@ -184,16 +192,16 @@ class PpmShantuiDH24Controller extends Controller {
             'unit_cn' => $request->unit_cn,
             'engine_model' => $request->engine_model,
             'engine_sn' => $request->engine_sn,
-            'att_front' => $request->att_front,
-            'att_rear' => $request->att_rear,
+            'brand' => $request->brand,
             'job_site' => $request->job_site,
             'job_location' => $request->location,
             'at_inspection' => $request->at_inspec,
             'date' => $request->date,
-            'checked_by' => $request->checked,
+            'creator' => $request->checked1,
+            'checked_by' => $request->checked2,
             'validated_by' => $request->validated,
+            'note' => $request->note,
             'updated_at' => DB::raw('GETDATE()'),
-            'creator' => $request->session()->get('user_id', ''),
             'status' => json_encode([null, null])
         ];
 
@@ -252,6 +260,7 @@ class PpmShantuiDH24Controller extends Controller {
 
 
     public function ExportPDF($id) {
+
         try {
             $data = DB::table('ppm_dh24')
                 ->where('id', $id)
@@ -262,7 +271,7 @@ class PpmShantuiDH24Controller extends Controller {
             }
 
             $detail = DB::table('ppm_dh24_detail')
-                ->where('ppm_dh24_id', $data->id)
+                ->where('doc_num_id', $data->doc_num)
                 ->first();
 
             if (!$detail) {
@@ -302,7 +311,8 @@ class PpmShantuiDH24Controller extends Controller {
 
             $pdf = PDF::loadView('SmartForm::plant.ppm_dh24.pdf', [
                 'data' => $data,
-                'list' => $list
+                'list' => $list,
+                'approvalList' => HrdHelper::getApprovalList(),
             ]);
 
             $pdf->setPaper('A4', 'landscape');
@@ -317,7 +327,9 @@ class PpmShantuiDH24Controller extends Controller {
         }
     }
 
-    function detail($id) {
+    function detail($id, Request $request) {
+
+        $nik_session = $request->session()->get( 'user_id', '' );
 
         $data = DB::table( 'ppm_dh24' )
         ->where( 'id', $id )
@@ -357,7 +369,12 @@ class PpmShantuiDH24Controller extends Controller {
             $data->fin_taggal = isset($detail->fin_taggal) ? json_decode($detail->fin_taggal, true) ?? [] : [];
             $data->fin_remark = $detail->fin_remark ?? '';
 
-        return view('SmartForm::plant.ppm_dh24.show', [ 'data' => $data, 'list' => $list, 'approvalList' => HrdHelper::getApprovalList() ] );
+            $cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','sn_unit','model','model_engine','sn_engine')->get();
+
+        return view('SmartForm::plant.ppm_dh24.show', [
+            'data' => $data, 'cn'=>$cn_data, 'list' => $list, 'approvalList' => HrdHelper::getApprovalList(),
+            'nik'=>$nik_session
+        ]);
     }
 
     function show(Request $request, $id) {
@@ -402,7 +419,9 @@ class PpmShantuiDH24Controller extends Controller {
             $data->fin_taggal = isset($detail->fin_taggal) ? json_decode($detail->fin_taggal, true) ?? [] : [];
             $data->fin_remark = $detail->fin_remark ?? '';
 
-        return view('SmartForm::plant.ppm_dh24.detail', [ 'data' => $data, 'nik' =>$nik_session, 'list' => $list, 'approvalList' => HrdHelper::getApprovalList() ] );
+            $cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','sn_unit','model','model_engine','sn_engine')->get();
+
+        return view('SmartForm::plant.ppm_dh24.detail', [ 'data' => $data, 'cn'=>$cn_data, 'nik' =>$nik_session, 'list' => $list, 'approvalList' => HrdHelper::getApprovalList() ] );
     }
 
     public function Reset( $id ) {
