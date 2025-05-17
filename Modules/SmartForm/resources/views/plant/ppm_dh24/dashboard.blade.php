@@ -316,7 +316,7 @@
                                                 </td>
                                                 <td>
                                                     @if ($session == $data->creator)
-                                                        @if ($data->status === 'rejected' || $data->status === 'draft')
+                                                        @if (in_array($data->status, ['rejected', 'draft', null, '[null,null]']))
                                                             <a href="{{ route('detail-dh24', ['id' => $data->id]) }}"
                                                                 class="btn btn-warning btn-sm mt-3"
                                                                 style="{{ $data->delete_status == 1 ? 'pointer-events: none; opacity: 0.6;' : '' }}">

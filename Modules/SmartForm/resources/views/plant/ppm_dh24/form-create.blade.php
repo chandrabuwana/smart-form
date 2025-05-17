@@ -76,7 +76,7 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="brand" class="ms-0">Brand</label>
-                                        <input type="text" class="form-control uppercase" id="brand" name="brand" required>
+                                        <textarea class="form-control uppercase" id="brand" name="brand" required></textarea>
                                     </div>
                                 </div>
                             </div>
