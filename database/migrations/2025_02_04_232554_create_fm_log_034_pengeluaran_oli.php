@@ -15,7 +15,7 @@ return new class extends Migration
             $table->increments('id');
             $table->string('no_dok');
             $table->string('revisi');
-            $table->string('tanggal');
+            $table->string('tanggal')->nullable();
             $table->string('halaman');
             $table->string('job_site');
             $table->string('no_lube_station');
