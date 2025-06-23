@@ -32,7 +32,9 @@ class HrdHelper
                         'NIK as nik',
                         'Nama as nama',
                     ])
-                    ->where('AKTIF', 0);
+                    ->where('AKTIF', 0)
+                    ->limit(50)
+                    ->orderBy('Nama', 'asc');
                 
                 return $query->get();
                 
