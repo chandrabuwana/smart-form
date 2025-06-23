@@ -83,6 +83,11 @@
             font-size: 12px;
             font-weight: bold;
         }
+
+        .ttd {
+            width: 40px;
+        }
+
     </style>
 </head>
 
@@ -123,12 +128,10 @@
             <td colspan="3">
                 UNIT
             </td>
-            <td colspan="2">
+            <td colspan="3">
                 ENGINE
             </td>
-            <td colspan="2">ATTACHMENT
-            </td>
-            <td colspan="4" style="border: none">
+            <td colspan="5" style="border: none">
             </td>
         </tr>
         <tr>
@@ -146,12 +149,9 @@
                 S/N
             </td>
             <td>
-                Front
+                Brand
             </td>
-            <td>
-                Rear
-            </td>
-            <td colspan="4" style="border: none"></td>
+            <td colspan="5" style="border: none"></td>
         </tr>
         <tr>
             <td>
@@ -161,9 +161,8 @@
             <td>{{ $data->unit_cn }}</td>
             <td>{{ $data->engine_model }}</td>
             <td>{{ $data->engine_sn }}</td>
-            <td>{{ $data->att_front }}</td>
-            <td>{{ $data->att_rear }}</td>
-            <td colspan="4" style="border: none; padding:4px;"></td>
+            <td>{{ $data->brand }}</td>
+            <td colspan="5" style="border: none; padding:4px;"></td>
         </tr>
         <tr>
             <td colspan="11" style="border:none;"></td>
@@ -197,19 +196,16 @@
         </tr>
 
         <tr style=" font-weight:bold; font-size:6px;">
-            <th rowspan="2">ITEM</th>
-            <th rowspan="2" colspan="2">CONDITION</th>
-            <th rowspan="2">UNIT</th>
-            <th rowspan="2">STANDARD STD / PMS</th>
-            <th rowspan="2">ACTUAL</th>
-            <th rowspan="2">CORRECTION MADE</th>
-            <th rowspan="2">RESULT</th>
-            <th colspan="2">RECOMMENDED PARTS</th>
-            <th rowspan="2">REMARKS</th>
-        </tr>
-        <tr>
-            <td>PR. NO</td>
-            <td>Tanggal</td>
+            <th rowspan="1">ITEM</th>
+            <th rowspan="1" colspan="2">CONDITION</th>
+            <th rowspan="1">UNIT</th>
+            <th rowspan="1">STANDARD STD / PMS</th>
+            <th rowspan="1">ACTUAL</th>
+            <th rowspan="1">CORRECTION MADE</th>
+            <th rowspan="1">RESULT</th>
+            <th style="vertical-align: middle;">PR.NO</th>
+            <th style="vertical-align: middle;">TANGGAL</th>
+            <th rowspan="1">REMARKS</th>
         </tr>
         </thead>
         <tbody>
@@ -376,19 +372,16 @@
             @endforeach
 
             <tr style=" font-weight:bold; font-size:6px;">
-                <th rowspan="2">ITEM</th>
-                <th rowspan="2" colspan="2">CONDITION</th>
-                <th rowspan="2">UNIT</th>
-                <th rowspan="2">STANDARD STD / PMS</th>
-                <th rowspan="2">ACTUAL</th>
-                <th rowspan="2">CORRECTION MADE</th>
-                <th rowspan="2">RESULT</th>
-                <th colspan="2">RECOMMENDED PARTS</th>
-                <th rowspan="2">REMARKS</th>
-            </tr>
-            <tr>
-                <td>PR. NO</td>
-                <td>Tanggal</td>
+                <th rowspan="1">ITEM</th>
+                <th rowspan="1" colspan="2">CONDITION</th>
+                <th rowspan="1">UNIT</th>
+                <th rowspan="1">STANDARD STD / PMS</th>
+                <th rowspan="1">ACTUAL</th>
+                <th rowspan="1">CORRECTION MADE</th>
+                <th rowspan="1">RESULT</th>
+                <th style="vertical-align: middle;">PR.NO</th>
+                <th style="vertical-align: middle;">TANGGAL</th>
+                <th rowspan="1">REMARKS</th>
             </tr>
 
             @php
@@ -404,11 +397,6 @@
                     @elseif ($value['condition'] == 'Function Check')
                         <tr>
                             <td colspan="11" style="text-align: left;  font-weight:bold; font-size:6px;">ELECTRICAL
-                            </td>
-                        </tr>
-                    @else
-                        <tr>
-                            <td colspan="11" style="text-align: left;  font-weight:bold; font-size:6px;">OPTIONAL
                             </td>
                         </tr>
                     @endif
@@ -460,35 +448,66 @@
                     $l++;
                 @endphp
             @endforeach
+            <tr>
+                <td style="text-align: left; font-weight: bold; font-size: 6px;">Note</td>
+                <td colspan="10" style="text-align: center; font-weight: bold; font-size: 6px;">
+
+                    {{ $data->note }}
+
+                </td>
+            </tr>
         </tbody>
     </table>
     <div style="margin-top: 10px;">
         <table style="width: 80%; border-collapse: collapse;">
             <tr>
-                <td colspan="2">Checked By</td>
+                <td colspan="2">Checked By1</td>
+                <td colspan="2">Checked By2</td>
                 <td colspan="2">Validated By</td>
-                <td colspan="2">Date</td>
                 <td colspan="5" style="border: none"></td>
             </tr>
             <tr>
-                <td colspan="2" style="height: 30px; border-bottom: none;"></td>
-                <td colspan="2" style="height: 30px; border-bottom: none;"></td>
-                <td colspan="2" style="height: 30px; border-bottom: none; width: 20%;">{{ $data->created_at }}
-                </td>
+                <td colspan="2" style="height: 30px; border-bottom: none;"> <img
+                        src="{{ public_path('img/checked.png') }}" class="ttd"></td>
+                <td colspan="2" style="height: 30px; border-bottom: none;"> <img
+                        src="{{ public_path('img/checked.png') }}" class="ttd"></td>
+                @if ($data->status == 'approved')
+                    <td colspan="2" style="height: 30px; border-bottom: none; width: 20%;"> <img
+                            src="{{ public_path('img/validated.png') }}" class="ttd">
+                    </td>
+                @else
+                    <td colspan="2" style="height: 30px; border-bottom: none; width: 20%;"></td>
+                @endif
+
                 <td colspan="5" style="border: none"></td>
             </tr>
             <tr>
+
+                <td colspan="2"style="border-top: none;">
+                    {{ optional(collect($approvalList)->firstWhere('nik', $data->creator))->nama ?? '' }}</td>
                 <td colspan="2" style="border-top: none;">
-                    {{ optional(collect($approvalList)->firstWhere('nik', $data->checked_by))->nama ?? '' }}</td>
+                    {{ optional(collect($approvalList)->firstWhere('nik', $data->checked_by))->nama ?? '' }}
+                </td>
                 <td colspan="2" style="border-top: none;">
                     {{ optional(collect($approvalList)->firstWhere('nik', $data->validated_by))->nama ?? '' }}</td>
-                <td colspan="2"style="border-top: none;"></td>
                 <td colspan="5" style="border: none"></td>
             </tr>
             <tr>
                 <td colspan="2">Mechanic</td>
+                <td colspan="2">Mechanic</td>
                 <td colspan="2">Foreman</td>
-                <td colspan="2">Date</td>
+                <td colspan="5" style="border: none"></td>
+            </tr>
+            <tr>
+                <td colspan="2"> {{ \Carbon\Carbon::parse($data->updated_at)->translatedFormat('d - m - Y') }}
+                </td>
+                <td colspan="2">{{ \Carbon\Carbon::parse($data->updated_at)->translatedFormat('d - m - Y') }}
+                </td>
+                </td>
+                <td colspan="2">
+                    {{ $data->updated_at ? \Carbon\Carbon::parse($data->updated_at)->translatedFormat('d - m - Y') : '-' }}
+                </td>
+                </td>
                 <td colspan="5" style="border: none"></td>
             </tr>
         </table>
