@@ -84,6 +84,10 @@
             font-size: 12px;
             font-weight: bold;
         }
+
+        .ttd {
+            width: 40px;
+        }
     </style>
 </head>
 
@@ -124,12 +128,10 @@
             <td colspan="3">
                 UNIT
             </td>
-            <td colspan="2">
+            <td colspan="3">
                 ENGINE
             </td>
-            <td colspan="2">ATTACHMENT
-            </td>
-            <td colspan="5" style="border: none">
+            <td colspan="6" style="border: none">
             </td>
         </tr>
         <tr>
@@ -147,12 +149,9 @@
                 S/N
             </td>
             <td>
-                Front
+                Brand
             </td>
-            <td>
-                Rear
-            </td>
-            <td colspan="5" style="border: none"></td>
+            <td colspan="6" style="border: none"></td>
         </tr>
         <tr>
             <td style="font-weight:bold;">
@@ -162,9 +161,8 @@
             <td>{{ $data->unit_cn }}</td>
             <td>{{ $data->engine_model }}</td>
             <td>{{ $data->engine_sn }}</td>
-            <td>{{ $data->att_front }}</td>
-            <td>{{ $data->att_rear }}</td>
-            <td colspan="5" style="border: none; padding:4px;"></td>
+            <td>{{ $data->brand }}</td>
+            <td colspan="6" style="border: none; padding:4px;"></td>
         </tr>
         <tr>
             <td colspan="12" style="border:none;"></td>
@@ -371,31 +369,56 @@
     <div style="margin-top: 10px;">
         <table style="width: 80%; border-collapse: collapse;">
             <tr>
-                <td colspan="2" style="border-top: none; border: 1px solid black;">Checked By</td>
-                <td colspan="2" style="border-top: none; border: 1px solid black;">Validated By</td>
-                <td style="border-top: none; border: 1px solid black; width: 20%;">Date</td>
-                <td colspan="8" style="border: none;"></td>
+                <td colspan="2">Checked By1</td>
+                <td colspan="2">Checked By2</td>
+                <td colspan="2">Validated By</td>
+                <td colspan="5" style="border: none"></td>
             </tr>
             <tr>
-                <td colspan="2" style="height: 30px; border-bottom: none;"></td>
-                <td colspan="2" style="height: 30px; border-bottom: none;"></td>
-                <td style="height: 30px; border-bottom: none;">{{ $data->created_at }}</td>
-                <td colspan="8" style="border: none;"></td>
+                <td colspan="2" style="height: 30px; border-bottom: none;"> <img
+                        src="{{ public_path('img/checked.png') }}" class="ttd"></td>
+                <td colspan="2" style="height: 30px; border-bottom: none;"> <img
+                        src="{{ public_path('img/checked.png') }}" class="ttd"></td>
+                @if ($data->status == 'approved')
+                    <td colspan="2" style="height: 30px; border-bottom: none; width: 20%;"> <img
+                            src="{{ public_path('img/validated.png') }}" class="ttd">
+                    </td>
+                @else
+                    <td colspan="2" style="height: 30px; border-bottom: none; width: 20%;"></td>
+                @endif
+
+                <td colspan="5" style="border: none"></td>
             </tr>
             <tr>
-                <td colspan="2" style="border-top: none;">{{ $data->checked_by }}</td>
-                <td colspan="2" style="border-top: none;">{{ $data->validated_by }}</td>
-                <td style="border-top: none;"></td>
-                <td colspan="8" style="border: none;"></td>
+
+                <td colspan="2"style="border-top: none;">
+                    {{ optional(collect($approvalList)->firstWhere('nik', $data->creator))->nama ?? '' }}</td>
+                <td colspan="2" style="border-top: none;">
+                    {{ optional(collect($approvalList)->firstWhere('nik', $data->checked_by))->nama ?? '' }}
+                </td>
+                <td colspan="2" style="border-top: none;">
+                    {{ optional(collect($approvalList)->firstWhere('nik', $data->validated_by))->nama ?? '' }}</td>
+                <td colspan="5" style="border: none"></td>
             </tr>
             <tr>
-                <td colspan="2" style="border-top: none;">Mechanic</td>
-                <td colspan="2" style="border-top: none;">Foreman</td>
-                <td style="border-top: none;">Date</td>
-                <td colspan="8" style="border: none;"></td>
+                <td colspan="2">Mechanic</td>
+                <td colspan="2">Mechanic</td>
+                <td colspan="2">Foreman</td>
+                <td colspan="5" style="border: none"></td>
+            </tr>
+            <tr>
+                <td colspan="2"> {{ \Carbon\Carbon::parse($data->updated_at)->translatedFormat('d - m - Y') }}
+                </td>
+                <td colspan="2">{{ \Carbon\Carbon::parse($data->updated_at)->translatedFormat('d - m - Y') }}
+                </td>
+                </td>
+                <td colspan="2">
+                    {{ $data->updated_at ? \Carbon\Carbon::parse($data->updated_at)->translatedFormat('d - m - Y') : '-' }}
+                </td>
+                </td>
+                <td colspan="5" style="border: none"></td>
             </tr>
         </table>
-
     </div>
 </body>
 

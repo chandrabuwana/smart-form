@@ -68,7 +68,7 @@
                                     </div>
                                     <div class="text-end pt-1">
                                         <p class="text-sm mb-0 text-capitalize">Total Records</p>
-                                        <<h4 class="mb-0">{{ $statistics->total_records }}</h4>
+                                        <h4 class="mb-0">{{ $statistics->total_records }}</h4>
                                     </div>
                                 </div>
                             </div>
@@ -99,8 +99,8 @@
                                         <i class="fas fa-tram fa-2x" style="color: #B197FC;"></i>
                                     </div>
                                     <div class="text-end pt-1">
-                                        <p class="text-sm mb-0 text-capitalize">Engine Model</p>
-                                        <h4 class="mb-0">{{ $statistics->engine_model }}</h4>
+                                        <p class="text-sm mb-0 text-capitalize">Unit C/N</p>
+                                        <h4 class="mb-0">{{ $statistics->unit_cn }}</h4>
                                     </div>
                                 </div>
                             </div>
@@ -146,19 +146,27 @@
                                     <div class="col-md-3
                                                 mb-3">
                                         <div class="input-group input-group-static mb-4 position-relative">
-                                            <label for="engine_model" class="ms-0">Engine Model</label>
-                                            <input type="text" class="form-control" id="engine_model" name="engine_model"
-                                                value="{{ $filters['engine_model'] ?? '' }}">
-
+                                            <label for="unit_cn" class="ms-0">Unit C/N</label>
+                                            <select name="unit_cn" class="form-control" id="unit_cn">
+                                                <option value="" disabled selected>-- Select --</option>
+                                                @foreach ($cn as $cn_unit)
+                                                    <option value="{{ $cn_unit->no_lambung }}"
+                                                        {{ $cn_unit->no_lambung == $filters['unit_cn'] ? 'selected' : '' }}>
+                                                        {{ $cn_unit->no_lambung }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-md-3 mb-3">
                                         <div class="input-group input-group-static mb-4 position-relative">
                                             <label for="job" class="ms-0">Job Site</label>
-                                            <select class="form-control" name="job_site" id="job_site">
-                                                <option disabled selected>-- Select Site --</option>
-                                                <option value="agm">agm</option>
-                                            </select>
+                                            {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect(
+                                                'job_site',
+                                                strtolower($filters['job_site']),
+                                                $isDisabled = false,
+                                                $isRequired = false,
+                                            ) !!}
                                         </div>
                                     </div>
                                     <div class="col-md-3
@@ -216,11 +224,13 @@
                                                 Engine Model</th>
                                             <th
                                                 class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                                Unit Model</th>
+                                                C/N Unit</th>
                                             <th
                                                 class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                                Inspection</th>
-
+                                                HM At Inspection</th>
+                                            <th
+                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                                Job Site</th>
                                             <th
                                                 class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                                 Date</th>
@@ -252,12 +262,14 @@
                                                     <p class="text-xs font-weight-bold mb-0">{{ $data->engine_model }}</p>
                                                 </td>
                                                 <td>
-                                                    <p class="text-xs font-weight-bold mb-0">{{ $data->unit_model }}</p>
+                                                    <p class="text-xs font-weight-bold mb-0">{{ $data->unit_cn }}</p>
                                                 </td>
                                                 <td>
                                                     <p class="text-xs font-weight-bold mb-0">{{ $data->at_inspection }}</p>
                                                 </td>
-
+                                                <td>
+                                                    <span class="text-xs font-weight-bold">{{ $data->job_site }}</span>
+                                                </td>
                                                 <td>
                                                     <span class="text-xs font-weight-bold">{{ $data->date }}</span>
                                                 </td>
@@ -298,17 +310,19 @@
                                                         @elseif (collect($status)->contains(fn($s) => $s === 'rejected'))
                                                             <span class="badge bg-danger">Rejected</span>
                                                         @elseif (collect($status)->contains(fn($s) => $s === null))
-                                                            <span class="badge bg-info">Draf</span>
+                                                            <span class="badge bg-info">Menunggu validasi Foreman</span>
                                                         @endif
                                                     </span>
                                                 </td>
                                                 <td>
                                                     @if ($session == $data->creator)
-                                                        <a href="{{ route('detail-dh24', ['id' => $data->id]) }}"
-                                                            class="btn btn-warning btn-sm mt-3"
-                                                            style="{{ $data->delete_status == 1 ? 'pointer-events: none; opacity: 0.6;' : '' }}">
-                                                            <i class="fas fa-edit"></i>
-                                                        </a>
+                                                        @if (in_array($data->status, ['rejected', 'draft', null, '[null,null]']))
+                                                            <a href="{{ route('detail-dh24', ['id' => $data->id]) }}"
+                                                                class="btn btn-warning btn-sm mt-3"
+                                                                style="{{ $data->delete_status == 1 ? 'pointer-events: none; opacity: 0.6;' : '' }}">
+                                                                <i class="fas fa-edit"></i>
+                                                            </a>
+                                                        @endif
                                                         <button type="button" class="btn btn-danger btn-sm mt-3"
                                                             onclick="deleteDh24('{{ $data->doc_num }}')"
                                                             {{ $data->delete_status == 1 ? 'disabled' : '' }}>
@@ -325,7 +339,7 @@
                                                     @if (collect($status)->every(fn($s) => $s === 'approved'))
                                                         <a href="{{ route('export-pdf-dh24', ['id' => $data->id]) }}"
                                                             class="btn btn-primary btn-sm mt-3"
-                                                            style="{{ $data->delete_status == 1 ? 'pointer-events: none; opacity: 0.6;' : '' }}">
+                                                            style="{{ $data->delete_status == 1 ? 'pointer-events: none; opacity: 0.6;' : '' }}" target="_blank">
                                                             <i class="fas fa-download"></i>
                                                         </a>
                                                     @endif
@@ -354,11 +368,13 @@
     <script>
         $(document).ready(function() {
             $('#approval').select2();
+            $('#job_site').select2();
+            $('#unit_cn').select2();
         });
         $(function() {
             // Clear filter button
             $('#btnClearFilter').click(function() {
-                window.location.href = '{{ route('plant.ppm.xe1250.dashboard') }}';
+                window.location.href = '{{ route('dashboard-dh24') }}';
             });
 
         });

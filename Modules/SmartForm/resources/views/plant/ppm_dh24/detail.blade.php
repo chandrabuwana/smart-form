@@ -35,58 +35,57 @@
                             <div class="row mb-3">
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
-                                        <label for="unit_model" class="ms-0">Unit Model</label>
-                                        <input type="text" class="form-control" id="unit_model" name="unit_model"
-                                            value="{{ $data->unit_model }}" required>
+                                        <label for="unit_cn" class="ms-0">Unit C/N</label>
+                                        <select name="unit_cn" class="form-control uppercase select2" id="unit_cn" required>
+                                            <option value="" disabled>-- Select Unit C/N --</option>
+                                            @foreach ($cn as $cn_unit)
+                                                <option value="{{ $cn_unit->no_lambung }}"
+                                                    {{ isset($data->unit_cn) && $data->unit_cn == $cn_unit->no_lambung ? 'selected' : '' }}>
+                                                    {{ $cn_unit->no_lambung }}
+                                                </option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="unit_sn" class="ms-0">Unit S/N</label>
-                                        <input type="text" class="form-control" id="unit_sn" name="unit_sn"
-                                            value="{{ $data->unit_sn }}" required>
+                                        <input type="text" class="form-control uppercase" id="unit_sn" name="unit_sn"
+                                            value="{{ $data->unit_sn }}" required disabled>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
-                                        <label for="unit_cn" class="ms-0">Unit C/N</label>
-                                        <input type="text" class="form-control" id="unit_cn"
-                                            value="{{ $data->unit_cn }}" name="unit_cn" required>
+                                        <label for="unit_model" class="ms-0">Unit Model</label>
+                                        <input type="text" class="form-control uppercase" id="unit_model" name="unit_model"
+                                            value="{{ $data->unit_model }}" required disabled>
                                     </div>
                                 </div>
-
                             </div>
                             <div class="row mb-3">
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="engine_model" class="ms-0">Engine Model</label>
-                                        <input type="text" class="form-control" id="engine_model" name="engine_model"
-                                            value="{{ $data->engine_model }}" required>
+                                        <input type="text" class="form-control uppercase" id="engine_model" name="engine_model"
+                                            value="{{ $data->engine_model }}" required disabled>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="engine_sn" class="ms-0">Engine S/N</label>
-                                        <input type="text" class="form-control" id="engine_sn" name="engine_sn"
-                                            value="{{ $data->engine_sn }}" required>
+                                        <input type="text" class="form-control uppercase" id="engine_sn" name="engine_sn"
+                                            value="{{ $data->engine_sn }}" required disabled>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
-                                        <label for="att_front" class="ms-0">Attachment Front</label>
-                                        <input type="text" class="form-control" id="att_front" name="att_front"
-                                            value="{{ $data->att_front }}" required>
+                                        <label for="brand" class="ms-0">Brand</label>
+                                        <input type="text" class="form-control uppercase" id="brand" name="brand"
+                                            value="{{ $data->brand }}" required disabled>
                                     </div>
                                 </div>
 
                                 <div class="row mb-3">
-                                    <div class="col-md-4">
-                                        <div class="input-group input-group-static mb-3">
-                                            <label for="att_rear" class="ms-0">Attachment Rear</label>
-                                            <input type="text" class="form-control" id="att_rear" name="att_rear"
-                                                value="{{ $data->att_rear }}" required>
-                                        </div>
-                                    </div>
                                     <div class="col-md-4">
                                         <div class="input-group input-group-static mb-3">
                                             <label for="job_site" class="ms-0">Job Site</label>
@@ -96,19 +95,16 @@
                                     <div class="col-md-4">
                                         <div class="input-group input-group-static mb-3">
                                             <label for="location" class="ms-0">Location</label>
-                                            <select class="form-control" name="location" id="location" required>
+                                            <select class="form-control uppercase" name="location" id="location" required disabled>
                                                 <option value="Workshop"
                                                     {{ old('location', $data->job_location ?? '') == 'Workshop' ? 'selected' : '' }}>
                                                     Workshop</option>
                                                 <option value="Pitstop"
                                                     {{ old('location', $data->job_location ?? '') == 'Pitstop' ? 'selected' : '' }}>
                                                     Pitstop</option>
-                                                <option value="Service"
-                                                    {{ old('location', $data->job_location ?? '') == 'Service' ? 'selected' : '' }}>
-                                                    Service</option>
-                                                <option value="Truck"
-                                                    {{ old('location', $data->job_location ?? '') == 'Truck' ? 'selected' : '' }}>
-                                                    Truck</option>
+                                                <option value="Service Pad Area"
+                                                    {{ old('location', $data->job_location ?? '') == 'Service Pad Area' ? 'selected' : '' }}>
+                                                    Service Pad Area</option>
                                             </select>
                                         </div>
                                     </div>
@@ -117,15 +113,15 @@
                                     <div class="col-md-6">
                                         <div class="input-group input-group-static mb-3">
                                             <label for="at_inspec" class="ms-0">SMR / HM At Inspection</label>
-                                            <input type="text" class="form-control" id="at_inspec" name="at_inspec"
-                                                value="{{ $data->at_inspection }}" required>
+                                            <input type="text" class="form-control uppercase" id="at_inspec" name="at_inspec"
+                                                value="{{ $data->at_inspection }}" required disabled>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="input-group input-group-static mb-3">
                                             <label for="date" class="ms-0">SMR / HM Date</label>
-                                            <input type="date" class="form-control" id="date" name="date"
-                                                value="{{ $data->date }}" required>
+                                            <input type="date" class="form-control uppercase" id="date" name="date"
+                                                value="{{ $data->date }}" required disabled>
                                         </div>
                                     </div>
 
@@ -151,14 +147,10 @@
                                                                 CORRECTION MODE</th>
                                                             <th style="vertical-align: middle;" rowspan="2">RESULT
                                                             </th>
-                                                            <th style="vertical-align: middle;" colspan="2">
-                                                                RECOMENDED PARTS</th>
+                                                            <th style="vertical-align: middle;">PR.NO</th>
+                                                            <th style="vertical-align: middle;">TANGGAL</th>
                                                             <th style="vertical-align: middle;" rowspan="2">REMARKS
                                                             </th>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>PR.NO</th>
-                                                            <th>TANGGAL</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -191,19 +183,19 @@
                                                             @if (isset($value['standard']))
                                                                 <td class="align-middle">{!! $value['standard'] !!}</td>
                                                             @endif
-                                                            <td><input type="text" class="form-control" name="eng_actual[]"
+                                                            <td><input type="text" class="form-control uppercase" name="eng_actual[]"
                                                                     value="{{ $data->eng_actual[$i] ?? '' }}" disabled></td>
-                                                            <td><input type="text" class="form-control" name="eng_correct[]"
+                                                            <td><input type="text" class="form-control uppercase" name="eng_correct[]"
                                                                     value="{{ $data->eng_correction_made[$i] ?? '' }}" disabled></td>
-                                                            <td><input type="text" class="form-control" name="eng_result[]"
+                                                            <td><input type="text" class="form-control uppercase" name="eng_result[]"
                                                                     value="{{ $data->eng_result[$i] ?? '' }}" disabled></td>
-                                                            <td><input type="text" class="form-control" name="eng_pr_no[]"
+                                                            <td><input type="text" class="form-control uppercase" name="eng_pr_no[]"
                                                                     value="{{ $data->eng_pr[$i] ?? '' }}" disabled></td>
-                                                            <td><input type="date" class="form-control" name="eng_tanggal[]"
+                                                            <td><input type="date" class="form-control uppercase" name="eng_tanggal[]"
                                                                     value="{{ $data->eng_taggal[$i] ?? '' }}" disabled></td>
                                                             @if ($i === 0)
                                                                 <td rowspan="13">
-                                                                    <textarea class="form-control" rows="30" name="eng_remarks" disabled>{{ $data->eng_remark }}</textarea>
+                                                                    <textarea class="form-control uppercase" rows="30" name="eng_remarks" disabled>{{ $data->eng_remark }}</textarea>
                                                                 </td>
                                                             @endif
                                                         </tr>
@@ -240,14 +232,10 @@
                                                                 CORRECTION MODE</th>
                                                             <th style="vertical-align: middle;" rowspan="2">RESULT
                                                             </th>
-                                                            <th style="vertical-align: middle;" colspan="2">
-                                                                RECOMENDED PARTS</th>
+                                                            <th style="vertical-align: middle;">PR.NO</th>
+                                                            <th style="vertical-align: middle;">TANGGAL</th>
                                                             <th style="vertical-align: middle;" rowspan="2">REMARKS
                                                             </th>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>PR.NO</th>
-                                                            <th>TANGGAL</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -281,19 +269,19 @@
                                                             @if (isset($value['standard']))
                                                                 <td class="align-middle">{!! $value['standard'] !!}</td>
                                                             @endif
-                                                            <td><input type="text" class="form-control" name="eng_actual[]"
+                                                            <td><input type="text" class="form-control uppercase" name="eng_actual[]"
                                                                     value="{{ $data->hyd_actual[$j] ?? '' }}" disabled></td>
-                                                            <td><input type="text" class="form-control" name="eng_correct[]"
+                                                            <td><input type="text" class="form-control uppercase" name="eng_correct[]"
                                                                     value="{{ $data->hyd_correction_made[$j] ?? '' }}" disabled></td>
-                                                            <td><input type="text" class="form-control" name="eng_result[]"
+                                                            <td><input type="text" class="form-control uppercase" name="eng_result[]"
                                                                     value="{{ $data->hyd_result[$j] ?? '' }}" disabled></td>
-                                                            <td><input type="text" class="form-control" name="eng_pr_no[]"
+                                                            <td><input type="text" class="form-control uppercase" name="eng_pr_no[]"
                                                                     value="{{ $data->hyd_pr[$j] ?? '' }}" disabled></td>
-                                                            <td><input type="date" class="form-control" name="eng_tanggal[]"
+                                                            <td><input type="date" class="form-control uppercase" name="eng_tanggal[]"
                                                                     value="{{ $data->hyd_taggal[$j] ?? '' }}" disabled></td>
                                                             @if ($j === 0)
                                                                 <td rowspan="13">
-                                                                    <textarea class="form-control" rows="30" name="eng_remarks" disabled>{{ $data->hyd_remark }}</textarea>
+                                                                    <textarea class="form-control uppercase" rows="30" name="eng_remarks" disabled>{{ $data->hyd_remark }}</textarea>
                                                                 </td>
                                                             @endif
                                                         </tr>
@@ -330,14 +318,10 @@
                                                                 CORRECTION MODE</th>
                                                             <th style="vertical-align: middle;" rowspan="2">RESULT
                                                             </th>
-                                                            <th style="vertical-align: middle;" colspan="2">
-                                                                RECOMENDED PARTS</th>
+                                                            <th style="vertical-align: middle;">PR.NO</th>
+                                                            <th style="vertical-align: middle;">TANGGAL</th>
                                                             <th style="vertical-align: middle;" rowspan="2">REMARKS
                                                             </th>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>PR.NO</th>
-                                                            <th>TANGGAL</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -362,18 +346,18 @@
                                                            @if (isset($value['standard']))
                                                                <td class="align-middle">{!! $value['standard'] !!}</td>
                                                            @endif
-                                                           <td><input type="text" class="form-control" name="eng_actual[]"
+                                                           <td><input type="text" class="form-control uppercase" name="eng_actual[]"
                                                                    value="{{ $data->hyd_actual[$j] ?? '' }}" disabled></td>
-                                                           <td><input type="text" class="form-control" name="eng_correct[]"
+                                                           <td><input type="text" class="form-control uppercase" name="eng_correct[]"
                                                                    value="{{ $data->hyd_correction_made[$j] ?? '' }}" disabled></td>
-                                                           <td><input type="text" class="form-control" name="eng_result[]"
+                                                           <td><input type="text" class="form-control uppercase" name="eng_result[]"
                                                                    value="{{ $data->hyd_result[$j] ?? '' }}" disabled></td>
-                                                           <td><input type="text" class="form-control" name="eng_pr_no[]"
+                                                           <td><input type="text" class="form-control uppercase" name="eng_pr_no[]"
                                                                    value="{{ $data->hyd_pr[$j] ?? '' }}" disabled></td>
-                                                           <td><input type="date" class="form-control" name="eng_tanggal[]"
+                                                           <td><input type="date" class="form-control uppercase" name="eng_tanggal[]"
                                                                    value="{{ $data->hyd_taggal[$j] ?? '' }}" disabled></td>
                                                            <td>
-                                                               <textarea class="form-control" name="eng_remarks" disabled>{{ $data->hyd_remark ?? '' }}</textarea>
+                                                               <textarea class="form-control uppercase" name="eng_remarks" disabled>{{ $data->hyd_remark ?? '' }}</textarea>
                                                            </td>
                                                        </tr>
                                                        @php
@@ -390,30 +374,47 @@
                                     </div>
                                 </div>
                                 <div class="row mt-5">
-                                    <div class="col-6 ">
+                                    <div class="col-12">
                                         <div class="input-group input-group-static mb-3">
-                                            <label for="dibuat" class="ms-0">Checked By</label>
-                                            <select name="checked" id="dibuat_oleh" class="form-control" disabled
-                                                required>
-                                                <option disabled selected>-- Select Creator --</option>
+                                            <label for="note" class="ms-0">Note/Catatan</label>
+                                            <textarea name="note" id="note" class="form-control uppercase" cols="30" rows="1" disabled>{{ $data->note ?? '' }}</textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-4 ">
+                                        <div class="input-group input-group-static mb-3">
+                                            <label for="dibuat" class="ms-0">Checked By1</label>
+                                            <select name="checked1_display" class="form-control uppercase" disabled>
                                                 @foreach ($approvalList as $user)
                                                     <option value="{{ $user->nik }}"
-                                                        {{ old('checked', $data->checked_by ?? '') == $user->nik ? 'selected' : '' }}>
+                                                        {{ old('checked1', $nik ?? '') == $user->nik ? 'selected' : '' }}>
+                                                        {{ $user->nama }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+
+                                            <input type="hidden" name="checked1" value="{{ old('checked1', $nik ?? '') }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-4 ">
+                                        <div class="input-group input-group-static mb-3">
+                                            <label for="dibuat" class="ms-0">Checked By2</label>
+                                            <select name="checked2" id="dibuat_oleh" class="form-control" required>
+                                                <option disabled selected>-- Select Creator --</option>
+                                                @foreach ($approvalList as $user)
+                                                    <option value="{{ $user->nik }}" {{ old('checked', $data->checked_by ?? '') == $user->nik ? 'selected' : '' }}>
                                                         {{ $user->nama }}</option>
                                                 @endforeach
 
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-6">
+                                    <div class="col-4">
                                         <div class="input-group input-group-static mb-3">
                                             <label for="diperiksa" class="ms-0">Validated By</label>
-                                            <select name="validated" id="diperiksa" class="form-control" disabled
-                                                required>
+                                            <select name="validated" id="diperiksa" class="form-control" required>
                                                 <option disabled selected>-- Select Approval --</option>
                                                 @foreach ($approvalList as $user)
-                                                    <option value="{{ $user->nik }}"
-                                                        {{ old('checked', $data->validated_by ?? '') == $user->nik ? 'selected' : '' }}>
+                                                    <option value="{{ $user->nik }}" {{ old('validated', $data->validated_by ?? '') == $user->nik ? 'selected' : '' }}>
                                                         {{ $user->nama }}</option>
                                                 @endforeach
                                             </select>
@@ -461,7 +462,7 @@
                                         <div class="col-12">
                                             <div class="form-actions">
                                                 @if ($nik == $data->checked_by || $nik == $data->validated_by)
-                                                    <button class="btn btn-primary btn-sm" id="btn900Approve"
+                                                    <button class="btn btn-success btn-sm" id="btn900Approve"
                                                         data-doc="{{ $data->doc_num }}"
                                                         data-status='@json($data->status)'
                                                         data-nik="{{ $nik }}">
@@ -503,6 +504,9 @@
 @section('custom-css')
     <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
     <style>
+        .uppercase {
+            text-transform: uppercase;
+        }
         .accordion {
             width: 100%;
 
@@ -596,10 +600,45 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <script>
         $(document).ready(function() {
-            $('#dibuat_oleh').select2();
-            $('#diperiksa').select2();
+            $('#dibuat_oleh').select2({
+                disabled: true
+            });
+            $('#diperiksa').select2({
+                disabled: true
+            });
             $('#job_site').select2({
                 disabled: true
+            });
+
+            $('#unit_cn').select2({
+                disabled: true
+            });
+
+            const engineModelMap = {
+                @foreach ($cn as $cn_unit)
+                    "{{ $cn_unit->no_lambung }}": {
+                        "engineModel": "{{ $cn_unit->model_engine }}",
+                        "unitSn": "{{ $cn_unit->sn_unit }}",
+                        "unitModel": "{{ $cn_unit->model }}",
+                        "engineSn": "{{ $cn_unit->sn_engine }}"
+                    },
+                @endforeach
+            };
+
+            $('#unit_cn').change(function() {
+                const selectedCn = $(this).val();
+                if (engineModelMap[selectedCn]) {
+                    const unitData = engineModelMap[selectedCn];
+                    $('#engine_model').val(unitData.engineModel);
+                    $('#unit_model').val(unitData.unitModel);
+                    $('#unit_sn').val(unitData.unitSn);
+                    $('#engine_sn').val(unitData.engineSn);
+                } else {
+                    $('#engine_model').val('');
+                    $('#unit_model').val('');
+                    $('#unit_sn').val('');
+                    $('#engine_sn').val('');
+                }
             });
         });
         document.addEventListener("DOMContentLoaded", function() {

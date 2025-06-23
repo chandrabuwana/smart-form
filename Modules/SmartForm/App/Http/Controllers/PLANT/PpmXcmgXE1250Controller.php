@@ -27,13 +27,13 @@ class PpmXcmgXE1250Controller extends Controller {
                 $query->where( function( $q ) use ( $searchTerm ) {
                     $q->where( 'doc_num', 'like', '%' . $searchTerm . '%' )
                     ->orWhere( 'unit_model', 'like', '%' . $searchTerm . '%' )
-                    ->orWhere( 'engine_model', 'like', '%' . $searchTerm . '%' )
+                    ->orWhere( 'unit_cn', 'like', '%' . $searchTerm . '%' )
                     ->orWhere( 'job_site', 'like', '%' . $searchTerm . '%' );
                 }
             );
         }
-        if ( $request->has( 'engine_model' ) && $request->engine_model ) {
-            $query->where( 'engine_model', $request->engine_model );
+        if ( $request->has( 'unit_cn' ) && $request->unit_cn ) {
+            $query->where( 'unit_cn', $request->unit_cn );
         }
 
         if ( $request->has( 'job_site' ) && $request->job_site ) {
@@ -50,14 +50,20 @@ class PpmXcmgXE1250Controller extends Controller {
             ->whereMonth( 'created_at', now()->month )
             ->whereYear( 'created_at', now()->year )
             ->count(),
-            'engine_model' => DB::table( 'ppm_xcmg_xe1250' )->distinct()->count( 'engine_model' ),
+            'unit_cn' => DB::table( 'ppm_xcmg_xe1250' )->distinct()->count( 'unit_cn' ),
             'job_site' => DB::table( 'ppm_xcmg_xe1250' )->distinct()->count( 'job_site' ),
         ];
 
+            $cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','sn_unit','model','model_engine','sn_engine')->get();
+
             $records = $query->paginate( 5 );
-            return view( 'smartform::plant.ppm_xe1250.dashboard-xe1250', [ 'record' => $records, 'session'=>$nik_session, 'user'=> HrdHelper::getApprovalList(), 'statistics'=>$statistics, 'filters' => [
+            return view( 'smartform::plant.ppm_xe1250.dashboard-xe1250', [
+            'record' => $records, 'session'=>$nik_session, 'user'=> HrdHelper::getApprovalList(),
+            'cn'=>$cn_data,
+            'statistics'=>$statistics,
+            'filters' => [
             'search' => $request->search,
-            'engine_model' => $request->engine_model,
+            'unit_cn' => $request->unit_cn,
             'job_site' => $request->job_site,
             'approval' => $request->approval
         ] ] );
@@ -69,15 +75,26 @@ class PpmXcmgXE1250Controller extends Controller {
 
     }
 
-    public function Add() {
+    public function Add(Request $request) {
+
+        $nik_session = $request->session()->get( 'user_id', '' );
         $json = file_get_contents( resource_path( 'data/ppm-xe1250/ppm-xe1250.json' ) );
         $list = json_decode( $json, true );
+        $cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','sn_unit','model','model_engine','sn_engine')->get();
 
-
-        return view( 'smartform::plant.ppm_xe1250.form-xe1250', [ 'list' => $list,  'approvalList' => HrdHelper::getApprovalList() ] );
+        return view( 'smartform::plant.ppm_xe1250.form-xe1250', [
+            'list' => $list,  'approvalList' => HrdHelper::getApprovalList(),
+            'cn'=>$cn_data,
+            'nik'=>$nik_session
+        ]);
     }
 
-    public function detail($id){
+    public function detail($id, Request $request){
+
+        $nik_session = $request->session()->get( 'user_id', '' );
+
+        $cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','sn_unit','model','model_engine','sn_engine')->get();
+
         $data = DB::table( 'ppm_xcmg_xe1250' )
         ->where( 'id', $id )
         ->first();
@@ -119,37 +136,41 @@ class PpmXcmgXE1250Controller extends Controller {
 
 
 
-        return view( 'smartform::plant.ppm_xe1250.show-xe1250', [ 'data' => $data, 'list' => $list, 'approvalList' => HrdHelper::getApprovalList() ] );
+        return view( 'smartform::plant.ppm_xe1250.show-xe1250', [
+            'data' => $data, 'list' => $list, 'approvalList' => HrdHelper::getApprovalList(),
+            'nik'=>$nik_session,
+            'cn'=>$cn_data
+        ]);
     }
 
     public function Store( Request $request ) {
 
         $data = [
             'doc_num' => $this->generateDocNumber(),
-            'unit_model' => "XCMG xe1250",
+            'unit_model' => $request->unit_model,
             'unit_sn' =>$request->unit_sn,
             'unit_cn' => $request->unit_cn,
             'engine_model' => $request->engine_model ,
             'engine_sn' => $request->engine_sn,
-            'att_front' => $request->att_front,
-            'att_rear' => $request->att_rear,
+            'brand' => $request->brand,
             'job_site' => $request->job_site,
             'job_location' => $request->location,
             'at_inspection' => $request->at_inspec,
             'date' => $request->date,
-            'creator' => $request->session()->get( 'user_id', '' ),
             'status' => json_encode( array_values( [ null, null] ) ),
-            'checked_by' => $request->checked,
+            'creator' => $request->checked1,
+            'checked_by' => $request->checked2,
             'validated_by' =>$request->validated,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
-            'delete_status' => 0
+            'delete_status' => 0,
+            'note' => $request->note
 
         ];
         for ( $i = 0; $i <= 3; $i++ ) {
-            $final_actual[] = $request->input( "final_actual$i" ) ?? 0;
-            $final_correct[] = $request->input( "final_correct$i" ) ?? 0;
-            $final_result[] = $request->input( "final_result$i" ) ?? 0;
+            $final_actual[] = $request->input( "final_actual$i" ) ?? '';
+            $final_correct[] = $request->input( "final_correct$i" ) ?? '';
+            $final_result[] = $request->input( "final_result$i" ) ?? '';
         }
 
 
@@ -196,9 +217,15 @@ class PpmXcmgXE1250Controller extends Controller {
     public function Export( $id ) {
 
     try{
+
         $data = DB::table( 'ppm_xcmg_xe1250' )
         ->where( 'id', $id )
         ->first();
+
+        if (!$data) {
+
+            return redirect()->route('plant.ppm.xe1250.dashboard')->with('error', 'Data not found.');
+        }
 
         $detail = DB::table( 'report_ppm_xcmg_xe1250' )
         ->where( 'doc_num_id', $data->doc_num )
@@ -233,15 +260,19 @@ class PpmXcmgXE1250Controller extends Controller {
         $data->fin_pr = json_decode( $detail->fin_pr );
         $data->fin_taggal = json_decode( $detail->fin_taggal );
         $data->fin_remark = json_decode( $detail->fin_remark );
+
         $pdf = PDF::loadView( 'smartform::plant.ppm_xe1250.export-pdf', [
-            'data' => $data, 'list' => $list, 'approvalList' => HrdHelper::getApprovalList()
+            'data' => $data,
+            'list' => $list,
+            'approvalList' => HrdHelper::getApprovalList()
 
         ] );
         $pdf->setPaper('A4', 'landscape');
 
-        return $pdf->download( 'PPM XCMG xe1250 - ' . $data->doc_num .'.pdf' );
+        return $pdf->stream( 'PPM XCMG xe1250 - ' . $data->doc_num .'.pdf' );
 
     } catch ( \Exception $e ) {
+        // dd($e);
         Log::error( 'Error in ExportForm: ' . $e->getMessage() );
         return redirect()
         ->route( 'plant.ppm.xe1250.dashboard' )
@@ -257,24 +288,24 @@ class PpmXcmgXE1250Controller extends Controller {
             'unit_cn' => $request->unit_cn,
             'engine_model' => $request->engine_model ,
             'engine_sn' => $request->engine_sn,
-            'att_front' => $request->att_front,
-            'att_rear' => $request->att_rear,
+            'brand' => $request->brand,
             'job_site' => $request->job_site,
             'job_location' => $request->location,
             'at_inspection' => $request->at_inspec,
             'date' => $request->date,
-            'checked_by' => $request->checked,
+            'creator' => $request->checked1,
+            'checked_by' => $request->checked2,
             'validated_by' =>$request->validated,
-            'updated_at' => Carbon::now()
-
+            'updated_at' => Carbon::now(),
+            'note' => $request->note
         ];
 
 
 
         for ( $i = 0; $i <= 3; $i++ ) {
-            $final_actual[] = $request->input( "final_actual$i" ) ?? 0;
-            $final_correct[] = $request->input( "final_correct$i" ) ?? 0;
-            $final_result[] = $request->input( "final_result$i" ) ?? 0;
+            $final_actual[] = $request->input( "final_actual$i" ) ?? '';
+            $final_correct[] = $request->input( "final_correct$i" ) ?? '';
+            $final_result[] = $request->input( "final_result$i" ) ?? '';
         }
 
 
@@ -342,7 +373,10 @@ class PpmXcmgXE1250Controller extends Controller {
 
     }
     public function show( Request $request,$id){
+
         $nik_session = $request->session()->get( 'user_id', '' );
+
+        $cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','sn_unit','model','model_engine','sn_engine')->get();
 
         $data = DB::table( 'ppm_xcmg_xe1250' )
         ->where( 'id', $id )
@@ -383,7 +417,11 @@ class PpmXcmgXE1250Controller extends Controller {
         $data->fin_taggal = json_decode( $detail->fin_taggal );
         $data->fin_remark = json_decode( $detail->fin_remark );
 
-        return view( 'smartform::plant.ppm_xe1250.detail-xe1250', [ 'data' => $data, 'nik' =>$nik_session, 'list' => $list, 'approvalList' => HrdHelper::getApprovalList() ] );
+        return view( 'smartform::plant.ppm_xe1250.detail-xe1250', [
+            'data' => $data, 'nik' =>$nik_session, 'list' => $list,
+            'approvalList' => HrdHelper::getApprovalList(),
+            'cn'=>$cn_data
+        ]);
     }
 
     public function Reset( $id ) {

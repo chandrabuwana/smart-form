@@ -35,63 +35,68 @@
                             <div class="row mb-3">
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
-                                        <label for="unit_sn" class="ms-0">Unit S/N</label>
-                                        <input type="text" class="form-control" id="unit_sn" name="unit_sn" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="input-group input-group-static mb-3">
                                         <label for="unit_cn" class="ms-0">Unit C/N</label>
-                                        <input type="text" class="form-control" id="unit_cn" name="unit_cn" required>
+                                        <select name="unit_cn" class="form-control uppercase" id="unit_cn" required>
+                                            <option value="" disabled selected>-- Select Unit C/N --</option>
+                                            @foreach ($cn as $cn_unit)
+                                                <option value="{{ $cn_unit->no_lambung }}">
+                                                    {{ $cn_unit->no_lambung }}
+                                                </option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
-                                        <label for="engine_model" class="ms-0">Engine Model</label>
-                                        <input type="text" class="form-control" id="engine_model" name="engine_model"
-                                            required>
+                                        <label for="unit_sn" class="ms-0">Unit S/N</label>
+                                        <input type="text" class="form-control uppercase" id="unit_sn" name="unit_sn" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label for="unit_model" class="ms-0">Unit Model</label>
+                                        <input type="text" class="form-control uppercase" id="unit_model" name="unit_model" required>
                                     </div>
                                 </div>
                             </div>
                             <div class="row mb-3">
-
-                                <div class="col-md-4">
-                                    <div class="input-group input-group-static mb-3">
-                                        <label for="engine_sn" class="ms-0">Engine S/N</label>
-                                        <input type="text" class="form-control" id="engine_sn" name="engine_sn" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="input-group input-group-static mb-3">
-                                        <label for="att_front" class="ms-0">Attachment Front</label>
-                                        <input type="text" class="form-control" id="att_front" name="att_front" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="input-group input-group-static mb-3">
-                                        <label for="att_rear" class="ms-0">Attachment Rear</label>
-                                        <input type="text" class="form-control" id="att_rear" name="att_rear" required>
-                                    </div>
+                            <div class="col-md-4">
+                                <div class="input-group input-group-static mb-3">
+                                    <label for="engine_model" class="ms-0">Engine Model</label>
+                                    <input type="text" class="form-control uppercase" id="engine_model" name="engine_model"
+                                        required>
                                 </div>
                             </div>
+                            <div class="col-md-4">
+                                <div class="input-group input-group-static mb-3">
+                                    <label for="engine_sn" class="ms-0">Engine S/N</label>
+                                    <input type="text" class="form-control uppercase" id="engine_sn" name="engine_sn" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="input-group input-group-static mb-3">
+                                    <label for="brand" class="ms-0">Brand</label>
+                                    <textarea class="form-control uppercase" id="brand" name="brand" required></textarea>
+                                </div>
+                            </div>
+                        </div>
 
                             <div class="row mb-3">
 
                                 <div class="col-md-6">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="job_site" class="ms-0">Job Site</label>
-                                        {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('job_site', null, false, true, 'job_site', 'form-control') !!}
+                                        {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('job_site', null, false, true, 'job_site', 'form-control uppercase') !!}
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="location" class="ms-0">Location</label>
-                                        <select class="form-control" name="location" id="location" required>
+                                        <select class="form-control uppercase" name="location" id="location" required>
                                             <option disabled selected>-- Select Location --</option>
                                             <option value="Workshop">Workshop</option>
                                             <option value="Pitstop">Pitstop</option>
-                                            <option value="Service">Service</option>
-                                            <option value="Truck">Truck</option>
+                                            <option value="Service">Service Pad Area</option>
                                         </select>
                                     </div>
                                 </div>
@@ -100,14 +105,14 @@
                                 <div class="col-md-6">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="at_inspec" class="ms-0">SMR / HM At Inspection</label>
-                                        <input type="text" class="form-control" id="at_inspec" name="at_inspec"
+                                        <input type="number" step="0.0001" class="form-control uppercase" id="at_inspec" name="at_inspec"
                                             required>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="date" class="ms-0">SMR / HM Date</label>
-                                        <input type="date" class="form-control" id="date" name="date"
+                                        <input type="date" class="form-control uppercase" id="date" name="date"
                                             required>
                                     </div>
                                 </div>
@@ -131,17 +136,13 @@
                                                             STANDARD STD/PMS</th>
                                                         <th style="vertical-align: middle;"rowspan="2">ACTUAL</th>
                                                         <th style="vertical-align: middle;" rowspan="2">
-                                                            CORRECTION MODE</th>
+                                                            CORRECTION MADE</th>
                                                         <th style="vertical-align: middle;" rowspan="2">RESULT
                                                         </th>
-                                                        <th style="vertical-align: middle;" colspan="2">
-                                                            RECOMENDED PARTS</th>
+                                                        <th style="vertical-align: middle;">PR.NO</th>
+                                                        <th style="vertical-align: middle;">TANGGAL</th>
                                                         <th style="vertical-align: middle;" rowspan="2">REMARKS
                                                         </th>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>PR.NO</th>
-                                                        <th>TANGGAL</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -179,17 +180,17 @@
                                                                 <td class="align-middle">{!! $value['standard'] !!}
                                                                 </td>
                                                             @endif
-                                                            <td><input type="text" class="form-control"
+                                                            <td><input type="number" step="0.0001" class="form-control uppercase"
                                                                     name="eng_actual[]"></td>
-                                                            <td><input type="text" class="form-control"
+                                                            <td><input type="text" class="form-control uppercase"
                                                                     name="eng_correct[]"></td>
-                                                            <td><input type="text" class="form-control"
+                                                            <td><input type="text" class="form-control uppercase"
                                                                     name="eng_result[]"></td>
-                                                            <td><input type="text" class="form-control"
+                                                            <td><input type="text" class="form-control uppercase"
                                                                     name="eng_pr_no[]"></td>
-                                                            <td><input type="date" class="form-control"
+                                                            <td><input type="date" class="form-control uppercase"
                                                                     name="eng_tanggal[]"></td>
-                                                            <td><input type="text" class="form-control"
+                                                            <td><input type="text" class="form-control uppercase"
                                                                     name="eng_remarks[]"></td>
                                                         </tr>
                                                     @endforeach
@@ -218,17 +219,13 @@
                                                             STANDARD STD/PMS</th>
                                                         <th style="vertical-align: middle;"rowspan="2">ACTUAL</th>
                                                         <th style="vertical-align: middle;" rowspan="2">
-                                                            CORRECTION MODE</th>
+                                                            CORRECTION MADE</th>
                                                         <th style="vertical-align: middle;" rowspan="2">RESULT
                                                         </th>
-                                                        <th style="vertical-align: middle;" colspan="2">
-                                                            RECOMENDED PARTS</th>
+                                                        <th style="vertical-align: middle;">PR.NO</th>
+                                                        <th style="vertical-align: middle;">TANGGAL</th>
                                                         <th style="vertical-align: middle;" rowspan="2">REMARKS
                                                         </th>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>PR.NO</th>
-                                                        <th>TANGGAL</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -265,17 +262,17 @@
                                                                 <td class="align-middle">{!! $value['standard'] !!}
                                                                 </td>
                                                             @endif
-                                                            <td><input type="text" class="form-control"
+                                                            <td><input type="number" step="0.0001" class="form-control uppercase"
                                                                     name="hyd_actual[]"></td>
-                                                            <td><input type="text" class="form-control"
+                                                            <td><input type="text" class="form-control uppercase"
                                                                     name="hyd_correct[]"></td>
-                                                            <td><input type="text" class="form-control"
+                                                            <td><input type="text" class="form-control uppercase"
                                                                     name="hyd_result[]"></td>
-                                                            <td><input type="text" class="form-control"
+                                                            <td><input type="text" class="form-control uppercase"
                                                                     name="hyd_pr_no[]"></td>
-                                                            <td><input type="date" class="form-control"
+                                                            <td><input type="date" class="form-control uppercase"
                                                                     name="hyd_tanggal[]"></td>
-                                                            <td><input type="text" class="form-control"
+                                                            <td><input type="text" class="form-control uppercase"
                                                                     name="hyd_remarks[]"></td>
                                                         </tr>
                                                     @endforeach
@@ -304,17 +301,13 @@
                                                             STANDARD STD/PMS</th>
                                                         <th style="vertical-align: middle;"rowspan="2">ACTUAL</th>
                                                         <th style="vertical-align: middle;" rowspan="2">
-                                                            CORRECTION MODE</th>
+                                                            CORRECTION MADE</th>
                                                         <th style="vertical-align: middle;" rowspan="2">RESULT
                                                         </th>
-                                                        <th style="vertical-align: middle;" colspan="2">
-                                                            RECOMENDED PARTS</th>
+                                                        <th style="vertical-align: middle;">PR.NO</th>
+                                                        <th style="vertical-align: middle;">TANGGAL</th>
                                                         <th style="vertical-align: middle;" rowspan="2">REMARKS
                                                         </th>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>PR.NO</th>
-                                                        <th>TANGGAL</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -353,17 +346,17 @@
                                                             @endif
 
 
-                                                            <td><input type="text" class="form-control"
+                                                            <td><input type="number" step="0.0001" class="form-control uppercase"
                                                                     name="wo_actual[]"></td>
-                                                            <td><input type="text" class="form-control"
+                                                            <td><input type="text" class="form-control uppercase"
                                                                     name="wo_correct[]"></td>
-                                                            <td><input type="text" class="form-control"
+                                                            <td><input type="text" class="form-control uppercase"
                                                                     name="wo_result[]"></td>
-                                                            <td><input type="text" class="form-control"
+                                                            <td><input type="text" class="form-control uppercase"
                                                                     name="wo_pr_no[]"></td>
-                                                            <td><input type="date" class="form-control"
+                                                            <td><input type="date" class="form-control uppercase"
                                                                     name="wo_tanggal[]"></td>
-                                                            <td><input type="text" class="form-control"
+                                                            <td><input type="text" class="form-control uppercase"
                                                                     name="wo_remarks[]"></td>
                                                         </tr>
                                                     @endforeach
@@ -393,17 +386,13 @@
                                                             STANDARD STD/PMS</th>
                                                         <th style="vertical-align: middle;"rowspan="2">ACTUAL</th>
                                                         <th style="vertical-align: middle;" rowspan="2">
-                                                            CORRECTION MODE</th>
+                                                            CORRECTION MADE</th>
                                                         <th style="vertical-align: middle;" rowspan="2">RESULT
                                                         </th>
-                                                        <th style="vertical-align: middle;" colspan="2">
-                                                            RECOMENDED PARTS</th>
+                                                        <th style="vertical-align: middle;">PR.NO</th>
+                                                        <th style="vertical-align: middle;">TANGGAL</th>
                                                         <th style="vertical-align: middle;" rowspan="2">REMARKS
                                                         </th>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>PR.NO</th>
-                                                        <th>TANGGAL</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -433,23 +422,61 @@
                                                                 <td></td>
                                                             @endif
 
-                                                            <td><input type="text" class="form-control"
-                                                                    name="final_actual{{ $inc }}" value=""></td>
-                                                            <td><input type="text" class="form-control"
+                                                            @if ($value['item'] == 'Drain Plug')
+                                                                <td
+                                                                    style="width: 10%; text-align: center; vertical-align: middle;">
+                                                                    <div style="display: inline-block; width: 100%;"
+                                                                        class="form-control uppercase">
+                                                                        <select name="final_actual{{ $inc }}"
+                                                                            style="width: 100%;"
+                                                                            class="form-control text-center uppercase">
+                                                                            <option value="">--select--</option>
+                                                                            <option value="A">A</option>
+                                                                            <option value="B">B</option>
+                                                                            <option value="C">C</option>
+                                                                            <option value="X">X</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </td>
+                                                            @elseif ($value['item'] == 'Oil Leak')
+                                                                <td
+                                                                    style="width: 10%; text-align: center; vertical-align: middle;">
+                                                                    <div style="display: inline-block; width: 100%;">
+                                                                        <select name="final_actual{{ $inc }}"
+                                                                            style="width: 100%;"
+                                                                            class="form-control text-center uppercase">
+                                                                            <option value="">--select--</option>
+                                                                            <option value="Leak">Leak</option>
+                                                                            <option value="No Leak">No Leak</option>
+
+                                                                        </select>
+                                                                    </div>
+                                                                </td>
+                                                            @else
+                                                                <td><input type="text"
+                                                                        class="form-control text-center uppercase"
+                                                                        name="final_actual{{ $inc }}">
+                                                                </td>
+                                                            @endif
+
+
+                                                            <td><input type="text" class="form-control uppercase"
                                                                     name="final_correct{{ $inc }}" value=""></td>
-                                                            <td><input type="text" class="form-control"
+                                                            <td><input type="text" class="form-control uppercase"
                                                                     name="final_result{{ $inc }}" value=""></td>
-                                                            <td><input type="text" class="form-control"
+                                                            <td><input type="text" class="form-control uppercase"
                                                                     name="final_pr_no[]"></td>
-                                                            <td><input type="date" class="form-control"
+                                                            <td><input type="date" class="form-control uppercase"
                                                                     name="final_tanggal[]"></td>
                                                             @if (isset($value['condition']))
                                                                 @if ($value['condition'] == 'Visual Check (Eng. Stop)')
                                                                     <td rowspan="2"> <input type="text"
-                                                                            class="form-control" name="final_remarks[]">
+                                                                            class="form-control text-center uppercase"
+                                                                            name="final_remarks[]">
                                                                     </td>
                                                                 @else
-                                                                    <td> <input type="text" class="form-control"
+                                                                    <td> <input type="text"
+                                                                            class="form-control text-center uppercase"
                                                                             name="final_remarks[]"></td>
                                                                 @endif
                                                             @endif
@@ -468,11 +495,32 @@
 
                             </div>
                             <div class="row mt-5">
-                                <div class="col-6 ">
+                                <div class="col-12">
                                     <div class="input-group input-group-static mb-3">
-                                        <label for="dibuat" class="ms-0">Checked By</label>
-                                        <select name="checked" id="dibuat_oleh" class="form-control" required>
-                                            <option disabled selected>-- Select checker --</option>
+                                        <label for="note" class="ms-0">Note/Catatan</label>
+                                        <textarea name="note" id="note" class="form-control uppercase" cols="30" rows="1"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-4 ">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label for="dibuat" class="ms-0">Checked By1</label>
+                                        <select name="checked1_display" class="form-control uppercase" disabled>
+                                            @foreach ($approvalList as $user)
+                                                <option value="{{ $user->nik }}"
+                                                    {{ old('checked1', $nik ?? '') == $user->nik ? 'selected' : '' }}>
+                                                    {{ $user->nama }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+
+                                        <input type="hidden" name="checked1" value="{{ old('checked1', $nik ?? '') }}">
+                                    </div>
+                                </div>
+                                <div class="col-4 ">
+                                    <div class="input-group input-group-static mb-3">
+                                        <label for="dibuat" class="ms-0">Checked By2</label>
+                                        <select name="checked2" id="dibuat_oleh" class="form-control" required>
+                                            <option disabled selected>-- Select Creator --</option>
                                             @foreach ($approvalList as $user)
                                                 <option value="{{ $user->nik }}">{{ $user->nama }}</option>
                                             @endforeach
@@ -480,10 +528,10 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-6">
+                                <div class="col-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="diperiksa" class="ms-0">Validated By</label>
-                                        <select name="validated" id="diperiksa" class="form-control" required>
+                                        <select name="validated" id="diperiksa" class="form-control uppercase" required>
                                             <option disabled selected>-- Select Approval --</option>
                                             @foreach ($approvalList as $user)
                                                 <option value="{{ $user->nik }}">{{ $user->nama }}</option>
@@ -512,6 +560,9 @@
 @section('custom-css')
     <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
     <style>
+        .uppercase {
+            text-transform: uppercase;
+        }
         .accordion {
             width: 100%;
 
@@ -607,6 +658,34 @@
             $('#dibuat_oleh').select2();
             $('#diperiksa').select2();
             $('#job_site').select2();
+            $('#unit_cn').select2();
+
+            const engineModelMap = {
+                @foreach ($cn as $cn_unit)
+                    "{{ $cn_unit->no_lambung }}": {
+                        "engineModel": "{{ $cn_unit->model_engine }}",
+                        "unitSn": "{{ $cn_unit->sn_unit }}",
+                        "unitModel": "{{ $cn_unit->model }}",
+                        "engineSn": "{{ $cn_unit->sn_engine }}"
+                    },
+                @endforeach
+            };
+
+            $('#unit_cn').change(function() {
+                const selectedCn = $(this).val();
+                if (engineModelMap[selectedCn]) {
+                    const unitData = engineModelMap[selectedCn];
+                    $('#engine_model').val(unitData.engineModel);
+                    $('#unit_model').val(unitData.unitModel);
+                    $('#unit_sn').val(unitData.unitSn);
+                    $('#engine_sn').val(unitData.engineSn);
+                } else {
+                    $('#engine_model').val('');
+                    $('#unit_model').val('');
+                    $('#unit_sn').val('');
+                    $('#engine_sn').val('');
+                }
+            });
         });
         $(function() {
             var form = $("#formXCMG900");
