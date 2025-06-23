@@ -558,7 +558,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
                 Route::resource('dongfeng', InspectionDongfengController::class);
             });
         });
-
+// produksi
         Route::prefix('prod-form-checker')->group(function () {
             Route::get('/dashboard', [FormCheckerController::class, 'dashboard'])->name('prod.form.checker.dashboard');
             Route::get('/form-checker/export/{id}', [FormCheckerController::class, 'ExportForm'])->name('prod.form.checker.export');
@@ -574,7 +574,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/get-alat-by-site', [FormCheckerController::class, 'getAlatBySite'])->name('get.alat.by.site');
         });
 
-
+// produksi
         Route::prefix('prod-kalibrasi-ct')->group(function () {
             Route::get('/dashboard', [KalibrasiCtController::class, 'Dashboard'])->name('prod.kalibrasi-ct.dashboard');
             Route::get('/form-kalibrasi-ct/export/{id}', [KalibrasiCtController::class, 'ExportForm'])->name('prod.kalibrasi-ct.export');
@@ -587,7 +587,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/approve-form-kalibrasi-ct/{id}', [KalibrasiCtController::class, 'ApproveKalibrasi'])->name('prod.kalibrasi-ct.approve');
             Route::post('/reject-form-kalibrasi-ct/{id}', [KalibrasiCtController::class, 'RejectKalibrasi'])->name('prod.kalibrasi-ct.reject');
         });
-
+        // produksi
         Route::prefix('prod-a2b-baru')->group(function () {
             Route::get('/dashboard', [A2bBaruController::class, 'Dashboard'])->name('prod.a2b-baru.dashboard');
             Route::get('/form-a2b-baru/export/{id}', [A2bBaruController::class, 'ExportForm'])->name('prod.a2b-baru.export');
@@ -600,7 +600,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/approve-a2b-baru/{id}', [A2bBaruController::class, 'ApproveA2bBaru'])->name('prod.a2b-baru.approve');
             Route::post('/reject-a2b-baru/{id}', [A2bBaruController::class, 'RejectA2bBaru'])->name('prod.a2b-baru.reject');
         });
-
+// plant
         Route::prefix('ppm-900d')->group(function () {
             Route::get('/dashboard', [PpmXcmg900dController::class, 'Dashboard'])->name('plant.ppm.900d.dashboard');
             Route::get('/export/{id}', [PpmXcmg900dController::class, 'Export'])->name('plant.ppm.900d.export');
@@ -614,6 +614,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/reject-ppm.900d', [PpmXcmg900dController::class, 'Reject'])->name("plant.ppm.900d.reject");
             Route::post('/reset-ppm.900d/{id}', [PpmXcmg900dController::class, 'Reset'])->name("plant.ppm.900d.reset");
         });
+        // plant
         Route::prefix('ppm-3005T')->group(function () {
             Route::get('/dashboard', [PpmXCMG3005TController::class, 'Dashboard'])->name('plant.ppm.3005.dashboard');
             Route::get('/export/{id}', [PpmXCMG3005TController::class, 'Export'])->name('plant.ppm.3005.export');
@@ -627,6 +628,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/reject-ppm.3005', [PpmXCMG3005TController::class, 'Reject'])->name("plant.ppm.3005.reject");
             Route::post('/reset-ppm.3005/{id}', [PpmXCMG3005TController::class, 'Reset'])->name("plant.ppm.3005.reset");
         });
+        // plant
         Route::prefix('ppm-700d')->group(function () {
             Route::get('/dashboard', [PpmXCMG700DController::class, 'Dashboard'])->name('plant.ppm.700d.dashboard');
             Route::get('/export/{id}', [PpmXCMG700DController::class, 'Export'])->name('plant.ppm.700d.export');
@@ -640,6 +642,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/reject-ppm.700d', [PpmXCMG700DController::class, 'Reject'])->name("plant.ppm.700d.reject");
             Route::post('/reset-ppm.700d/{id}', [PpmXCMG700DController::class, 'Reset'])->name("plant.ppm.700d.reset");
         });
+        // plant
         Route::prefix('ppu-xe1250')->group(function () {
             Route::get('/dashboard', [PpuXE1250Controller::class, 'Dashboard'])->name('plant.ppu.xe1250.dashboard');
             Route::get('/export/{id}', [PpuXE1250Controller::class, 'Export'])->name('plant.ppu.xe1250.export');
@@ -653,6 +656,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/reject-ppu-xe1250', [PpuXE1250Controller::class, 'Reject'])->name("plant.ppu.xe1250.reject");
             Route::post('/reset-ppu-xe1250/{id}', [PpuXE1250Controller::class, 'Reset'])->name("plant.ppu.xe1250.reset");
         });
+        // plant
         Route::prefix('ppm-dh24')->group(function () {
             Route::get('/dashboard', [PpmShantuiDH24Controller::class, 'Dashboard'])->name('dashboard-dh24');
             Route::get('/add', [PpmShantuiDH24Controller::class, 'Add'])->name('form-create-dh24');
@@ -666,7 +670,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/reset-dh24/{id}', [PpmShantuiDH24Controller::class, 'Reset'])->name("plant.dh24.reset");
             Route::post('/update', [PpmShantuiDH24Controller::class, 'Update'])->name('plant.dh24.update');
         });
-
+        // plant
         Route::prefix('ppm-xe1250')->group(function () {
             Route::get('/dashboard', [PpmXcmgXE1250Controller::class, 'Dashboard'])->name('plant.ppm.xe1250.dashboard');
             Route::get('/export/{id}', [PpmXcmgXE1250Controller::class, 'Export'])->name('plant.ppm.xe1250.export');
@@ -680,7 +684,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/reject-ppm.xe1250', [PpmXcmgXE1250Controller::class, 'Reject'])->name("plant.ppm.xe1250.reject");
             Route::post('/reset-ppm.xe1250/{id}', [PpmXcmgXE1250Controller::class, 'Reset'])->name("plant.ppm.xe1250.reset");
         });
-
+        // log
         Route::prefix('ogc-compliance')->group(function () {
             Route::get('/dashboard', [OgcComplianceController::class, 'Dashboard'])->name('log.ogc.dashboard');
             Route::get('/export/{id}', [OgcComplianceController::class, 'Export'])->name('log.ogc.export');
@@ -696,7 +700,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/reject-log.ogc', [OgcComplianceController::class, 'Reject'])->name('log.ogc.reject');
             Route::post('/reset-log.ogc/{id}', [OgcComplianceController::class, 'Reset'])->name('log.ogc.reset');
         });
-
+        // plant
         Route::prefix('lgmg')->group(function () {
             Route::get('/dashboard', [LgmgController::class, 'Dashboard'])->name('lgmg.dashboard');
             Route::get('/export/{id}', [LgmgController::class, 'Export'])->name('lgmg.export');
