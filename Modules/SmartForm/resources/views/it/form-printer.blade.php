@@ -307,7 +307,7 @@
             
             var formData = new FormData(this);
             
-            axios.post('{{ route("it-ops.submit-printer") }}', formData)
+            axios.post(maintenanceForm.attr('action'), formData)
                 .then(function(response) {
                     if (response.data.success) {
                         Swal.fire({
