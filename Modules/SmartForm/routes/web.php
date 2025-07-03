@@ -125,7 +125,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/update-fuel', [FuelController::class, 'updateReqFuel'])->name('bss-form.log.update-fuel');
             Route::get('/delete-fuel', [FuelController::class, 'HapusReqFuel'])->name('bss-form.log.delete-fuel');
             Route::get('/pdf-fuel', [FuelController::class, 'PdfReqFuel'])->name('bss-form.log.pdf-fuel');
-            Route::get('/get-req-fuel-detail', [FuelController::class, 'FuelDetailById'])->name("bss-form.log.form-detail-by-id");
+            Route::get('/get-request-fuel-detail', [FuelController::class, 'FuelDetailById'])->name("bss-form.log.form-detail-by-id");
             Route::get('/get-alat-by-site-fuel', [FuelController::class, 'getNoBySite'])->name('fuel-get.alat.by.site');
             Route::get('/get-model-by-site-fuel', [FuelController::class, 'getModelByNo'])->name('fuel-get.model.by.site');
 

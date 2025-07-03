@@ -160,7 +160,7 @@
                                 </button>
                                 <a href="{{url()->previous()}}" class="btn btn-success" style="margin:5px"><i class="fas fa-cancel"></i> Cancel</a>
                             @else
-                                <a href="{{url()->previous()}}" class="btn btn-success" style="margin:5px"><i class="fas fa-cancel"></i> Cancel</a>
+                                <a href="{{url()->previous()}}" class="btn btn-success" style="margin:5px"><i class="fas fa fa-chevron-left"></i> Back</a>
                             @endif
                         </div>
                     </div>

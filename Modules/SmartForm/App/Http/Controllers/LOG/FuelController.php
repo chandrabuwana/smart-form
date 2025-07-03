@@ -290,7 +290,10 @@ class FuelController extends Controller {
         // $data = array_merge($data, $history_edit, $data_approval);
         $data['list_dept'] = self::LIST_DEPT;
 
-        return view('SmartForm::LOG/pemakaian-solar/lihat-detail-form-pemakaian-solar', $data);
+        return view('SmartForm::LOG/request-fuel/lihat-detail-request-fuel', 
+            $data,
+            ['approvalList' => HrdHelper::getApprovalList()]
+        );
     }
 
     public function HapusReqFuel(Request $request)
