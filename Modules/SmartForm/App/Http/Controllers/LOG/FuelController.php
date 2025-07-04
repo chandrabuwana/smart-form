@@ -228,6 +228,7 @@ class FuelController extends Controller {
             'nama' => '',
             'jabatan' => '',
             'tanggal' => '',
+            'no_lambung' => '',
             'dibuat_oleh' => ''
         );
         try {
