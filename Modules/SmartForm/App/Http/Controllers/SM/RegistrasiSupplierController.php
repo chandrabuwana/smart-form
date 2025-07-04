@@ -185,7 +185,8 @@ class RegistrasiSupplierController extends Controller {
 	    	    'file_profile_per' => $files[7] ?? "Tidak ada",
 	    	    'file_lain' => $files[8] ?? "Tidak ada",
 
-                'diisi_oleh' => $request->tFiller,
+                // 'diisi_oleh' => $request->tFiller,
+                'diisi_oleh' => $requested_by,
                 'diterima_oleh' => $request->dDiterima,
                 'status' => "3",
                 'created_at' => $today,

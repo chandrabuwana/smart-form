@@ -521,7 +521,7 @@
                         <table style="width:100%" >
                           <tr>
                             <td>Diisi Oleh/Filled by, :</td>
-                            <td><input type="text" style="text-transform:uppercase" class="form-control" id="tFiller" name="tFiller" placeholder="Filler Name" required>
+                            <td><input type="text" style="text-transform:uppercase" class="form-control" id="tFiller" name="tFiller" placeholder="Filler Name" value="{{ session('user_id') }}" disabled>
                             </td>
                             <td>Diterima Oleh/Received by, :</td>
                             <td> 

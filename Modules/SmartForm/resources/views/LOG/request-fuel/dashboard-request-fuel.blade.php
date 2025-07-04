@@ -70,7 +70,7 @@
                                 </div>
                                 <div class="text-end pt-1">
                                     <p class="text-sm mb-0 text-capitalize">Records This Month</p>
-                                    <!-- <h4 class="mb-0">{!! $totalThisMonth !!}</h4> -->
+                                    <h4 class="mb-0">{!! $totalThisMonth !!}</h4>
                                 </div>
                             </div>
                         </div>
