@@ -1,61 +1,11 @@
 @extends('master.master_page')
-
 @section('custom-css')
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.css">
-    <link href="{{ asset('master/css/app-baf8d111.css') }}" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    {{-- <script src="{{ asset('master/js/app-e576488e.js') }}"></script> --}}
-    {{-- @vite('resources/css/app.css') --}}
-    <style>
-        /* .form-control {
-            border: 1px solid;
-            padding: 4px;
-        } */
-        /* .form-control:focus {
-            border: 1px solid;
-        } */
-        .ml-16px {
-            margin-left: 16px;
-        }
-        .mb-8px {
-            margin-bottom: 8px;
-        }
-        .display-block {
-            display: block;
-        }
-        .m-0 {
-            margin: 0;
-        }
-        .text-right {
-            text-align: right;
-        }
-        .input-text {
-
-            border: 0;
-            border-bottom: 1px solid;
-            border-color: rgb(188, 188, 188);
-            padding: 2px;
-        }
-        /* .input-text:focus {
-            border: 0;
-            border-bottom: 1px solid;
-            border-color: rgb(188, 188, 188);
-            padding: 2px;
-        } */
-        .reset-border {
-            border: 0;
-        }
-        .w-full {
-            width: 100%
-        }
-        .collapse {
-            visibility: visible;
-        }
-        .mouse-click {
-            cursor: pointer;
-        }
-    </style>
-
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.css">
+<style>
+    .text-right {
+        text-align: right;
+    }
+</style>
 @endsection
 
 @section('content')
@@ -67,7 +17,7 @@
                 <div class="card my-4">
                     <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                         <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                            <h6 class="text-white text-capitalize ps-3">Detail Permintaan Pengisian Fuel</h6>
+                            <h6 class="text-white text-capitalize ps-3">DETAIL REQUEST FUEL</h6>
                         </div>
                     </div>
 
@@ -98,6 +48,7 @@
                                     </tr>
                                     <tr>
                                         <td>Site</td>
+                                        <td>:</td>
                                         <td>{{ $data['site'] }}</td>
                                     </tr>
                                 </table>
@@ -127,58 +78,32 @@
                                 </table>
                             </div>
                             <!-- ====================================== -->
-                            <div class="table-responsive">
-                            <table id="item-pemakaian" class="display" data-toggle="table">
-                                <thead>
+                            <div class="margin-top">
+                                <table class="products">
                                     <tr>
-                                        <th data-formatter="indexFormatter" data-field="no">No</th>
-                                        <th data-field="jam">Jam</th>
-                                        <th data-field="shift">Shift</th>
-                                        <th data-field="shift">HM</th>
-                                        <th data-field="shift">KM</th>
-                                        <th data-field="shift">Flow Meter Awal</th>
-                                        <th data-field="shift">Flow Meter Akhir</th>
-                                        <th data-field="shift">Total Liter</th>
+                                        <th style="width:15%;text-align: center;" rowspan="2">Jam</th>
+                                        <th style="width:15%;text-align: center;" rowspan="2">Shift</th>
+                                        <th style="width:15%;text-align: center;" rowspan="2">HM</th>
+                                        <th style="width:15%;text-align: center;" rowspan="2">KM</th>
+                                        <th style="width:15%;text-align: center;" colspan="2">Flowmeter</th>
+                                        <th style="width:15%;text-align: center;" rowspan="2">Total Liter</th>
                                     </tr>
-                                </thead>
-                            </table>
-                            </table>
+                                    <tr class="itemsHead">
+                                        <th style="width:20%;text-align: center;">AWAL</th>
+                                        <th style="width:20%;text-align: center;">AKHIR</th>
+                                    </tr>
+                                    <tr class="items">
+                                        <td style="text-align: center;">{{$data['jam']}}</td>
+                                        <td style="text-align: center;">{{$data['shift']}}</td>
+                                        <td style="text-align: center;">{{$data['hm']}}</td>
+                                        <td style="text-align: center;">{{$data['km']}}</td>
+                                        <td style="text-align: center;">{{$data['awal']}}</td>
+                                        <td style="text-align: center;">{{$data['akhir']}}</td>
+                                        <td style="text-align: center;">{{$data['total_liter']}}</td>
+                                    </tr>
+                                </table>
+                            </div>
                         </div>
-<!-- 
-
-                            <div class="w-1/2 md:w-1/6">
-                                <span>Jam</span>
-                                    <td class="input-text w-full" id="iJam" name="iJam">{{$data['jam']}}
-                            </div>
-                            <div class="w-1/2 md:w-1/6">
-                                <span>Shift</span>
-                                <select class="form-select form-select-sm input-text" aria-label="Default select example" id="i_shift" name="i_shift">
-                                    <option value="{{$data['shift']}}"selected>{{$data['shift']}}</option>
-                                    <option value="DS">DS</option>
-                                    <option value="NS">NS</option>
-                                </select>
-                            </div>
-                            <div class="w-1/2 md:w-1/6">
-                                <span>HM</span>
-                                    <input type="number" onkeypress="return event.charCode >= 48" min="1" class="input-text w-full" id="i_hm" name="i_hm" value="{{$data['hm']}}">
-                            </div>
-                            <div class="w-1/2 md:w-1/6">
-                                <span>KM</span>
-                                    <input  type="number" onkeypress="return event.charCode >= 48" min="1" class="input-text w-full" id="i_km" name="i_km" value="{{$data['km']}}">
-                            </div>
-                            <div class="w-1/2 md:w-1/6">
-                                <span>Flow Meter Awal</span>
-                                    <input  type="number" onkeypress="return event.charCode >= 48" min="1" class="input-text w-full" id="i_awal" name="i_awal" value="{{$data['awal']}}">
-                            </div>
-                            <div class="w-1/2 md:w-1/6">
-                                <span>Flow Meter Akhir</span>
-                                    <input  type="number" onkeypress="return event.charCode >= 48" min="1" class="input-text w-full" id="i_akhir" name="i_akhir" value="{{$data['akhir']}}">
-                            </div>
-                            <div class="w-1/2 md:w-1/6">
-                                <span>Total Liter</span>
-                                    <input  type="number" onkeypress="return event.charCode >= 48" min="1" class="input-text w-full" id="i_total_liter" name="i_total_liter" value="{{$data['total_liter']}}">
-                            </div>
-                        </div> -->
 
                     <table style="width:100%" >
                           <tr>

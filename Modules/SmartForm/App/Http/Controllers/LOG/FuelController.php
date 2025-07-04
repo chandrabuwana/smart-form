@@ -239,8 +239,8 @@ class FuelController extends Controller {
                 ->where('id', $id)
                 ->first();
             if(!is_null($data)) {
-                Log::info("id : ". json_encode($data));
-
+                // Log::info("id : ". json_encode($data));
+                
                 $data_user = DB::connection('sqlsrv2')
                     ->table("TKaryawan")
                     ->select('NIK as nik', 'Nama as nama')
