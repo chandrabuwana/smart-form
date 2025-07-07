@@ -708,6 +708,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/approve-log.ogc', [OgcComplianceController::class, 'Approve'])->name('log.ogc.approve');
             Route::post('/reject-log.ogc', [OgcComplianceController::class, 'Reject'])->name('log.ogc.reject');
             Route::post('/reset-log.ogc/{id}', [OgcComplianceController::class, 'Reset'])->name('log.ogc.reset');
+            Route::get('/approval-list', [OgcComplianceController::class, 'getApprovalList'])->name('ogc.approval.list');
         });
         // plant
         Route::prefix('lgmg')->group(function () {

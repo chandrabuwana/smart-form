@@ -62,13 +62,7 @@
                                             <td>{{ $records->week }}</td>
                                             <td>
                                                 @php
-                                                    $checkerName =
-                                                        optional(
-                                                            collect($approvalList)->firstWhere(
-                                                                'nik',
-                                                                $records->validator,
-                                                            ),
-                                                        )->nama ?? '';
+                                                    $checkerName = $records->validator;
                                                     $status = is_string($records->status)
                                                         ? json_decode($records->status, true)
                                                         : $records->status;
@@ -83,7 +77,7 @@
                                                 @endif
                                                 @if ($nik == $records->validator)
                                                     <div class="mt-2 d-flex justify-content-center gap-2">
-                                                        <button class="btn btn-primary btn-sm btnOGCApprove"
+                                                        <button class="btn btn-success btn-sm btnOGCApprove"
                                                             data-doc="{{ $data->doc_num }}" data-week="{{ $records->week }}"
                                                             data-status="{{ $records->status }}"
                                                             data-cek='{{ $records->checker }}'
@@ -107,13 +101,7 @@
 
                                             <td class="text-center">
                                                 @php
-                                                    $checkerName =
-                                                        optional(
-                                                            collect($approvalList)->firstWhere(
-                                                                'nik',
-                                                                $records->checker,
-                                                            ),
-                                                        )->nama ?? '';
+                                                    $checkerName = $records->checker;
                                                     $status = is_string($records->status)
                                                         ? json_decode($records->status, true)
                                                         : $records->status;
@@ -129,7 +117,7 @@
 
                                                 @if ($nik == $records->checker)
                                                     <div class="mt-2 d-flex justify-content-center gap-2">
-                                                        <button class="btn btn-primary btn-sm btnOGCApprove"
+                                                        <button class="btn btn-success btn-sm btnOGCApprove"
                                                             data-doc="{{ $data->doc_num }}"data-week="{{ $records->week }}"
                                                             data-status="{{ $records->status }}"
                                                             data-cek='{{ $records->checker }}'
@@ -322,8 +310,7 @@
         <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
         <script>
             $(document).ready(function() {
-                $('#validator').select2();
-                $('#known').select2();
+               
                 $('#week').select2();
             });
 

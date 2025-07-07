@@ -117,16 +117,14 @@
 
                                 <div class="col-md-3
                                 mb-3">
+                                    @php
+                                        $validatedBy = $filters['creator'] ?? null;
+
+                                    @endphp
                                     <div class="input-group input-group-static mb-4 position-relative">
-                                        <label for="approval" class="ms-0">Creator</label>
-                                        <select name="creator" id="creator" class="form-control">
-                                            <option disabled selected>-- Select Creator--</option>
-                                            @foreach ($user as $appUser)
-                                                <option value="{{ $appUser->nik }}"
-                                                    {{ $appUser->nik == $filters['creator'] ? 'selected' : '' }}>
-                                                    {{ $appUser->nama }}
-                                                </option>
-                                            @endforeach
+                                        <label for="validated_by" class="ms-0">creator</label>
+
+                                        <select name="creator" id="approval" class="form-control">
 
                                         </select>
 
@@ -140,22 +138,12 @@
                                         Clear Filter
                                     </button>
                                 </div>
-                                <div class="col-md-12 d-flex justify-content-end">
 
-                                    <div class="status me-2">
-                                        <span class="box red"></span> Rejected
-                                    </div>
-                                    <div class="status me-2">
-                                        <span class="box green"></span> Approved
-                                    </div>
-                                    <div class="status me-2">
-                                        <span class="box blue"></span> Draft
-                                    </div>
-                                </div>
                             </div>
                         </form>
                     </div>
                 </div>
+
 
                 <!-- Data Table -->
                 <div class="card">
@@ -174,9 +162,7 @@
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Date</th>
 
-                                        <th
-                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Status</th>
+
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Actions</th>
@@ -194,7 +180,7 @@
                                             </td>
                                             <td>
                                                 <p class="text-xs font-weight-bold mb-0">
-                                                    {{ optional(collect($user)->firstWhere('nik', $data->creator))->nama ?? '' }}
+                                                    {{ $data->creator }}
                                                 </p>
                                             </td>
                                             <td>
@@ -203,67 +189,17 @@
                                                 </p>
                                             </td>
 
-
-                                            @php
-
-                                                $rawStatuses = json_decode($data->combined_status, true);
-
-                                                if (json_last_error() !== JSON_ERROR_NONE || !is_array($rawStatuses)) {
-                                                    dd('JSON Error: ' . json_last_error_msg(), $data->combined_status);
-                                                    $rawStatuses = [];
-                                                }
-
-                                                $parsedStatuses = [];
-
-                                                foreach ($rawStatuses as $item) {
-                                                    if (isset($item['status'])) {
-                                                        $decodedStatus = json_decode($item['status'], true);
-                                                        if (json_last_error() === JSON_ERROR_NONE) {
-                                                            $parsedStatuses[] = $decodedStatus;
-                                                        } else {
-                                                            dd(
-                                                                'JSON Decode Error: ' . json_last_error_msg(),
-                                                                $item['status'],
-                                                            );
-                                                        }
-                                                    }
-                                                }
-
-                                                $status = Arr::flatten($parsedStatuses);
-
-                                                $status = array_map(
-                                                    fn($value) => is_null($value) ? 'null' : $value,
-                                                    $status,
-                                                );
-
-                                            @endphp
-
-                                            <td>
-
-                                                <span class="text-xs font-weight-bold">
-                                                    @if (collect($status)->every(fn($s) => $s === 'approved'))
-                                                        <span class="badge bg-success">Approved</span>
-                                                    @elseif (collect($status)->contains(fn($s) => $s === 'rejected'))
-                                                        <span class="badge bg-danger">Rejected</span>
-                                                    @elseif (collect($status)->contains(fn($s) => $s === 'null' || $s === null))
-                                                        <span class="badge bg-info">Draf</span>
-                                                    @endif
-                                                </span>
-                                            </td>
                                             <td>
 
                                                 @if ($session == $data->creator)
-                                                    @if (collect($status)->contains(fn($s) => $s === 'rejected') ||
-                                                            collect($status)->contains(fn($s) => $s === 'null' || $s === null))
-                                                        <a href="{{ route('log.ogc.detail', ['id' => $data->id]) }}"
-                                                            class="btn btn-warning btn-sm mt-3">
-                                                            <i class="fas fa-edit"></i>
-                                                        </a>
-                                                        <button type="button" class="btn btn-danger btn-sm mt-3"
-                                                            onclick="deleteOGC('{{ $data->doc_num }}')">
-                                                            <i class="fas fa-trash"></i>
-                                                        </button>
-                                                    @endif
+                                                    <a href="{{ route('log.ogc.detail', ['id' => $data->id]) }}"
+                                                        class="btn btn-warning btn-sm mt-3">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <button type="button" class="btn btn-danger btn-sm mt-3"
+                                                        onclick="deleteOGC('{{ $data->doc_num }}')">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
                                                 @endif
                                                 <a href="{{ route('log.ogc.show', ['id' => $data->id]) }}"
                                                     class="btn btn-info btn-sm mt-3">
@@ -298,9 +234,54 @@
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <script>
-        $(document).ready(function() {
-            $('#creator').select2();
+        $(function() {
+            const selectedNama = @json($validatedBy);
+
+            $('#approval').select2({
+                placeholder: '-- Pilih creator--',
+                width: '100%',
+                ajax: {
+                    url: '{{ route('ogc.approval.list') }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            search: params.term
+                        };
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(item) {
+                                if (!item.nama) return null;
+                                return {
+                                    id: item.nama,
+                                    text: item.nama + ' (' + item.nik + ')'
+                                };
+                            }).filter(Boolean)
+                        };
+                    },
+                    cache: true
+                }
+            });
+
+            // Preselect jika nama sudah ada
+            if (selectedNama) {
+                $.ajax({
+                    url: '{{ route('ogc.approval.list') }}',
+                    dataType: 'json',
+                    success: function(data) {
+                        const matched = data.find(item => item.nama === selectedNama);
+                        if (matched) {
+                            const option = new Option(matched.nama + ' (' + matched.nik + ')', matched
+                                .nama, true, true);
+                            $('#approval').append(option).trigger('change');
+                        }
+                    }
+                });
+            }
         });
+    </script>
+    <script>
         $(function() {
             // Clear filter button
             $('#btnClearFilter').click(function() {

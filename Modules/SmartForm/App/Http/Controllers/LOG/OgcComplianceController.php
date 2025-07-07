@@ -16,36 +16,18 @@ use Modules\SmartForm\helpers\HrdHelper;
 class OgcComplianceController extends Controller {
     public function dashboard( Request $request ) {
             try {
-                $nik_session = $request->session()->get( 'user_id', '' );
-               
+                $nik_session = $request->session()->get( 'username', '' );
+            $query = DB::table( 'log_ogc_compliance' )
+            ->select( '*' )
+            ->orderBy( 'created_at', 'desc' );
 
-                $query = DB::table('log_ogc_compliance as log')
-                ->join(
-                    DB::raw("(SELECT doc_num_id,
-                                     (SELECT status
-                                      FROM detail_log_ogc_compliance
-                                      WHERE doc_num_id = d.doc_num_id
-                                      FOR JSON PATH) AS combined_status
-                              FROM detail_log_ogc_compliance d
-                              GROUP BY doc_num_id) AS detail"),
-                    'log.doc_num', '=', 'detail.doc_num_id'
-                )
-                ->select(
-                    'log.id',
-                    'log.doc_num',
-                    'log.created_at',
-                    'log.creator',
-                    'detail.combined_status'
-                )
-                ->groupBy('log.id', 'log.doc_num', 'log.created_at', 'log.creator', 'detail.combined_status')
-                ->orderBy('log.created_at', 'desc');
 
                 if ( $request->has( 'search' ) ) {
                     $searchTerm = $request->search;
                     $query->where( function( $q ) use ( $searchTerm ) {
                         $q->where( 'doc_num', 'like', '%' . $searchTerm . '%' )
-                        ->orWhere( 'creator', 'like', '%' . $searchTerm . '%' )
-                        ->orWhere( 'status', 'like', '%' . $searchTerm . '%' );
+                        ->orWhere( 'creator', 'like', '%' . $searchTerm . '%' );
+
                     }
                 );
             }
@@ -98,7 +80,7 @@ class OgcComplianceController extends Controller {
 
             $data = [
                 'doc_num' => $this->generateDocNumber(),
-                'creator' => $request->session()->get( 'user_id', '' ),
+                'creator' => $request->session()->get( 'username', '' ),
 
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
@@ -222,7 +204,7 @@ class OgcComplianceController extends Controller {
 
     }
     public function show(Request $request, $id){
-        $nik_session = $request->session()->get( 'user_id', '' );
+        $nik_session = $request->session()->get( 'username', '' );
         $data = DB::table('log_ogc_compliance')
         ->where('id', $id)
         ->first();
@@ -410,5 +392,12 @@ class OgcComplianceController extends Controller {
         }
         while ( $exists );
         return $docNumber;
+    }
+    public function getApprovalList(Request $request)
+    {
+        $search = $request->input('search', '');
+        $list = HrdHelper::getApprovalList($search);
+
+        return response()->json($list);
     }
 }
