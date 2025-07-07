@@ -614,6 +614,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/approve-ppm.900d', [PpmXcmg900dController::class, 'Approve'])->name("plant.ppm.900d.approve");
             Route::post('/reject-ppm.900d', [PpmXcmg900dController::class, 'Reject'])->name("plant.ppm.900d.reject");
             Route::post('/reset-ppm.900d/{id}', [PpmXcmg900dController::class, 'Reset'])->name("plant.ppm.900d.reset");
+             Route::get('/approval-list', [PpmXCMG900DController::class, 'getApprovalList'])->name('900d.approval.list');
         });
         // plant
         Route::prefix('ppm-3005T')->group(function () {

@@ -176,16 +176,7 @@
                                     @endphp
                                     <div class="input-group input-group-static mb-4 position-relative">
                                         <label for="validated_by" class="ms-0">Approval</label>
-                                        {{-- <select name="validated_by" id="approval" class="form-control">
-                                            <option disabled selected>-- Select Approval --</option>
-                                            @foreach ($user as $appUser)
-                                                <option value="{{ $appUser->nik }}"
-                                                    {{ $appUser->nik == $filters['validated_by'] ? 'selected' : '' }}>
-                                                    {{ $appUser->nama }}
-                                                </option>
-                                            @endforeach
 
-                                        </select> --}}
                                         <select name="validated_by" id="approval" class="form-control">
 
                                         </select>
@@ -405,10 +396,10 @@
     </script>
     <script>
         $(function() {
-            const selectedNama = @json($validatedBy); // nama yang akan dipilih jika ada
+            const selectedNama = @json($validatedBy); 
 
             $('#approval').select2({
-                placeholder: '-- Pilih checked --',
+                placeholder: '-- Pilih Approval --',
                 width: '100%',
                 ajax: {
                     url: '{{ route('700d.approval.list') }}',
