@@ -168,12 +168,12 @@
                                                 max="284" style="background-color: #c3bdbf;text-align: center;"
                                                 class="form-control" name="link_pitch[]"
                                                 value="{{ $data->link_pitch[0] }}"
-                                                oninput="this.setCustomValidity(parseFloat(this.value) < 281 ? 'Value must be at least 281' : 
-                                                parseFloat(this.value) > 284 ? 'Value must not exceed 284' : ''); 
+                                                oninput="this.setCustomValidity(parseFloat(this.value) < 281 ? 'Value must be at least 281' :
+                                                parseFloat(this.value) > 284 ? 'Value must not exceed 284' : '');
                                                 this.reportValidity();"
                                                 required></td>
                                         <td colspan="2"><input type="number" step="0.0001"
-                                                oninput="this.setCustomValidity(parseFloat(this.value) > 181 ? 'Value must not exceed 181' : ''); 
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 181 ? 'Value must not exceed 181' : '');
                                                 this.reportValidity();"
                                                 max="181" style="background-color: #c3bdbf;text-align: center;"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
@@ -181,7 +181,7 @@
                                         <td colspan="2"><input type="number" step="0.0001" max="99"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
                                                 name="link_bushing[]" value="{{ $data->link_bushing[0] }}"
-                                                oninput="this.setCustomValidity(parseFloat(this.value) > 99 ? 'Value must not exceed 99' : ''); 
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 99 ? 'Value must not exceed 99' : '');
                                                 this.reportValidity();"
                                                 required></td>
                                     </tr>
@@ -190,20 +190,20 @@
                                         <td colspan="2"><input type="number" step="0.0001" min="281"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
                                                 name="link_pitch[]" value="{{ $data->link_pitch[1] }}"
-                                                oninput="this.setCustomValidity(parseFloat(this.value) < 281 ? 'Value must be at least 281' : 
-                                                parseFloat(this.value) > 284 ? 'Value must not exceed 284' : ''); 
+                                                oninput="this.setCustomValidity(parseFloat(this.value) < 281 ? 'Value must be at least 281' :
+                                                parseFloat(this.value) > 284 ? 'Value must not exceed 284' : '');
                                                 this.reportValidity();"
                                                 required></td>
                                         <td colspan="2"><input type="number" step="0.0001" max="181"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
                                                 name="link_Height[]" value="{{ $data->link_height[1] }}"
-                                                oninput="this.setCustomValidity(parseFloat(this.value) > 181 ? 'Value must not exceed 181' : ''); 
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 181 ? 'Value must not exceed 181' : '');
                                                 this.reportValidity();"
                                                 required></td>
                                         <td colspan="2"><input type="number" step="0.0001" max="99"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
                                                 name="link_bushing[]" value="{{ $data->link_bushing[1] }}"
-                                                oninput="this.setCustomValidity(parseFloat(this.value) > 99 ? 'Value must not exceed 99' : ''); 
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 99 ? 'Value must not exceed 99' : '');
                                                 this.reportValidity();"
                                                 required></td>
                                     </tr>
@@ -253,21 +253,21 @@
                                         <td colspan="2"><input type="number" step="0.0001" max="50"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
                                                 name="grouser_height[]" value="{{ $data->grouser_height[0] }}"
-                                                oninput="this.setCustomValidity(parseFloat(this.value) > 50 ? 'Value must not exceed 50' : ''); 
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 50 ? 'Value must not exceed 50' : '');
                                                 this.reportValidity();"
                                                 required></td>
                                         <td colspan="2"><input type="number" step="0.0001" min="23"
                                                 max="29" style="background-color: #c3bdbf;text-align: center;"
                                                 class="form-control" name="idler[]" value="{{ $data->idler[0] }}"
-                                                oninput="this.setCustomValidity(parseFloat(this.value) < 23? 'Value must be at least 23' : 
-                                                parseFloat(this.value) > 29 ? 'Value must not exceed 29' : ''); 
+                                                oninput="this.setCustomValidity(parseFloat(this.value) < 23? 'Value must be at least 23' :
+                                                parseFloat(this.value) > 29 ? 'Value must not exceed 29' : '');
                                                 this.reportValidity();"
                                                 required>
                                         </td>
                                         <td colspan="2"><input type="number" step="0.0001" max="423"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
                                                 name="sprocket[]" value="{{ $data->sprocket[0] }}"
-                                                oninput="this.setCustomValidity(parseFloat(this.value) > 423 ? 'Value must not exceed 423' : ''); 
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 423 ? 'Value must not exceed 423' : '');
                                                 this.reportValidity();"
                                                 required>
                                         </td>
@@ -277,21 +277,21 @@
                                         <td colspan="2"><input type="number" step="0.0001" max="50"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
                                                 name="grouser_height[]" value="{{ $data->grouser_height[1] }}"
-                                                oninput="this.setCustomValidity(parseFloat(this.value) > 50 ? 'Value must not exceed 50' : ''); 
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 50 ? 'Value must not exceed 50' : '');
                                                 this.reportValidity();"
                                                 required></td>
                                         <td colspan="2"><input type="number" step="0.0001" min="23"
                                                 max="29" style="background-color: #c3bdbf;text-align: center;"
                                                 class="form-control" name="idler[]" value="{{ $data->idler[1] }}"
-                                                oninput="this.setCustomValidity(parseFloat(this.value) < 23? 'Value must be at least 23' : 
-                                                parseFloat(this.value) > 29 ? 'Value must not exceed 29' : ''); 
+                                                oninput="this.setCustomValidity(parseFloat(this.value) < 23? 'Value must be at least 23' :
+                                                parseFloat(this.value) > 29 ? 'Value must not exceed 29' : '');
                                                 this.reportValidity();"
                                                 required>
                                         </td>
                                         <td colspan="2"><input type="number" step="0.0001" max="423"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
                                                 name="sprocket[]" value="{{ $data->sprocket[1] }}"
-                                                oninput="this.setCustomValidity(parseFloat(this.value) > 423 ? 'Value must not exceed 423' : ''); 
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 423 ? 'Value must not exceed 423' : '');
                                                 this.reportValidity();"
                                                 required>
                                         </td>
@@ -342,20 +342,20 @@
                                         <td colspan="2"><input type="number" step="0.0001" max="210"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
                                                 name="carrier_roller1[]" value="{{ $data->carrier_roller1[0] }}"
-                                                oninput="this.setCustomValidity(parseFloat(this.value) > 210 ? 'Value must not exceed 210' : ''); 
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 210 ? 'Value must not exceed 210' : '');
                                                 this.reportValidity();"
                                                 required></td>
                                         <td colspan="2"><input type="number" step="0.0001" max="210"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
                                                 name="carrier_roller2[]" value="{{ $data->carrier_roller2[0] }}"
-                                                oninput="this.setCustomValidity(parseFloat(this.value) > 210 ? 'Value must not exceed 210' : ''); 
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 210 ? 'Value must not exceed 210' : '');
                                                 this.reportValidity();"
                                                 required>
                                         </td>
                                         <td colspan="2"><input type="number" step="0.0001" max="210"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
                                                 name="carrier_roller3[]"value="{{ $data->carrier_roller3[0] }}"
-                                                oninput="this.setCustomValidity(parseFloat(this.value) > 210 ? 'Value must not exceed 210' : ''); 
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 210 ? 'Value must not exceed 210' : '');
                                                 this.reportValidity();"
                                                 required>
                                         </td>
@@ -365,20 +365,20 @@
                                         <td colspan="2"><input type="number" step="0.0001" max="210"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
                                                 name="carrier_roller1[]" value="{{ $data->carrier_roller1[1] }}"
-                                                oninput="this.setCustomValidity(parseFloat(this.value) > 210 ? 'Value must not exceed 210' : ''); 
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 210 ? 'Value must not exceed 210' : '');
                                                 this.reportValidity();"
                                                 required></td>
                                         <td colspan="2"><input type="number" step="0.0001" max="210"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
                                                 name="carrier_roller2[]" value="{{ $data->carrier_roller2[1] }}"
-                                                oninput="this.setCustomValidity(parseFloat(this.value) > 210 ? 'Value must not exceed 210' : ''); 
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 210 ? 'Value must not exceed 210' : '');
                                                 this.reportValidity();"
                                                 required>
                                         </td>
                                         <td colspan="2"><input type="number" step="0.0001" max="210"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
                                                 name="carrier_roller3[]" value="{{ $data->carrier_roller3[1] }}"
-                                                oninput="this.setCustomValidity(parseFloat(this.value) > 210 ? 'Value must not exceed 210' : ''); 
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 210 ? 'Value must not exceed 210' : '');
                                                 this.reportValidity();"
                                                 required>
                                         </td>
@@ -430,7 +430,7 @@
                                                     style="background-color: #c3bdbf;text-align: center;"
                                                     class="form-control" name="track_roller[]"
                                                     value="{{ $data->track_roller[$i] }}"
-                                                    oninput="this.setCustomValidity(parseFloat(this.value) > 291 ? 'Value must not exceed 291' : ''); 
+                                                    oninput="this.setCustomValidity(parseFloat(this.value) > 291 ? 'Value must not exceed 291' : '');
                                                 this.reportValidity();"
                                                     required></td>
                                         @endfor
@@ -443,7 +443,7 @@
                                                     style="background-color: #c3bdbf;text-align: center;"
                                                     class="form-control" name="track_roller[]"
                                                     value="{{ $data->track_roller[8 + $i] }}"
-                                                    oninput="this.setCustomValidity(parseFloat(this.value) > 291 ? 'Value must not exceed 291' : ''); 
+                                                    oninput="this.setCustomValidity(parseFloat(this.value) > 291 ? 'Value must not exceed 291' : '');
                                                 this.reportValidity();"
                                                     required></td>
                                         @endfor
@@ -753,9 +753,9 @@
                                 <div class="col-4 ">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="dibuat" class="ms-0">Checked By1</label>
-                                        <input type="hidden" name="checked1" value="{{ $data->creator }}">
-                                        <input type="text" name="view_checked1" class="form-control"
-                                            value="{{ optional(collect($approvalList)->firstWhere('nik', $data->creator))->nama ?? '' }}"
+
+                                        <input type="text" name="checked1" class="form-control"
+                                            value="{{ $data->creator }}"
                                             readonly>
 
                                         </select>
@@ -764,13 +764,8 @@
                                 <div class="col-4 ">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="dibuat" class="ms-0">Checked By2</label>
-                                        <select name="checked2" id="dibuat_oleh2" class="form-control" required>
-                                            <option disabled selected>-- Select Creator --</option>
-                                            @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nik }}"
-                                                    {{ old('checked2', $data->checked_2 ?? '') == $user->nik ? 'selected' : '' }}>
-                                                    {{ $user->nama }}</option>
-                                            @endforeach
+                                        <select name="checked2" id="checked2" class="form-control" required>
+
 
                                         </select>
                                     </div>
@@ -778,14 +773,8 @@
                                 <div class="col-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="diperiksa" class="ms-0">Validated By</label>
-                                        <select name="validated" id="diperiksa" class="form-control" required>
-                                            <option disabled selected>-- Select Approval --</option>
-                                            @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nik }}"
-                                                    {{ old('validated', $data->validated ?? '') == $user->nik ? 'selected' : '' }}>
-                                                    {{ $user->nama }}
-                                                </option>
-                                            @endforeach
+                                        <select name="validated" id="validated" class="form-control" required>
+
                                         </select>
                                     </div>
                                 </div>
@@ -907,6 +896,103 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+    <script>
+        $(function() {
+            const selectedNama = '{{ $data->checked_2 }}';
+
+            $('#checked2').select2({
+                placeholder: '-- Select Creator --',
+                width: '100%',
+                ajax: {
+                    url: '{{ route('ppu.1250.approval.list') }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            search: params.term
+                        };
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(item) {
+                                return {
+                                    id: item.nama,
+                                    text: item.nama + ' (' + item.nik + ')',
+                                    nama: item.nama
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+
+
+            if (selectedNama) {
+                $.ajax({
+                    url: '{{ route('ppu.1250.approval.list') }}',
+                    dataType: 'json',
+                    success: function(data) {
+                        const matched = data.find(item => item.nama ===
+                            selectedNama);
+                        if (matched) {
+                            const option = new Option(matched.nama + ' (' + matched.nik + ')', matched
+                                .nama, true, true);
+                            $('#checked2').append(option).trigger('change');
+                        }
+                    }
+                });
+            }
+        });
+
+
+        $(function() {
+            const selectedNik = '{{ $data->validated }}';
+
+            $('#validated').select2({
+                placeholder: '-- Select Creator --',
+                width: '100%',
+                ajax: {
+                    url: '{{ route('ppu.1250.approval.list') }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            search: params.term || ''
+                        };
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(item) {
+                                return {
+                                    id: item.nama,
+                                    text: item.nama + ' (' + item.nik +
+                                        ')',
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+
+
+            if (selectedNik) {
+                $.ajax({
+                    url: '{{ route('ppu.1250.approval.list') }}',
+                    dataType: 'json',
+                    success: function(data) {
+                        const matched = data.find(item => item.nama === selectedNik);
+                        if (matched) {
+                            const option = new Option(matched.nama + ' (' + matched.nik + ')', matched
+                                .nama, true, true);
+                            $('#validated').append(option).trigger('change');
+                        }
+                    }
+                });
+            }
+        });
+    </script>
     <script>
         $(document).ready(function() {
             $('#dibuat_oleh').select2();

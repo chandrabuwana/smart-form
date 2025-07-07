@@ -644,7 +644,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/approve-ppm.700d', [PpmXCMG700DController::class, 'Approve'])->name("plant.ppm.700d.approve");
             Route::post('/reject-ppm.700d', [PpmXCMG700DController::class, 'Reject'])->name("plant.ppm.700d.reject");
             Route::post('/reset-ppm.700d/{id}', [PpmXCMG700DController::class, 'Reset'])->name("plant.ppm.700d.reset");
-             Route::get('/approval-list', [PpmXCMG700DController::class, 'getApprovalList'])->name('700d.approval.list');
+            Route::get('/approval-list', [PpmXCMG700DController::class, 'getApprovalList'])->name('700d.approval.list');
         });
         // plant
         Route::prefix('ppu-xe1250')->group(function () {
@@ -659,6 +659,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/approve-ppu-xe1250', [PpuXE1250Controller::class, 'Approve'])->name("plant.ppu.xe1250.approve");
             Route::post('/reject-ppu-xe1250', [PpuXE1250Controller::class, 'Reject'])->name("plant.ppu.xe1250.reject");
             Route::post('/reset-ppu-xe1250/{id}', [PpuXE1250Controller::class, 'Reset'])->name("plant.ppu.xe1250.reset");
+            Route::get('/approval-list', [PpuXE1250Controller::class, 'getApprovalList'])->name('ppu.1250.approval.list');
         });
         // plant
         Route::prefix('ppm-dh24')->group(function () {

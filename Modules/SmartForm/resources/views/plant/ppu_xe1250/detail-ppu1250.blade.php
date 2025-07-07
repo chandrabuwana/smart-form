@@ -680,27 +680,13 @@
                                 <div class="col-4 ">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="dibuat" class="ms-0">Checked By1</label>
-                                        <select name="checked1" id="dibuat_oleh" class="form-control" disabled>
-                                            <option disabled selected>-- Select Creator --</option>
-                                            @foreach ($approvalList as $user)
-                                                <option
-                                                    {{ old('checked1', $data->checked_1 ?? '') == $user->nik ? 'selected' : '' }}>
-                                                    {{ $user->nama }}</option>
-                                            @endforeach
-
-                                        </select>
+                                        <input type="text" class="form-control" readonly value="{{$data->creator}}">
                                     </div>
                                 </div>
                                 <div class="col-4 ">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="dibuat" class="ms-0">Checked By2</label>
-                                        <select name="checked2" id="dibuat_oleh2" class="form-control" disabled>
-                                            <option disabled selected>-- Select Creator --</option>
-                                            @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nik }}"
-                                                    {{ old('checked2', $data->checked_2 ?? '') == $user->nik ? 'selected' : '' }}>
-                                                    {{ $user->nama }}</option>
-                                            @endforeach
+                                        <select name="checked2" id="checked2" class="form-control" disabled>
 
                                         </select>
                                     </div>
@@ -708,13 +694,8 @@
                                 <div class="col-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="diperiksa" class="ms-0">Validated By</label>
-                                        <select name="validated" id="diperiksa" class="form-control" disabled>
-                                            <option disabled selected>-- Select Approval --</option>
-                                            @foreach ($approvalList as $user)
-                                                <option
-                                                    {{ old('validated', $data->validated ?? '') == $user->nik ? 'selected' : '' }}>
-                                                    {{ $user->nama }}</option>
-                                            @endforeach
+                                        <select name="validated" id="validated" class="form-control" disabled>
+
                                         </select>
                                     </div>
                                 </div>
@@ -916,10 +897,104 @@
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <script>
+        $(function() {
+            const selectedNik = '{{ $data->checked_2 }}';
+
+            $('#checked2').select2({
+                placeholder: '-- Select Creator --',
+                width: '100%',
+                ajax: {
+                    url: '{{ route('ppu.1250.approval.list') }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            search: params.term || ''
+                        };
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(item) {
+                                return {
+                                    id: item.nama,
+                                    text: item.nama + ' (' + item.nik +
+                                        ')',
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+
+
+            if (selectedNik) {
+                $.ajax({
+                    url: '{{ route('ppu.1250.approval.list') }}',
+                    dataType: 'json',
+                    success: function(data) {
+                        const matched = data.find(item => item.nama === selectedNik);
+                        if (matched) {
+                            const option = new Option(matched.nama + ' (' + matched.nik + ')', matched
+                                .nama, true, true);
+                            $('#checked2').append(option).trigger('change');
+                        }
+                    }
+                });
+            }
+        });
+
+        $(function() {
+            const selectedNik = '{{ $data->validated }}';
+
+            $('#validated').select2({
+                placeholder: '-- Select Creator --',
+                width: '100%',
+                ajax: {
+                    url: '{{ route('ppu.1250.approval.list') }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            search: params.term || ''
+                        };
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(item) {
+                                return {
+                                    id: item.nama,
+                                    text: item.nama + ' (' + item.nik +
+                                        ')',
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+
+
+            if (selectedNik) {
+                $.ajax({
+                    url: '{{ route('ppu.1250.approval.list') }}',
+                    dataType: 'json',
+                    success: function(data) {
+                        const matched = data.find(item => item.nama === selectedNik);
+                        if (matched) {
+                            const option = new Option(matched.nama + ' (' + matched.nik + ')', matched
+                                .nama, true, true);
+                            $('#validated').append(option).trigger('change');
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+
+    <script>
         $(document).ready(function() {
-            $('#dibuat_oleh').select2();
-            $('#dibuat_oleh2').select2();
-            $('#diperiksa').select2();
+
             $('#job_site').select2();
         });
         document.addEventListener("DOMContentLoaded", function() {
