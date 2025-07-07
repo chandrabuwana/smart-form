@@ -573,6 +573,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/update-form-checker', [FormCheckerController::class, 'Update'])->name('prod.form.checker.update');
             Route::get('/detail/{id}', [FormCheckerController::class, 'detail'])->name('prod.form.checker.detail');
             Route::get('/get-alat-by-site', [FormCheckerController::class, 'getAlatBySite'])->name('get.alat.by.site');
+            Route::get('/approval-list', [FormCheckerController::class, 'getApprovalList'])->name('checker.approval.list');
         });
 
 // produksi

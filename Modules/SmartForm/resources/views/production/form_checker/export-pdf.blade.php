@@ -90,7 +90,7 @@
                     <th colspan="3">{{ $record->stop_loading }}</th>
                     <th colspan="4">PIC Area</th>
                     <th colspan="8">
-                        {{ optional(collect($approvalList)->firstWhere('nik', $record->pic_area))->nama ?? '' }}</th>
+                        {{ $record->pic_area }}</th>
                     <th style="border: none;"></th>
                 </tr>
                 <tr>
@@ -224,11 +224,11 @@
                             <td style="border: none;" class="center" colspan="6">Diperiksa Oleh</td>
                         @elseif ($i == 7)
                             <td style="border: none;"> (
-                                {{ optional(collect($approvalList)->firstWhere('nik', $record->checker))->nama ?? '' }})
+                                {{ $record->checker }})
                             </td>
                             <td style="border: none;" class="center" colspan="6">
                                 (
-                                {{ optional(collect($approvalList)->firstWhere('nik', $record->pengawas))->nama ?? '' }})
+                                {{ $record->pengawas }})
                             </td>
                         @elseif ($i == 8)
                             <td style="border: none;">Checker</td>

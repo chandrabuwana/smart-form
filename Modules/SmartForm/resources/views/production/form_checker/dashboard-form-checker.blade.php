@@ -248,14 +248,11 @@
                                             <td>
                                                 <span class="text-xs font-weight-bold">
                                                     @if ($data->status === 'Approved')
-                                                        <span
-                                                            class="badge bg-success">{{ optional(collect($user)->firstWhere('nik', $data->pengawas))->nama ?? '' }}</span>
+                                                        <span class="badge bg-success">{{ $data->pengawas }}</span>
                                                     @elseif ($data->status === 'Rejected')
-                                                        <span
-                                                            class="badge bg-danger">{{ optional(collect($user)->firstWhere('nik', $data->pengawas))->nama ?? '' }}</span>
+                                                        <span class="badge bg-danger">{{ $data->pengawas }}</span>
                                                     @elseif ($data->status === 'Draft')
-                                                        <span
-                                                            class="badge bg-info">{{ optional(collect($user)->firstWhere('nik', $data->pengawas))->nama ?? '' }}</span>
+                                                        <span class="badge bg-info">{{ $data->pengawas }}</span>
                                                     @endif
                                                 </span>
                                             </td>

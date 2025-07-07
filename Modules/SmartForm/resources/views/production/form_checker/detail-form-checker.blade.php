@@ -96,8 +96,8 @@
                                         disabled>
                                         <option disabled selected>-- Select Nama Operator --</option>
                                         @forelse($users as $user)
-                                            <option value="{{ $user->nik ?? '' }}"
-                                                {{ $record->operator_leader == $user->nik ? 'selected' : '' }}>
+                                            <option value="{{ $user->nama ?? '' }}"
+                                                {{ $record->operator_leader == $user->nama ? 'selected' : '' }}>
                                                 {{ $user->nama ?? 'User tidak tersedia' }}
                                             </option>
                                         @empty
@@ -110,8 +110,7 @@
                                 <div class="input-group input-group-static mb-3">
                                     <label for="nama_pic" class="ms-0">Nama PIC</label>
                                     <input type="text" class="form-control" id="nama-pic"
-                                        value="{{ optional(collect($approvalList)->firstWhere('nik', $record->pic_area))->nama ?? '' }}"
-                                        disabled>
+                                        value="{{ $record->pic_area }}" disabled>
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -201,20 +200,14 @@
                                 <div class="input-group input-group-static mb-3">
                                     <label for="dibuat" class="ms-0">Dibuat Oleh</label>
                                     <input type="text" class="form-control" id="dibuat"
-                                        value="{{ optional(collect($approvalList)->firstWhere('nik', $record->checker))->nama ?? '' }}"
-                                        name="dibuat_oleh" disabled>
+                                        value="{{ $record->checker }}" name="dibuat_oleh" disabled>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="input-group input-group-static mb-3">
                                     <label for="diperiksa" class="ms-0">Diperiksa Oleh</label>
-                                    <select name="diperiksa_oleh" id="diperiksa" class="form-control" disabled required>
-                                        <option disabled selected>-- Select Validator --</option>
-                                        @foreach ($approvalList as $user)
-                                            <option value="{{ $user->nik }}"
-                                                {{ old('validated', $record->pengawas ?? '') == $user->nik ? 'selected' : '' }}>
-                                                {{ $user->nama }}</option>
-                                        @endforeach
+                                    <select name="diperiksa_oleh" id="validated" class="form-control" disabled required>
+
                                     </select>
                                 </div>
                             </div>
@@ -362,6 +355,54 @@
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+        <script>
+            $(function() {
+                const selectedNik = '{{ $record->pengawas }}';
+
+                $('#validated').select2({
+                    placeholder: '-- Select Creator --',
+                    width: '100%',
+                    ajax: {
+                        url: '{{ route('checker.approval.list') }}',
+                        dataType: 'json',
+                        delay: 250,
+                        data: function(params) {
+                            return {
+                                search: params.term || ''
+                            };
+                        },
+                        processResults: function(data) {
+                            return {
+                                results: $.map(data, function(item) {
+                                    return {
+                                        id: item.nama,
+                                        text: item.nama + ' (' + item.nik +
+                                            ')',
+                                    };
+                                })
+                            };
+                        },
+                        cache: true
+                    }
+                });
+
+
+                if (selectedNik) {
+                    $.ajax({
+                        url: '{{ route('checker.approval.list') }}',
+                        dataType: 'json',
+                        success: function(data) {
+                            const matched = data.find(item => item.nama === selectedNik);
+                            if (matched) {
+                                const option = new Option(matched.nama + ' (' + matched.nik + ')', matched
+                                    .nama, true, true);
+                                $('#validated').append(option).trigger('change');
+                            }
+                        }
+                    });
+                }
+            });
+        </script>
         <script>
             $(document).ready(function() {
                 $('#dibuat_oleh').select2();
@@ -759,7 +800,7 @@
                         row.innerHTML = `
                     <td>${data}</td>
                     ${timeInputs}
-    
+
                     <td><textarea class="form-control" name="${materialName}" rows="1" disabled>${materialValue}</textarea></td>
                 `;
                         container.appendChild(row);

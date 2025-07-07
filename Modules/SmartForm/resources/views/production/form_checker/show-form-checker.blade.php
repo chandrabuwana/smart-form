@@ -98,8 +98,8 @@
                                             required>
                                             <option disabled>-- Select Nama Operator --</option>
                                             @forelse($users as $user)
-                                                <option value="{{ $user->nik ?? '' }}"
-                                                    {{ $record->operator_leader == $user->nik ? 'selected' : '' }}>
+                                                <option value="{{ $user->nama ?? '' }}"
+                                                    {{ $record->operator_leader == $user->nama ? 'selected' : '' }}>
                                                     {{ $user->nama ?? 'User tidak tersedia' }}
                                                 </option>
                                             @empty
@@ -111,10 +111,9 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="nama_pic" class="ms-0">Nama PIC</label>
-                                        <input type="text" class="form-control" id="nama-pic"
-                                            value="{{ optional(collect($approvalList)->firstWhere('nik', $record->pic_area))->nama ?? '' }}"
-                                            readonly>
-                                        <input type="hidden" name="nama_pic" value="{{ $record->pic_area }}">
+
+                                        <input type="text" id="nama_pic" readonly class="form-control"
+                                            name="nama_pic" value="{{ $record->pic_area }}">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -205,22 +204,16 @@
                                 <div class="col-6">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="dibuat" class="ms-0">Dibuat Oleh</label>
-                                        <input type="text" class="form-control" id="dibuat"
-                                            value="{{ optional(collect($approvalList)->firstWhere('nik', $record->checker))->nama ?? '' }}"
-                                            readonly>
-                                        <input type="hidden" name="dibuat_oleh" value="{{ $record->checker }}">
+
+                                        <input type="text" readonly class="form-control" name="dibuat_oleh"
+                                            value="{{ $record->checker }}">
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="diperiksa" class="ms-0">Diperiksa Oleh</label>
-                                        <select name="diperiksa_oleh" id="diperiksa" class="form-control" required>
-                                            <option disabled selected>-- Select Validator --</option>
-                                            @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nik }}"
-                                                    {{ old('validated', $record->pengawas ?? '') == $user->nik ? 'selected' : '' }}>
-                                                    {{ $user->nama }}</option>
-                                            @endforeach
+                                        <select name="diperiksa_oleh" id="validated" class="form-control" required>
+
                                         </select>
                                     </div>
                                 </div>
@@ -396,8 +389,7 @@
 
 
         $(document).ready(function() {
-            $('#dibuat_oleh').select2();
-            $('#diperiksa').select2();
+
             $('#site').select2();
             $('#operator_load').select2();
             $('#nama_operator').select2();
@@ -874,6 +866,54 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             initializeFormWithRecord();
+        });
+    </script>
+    <script>
+        $(function() {
+            const selectedNik = '{{ $record->pengawas }}';
+
+            $('#validated').select2({
+                placeholder: '-- Select Creator --',
+                width: '100%',
+                ajax: {
+                    url: '{{ route('checker.approval.list') }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            search: params.term || ''
+                        };
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(item) {
+                                return {
+                                    id: item.nama,
+                                    text: item.nama + ' (' + item.nik +
+                                        ')',
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+
+
+            if (selectedNik) {
+                $.ajax({
+                    url: '{{ route('checker.approval.list') }}',
+                    dataType: 'json',
+                    success: function(data) {
+                        const matched = data.find(item => item.nama === selectedNik);
+                        if (matched) {
+                            const option = new Option(matched.nama + ' (' + matched.nik + ')', matched
+                                .nama, true, true);
+                            $('#validated').append(option).trigger('change');
+                        }
+                    }
+                });
+            }
         });
     </script>
 @endsection
