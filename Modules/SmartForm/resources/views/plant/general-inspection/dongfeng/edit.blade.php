@@ -477,16 +477,10 @@
                             <div class="row">
                                 <div class="col-6 ">
                                     <div class="input-group input-group-static mb-3">
-                                        <input type="text" name="dilakukan1" id="dibuat"
-                                            value="{{ old('dibuat', $inspection['dilakukan1'] ?? '') }}" hidden>
+
                                         <label for="dilakukan1" class="ms-0">Dilakukan Oleh 1</label>
-                                        <select id="dilakukan1" class="form-control" disabled>
-                                            <option disabled selected>-- Select User --</option>
-                                            @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nama }}"
-                                                    {{ old('dilakukan1', $inspection['dilakukan1'] ?? '') == $user->nik ? 'selected' : '' }}>
-                                                    {{ $user->nama }}</option>
-                                            @endforeach
+                                        <input type="text" name="dilakukan1" id="dibuat" class="form-control"
+                                            value="{{ old('dibuat', $inspection['dilakukan1'] ?? '') }}" readonly>
                                         </select>
                                     </div>
                                 </div>
@@ -494,12 +488,7 @@
                                     <div class="input-group input-group-static mb-3">
                                         <label for="dilakukan2" class="ms-0">Dilakukan Oleh 2</label>
                                         <select name="dilakukan2" id="dilakukan2" class="form-control" required>
-                                            <option disabled selected>-- Select User --</option>
-                                            @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nama }}"
-                                                    {{ old('dilakukan2', $inspection['dilakukan2'] ?? '') == $user->nama ? 'selected' : '' }}>
-                                                    {{ $user->nama }}</option>
-                                            @endforeach
+
                                         </select>
                                     </div>
                                 </div>
@@ -507,12 +496,7 @@
                                     <div class="input-group input-group-static mb-3">
                                         <label for="diperiksa" class="ms-0">Diperiksa Oleh</label>
                                         <select name="diperiksa" id="diperiksa" class="form-control" required>
-                                            <option disabled selected>-- Select User --</option>
-                                            @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nik }}"
-                                                    {{ old('diperiksa', $inspection['diperiksa'] ?? '') == $user->nik ? 'selected' : '' }}>
-                                                    {{ $user->nama }}</option>
-                                            @endforeach
+
                                         </select>
                                     </div>
                                 </div>
@@ -520,12 +504,7 @@
                                     <div class="input-group input-group-static mb-3">
                                         <label for="diketahui" class="ms-0">Diketahui Oleh</label>
                                         <select name="diketahui" id="diketahui" class="form-control" required>
-                                            <option disabled selected>-- Select User --</option>
-                                            @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nik }}"
-                                                    {{ old('diketahui', $inspection['diketahui'] ?? '') == $user->nik ? 'selected' : '' }}>
-                                                    {{ $user->nama }}</option>
-                                            @endforeach
+
                                         </select>
                                     </div>
                                 </div>
@@ -551,11 +530,151 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
     <script>
+        $(function() {
+            const selectedNama = '{{ $inspection['dilakukan2'] }}';
+
+            $('#dilakukan2').select2({
+                placeholder: '-- Select Creator --',
+                width: '100%',
+                ajax: {
+                    url: '{{ route('bss-form.plant.general-inspection.dongfeng.approval.list') }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            search: params.term
+                        };
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(item) {
+                                return {
+                                    id: item.nama,
+                                    text: item.nama + ' (' + item.nik + ')',
+                                    nama: item.nama
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+
+
+            if (selectedNama) {
+                $.ajax({
+                    url: '{{ route('bss-form.plant.general-inspection.dongfeng.approval.list') }}',
+                    dataType: 'json',
+                    success: function(data) {
+                        const matched = data.find(item => item.nama ===
+                            selectedNama);
+                        if (matched) {
+                            const option = new Option(matched.nama + ' (' + matched.nik + ')', matched
+                                .nama, true, true);
+                            $('#dilakukan2').append(option).trigger('change');
+                        }
+                    }
+                });
+            }
+        });
+
+
+        $(function() {
+            const selectedNik = '{{ $inspection['diketahui']}}';
+
+            $('#diketahui').select2({
+                placeholder: '-- Select Creator --',
+                width: '100%',
+                ajax: {
+                    url: '{{ route('bss-form.plant.general-inspection.dongfeng.approval.list') }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            search: params.term || ''
+                        };
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(item) {
+                                return {
+                                    id: item.nama,
+                                    text: item.nama + ' (' + item.nik +
+                                        ')',
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+
+
+            if (selectedNik) {
+                $.ajax({
+                    url: '{{ route('bss-form.plant.general-inspection.dongfeng.approval.list') }}',
+                    dataType: 'json',
+                    success: function(data) {
+                        const matched = data.find(item => item.nama === selectedNik);
+                        if (matched) {
+                            const option = new Option(matched.nama + ' (' + matched.nik + ')', matched
+                                .nama, true, true);
+                            $('#diketahui').append(option).trigger('change');
+                        }
+                    }
+                });
+            }
+        });
+        $(function() {
+            const selectedNik = '{{ $inspection['diperiksa'] }}';
+
+            $('#diperiksa').select2({
+                placeholder: '-- Select Creator --',
+                width: '100%',
+                ajax: {
+                    url: '{{ route('bss-form.plant.general-inspection.dongfeng.approval.list') }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            search: params.term || ''
+                        };
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(item) {
+                                return {
+                                    id: item.nama,
+                                    text: item.nama + ' (' + item.nik +
+                                        ')',
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+
+
+            if (selectedNik) {
+                $.ajax({
+                    url: '{{ route('bss-form.plant.general-inspection.dongfeng.approval.list') }}',
+                    dataType: 'json',
+                    success: function(data) {
+                        const matched = data.find(item => item.nama === selectedNik);
+                        if (matched) {
+                            const option = new Option(matched.nama + ' (' + matched.nik + ')', matched
+                                .nama, true, true);
+                            $('#diperiksa').append(option).trigger('change');
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+    <script>
         $(document).ready(function() {
-            $('#diperiksa').select2();
-            $('#diketahui').select2();
-            $('#dilakukan1').select2();
-            $('#dilakukan2').select2();
+
             $('#site').select2();
             $('#cn').select2();
         });

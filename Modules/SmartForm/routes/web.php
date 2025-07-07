@@ -521,6 +521,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/store-compressor', [CompressorPompaController::class, 'StoreCompressor'])->name('plant.compressor.store');
             Route::POST('/update', [CompressorPompaController::class, 'UpdateCompressor'])->name('plant.compressor.update');
             Route::delete('/delete/{id}', [CompressorPompaController::class, 'DeleteCompressor'])->name('plant.compressor.delete');
+            Route::get('/approval-list', [InspectionCmtController::class, 'getApprovalList'])->name('cmt.approval.list');
         });
 
         Route::prefix('plant-welding')->group(function () {
@@ -547,6 +548,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
                 Route::post('/reject-cmt', [InspectionCmtController::class, 'Reject'])->name("cmt.reject");
                 Route::post('/reset-cmt/{id}', [InspectionCmtController::class, 'Reset'])->name("cmt.reset");
                 Route::get('cmt/get-data', [InspectionCmtController::class, 'getData'])->name('cmt.get-data');
+
                 Route::resource('cmt', InspectionCmtController::class);
 
                 // Dongfeng
@@ -557,6 +559,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
                 Route::post('/reset-dongfeng/{id}', [InspectionDongfengController::class, 'Reset'])->name("dongfeng.reset");
                 Route::get('dongfeng/get-data', [InspectionDongfengController::class, 'getData'])->name('dongfeng.get-data');
                 Route::resource('dongfeng', InspectionDongfengController::class);
+                Route::get('/approval-list', [InspectionDongfengController::class, 'getApprovalList'])->name('dongfeng.approval.list');
             });
         });
 // produksi

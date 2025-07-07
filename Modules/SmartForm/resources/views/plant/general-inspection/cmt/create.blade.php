@@ -331,26 +331,16 @@
                                 <div class="col-6 ">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="dilakukan1" class="ms-0">Dilakukan Oleh 1</label>
-                                        <input type="hidden" name="dilakukan1" value="{{ $nik }}">
-                                        <select name="dilakukanview" id="dilakukan1" class="form-control" disabled>
-                                            <option disabled selected>-- Select User --</option>
-                                            @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nik }}"
-                                                    {{ $user->nik == $nik ? 'selected' : '' }}>
-                                                    {{ $user->nama }}
-                                                </option>
-                                            @endforeach
-                                        </select>
+                                        <input type="text" name="dilakukan1" class="form-control"
+                                            value="{{ session('username') }}" readonly>
+
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="dilakukan2" class="ms-0">Dilakukan Oleh 2</label>
                                         <select name="dilakukan2" id="dilakukan2" class="form-control" required>
-                                            <option disabled selected>-- Select User --</option>
-                                            @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nama }}">{{ $user->nama }}</option>
-                                            @endforeach
+
                                         </select>
                                     </div>
                                 </div>
@@ -358,10 +348,7 @@
                                     <div class="input-group input-group-static mb-3">
                                         <label for="diperiksa" class="ms-0">Diperiksa Oleh</label>
                                         <select name="diperiksa" id="diperiksa" class="form-control" required>
-                                            <option disabled selected>-- Select User --</option>
-                                            @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nik }}">{{ $user->nama }}</option>
-                                            @endforeach
+
                                         </select>
                                     </div>
                                 </div>
@@ -369,10 +356,7 @@
                                     <div class="input-group input-group-static mb-3">
                                         <label for="diketahui" class="ms-0">Diketahui Oleh</label>
                                         <select name="diketahui" id="diketahui" class="form-control" required>
-                                            <option disabled selected>-- Select User --</option>
-                                            @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nik }}">{{ $user->nama }}</option>
-                                            @endforeach
+
                                         </select>
                                     </div>
                                 </div>
@@ -392,6 +376,96 @@
 @section('custom-js')
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    <script>
+        $(function() {
+            $('#dilakukan2').select2({
+                placeholder: '-- Pilih--',
+                width: '100%',
+                ajax: {
+                    url: '{{ route('cmt.approval.list') }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            search: params.term
+                        };
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(item) {
+                                return {
+                                    id: item
+                                        .nama,
+                                    text: item.nama + ' (' + item.nik + ')'
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+        });
+    </script>
+    <script>
+        $(function() {
+            $('#diperiksa').select2({
+                placeholder: '-- Pilih --',
+                width: '100%',
+                ajax: {
+                    url: '{{ route('cmt.approval.list') }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            search: params.term
+                        };
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(item) {
+                                return {
+                                    id: item
+                                        .nama,
+                                    text: item.nama + ' (' + item.nik + ')'
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+        });
+    </script>
+    <script>
+        $(function() {
+            $('#diketahui').select2({
+                placeholder: '-- Pilih --',
+                width: '100%',
+                ajax: {
+                    url: '{{ route('cmt.approval.list') }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            search: params.term
+                        };
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(item) {
+                                return {
+                                    id: item
+                                        .nama,
+                                    text: item.nama + ' (' + item.nik + ')'
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+        });
+    </script>
     <script>
         $(document).ready(function() {
 
@@ -414,10 +488,7 @@
             });
         });
         $(document).ready(function() {
-            $('#diperiksa').select2();
-            $('#diketahui').select2();
-            $('#dilakukan1').select2();
-            $('#dilakukan2').select2();
+
             $('#site').select2();
             $('#cn').select2();
         });

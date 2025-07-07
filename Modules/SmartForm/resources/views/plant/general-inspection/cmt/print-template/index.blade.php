@@ -328,7 +328,7 @@
             </div>
             <div style="display: flex; justify-content: space-around;">
                 <div class="name">
-                    <p>{{ optional(collect($approvalList)->firstWhere('nik', $inspection['dilakukan1']))->nama ?? '' }}
+                    <p>{{ $inspection['dilakukan1'] }}
                     </p>
                     <p>(Mechanic)</p>
                 </div>
@@ -350,7 +350,7 @@
                 </p>
             </div>
             <div class="name">
-                <p>{{ optional(collect($approvalList)->firstWhere('nik', $inspection['diperiksa']))->nama ?? '' }}</p>
+                <p>{{ $inspection['diperiksa'] }}</p>
                 <p>(Plant Foreman)</p>
             </div>
         </div>
@@ -365,7 +365,7 @@
                 </p>
             </div>
             <div class="name">
-                <p>{{ optional(collect($approvalList)->firstWhere('nik', $inspection['diketahui']))->nama ?? '' }}</p>
+                <p>{{ $inspection['diketahui'] }}</p>
                 <p>(Kabag / Spv Plant)</p>
             </div>
         </div>
