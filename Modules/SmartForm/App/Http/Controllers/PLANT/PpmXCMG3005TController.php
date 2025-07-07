@@ -17,7 +17,7 @@ class PpmXCMG3005TController extends Controller {
 
     public function dashboard( Request $request ) {
         try {
-            $nik_session = $request->session()->get( 'user_id', '' );
+            $nik_session = $request->session()->get( 'username', '' );
             $query = DB::table( 'ppm_xcmg_3005_t' )
             ->select( '*' )
             ->orderBy( 'created_at', 'desc' );
@@ -40,7 +40,7 @@ class PpmXCMG3005TController extends Controller {
             $query->where( 'job_site',  $request->job_site );
         }
         if ( $request->has( 'approval' ) && $request->approval ) {
-            $query->where( 'checked_by', $request->approval )->orwhere( 'validated_by', $request->approval );
+            $query->where( 'validated_by', $request->approval );
             ;
         }
 
@@ -69,7 +69,7 @@ class PpmXCMG3005TController extends Controller {
 }
 
 public function Add(Request $request) {
-    $nik_session = $request->session()->get( 'user_id', '' );
+    $nik_session = $request->session()->get( 'username', '' );
     $json = file_get_contents( resource_path( 'data/xcmg-3005T/xcmg-3005T.json' ) );
     $list = json_decode( $json, true );
     $cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','sn_unit','model','model_engine','sn_engine')->get();
@@ -90,25 +90,25 @@ public function detail( $id ) {
     $data->eng_actual = json_decode( $detail->eng_actual );
     $data->eng_correction_made = json_decode( $detail->eng_correction_made );
     $data->eng_result = json_decode( $detail->eng_result );
-   
+
     $data->eng_remark = $detail->eng_remark ;
 
     $data->hyd_actual = json_decode( $detail->hyd_actual );
     $data->hyd_correction_made = json_decode( $detail->hyd_correction_made );
     $data->hyd_result = json_decode( $detail->hyd_result );
-   
+
     $data->hyd_remark =  $detail->hyd_remark ;
 
     $data->wo_actual = json_decode( $detail->wo_actual );
     $data->wo_correction_made = json_decode( $detail->wo_correction_made );
     $data->wo_result = json_decode( $detail->wo_result );
-   
+
     $data->wo_remark = $detail->wo_remark ;
 
     $data->fin_actual = json_decode( $detail->fin_actual );
     $data->fin_correction_made = json_decode( $detail->fin_correction_made );
     $data->fin_result = json_decode( $detail->fin_result );
-   
+
     $data->fin_remark =  json_decode( $detail->fin_remark ) ;
 
 
@@ -151,28 +151,28 @@ public function Store( Request $request ) {
         'eng_actual' =>json_encode( array_values( $request->eng_actual ) ),
         'eng_correction_made' =>json_encode( array_values( $request->eng_correct ) ),
         'eng_result' => json_encode( array_values( $request->eng_result ) ),
-      
+
         'eng_remark' => $request->eng_remarks ?? '',
         'hyd_actual' => json_encode( array_values( $request->hyd_actual ) ),
         'hyd_correction_made' =>json_encode( array_values( $request->hyd_correct ) ),
         'hyd_result' => json_encode( array_values( $request->hyd_result ) ),
-       
+
         'hyd_remark' => $request->hyd_remarks ?? '',
         'wo_actual' => json_encode( array_values( $request->wo_actual ) ),
         'wo_correction_made' =>json_encode( array_values( $request->wo_correct ) ),
         'wo_result' => json_encode( array_values( $request->wo_result ) ),
-     
+
         'wo_remark' => $request->wo_remarks ?? '',
         'fin_actual' => json_encode( array_values( $final_actual ) ),
         'fin_correction_made' =>json_encode( array_values( $final_correct ) ),
         'fin_result' => json_encode( array_values( $final_result ) ),
-      
+
         'fin_remark' => json_encode( array_values( $request->final_remarks ) ),
         'created_at' => Carbon::now(),
         'updated_at' => Carbon::now()
     ];
 
-   
+
     DB::table( 'ppm_xcmg_3005_t' )->insert( $data );
     DB::table( 'detail_ppm_xcmg_3005_t' )->insert( $dataDetail );
     return response()->json( [
@@ -201,9 +201,9 @@ public function Update( Request $request ) {
         'updated_at' => Carbon::now()
 
     ];
-     
 
-     
+
+
     for ( $i = 0; $i <= 7; $i++ ) {
         $final_actual[] = $request->input( "final_actual$i" ) ?? 0;
         $final_correct[] = $request->input( "final_correct$i" ) ?? 0;
@@ -221,17 +221,17 @@ public function Update( Request $request ) {
         'hyd_actual' => json_encode( array_values( $request->hyd_actual ) ),
         'hyd_correction_made' =>json_encode( array_values( $request->hyd_correct ) ),
         'hyd_result' => json_encode( array_values( $request->hyd_result ) ),
-      
+
         'hyd_remark' => $request->hyd_remarks ?? '',
         'wo_actual' => json_encode( array_values( $request->wo_actual ) ),
         'wo_correction_made' =>json_encode( array_values( $request->wo_correct ) ),
         'wo_result' => json_encode( array_values( $request->wo_result ) ),
-     
+
         'wo_remark' => $request->wo_remarks ?? '',
         'fin_actual' => json_encode( array_values( $final_actual ) ),
         'fin_correction_made' =>json_encode( array_values( $final_correct ) ),
         'fin_result' => json_encode( array_values( $final_result ) ),
-    
+
         'fin_remark' => json_encode( array_values( $request->final_remarks ) ),
         'created_at' => Carbon::now(),
         'updated_at' => Carbon::now()
@@ -270,7 +270,7 @@ public function Approve( Request $request ) {
 
 }
 public function show( Request $request,$id){
-    $nik_session = $request->session()->get( 'user_id', '' );
+    $nik_session = $request->session()->get( 'username', '' );
 
     $data = DB::table( 'ppm_xcmg_3005_t' )
     ->where( 'id', $id )
@@ -282,29 +282,29 @@ public function show( Request $request,$id){
     $json = file_get_contents( resource_path( 'data/xcmg-3005T/xcmg-3005T.json' ) );
     $list = json_decode( $json, true );
 
-  
+
     $data->eng_actual = json_decode( $detail->eng_actual );
     $data->eng_correction_made = json_decode( $detail->eng_correction_made );
     $data->eng_result = json_decode( $detail->eng_result );
-    
+
     $data->eng_remark =  $detail->eng_remark ;
 
     $data->hyd_actual = json_decode( $detail->hyd_actual );
     $data->hyd_correction_made = json_decode( $detail->hyd_correction_made );
     $data->hyd_result = json_decode( $detail->hyd_result );
-   
+
     $data->hyd_remark = $detail->hyd_remark ;
 
     $data->wo_actual = json_decode( $detail->wo_actual );
     $data->wo_correction_made = json_decode( $detail->wo_correction_made );
     $data->wo_result = json_decode( $detail->wo_result );
-   
+
     $data->wo_remark =  $detail->wo_remark ;
 
     $data->fin_actual = json_decode( $detail->fin_actual );
     $data->fin_correction_made = json_decode( $detail->fin_correction_made );
     $data->fin_result = json_decode( $detail->fin_result );
-   
+
    $data->fin_remark =  json_decode( $detail->fin_remark ) ;
 
     return view( 'smartform::plant.ppm_3005T.detail-3005T', [ 'data' => $data, 'nik' =>$nik_session, 'list' => $list, 'approvalList' => HrdHelper::getApprovalList() ] );
@@ -332,7 +332,7 @@ public function Reset( $id ) {
 public function Reject( Request $request ) {
     $data = [
         'status' => $request->validated,
-        'date_validated' => Carbon::now(),  
+        'date_validated' => Carbon::now(),
         'updated_at' => Carbon::now()
     ];
     ;
@@ -363,25 +363,25 @@ public function Export( $id ) {
         $data->eng_actual = json_decode( $detail->eng_actual );
         $data->eng_correction_made = json_decode( $detail->eng_correction_made );
         $data->eng_result = json_decode( $detail->eng_result );
-     
+
         $data->eng_remark =  $detail->eng_remark ;
 
         $data->hyd_actual = json_decode( $detail->hyd_actual );
         $data->hyd_correction_made = json_decode( $detail->hyd_correction_made );
         $data->hyd_result = json_decode( $detail->hyd_result );
-        
+
         $data->hyd_remark =  $detail->hyd_remark ;
 
         $data->wo_actual = json_decode( $detail->wo_actual );
         $data->wo_correction_made = json_decode( $detail->wo_correction_made );
         $data->wo_result = json_decode( $detail->wo_result );
-      
+
         $data->wo_remark =  $detail->wo_remark ;
 
         $data->fin_actual = json_decode( $detail->fin_actual );
         $data->fin_correction_made = json_decode( $detail->fin_correction_made );
         $data->fin_result = json_decode( $detail->fin_result );
-      
+
         $data->fin_remark = json_decode( $detail->fin_remark );
         $pdf = PDF::loadView( 'smartform::plant.ppm_3005T.export-pdf', [
             'data' => $data, 'list' => $list, 'approvalList' => HrdHelper::getApprovalList()
@@ -456,5 +456,11 @@ public function Delete( $id ) {
         while ( $exists );
         return $docNumber;
     }
+public function getApprovalList(Request $request)
+    {
+        $search = $request->input('search', '');
+        $list = HrdHelper::getApprovalList($search);
 
+        return response()->json($list);
+    }
 }

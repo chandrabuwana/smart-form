@@ -155,21 +155,22 @@
                                 <div class="col-md-3 mb-3">
                                     <div class="input-group input-group-static mb-4 position-relative">
                                         <label for="job" class="ms-0">Job Site</label>
-                                        {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('job_site', strtolower($filters['job_site'])) !!}
+                                        {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect(
+                                            'job_site',
+                                            strtolower($filters['job_site']),
+                                            $isDisabled = false,
+                                            $isRequired = false,
+                                        ) !!}
                                     </div>
 
                                 </div>
                                 <div class="col-md-3 mb-3">
+                                    @php
+                                        $validatedBy = $filters['approval'] ?? null;
+                                    @endphp
                                     <div class="input-group input-group-static mb-4 position-relative">
-                                        <label for="approval" class="ms-0">Approval</label>
+                                        <label for="validated_by" class="ms-0">Approval</label>
                                         <select name="approval" id="approval" class="form-control">
-                                            <option disabled selected>-- Select Approval --</option>
-                                            @foreach ($user as $appUser)
-                                                <option value="{{ $appUser->nik }}"
-                                                    {{ $appUser->nik == $filters['approval'] ? 'selected' : '' }}>
-                                                    {{ $appUser->nama }}
-                                                </option>
-                                            @endforeach
 
                                         </select>
 
@@ -221,9 +222,7 @@
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Date</th>
-                                        <th
-                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Checker</th>
+
 
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
@@ -258,32 +257,15 @@
                                                 <span class="text-xs font-weight-bold">{{ $data->date }}</span>
                                             </td>
 
-                                            <td>
 
-
-                                                @if ($data->status === 'approved')
-                                                    <span
-                                                        class="badge bg-success">{{ optional(collect($user)->firstWhere('nik', $data->checked_by))->nama ?? '' }}</span>
-                                                @elseif ($data->status === 'rejected')
-                                                    <span
-                                                        class="badge bg-danger">{{ optional(collect($user)->firstWhere('nik', $data->checked_by))->nama ?? '' }}</span>
-                                                @elseif ($data->status === 'draft')
-                                                    <span
-                                                        class="badge bg-info">{{ optional(collect($user)->firstWhere('nik', $data->checked_by))->nama ?? '' }}</span>
-                                                @endif
-
-                                            </td>
                                             <td>
                                                 <span class="text-xs font-weight-bold">
                                                     @if ($data->status === 'approved')
-                                                        <span
-                                                            class="badge bg-success">{{ optional(collect($user)->firstWhere('nik', $data->validated_by))->nama ?? '' }}</span>
+                                                        <span class="badge bg-success">{{ $data->validated_by }}</span>
                                                     @elseif ($data->status === 'rejected')
-                                                        <span
-                                                            class="badge bg-danger">{{ optional(collect($user)->firstWhere('nik', $data->validated_by))->nama ?? '' }}</span>
+                                                        <span class="badge bg-danger">{{ $data->validated_by }}</span>
                                                     @elseif ($data->status == 'draft')
-                                                        <span
-                                                            class="badge bg-info">{{ optional(collect($user)->firstWhere('nik', $data->validated_by))->nama ?? '' }}</span>
+                                                        <span class="badge bg-info">{{ $data->validated_by }}</span>
                                                     @endif
                                                 </span>
                                             </td>
@@ -406,5 +388,53 @@
                     });
             }
         }
+    </script>
+    <script>
+        $(function() {
+            const selectedNama = @json($validatedBy);
+
+            $('#approval').select2({
+                placeholder: '-- Pilih Approval --',
+                width: '100%',
+                ajax: {
+                    url: '{{ route('3005.approval.list') }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            search: params.term
+                        };
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(item) {
+                                if (!item.nama) return null;
+                                return {
+                                    id: item.nama,
+                                    text: item.nama + ' (' + item.nik + ')'
+                                };
+                            }).filter(Boolean)
+                        };
+                    },
+                    cache: true
+                }
+            });
+
+
+            if (selectedNama) {
+                $.ajax({
+                    url: '{{ route('3005.approval.list') }}',
+                    dataType: 'json',
+                    success: function(data) {
+                        const matched = data.find(item => item.nama === selectedNama);
+                        if (matched) {
+                            const option = new Option(matched.nama + ' (' + matched.nik + ')', matched
+                                .nama, true, true);
+                            $('#approval').append(option).trigger('change');
+                        }
+                    }
+                });
+            }
+        });
     </script>
 @endsection

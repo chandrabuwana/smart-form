@@ -726,7 +726,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <script>
         $(function() {
-            const selectedNama = '{{ $data->checked_by }}'; // isinya nama, bukan NIK
+            const selectedNama = '{{ $data->checked_by }}';
 
             $('#dibuat_oleh').select2({
                 placeholder: '-- Select Creator --',
@@ -746,7 +746,7 @@
                                 return {
                                     id: item.nama,
                                     text: item.nama + ' (' + item.nik + ')',
-                                    nama: item.nama // tambahkan jika mau banding nama
+                                    nama: item.nama
                                 };
                             })
                         };
@@ -755,14 +755,14 @@
                 }
             });
 
-            // Set selected option saat edit form (preload by nama)
+
             if (selectedNama) {
                 $.ajax({
                     url: '{{ route('700d.approval.list') }}',
                     dataType: 'json',
                     success: function(data) {
                         const matched = data.find(item => item.nama ===
-                        selectedNama); // cocokan berdasarkan nama
+                        selectedNama); 
                         if (matched) {
                             const option = new Option(matched.nama + ' (' + matched.nik + ')', matched
                                 .nama, true, true);
