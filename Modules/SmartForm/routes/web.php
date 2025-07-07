@@ -490,6 +490,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('update/{id}', [CoalGettingController::class, 'Update'])->name('prod.coal.form.update');
             Route::post('delete', [CoalGettingController::class, 'Delete'])->name('prod.coal.delete');
             Route::post('/update-status', [CoalGettingController::class, 'updateStatus'])->name('prod.coal.update-status');
+            Route::get('/approval-list', [CoalGettingController::class, 'getApprovalList'])->name('approval.list');
         });
 
         Route::prefix('she-ergonomi')->group(function () {

@@ -175,15 +175,9 @@
                                     
                                     <div class="mb-3">
                                         <select name="acknowledged_by_name" id="acknowledged_by_name" class="form-control text-left" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
-                                            <option value="">-- Pilih Pengawas --</option>
-                                            @foreach($approvalList as $user)
-                                                <option value="{{ $user->nama }}" {{ $isShowDetail && $record->acknowledged_by_name == $user->nama ? 'selected' : '' }}>
-                                                    {{ $user->nama }} ({{ $user->nik }})
-                                                </option>
-                                            @endforeach
                                         </select>
                                     </div>
-                                    <input type="hidden" name="acknowledged_by_nik" value="">
+                                    <input type="hidden" name="acknowledged_by_nik" value="{{ $record->acknowledged_by_nik ?? '' }}">
                                     <p class="mb-1">Production Supervisor</p>
                                 </div>
                             </div>
@@ -241,7 +235,27 @@
         $(function() {
             $('#acknowledged_by_name').select2({
                 placeholder: '-- Pilih Pengawas --',
-                width: '50%'
+                width: '50%',
+                ajax: {
+                    url: '{{ route("approval.list") }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return { search: params.term };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    id: item.nama,
+                                    text: item.nama + ' (' + item.nik + ')',
+                                    nik: item.nik
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
             });
         });
     </script>
