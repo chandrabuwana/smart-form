@@ -17,7 +17,7 @@ class PpmXCMG700DController extends Controller {
 
     public function dashboard(Request $request) {
         try {
-            $nik_session = $request->session()->get( 'user_id', '' );
+            $nik_session = $request->session()->get( 'username', '' );
             $query = DB::table( 'ppm_xcmg_xe700d' )
             ->select( '*' )
             ->orderBy( 'created_at', 'desc' );
@@ -67,7 +67,7 @@ $cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','sn_unit','model
     }
 
     public function Add(Request $request) {
-        $nik_session = $request->session()->get( 'user_id', '' );
+        $nik_session = $request->session()->get( 'username', '' );
         $json = file_get_contents( resource_path( 'data/xe700d/ppm-700.json' ) );
         $list = json_decode( $json, true );
         $cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','sn_unit','model','model_engine','sn_engine')->get();
@@ -88,13 +88,13 @@ $cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','sn_unit','model
         $data->eng_actual = json_decode( $detail->eng_actual );
         $data->eng_correction_made = json_decode( $detail->eng_correction_made );
         $data->eng_result = json_decode( $detail->eng_result );
-       
+
         $data->eng_remark = json_decode( $detail->eng_remark );
 
         $data->hyd_actual = json_decode( $detail->hyd_actual );
         $data->hyd_correction_made = json_decode( $detail->hyd_correction_made );
         $data->hyd_result = json_decode( $detail->hyd_result );
-       
+
         $data->hyd_remark = json_decode( $detail->hyd_remark );
 
         $data->wo_actual = json_decode( $detail->wo_actual );
@@ -110,7 +110,7 @@ $cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','sn_unit','model
         return view( 'smartform::plant.ppm_700d.show-700d', [ 'cn'=>$cn_data, 'data' => $data, 'list' => $list, 'approvalList' => HrdHelper::getApprovalList() ] );
     }
     public function show( Request $request,$id){
-        $nik_session = $request->session()->get( 'user_id', '' );
+        $nik_session = $request->session()->get( 'username', '' );
 
         $data = DB::table( 'ppm_xcmg_xe700d' )
         ->where( 'id', $id )
@@ -122,38 +122,38 @@ $cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','sn_unit','model
         $json = file_get_contents( resource_path( 'data/xe700d/ppm-700.json' ) );
         $list = json_decode( $json, true );
 
-     
+
         $data->eng_actual = json_decode( $detail->eng_actual );
         $data->eng_correction_made = json_decode( $detail->eng_correction_made );
         $data->eng_result = json_decode( $detail->eng_result );
-       
+
         $data->eng_remark = json_decode( $detail->eng_remark );
 
         $data->hyd_actual = json_decode( $detail->hyd_actual );
         $data->hyd_correction_made = json_decode( $detail->hyd_correction_made );
         $data->hyd_result = json_decode( $detail->hyd_result );
-      
+
         $data->hyd_remark = json_decode( $detail->hyd_remark );
 
         $data->wo_actual = json_decode( $detail->wo_actual );
         $data->wo_correction_made = json_decode( $detail->wo_correction_made );
         $data->wo_result = json_decode( $detail->wo_result );
-    
+
         $data->wo_remark = json_decode( $detail->wo_remark );
 
         $data->fin_actual = json_decode( $detail->fin_actual );
         $data->fin_correction_made = json_decode( $detail->fin_correction_made );
         $data->fin_result = json_decode( $detail->fin_result );
-       
+
         $data->fin_remark = json_decode( $detail->fin_remark );
 
-       
+
         return view( 'smartform::plant.ppm_700d.detail-700d', [ 'data' => $data, 'nik' =>$nik_session, 'list' => $list, 'approvalList' => HrdHelper::getApprovalList() ] );
     }
 
     public function Store( Request $request ) {
 
-       
+
         $data = [
             'doc_num' => $this->generateDocNumber(),
             'unit_model' => $request->unit_model,
@@ -177,7 +177,7 @@ $cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','sn_unit','model
             'updated_at' => Carbon::now()
 
         ];
-        
+
         for ( $i = 0; $i <= 2; $i++ ) {
             $final_actual[] = $request->input( "final_actual$i" ) ?? 0;
             $final_correct[] = $request->input( "final_correct$i" ) ?? 0;
@@ -190,29 +190,29 @@ $cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','sn_unit','model
             'eng_actual' =>json_encode( array_values( $request->eng_actual ) ),
             'eng_correction_made' =>json_encode( array_values( $request->eng_correct ) ),
             'eng_result' => json_encode( array_values( $request->eng_result ) ),
-            
+
             'eng_remark' => json_encode( array_values( $request->eng_remarks ) ),
             'hyd_actual' => json_encode( array_values( $request->hyd_actual ) ),
             'hyd_correction_made' =>json_encode( array_values( $request->hyd_correct ) ),
             'hyd_result' => json_encode( array_values( $request->hyd_result ) ),
-          
+
             'hyd_remark' => json_encode( array_values( $request->hyd_remarks ) ),
             'wo_actual' => json_encode( array_values( $request->wo_actual ) ),
             'wo_correction_made' =>json_encode( array_values( $request->wo_correct ) ),
             'wo_result' => json_encode( array_values( $request->wo_result ) ),
-           
+
             'wo_remark' =>json_encode( array_values( $request->wo_remarks ) ),
             'fin_actual' => json_encode( array_values( $final_actual ) ),
             'fin_correction_made' =>json_encode( array_values( $final_correct ) ),
             'fin_result' => json_encode( array_values($final_result ) ),
-           
+
             'fin_remark' => json_encode( array_values( $request->final_remarks ) ),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now()
         ];
 
 
-        
+
         DB::table( 'ppm_xcmg_xe700d' )->insert( $data );
         DB::table( 'detail_ppm_xcmg_xe700d' )->insert( $dataDetail );
         return response()->json( [
@@ -238,26 +238,27 @@ $cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','sn_unit','model
         $data->eng_actual = json_decode( $detail->eng_actual );
         $data->eng_correction_made = json_decode( $detail->eng_correction_made );
         $data->eng_result = json_decode( $detail->eng_result );
-       
+
         $data->eng_remark = json_decode( $detail->eng_remark );
 
         $data->hyd_actual = json_decode( $detail->hyd_actual );
         $data->hyd_correction_made = json_decode( $detail->hyd_correction_made );
         $data->hyd_result = json_decode( $detail->hyd_result );
-       
+
         $data->hyd_remark = json_decode( $detail->hyd_remark );
 
         $data->wo_actual = json_decode( $detail->wo_actual );
         $data->wo_correction_made = json_decode( $detail->wo_correction_made );
         $data->wo_result = json_decode( $detail->wo_result );
-        
+
         $data->wo_remark = json_decode( $detail->wo_remark );
 
         $data->fin_actual = json_decode( $detail->fin_actual );
         $data->fin_correction_made = json_decode( $detail->fin_correction_made );
         $data->fin_result = json_decode( $detail->fin_result );
-       
+
         $data->fin_remark = json_decode( $detail->fin_remark );
+
         $pdf = PDF::loadView( 'smartform::plant.ppm_700d.export-pdf', [
             'data' => $data, 'list' => $list,'approvalList' => HrdHelper::getApprovalList()
 
@@ -266,7 +267,7 @@ $cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','sn_unit','model
 
         return $pdf->download( 'PPM XCMG XE700D - ' . $data->doc_num .'.pdf' );
 
-     
+
 
     } catch ( \Exception $e ) {
         Log::error( 'Error in ExportForm: ' . $e->getMessage() );
@@ -351,7 +352,7 @@ $cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','sn_unit','model
             'updated_at' => Carbon::now()
 
         ];
- 
+
 
 
         for ( $i = 0; $i <= 2; $i++ ) {
@@ -366,28 +367,28 @@ $cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','sn_unit','model
             'eng_actual' =>json_encode( array_values( $request->eng_actual ) ),
             'eng_correction_made' =>json_encode( array_values( $request->eng_correct ) ),
             'eng_result' => json_encode( array_values( $request->eng_result ) ),
-           
+
             'eng_remark' => json_encode( array_values( $request->eng_remarks ) ),
             'hyd_actual' => json_encode( array_values( $request->hyd_actual ) ),
             'hyd_correction_made' =>json_encode( array_values( $request->hyd_correct ) ),
             'hyd_result' => json_encode( array_values( $request->hyd_result ) ),
-           
+
             'hyd_remark' => json_encode( array_values( $request->hyd_remarks ) ),
             'wo_actual' => json_encode( array_values( $request->wo_actual ) ),
             'wo_correction_made' =>json_encode( array_values( $request->wo_correct ) ),
             'wo_result' => json_encode( array_values( $request->wo_result ) ),
-          
+
             'wo_remark' =>json_encode( array_values( $request->wo_remarks ) ),
             'fin_actual' => json_encode( array_values( $final_actual ) ),
             'fin_correction_made' =>json_encode( array_values( $final_correct ) ),
             'fin_result' => json_encode( array_values($final_result ) ),
-           
+
             'fin_remark' => json_encode( array_values( $request->final_remarks ) ),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now()
         ];
 
-       
+
 
         DB::table( 'ppm_xcmg_xe700d' )
             ->where( 'doc_num', $request->doc_num )
@@ -459,5 +460,11 @@ $cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','sn_unit','model
         return $docNumber;
     }
 
+ public function getApprovalList(Request $request)
+    {
+        $search = $request->input('search', '');
+        $list = HrdHelper::getApprovalList($search);
 
+        return response()->json($list);
+    }
 }

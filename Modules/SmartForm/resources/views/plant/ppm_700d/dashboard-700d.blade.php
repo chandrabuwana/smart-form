@@ -171,9 +171,12 @@
                                 </div>
                                 <div class="col-md-3
                                 mb-3">
+                                    @php
+                                        $validatedBy = $filters['validated_by'] ?? null;
+                                    @endphp
                                     <div class="input-group input-group-static mb-4 position-relative">
                                         <label for="validated_by" class="ms-0">Approval</label>
-                                        <select name="validated_by" id="approval" class="form-control">
+                                        {{-- <select name="validated_by" id="approval" class="form-control">
                                             <option disabled selected>-- Select Approval --</option>
                                             @foreach ($user as $appUser)
                                                 <option value="{{ $appUser->nik }}"
@@ -181,6 +184,9 @@
                                                     {{ $appUser->nama }}
                                                 </option>
                                             @endforeach
+
+                                        </select> --}}
+                                        <select name="validated_by" id="approval" class="form-control">
 
                                         </select>
 
@@ -273,14 +279,11 @@
                                             <td>
                                                 <span class="text-xs font-weight-bold">
                                                     @if ($data->status === 'approved')
-                                                        <span
-                                                            class="badge bg-success">{{ optional(collect($user)->firstWhere('nik', $data->validated_by))->nama ?? '' }}</span>
+                                                        <span class="badge bg-success">{{ $data->validated_by }}</span>
                                                     @elseif ($data->status === 'rejected')
-                                                        <span
-                                                            class="badge bg-danger">{{ optional(collect($user)->firstWhere('nik', $data->validated_by))->nama ?? '' }}</span>
+                                                        <span class="badge bg-danger">{{ $data->validated_by }}</span>
                                                     @elseif ($data->status == 'draft')
-                                                        <span
-                                                            class="badge bg-info">{{ optional(collect($user)->firstWhere('nik', $data->validated_by))->nama ?? '' }}</span>
+                                                        <span class="badge bg-info">{{ $data->validated_by }}</span>
                                                     @endif
                                                 </span>
                                             </td>
@@ -341,7 +344,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <script>
         $(document).ready(function() {
-            $('#approval').select2();
+            // $('#approval').select2();
             $('#job_site').select2();
             $('#unit_cn').select2();
         });
@@ -399,5 +402,53 @@
                     });
             }
         }
+    </script>
+    <script>
+        $(function() {
+            const selectedNama = @json($validatedBy); // nama yang akan dipilih jika ada
+
+            $('#approval').select2({
+                placeholder: '-- Pilih checked --',
+                width: '100%',
+                ajax: {
+                    url: '{{ route('700d.approval.list') }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            search: params.term
+                        };
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(item) {
+                                if (!item.nama) return null;
+                                return {
+                                    id: item.nama,
+                                    text: item.nama + ' (' + item.nik + ')'
+                                };
+                            }).filter(Boolean)
+                        };
+                    },
+                    cache: true
+                }
+            });
+
+            // Preselect jika nama sudah ada
+            if (selectedNama) {
+                $.ajax({
+                    url: '{{ route('700d.approval.list') }}',
+                    dataType: 'json',
+                    success: function(data) {
+                        const matched = data.find(item => item.nama === selectedNama);
+                        if (matched) {
+                            const option = new Option(matched.nama + ' (' + matched.nik + ')', matched
+                                .nama, true, true);
+                            $('#approval').append(option).trigger('change');
+                        }
+                    }
+                });
+            }
+        });
     </script>
 @endsection

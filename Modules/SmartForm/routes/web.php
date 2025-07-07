@@ -642,6 +642,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/approve-ppm.700d', [PpmXCMG700DController::class, 'Approve'])->name("plant.ppm.700d.approve");
             Route::post('/reject-ppm.700d', [PpmXCMG700DController::class, 'Reject'])->name("plant.ppm.700d.reject");
             Route::post('/reset-ppm.700d/{id}', [PpmXCMG700DController::class, 'Reset'])->name("plant.ppm.700d.reset");
+             Route::get('/approval-list', [PpmXCMG700DController::class, 'getApprovalList'])->name('700d.approval.list');
         });
         // plant
         Route::prefix('ppu-xe1250')->group(function () {

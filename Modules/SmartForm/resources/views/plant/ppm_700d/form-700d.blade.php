@@ -499,41 +499,31 @@
                                         <textarea name="note" id="note" class="form-control uppercase" cols="30" rows="1"></textarea>
                                     </div>
                                 </div>
-                                <div class="col-4 ">
-                                    <div class="input-group input-group-static mb-3">
-                                        <label for="dibuat" class="ms-0">Checked By1</label>
-                                        <select name="checked1_display" class="form-control uppercase" disabled>
-                                            @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nik }}"
-                                                    {{ old('checked1', $nik ?? '') == $user->nik ? 'selected' : '' }}>
-                                                    {{ $user->nama }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-
-                                        <input type="hidden" name="checked1" value="{{ old('checked1', $nik ?? '') }}">
-                                    </div>
-                                </div>
-                                <div class="col-4 ">
-                                    <div class="input-group input-group-static mb-3">
-                                        <label for="dibuat" class="ms-0">Checked By2</label>
-                                        <select name="checked2" id="dibuat_oleh" class="form-control" required>
-                                            <option disabled selected>-- Select Creator --</option>
-                                            @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nik }}">{{ $user->nama }}</option>
-                                            @endforeach
-
-                                        </select>
+                                <div class="col-4">
+                                    <div class="mb-3">
+                                        <label for="created_by_name" class="form-label">Checked By 1</label>
+                                        <input type="text" name="created_by_name" id="created_by_name"
+                                            class="form-control" placeholder="Nama Lengkap"
+                                            value="{{ session('username') }}" required>
+                                        <input type="hidden" name="checked1" value="{{ session('username') }}"
+                                            required>
                                     </div>
                                 </div>
                                 <div class="col-4">
-                                    <div class="input-group input-group-static mb-3">
-                                        <label for="diperiksa" class="ms-0">Validated By</label>
-                                        <select name="validated" id="diperiksa" class="form-control" required>
-                                            <option disabled selected>-- Select Approval --</option>
-                                            @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nik }}">{{ $user->nama }}</option>
-                                            @endforeach
+                                    <div class="mb-3">
+                                        <label for="checked2_name" class="form-label d-block">Checked By 2</label>
+                                        <select name="checked2" id="checked2" class="form-control" required>
+
+                                        </select>
+
+                                    </div>
+                                </div>
+
+                                <div class="col-4">
+                                    <div class="mb-3">
+                                        <label for="diperiksa" class="form-label d-block">Validated By</label>
+                                        <select name="validated" id="validated" class="form-control" required>
+
                                         </select>
                                     </div>
                                 </div>
@@ -660,8 +650,7 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
     <script>
         $(document).ready(function() {
-            $('#dibuat_oleh').select2();
-            $('#diperiksa').select2();
+
             $('#job_site').select2();
             $('#unit_cn').select2();
         });
@@ -773,6 +762,66 @@
                         content.style.display = "block";
                     }
                 });
+            });
+        });
+    </script>
+    <script>
+        $(function() {
+            $('#checked2').select2({
+                placeholder: '-- Pilih checked --',
+                width: '100%',
+                ajax: {
+                    url: '{{ route('700d.approval.list') }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            search: params.term
+                        };
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(item) {
+                                return {
+                                    id: item
+                                        .nama,
+                                    text: item.nama + ' (' + item.nik + ')'
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+        });
+    </script>
+    <script>
+        $(function() {
+            $('#validated').select2({
+                placeholder: '-- Pilih validated --',
+                width: '100%',
+                ajax: {
+                    url: '{{ route('700d.approval.list') }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            search: params.term
+                        };
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(item) {
+                                return {
+                                    id: item
+                                        .nama,
+                                    text: item.nama + ' (' + item.nik + ')'
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
             });
         });
     </script>

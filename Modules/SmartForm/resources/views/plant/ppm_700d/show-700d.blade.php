@@ -579,40 +579,27 @@
                                             <textarea name="note" id="note" class="form-control uppercase" cols="30" rows="1">{{ $data->note }}</textarea>
                                         </div>
                                     </div>
-                                    <div class="col-4 ">
+                                    <div class="col-4">
                                         <div class="input-group input-group-static mb-3">
                                             <label for="dibuat" class="ms-0">Checked By1</label>
-                                            <input type="hidden" name="checked1" value="{{ $data->creator }}">
-                                            <input type="text" name="view_checked1" class="form-control"
-                                                value="{{ optional(collect($approvalList)->firstWhere('nik', $data->creator))->nama ?? '' }}"
-                                                readonly>
-
+                                            <input type="text" name="checked1" value="{{ $data->creator }}"
+                                                class="form-control" readonly>
                                         </div>
                                     </div>
-                                    <div class="col-4 ">
-                                        <div class="input-group input-group-static mb-3">
-                                            <label for="dibuat" class="ms-0">Checked By</label>
-                                            <select name="checked" id="dibuat_oleh" class="form-control" required>
-                                                <option disabled selected>-- Select Creator --</option>
-                                                @foreach ($approvalList as $user)
-                                                    <option value="{{ $user->nik }}"
-                                                        {{ old('checked', $data->checked_by ?? '') == $user->nik ? 'selected' : '' }}>
-                                                        {{ $user->nama }}</option>
-                                                @endforeach
 
+                                    <div class="col-4">
+                                        <div class="input-group input-group-static mb-3">
+                                            <label for="dibuat_oleh" class="ms-0">Checked By</label>
+                                            <select name="checked" id="dibuat_oleh" class="form-control" required>
+                                                <!-- option akan di-generate dari JS -->
                                             </select>
                                         </div>
                                     </div>
                                     <div class="col-4">
                                         <div class="input-group input-group-static mb-3">
-                                            <label for="diperiksa" class="ms-0">Validated By</label>
-                                            <select name="validated" id="diperiksa" class="form-control" required>
-                                                <option disabled selected>-- Select Approval --</option>
-                                                @foreach ($approvalList as $user)
-                                                    <option value="{{ $user->nik }}"
-                                                        {{ old('validated', $data->validated_by ?? '') == $user->nik ? 'selected' : '' }}>
-                                                        {{ $user->nama }}</option>
-                                                @endforeach
+                                            <label for="dibuat_oleh" class="ms-0">Validated By</label>
+                                            <select name="validated" id="validated" class="form-control" required>
+                                                <!-- option akan di-generate dari JS -->
                                             </select>
                                         </div>
                                     </div>
@@ -738,8 +725,106 @@
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <script>
+        $(function() {
+            const selectedNama = '{{ $data->checked_by }}'; // isinya nama, bukan NIK
+
+            $('#dibuat_oleh').select2({
+                placeholder: '-- Select Creator --',
+                width: '100%',
+                ajax: {
+                    url: '{{ route('700d.approval.list') }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            search: params.term
+                        };
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(item) {
+                                return {
+                                    id: item.nama,
+                                    text: item.nama + ' (' + item.nik + ')',
+                                    nama: item.nama // tambahkan jika mau banding nama
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+
+            // Set selected option saat edit form (preload by nama)
+            if (selectedNama) {
+                $.ajax({
+                    url: '{{ route('700d.approval.list') }}',
+                    dataType: 'json',
+                    success: function(data) {
+                        const matched = data.find(item => item.nama ===
+                        selectedNama); // cocokan berdasarkan nama
+                        if (matched) {
+                            const option = new Option(matched.nama + ' (' + matched.nik + ')', matched
+                                .nama, true, true);
+                            $('#dibuat_oleh').append(option).trigger('change');
+                        }
+                    }
+                });
+            }
+        });
+
+
+        $(function() {
+            const selectedNik = '{{ $data->validated_by }}';
+
+            $('#validated').select2({
+                placeholder: '-- Select Creator --',
+                width: '100%',
+                ajax: {
+                    url: '{{ route('700d.approval.list') }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            search: params.term || ''
+                        };
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(item) {
+                                return {
+                                    id: item.nama,
+                                    text: item.nama + ' (' + item.nik +
+                                        ')',
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+
+
+            if (selectedNik) {
+                $.ajax({
+                    url: '{{ route('700d.approval.list') }}',
+                    dataType: 'json',
+                    success: function(data) {
+                        const matched = data.find(item => item.nama === selectedNik);
+                        if (matched) {
+                            const option = new Option(matched.nama + ' (' + matched.nik + ')', matched.nama, true, true);
+                            $('#validated').append(option).trigger('change');
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+
+
+    <script>
         $(document).ready(function() {
-            $('#dibuat_oleh').select2();
+
             $('#diperiksa').select2();
             $('#job_site').select2();
             $('#unit_cn').select2();
