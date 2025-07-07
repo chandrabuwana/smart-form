@@ -137,7 +137,9 @@ class AparController extends Controller {
 
     function formInspeksiApar() {
         return view('SmartForm::she/inspeksi-apar/form-inspeksi-apar', [
-        'approvalList' => HrdHelper::getApprovalList(),
+            'isShowDetail' => false,
+            'record' => null,
+            'approvalList' => HrdHelper::getApprovalList(),
         ]);
     }
 
