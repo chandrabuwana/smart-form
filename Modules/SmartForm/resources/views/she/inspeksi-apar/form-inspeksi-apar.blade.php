@@ -260,14 +260,15 @@
                                 </td>
                                 <td>Diketahui oleh :</td>
                                 <td>
-                                    <select name="dDiketahui" id="dDiketahui" class="form-control text-center" required>
+                                    <select name="dDiketahui" id="dDiketahui" class="form-control text-center" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
                                         <option value="">-- Pilih Mengetahui --</option>
                                         @foreach($approvalList as $user)
-                                            <option value="{{ $user->nik }}">
+                                            <option value="{{ $user->nama }}" {{ $isShowDetail && $record->dDiketahui == $user->nama ? 'selected' : '' }}>
                                                 {{ $user->nama }} ({{ $user->nik }})
                                             </option>
                                         @endforeach
                                     </select>
+                                    <input type="hidden" name="acknowledged_by_nik" value="">
                                 </td>
                               </tr>
                             </table>
@@ -297,6 +298,14 @@
     <script>
         $(function() {
             $('#dDiperiksa').select2({
+                placeholder: '-- Pilih Pengawas --',
+                width: '50%'
+            });
+        });
+    </script>
+    <script>
+        $(function() {
+            $('#dDiketahui').select2({
                 placeholder: '-- Pilih Pengawas --',
                 width: '50%'
             });
@@ -424,6 +433,25 @@
             if ($('select[name="dDiperiksa"]').val()) {
                 $('select[name="dDiperiksa"]').trigger('change');
             }
+            $table.bootstrapTable({
+                pagination: true,
+                search: true,
+                showRefresh: false
+            });
+
+            // Handle supervisor selection
+            $('select[name="dDiketahui"]').change(function() {
+                var selectedText = $(this).find('option:selected').text();
+                var match = selectedText.match(/\(([^)]+)\)/);
+                var nik = match ? match[1] : '';
+                $('input[name="acknowledged_by_nik"]').val(nik);
+            });
+
+            // Trigger change on load if there's a value
+            if ($('select[name="dDiketahui"]').val()) {
+                $('select[name="dDiketahui"]').trigger('change');
+            }
+            
             $table.bootstrapTable({
                 pagination: true,
                 search: true,
