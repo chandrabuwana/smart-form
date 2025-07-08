@@ -52,14 +52,10 @@
                                             <td>Pilih Atasan Langsung</td>
                                             <td>:</td>
                                             <td>
-                                                <select name="dApproved" id="dApproved" class="form-control text-center" required>
-                                                <option selected value="" disabled>-- Pilih Atasan Langsung --</option>
-                                                @foreach($approvalList as $user)
-                                                    <option value="{{ $user->nama }}">{{ $user->nama }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
+                                                <select name="dApproved" id="dApproved" class="form-control text-center" required >
+                                                </select>
                                             </td>
+                                            <input type="hidden" name="acknowledged_by_nik" value="{{ $record->acknowledged_by_nik ?? '' }}">
                                         </tr>
                                     </table>
                                 </div>
@@ -240,8 +236,35 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script>
+        $(function() {
+            $('#dApproved').select2({
+                placeholder: '-- Pilih Pengawas --',
+                width: '50%',
+                ajax: {
+                    url: '{{ route("approval.list") }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return { search: params.term };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    id: item.nama,
+                                    text: item.nama + ' (' + item.nik + ')',
+                                    nik: item.nik
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+        });
+    </script>
+    <script>
         $(document).ready(function() {
-            $('#dApproved').select2();
             $('#iJobSite').select2();
         });
         var tglNow = new Date()
@@ -387,6 +410,19 @@
         }
 
         $(function() {
+            // Handle supervisor selection
+            $('select[name="dApproved"]').change(function() {
+                var selectedText = $(this).find('option:selected').text();
+                var match = selectedText.match(/\(([^)]+)\)/);
+                var nik = match ? match[1] : '';
+                $('input[name="acknowledged_by_nik"]').val(nik);
+            });
+
+            // Trigger change on load if there's a value
+            if ($('select[name="dApproved"]').val()) {
+                $('select[name="dApproved"]').trigger('change');
+            }
+
             noDoc.text(generateNoDoc())
             tglDoc.text(formatTgl() || "-")
 
