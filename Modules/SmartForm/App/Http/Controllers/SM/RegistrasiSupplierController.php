@@ -106,7 +106,8 @@ class RegistrasiSupplierController extends Controller {
     function FormRegistrasiSupplier() {
         $jenisbu = self::LIST_BU;
         return view('SmartForm::SM/registrasi-supplier/form-registrasi-supplier', [
-                    'isShowDetail' => true,
+                    'isShowDetail' => false,
+                    'record' => null,
                     'jenisbu' => $jenisbu,
                     'approvalList' => HrdHelper::getApprovalList()
                 ]);

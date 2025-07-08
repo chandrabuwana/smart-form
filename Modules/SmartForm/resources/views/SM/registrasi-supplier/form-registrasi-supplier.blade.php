@@ -518,34 +518,31 @@
                         </div>
                         <span style="display: none;" id="requestornik">{{ session('user_id') }}</span>
 
-                        <table style="width:100%" >
-                          <tr>
-                            <td>Diisi Oleh/Filled by, :</td>
-                            <td><input type="text" style="text-transform:uppercase" class="form-control" id="tFiller" name="tFiller" placeholder="Filler Name" value="{{ session('user_id') }}" disabled>
-                            </td>
-                            <td>Diterima Oleh/Received by, :</td>
-                            <td> 
-                                <select name="dDiterima" id="dDiterima" class="form-control text-center" required>
-                                    <option value="">-- Pilih Penerima --</option>
-                                    @foreach($approvalList as $user)
-                                        <option value="{{ $user->nama }}">
-                                            {{ $user->nama }} ({{ $user->nik }})
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </td>
-                            <!-- <td>Disetujui Oleh/Approved by, :</td>
-                            <td>
-                                <select name="dApproved" id="dApproved" class="form-control text-center" required>
-                                    <option disabled selected>-- Pilih Approver --</option>
-                                    @foreach($approvalList as $user)
-                                        <option value="{{ $user->nama }}">{{ $user->nama }} ({{ $user->nik }})
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </td> -->
-                          </tr>
-                        </table>
+                        <!-- Signatures -->
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <h6>Dibuat oleh</h6>
+                                
+                                <div class="mb-3">
+                                    <input type="text" name="tFiller" class="form-control" 
+                                        placeholder="Nama Lengkap"
+                                        value="{{ $isShowDetail ? $record->created_by_name : session('username') }}"
+                                        {{ $isShowDetail ? 'disabled' : '' }} required>
+                                </div>
+                                <input type="hidden" name="created_by_nik" value="{{ $isShowDetail ? $record->created_by_nik : session('user_id') }}" required>
+                                <p class="mb-1">Production Foreman</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Diterima oleh</h6>
+                                
+                                <div class="mb-3">
+                                    <select name="dDiterima" id="dDiterima" class="form-control text-left" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                    </select>
+                                </div>
+                                <input type="hidden" name="acknowledged_by_nik" value="{{ $record->acknowledged_by_nik ?? '' }}">
+                                <p class="mb-1">Production Supervisor</p>
+                            </div>
+                        </div>
                         
                         <div class="card-footer">
                             <div class="d-flex align-items-center">
@@ -567,6 +564,34 @@
 @section('custom-js')
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
+    <script>
+        $(function() {
+            $('#dDiterima').select2({
+                placeholder: '-- Pilih Pengawas --',
+                width: '50%',
+                ajax: {
+                    url: '{{ route("approval.list") }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return { search: params.term };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    id: item.nama,
+                                    text: item.nama + ' (' + item.nik + ')',
+                                    nik: item.nik
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+        });
+    </script>
     <script>
         //PREVIEW IMAGE NPWP
         function previewImage(event) {
@@ -679,7 +704,6 @@
         // DROPDOWN SEARCH FIELD
         $(document).ready(function() {
             $('#dApproved').select2();
-            $('#dDiterima').select2();
         });
         // JENIS BADAN USAHA CV/PT/PERORANGAN
         $(document).ready(function(){
