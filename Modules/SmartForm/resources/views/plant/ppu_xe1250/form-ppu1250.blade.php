@@ -153,20 +153,20 @@
                                                 style="background-color: #c3bdbf; text-align: center;"
                                                 class="form-control" name="link_pitch[]" min="281" max="284"
                                                 required
-                                                oninput="this.setCustomValidity(parseFloat(this.value) < 281 ? 'Value must be at least 281' : 
-                                                parseFloat(this.value) > 284 ? 'Value must not exceed 284' : ''); 
+                                                oninput="this.setCustomValidity(parseFloat(this.value) < 281 ? 'Value must be at least 281' :
+                                                parseFloat(this.value) > 284 ? 'Value must not exceed 284' : '');
                                                 this.reportValidity();">
                                         </td>
                                         <td colspan="2"><input type="number" step="0.0001" max="181"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
                                                 name="link_Height[]"
-                                                oninput="this.setCustomValidity(parseFloat(this.value) > 181 ? 'Value must not exceed 181' : ''); 
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 181 ? 'Value must not exceed 181' : '');
                                                 this.reportValidity();"
                                                 required></td>
                                         <td colspan="2"><input type="number" step="0.0001" max="99"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
                                                 name="link_bushing[]"
-                                                oninput="this.setCustomValidity(parseFloat(this.value) > 99 ? 'Value must not exceed 99' : ''); 
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 99 ? 'Value must not exceed 99' : '');
                                                 this.reportValidity();"
                                                 required></td>
                                     </tr>
@@ -175,21 +175,21 @@
                                         <td colspan="2"><input type="number" step="0.0001" min="281"
                                                 max="284" style="background-color: #c3bdbf;text-align: center;"
                                                 class="form-control" name="link_pitch[]"
-                                                oninput="this.setCustomValidity(parseFloat(this.value) < 281 ? 'Value must be at least 281' : 
-                                                parseFloat(this.value) > 284 ? 'Value must not exceed 284' : ''); 
+                                                oninput="this.setCustomValidity(parseFloat(this.value) < 281 ? 'Value must be at least 281' :
+                                                parseFloat(this.value) > 284 ? 'Value must not exceed 284' : '');
                                                 this.reportValidity();"
                                                 required>
                                         </td>
                                         <td colspan="2"><input type="number" step="0.0001" max="181"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
                                                 name="link_Height[]"
-                                                oninput="this.setCustomValidity(parseFloat(this.value) > 181 ? 'Value must not exceed 181' : ''); 
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 181 ? 'Value must not exceed 181' : '');
                                                 this.reportValidity();"
                                                 required></td>
                                         <td colspan="2"><input type="number" step="0.0001" max="99"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
                                                 name="link_bushing[]"
-                                                oninput="this.setCustomValidity(parseFloat(this.value) > 99 ? 'Value must not exceed 99' : ''); 
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 99 ? 'Value must not exceed 99' : '');
                                                 this.reportValidity();"
                                                 required></td>
                                     </tr>
@@ -239,21 +239,21 @@
                                         <td colspan="2"><input type="number" step="0.0001" max="50"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
                                                 name="grouser_height[]"
-                                                oninput="this.setCustomValidity(parseFloat(this.value) > 50 ? 'Value must not exceed 50' : ''); 
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 50 ? 'Value must not exceed 50' : '');
                                                 this.reportValidity();"
                                                 required></td>
                                         <td colspan="2"><input type="number" step="0.0001"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
                                                 name="idler[]" min="23" max="29"
-                                                oninput="this.setCustomValidity(parseFloat(this.value) < 23? 'Value must be at least 23' : 
-                                                parseFloat(this.value) > 29 ? 'Value must not exceed 29' : ''); 
+                                                oninput="this.setCustomValidity(parseFloat(this.value) < 23? 'Value must be at least 23' :
+                                                parseFloat(this.value) > 29 ? 'Value must not exceed 29' : '');
                                                 this.reportValidity();"
                                                 required>
                                         </td>
                                         <td colspan="2"><input type="number" step="0.0001" max="423"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
                                                 name="sprocket[]"
-                                                oninput="this.setCustomValidity(parseFloat(this.value) > 423 ? 'Value must not exceed 423' : ''); 
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 423 ? 'Value must not exceed 423' : '');
                                                 this.reportValidity();"
                                                 required>
                                         </td>
@@ -263,21 +263,21 @@
                                         <td colspan="2"><input type="number" step="0.0001" max="50"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
                                                 name="grouser_height[]"
-                                                oninput="this.setCustomValidity(parseFloat(this.value) > 50 ? 'Value must not exceed 50' : ''); 
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 50 ? 'Value must not exceed 50' : '');
                                                 this.reportValidity();"
                                                 required></td>
                                         <td colspan="2"><input type="number" step="0.0001" min="23"
                                                 max="29" style="background-color: #c3bdbf;text-align: center;"
                                                 class="form-control" name="idler[]"
-                                                oninput="this.setCustomValidity(parseFloat(this.value) < 23? 'Value must be at least 23' : 
-                                                parseFloat(this.value) > 29 ? 'Value must not exceed 29' : ''); 
+                                                oninput="this.setCustomValidity(parseFloat(this.value) < 23? 'Value must be at least 23' :
+                                                parseFloat(this.value) > 29 ? 'Value must not exceed 29' : '');
                                                 this.reportValidity();"
                                                 required>
                                         </td>
                                         <td colspan="2"><input type="number" step="0.0001" max="423"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
                                                 name="sprocket[]"
-                                                oninput="this.setCustomValidity(parseFloat(this.value) > 423 ? 'Value must not exceed 423' : ''); 
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 423 ? 'Value must not exceed 423' : '');
                                                 this.reportValidity();"
                                                 required>
                                         </td>
@@ -328,20 +328,20 @@
                                         <td colspan="2"><input type="number" step="0.0001" max="210"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
                                                 name="carrier_roller1[]"
-                                                oninput="this.setCustomValidity(parseFloat(this.value) > 210 ? 'Value must not exceed 210' : ''); 
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 210 ? 'Value must not exceed 210' : '');
                                                 this.reportValidity();"
                                                 required></td>
                                         <td colspan="2"><input type="number" step="0.0001" max="210"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
                                                 name="carrier_roller2[]"
-                                                oninput="this.setCustomValidity(parseFloat(this.value) > 210 ? 'Value must not exceed 210' : ''); 
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 210 ? 'Value must not exceed 210' : '');
                                                 this.reportValidity();"
                                                 required>
                                         </td>
                                         <td colspan="2"><input type="number" step="0.0001" max="210"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
                                                 name="carrier_roller3[]"
-                                                oninput="this.setCustomValidity(parseFloat(this.value) > 210 ? 'Value must not exceed 210' : ''); 
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 210 ? 'Value must not exceed 210' : '');
                                                 this.reportValidity();"
                                                 required>
                                         </td>
@@ -351,20 +351,20 @@
                                         <td colspan="2"><input type="number" step="0.0001" max="210"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
                                                 name="carrier_roller1[]"
-                                                oninput="this.setCustomValidity(parseFloat(this.value) > 210 ? 'Value must not exceed 210' : ''); 
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 210 ? 'Value must not exceed 210' : '');
                                                 this.reportValidity();"
                                                 required></td>
                                         <td colspan="2"><input type="number" step="0.0001" max="210"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
                                                 name="carrier_roller2[]"
-                                                oninput="this.setCustomValidity(parseFloat(this.value) > 210 ? 'Value must not exceed 210' : ''); 
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 210 ? 'Value must not exceed 210' : '');
                                                 this.reportValidity();"
                                                 required>
                                         </td>
                                         <td colspan="2"><input type="number" step="0.0001" max="210"
                                                 style="background-color: #c3bdbf;text-align: center;" class="form-control"
                                                 name="carrier_roller3[]"
-                                                oninput="this.setCustomValidity(parseFloat(this.value) > 210 ? 'Value must not exceed 210' : ''); 
+                                                oninput="this.setCustomValidity(parseFloat(this.value) > 210 ? 'Value must not exceed 210' : '');
                                                 this.reportValidity();"
                                                 required>
                                         </td>
@@ -415,7 +415,7 @@
                                             <td colspan="2"><input type="number" step="0.0001" max="291"
                                                     style="background-color: #c3bdbf;text-align: center;"
                                                     class="form-control" name="track_roller[]"
-                                                    oninput="this.setCustomValidity(parseFloat(this.value) > 291 ? 'Value must not exceed 291' : ''); 
+                                                    oninput="this.setCustomValidity(parseFloat(this.value) > 291 ? 'Value must not exceed 291' : '');
                                                 this.reportValidity();"
                                                     required></td>
                                         @endfor
@@ -427,7 +427,7 @@
                                             <td colspan="2"><input type="number" step="0.0001" max="291"
                                                     style="background-color: #c3bdbf;text-align: center;"
                                                     class="form-control" name="track_roller[]"
-                                                    oninput="this.setCustomValidity(parseFloat(this.value) > 291 ? 'Value must not exceed 291' : ''); 
+                                                    oninput="this.setCustomValidity(parseFloat(this.value) > 291 ? 'Value must not exceed 291' : '');
                                                 this.reportValidity();"
                                                     required></td>
                                         @endfor
@@ -739,26 +739,14 @@
                                 <div class="col-4 ">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="dibuat" class="ms-0">Checked By1</label>
-                                        <select name="checked1_display" class="form-control uppercase" disabled>
-                                            @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nik }}"
-                                                    {{ old('checked1', $nik ?? '') == $user->nik ? 'selected' : '' }}>
-                                                    {{ $user->nama }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-
-                                        <input type="hidden" name="checked1" value="{{ old('checked1', $nik ?? '') }}">
+                                        <input type="text" readonly name="checked1" class="form-control" value="{{ session('username') }}">
                                     </div>
                                 </div>
                                 <div class="col-4 ">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="dibuat" class="ms-0">Checked By2</label>
-                                        <select name="checked2" id="dibuat_oleh2" class="form-control" required>
-                                            <option disabled selected>-- Select Creator --</option>
-                                            @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nik }}">{{ $user->nama }}</option>
-                                            @endforeach
+                                        <select name="checked2" id="checked2" class="form-control" required>
+
 
                                         </select>
                                     </div>
@@ -766,11 +754,8 @@
                                 <div class="col-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="diperiksa" class="ms-0">Validated By</label>
-                                        <select name="validated" id="diperiksa" class="form-control" required>
-                                            <option disabled selected>-- Select Approval --</option>
-                                            @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nik }}">{{ $user->nama }}</option>
-                                            @endforeach
+                                        <select name="validated" id="validated" class="form-control" required>
+
                                         </select>
                                     </div>
                                 </div>
@@ -974,6 +959,66 @@
                         content.style.display = "block";
                     }
                 });
+            });
+        });
+    </script>
+    <script>
+        $(function() {
+            $('#checked2').select2({
+                placeholder: '-- Pilih checked --',
+                width: '100%',
+                ajax: {
+                    url: '{{ route('ppu.1250.approval.list') }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            search: params.term
+                        };
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(item) {
+                                return {
+                                    id: item
+                                        .nama,
+                                    text: item.nama + ' (' + item.nik + ')'
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+        });
+    </script>
+    <script>
+        $(function() {
+            $('#validated').select2({
+                placeholder: '-- Pilih validated --',
+                width: '100%',
+                ajax: {
+                    url: '{{ route('ppu.1250.approval.list') }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            search: params.term
+                        };
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(item) {
+                                return {
+                                    id: item
+                                        .nama,
+                                    text: item.nama + ' (' + item.nik + ')'
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
             });
         });
     </script>

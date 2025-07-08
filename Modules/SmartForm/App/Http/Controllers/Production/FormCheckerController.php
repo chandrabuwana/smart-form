@@ -16,7 +16,7 @@ use Modules\SmartForm\helpers\HrdHelper;
 
 class FormCheckerController extends Controller {
     public function dashboard(Request $request) {
-        $nik_session = $request->session()->get( 'user_id', '' );
+        $nik_session = $request->session()->get( 'username', '' );
         try {
             $query = DB::table( 'prod_checker_form' )
             ->select( '*' )
@@ -62,7 +62,7 @@ class FormCheckerController extends Controller {
     }
 
     public function ShowFormChecker($id, Request $request) {
-        $nik_session = $request->session()->get( 'user_id', '' );
+        $nik_session = $request->session()->get( 'username', '' );
         $dataDS = [
             '06-00 sd 07.00',
             '07-00 sd 08.00',
@@ -158,7 +158,7 @@ class FormCheckerController extends Controller {
         ] );
     }
     public function AddFormChecker( Request $request ) {
-        $nik_session = $request->session()->get( 'user_id', '' );
+        $nik_session = $request->session()->get( 'username', '' );
         $dataDS = [
             '06-00 sd 07.00',
             '07-00 sd 08.00',
@@ -210,7 +210,7 @@ class FormCheckerController extends Controller {
     }
 
     public function detail($id, Request $request) {
-        $nik_session = $request->session()->get( 'user_id', '' );
+        $nik_session = $request->session()->get( 'username', '' );
         $dataDS = [
             '06-00 sd 07.00',
             '07-00 sd 08.00',
@@ -305,7 +305,7 @@ class FormCheckerController extends Controller {
         $sites = DB::connection('sqlsrv2')->table('tsite')->select(columns: 'KodeST')->get();
 
 
-        $record->operator_leader =  $findUser = DB::connection('sqlsrv2')->table('TKaryawan')->where('NIK',  $record->operator_leader)->first()->Nama;
+        $record->operator_leader =  $findUser = DB::connection('sqlsrv2')->table('TKaryawan')->where('Nama',  $record->operator_leader)->first()->Nama;
         return view( 'smartform::production.form_checker.show-form-checker', [
             'record' => $record, 'dataDS' => $dataDS, 'dataNS' => $dataNS, 'nik'=>$nik_session, 'time_details' => $time_details, 'nonNullCounts' => $nonNullCounts,  'approvalList' => $users, 'users' => $users, 'sites' => $sites
 
@@ -315,7 +315,7 @@ class FormCheckerController extends Controller {
     public function Update( Request $request ) {
 
 
-     
+
         try {
             $alatAngkutIds = json_decode($request->alat_angkut_all, true);
 
@@ -411,7 +411,7 @@ class FormCheckerController extends Controller {
                 }
             }
 
-            
+
             DB::table( 'prod_checker_form' )
             ->where( 'doc_num', $request->doc_num )
             ->update( $data );
@@ -779,5 +779,11 @@ class FormCheckerController extends Controller {
         return $docNumber;
     }
 
+public function getApprovalList(Request $request)
+    {
+        $search = $request->input('search', '');
+        $list = HrdHelper::getApprovalList($search);
 
+        return response()->json($list);
+    }
 }

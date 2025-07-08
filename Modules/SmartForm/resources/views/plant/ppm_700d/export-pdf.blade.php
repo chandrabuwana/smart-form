@@ -392,7 +392,7 @@
                         </tr>
                     @else
                         <tr>
-                            
+
                         </tr>
                     @endif
                 @else
@@ -478,12 +478,12 @@
             <tr>
 
                 <td colspan="2"style="border-top: none;">
-                    {{ optional(collect($approvalList)->firstWhere('nik', $data->creator))->nama ?? '' }}</td>
+                    {{ $data->creator }}</td>
                 <td colspan="2" style="border-top: none;">
-                    {{ optional(collect($approvalList)->firstWhere('nik', $data->checked_by))->nama ?? '' }}
+                    {{ $data->checked_by }}
                 </td>
                 <td colspan="2" style="border-top: none;">
-                    {{ optional(collect($approvalList)->firstWhere('nik', $data->validated_by))->nama ?? '' }}</td>
+                    {{ $data->validated_by }}</td>
                 <td colspan="5" style="border: none"></td>
             </tr>
             <tr>

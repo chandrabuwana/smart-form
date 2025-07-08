@@ -521,6 +521,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/store-compressor', [CompressorPompaController::class, 'StoreCompressor'])->name('plant.compressor.store');
             Route::POST('/update', [CompressorPompaController::class, 'UpdateCompressor'])->name('plant.compressor.update');
             Route::delete('/delete/{id}', [CompressorPompaController::class, 'DeleteCompressor'])->name('plant.compressor.delete');
+            Route::get('/approval-list', [InspectionCmtController::class, 'getApprovalList'])->name('cmt.approval.list');
         });
 
         Route::prefix('plant-welding')->group(function () {
@@ -547,6 +548,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
                 Route::post('/reject-cmt', [InspectionCmtController::class, 'Reject'])->name("cmt.reject");
                 Route::post('/reset-cmt/{id}', [InspectionCmtController::class, 'Reset'])->name("cmt.reset");
                 Route::get('cmt/get-data', [InspectionCmtController::class, 'getData'])->name('cmt.get-data');
+
                 Route::resource('cmt', InspectionCmtController::class);
 
                 // Dongfeng
@@ -557,6 +559,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
                 Route::post('/reset-dongfeng/{id}', [InspectionDongfengController::class, 'Reset'])->name("dongfeng.reset");
                 Route::get('dongfeng/get-data', [InspectionDongfengController::class, 'getData'])->name('dongfeng.get-data');
                 Route::resource('dongfeng', InspectionDongfengController::class);
+                Route::get('/approval-list', [InspectionDongfengController::class, 'getApprovalList'])->name('dongfeng.approval.list');
             });
         });
 // produksi
@@ -573,6 +576,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/update-form-checker', [FormCheckerController::class, 'Update'])->name('prod.form.checker.update');
             Route::get('/detail/{id}', [FormCheckerController::class, 'detail'])->name('prod.form.checker.detail');
             Route::get('/get-alat-by-site', [FormCheckerController::class, 'getAlatBySite'])->name('get.alat.by.site');
+            Route::get('/approval-list', [FormCheckerController::class, 'getApprovalList'])->name('checker.approval.list');
         });
 
 // produksi
@@ -614,6 +618,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/approve-ppm.900d', [PpmXcmg900dController::class, 'Approve'])->name("plant.ppm.900d.approve");
             Route::post('/reject-ppm.900d', [PpmXcmg900dController::class, 'Reject'])->name("plant.ppm.900d.reject");
             Route::post('/reset-ppm.900d/{id}', [PpmXcmg900dController::class, 'Reset'])->name("plant.ppm.900d.reset");
+             Route::get('/approval-list', [PpmXCMG900DController::class, 'getApprovalList'])->name('900d.approval.list');
         });
         // plant
         Route::prefix('ppm-3005T')->group(function () {
@@ -628,6 +633,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/approve-ppm.3005', [PpmXCMG3005TController::class, 'Approve'])->name("plant.ppm.3005.approve");
             Route::post('/reject-ppm.3005', [PpmXCMG3005TController::class, 'Reject'])->name("plant.ppm.3005.reject");
             Route::post('/reset-ppm.3005/{id}', [PpmXCMG3005TController::class, 'Reset'])->name("plant.ppm.3005.reset");
+             Route::get('/approval-list', [PpmXCMG3005TController::class, 'getApprovalList'])->name('3005.approval.list');
         });
         // plant
         Route::prefix('ppm-700d')->group(function () {
@@ -642,6 +648,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/approve-ppm.700d', [PpmXCMG700DController::class, 'Approve'])->name("plant.ppm.700d.approve");
             Route::post('/reject-ppm.700d', [PpmXCMG700DController::class, 'Reject'])->name("plant.ppm.700d.reject");
             Route::post('/reset-ppm.700d/{id}', [PpmXCMG700DController::class, 'Reset'])->name("plant.ppm.700d.reset");
+            Route::get('/approval-list', [PpmXCMG700DController::class, 'getApprovalList'])->name('700d.approval.list');
         });
         // plant
         Route::prefix('ppu-xe1250')->group(function () {
@@ -656,6 +663,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/approve-ppu-xe1250', [PpuXE1250Controller::class, 'Approve'])->name("plant.ppu.xe1250.approve");
             Route::post('/reject-ppu-xe1250', [PpuXE1250Controller::class, 'Reject'])->name("plant.ppu.xe1250.reject");
             Route::post('/reset-ppu-xe1250/{id}', [PpuXE1250Controller::class, 'Reset'])->name("plant.ppu.xe1250.reset");
+            Route::get('/approval-list', [PpuXE1250Controller::class, 'getApprovalList'])->name('ppu.1250.approval.list');
         });
         // plant
         Route::prefix('ppm-dh24')->group(function () {
@@ -700,6 +708,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/approve-log.ogc', [OgcComplianceController::class, 'Approve'])->name('log.ogc.approve');
             Route::post('/reject-log.ogc', [OgcComplianceController::class, 'Reject'])->name('log.ogc.reject');
             Route::post('/reset-log.ogc/{id}', [OgcComplianceController::class, 'Reset'])->name('log.ogc.reset');
+            Route::get('/approval-list', [OgcComplianceController::class, 'getApprovalList'])->name('ogc.approval.list');
         });
         // plant
         Route::prefix('lgmg')->group(function () {

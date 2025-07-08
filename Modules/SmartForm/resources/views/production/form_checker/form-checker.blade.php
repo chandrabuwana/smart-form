@@ -89,7 +89,7 @@
                                             required>
                                             <option disabled selected>-- Select Nama Operator --</option>
                                             @forelse($users as $user)
-                                                <option value="{{ $user->nik ?? '' }}">
+                                                <option value="{{ $user->nama ?? '' }}">
                                                     {{ $user->nama ?? 'User tidak tersedia' }}
                                                 </option>
                                             @empty
@@ -102,10 +102,8 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="nama_pic" class="ms-0">Nama PIC</label>
-                                        <input type="text" class="form-control" id="nama-pic"
-                                            value="{{ optional(collect($approvalList)->firstWhere('nik', $nik))->nama ?? '' }}"
-                                            readonly>
-                                        <input type="hidden" name="nama_pic" value="{{ $nik }}">
+
+                                        <input type="text" class="form-control" name="nama_pic" value="{{session('username')}}" readonly>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -198,21 +196,17 @@
                                 <div class="col-6">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="dibuat" class="ms-0">Dibuat Oleh</label>
-                                        <input type="text" class="form-control" id="dibuat"
-                                            value="{{ optional(collect($approvalList)->firstWhere('nik', $nik))->nama ?? '' }}"
-                                            readonly>
-                                        <input type="hidden" name="dibuat_oleh" value="{{ $nik }}">
+
+                                        <input type="text" class="form-control" name="dibuat_oleh" readonly
+                                            value="{{ session('username') }}">
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="diperiksa" class="ms-0">Diperiksa Oleh</label>
-                                        <select name="diperiksa_oleh" id="diperiksa" class="form-control form-select"
+                                        <select name="diperiksa_oleh" id="validated" class="form-control form-select"
                                             required>
-                                            <option disabled selected>-- Select Approval --</option>
-                                            @foreach ($approvalList as $data)
-                                                <option value="{{ $data->nik }}">{{ $data->nama }}</option>
-                                            @endforeach
+
                                         </select>
                                     </div>
                                 </div>
@@ -681,5 +675,35 @@
                 renderAlatAngkutTable(JSON.stringify([selected]));
             }
         }
+    </script>
+    <script>
+        $(function() {
+            $('#validated').select2({
+                placeholder: '-- Pilih validated --',
+                width: '100%',
+                ajax: {
+                    url: '{{ route('checker.approval.list') }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            search: params.term
+                        };
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(item) {
+                                return {
+                                    id: item
+                                        .nama,
+                                    text: item.nama + ' (' + item.nik + ')'
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+        });
     </script>
 @endsection

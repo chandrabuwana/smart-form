@@ -19,7 +19,7 @@ class InspectionCmtController extends Controller
     public function index()
     {
         try {
-            $nik_session = request()->session()->get('user_id', '');
+            $nik_session = request()->session()->get('username', '');
             $statistics = ( object )[
                 'total_records' => DB::table( 'plant_general_inspection_cmt' )->count(),
                 'total_this_month' => DB::table( 'plant_general_inspection_cmt' )
@@ -116,7 +116,7 @@ class InspectionCmtController extends Controller
      */
     public function create()
     {
-        $nik_session = request()->session()->get('user_id', '');
+        $nik_session = request()->session()->get('username', '');
         $sites = ['PMSS', 'MAS', 'MME', 'BRAM', 'TAJ', 'AGM', 'MSJ', 'TDM', 'BSSR', 'MBLM', 'MBLH', 'others'];
 
         $json = file_get_contents(resource_path('data/general-inspection/cmt/activity-list.json'));
@@ -179,7 +179,7 @@ class InspectionCmtController extends Controller
                 'diketahui'  => $request->diketahui,
                 'note' => $request->note,
                 'date_inspection' => $request->date,
-                'creator'    => $request->session()->get('user_id', ''),
+                'creator'    => $request->session()->get('username', ''),
                 'date_sign1' => Carbon::now(),
                 'date_sign2' => null,
                 'date_sign3' => null,
@@ -248,7 +248,7 @@ class InspectionCmtController extends Controller
      */
     public function show(InspectionCmt $cmt, Request $request)
     {
-        $nik_session = $request->session()->get( 'user_id', '' );
+        $nik_session = $request->session()->get( 'username', '' );
         $sites = ['PMSS', 'MAS', 'MME', 'BRAM', 'TAJ', 'AGM', 'MSJ', 'TDM', 'BSSR', 'MBLM', 'MBLH', 'others'];
 
         $json = file_get_contents(resource_path('data/general-inspection/cmt/activity-list.json'));
@@ -626,5 +626,11 @@ class InspectionCmtController extends Controller
 
         return view('smartform::plant.general-inspection.cmt.print-template.index', $result  );
     }
+public function getApprovalList(Request $request)
+    {
+        $search = $request->input('search', '');
+        $list = HrdHelper::getApprovalList($search);
 
+        return response()->json($list);
+    }
 }

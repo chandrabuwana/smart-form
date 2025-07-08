@@ -142,45 +142,25 @@
             <td style="border-bottom: none;"></td>
             <td style="border-bottom: none;"></td>
             <td style="border-bottom: none;"></td>
-            <td colspan="2" style="border-top: none; border-bottom: none;">Definisi Lube Compliance : Kepatuhan terhadap standart
+            <td colspan="2" style="border-top: none; border-bottom: none;">Definisi Lube Compliance : Kepatuhan
+                terhadap standart
                 kelayakan penggunaan alat kerja maupun
                 perlengkapan agar operasional Lube meliputi : Oil, Grease, dan
                 Coolant dapat berjalan lancar dan sesuai dengan kaedah keselamatan kerja.</td>
 
         </tr>
         <tr>
-            <td style="border-top: none;">
-                {{ optional(collect($approvalList)->firstWhere('nik', isset($detail['week 1']) && $detail['week 1']->isNotEmpty() ? $detail['week 1']->first()->validator : ''))->nama ?? '' }}
-            </td>
-            <td style="border-top: none;">
-                {{ optional(collect($approvalList)->firstWhere('nik', isset($detail['week 1']) && $detail['week 1']->isNotEmpty() ? $detail['week 1']->first()->checker : ''))->nama ?? '' }}
-            </td>
-            <td style="border-top: none;">
-                {{ optional(collect($approvalList)->firstWhere('nik', isset($detail['week 2']) && $detail['week 2']->isNotEmpty() ? $detail['week 2']->first()->validator : ''))->nama ?? '' }}
-            </td>
-            <td style="border-top: none;">
-                {{ optional(collect($approvalList)->firstWhere('nik', isset($detail['week 2']) && $detail['week 2']->isNotEmpty() ? $detail['week 2']->first()->checker : ''))->nama ?? '' }}
-            </td>
-            <td style="border-top: none;">
-                {{ optional(collect($approvalList)->firstWhere('nik', isset($detail['week 3']) && $detail['week 3']->isNotEmpty() ? $detail['week 3']->first()->validator : ''))->nama ?? '' }}
-            </td>
-            <td style="border-top: none;">
-                {{ optional(collect($approvalList)->firstWhere('nik', isset($detail['week 3']) && $detail['week 3']->isNotEmpty() ? $detail['week 3']->first()->checker : ''))->nama ?? '' }}
-            </td>
-            <td style="border-top: none;">
-                {{ optional(collect($approvalList)->firstWhere('nik', isset($detail['week 4']) && $detail['week 4']->isNotEmpty() ? $detail['week 4']->first()->validator : ''))->nama ?? '' }}
-            </td>
-            <td style="border-top: none;">
-                {{ optional(collect($approvalList)->firstWhere('nik', isset($detail['week 4']) && $detail['week 4']->isNotEmpty() ? $detail['week 4']->first()->checker : ''))->nama ?? '' }}
-            </td>
-            <td style="border-top: none;">
-                {{ optional(collect($approvalList)->firstWhere('nik', isset($detail['week 5']) && $detail['week 5']->isNotEmpty() ? $detail['week 5']->first()->validator : ''))->nama ?? '' }}
-            </td>
-            <td style="border-top: none;">
-                {{ optional(collect($approvalList)->firstWhere('nik', isset($detail['week 5']) && $detail['week 5']->isNotEmpty() ? $detail['week 5']->first()->checker : ''))->nama ?? '' }}
-            </td>
+            @for ($i = 1; $i <= 5; $i++)
+                <td style="border-top: none;">
+                    {{ optional($detail['week ' . $i] ?? null)->first()->validator ?? '' }}
+                </td>
+                <td style="border-top: none;">
+                    {{ optional($detail['week ' . $i] ?? null)->first()->checker ?? '' }}
+                </td>
+            @endfor
 
-            <td colspan="2" style="border-top: none; border-bottom: none;"> Berikanlah informasi yang valid sesuai kondisi actual,
+            <td colspan="2" style="border-top: none; border-bottom: none;"> Berikanlah informasi yang valid sesuai
+                kondisi actual,
                 apabila terdapat peralatan / perlengkapan yang
                 tidak memenuhi standart atau tidak tersedia berikan catatan di
                 kolom Coment.</td>

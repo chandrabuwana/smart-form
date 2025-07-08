@@ -563,11 +563,11 @@
             </tr>
             <tr>
                 <td colspan="3" style="border-top: none;">
-                    {{ optional(collect($approvalList)->firstWhere('nik', $data->checked_1))->nama ?? '' }}</td>
+                    {{ $data->checked_1 }}</td>
                 <td colspan="3" style="border-top: none;">
-                    {{ optional(collect($approvalList)->firstWhere('nik', $data->validated))->nama ?? '' }}</td>
+                    {{ $data->validated }}</td>
                 <td colspan="3"style="border-top: none;">
-                    {{ optional(collect($approvalList)->firstWhere('nik', $data->checked_2))->nama ?? '' }}</td>
+                    {{ $data->checked_2 }}</td>
                 <td colspan="10" style="border: none"></td>
             </tr>
             <tr>

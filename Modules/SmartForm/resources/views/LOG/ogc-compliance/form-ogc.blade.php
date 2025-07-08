@@ -55,10 +55,6 @@
                                     <div class="input-group input-group-static mb-3">
                                         <label for="validator" class="ms-0">Validator</label>
                                         <select name="validator" id="validator" class="form-control" required>
-                                            <option disabled selected>-- Select validator --</option>
-                                            @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nik }}">{{ $user->nama }}</option>
-                                            @endforeach
 
                                         </select>
                                     </div>
@@ -67,10 +63,7 @@
                                     <div class="input-group input-group-static mb-3">
                                         <label for="known" class="ms-0">Known By</label>
                                         <select name="known" id="known" class="form-control" required>
-                                            <option disabled selected>-- Select Known By--</option>
-                                            @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nik }}">{{ $user->nama }}</option>
-                                            @endforeach
+
 
                                         </select>
                                     </div>
@@ -92,9 +85,9 @@
                                             @foreach ($data as $records)
                                                 <tr>
                                                     <td>{{ $records->week }}</td>
-                                                    <td> {{ optional(collect($approvalList)->firstWhere('nik', $records->validator))->nama ?? '' }}
+                                                    <td> {{ $records->validator }}
                                                     </td>
-                                                    <td>{{ optional(collect($approvalList)->firstWhere('nik', $records->checker))->nama ?? '' }}
+                                                    <td>{{ $records->checker }}
                                                     </td>
 
                                                     <td>
@@ -285,9 +278,67 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
     <script>
+        $(function() {
+            $('#validator').select2({
+                placeholder: '-- Pilih checked --',
+                width: '100%',
+                ajax: {
+                    url: '{{ route('ogc.approval.list') }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            search: params.term
+                        };
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(item) {
+                                return {
+                                    id: item
+                                        .nama,
+                                    text: item.nama + ' (' + item.nik + ')'
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+        });
+    </script>
+    <script>
+        $(function() {
+            $('#known').select2({
+                placeholder: '-- Pilih validated --',
+                width: '100%',
+                ajax: {
+                    url: '{{ route('ogc.approval.list') }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            search: params.term
+                        };
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(item) {
+                                return {
+                                    id: item
+                                        .nama,
+                                    text: item.nama + ' (' + item.nik + ')'
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+        });
+    </script>
+    <script>
         $(document).ready(function() {
-            $('#validator').select2();
-            $('#known').select2();
             $('#week').select2();
         });
         $(function() {

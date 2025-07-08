@@ -18,7 +18,7 @@ class PpmXcmg900dController extends Controller {
 
     public function dashboard(Request $request) {
         try {
-            $nik_session = $request->session()->get( 'user_id', '' );
+            $nik_session = $request->session()->get( 'username', '' );
             $query = DB::table( 'ppm_xcmg_900d' )
             ->select( '*' )
             ->orderBy( 'created_at', 'desc' );
@@ -41,7 +41,7 @@ class PpmXcmg900dController extends Controller {
             $query->where( 'job_site',  $request->job_site );
         }
         if ( $request->has( 'approval' ) && $request->approval ) {
-            $query->where( 'checked_by', $request->approval )->orwhere( 'validated_by', $request->approval );
+            $query->where( 'validated_by', $request->approval );
             ;
         }
 
@@ -70,7 +70,7 @@ class PpmXcmg900dController extends Controller {
     }
 
     public function Add(Request $request) {
-        $nik_session = $request->session()->get( 'user_id', '' );
+        $nik_session = $request->session()->get( 'username', '' );
         $json = file_get_contents( resource_path( 'data/ppm-900d/ppm-900.json' ) );
         $list = json_decode( $json, true );
 
@@ -196,35 +196,35 @@ $cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','sn_unit','model
         $data->eng_actual = json_decode( $detail->eng_actual );
         $data->eng_correction_made = json_decode( $detail->eng_correction_made );
         $data->eng_result = json_decode( $detail->eng_result );
-    
+
         $data->eng_remark = json_decode( $detail->eng_remark );
 
         $data->hyd_actual = json_decode( $detail->hyd_actual );
         $data->hyd_correction_made = json_decode( $detail->hyd_correction_made );
         $data->hyd_result = json_decode( $detail->hyd_result );
-      
+
         $data->hyd_remark = json_decode( $detail->hyd_remark );
 
         $data->wo_actual = json_decode( $detail->wo_actual );
         $data->wo_correction_made = json_decode( $detail->wo_correction_made );
         $data->wo_result = json_decode( $detail->wo_result );
-      
+
         $data->wo_remark = json_decode( $detail->wo_remark );
 
         $data->fin_actual = json_decode( $detail->fin_actual );
         $data->fin_correction_made = json_decode( $detail->fin_correction_made );
         $data->fin_result = json_decode( $detail->fin_result );
-      
+
         $data->fin_remark = json_decode( $detail->fin_remark );
         $pdf = PDF::loadView( 'smartform::plant.ppm_900d.export-pdf', [
-            'data' => $data, 'list' => $list, 'approvalList' => HrdHelper::getApprovalList()
+            'data' => $data, 'list' => $list
 
         ] );
         $pdf->setPaper('A4', 'landscape');
 
         return $pdf->download( 'PPM XCMG 900D - ' . $data->doc_num .'.pdf' );
 
-      
+
     } catch ( \Exception $e ) {
         Log::error( 'Error in ExportForm: ' . $e->getMessage() );
         return redirect()
@@ -319,7 +319,7 @@ $cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','sn_unit','model
 
     }
     public function show( Request $request,$id){
-        $nik_session = $request->session()->get( 'user_id', '' );
+        $nik_session = $request->session()->get( 'username', '' );
 
         $data = DB::table( 'ppm_xcmg_900d' )
         ->where( 'id', $id )
@@ -331,7 +331,7 @@ $cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','sn_unit','model
         $json = file_get_contents( resource_path( 'data/ppm-900d/ppm-900.json' ) );
         $list = json_decode( $json, true );
 
-       
+
         $data->eng_actual = json_decode( $detail->eng_actual );
         $data->eng_correction_made = json_decode( $detail->eng_correction_made );
         $data->eng_result = json_decode( $detail->eng_result );
@@ -355,8 +355,8 @@ $cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','sn_unit','model
         $data->fin_result = json_decode( $detail->fin_result );
 
         $data->fin_remark = json_decode( $detail->fin_remark );
-        
-     
+
+
 
         return view( 'smartform::plant.ppm_900d.detail-900d', [ 'data' => $data, 'nik' =>$nik_session, 'list' => $list, 'approvalList' => HrdHelper::getApprovalList() ] );
     }
@@ -455,5 +455,11 @@ $cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','sn_unit','model
         return $docNumber;
     }
 
+public function getApprovalList(Request $request)
+    {
+        $search = $request->input('search', '');
+        $list = HrdHelper::getApprovalList($search);
 
+        return response()->json($list);
+    }
 }

@@ -18,7 +18,7 @@ class PpuXE1250Controller extends Controller {
     public function dashboard( Request $request ) {
 
         try {
-            $nik_session = $request->session()->get( 'user_id', '' );
+            $nik_session = $request->session()->get( 'username', '' );
             $query = DB::table( 'ppu_xe1250' )
             ->select( '*' )
             ->orderBy( 'created_at', 'desc' );
@@ -67,7 +67,7 @@ class PpuXE1250Controller extends Controller {
 }
 
 public function Add( Request $request ) {
-    $nik_session = $request->session()->get( 'user_id', '' );
+    $nik_session = $request->session()->get( 'username', '' );
     $cn_data = DB::table( 'alat_angkut_data' )->select( 'no_lambung', 'sn_unit', 'model', 'model_engine', 'sn_engine' )->get();
     return view( 'smartform::plant.ppu_xe1250.form-ppu1250', [ 'cn'=>$cn_data, 'nik'=>$nik_session, 'approvalList' => HrdHelper::getApprovalList() ] );
 }
@@ -88,7 +88,7 @@ public function Store( Request $request ) {
         'checked_1' => $request->checked1,
         'checked_2' => $request->checked2,
         'validated' => $request->validated,
-        'creator' => $request->session()->get( 'user_id', '' ),
+        'creator' => $request->session()->get( 'username', '' ),
         'status' =>  'draft',
         'date_checked' => Carbon::now(),
         'date_validated' => null,
@@ -220,7 +220,7 @@ public function Reject( Request $request ) {
 }
 
 public function show( Request $request, $id ) {
-    $nik_session = $request->session()->get( 'user_id', '' );
+    $nik_session = $request->session()->get( 'username', '' );
 
     $data = DB::table( 'ppu_xe1250' )
     ->where( 'id', $id )
@@ -411,4 +411,10 @@ public function Export( $id ) {
         return $docNumber;
     }
 
+    public function getApprovalList( Request $request ) {
+        $search = $request->input( 'search', '' );
+        $list = HrdHelper::getApprovalList( $search );
+
+        return response()->json( $list );
+    }
 }
