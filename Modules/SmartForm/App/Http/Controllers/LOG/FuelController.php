@@ -127,6 +127,8 @@ class FuelController extends Controller {
         $dept = DB::connection('sqlsrv2')->table(self::TABLE_DEPARTEMENT)->select(columns: 'Nama')->get();
 
         return view('SmartForm::LOG/request-fuel/form-request-fuel', [
+            'isShowDetail' => false,
+            'record' => null,
             'approvalList' => HrdHelper::getApprovalList(),
             'sites' => $sites,
             'dept' => $dept,

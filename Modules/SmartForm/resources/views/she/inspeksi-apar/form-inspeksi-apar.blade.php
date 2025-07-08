@@ -241,37 +241,40 @@
 
                     <div class="approval-section">
                         <div class="row">
-                            <table style="width:100%" >
-                              <tr>
-                                <td>Dibuat oleh</td>
-                                <td>: {{ session('username') }} {{ session('user_id') }}
-                                </td>
-                                <td>Diperiksa oleh :</td>
-                                <td>
-                                    <select name="dDiperiksa" id="dDiperiksa" class="form-control text-center" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
-                                        <option value="">-- Pilih Pemeriksa --</option>
-                                        @foreach($approvalList as $user)
-                                            <option value="{{ $user->nama }}" {{ $isShowDetail && $record->dDiperiksa == $user->nama ? 'selected' : '' }}>
-                                                {{ $user->nama }} ({{ $user->nik }})
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    <input type="hidden" name="acknowledged_by_nik" value="">
-                                </td>
-                                <td>Diketahui oleh :</td>
-                                <td>
-                                    <select name="dDiketahui" id="dDiketahui" class="form-control text-center" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
-                                        <option value="">-- Pilih Mengetahui --</option>
-                                        @foreach($approvalList as $user)
-                                            <option value="{{ $user->nama }}" {{ $isShowDetail && $record->dDiketahui == $user->nama ? 'selected' : '' }}>
-                                                {{ $user->nama }} ({{ $user->nik }})
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    <input type="hidden" name="acknowledged_by_nik" value="">
-                                </td>
-                              </tr>
-                            </table>
+                        <div class="row mt-4">
+                                <div class="col-md-4">
+                                    <h6>Dibuat oleh</h6>
+                                    
+                                    <div class="mb-3">
+                                        <input type="text" name="created_by_name" class="form-control" 
+                                            placeholder="Nama Lengkap"
+                                            value="{{ $isShowDetail ? $record->created_by_name : session('username') }}"
+                                            {{ $isShowDetail ? 'disabled' : '' }} required>
+                                    </div>
+                                    <input type="hidden" name="created_by_nik" value="{{ $isShowDetail ? $record->created_by_nik : session('user_id') }}" required>
+                                    <p class="mb-1">Production Foreman</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6>Diperiksa oleh</h6>
+                                    
+                                    <div class="mb-3">
+                                        <select name="dDiperiksa" id="dDiperiksa" class="form-control text-left" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                        </select>
+                                    </div>
+                                    <input type="hidden" name="acknowledged_by_nik" value="{{ $record->acknowledged_by_nik ?? '' }}">
+                                    <p class="mb-1">Production Supervisor</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6>Diketahui oleh</h6>
+                                    
+                                    <div class="mb-3">
+                                        <select name="dDiketahui" id="dDiketahui" class="form-control text-left" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                        </select>
+                                    </div>
+                                    <input type="hidden" name="acknowledged_by_nik" value="{{ $record->acknowledged_by_nik ?? '' }}">
+                                    <p class="mb-1">Production Supervisor</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -299,7 +302,27 @@
         $(function() {
             $('#dDiperiksa').select2({
                 placeholder: '-- Pilih Pengawas --',
-                width: '50%'
+                width: '50%',
+                ajax: {
+                    url: '{{ route("approval.list") }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return { search: params.term };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    id: item.nama,
+                                    text: item.nama + ' (' + item.nik + ')',
+                                    nik: item.nik
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
             });
         });
     </script>
@@ -307,15 +330,31 @@
         $(function() {
             $('#dDiketahui').select2({
                 placeholder: '-- Pilih Pengawas --',
-                width: '50%'
+                width: '50%',
+                ajax: {
+                    url: '{{ route("approval.list") }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return { search: params.term };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    id: item.nama,
+                                    text: item.nama + ' (' + item.nik + ')',
+                                    nik: item.nik
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
             });
         });
     </script>
     <script>
-        $(document).ready(function() {
-            $('#dDiperiksa').select2();
-            $('#dDiketahui').select2();
-        });
         var tglNow = new Date()
         var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         var months_romawi = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
