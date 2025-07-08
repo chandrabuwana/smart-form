@@ -82,17 +82,9 @@
                                             <tr>
                                                 <td  class="fw-bold">Request Approval</td>
                                                 <td>
-                                                    <select class="form-select form-select-sm input-text" id="iApproval" name="iApproval">
-                                                        
-                                                        <option disabled selected>-- select user --</option>
-                                                        @forelse($users as $approved)
-                                                            <option value="{{ $approved->NIK ?? '' }}">
-                                                                {{ $approved->nama ?? 'Nama tidak tersedia' }}
-                                                            </option>
-                                                        @empty
-                                                            <option>Data karyawan tidak ditemukan</option>
-                                                        @endforelse
+                                                    <select class="form-select form-select-sm input-text" id="iApproval" name="iApproval" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
                                                     </select>
+                                                    <input type="hidden" name="acknowledged_by_nik" value="{{ $record->acknowledged_by_nik ?? '' }}">
                                                 </td>
                                             </tr>
                                             <tr>
@@ -549,9 +541,36 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script>
+        $(function() {
+            $('#iApproval').select2({
+                placeholder: '-- Pilih Pengawas --',
+                width: '50%',
+                ajax: {
+                    url: '{{ route("approval.list") }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return { search: params.term };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    id: item.nama,
+                                    text: item.nama + ' (' + item.nik + ')',
+                                    nik: item.nik
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+        });
+    </script>
+    <script>
         $(document).ready(function() {
             $('#idCataloging').select2();
-            $('#iApproval').select2();
             $('#iSite').select2();
             $('#iSite').select2();
             $('#iPlant').select2();
@@ -706,6 +725,19 @@
         }
 
         $(function() {
+            // Handle supervisor selection
+            $('select[name="iApproval"]').change(function() {
+                var selectedText = $(this).find('option:selected').text();
+                var match = selectedText.match(/\(([^)]+)\)/);
+                var nik = match ? match[1] : '';
+                $('input[name="acknowledged_by_nik"]').val(nik);
+            });
+
+            // Trigger change on load if there's a value
+            if ($('select[name="iApproval"]').val()) {
+                $('select[name="iApproval"]').trigger('change');
+            }
+
             noDoc.text(generateNoDoc())
             tglDoc.text(formatTgl() || "-")
 

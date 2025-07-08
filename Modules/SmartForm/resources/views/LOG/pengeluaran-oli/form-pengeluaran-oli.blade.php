@@ -49,16 +49,9 @@
                                             <tr>
                                                 <td class="fw-bold">Pilih Foreman/Spv</td>
                                                 <td>
-                                                    <select class="form-select form-select-sm input-text" id="iForeman" name="iForeman">
-                                                        <option disabled selected>-- Pilih Approver --</option>
-                                                        @forelse($users as $user)
-                                                            <option value="{{ $user->NIK ?? '' }}">
-                                                                {{ $user->nama ?? 'Nama tidak tersedia' }}
-                                                            </option>
-                                                        @empty
-                                                            <option>Data karyawan tidak ditemukan</option>
-                                                        @endforelse
+                                                    <select class="form-select form-select-sm input-text" id="iForeman" name="iForeman" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
                                                     </select>
+                                                    <input type="hidden" name="acknowledged_by_nik" value="{{ $record->acknowledged_by_nik ?? '' }}">
                                                 </td>
                                             </tr>
                                             <tr>
@@ -388,10 +381,51 @@
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        $(function() {
+            $('#iForeman').select2({
+                placeholder: '-- Pilih Pengawas --',
+                width: '50%',
+                ajax: {
+                    url: '{{ route("approval.list") }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return { search: params.term };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    id: item.nama,
+                                    text: item.nama + ' (' + item.nik + ')',
+                                    nik: item.nik
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+        });
+    </script>
+    <script>
         $(document).ready(function() {
-            $('#iForeman').select2();
             $('#dDiterima').select2();
             $('#iJobSite').select2();
+
+            // Handle supervisor selection
+            $('select[name="iForeman"]').change(function() {
+                var selectedText = $(this).find('option:selected').text();
+                var match = selectedText.match(/\(([^)]+)\)/);
+                var nik = match ? match[1] : '';
+                $('input[name="acknowledged_by_nik"]').val(nik);
+            });
+
+            // Trigger change on load if there's a value
+            if ($('select[name="iForeman"]').val()) {
+                $('select[name="iForeman"]').trigger('change');
+            }
+
         });
         var tglNow = new Date()
         var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
