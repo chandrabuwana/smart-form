@@ -867,4 +867,12 @@ class AirMinumController extends Controller
 
         return sprintf("%s-%s-%03d", $prefix, $date, $sequence);
     }
+
+    public function getApprovalList(Request $request)
+    {
+        $search = $request->input('search', '');
+        $list = HrdHelper::getApprovalList($search);
+
+        return response()->json($list);
+    }
 }

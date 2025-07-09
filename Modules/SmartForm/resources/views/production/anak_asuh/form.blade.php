@@ -268,11 +268,6 @@
                                                 <td>
                                                     <select name="nama_anak_asuh_{{ $i }}" class="form-control text-center" {{ $isShowDetail ? 'disabled' : '' }}>
                                                         <option value="">-- Pilih Anak Asuh --</option>
-                                                        @foreach($approvalList as $user)
-                                                            <option value="{{ $user->nama }}" {{ (old('nama_anak_asuh_'.$i, isset($record->nama_anak_asuh_items[$i-1]) ? $record->nama_anak_asuh_items[$i-1] : '') == $user->nama) ? 'selected' : '' }}>
-                                                                {{ $user->nama }} ({{ $user->nik }})
-                                                            </option>
-                                                        @endforeach
                                                     </select>
                                                 </td>
                                                 <td class="checkbox-cell">
@@ -424,7 +419,27 @@
             $(`select[name="nama_anak_asuh_${rowIndex}"]`).select2({
                 placeholder: "-- Pilih Anak Asuh --",
                 allowClear: true,
-                width: '100%'
+                width: '100%',
+                ajax: {
+                    url: '{{ route("approval.list") }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return { search: params.term };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    id: item.nama,
+                                    text: item.nama + ' (' + item.nik + ')',
+                                    nik: item.nik
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
             });
         }
         

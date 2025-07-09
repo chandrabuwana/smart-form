@@ -305,14 +305,6 @@ Tidak ada peraturan yg berlaku atau berdampak kelingkungan perusahaan
                                 <td width="25%">Diinspeksi Oleh</td>
                                 <td width="25%">
                                     <select name="inspected_by_name" id="inspected_by_name" class="form-control text-center" required {{ $isShowDetail ? 'disabled' : '' }}>
-                                        <option value="">-- Pilih Inspektor --</option>
-                                        @foreach($approvalList as $user)
-                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" 
-                                                {{ ($isShowDetail && isset($data->inspected_by_name) && $data->inspected_by_name == $user->nama) || 
-                                                   (!$isShowDetail && $user->nama == session('username')) ? 'selected' : '' }}>
-                                                {{ $user->nama }}
-                                            </option>
-                                        @endforeach
                                     </select>
                                     <input type="hidden" name="inspected_by_nik" id="inspected_by_nik" 
                                            value="{{ $isShowDetail && isset($data->inspected_by_nik) ? $data->inspected_by_nik : session('user_id') }}">
@@ -342,14 +334,6 @@ Tidak ada peraturan yg berlaku atau berdampak kelingkungan perusahaan
                                 <td>Diinspeksi Oleh</td>
                                 <td>
                                     <select name="inspected_by2_name" id="inspected_by2_name" class="form-control text-center" {{ $isShowDetail ? 'disabled' : '' }}>
-                                        <option value="">-- Pilih Inspektor --</option>
-                                        @foreach($approvalList as $user)
-                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" 
-                                                {{ ($isShowDetail && isset($data->inspected_by2_name) && $data->inspected_by2_name == $user->nama) || 
-                                                   (!$isShowDetail && $user->nama == session('username')) ? 'selected' : '' }}>
-                                                {{ $user->nama }}
-                                            </option>
-                                        @endforeach
                                     </select>
                                     <input type="hidden" name="inspected_by2_nik" id="inspected_by2_nik" 
                                            value="{{ $isShowDetail && isset($data->inspected_by2_nik) ? $data->inspected_by2_nik : '' }}">
@@ -379,14 +363,6 @@ Tidak ada peraturan yg berlaku atau berdampak kelingkungan perusahaan
                                 <td>Diinspeksi Oleh</td>
                                 <td>
                                     <select name="inspected_by3_name" id="inspected_by3_name" class="form-control text-center" {{ $isShowDetail ? 'disabled' : '' }}>
-                                        <option value="">-- Pilih Inspektor --</option>
-                                        @foreach($approvalList as $user)
-                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" 
-                                                {{ ($isShowDetail && isset($data->inspected_by3_name) && $data->inspected_by3_name == $user->nama) || 
-                                                   (!$isShowDetail && $user->nama == session('username')) ? 'selected' : '' }}>
-                                                {{ $user->nama }}
-                                            </option>
-                                        @endforeach
                                     </select>
                                     <input type="hidden" name="inspected_by3_nik" id="inspected_by3_nik" 
                                            value="{{ $isShowDetail && isset($data->inspected_by3_nik) ? $data->inspected_by3_nik : '' }}">
@@ -416,14 +392,6 @@ Tidak ada peraturan yg berlaku atau berdampak kelingkungan perusahaan
                                 <td class="border">Disetujui Oleh</td>
                                 <td class="border">
                                     <select name="acknowledged_by_name" id="acknowledged_by_name" class="form-control text-center" {{ $isShowDetail ? 'disabled' : '' }}>
-                                        <option value="">-- Pilih Approver --</option>
-                                        @foreach($approvalList as $user)
-                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" 
-                                                {{ ($isShowDetail && isset($data->acknowledged_by_name) && $data->acknowledged_by_name == $user->nama) || 
-                                                   (!$isShowDetail && $user->nama == session('username')) ? 'selected' : '' }}>
-                                                {{ $user->nama }}
-                                            </option>
-                                        @endforeach
                                     </select>
                                     <input type="hidden" name="acknowledged_by_nik" id="acknowledged_by_nik" 
                                            value="{{ $isShowDetail && isset($data->acknowledged_by_nik) ? $data->acknowledged_by_nik : '' }}">
@@ -518,16 +486,100 @@ Tidak ada peraturan yg berlaku atau berdampak kelingkungan perusahaan
 <script>
     $(function() {
         $('#inspected_by_name').select2({
-            width: '100%'
+            width: '100%',
+            placeholder: '-- Pilih Inspektor --',
+            ajax: {
+                url: '{{ route("approval.list") }}',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { search: params.term };
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                id: item.nama,
+                                text: item.nama + ' (' + item.nik + ')',
+                                nik: item.nik
+                            };
+                        })
+                    };
+                },
+                cache: true
+            }
         })
         $('#inspected_by2_name').select2({
-            width: '100%'
+            width: '100%',
+            placeholder: '-- Pilih Inspektor --',
+            ajax: {
+                url: '{{ route("approval.list") }}',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { search: params.term };
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                id: item.nama,
+                                text: item.nama + ' (' + item.nik + ')',
+                                nik: item.nik
+                            };
+                        })
+                    };
+                },
+                cache: true
+            }
         })
         $('#inspected_by3_name').select2({
-            width: '100%'
+            width: '100%',
+            placeholder: '-- Pilih Inspektor --',
+            ajax: {
+                url: '{{ route("approval.list") }}',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { search: params.term };
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                id: item.nama,
+                                text: item.nama + ' (' + item.nik + ')',
+                                nik: item.nik
+                            };
+                        })
+                    };
+                },
+                cache: true
+            }
         })
         $('#acknowledged_by_name').select2({
-            width: '100%'
+            width: '100%',
+            placeholder: '-- Pilih Mengetahui --',
+            ajax: {
+                url: '{{ route("approval.list") }}',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { search: params.term };
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                id: item.nama,
+                                text: item.nama + ' (' + item.nik + ')',
+                                nik: item.nik
+                            };
+                        })
+                    };
+                },
+                cache: true
+            }
         })
     });
 </script>
