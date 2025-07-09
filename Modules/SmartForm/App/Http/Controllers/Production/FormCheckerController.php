@@ -731,7 +731,7 @@ class FormCheckerController extends Controller {
 
 
 
-            $record->operator_leader =  $findUser = DB::connection('sqlsrv2')->table('TKaryawan')->where('NIK',  $record->operator_leader)->first()->Nama;
+            $record->operator_leader =  $findUser = DB::connection('sqlsrv2')->table('TKaryawan')->where('Nama',  $record->operator_leader)->first()->Nama;
 
             $pdf = PDF::loadView( 'smartform::production.form_checker.export-pdf', [
                 'record' => $record, 'dataDS' => $dataDS, 'dataNS' => $dataNS, 'approvalList' => HrdHelper::getApprovalList(),'time_details' => $time_details, 'nonNullCounts' => $nonNullCounts, 'sumRitasi' => $sumRitasi

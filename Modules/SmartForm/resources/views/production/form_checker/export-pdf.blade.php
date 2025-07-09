@@ -116,7 +116,7 @@
                     @for ($i = 0; $i < 6; $i++)
                         @if (isset($record->nama_operator[$i]))
                             <th colspan="5" class="center">
-                                {{ optional(collect($approvalList)->firstWhere('nik', $record->nama_operator[$i]))->nama ?? '' }}
+                                {{ $record->nama_operator[$i] }}
                             </th>
                         @else
                             <th colspan="5"></th>

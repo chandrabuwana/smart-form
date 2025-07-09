@@ -98,13 +98,6 @@
                                         <td class="border">
                                             <select name="reviewer_name" id="reviewer_name" class="form-control text-center" required {{ $isShowDetail ? 'disabled' : '' }}>
                                                 <option disabled selected>-- Select Reviewer --</option>
-                                                @foreach ($approvalList as $reviewer)
-                                                    <option value="{{ $reviewer->nama }}" 
-                                                        data-nik="{{ $reviewer->nik }}"
-                                                        {{ $isShowDetail && isset($data->reviewer_name) && $data->reviewer_name == $reviewer->nama ? 'selected' : '' }}>
-                                                        {{ $reviewer->nama }} ({{ $reviewer->nik }})
-                                                    </option>
-                                                @endforeach
                                             </select>
                                             <input type="hidden" name="reviewer_nik" id="reviewer_nik" value="{{ $isShowDetail ? $data->reviewer_nik : '' }}">
                                         </td>
@@ -1181,39 +1174,18 @@
                                                 <td class="align-bottom text-center border">
                                                     <select name="paramedic_name" id="paramedic_name" class="form-control text-center" required {{ $isShowDetail ? 'disabled' : '' }}>
                                                         <option disabled selected>-- Select Paramedic --</option>
-                                                        @foreach ($approvalList as $paramedic)
-                                                            <option value="{{ $paramedic->nama }}" 
-                                                                data-nik="{{ $paramedic->nik }}"
-                                                                {{ $isShowDetail && isset($data->paramedic_name) && $data->paramedic_name == $paramedic->nama ? 'selected' : '' }}>
-                                                                {{ $paramedic->nama }} ({{ $paramedic->nik }})
-                                                            </option>
-                                                        @endforeach
                                                     </select>
                                                     <input type="hidden" name="paramedic_nik" id="paramedic_nik" value="{{ $isShowDetail ? $data->paramedic_nik : '' }}">
                                                 </td>
                                                 <td class="align-bottom text-center border">
                                                     <select name="doctor_name" id="doctor_name" class="form-control text-center" required {{ $isShowDetail ? 'disabled' : '' }}>
                                                         <option disabled selected>-- Select Doctor --</option>
-                                                        @foreach ($approvalList as $doctor)
-                                                            <option value="{{ $doctor->nama }}" 
-                                                                data-nik="{{ $doctor->nik }}"
-                                                                {{ $isShowDetail && isset($data->doctor_name) && $data->doctor_name == $doctor->nama ? 'selected' : '' }}>
-                                                                {{ $doctor->nama }} ({{ $doctor->nik }})
-                                                            </option>
-                                                        @endforeach
                                                     </select>
                                                     <input type="hidden" name="doctor_nik" id="doctor_nik" value="{{ $isShowDetail ? $data->doctor_nik : '' }}">
                                                 </td>
                                                 <td class="align-bottom text-center border">
                                                     <select name="dept_head_name" id="dept_head_name" class="form-control text-center" required {{ $isShowDetail ? 'disabled' : '' }}>
                                                         <option disabled selected>-- Select Department Head --</option>
-                                                        @foreach ($approvalList as $deptHead)
-                                                            <option value="{{ $deptHead->nama }}" 
-                                                                data-nik="{{ $deptHead->nik }}"
-                                                                {{ $isShowDetail && isset($data->dept_head_name) && $data->dept_head_name == $deptHead->nama ? 'selected' : '' }}>
-                                                                {{ $deptHead->nama }} ({{ $deptHead->nik }})
-                                                            </option>
-                                                        @endforeach
                                                     </select>
                                                     <input type="hidden" name="dept_head_nik" id="dept_head_nik" value="{{ $isShowDetail ? $data->dept_head_nik : '' }}">
                                                 </td>
@@ -1294,25 +1266,105 @@
         $(function() {
             $('#reviewer_name').select2({
                 placeholder: '-- Pilih Reviewer --',
-                width: '100%'
+                width: '100%',
+                ajax: {
+                    url: '{{ route("approval.list") }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return { search: params.term };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    id: item.nama,
+                                    text: item.nama + ' (' + item.nik + ')',
+                                    nik: item.nik
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
             });
         });
         $(function() {
             $('#paramedic_name').select2({
                 placeholder: '-- Pilih Paramedic --',
-                width: '100%'
+                width: '100%',
+                ajax: {
+                    url: '{{ route("approval.list") }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return { search: params.term };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    id: item.nama,
+                                    text: item.nama + ' (' + item.nik + ')',
+                                    nik: item.nik
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
             });
         });
         $(function() {
             $('#doctor_name').select2({
                 placeholder: '-- Pilih Dokter --',
-                width: '100%'
+                width: '100%',
+                ajax: {
+                    url: '{{ route("approval.list") }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return { search: params.term };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    id: item.nama,
+                                    text: item.nama + ' (' + item.nik + ')',
+                                    nik: item.nik
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
             });
         });
         $(function() {
             $('#dept_head_name').select2({
                 placeholder: '-- Pilih Department Head --',
-                width: '100%'
+                width: '100%',
+                ajax: {
+                    url: '{{ route("approval.list") }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return { search: params.term };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    id: item.nama,
+                                    text: item.nama + ' (' + item.nik + ')',
+                                    nik: item.nik
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
             });
         });
     </script>

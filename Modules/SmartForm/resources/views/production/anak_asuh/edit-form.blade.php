@@ -378,7 +378,27 @@
             $(`select[name="nama_anak_asuh_${rowIndex}"]`).select2({
                 placeholder: "-- Pilih Anak Asuh --",
                 allowClear: true,
-                width: '100%'
+                width: '100%',
+                ajax: {
+                    url: '{{ route("approval.list") }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return { search: params.term };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    id: item.nama,
+                                    text: item.nama + ' (' + item.nik + ')',
+                                    nik: item.nik
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
             });
         }
         

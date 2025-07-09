@@ -146,14 +146,9 @@
                                         <td>Mengetahui</td>
                                         <td>
                                             <select name="dMengetahui" id="dMengetahui" class="form-control text-center">
-                                                <option value="">-- Pilih Mengetahui --</option>
-                                                @foreach($approvalList as $user)
-                                                    <option value="{{ $user->nama }}">
-                                                        {{ $user->nama }} ({{ $user->nik }})
-                                                    </option>
-                                                @endforeach
                                             </select>
                                         </td>
+                                        <input type="hidden" name="acknowledged_by_nik" value="{{ $record->acknowledged_by_nik ?? '' }}">
                                     </tr>
                                 </table>
                             </div>
@@ -796,11 +791,52 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
     <script>
+        $(function() {
+            $('#dMengetahui').select2({
+                placeholder: '-- Pilih Pengawas --',
+                width: '50%',
+                ajax: {
+                    url: '{{ route("approval.list") }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return { search: params.term };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    id: item.nama,
+                                    text: item.nama + ' (' + item.nik + ')',
+                                    nik: item.nik
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+        });
+    </script>
+    
+    <script>
+        $(function() {
+        // Handle supervisor selection
+        $('select[name="dMengetahui"]').change(function() {
+            var selectedText = $(this).find('option:selected').text();
+            var match = selectedText.match(/\(([^)]+)\)/);
+            var nik = match ? match[1] : '';
+            $('input[name="acknowledged_by_nik"]').val(nik);
+        });
+
+        // Trigger change on load if there's a value
+        if ($('select[name="dMengetahui"]').val()) {
+            $('select[name="dMengetahui"]').trigger('change');
+        }
+        });
         $(document).ready(function() {
             $('#dDept').select2();
-            $('#dMengetahui').select2();
             $('#tNamaSite').select2();
         });
         var tglNow = new Date()

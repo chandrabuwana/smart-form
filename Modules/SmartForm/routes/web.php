@@ -431,6 +431,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::delete('/delete/{id}', [EyewashController::class, 'DeleteRecord'])->name('she-inspeksi.delete');
             Route::post('/approve/{id}', [EyewashController::class, 'ApproveRecord'])->name('she-inspeksi.approve');
             Route::post('/reject/{id}', [EyewashController::class, 'RejectRecord'])->name('she-inspeksi.reject');
+            Route::get('/approval-list', [EyewashController::class, 'getApprovalList'])->name('approval.list');
         });
 
         Route::prefix('she-p3k')->group(function () {
@@ -444,6 +445,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/approve-all/{id}', [P3KController::class, 'ApproveAll'])->name('she-p3k.approve-all');
             Route::post('/set-user-nik', [P3KController::class, 'SetUserNik'])->name('she-p3k.set-user-nik');
             Route::delete('/delete/{id}', [P3KController::class, 'Delete'])->name('she-p3k.delete');
+            Route::get('/approval-list', [P3KController::class, 'getApprovalList'])->name('approval.list');
         });
 
         Route::prefix('she-air-minum')->group(function () {
@@ -455,6 +457,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/approve/{id}/{role}', [AirMinumController::class, 'UpdateApprovalStatus'])->name('she.air-minum.approve');
             Route::post('/update-approval', [AirMinumController::class, 'UpdateApprovalStatus'])->name('she.air-minum.update-approval');
             Route::delete('/delete/{id}', [AirMinumController::class, 'Delete'])->name('she.air-minum.delete');
+            Route::get('/approval-list', [AirMinumController::class, 'getApprovalList'])->name('approval.list');
         });
 
         Route::prefix('she-noise')->group(function () {
@@ -467,6 +470,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/view/{id}', [NoiseController::class, 'ViewForm'])->name('she.noise.view');
             Route::delete('/delete/{id}', [NoiseController::class, 'Delete'])->name('she.noise.delete');
             Route::post('/update-status', [NoiseController::class, 'UpdateStatus'])->name('she.noise.update.status');
+            Route::get('/approval-list', [NoiseController::class, 'getApprovalList'])->name('approval.list');
         });
 
         Route::prefix('she-mess')->group(function () {
@@ -479,6 +483,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('reject/{id}/{role}', [SheMessController::class, 'Reject'])->name('she.mess.reject');
             Route::delete('delete', [SheMessController::class, 'Delete'])->name('she.mess.delete');
             Route::get('edit/{id}', [SheMessController::class, 'EditForm'])->name('she.mess.form.edit');
+            Route::get('/approval-list', [SheMessController::class, 'getApprovalList'])->name('approval.list');
         });
 
         Route::prefix('prod-coal')->group(function () {
@@ -502,6 +507,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('update', [ErgonomiController::class, 'UpdateForm'])->name('she.ergonomi.update');
             Route::delete('delete/{id}', [ErgonomiController::class, 'Delete'])->name('she.ergonomi.delete');
             Route::post('approve', [ErgonomiController::class, 'Approve'])->name('she.ergonomi.approve');
+            Route::get('/approval-list', [ErgonomiController::class, 'getApprovalList'])->name('approval.list');
         });
 
         Route::prefix('prod-anak-asuh')->group(function () {
@@ -512,6 +518,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/store', [AnakAsuhController::class, 'Store'])->name('prod.anak-asuh.store');
             Route::post('/update', [AnakAsuhController::class, 'UpdateAnakAsuh'])->name('prod.anak-asuh.update');
             Route::post('/delete', [AnakAsuhController::class, 'Delete'])->name('prod.anak-asuh.delete');
+            Route::get('/approval-list', [AnakAsuhController::class, 'getApprovalList'])->name('approval.list');
         });
 
         Route::prefix('plant-compressor')->group(function () {
@@ -695,6 +702,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/approve-ppm.xe1250', [PpmXcmgXE1250Controller::class, 'Approve'])->name("plant.ppm.xe1250.approve");
             Route::post('/reject-ppm.xe1250', [PpmXcmgXE1250Controller::class, 'Reject'])->name("plant.ppm.xe1250.reject");
             Route::post('/reset-ppm.xe1250/{id}', [PpmXcmgXE1250Controller::class, 'Reset'])->name("plant.ppm.xe1250.reset");
+            Route::get('/approval-list', [PpmXcmgXE1250Controller::class, 'getApprovalList'])->name('ppm.1250.approval.list');
         });
         // log
         Route::prefix('ogc-compliance')->group(function () {
