@@ -792,4 +792,12 @@ class SheMessController extends Controller
             $record->$fieldName = now()->format('Y-m-d');
         }
     }
+
+    public function getApprovalList(Request $request)
+    {
+        $search = $request->input('search', '');
+        $list = HrdHelper::getApprovalList($search);
+
+        return response()->json($list);
+    }
 }

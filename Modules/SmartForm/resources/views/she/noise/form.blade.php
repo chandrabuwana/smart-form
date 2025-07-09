@@ -328,14 +328,6 @@
                                     <div class="input-group input-group-static mb-3">
                                         <label>Mengetahui</label>
                                         <select name="acknowledged_by_name" id="acknowledged_by_select" class="form-control text-left px-5" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
-                                            <option value="">-- Pilih Pengawas --</option>
-                                            @foreach($approvalList as $user)
-                                                <option value="{{ $user->nama }}" 
-                                                    data-nik="{{ $user->nik }}"
-                                                    {{ $isShowDetail && $maintenanceRecord->acknowledged_by_name == $user->nama ? 'selected' : '' }}>
-                                                    {{ $user->nama }} ({{ $user->nik }})
-                                                </option>
-                                            @endforeach
                                         </select>
                                         <input type="hidden" name="acknowledged_by_nik" id="acknowledged_by_nik" value="{{ $isShowDetail ? $maintenanceRecord->acknowledged_by_nik : '' }}" required>
                                     </div>
@@ -432,7 +424,27 @@
     $(function() {
         $('#acknowledged_by_select').select2({
             placeholder: '-- Pilih Mengetahui --',
-            width: '100%'
+            width: '100%',
+            ajax: {
+                url: '{{ route("approval.list") }}',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { search: params.term };
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                id: item.nama,
+                                text: item.nama + ' (' + item.nik + ')',
+                                nik: item.nik
+                            };
+                        })
+                    };
+                },
+                cache: true
+            }
         }).on('select2:select', function (e) {
             // Get the selected option's data-nik attribute
             var selectedOption = $(this).find('option:selected');

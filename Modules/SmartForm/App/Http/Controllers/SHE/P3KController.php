@@ -1193,4 +1193,12 @@ class P3KController extends Controller
                 ->with('error', 'Failed to load edit form: ' . $e->getMessage());
         }
     }
+
+    public function getApprovalList(Request $request)
+    {
+        $search = $request->input('search', '');
+        $list = HrdHelper::getApprovalList($search);
+
+        return response()->json($list);
+    }
 }
