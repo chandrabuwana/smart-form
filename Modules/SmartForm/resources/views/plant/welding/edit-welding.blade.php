@@ -139,13 +139,15 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="pemeriksa" class="ms-0">Nama Pemeriksa</label>
-                                            <select name="pemeriksa" id="pemeriksa" class="form-control select2" required {{ $isShowDetail ? 'disabled' : '' }}>
-                                                <option disabled {{ optional($record)->pemeriksa == '' ? 'selected' : '' }}>-- Select Pemeriksa --</option>
-                                                @foreach ($approvalList as $user)
-                                                    <option value="{{ $user->nik }}" {{ optional($record)->pemeriksa == $user->nik ? 'selected' : '' }}>
-                                                        {{ $user->nama }}
+                                        @php
+                                            $selectedPemeriksa = $approvalList->firstWhere('nama', $record->pemeriksa);
+                                        @endphp
+                                            <select name="pemeriksa" id="pemeriksa" class="form-control text-left" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                                @if($record?->pemeriksa)
+                                                    <option value="{{ $record->pemeriksa }}" selected>
+                                                        {{ $selectedPemeriksa ? $selectedPemeriksa->nama . ' (' . $selectedPemeriksa->nik . ')' : $record->pemeriksa }}
                                                     </option>
-                                                @endforeach
+                                                @endif
                                             </select>
                                             <span class="
                                                 {{ $record->status_pemeriksa == 'Approve' ? 'text-success' : '' }}
@@ -158,14 +160,16 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="atasan" class="ms-0">Nama Atasan Langsung</label>
-                                        <select name="atasan" id="atasan" class="form-control select2" required {{ $isShowDetail ? 'disabled' : '' }}>
-                                                <option disabled {{ optional($record)->atasan == '' ? 'selected' : '' }}>-- Select Atasan --</option>
-                                                @foreach ($approvalList as $user)
-                                                    <option value="{{ $user->nik }}" {{ optional($record)->atasan == $user->nik ? 'selected' : '' }}>
-                                                        {{ $user->nama }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
+                                        @php
+                                            $selectedAtasan = $approvalList->firstWhere('nama', $record->atasan);
+                                        @endphp
+                                        <select name="atasan" id="atasan" class="form-control text-left" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                            @if($record?->atasan)
+                                                <option value="{{ $record->atasan }}" selected>
+                                                    {{ $selectedAtasan ? $selectedAtasan->nama . ' (' . $selectedAtasan->nik . ')' : $record->atasan }}
+                                                </option>
+                                            @endif
+                                        </select>
                                             <span class="
                                                 {{ $record->status_atasan == 'Approve' ? 'text-success' : '' }}
                                                 {{ $record->status_atasan == 'Pending' ? 'text-warning' : '' }}
@@ -578,4 +582,33 @@
             });
         });
     </script>
+
+<script>
+    $(function() {
+        $('#pemeriksa, #atasan').select2({
+            placeholder: '-- Pilih --',
+            width: '50%',
+            ajax: {
+                url: '{{ route('kalibrasi.approval.list') }}',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { search: params.term };
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                id: item.nama,
+                                text: item.nama + ' (' + item.nik + ')',
+                                nik: item.nik
+                            };
+                        })
+                    };
+                },
+                cache: true
+            }
+        });
+    });
+</script>
 @endsection

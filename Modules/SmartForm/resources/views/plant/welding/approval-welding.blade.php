@@ -136,12 +136,14 @@
                                     </div>
                                 </div>
                             </div>
+                            @php
+                            @endphp
 
                             <div class="row mb-3">
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="pemeriksa" class="ms-0">Nama Pemeriksa</label>
-                                            <select name="pemeriksa" id="pemeriksa" class="form-control" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                            <select name="pemeriksa" id="pemeriksa" class="form-control text-left" required {{ $isShowDetail ? 'disabled' : '' }}>
                                                 <option disabled {{ optional($record)->pemeriksa == '' ? 'selected' : '' }}>-- Select Pemeriksa --</option>
                                                 @foreach ($approvalList as $user)
                                                     <option value="{{ $user->nik }}" {{ optional($record)->pemeriksa == $user->nik ? 'selected' : '' }}>
@@ -629,4 +631,5 @@
         });
     });
 </script>
+
 @endsection

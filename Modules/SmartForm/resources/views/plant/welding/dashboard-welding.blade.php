@@ -72,6 +72,7 @@
                                             value="{{ $filters['search'] ?? '' }}">
                                     </div>
                                 </div>
+                                
                                 <div class="col-md-3 mb-3">
                                     <div class="input-group input-group-static mb-4 position-relative">
                                         <label for="atasan" class="ms-0">Atasan</label>
@@ -87,17 +88,20 @@
                                     </div>
                                 </div>
 
+                                @php
+                                    $selectedUser = collect($user)->firstWhere('nik', $filters['pemeriksa'] ?? null);
+                                @endphp
                                 <div class="col-md-3 mb-3">
                                     <div class="input-group input-group-static mb-4 position-relative">
                                         <label for="pemeriksa" class="ms-0">Pemeriksa</label>
-                                        <select class="form-control" id="pemeriksa" name="pemeriksa">
-                                            <option value="" selected disabled>-- Select Pemeriksa --</option>
-                                            @foreach ($user as $usr)
-                                                <option value="{{ $usr->nik }}" 
-                                                    {{ isset($filters['pemeriksa']) && $filters['pemeriksa'] == $usr->nik ? 'selected' : '' }}>
-                                                    {{ $usr->nama }}
+                                        <select class="form-control select2" id="pemeriksa" name="pemeriksa">
+                                            @if(!empty($filters['pemeriksa']) && $selectedUser)
+                                                <option value="{{ $selectedUser->nama }}" selected>
+                                                    {{ $selectedUser->nama }} ({{ $selectedUser->nik }})
                                                 </option>
-                                            @endforeach
+                                            @else
+                                                <option value="" selected disabled>-- Select Pemeriksa --</option>
+                                            @endif
                                         </select>
                                     </div>
                                 </div>
@@ -182,20 +186,12 @@
                                             </td>
                                             <td>
                                                 <p class="text-xs font-weight-bold mb-0">
-                                                    @foreach ($user as $usr)
-                                                        @if ($record->atasan == $usr->nik)
-                                                            {{ $usr->nama }}
-                                                        @endif
-                                                    @endforeach
+                                                    {{$record->atasan}}
                                                 </p>
                                             </td>
                                             <td>
                                                 <p class="text-xs font-weight-bold mb-0">
-                                                    @foreach ($user as $usr)
-                                                        @if ($record->pemeriksa == $usr->nik)
-                                                            {{ $usr->nama }}
-                                                        @endif
-                                                    @endforeach
+                                                    {{$record->pemeriksa}}
                                                 </p>
                                             </td>
                                             <td>
@@ -317,4 +313,33 @@
         }
 
     </script>
+
+<script>
+    $(function() {
+        $('#pemeriksa, #atasan').select2({
+            placeholder: '-- Pilih --',
+            width: '50%',
+            ajax: {
+                url: '{{ route('plant.welding.approval.list') }}',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { search: params.term };
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                id: item.nama,
+                                text: item.nama + ' (' + item.nik + ')',
+                                nik: item.nik
+                            };
+                        })
+                    };
+                },
+                cache: true
+            }
+        });
+    });
+</script>
 @endsection

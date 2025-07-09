@@ -176,29 +176,17 @@
                                     </td>
                                     <td>
                                         <p class="text-xs font-weight-bold mb-0">
-                                            @foreach ($user as $usr)
-                                                @if ($record->mengetahui_hauler == $usr->nik)
-                                                    {{ $usr->nama }}
-                                                @endif
-                                            @endforeach
+                                            {{ $record->mengetahui_hauler }}
                                         </p>
                                     </td>
                                     <td>
                                         <p class="text-xs font-weight-bold mb-0">
-                                            @foreach ($user as $usr)
-                                                @if ($record->mengetahui_loader == $usr->nik)
-                                                    {{ $usr->nama }}
-                                                @endif
-                                            @endforeach
+                                            {{ $record->mengetahui_loader }}
                                         </p>
                                     </td>
                                     <td>
                                         <p class="text-xs font-weight-bold mb-0">
-                                            @foreach ($user as $usr)
-                                                @if ($record->mengetahui_dozer == $usr->nik)
-                                                    {{ $usr->nama }}
-                                                @endif
-                                            @endforeach
+                                            {{ $record->mengetahui_dozer }}
                                         </p>
                                     </td>
                                     <td>
@@ -339,5 +327,63 @@ function deleteKalibrasi(id) {
                     });
             }
         }
+</script>
+
+<script>
+    $(function() {
+        $('#pemeriksa, #atasan').select2({
+            placeholder: '-- Pilih --',
+            width: '50%',
+            ajax: {
+                url: '{{ route('kalibrasi.approval.list') }}',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { search: params.term };
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                id: item.nama,
+                                text: item.nama + ' (' + item.nik + ')',
+                                nik: item.nik
+                            };
+                        })
+                    };
+                },
+                cache: true
+            }
+        });
+    });
+</script>
+
+<script>
+    $(function() {
+        $('#dibuat_hauler, #mengetahui_hauler, #dibuat_loader, #mengetahui_loader, #dibuat_dozer, #mengetahui_dozer').select2({
+            placeholder: '-- Pilih --',
+            width: '50%',
+            ajax: {
+                url: '{{ route('kalibrasi.approval.list') }}',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { search: params.term };
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                id: item.nama,
+                                text: item.nama + ' (' + item.nik + ')',
+                                nik: item.nik
+                            };
+                        })
+                    };
+                },
+                cache: true
+            }
+        });
+    });
 </script>
 @endsection
