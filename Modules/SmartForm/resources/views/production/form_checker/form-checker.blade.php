@@ -87,14 +87,7 @@
                                         <label for="operator_load" class="ms-0">Nama Operator Loader</label>
                                         <select class="form-control form-select" id="operator_load" name="operator_load"
                                             required>
-                                            <option disabled selected>-- Select Nama Operator --</option>
-                                            @forelse($users as $user)
-                                                <option value="{{ $user->nama ?? '' }}">
-                                                    {{ $user->nama ?? 'User tidak tersedia' }}
-                                                </option>
-                                            @empty
-                                                <option>Data karyawan tidak ditemukan</option>
-                                            @endforelse
+
                                         </select>
 
                                     </div>
@@ -103,7 +96,8 @@
                                     <div class="input-group input-group-static mb-3">
                                         <label for="nama_pic" class="ms-0">Nama PIC</label>
 
-                                        <input type="text" class="form-control" name="nama_pic" value="{{session('username')}}" readonly>
+                                        <input type="text" class="form-control" name="nama_pic"
+                                            value="{{ session('username') }}" readonly>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -386,7 +380,7 @@
             $('#diperiksa').select2();
             $('#site').select2();
             $('#alat_angkut').select2();
-            $('#operator_load').select2();
+
             $('#nama_operator').select2();
             $('#multiple_angkut').select2({
                 placeholder: "Pilih kategori",
@@ -478,32 +472,55 @@
 
                 let operatorRow = document.createElement('tr');
                 operatorRow.innerHTML = `
-                    <td colspan="2"><strong>Nama Operator</strong></td>
-                    <td colspan="5" class="text-center">
-                        <select class="form-control form-select" name="nama_operator_${alat}" id="nama_operator_${alat}" required style="background-color: #eee7e8; color: rgb(11, 10, 10); width: 100%;">
-                            <option disabled selected>-- Select Nama Operator --</option>
-                            ${
-                                users.length > 0
-                                ? users.map(user => `<option value="${user.nik ?? ''}">${user.nama ?? 'User tidak tersedia'}</option>`).join('')
-                                : '<option>Data karyawan tidak ditemukan</option>'
-                            }
-                        </select>
-                    </td>
-                    <td></td>
-                `;
+    <td colspan="2"><strong>Nama Operator</strong></td>
+    <td colspan="5" class="text-center">
+        <select class="form-control form-select" name="nama_operator_${alat}" id="nama_operator_${alat}" required style="background-color: #eee7e8; color: rgb(11, 10, 10); width: 100%;">
+        </select>
+    </td>
+    <td></td>
+`;
+
                 container.appendChild(operatorRow);
                 operatorRow.classList.add('operator-row', `operator-${alat}`);
                 operatorRow.style.display = 'none';
-                $(`#nama_operator_${alat}`).select2();
 
-                setTimeout(() => {
-                    const operatorSelect = operatorRow.querySelector(
-                        `select[name="nama_operator_${alat}"]`);
-                    if (operatorSelect && globalSavedValues[`operator_${alat}`]) {
-                        operatorSelect.value = globalSavedValues[`operator_${alat}`];
 
+                const operatorSelect = operatorRow.querySelector(`select[name="nama_operator_${alat}"]`);
+                $(operatorSelect).select2({
+                    placeholder: '-- Pilih Operator --',
+                    width: '100%',
+                    ajax: {
+                        url: '{{ route('checker.approval.list') }}',
+                        dataType: 'json',
+                        delay: 250,
+                        data: function(params) {
+                            return {
+                                search: params.term
+                            };
+                        },
+                        processResults: function(data) {
+                            return {
+                                results: $.map(data, function(item) {
+                                    return {
+                                        id: item.nama,
+                                        text: item.nama + ' (' + item.nik + ')'
+                                    };
+                                })
+                            };
+                        },
+                        cache: true
                     }
-                }, 0);
+                });
+
+
+                if (globalSavedValues[`operator_${alat}`]) {
+                    const savedName = globalSavedValues[`operator_${alat}`];
+
+
+                    const newOption = new Option(savedName, savedName, true, true);
+                    $(operatorSelect).append(newOption).trigger('change');
+                }
+
 
                 let dataToShow = [];
                 if (selectedShift === 'DS') {
@@ -680,6 +697,36 @@
         $(function() {
             $('#validated').select2({
                 placeholder: '-- Pilih validated --',
+                width: '100%',
+                ajax: {
+                    url: '{{ route('checker.approval.list') }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            search: params.term
+                        };
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(item) {
+                                return {
+                                    id: item
+                                        .nama,
+                                    text: item.nama + ' (' + item.nik + ')'
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+        });
+    </script>
+    <script>
+        $(function() {
+            $('#operator_load').select2({
+                placeholder: '-- Pilih Operator --',
                 width: '100%',
                 ajax: {
                     url: '{{ route('checker.approval.list') }}',
