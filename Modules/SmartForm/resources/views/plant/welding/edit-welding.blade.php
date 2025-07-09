@@ -155,6 +155,7 @@
                                             </span>
                                     </div>
                                 </div>
+                                
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="atasan" class="ms-0">Nama Atasan Langsung</label>
@@ -578,4 +579,36 @@
             });
         });
     </script>
+<<<<<<< Updated upstream
+=======
+
+<script>
+    $(function() {
+        $('#pemeriksa, #atasan').select2({
+            placeholder: '-- Pilih --',
+            width: '50%',
+            ajax: {
+                url: '{{ route('plant.welding.approval.list') }}',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { search: params.term };
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                id: item.nama,
+                                text: item.nama + ' (' + item.nik + ')',
+                                nik: item.nik
+                            };
+                        })
+                    };
+                },
+                cache: true
+            }
+        });
+    });
+</script>
+>>>>>>> Stashed changes
 @endsection
