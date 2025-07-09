@@ -717,4 +717,12 @@ class A2bBaruController extends Controller
     }
 
     public function showPDF() {}
+
+    public function getApprovalList(Request $request)
+    {
+        $search = $request->input('search', '');
+        $list = HrdHelper::getApprovalList($search);
+
+        return response()->json($list);
+    }
 }

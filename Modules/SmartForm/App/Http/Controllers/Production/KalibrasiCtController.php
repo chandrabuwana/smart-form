@@ -1142,4 +1142,12 @@ class KalibrasiCtController extends Controller
     public function showPDF()
     {
     }
+
+    public function getApprovalList(Request $request)
+    {
+        $search = $request->input('search', '');
+        $list = HrdHelper::getApprovalList($search);
+
+        return response()->json($list);
+    }
 }

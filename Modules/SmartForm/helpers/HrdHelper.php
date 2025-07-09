@@ -24,7 +24,7 @@ class HrdHelper
                 ->where('Aktif', 0)
                 ->where(function ($q) use ($search) {
                     $q->where('NIK', 'like', "%$search%")
-                      ->orWhere('Nama', 'like', "%$search%");
+                    ->orWhere('Nama', 'like', "%$search%");
                 })
                 ->limit(50);
 

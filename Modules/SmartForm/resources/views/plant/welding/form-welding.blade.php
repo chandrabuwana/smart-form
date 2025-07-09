@@ -142,14 +142,16 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="pemeriksa" class="ms-0">Nama Pemeriksa</label>
-                                            <select name="pemeriksa" id="pemeriksa" class="form-control select2" required {{ $isShowDetail ? 'disabled' : '' }}>
-                                                <option disabled {{ optional($record)->pemeriksa == '' ? 'selected' : '' }}>-- Select Pemeriksa --</option>
-                                                @foreach ($approvalList as $user)
-                                                    <option value="{{ $user->nik }}" {{ optional($record)->pemeriksa == $user->nik ? 'selected' : '' }}>
-                                                        {{ $user->nama }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
+                                        @php
+                                            $selectedPemeriksa = $approvalList->firstWhere('nama', optional($record)->pemeriksa);
+                                        @endphp
+                                        <select name="pemeriksa" id="pemeriksa" class="form-control text-left" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                            @if($isShowDetail && $selectedPemeriksa)
+                                                <option value="{{ $selectedPemeriksa->nama }}" selected>
+                                                    {{ $selectedPemeriksa->nama }} ({{ $selectedPemeriksa->nik }})
+                                                </option>
+                                            @endif
+                                        </select>
                                             @if($isShowDetail)
                                                 <span class="
                                                     {{ $record->status_pemeriksa == 'Approve' ? 'text-success' : '' }}
@@ -160,16 +162,19 @@
                                             @endif
                                     </div>
                                 </div>
+                                
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="atasan" class="ms-0">Nama Atasan Langsung</label>
-                                        <select name="atasan" id="atasan" class="form-control select2" required {{ $isShowDetail ? 'disabled' : '' }}>
-                                                <option disabled {{ optional($record)->atasan == '' ? 'selected' : '' }}>-- Select Atasan --</option>
-                                                @foreach ($approvalList as $user)
-                                                    <option value="{{ $user->nik }}" {{ optional($record)->atasan == $user->nik ? 'selected' : '' }}>
-                                                        {{ $user->nama }}
+                                        @php
+                                        $selectedAtasan = $approvalList->firstWhere('nama', optional($record)->atasan);
+                                        @endphp
+                                            <select name="atasan" id="atasan" class="form-control text-left" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                                @if($isShowDetail && $selectedAtasan)
+                                                    <option value="{{ $selectedAtasan->nama }}" selected>
+                                                        {{ $selectedAtasan->nama }} ({{ $selectedAtasan->nik }})
                                                     </option>
-                                                @endforeach
+                                                @endif
                                             </select>
                                             @if($isShowDetail)
                                                 <span class="
@@ -595,4 +600,33 @@
             });
         });
     </script>
+
+<script>
+    $(function() {
+        $('#pemeriksa, #atasan').select2({
+            placeholder: '-- Pilih --',
+            width: '50%',
+            ajax: {
+                url: '{{ route('plant.welding.approval.list') }}',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { search: params.term };
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                id: item.nama,
+                                text: item.nama + ' (' + item.nik + ')',
+                                nik: item.nik
+                            };
+                        })
+                    };
+                },
+                cache: true
+            }
+        });
+    });
+</script>
 @endsection

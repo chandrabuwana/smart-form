@@ -341,7 +341,7 @@
             <tr>
                 <td colspan="2">Nama Pemeriksa/Pengecek</td>
                 <td colspan="32" style="text-align: left">
-                    {{ collect($approvalList)->firstWhere('nik', $record->pemeriksa)?->nama ?? 'N/A' }}
+                    {{ $record->pemeriksa }}
                 </td>
             </tr>
             <tr>
@@ -355,7 +355,7 @@
             <tr>
                 <td colspan="2">Nama Atasan Langsung</td>
                 <td colspan="32" style="text-align: left">
-                    {{ collect($approvalList)->firstWhere('nik', $record->atasan)?->nama ?? 'N/A' }}
+                    {{ $record->atasan }}
                 </td>
             </tr>
             <tr>

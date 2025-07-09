@@ -403,19 +403,24 @@
                                                     <div>
                                                         <h5>Dibuat Oleh</h5>
                                                         <div class="row mb-3">
+                                                            
                                                             <div class="col-md-4">
                                                                 <div class="input-group input-group-static mb-3">
-                                                                    <label for="alat_support_hauler" class="ms-0">Nama Pembuat</label>
-                                                                    <select name="dibuat_hauler" id="dibuat_hauler" class="form-control select2" required {{ $isShowDetail ? 'disabled' : '' }}>
-                                                                        <option disabled {{ optional($record)->dibuat_hauler == '' ? 'selected' : '' }}>-- Select Pembuat --</option>
-                                                                        @foreach ($approvalList as $user)
-                                                                            <option value="{{ $user->nik }}" {{ optional($record)->dibuat_hauler == $user->nik ? 'selected' : '' }}>
-                                                                                {{ $user->nama }}
+                                                                    <label for="dibuat_hauler" class="ms-0">Nama Pembuat</label>
+                                                                    @php
+                                                                        $selectedDibuatHauler = $approvalList->firstWhere('nama', $record->dibuat_hauler ?? '');
+                                                                    @endphp
+                                                                    <select name="dibuat_hauler" id="dibuat_hauler" class="form-control text-left" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                        @if($isShowDetail && $selectedDibuatHauler)
+                                                                            <option value="{{ $selectedDibuatHauler->nama }}" selected>
+                                                                                {{ $selectedDibuatHauler->nama }} ({{ $selectedDibuatHauler->nik }})
                                                                             </option>
-                                                                        @endforeach
+                                                                        @endif
                                                                     </select>
                                                                 </div>
                                                             </div>
+
+
         
                                                             <div class="col-md-4">
                                                                 <div class="input-group input-group-static mb-3">
@@ -442,14 +447,16 @@
                                                         <div class="row mb-3">
                                                             <div class="col-md-4">
                                                                 <div class="input-group input-group-static mb-3">
-                                                                    <label for="alat_support_hauler" class="ms-0">Nama Pemeriksa</label>
-                                                                    <select name="mengetahui_hauler" id="mengetahui_hauler" class="form-control select2" required {{ $isShowDetail ? 'disabled' : '' }}>
-                                                                        <option disabled {{ optional($record)->mengetahui_hauler == '' ? 'selected' : '' }}>-- Select Pemeriksa --</option>
-                                                                        @foreach ($approvalList as $user)
-                                                                            <option value="{{ $user->nik }}" {{ optional($record)->mengetahui_hauler == $user->nik ? 'selected' : '' }}>
-                                                                                {{ $user->nama }}
+                                                                    <label for="mengetahui_hauler" class="ms-0">Nama Pemeriksa</label>
+                                                                    @php
+                                                                        $selectedMengetahuiHauler = $approvalList->firstWhere('nama', $record->mengetahui_hauler ?? '');
+                                                                    @endphp
+                                                                    <select name="mengetahui_hauler" id="mengetahui_hauler" class="form-control text-left" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                        @if($isShowDetail && $selectedMengetahuiHauler)
+                                                                            <option value="{{ $selectedMengetahuiHauler->nama }}" selected>
+                                                                                {{ $selectedMengetahuiHauler->nama }} ({{ $selectedMengetahuiHauler->nik }})
                                                                             </option>
-                                                                        @endforeach
+                                                                        @endif
                                                                     </select>
                                                                 </div>
                                                             </div>
@@ -690,14 +697,17 @@
                                                         <div class="row mb-3">
                                                             <div class="col-md-4">
                                                                 <div class="input-group input-group-static mb-3">
-                                                                    <label for="alat_support_hauler" class="ms-0">Nama Pembuat</label>
-                                                                    <select name="dibuat_loader" id="dibuat_loader" class="form-control select2" required {{ $isShowDetail ? 'disabled' : '' }}>
-                                                                        <option disabled {{ optional($record)->dibuat_loader == '' ? 'selected' : '' }}>-- Select Pembuat --</option>
-                                                                        @foreach ($approvalList as $user)
-                                                                            <option value="{{ $user->nik }}" {{ optional($record)->dibuat_loader == $user->nik ? 'selected' : '' }}>
-                                                                                {{ $user->nama }}
+                                                                    <label for="dibuat_loader" class="ms-0">Nama Pembuat</label>
+                                                                    @php
+                                                                        $selectedDibuatLoader = $approvalList->firstWhere('nama', optional($record)->dibuat_loader);
+                                                                        
+                                                                    @endphp
+                                                                    <select name="dibuat_loader" id="dibuat_loader" class="form-control text-left" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                        @if($isShowDetail && $selectedDibuatLoader)
+                                                                            <option value="{{ $selectedDibuatLoader->nama }}" selected>
+                                                                                {{ $selectedDibuatLoader->nama }} ({{ $selectedDibuatLoader->nik }})
                                                                             </option>
-                                                                        @endforeach
+                                                                        @endif
                                                                     </select>
                                                                 </div>
                                                             </div>
@@ -724,14 +734,16 @@
                                                         <div class="row mb-3">
                                                             <div class="col-md-4">
                                                                 <div class="input-group input-group-static mb-3">
-                                                                    <label for="alat_support_hauler" class="ms-0">Nama Pemeriksa</label>
-                                                                    <select name="mengetahui_loader" id="mengetahui_loader" class="form-control select2" required {{ $isShowDetail ? 'disabled' : '' }}>
-                                                                        <option disabled {{ optional($record)->mengetahui_loader == '' ? 'selected' : '' }}>-- Select Pemeriksa --</option>
-                                                                        @foreach ($approvalList as $user)
-                                                                            <option value="{{ $user->nik }}" {{ optional($record)->mengetahui_loader == $user->nik ? 'selected' : '' }}>
-                                                                                {{ $user->nama }}
+                                                                    <label for="mengetahui_loader" class="ms-0">Nama Pemeriksa</label>
+                                                                    @php
+                                                                        $selectedMengetahuiLoader = $approvalList->firstWhere('nama', optional($record)->mengetahui_loader);
+                                                                    @endphp
+                                                                    <select name="mengetahui_loader" id="mengetahui_loader" class="form-control text-left" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                        @if($isShowDetail && $selectedMengetahuiLoader)
+                                                                            <option value="{{ $selectedMengetahuiLoader->nama }}" selected>
+                                                                                {{ $selectedMengetahuiLoader->nama }} ({{ $selectedMengetahuiLoader->nik }})
                                                                             </option>
-                                                                        @endforeach
+                                                                        @endif
                                                                     </select>
                                                                 </div>
                                                             </div>
@@ -962,14 +974,16 @@
                                                         <div class="row mb-3">
                                                             <div class="col-md-4">
                                                                 <div class="input-group input-group-static mb-3">
-                                                                    <label for="alat_support_hauler" class="ms-0">Nama Pembuat</label>
-                                                                    <select name="dibuat_dozer" id="dibuat_dozer" class="form-control select2" required {{ $isShowDetail ? 'disabled' : '' }}>
-                                                                        <option disabled {{ optional($record)->dibuat_dozer == '' ? 'selected' : '' }}>-- Select Pembuat --</option>
-                                                                        @foreach ($approvalList as $user)
-                                                                            <option value="{{ $user->nik }}" {{ optional($record)->dibuat_dozer == $user->nik ? 'selected' : '' }}>
-                                                                                {{ $user->nama }}
+                                                                    <label for="dibuat_dozer" class="ms-0">Nama Pembuat</label>
+                                                                    @php
+                                                                        $selectedDibuatHauler = $approvalList->firstWhere('nama', optional($record)->dibuat_dozer);
+                                                                    @endphp
+                                                                    <select name="dibuat_dozer" id="dibuat_dozer" class="form-control text-left" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                        @if($isShowDetail && $selectedDibuatHauler)
+                                                                            <option value="{{ $selectedDibuatHauler->nama }}" selected>
+                                                                                {{ $selectedDibuatHauler->nama }} ({{ $selectedDibuatHauler->nik }})
                                                                             </option>
-                                                                        @endforeach
+                                                                        @endif
                                                                     </select>
                                                                 </div>
                                                             </div>
@@ -996,14 +1010,17 @@
                                                         <div class="row mb-3">
                                                             <div class="col-md-4">
                                                                 <div class="input-group input-group-static mb-3">
-                                                                    <label for="alat_support_hauler" class="ms-0">Nama Pemeriksa</label>
-                                                                    <select name="mengetahui_dozer" id="mengetahui_dozer" class="form-control select2" required {{ $isShowDetail ? 'disabled' : '' }}>
-                                                                        <option disabled {{ optional($record)->mengetahui_dozer == '' ? 'selected' : '' }}>-- Select Pemeriksa --</option>
-                                                                        @foreach ($approvalList as $user)
-                                                                            <option value="{{ $user->nik }}" {{ optional($record)->mengetahui_dozer == $user->nik ? 'selected' : '' }}>
-                                                                                {{ $user->nama }}
+                                                                    <label for="mengetahui_dozer" class="ms-0">Nama Pemeriksa</label>
+                                                                    @php
+                                                                        $selectedMengetahuiDozer = $approvalList->firstWhere('nama', optional($record)->mengetahui_dozer);
+                                                                    @endphp
+                                                                
+                                                                    <select name="mengetahui_dozer" id="mengetahui_dozer" class="form-control text-left" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                        @if($isShowDetail && $selectedMengetahuiDozer)
+                                                                            <option value="{{ $selectedMengetahuiDozer->nama }}" selected>
+                                                                                {{ $selectedMengetahuiDozer->nama }} ({{ $selectedMengetahuiDozer->nik }})
                                                                             </option>
-                                                                        @endforeach
+                                                                        @endif
                                                                     </select>
                                                                 </div>
                                                             </div>
@@ -1051,7 +1068,9 @@
         </div>
     </div>
 
+
 <script>
+
     document.addEventListener("DOMContentLoaded", function () {
         let inputs = document.querySelectorAll("[name^='dozing_dozer_'], [name^='reverse_dozer_'], [name^='gear_shifting_dozer_']");
         inputs.forEach(input => {
@@ -1197,6 +1216,7 @@ function convertToTimeFormat(totalSeconds) {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
     <script>
         $(function() {
         $('.select2').select2();
@@ -1249,4 +1269,33 @@ function convertToTimeFormat(totalSeconds) {
         });
         
     </script>
+
+        <script>
+            $(function() {
+                $('#dibuat_hauler, #mengetahui_hauler, #dibuat_loader, #mengetahui_loader, #dibuat_dozer, #mengetahui_dozer').select2({
+                    placeholder: '-- Pilih --',
+                    width: '50%',
+                    ajax: {
+                        url: '{{ route('prod.kalibrasi.approval.list') }}',
+                        dataType: 'json',
+                        delay: 250,
+                        data: function (params) {
+                            return { search: params.term };
+                        },
+                        processResults: function (data) {
+                            return {
+                                results: $.map(data, function (item) {
+                                    return {
+                                        id: item.nama,
+                                        text: item.nama + ' (' + item.nik + ')',
+                                        nik: item.nik
+                                    };
+                                })
+                            };
+                        },
+                        cache: true
+                    }
+                });
+            });
+        </script>
 @endsection

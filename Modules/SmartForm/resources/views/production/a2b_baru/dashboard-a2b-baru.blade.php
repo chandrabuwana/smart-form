@@ -170,20 +170,12 @@
                                     </td>
                                     <td>
                                         <p class="text-xs font-weight-bold mb-0">
-                                            @foreach ($user as $usr)
-                                                @if ($record->operator == $usr->nik)
-                                                    {{ $usr->nama }}
-                                                @endif
-                                            @endforeach
+                                            {{ $record->operator }}
                                         </p>
                                     </td>
                                     <td>
                                         <p class="text-xs font-weight-bold mb-0">
-                                            @foreach ($user as $usr)
-                                                @if ($record->pengawas == $usr->nik)
-                                                    {{ $usr->nama }}
-                                                @endif
-                                            @endforeach
+                                            {{ $record->pengawas }}
                                         </p>
                                     </td>
                                     <td>

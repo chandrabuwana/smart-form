@@ -148,14 +148,16 @@
                             <div class="row mb-3">
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
-                                        <label for="hmawal2" class="ms-0">Operator</label>
-                                            <select name="operator" id="operator" class="form-control select2">
-                                                <option disabled {{ optional($record)->operator == '' ? 'selected' : '' }}>-- Select Operator --</option>
-                                                @foreach ($approvalList as $user)
-                                                    <option value="{{ $user->nik }}" {{ optional($record)->operator == $user->nik ? 'selected' : '' }}>
-                                                        {{ $user->nama }}
+                                        <label for="operator" class="ms-0">Operator</label>
+                                        @php
+                                            $selectedOperator = $approvalList->firstWhere('nama', optional($record)->operator);
+                                        @endphp
+                                            <select name="operator" id="operator" class="form-control text-left" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                                @if($record?->operator)
+                                                    <option value="{{ $record->operator }}" selected>
+                                                        {{ $selectedOperator ? $selectedOperator->nama . ' (' . $selectedOperator->nik . ')' : $record->operator }}
                                                     </option>
-                                                @endforeach
+                                                @endif
                                             </select>
                                             @if($isShowDetail)
                                                 <span class="
@@ -169,14 +171,16 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
-                                        <label for="hmakhir2" class="ms-0">Pengawas</label>
-                                            <select name="pengawas" id="pengawas" class="form-control select2">
-                                                <option disabled {{ optional($record)->pengawas == '' ? 'selected' : '' }}>-- Select Pengawas --</option>
-                                                @foreach ($approvalList as $user)
-                                                    <option value="{{ $user->nik }}" {{ optional($record)->pengawas == $user->nik ? 'selected' : '' }}>
-                                                        {{ $user->nama }}
+                                        <label for="pengawas" class="ms-0">Pengawas</label>
+                                        @php
+                                            $selectedOperator = $approvalList->firstWhere('nama', optional($record)->pengawas);
+                                        @endphp
+                                            <select name="pengawas" id="pengawas" class="form-control text-left" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                                @if($record?->pengawas)
+                                                    <option value="{{ $record->pengawas }}" selected>
+                                                        {{ $selectedOperator ? $selectedOperator->nama . ' (' . $selectedOperator->nik . ')' : $record->pengawas }}
                                                     </option>
-                                                @endforeach
+                                                @endif
                                             </select>
                                             @if($isShowDetail)
                                                 <span class="
@@ -1362,6 +1366,34 @@
                     .finally(function() {
                         submitBtn.prop('disabled', false);
                     });
+            });
+        });
+    </script>
+    <script>
+        $(function() {
+            $('#operator, #pengawas').select2({
+                placeholder: '-- Pilih --',
+                width: '100%',
+                ajax: {
+                    url: '{{ route('prod.a2b.approval.list') }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return { search: params.term };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    id: item.nama,
+                                    text: item.nama + ' (' + item.nik + ')',
+                                    nik: item.nik
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
             });
         });
     </script>

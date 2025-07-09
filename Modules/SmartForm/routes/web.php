@@ -542,6 +542,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/approval-welding/{id}', [PlantWeldingController::class, 'ApprovalWelding'])->name('plant.welding.approval');
             Route::post('/approve-welding/{id}', [PlantWeldingController::class, 'ApproveWelding'])->name('plant.welding.approve');
             Route::post('/reject-welding/{id}', [PlantWeldingController::class, 'RejectWelding'])->name('plant.welding.reject');
+            Route::get('/approval-list', [PlantWeldingController::class, 'getApprovalList'])->name('plant.welding.approval.list');
         });
 
         // PLANT
@@ -598,6 +599,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/approval-form-kalibrasi-ct/{id}', [KalibrasiCtController::class, 'ApprovalKalibrasi'])->name('prod.kalibrasi-ct.approval');
             Route::post('/approve-form-kalibrasi-ct/{id}', [KalibrasiCtController::class, 'ApproveKalibrasi'])->name('prod.kalibrasi-ct.approve');
             Route::post('/reject-form-kalibrasi-ct/{id}', [KalibrasiCtController::class, 'RejectKalibrasi'])->name('prod.kalibrasi-ct.reject');
+            Route::get('/approval-list', [KalibrasiCtController::class, 'getApprovalList'])->name('prod.kalibrasi.approval.list');
         });
         // produksi
         Route::prefix('prod-a2b-baru')->group(function () {
@@ -611,6 +613,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/approval-a2b-baru/{id}', [A2bBaruController::class, 'ApprovalA2bBaru'])->name('prod.a2b-baru.approval');
             Route::post('/approve-a2b-baru/{id}', [A2bBaruController::class, 'ApproveA2bBaru'])->name('prod.a2b-baru.approve');
             Route::post('/reject-a2b-baru/{id}', [A2bBaruController::class, 'RejectA2bBaru'])->name('prod.a2b-baru.reject');
+            Route::get('/approval-list', [A2bBaruController::class, 'getApprovalList'])->name('prod.a2b.approval.list');
         });
 // plant
         Route::prefix('ppm-900d')->group(function () {

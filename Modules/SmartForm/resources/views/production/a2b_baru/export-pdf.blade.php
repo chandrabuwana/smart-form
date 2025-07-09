@@ -1057,7 +1057,7 @@
             <td style="border-bottom: none; border-top: none; border-left: none; border-right: none;"></td>
             <td style="text-align: right; border-right: none;"><img src="{{ public_path('img/a2b_baru/square.jpg') }}" style="width: 10px; height: 10px;"></td>
             <td colspan="4" style="text-align: left; border-left: none; border-right: none;">HD ( OFF HIGHWAY DUMPTRUCK)</td>
-            <td colspan="3" style="border-bottom: none; border-top: none;">{{ collect($approvalList)->firstWhere('nik', $record->operator)?->nama ?? 'N/A' }}</td>
+            <td colspan="3" style="border-bottom: none; border-top: none;">{{$record->operator}}</td>
             <td style="border-bottom: none; border-top: none; border-left: none; border-right: none;"></td>
             <td colspan="10" style="border-bottom: none; border-top: none; border-left: none; border-right: none;"></td>
             <td colspan="5" style="border-bottom: none; border-top: none; border-left: none; border-right: none;"></td>
@@ -1092,7 +1092,7 @@
         <tr>
             <td style="border-bottom: none; border-top: none; border-left: none; border-right: none;"></td>
             <td colspan="5" style="text-align: left">3. B / LOW : PEKERJAAN BISA DILAKUKAN DENGAN PENGENDALIAN LEBIH LANJUT</td>
-            <td colspan="3" style="border-bottom: none; border-top: none;">{{ collect($approvalList)->firstWhere('nik', $record->pengawas)?->nama ?? 'N/A' }}</td>
+            <td colspan="3" style="border-bottom: none; border-top: none;">{{$record->pengawas}}</td>
             <td style="border-bottom: none; border-top: none; border-left: none; border-right: none;"></td>
         </tr>
         <tr>

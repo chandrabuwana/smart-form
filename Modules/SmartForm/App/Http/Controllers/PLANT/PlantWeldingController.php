@@ -660,4 +660,13 @@ class PlantWeldingController extends Controller
     {
         return view('smartform::plant.welding.export-pdf');
     }
+
+    public function getApprovalList(Request $request)
+    {
+        $search = $request->input('search', '');
+        $list = HrdHelper::getApprovalList($search);
+
+        return response()->json($list);
+    }
+    
 }
