@@ -17,12 +17,15 @@ return new class extends Migration
             $table->string('doc_number')->nullable();
             $table->integer('revision')->default(0);
             $table->date('doc_date')->nullable();
+
+            // status
+            $table->boolean('isActive')->default(true);
             
             // Teknisi Information
             $table->string('nama');
             $table->string('nik');
             $table->string('dept');
-            $table->enum('site', ['agm', 'mbl', 'mme', 'mas', 'pmss', 'taj', 'bssr', 'tdm', 'msj']);
+            $table->string('site');
 
             // Asset Information
             $table->string('no_asset');

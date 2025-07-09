@@ -3,9 +3,11 @@
 // use App\Http\Controllers\GS\SmartCateringController;
 use App\Http\Middleware\FetchMenu;
 use App\Http\Middleware\PermissionMenu;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Modules\SmartForm\App\Http\Controllers\Admin\AdminController;
 use Modules\SmartForm\App\Http\Controllers\Approval\ApprovalFormController;
+use Modules\SmartForm\App\Http\Controllers\DC\BAUnbudget\UnbudgetController;
 use Modules\SmartForm\App\Http\Controllers\GS\MessController;
 use Modules\SmartForm\App\Http\Controllers\GS\SmartCateringController;
 use Modules\SmartForm\App\Http\Controllers\GS\VendorController;
@@ -15,23 +17,40 @@ use Modules\SmartForm\App\Http\Controllers\Master\DashboardController;
 use Modules\SmartForm\App\Http\Controllers\MasterData\MasterFormPICController;
 use Modules\SmartForm\App\Http\Controllers\PDF\HelperPdfMobilisasiFormController;
 use Modules\SmartForm\App\Http\Controllers\PLANT\PlantTransmissionController;
+use Modules\SmartForm\App\Http\Controllers\PLANT\CompressorPompaController;
+use Modules\SmartForm\App\Http\Controllers\PLANT\PpmXcmg900dController;
+use Modules\SmartForm\App\Http\Controllers\PLANT\PpmXCMG700DController;
+use Modules\SmartForm\App\Http\Controllers\PLANT\PpmXCMG3005TController;
+use Modules\SmartForm\App\Http\Controllers\PLANT\PpuXE1250Controller;
+use Modules\SmartForm\App\Http\Controllers\LOG\OgcComplianceController;
+use Modules\SmartForm\App\Http\Controllers\PLANT\PlantWeldingController;
+use Modules\SmartForm\App\Http\Controllers\Production\FormCheckerController;
+use Modules\SmartForm\App\Http\Controllers\Production\KalibrasiCtController;
 use Modules\SmartForm\App\Http\Controllers\Production\ProductionTimeSheetDashboarController;
 use Modules\SmartForm\App\Http\Controllers\Production\AnakAsuhController;
+use Modules\SmartForm\App\Http\Controllers\Production\CoalGettingController;
+use Modules\SmartForm\App\Http\Controllers\Production\A2bBaruController;
 use Modules\SmartForm\App\Http\Controllers\SHE\DashboardSHEFRM19BController;
 use Modules\SmartForm\App\Http\Controllers\SHE\TransactionSHEFRM19BController;
 use Modules\SmartForm\App\Http\Controllers\SHE\EyewashController;
 use Modules\SmartForm\App\Http\Controllers\SHE\AparController;
+use Modules\SmartForm\App\Http\Controllers\SHE\InspeksiCateringController;
 use Modules\SmartForm\App\Http\Controllers\SHE\P3KController;
 use Modules\SmartForm\App\Http\Controllers\SHE\AirMinumController;
 use Modules\SmartForm\App\Http\Controllers\SHE\NoiseController;
 use Modules\SmartForm\App\Http\Controllers\SHE\SheMessController;
-use Modules\SmartForm\App\Http\Controllers\SHE\CoalGettingController;
+use Modules\SmartForm\App\Http\Controllers\SHE\ErgonomiController;
 use Modules\SmartForm\App\Http\Controllers\SKL\DashboardSKLController;
 use Modules\SmartForm\App\Http\Controllers\SKL\SKLFormController;
 use Modules\SmartForm\App\Http\Controllers\SM\AssetRequestController;
 use Modules\SmartForm\App\Http\Controllers\SM\RegistrasiSupplierController;
 use Modules\SmartForm\App\Http\Controllers\LOG\CheckOgcComController;
 use Modules\SmartForm\App\Http\Controllers\LOG\LogController;
+use Modules\SmartForm\App\Http\Controllers\LOG\RequestMasterController;
+use Modules\SmartForm\App\Http\Controllers\LOG\PengeluaranOilController;
+use Modules\SmartForm\App\Http\Controllers\LOG\PemakaianSolarController;
+use Modules\SmartForm\App\Http\Controllers\LOG\FuelController;
+use Modules\SmartForm\App\Http\Controllers\LOG\Pengajuan003SapController;
 use Modules\SmartForm\App\Http\Controllers\SmartFormController;
 use Modules\SmartForm\App\Http\Controllers\SmartPica\DashboarController;
 use Modules\SmartForm\App\Http\Controllers\SmartPica\HelperController;
@@ -42,11 +61,22 @@ use Modules\SmartForm\App\Http\Controllers\TeamManagement\RoleManagementControll
 use Modules\SmartForm\App\Http\Controllers\TeamManagement\UserManagementController;
 use Modules\SmartForm\App\Http\Controllers\UnderCarriage\UnderCarriageInspectionController;
 use Modules\SmartForm\App\Http\Controllers\FAT\PPH\PPHDashboardController;
-use Modules\SmartForm\App\Http\Controllers\FAT\PPH\HelperPPHController;
+use Modules\SmartForm\App\Http\Controllers\FAT\PPH\UserVendorController;
+use Modules\SmartForm\App\Http\Controllers\IC\PengajuanTraining\HelperTraininingController;
+use Modules\SmartForm\App\Http\Controllers\IC\PengajuanTraining\PengajuanTrainingController;
+use Modules\SmartForm\App\Http\Controllers\OD\CPM\CPMController;
+use Modules\SmartForm\App\Http\Controllers\OD\CPM\CPMHelper;
+use Modules\SmartForm\App\Http\Middleware\PengajuanTrainingIC;
 use Modules\SmartForm\App\Http\Controllers\IT\PrinterFormController;
 use Modules\SmartForm\App\Http\Controllers\IT\CctvFormController;
 use Modules\SmartForm\App\Http\Controllers\IT\DeviceFormController;
 use Modules\SmartForm\App\Http\Controllers\IT\RouterFormController;
+use Modules\SmartForm\App\Http\Controllers\PLANT\GeneralInspection\InspectionCmtController;
+use Modules\SmartForm\App\Http\Controllers\PLANT\GeneralInspection\InspectionDongfengController;
+use Modules\SmartForm\App\Http\Controllers\GS\InspeksiToiletMessKantorController;
+use Modules\SmartForm\App\Http\Controllers\PLANT\PpmShantuiDH24Controller;
+use Modules\SmartForm\App\Http\Controllers\PLANT\PpmXcmgXE1250Controller;
+use Modules\SmartForm\App\Http\Controllers\Production\LgmgController;
 
 /*
 |--------------------------------------------------------------------------
@@ -72,42 +102,79 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
 
         // LOG BNP
         Route::prefix('log')->group(function () {
-			
+
             // REQUEST MASTER MENU
-            Route::get('/request-master', [LogController::class, 'RequestMasterDashboard'])->name('bss-form.log.request-master.dashboard');
-            Route::get('/list', [LogController::class, 'GetListRequestMaster'])->name("bss-form.log.list-request-master");
-            Route::get('/form-req-master', [LogController::class, 'formReqMaster'])->name('bss-form.log.form-req-master');
-            Route::post('/add-request-master', [LogController::class, 'SubmitFormRequestMaster'])->name("bss-form.log.add-request-master");
-            Route::get('/pdf-req-master/{id}', [LogController::class, 'PdfReqMaster'])->name('bss-form.log.pdf-req-master');
-			
+            Route::get('/request-master', [RequestMasterController::class, 'RequestMasterDashboard'])->name('bss-form.log.request-master.dashboard');
+            Route::get('/list', [RequestMasterController::class, 'GetListRequestMaster'])->name("bss-form.log.list-request-master");
+            Route::get('/form-req-master', [RequestMasterController::class, 'formReqMaster'])->name('bss-form.log.form-req-master');
+            Route::post('/add-request-master', [RequestMasterController::class, 'SubmitFormRequestMaster'])->name("bss-form.log.add-request-master");
+            Route::get('/pdf-req-master/{id}', [RequestMasterController::class, 'PdfReqMaster'])->name('bss-form.log.pdf-req-master');
+            Route::get('/edit-req-master', [RequestMasterController::class, 'EditReqMaster'])->name('bss-form.log.edit-request-master');
+            Route::post('/update-request-master', [RequestMasterController::class, 'UpdateFormRequestMaster'])->name("bss-form.log.update-request-master");
+            Route::get('/catalog-view-req-master', [RequestMasterController::class, 'CatalogViewReqMaster'])->name('bss-form.log.catalog-view-request-master');
+            Route::get('/detail-req-master', [RequestMasterController::class, 'DetailReqMaster'])->name('bss-form.log.detail-request-master');
+            Route::post('/approve-reject-request-master', [RequestMasterController::class, 'ApproveRejectRequestMaster'])->name('bss-form.log.approve-reject-request-master');
+            Route::post('/delete-request-master', [RequestMasterController::class, 'DeleteRequestMaster'])->name('bss-form.log.delete-request-master');
+
             // PERMINTAAN PENGISIAN FUEL
-            Route::get('/request-fuel', [LogController::class, 'FuelDashboard'])->name('bss-form.log.fuel.dashboard');
-            Route::get('/list-fuel', [LogController::class, 'GetListRequestFuel'])->name("bss-form.log.list-fuel");
-            Route::get('/form-fuel', [LogController::class, 'FormFuel'])->name('bss-form.log.form-fuel');
-            Route::post('/create-fuel', [LogController::class, 'CreateReqFuel'])->name('bss-form.log.create-req-fuel');
-            Route::get('/edit-fuel/{id}', [LogController::class, 'editReqFuel'])->name('bss-form.log.edit-req-fuel');
-            Route::post('/update-fuel/{id}', [LogController::class, 'updateReqFuel'])->name('bss-form.log.update-req-fuel');
-            Route::get('/delete-fuel/{id}', [LogController::class, 'DeleteReqFuel'])->name('bss-form.log.delete-fuel');
-            Route::get('/pdf-fuel/{id}', [LogController::class, 'PdfReqFuel'])->name('bss-form.log.pdf-fuel');
-			
+            Route::get('/request-fuel', [FuelController::class, 'FuelDashboard'])->name('bss-form.log.fuel.dashboard');
+            Route::get('/list-fuel', [FuelController::class, 'GetListRequestFuel'])->name("bss-form.log.list-fuel");
+            Route::get('/form-fuel', [FuelController::class, 'FormFuel'])->name('bss-form.log.form-fuel');
+            Route::post('/create-fuel', [FuelController::class, 'CreateReqFuel'])->name('bss-form.log.create-req-fuel');
+            Route::get('/edit-req-fuel', [FuelController::class, 'editReqFuel'])->name('bss-form.log.edit-req-fuel');
+            Route::post('/update-fuel', [FuelController::class, 'updateReqFuel'])->name('bss-form.log.update-fuel');
+            Route::get('/delete-fuel', [FuelController::class, 'HapusReqFuel'])->name('bss-form.log.delete-fuel');
+            Route::get('/pdf-fuel', [FuelController::class, 'PdfReqFuel'])->name('bss-form.log.pdf-fuel');
+            Route::get('/get-request-fuel-detail', [FuelController::class, 'FuelDetailById'])->name("bss-form.log.form-detail-by-id");
+            Route::get('/get-alat-by-site-fuel', [FuelController::class, 'getNoBySite'])->name('fuel-get.alat.by.site');
+            Route::get('/get-model-by-site-fuel', [FuelController::class, 'getModelByNo'])->name('fuel-get.model.by.site');
+
             // PENGELUARAN OIL, GREASE & COOLANT MENU
-            Route::get('/pengeluaran-oli', [LogController::class, 'PengeluaranOliDashboard'])->name('bss-form.log.pengeluaran-oli.dashboard');
-            Route::get('/list-pengeluaran-oli', [LogController::class, 'GetListPengeluaranOli'])->name("bss-form.log.list-pengeluaran-oli");
-            Route::get('/form-pengeluaran-oli', [LogController::class, 'formPengeluaranOli'])->name('bss-form.log.form-pengeluaran-oli');
-            Route::post('/add-pengeluaran-oli', [LogController::class, 'SubmitFormPengeluaranOli'])->name("bss-form.log.add-pengeluaran-oli");
-            Route::get('/pdf-pengeluaran-oli/{id}', [LogController::class, 'PdfPengeluaranOli'])->name('bss-form.log.pdf-pengeluaran-oli');
+            Route::get('/pengeluaran-oli', [PengeluaranOilController::class, 'PengeluaranOliDashboard'])->name('bss-form.log.pengeluaran-oli.dashboard');
+            Route::get('/list-pengeluaran-oli', [PengeluaranOilController::class, 'GetListPengeluaranOli'])->name("bss-form.log.list-pengeluaran-oli");
+            Route::get('/form-pengeluaran-oli', [PengeluaranOilController::class, 'formPengeluaranOli'])->name('bss-form.log.form-pengeluaran-oli');
+            Route::post('/add-pengeluaran-oli', [PengeluaranOilController::class, 'SubmitFormPengeluaranOli'])->name("bss-form.log.add-pengeluaran-oli");
+            Route::get('/pdf-pengeluaran-oli/{id}', [PengeluaranOilController::class, 'PdfPengeluaranOli'])->name('bss-form.log.pdf-pengeluaran-oli');
+            Route::get('/edit-pengeluaran-oli', [PengeluaranOilController::class, 'EditPengeluaranOli'])->name('bss-form.log.edit-pengeluaran-oli');
+            Route::post('/update-pengeluaran-oli', [PengeluaranOilController::class, 'UpdateFormPengeluaranOli'])->name("bss-form.log.update-pengeluaran-oli");
+            Route::get('/detail-pengeluaran-oli', [PengeluaranOilController::class, 'DetailPengeluaranOli'])->name('bss-form.log.detail-pengeluaran-oli');
+            Route::post('/approve-reject-pengeluaran-oli', [PengeluaranOilController::class, 'ApproveRejectPengeluaranOli'])->name('bss-form.log.approve-reject-pengeluaran-oli');
+            Route::post('/delete-pengeluaran-oli', [PengeluaranOilController::class, 'DeletePengeluaranOli'])->name('bss-form.log.delete-pengeluaran-oli');
 
             // PEMAKAIAN SOLAR
-            Route::get('/pemakaian-solar', [LogController::class, 'PemakaianSolarDashboard'])->name('bss-form.log.pemakaian-solar.dashboard');
-            Route::get('/list-pemakaian-solar', [LogController::class, 'GetListPemakaianSolar'])->name("bss-form.log.list-pemakaian-solar");
-            Route::get('/form-pemakaian-solar', [LogController::class, 'formPemakaianSolar'])->name('bss-form.log.form-pemakaian-solar');
-            Route::post('/add-pemakaian-solar', [LogController::class, 'SubmitFormPemakaianSolar'])->name("bss-form.log.add-pemakaian-solar");
-            Route::get('/pdf-pemakaian-solar/{id}', [LogController::class, 'PdfPemakaianSolar'])->name('bss-form.log.pdf-pemakaian-solar');
+            Route::get('/pemakaian-solar', [PemakaianSolarController::class, 'PemakaianSolarDashboard'])->name('bss-form.log.pemakaian-solar.dashboard');
+            Route::get('/list-pemakaian-solar', [PemakaianSolarController::class, 'GetListPemakaianSolar'])->name("bss-form.log.list-pemakaian-solar");
+            Route::get('/form-pemakaian-solar', [PemakaianSolarController::class, 'formPemakaianSolar'])->name('bss-form.log.form-pemakaian-solar');
+            Route::post('/add-pemakaian-solar', [PemakaianSolarController::class, 'SubmitFormPemakaianSolar'])->name("bss-form.log.add-pemakaian-solar");
+            Route::get('/edit-pemakaian-solar', [PemakaianSolarController::class, 'editPemakaianSolar'])->name('bss-form.log.edit-pemakaian-solar');
+            Route::post('/submit-edit-pemakaian-solar', [PemakaianSolarController::class, 'SubmitEditPemakaianSolar'])->name("bss-form.log.submit-edit-pemakaian-solar");
+            Route::get('/pdf-pemakaian-solar', [PemakaianSolarController::class, 'PdfPemakaianSolar'])->name('bss-form.log.pdf-pemakaian-solar');
+            Route::get('/get-pemakaian-solar-detail', [PemakaianSolarController::class, 'SolarDetailByNoDoc'])->name("bss-form.log.form-detail-by-id");
+            Route::get('/get-pemakaian-solar-data', [PemakaianSolarController::class, 'GetPemakaianSolarData'])->name("bss-form.log.get-pemakaian-solar-data");
 
-            // CHECK OGC COMPLIANCE
+            Route::get('/delete-pemakaian-solar', [PemakaianSolarController::class, 'DeletePemakaianSolar'])->name('bss-form.sm.delete-pemakaian-solar');
+            Route::post('/submit-approve-pemakaian-solar', [PemakaianSolarController::class, 'SubmitApprovePemakaianSolar'])->name("bss-form.log.submit-approve-pemakaian-solar");
+            Route::post('/submit-reject-pemakaian-solar', [PemakaianSolarController::class, 'SubmitRejectPemakaianSolar'])->name("bss-form.log.submit-reject-pemakaian-solar");
+
+            // // CHECK OGC COMPLIANCE
             Route::get('/check-ogc-compliance', [CheckOgcComController::class, 'CheckOgcCompDashboard'])->name('bss-form.log.check-ogc-comp.dashboard');
             Route::get('/list-check-ogc', [CheckOgcComController::class, 'GetListCheckOgc'])->name("bss-form.log.list-check-ogc");
             Route::get('/form-check-ogc', [CheckOgcComController::class, 'formCheckOgc'])->name('bss-form.log.form-check-ogc');
+
+            // 003 PENGAJUAN PR SAP
+            Route::prefix('003-sap')->group(function () {
+                Route::get('/dashboard', [Pengajuan003SapController::class, 'dashboard'])->name('dashboard-003-sap');
+                Route::get('/create-form', [Pengajuan003SapController::class, 'createForm'])->name('create-003-sap');
+                Route::post('/store-form', [Pengajuan003SapController::class, 'storeForm'])->name('store-003-sap');
+                Route::get('/export-pdf/{id}', [Pengajuan003SapController::class, 'exportPDF'])->name('export-003-sap');
+                Route::post('/update/{id}', [Pengajuan003SapController::class, 'Update'])->name('003-sap-update');
+                Route::get('/detail/{id}', [Pengajuan003SapController::class, 'detail'])->name('003-sap-detail');
+                Route::delete('/delete/{id}', [Pengajuan003SapController::class, 'Delete'])->name('003-sap-delete');
+                Route::get('/show/{id}', [Pengajuan003SapController::class, 'show'])->name('003-sap-show');
+                Route::post('/approve-ppm.xe1250', [Pengajuan003SapController::class, 'Approve'])->name("003-sap-approve");
+                Route::post('/reject-ppm.xe1250', [Pengajuan003SapController::class, 'Reject'])->name("003-sap-reject");
+                Route::post('/reset-ppm.xe1250/{id}', [Pengajuan003SapController::class, 'Reset'])->name("003-sap-reset");
+            });
         });
 
         Route::prefix('under-carriage')->group(function () {
@@ -135,10 +202,20 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/list-supplier', [RegistrasiSupplierController::class, 'GetListRegistrasiSupplier'])->name("bss-form.sm.list-supplier");
             Route::get('/form-registrasi-supplier', [RegistrasiSupplierController::class, 'FormRegistrasiSupplier'])->name('bss-form.sm.form-registrasi-supplier');
             Route::post('/create-registrasi-supplier', [RegistrasiSupplierController::class, 'CreateRegisSupplier'])->name('bss-form.sm.create-registrasi-supplier');
-            Route::get('/edit-registrasi-supplier/{id}', [RegistrasiSupplierController::class, 'editRegisSupplier'])->name('bss-form.sm.edit-registrasi-supplier');
-            Route::post('/update-fuel/{id}', [RegistrasiSupplierController::class, 'updateReqFuel'])->name('bss-form.sm.update-req-fuel');
-            Route::get('/delete-supplier/{id}', [RegistrasiSupplierController::class, 'DeleteSupplier'])->name('bss-form.sm.delete-supplier');
-            Route::get('/pdf-registrasi-supplier/{id}', [RegistrasiSupplierController::class, 'PdfRegSupplier'])->name('bss-form.sm.pdf-registrasi-supplier');
+            Route::get('/edit-supplier', [RegistrasiSupplierController::class, 'RubahRegisSupplier'])->name('bss-form.sm.edit-registrasi-supplier');
+            Route::get('/lihat-approve-supplier', [RegistrasiSupplierController::class, 'ApproveRegisSupplier'])->name('bss-form.sm.lihat-approve-supplier');
+            Route::post('/update-supplier', [RegistrasiSupplierController::class, 'updateRegisSupplier'])->name('bss-form.sm.update-supplier');
+            Route::get('/approve-supplier', [RegistrasiSupplierController::class, 'approveSupplier'])->name('bss-form.sm.approve-supplier');
+            Route::get('/delete-supplier', [RegistrasiSupplierController::class, 'DeleteSupplier'])->name('bss-form.sm.delete-supplier');
+            Route::get('/pdf-registrasi-supplier', [RegistrasiSupplierController::class, 'PdfRegSupplier'])->name('bss-form.sm.pdf-registrasi-supplier');
+            Route::get('/get-supplier-detail', [RegistrasiSupplierController::class, 'SupplierDetailById'])->name("bss-form.sm.supplier-detail-by-id");
+
+            Route::get('/file-npwp-supplier-download/{fileNpwp}', [RegistrasiSupplierController::class, 'DownloadNpwpSupplier'])->name("bss-form.sm.file-npwp-supplier-download");
+            Route::get('/file-sppkp-supplier-download/{fileSppkp}', [RegistrasiSupplierController::class, 'DownloadSppkpSupplier'])->name("bss-form.sm.file-sppkp-supplier-download");
+            Route::get('/file-nib-supplier-download/{fileNib}', [RegistrasiSupplierController::class, 'DownloadNibSupplier'])->name("bss-form.sm.file-nib-supplier-download");
+
+            Route::post('/submit-approve-supplier', [RegistrasiSupplierController::class, 'SubmitApproveSupplier'])->name("bss-form.sm.submit-approve-supplier");
+            Route::post('/submit-reject-supplier', [RegistrasiSupplierController::class, 'SubmitRejectSupplier'])->name("bss-form.sm.submit-reject-supplier");
         });
 
         Route::prefix('induksi-karyawan')->group(function () {
@@ -170,6 +247,17 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
                 Route::post('/hapus-document-potongan', [HelperPPHController::class, 'HapusDocumentPotonganPPH']);
                 Route::post('/update-document-potongan', [HelperPPHController::class, 'UpdateDocumentPotonganPPH']);
                 Route::get('/view-detail-master-potongan-pph/{id}', [PPHDashboardController::class, 'indexViewDataDetailMasterPPh']);
+                Route::get('/view-document/{id}', [PPHDashboardController::class, 'indexViewDetailDocument']);
+
+                Route::prefix('vendor')->group( function() {
+                    Route::get('/dashboard', [UserVendorController::class, 'index'])->name('bss-pph-vendor.dashboard');
+                    Route::get('/dashboard/fetch-data', [UserVendorController::class, 'fetchData'])->name('bss-pph-vendor.fetch-dashboard-data');
+                    Route::get('/create', [UserVendorController::class, 'create'])->name('bss-pph-vendor.add');
+                    Route::post('/store', [UserVendorController::class, 'store'])->name('bss-pph-vendor.store');
+                    Route::get('/edit/{npwp}', [UserVendorController::class, 'edit'])->name('bss-pph-vendor.edit');
+                    Route::post('/update/{npwp}', [UserVendorController::class, 'update'])->name('bss-pph-vendor.update');
+                    Route::get('/delete/{npwp}', [UserVendorController::class, 'delete'])->name('bss-pph-vendor.delete');
+                });
             });
         });
 
@@ -179,13 +267,37 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/store', [TransactionSHEFRM19BController::class, 'addDataPraCheckUp']);
             Route::get('/get-dashboard-data', [TransactionSHEFRM19BController::class, 'helperDataListSHE019B']);
             Route::post('/store-petugas-checker', [TransactionSHEFRM19BController::class, 'addDataCheckUpPetugas']);
-			
-			// INSPEKSI APAR
-            Route::get('/inspeksi-apar', [AparController::class, 'inspeksiAparDashboard'])->name('bss-form.she-019B.inspeksi-apar.dashboard');
-            Route::get('/list-inspeksi-apar', [AparController::class, 'GetListInspeksiApar'])->name("bss-form.she-019B.list-inspeksi-apar");
-            Route::get('/form-inspeksi-apar', [AparController::class, 'formInspeksiApar'])->name('bss-form.she-019B.form-inspeksi-apar');
-            Route::post('/add-inspeksi-apar', [AparController::class, 'SubmitFormInspeksiApar'])->name("bss-form.she-019B.add-inspeksi-apar");
-            Route::get('/pdf-inspeksi-apar/{id}', [AparController::class, 'PdfInspeksiApar'])->name('bss-form.log.pdf-inspeksi-apar');
+        });
+
+        Route::prefix('she-036')->group(function () {
+            Route::get('/inspeksi-apar', [AparController::class, 'inspeksiAparDashboard'])->name('bss-form.she-036.inspeksi-apar.dashboard');
+            Route::get('/list-inspeksi-apar', [AparController::class, 'GetListInspeksiApar'])->name('bss-form.she-036.list-inspeksi-apar');
+            Route::get('/form-inspeksi-apar', [AparController::class, 'formInspeksiApar'])->name('bss-form.she-036.form-inspeksi-apar');
+            Route::post('/add-inspeksi-apar', [AparController::class, 'SubmitFormInspeksiApar'])->name('bss-form.she-036.add-inspeksi-apar');
+            Route::post('/update-inspeksi-apar', [AparController::class, 'UpdateInspeksiApar'])->name('bss-form.she-036.update-inspeksi-apar');
+            Route::get('/detail-inspeksi-apar/{id}', [AparController::class, 'DetailInspeksiApar'])->name('bss-form.she-036.detail-inspeksi-apar');
+            Route::post('/delete-inspeksi-apar', [AparController::class, 'DeleteInspeksiApar'])->name('bss-form.she-036.delete-inspeksi-apar');
+            Route::get('/edit-inspeksi-apar', [AparController::class, 'EditInspeksiApar'])->name('bss-form.she-036.edit-inspeksi-apar');
+            Route::get('/show-inspeksi-apar/{id}', [AparController::class, 'ShowInspeksiApar'])->name('bss-form.she-036.show-inspeksi-apar');
+            Route::post('/approve-inspeksi-apar', [AparController::class, 'Approve'])->name('bss-form.she-036.approve-inspeksi-apar');
+            Route::post('/reject-inspeksi-apar', [AparController::class, 'Reject'])->name('bss-form.she-036.reject-inspeksi-apar');
+            Route::post('/reset-inspeksi-apar/{id}', [AparController::class, 'Reset'])->name('bss-form.she-036.reset-inspeksi-apar');
+            Route::get('/pdf-inspeksi-apar/{id}', [AparController::class, 'PdfInspeksiApar'])->name('bss-form.she-036.pdf-inspeksi-apar');
+        });
+
+        Route::prefix('she-048')->group(function () {
+            Route::get('/inspeksi-catering', [InspeksiCateringController::class, 'InspeksiCateringDashboard'])->name('bss-form.she-048.inspeksi-catering.dashboard');
+            Route::get('/list-inspeksi-catering', [InspeksiCateringController::class, 'GetListInspeksiCatering'])->name("bss-form.she-048.list-inspeksi-catering");
+            Route::get('/form-inspeksi-catering', [InspeksiCateringController::class, 'FormInspeksiCatering'])->name('bss-form.she-048.form-inspeksi-catering');
+            Route::post('/create-inspeksi-catering', [InspeksiCateringController::class, 'CreateInspeksiCatering'])->name('bss-form.she-048.create-inspeksi-catering');
+            Route::get('/detail-inspeksi-catering/{id}', [InspeksiCateringController::class, 'DetailInspeksiCatering'])->name('bss-form.she-048.detail-inspeksi-catering');
+            Route::get('/edit-inspeksi-catering', [InspeksiCateringController::class, 'EditInspeksiCatering'])->name('bss-form.she-048.edit-inspeksi-catering');
+            Route::post('/update-inspeksi-catering', [InspeksiCateringController::class, 'UpdateInspeksiCatering'])->name('bss-form.she-048.update-inspeksi-catering');
+            Route::post('/delete-inspeksi-catering', [InspeksiCateringController::class, 'DeleteInspeksiCatering'])->name('bss-form.she-048.delete-inspeksi-catering');
+            Route::post('/approve-inspeksi-catering', [InspeksiCateringController::class, 'Approve'])->name('bss-form.she-048.approve-inspeksi-catering');
+            Route::post('/reject-inspeksi-catering', [InspeksiCateringController::class, 'Reject'])->name('bss-form.she-048.reject-inspeksi-catering');
+            Route::post('/reset-inspeksi-catering/{id}', [InspeksiCateringController::class, 'Reset'])->name('bss-form.she-048.reset-inspeksi-catering');
+            Route::get('/pdf-inspeksi-catering/{id}', [InspeksiCateringController::class, 'PdfInspeksiCatering'])->name('bss-form.she-048.pdf-inspeksi-catering');
         });
 
         Route::prefix('timesheet')->group(function () {
@@ -234,7 +346,6 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
                 Route::get('/list-kamar', [MessController::class, 'GetListKamar'])->name('list-kamar');
                 Route::get('/helper-mess', [MessController::class, 'HelperMess'])->name('helper-mess');
                 Route::get('/helper-kamar', [MessController::class, 'HelperKamar'])->name('helper-kamar');
-
             });
 
             Route::prefix('vendor')->group(function () {
@@ -259,27 +370,54 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             });
         });
 
+        Route::prefix('wc')->group(function () {
+            Route::get('/dashboard', [InspeksiToiletMessKantorController::class, 'Dashboard'])->name('dashboard-wc');
+            Route::get('/create-form', [InspeksiToiletMessKantorController::class, 'createForm'])->name('create-wc');
+            Route::post('/store-form', [InspeksiToiletMessKantorController::class, 'storeForm'])->name('store-wc');
+            Route::get('/list', [InspeksiToiletMessKantorController::class, 'list'])->name('list-wc');
+            Route::get('/export-inspeksi/{id}', [InspeksiToiletMessKantorController::class, 'exportPDF'])->name('export-inspeksi');
+            Route::put('/update/{id}', [InspeksiToiletMessKantorController::class, 'Update'])->name('wc-update');
+            Route::get('/detail/{id}', [InspeksiToiletMessKantorController::class, 'detail'])->name('wc-detail');
+            Route::delete('/delete/{id}', [InspeksiToiletMessKantorController::class, 'Delete'])->name('wc-delete');
+            Route::get('/show/{id}', [InspeksiToiletMessKantorController::class, 'show'])->name('wc-show');
+            Route::post('/approve-wc', [InspeksiToiletMessKantorController::class, 'Approve'])->name("wc-approve");
+            Route::post('/reject-wc', [InspeksiToiletMessKantorController::class, 'Reject'])->name("wc-reject");
+            Route::post('/reset-wc/{id}', [InspeksiToiletMessKantorController::class, 'Reset'])->name("wc-reset");
+        });
+
         Route::prefix('it-ops')->group(function () {
             // PRINTER
             Route::get('/dashboard-printer', [PrinterFormController::class, 'IndexPrinterForm'])->name('it-ops.dashboard-printer');
             Route::get('/form-printer/{id}/export-pdf', [PrinterFormController::class, 'ExportPrinter'])->name('it-ops.form-printer.export');
             Route::post('/submit-printer', [PrinterFormController::class, 'SubmitPrinterForm'])->name('it-ops.submit-printer');
             Route::get('/form-printer', [PrinterFormController::class, 'CreatePrinterForm'])->name('it-ops.form-printer');
+            Route::get('/edit-printer', [PrinterFormController::class, 'EditPrinterForm'])->name('it-ops.edit-printer');
+            Route::post('/update-printer', [PrinterFormController::class, 'UpdatePrinterForm'])->name('it-ops.update-printer');
+            Route::post('/delete-printer', [PrinterFormController::class, 'DeletePrinterForm'])->name('it-ops.delete-printer');
             // CCTV
             Route::get('/dashboard-cctv', [CctvFormController::class, 'IndexCctvForm'])->name('it-ops.dashboard-cctv');
             Route::get('/form-cctv', [CctvFormController::class, 'CreateCctvForm'])->name('it-ops.form-cctv');
             Route::post('/submit-cctv', [CctvFormController::class, 'SubmitCctvForm'])->name('it-ops.submit-cctv');
             Route::get('/form-cctv/{id}/export-pdf', [CctvFormController::class, 'ExportCctv'])->name('it-ops.form-cctv.export');
+            Route::get('/edit-cctv', [CctvFormController::class, 'EditCctvForm'])->name('it-ops.edit-cctv');
+            Route::post('/update-cctv', [CctvFormController::class, 'UpdateCctvForm'])->name('it-ops.update-cctv');
+            Route::post('/delete-cctv', [CctvFormController::class, 'DeleteCctvForm'])->name('it-ops.delete-cctv');
             // DEVICE
             Route::get('/dashboard-device', [DeviceFormController::class, 'IndexDeviceForm'])->name('it-ops.dashboard-device');
             Route::get('/form-device', [DeviceFormController::class, 'CreateDeviceForm'])->name('it-ops.form-device');
             Route::post('/submit-device', [DeviceFormController::class, 'SubmitDeviceForm'])->name('it-ops.submit-device');
             Route::get('/form-device/{id}/export-pdf', [DeviceFormController::class, 'ExportDevice'])->name('it-ops.form-device.export');
+            Route::get('/edit-device', [DeviceFormController::class, 'EditDeviceForm'])->name('it-ops.edit-device');
+            Route::post('/update-device', [DeviceFormController::class, 'UpdateDeviceForm'])->name('it-ops.update-device');
+            Route::post('/delete-device', [DeviceFormController::class, 'DeleteDeviceForm'])->name('it-ops.delete-device');
             // ROUTER
             Route::get('/dashboard-router', [RouterFormController::class, 'Dashboard'])->name('it-ops.dashboard-router');
             Route::get('/form-router', [RouterFormController::class, 'CreateRouterForm'])->name('it-ops.form-router');
             Route::post('/submit-router', [RouterFormController::class, 'SubmitRouterForm'])->name('it-ops.submit-router');
             Route::get('/form-router/{id}/export-pdf', [RouterFormController::class, 'ExportRouter'])->name('it-ops.form-router.export');
+            Route::get('/edit-router', [RouterFormController::class, 'EditRouterForm'])->name('it-ops.edit-router');
+            Route::post('/update-router', [RouterFormController::class, 'UpdateRouterForm'])->name('it-ops.update-router');
+            Route::post('/delete-router', [RouterFormController::class, 'DeleteRouterForm'])->name('it-ops.delete-router');
         });
 
         Route::prefix('she-inspeksi')->group(function () {
@@ -288,6 +426,12 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/form', [EyewashController::class, 'AddForm'])->name('she-inspeksi.form');
             Route::post('/store', [EyewashController::class, 'Store'])->name('she-inspeksi.submit');
             Route::put('/form/{id}', [EyewashController::class, 'Update'])->name('she-inspeksi.form.update');
+            Route::get('/edit/{id}', [EyewashController::class, 'EditForm'])->name('she-inspeksi.edit');
+            Route::post('/update', [EyewashController::class, 'UpdateForm'])->name('she-inspeksi.update');
+            Route::delete('/delete/{id}', [EyewashController::class, 'DeleteRecord'])->name('she-inspeksi.delete');
+            Route::post('/approve/{id}', [EyewashController::class, 'ApproveRecord'])->name('she-inspeksi.approve');
+            Route::post('/reject/{id}', [EyewashController::class, 'RejectRecord'])->name('she-inspeksi.reject');
+            Route::get('/approval-list', [EyewashController::class, 'getApprovalList'])->name('approval.list');
         });
 
         Route::prefix('she-p3k')->group(function () {
@@ -295,7 +439,13 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/form/export/{id}', [P3KController::class, 'ExportForm'])->name('she-p3k.export');
             Route::get('/form', [P3KController::class, 'AddForm'])->name('she-p3k.form');
             Route::post('/store', [P3KController::class, 'Store'])->name('she-p3k.submit');
-            Route::put('/form/{id}', [P3KController::class, 'Update'])->name('she-p3k.form.update');
+            Route::get('/form/edit/{id}', [P3KController::class, 'EditForm'])->name('she-p3k.edit');
+            Route::post('/update/{id}', [P3KController::class, 'Update'])->name('she-p3k.update');
+            Route::get('/approve/{id}/{role}', [P3KController::class, 'Approve'])->name('she-p3k.approve');
+            Route::get('/approve-all/{id}', [P3KController::class, 'ApproveAll'])->name('she-p3k.approve-all');
+            Route::post('/set-user-nik', [P3KController::class, 'SetUserNik'])->name('she-p3k.set-user-nik');
+            Route::delete('/delete/{id}', [P3KController::class, 'Delete'])->name('she-p3k.delete');
+            Route::get('/approval-list', [P3KController::class, 'getApprovalList'])->name('approval.list');
         });
 
         Route::prefix('she-air-minum')->group(function () {
@@ -303,7 +453,11 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/form/export/{id}', [AirMinumController::class, 'ExportForm'])->name('she.air-minum.export');
             Route::get('/form', [AirMinumController::class, 'AddForm'])->name('she.air-minum.form');
             Route::post('/store', [AirMinumController::class, 'Store'])->name('she.air-minum.store');
-            Route::put('/form/{id}', [AirMinumController::class, 'Update'])->name('she.air-minum.form.update');
+            Route::post('/form/{id}', [AirMinumController::class, 'Update'])->name('she.air-minum.form.update');
+            Route::get('/approve/{id}/{role}', [AirMinumController::class, 'UpdateApprovalStatus'])->name('she.air-minum.approve');
+            Route::post('/update-approval', [AirMinumController::class, 'UpdateApprovalStatus'])->name('she.air-minum.update-approval');
+            Route::delete('/delete/{id}', [AirMinumController::class, 'Delete'])->name('she.air-minum.delete');
+            Route::get('/approval-list', [AirMinumController::class, 'getApprovalList'])->name('approval.list');
         });
 
         Route::prefix('she-noise')->group(function () {
@@ -312,6 +466,11 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/form', [NoiseController::class, 'AddForm'])->name('she.noise.form');
             Route::post('/store', [NoiseController::class, 'Store'])->name('she.noise.store');
             Route::put('/form/{id}', [NoiseController::class, 'Update'])->name('she.noise.form.update');
+            Route::get('/edit/{id}', [NoiseController::class, 'EditForm'])->name('she.noise.edit');
+            Route::get('/view/{id}', [NoiseController::class, 'ViewForm'])->name('she.noise.view');
+            Route::delete('/delete/{id}', [NoiseController::class, 'Delete'])->name('she.noise.delete');
+            Route::post('/update-status', [NoiseController::class, 'UpdateStatus'])->name('she.noise.update.status');
+            Route::get('/approval-list', [NoiseController::class, 'getApprovalList'])->name('approval.list');
         });
 
         Route::prefix('she-mess')->group(function () {
@@ -320,24 +479,259 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('form/{id?}', [SheMessController::class, 'AddForm'])->name('she.mess.form');
             Route::post('store', [SheMessController::class, 'Store'])->name('she.mess.store');
             Route::put('form/{id}', [SheMessController::class, 'Update'])->name('she.mess.form.update');
+            Route::get('approve/{id}/{role}', [SheMessController::class, 'Approve'])->name('she.mess.approve');
+            Route::get('reject/{id}/{role}', [SheMessController::class, 'Reject'])->name('she.mess.reject');
+            Route::delete('delete', [SheMessController::class, 'Delete'])->name('she.mess.delete');
+            Route::get('edit/{id}', [SheMessController::class, 'EditForm'])->name('she.mess.form.edit');
+            Route::get('/approval-list', [SheMessController::class, 'getApprovalList'])->name('approval.list');
         });
 
-        Route::prefix('she-coal')->group(function () {
-            Route::get('dashboard', [CoalGettingController::class, 'Dashboard'])->name('she.coal.dashboard');
-            Route::get('form/export/{id}', [CoalGettingController::class, 'ExportForm'])->name('she.coal.export');
-            Route::get('form', [CoalGettingController::class, 'AddForm'])->name('she.coal.form');
-            Route::post('store', [CoalGettingController::class, 'Store'])->name('she.coal.store');
-            Route::put('form/{id}', [CoalGettingController::class, 'Update'])->name('she.coal.form.update');
+        Route::prefix('prod-coal')->group(function () {
+            Route::get('dashboard', [CoalGettingController::class, 'Dashboard'])->name('prod.coal.dashboard');
+            Route::get('form/export/{id}', [CoalGettingController::class, 'ExportForm'])->name('prod.coal.export');
+            Route::get('form', [CoalGettingController::class, 'AddForm'])->name('prod.coal.form');
+            Route::get('form/edit/{id}', [CoalGettingController::class, 'EditForm'])->name('prod.coal.form.edit');
+            Route::post('store', [CoalGettingController::class, 'Store'])->name('prod.coal.store');
+            Route::post('update/{id}', [CoalGettingController::class, 'Update'])->name('prod.coal.form.update');
+            Route::post('delete', [CoalGettingController::class, 'Delete'])->name('prod.coal.delete');
+            Route::post('/update-status', [CoalGettingController::class, 'updateStatus'])->name('prod.coal.update-status');
+            Route::get('/approval-list', [CoalGettingController::class, 'getApprovalList'])->name('approval.list');
+        });
+
+        Route::prefix('she-ergonomi')->group(function () {
+            Route::get('dashboard', [ErgonomiController::class, 'Dashboard'])->name('she.ergonomi.dashboard');
+            Route::get('form/export/{id}', [ErgonomiController::class, 'ExportForm'])->name('she.ergonomi.export');
+            Route::get('form', [ErgonomiController::class, 'AddForm'])->name('she.ergonomi.form');
+            Route::post('store', [ErgonomiController::class, 'Store'])->name('she.ergonomi.store');
+            Route::get('edit/{id}', [ErgonomiController::class, 'EditForm'])->name('she.ergonomi.edit');
+            Route::post('update', [ErgonomiController::class, 'UpdateForm'])->name('she.ergonomi.update');
+            Route::delete('delete/{id}', [ErgonomiController::class, 'Delete'])->name('she.ergonomi.delete');
+            Route::post('approve', [ErgonomiController::class, 'Approve'])->name('she.ergonomi.approve');
+            Route::get('/approval-list', [ErgonomiController::class, 'getApprovalList'])->name('approval.list');
         });
 
         Route::prefix('prod-anak-asuh')->group(function () {
             Route::get('/dashboard', [AnakAsuhController::class, 'Dashboard'])->name('prod.anak-asuh.dashboard');
             Route::get('/form/export/{id}', [AnakAsuhController::class, 'ExportForm'])->name('prod.anak-asuh.export');
             Route::get('/form', [AnakAsuhController::class, 'AddForm'])->name('prod.anak-asuh.form');
+            Route::get('/form/edit/{id}', [AnakAsuhController::class, 'EditForm'])->name('prod.anak-asuh.form.edit');
             Route::post('/store', [AnakAsuhController::class, 'Store'])->name('prod.anak-asuh.store');
-            Route::put('/form/{id}', [AnakAsuhController::class, 'Update'])->name('prod.anak-asuh.form.update');
+            Route::post('/update', [AnakAsuhController::class, 'UpdateAnakAsuh'])->name('prod.anak-asuh.update');
+            Route::post('/delete', [AnakAsuhController::class, 'Delete'])->name('prod.anak-asuh.delete');
+            Route::get('/approval-list', [AnakAsuhController::class, 'getApprovalList'])->name('approval.list');
         });
 
+        Route::prefix('plant-compressor')->group(function () {
+            Route::get('/dashboard', [CompressorPompaController::class, 'dashboard'])->name('plant.compressor.dashboard');
+            Route::get('/form-compressor/export/{id}', [CompressorPompaController::class, 'ExportForm'])->name('plant.compressor.export');
+            Route::get('/form-compressor', [CompressorPompaController::class, 'AddFormCompressor'])->name('plant.compressor.form');
+            Route::post('/store-compressor', [CompressorPompaController::class, 'StoreCompressor'])->name('plant.compressor.store');
+            Route::POST('/update', [CompressorPompaController::class, 'UpdateCompressor'])->name('plant.compressor.update');
+            Route::delete('/delete/{id}', [CompressorPompaController::class, 'DeleteCompressor'])->name('plant.compressor.delete');
+            Route::get('/approval-list', [InspectionCmtController::class, 'getApprovalList'])->name('cmt.approval.list');
+        });
+
+        Route::prefix('plant-welding')->group(function () {
+            Route::get('/dashboard', [PlantWeldingController::class, 'dashboard'])->name('plant.welding.dashboard');
+            Route::get('/form-welding/export/{id}', [PlantWeldingController::class, 'ExportForm'])->name('plant.welding.export');
+            Route::get('/form-welding', [PlantWeldingController::class, 'AddFormWelding'])->name('plant.welding.form');
+            Route::post('/store-welding', [PlantWeldingController::class, 'StoreWelding'])->name('plant.welding.store');
+            Route::get('/edit-welding/{id}', [PlantWeldingController::class, 'EditWelding'])->name('plant.welding.edit');
+            Route::post('/update-welding/{id}', [PlantWeldingController::class, 'UpdateWelding'])->name('plant.welding.update');
+            Route::delete('/form-welding/{id}', [PlantWeldingController::class, 'destroy'])->name('plant.welding.delete');
+            Route::get('/approval-welding/{id}', [PlantWeldingController::class, 'ApprovalWelding'])->name('plant.welding.approval');
+            Route::post('/approve-welding/{id}', [PlantWeldingController::class, 'ApproveWelding'])->name('plant.welding.approve');
+            Route::post('/reject-welding/{id}', [PlantWeldingController::class, 'RejectWelding'])->name('plant.welding.reject');
+        });
+
+        // PLANT
+        Route::prefix('plant')->name('bss-form.plant.')->group(function () {
+            // General Inspection
+            Route::prefix('general-inspection')->name('general-inspection.')->group(function () {
+                // CMT
+                Route::get('cmt/{id}/print', [InspectionCmtController::class, 'print'])->name('cmt.print');
+                Route::get('cmt/dashboard', [InspectionCmtController::class, 'index'])->name('cmt.dashboard');
+                Route::post('/approve-cmt', [InspectionCmtController::class, 'Approve'])->name("cmt.approve");
+                Route::post('/reject-cmt', [InspectionCmtController::class, 'Reject'])->name("cmt.reject");
+                Route::post('/reset-cmt/{id}', [InspectionCmtController::class, 'Reset'])->name("cmt.reset");
+                Route::get('cmt/get-data', [InspectionCmtController::class, 'getData'])->name('cmt.get-data');
+
+                Route::resource('cmt', InspectionCmtController::class);
+
+                // Dongfeng
+                Route::get('dongfeng/{id}/print', [InspectionDongfengController::class, 'print'])->name('dongfeng.print');
+                Route::get('dongfeng/dashboard', [InspectionDongfengController::class, 'index'])->name('dongfeng.dashboard');
+                Route::post('/approve-dongfeng', [InspectionDongfengController::class, 'Approve'])->name("dongfeng.approve");
+                Route::post('/reject-dongfeng', [InspectionDongfengController::class, 'Reject'])->name("dongfeng.reject");
+                Route::post('/reset-dongfeng/{id}', [InspectionDongfengController::class, 'Reset'])->name("dongfeng.reset");
+                Route::get('dongfeng/get-data', [InspectionDongfengController::class, 'getData'])->name('dongfeng.get-data');
+                Route::resource('dongfeng', InspectionDongfengController::class);
+                Route::get('/approval-list', [InspectionDongfengController::class, 'getApprovalList'])->name('dongfeng.approval.list');
+            });
+        });
+// produksi
+        Route::prefix('prod-form-checker')->group(function () {
+            Route::get('/dashboard', [FormCheckerController::class, 'dashboard'])->name('prod.form.checker.dashboard');
+            Route::get('/form-checker/export/{id}', [FormCheckerController::class, 'ExportForm'])->name('prod.form.checker.export');
+            Route::get('/form-checker', [FormCheckerController::class, 'AddFormChecker'])->name('prod.form.checker.form');
+            Route::get('/show/{id}', [FormCheckerController::class, 'ShowFormChecker'])->name('prod.form.checker.show');
+            Route::post('/store-form-checker', [FormCheckerController::class, 'StoreChecker'])->name('prod.checker.submit');
+            Route::delete('/delete/{id}', [FormCheckerController::class, 'Delete'])->name('prod.form.checker.delete');
+            Route::post('/approve-form-checker', [FormCheckerController::class, 'Approve'])->name("prod.form.checker.approve");
+            Route::post('/reject-form-checker', [FormCheckerController::class, 'Reject'])->name("prod.form.checker.reject");
+            Route::post('/reset-form-checker/{id}', [FormCheckerController::class, 'Reset'])->name("prod.form.checker.reset");
+            Route::post('/update-form-checker', [FormCheckerController::class, 'Update'])->name('prod.form.checker.update');
+            Route::get('/detail/{id}', [FormCheckerController::class, 'detail'])->name('prod.form.checker.detail');
+            Route::get('/get-alat-by-site', [FormCheckerController::class, 'getAlatBySite'])->name('get.alat.by.site');
+            Route::get('/approval-list', [FormCheckerController::class, 'getApprovalList'])->name('checker.approval.list');
+        });
+
+// produksi
+        Route::prefix('prod-kalibrasi-ct')->group(function () {
+            Route::get('/dashboard', [KalibrasiCtController::class, 'Dashboard'])->name('prod.kalibrasi-ct.dashboard');
+            Route::get('/form-kalibrasi-ct/export/{id}', [KalibrasiCtController::class, 'ExportForm'])->name('prod.kalibrasi-ct.export');
+            Route::get('/form-kalibrasi-ct', [KalibrasiCtController::class, 'AddFormKalibrasi'])->name('prod.kalibrasi-ct.form');
+            Route::post('/store-kalibrasi-ct', [KalibrasiCtController::class, 'StoreKalibrasi'])->name('prod.kalibrasi-ct.store');
+            Route::get('/edit-kalibrasi-ct/{id}', [KalibrasiCtController::class, 'EditKalibrasi'])->name('prod.kalibrasi-ct.edit');
+            Route::post('/form-kalibrasi-ct/{id}', [KalibrasiCtController::class, 'UpdateKalibrasi'])->name('prod.kalibrasi-ct.update');
+            Route::delete('/form-kalibrasi-ct/{id}', [KalibrasiCtController::class, 'destroy'])->name('prod.kalibrasi-ct.delete');
+            Route::get('/approval-form-kalibrasi-ct/{id}', [KalibrasiCtController::class, 'ApprovalKalibrasi'])->name('prod.kalibrasi-ct.approval');
+            Route::post('/approve-form-kalibrasi-ct/{id}', [KalibrasiCtController::class, 'ApproveKalibrasi'])->name('prod.kalibrasi-ct.approve');
+            Route::post('/reject-form-kalibrasi-ct/{id}', [KalibrasiCtController::class, 'RejectKalibrasi'])->name('prod.kalibrasi-ct.reject');
+        });
+        // produksi
+        Route::prefix('prod-a2b-baru')->group(function () {
+            Route::get('/dashboard', [A2bBaruController::class, 'Dashboard'])->name('prod.a2b-baru.dashboard');
+            Route::get('/form-a2b-baru/export/{id}', [A2bBaruController::class, 'ExportForm'])->name('prod.a2b-baru.export');
+            Route::get('/form-a2b-baru', [A2bBaruController::class, 'AddFormA2bBaru'])->name('prod.a2b-baru.form');
+            Route::post('/store-a2b-baru', [A2bBaruController::class, 'StoreA2bBaru'])->name('prod.a2b-baru.store');
+            Route::get('/edit-a2b-baru/{id}', [A2bBaruController::class, 'EditA2bBaru'])->name('prod.a2b-baru.edit');
+            Route::post('/form-a2b-baru/{id}', [A2bBaruController::class, 'UpdateA2bBaru'])->name('prod.a2b-baru.update');
+            Route::delete('/form-a2b-baru/{id}', [A2bBaruController::class, 'destroy'])->name('prod.a2b-baru.delete');
+            Route::get('/approval-a2b-baru/{id}', [A2bBaruController::class, 'ApprovalA2bBaru'])->name('prod.a2b-baru.approval');
+            Route::post('/approve-a2b-baru/{id}', [A2bBaruController::class, 'ApproveA2bBaru'])->name('prod.a2b-baru.approve');
+            Route::post('/reject-a2b-baru/{id}', [A2bBaruController::class, 'RejectA2bBaru'])->name('prod.a2b-baru.reject');
+        });
+// plant
+        Route::prefix('ppm-900d')->group(function () {
+            Route::get('/dashboard', [PpmXcmg900dController::class, 'Dashboard'])->name('plant.ppm.900d.dashboard');
+            Route::get('/export/{id}', [PpmXcmg900dController::class, 'Export'])->name('plant.ppm.900d.export');
+            Route::get('/add', [PpmXcmg900dController::class, 'Add'])->name('plant.ppm.900d.form');
+            Route::post('/store', [PpmXcmg900dController::class, 'Store'])->name('plant.ppm.900d.store');
+            Route::post('/update', [PpmXcmg900dController::class, 'Update'])->name('plant.ppm.900d.update');
+            Route::get('/detail/{id}', [PpmXcmg900dController::class, 'detail'])->name('plant.ppm.900d.detail');
+            Route::delete('/delete/{id}', [PpmXcmg900dController::class, 'Delete'])->name('plant.ppm.900d.delete');
+            Route::get('/show/{id}', [PpmXcmg900dController::class, 'show'])->name('plant.ppm.900d.show');
+            Route::post('/approve-ppm.900d', [PpmXcmg900dController::class, 'Approve'])->name("plant.ppm.900d.approve");
+            Route::post('/reject-ppm.900d', [PpmXcmg900dController::class, 'Reject'])->name("plant.ppm.900d.reject");
+            Route::post('/reset-ppm.900d/{id}', [PpmXcmg900dController::class, 'Reset'])->name("plant.ppm.900d.reset");
+             Route::get('/approval-list', [PpmXCMG900DController::class, 'getApprovalList'])->name('900d.approval.list');
+        });
+        // plant
+        Route::prefix('ppm-3005T')->group(function () {
+            Route::get('/dashboard', [PpmXCMG3005TController::class, 'Dashboard'])->name('plant.ppm.3005.dashboard');
+            Route::get('/export/{id}', [PpmXCMG3005TController::class, 'Export'])->name('plant.ppm.3005.export');
+            Route::get('/add', [PpmXCMG3005TController::class, 'Add'])->name('plant.ppm.3005.form');
+            Route::post('/store', [PpmXCMG3005TController::class, 'Store'])->name('plant.ppm.3005.store');
+            Route::post('/update', [PpmXCMG3005TController::class, 'Update'])->name('plant.ppm.3005.update');
+            Route::get('/detail/{id}', [PpmXCMG3005TController::class, 'detail'])->name('plant.ppm.3005.detail');
+            Route::delete('/delete/{id}', [PpmXCMG3005TController::class, 'Delete'])->name('plant.ppm.3005.delete');
+            Route::get('/show/{id}', [PpmXCMG3005TController::class, 'show'])->name('plant.ppm.3005.show');
+            Route::post('/approve-ppm.3005', [PpmXCMG3005TController::class, 'Approve'])->name("plant.ppm.3005.approve");
+            Route::post('/reject-ppm.3005', [PpmXCMG3005TController::class, 'Reject'])->name("plant.ppm.3005.reject");
+            Route::post('/reset-ppm.3005/{id}', [PpmXCMG3005TController::class, 'Reset'])->name("plant.ppm.3005.reset");
+             Route::get('/approval-list', [PpmXCMG3005TController::class, 'getApprovalList'])->name('3005.approval.list');
+        });
+        // plant
+        Route::prefix('ppm-700d')->group(function () {
+            Route::get('/dashboard', [PpmXCMG700DController::class, 'Dashboard'])->name('plant.ppm.700d.dashboard');
+            Route::get('/export/{id}', [PpmXCMG700DController::class, 'Export'])->name('plant.ppm.700d.export');
+            Route::get('/add', [PpmXCMG700DController::class, 'Add'])->name('plant.ppm.700d.form');
+            Route::post('/store', [PpmXCMG700DController::class, 'Store'])->name('plant.ppm.700d.store');
+            Route::post('/update', [PpmXCMG700DController::class, 'Update'])->name('plant.ppm.700d.update');
+            Route::get('/detail/{id}', [PpmXCMG700DController::class, 'detail'])->name('plant.ppm.700d.detail');
+            Route::delete('/delete/{id}', [PpmXCMG700DController::class, 'Delete'])->name('plant.ppm.700d.delete');
+            Route::get('/show/{id}', [PpmXCMG700DController::class, 'show'])->name('plant.ppm.700d.show');
+            Route::post('/approve-ppm.700d', [PpmXCMG700DController::class, 'Approve'])->name("plant.ppm.700d.approve");
+            Route::post('/reject-ppm.700d', [PpmXCMG700DController::class, 'Reject'])->name("plant.ppm.700d.reject");
+            Route::post('/reset-ppm.700d/{id}', [PpmXCMG700DController::class, 'Reset'])->name("plant.ppm.700d.reset");
+            Route::get('/approval-list', [PpmXCMG700DController::class, 'getApprovalList'])->name('700d.approval.list');
+        });
+        // plant
+        Route::prefix('ppu-xe1250')->group(function () {
+            Route::get('/dashboard', [PpuXE1250Controller::class, 'Dashboard'])->name('plant.ppu.xe1250.dashboard');
+            Route::get('/export/{id}', [PpuXE1250Controller::class, 'Export'])->name('plant.ppu.xe1250.export');
+            Route::get('/add', [PpuXE1250Controller::class, 'Add'])->name('plant.ppu.xe1250.form');
+            Route::post('/store', [PpuXE1250Controller::class, 'Store'])->name('plant.ppu.xe1250.store');
+            Route::post('/update', [PpuXE1250Controller::class, 'Update'])->name('plant.ppu.xe1250.update');
+            Route::get('/detail/{id}', [PpuXE1250Controller::class, 'detail'])->name('plant.ppu.xe1250.detail');
+            Route::get('/show/{id}', [PpuXE1250Controller::class, 'show'])->name('plant.ppu.xe1250.show');
+            Route::delete('/delete/{id}', [PpuXE1250Controller::class, 'Delete'])->name('plant.ppu.xe1250.delete');
+            Route::post('/approve-ppu-xe1250', [PpuXE1250Controller::class, 'Approve'])->name("plant.ppu.xe1250.approve");
+            Route::post('/reject-ppu-xe1250', [PpuXE1250Controller::class, 'Reject'])->name("plant.ppu.xe1250.reject");
+            Route::post('/reset-ppu-xe1250/{id}', [PpuXE1250Controller::class, 'Reset'])->name("plant.ppu.xe1250.reset");
+            Route::get('/approval-list', [PpuXE1250Controller::class, 'getApprovalList'])->name('ppu.1250.approval.list');
+        });
+        // plant
+        Route::prefix('ppm-dh24')->group(function () {
+            Route::get('/dashboard', [PpmShantuiDH24Controller::class, 'Dashboard'])->name('dashboard-dh24');
+            Route::get('/add', [PpmShantuiDH24Controller::class, 'Add'])->name('form-create-dh24');
+            Route::post('/store', [PpmShantuiDH24Controller::class, 'Store'])->name('store-dh24');
+            Route::get('/export/{id}', [PpmShantuiDH24Controller::class, 'ExportPDF'])->name('export-pdf-dh24');
+            Route::delete('/delete/{id}', [PpmShantuiDH24Controller::class, 'Delete'])->name('delete-dh24');
+            Route::get('/show/{id}', [PpmShantuiDH24Controller::class, 'show'])->name('show-dh24');
+            Route::get('/detail/{id}', [PpmShantuiDH24Controller::class, 'detail'])->name('detail-dh24');
+            Route::post('/approve-dh24', [PpmShantuiDH24Controller::class, 'Approve'])->name("plant.dh24.approve");
+            Route::post('/reject-dh24', [PpmShantuiDH24Controller::class, 'Reject'])->name("plant.dh24.reject");
+            Route::post('/reset-dh24/{id}', [PpmShantuiDH24Controller::class, 'Reset'])->name("plant.dh24.reset");
+            Route::post('/update', [PpmShantuiDH24Controller::class, 'Update'])->name('plant.dh24.update');
+        });
+        // plant
+        Route::prefix('ppm-xe1250')->group(function () {
+            Route::get('/dashboard', [PpmXcmgXE1250Controller::class, 'Dashboard'])->name('plant.ppm.xe1250.dashboard');
+            Route::get('/export/{id}', [PpmXcmgXE1250Controller::class, 'Export'])->name('plant.ppm.xe1250.export');
+            Route::get('/add', [PpmXcmgXE1250Controller::class, 'Add'])->name('plant.ppm.xe1250.form');
+            Route::post('/store', [PpmXcmgXE1250Controller::class, 'Store'])->name('plant.ppm.xe1250.store');
+            Route::post('/update', [PpmXcmgXE1250Controller::class, 'Update'])->name('plant.ppm.xe1250.update');
+            Route::get('/detail/{id}', [PpmXcmgXE1250Controller::class, 'detail'])->name('plant.ppm.xe1250.detail');
+            Route::delete('/delete/{id}', [PpmXcmgXE1250Controller::class, 'Delete'])->name('plant.ppm.xe1250.delete');
+            Route::get('/show/{id}', [PpmXcmgXE1250Controller::class, 'show'])->name('plant.ppm.xe1250.show');
+            Route::post('/approve-ppm.xe1250', [PpmXcmgXE1250Controller::class, 'Approve'])->name("plant.ppm.xe1250.approve");
+            Route::post('/reject-ppm.xe1250', [PpmXcmgXE1250Controller::class, 'Reject'])->name("plant.ppm.xe1250.reject");
+            Route::post('/reset-ppm.xe1250/{id}', [PpmXcmgXE1250Controller::class, 'Reset'])->name("plant.ppm.xe1250.reset");
+            Route::get('/approval-list', [PpmXcmgXE1250Controller::class, 'getApprovalList'])->name('ppm.1250.approval.list');
+        });
+        // log
+        Route::prefix('ogc-compliance')->group(function () {
+            Route::get('/dashboard', [OgcComplianceController::class, 'Dashboard'])->name('log.ogc.dashboard');
+            Route::get('/export/{id}', [OgcComplianceController::class, 'Export'])->name('log.ogc.export');
+            Route::get('/add', [OgcComplianceController::class, 'Add'])->name('log.ogc.form');
+            Route::post('/store', [OgcComplianceController::class, 'Store'])->name('log.ogc.store');
+            Route::post('/update', [OgcComplianceController::class, 'Update'])->name('log.ogc.update');
+            Route::get('/detail/{id}', [OgcComplianceController::class, 'detail'])->name('log.ogc.detail');
+            Route::get('modal/{id}/{doc_num}', [OgcComplianceController::class, 'modal'])->name('log.ogc.modal');
+            Route::get('/show/{id}', [OgcComplianceController::class, 'show'])->name('log.ogc.show');
+            Route::delete('/delete/{id}', [OgcComplianceController::class, 'Delete'])->name('log.ogc.delete');
+            Route::delete('/delete-week/{id}', [OgcComplianceController::class, 'DeleteWeek'])->name('log.ogc.deleteWeek');
+            Route::post('/approve-log.ogc', [OgcComplianceController::class, 'Approve'])->name('log.ogc.approve');
+            Route::post('/reject-log.ogc', [OgcComplianceController::class, 'Reject'])->name('log.ogc.reject');
+            Route::post('/reset-log.ogc/{id}', [OgcComplianceController::class, 'Reset'])->name('log.ogc.reset');
+            Route::get('/approval-list', [OgcComplianceController::class, 'getApprovalList'])->name('ogc.approval.list');
+        });
+        // plant
+        Route::prefix('lgmg')->group(function () {
+            Route::get('/dashboard', [LgmgController::class, 'Dashboard'])->name('lgmg.dashboard');
+            Route::get('/export/{id}', [LgmgController::class, 'Export'])->name('lgmg.export');
+            Route::get('/add', [LgmgController::class, 'Add'])->name('lgmg.form');
+            Route::post('/store', [LgmgController::class, 'Store'])->name('lgmg.store');
+            Route::post('/update/{id}', [LgmgController::class, 'Update'])->name('lgmg.update');
+            Route::get('/detail/{id}', [LgmgController::class, 'detail'])->name('lgmg.detail');
+            Route::delete('/delete/{id}', [LgmgController::class, 'Delete'])->name('lgmg.delete');
+            Route::get('/show/{id}', [LgmgController::class, 'show'])->name('lgmg.show');
+            Route::post('/approve-lgmg', [LgmgController::class, 'Approve'])->name("lgmg.approve");
+            Route::post('/reject-lgmg', [LgmgController::class, 'Reject'])->name("lgmg.reject");
+            Route::post('/reset-lgmg/{id}', [LgmgController::class, 'Reset'])->name("lgmg.reset");
+        });
     });
 
     Route::get('/dashboard-menu', [AdminController::class, 'index'])->name('dashboard-menu');
@@ -372,6 +766,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
         Route::post('/karyawan', [HelperController::class, 'HelperSelect2PicaKaryawanByDept']);
         Route::post('/change-password-pegawai', [HelperController::class, 'ChangepasswordPegawaiPost']);
         Route::get('/data-pica', [HelperController::class, 'HelperDataTablePica']);
+        Route::get('/data-regis-supplier', [HelperController::class, 'HelperDataTableRegisSupplier']);
         Route::get('/data-update-progress', [HelperController::class, 'HelperDataTableStepSolutionPica']);
         Route::get('/data-history-progress', [HelperController::class, 'HelperDataTableHistoryProgressPica']);
         Route::get('/data-dashboard-history-progress', [HelperController::class, 'HelperDataTableDashboardHistoryProgressPica']);
@@ -387,7 +782,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
         Route::get('/edit/{id}', [RoleManagementController::class, 'edit'])->name('role-management.edit');
         Route::post('/edit/update/{id}', [RoleManagementController::class, 'update'])->name('role-management.store-edit');
         Route::get('/destroy/{id}', [RoleManagementController::class, 'destroy'])->name('role-management.destroy');
-    }); 
+    });
 
     Route::prefix('user-management')->group(function () {
         Route::get('/dashboard', [UserManagementController::class, 'dashboard'])->name('user-management.dashboard');
@@ -430,7 +825,6 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
         Route::post('/edit-why-spesific-data', [TransactionPicaController::class, 'EditWhySpesificData']);
         Route::post('/check-data-step', [TransactionPicaController::class, 'checkDataStep']);
         Route::post('/change-flag-revision', [TransactionPicaController::class, 'ChangeFlagRevision']);
-
     });
 
     Route::prefix('skl')->group(function () {
@@ -446,6 +840,76 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
         Route::get('/download', [DashboardSKLController::class, 'downloadExcel'])->name('bss-skl.download-excel');
     });
 
+    Route::prefix('ic/training')->group(function () {
+        Route::get('/', [PengajuanTrainingController::class, 'index'])->name('ic.training.index');
+        Route::get('add', [PengajuanTrainingController::class, 'AddPengajuan'])->name('ic.training.add');
+        Route::post('submit-pengajuan', [PengajuanTrainingController::class, 'SubmitPengajuan'])->name('ic.training.submit-pengajuan');
+
+        Route::group(['middleware' => [PengajuanTrainingIC::class]], function () {
+            Route::get('import-approval', [PengajuanTrainingController::class, 'ImportApproval'])->name('ic.training.import-approval');
+            Route::post('import-approval/submit', [PengajuanTrainingController::class, 'ImportApprovalSubmit'])->name('ic.training.import-approval-submit');
+
+            Route::get('import-master-training', [PengajuanTrainingController::class, 'training'])->name('ic.training.master-training');
+            Route::post('import-master-training', [PengajuanTrainingController::class, 'ImportMasterTraining'])->name('ic.training.submit-master-training');
+            Route::get('import-std-jab', [PengajuanTrainingController::class, 'ImportStdJab'])->name('ic.training.import-std-jab');
+            Route::get('import-atmp', [PengajuanTrainingController::class, 'atmp'])->name('ic.training.import-atmp');
+            Route::post('import-atmp', [PengajuanTrainingController::class, 'ImportATMP'])->name('ic.training.submit-atmp');
+        });
+
+        // Route::get('import-master-training', [PengajuanTrainingController::class, 'training'])->name('ic.training.master-training');
+        // Route::post('import-master-training', [PengajuanTrainingController::class, 'ImportMasterTraining'])->name('ic.training.submit-master-training');
+        // Route::get('import-std-jab', [PengajuanTrainingController::class, 'ImportStdJab'])->name('ic.training.import-std-jab');
+        // Route::get('import-atmp', [PengajuanTrainingController::class, 'atmp'])->name('ic.training.import-atmp');
+        // Route::post('import-atmp', [PengajuanTrainingController::class, 'ImportATMP'])->name('ic.training.submit-atmp');
+
+        // Route::get('import-approval', [PengajuanTrainingController::class, 'ImportApproval'])->name('ic.training.import-approval');
+        // Route::post('import-approval/submit', [PengajuanTrainingController::class, 'ImportApprovalSubmit'])->name('ic.training.import-approval-submit');
+
+        Route::get('cross-check', [PengajuanTrainingController::class, 'CrossCheck'])->name('ic.training.crosscheck');
+        Route::get('data-cross-check', [PengajuanTrainingController::class, 'DataCrossCheck'])->name('ic.training.data-crosscheck');
+        Route::get('cross-check-dtl/{id}', [PengajuanTrainingController::class, 'CrossCheckDtl'])->name('ic.training.crosscheck-dtl');
+        Route::get('data-cross-check-dtl', [PengajuanTrainingController::class, 'DataCrossCheckDtl'])->name('ic.training.crosscheck-dtl-data');
+        Route::post('cross-check-approve', [PengajuanTrainingController::class, 'CrossCheckApprove'])->name('ic.training.crosscheck-approve');
+
+        Route::get('form-komitmen/{id}', [PengajuanTrainingController::class, 'FormKomitmen'])->name('ic.training.form-komitmen');
+        Route::post('form-komitmen-act', [PengajuanTrainingController::class, 'SubmitFormKomitmen'])->name('ic.training.form-komitmen-act');
+        Route::post('komitmen-approve', [PengajuanTrainingController::class, 'KomitmenApprove'])->name('ic.training.komitment-approve');
+
+        Route::get('dashboard-komitmen', [PengajuanTrainingController::class, 'DashboardKomitmen'])->name('ic.training.dashboard-komitmen');
+        Route::get('dashboard-komitmen-data', [PengajuanTrainingController::class, 'DataDashboardKomitmen'])->name('ic.training.dashboard-komitmen-data');
+        Route::get('justifikasi/{id}', [PengajuanTrainingController::class, 'Justifikasi'])->name('ic.training.dashboard-justifikasi');
+        Route::post('submit-justifikasi', [PengajuanTrainingController::class, 'SubmitJustifikasi'])->name('ic.training.submit-justifikasi');
+        Route::post('justifikasi-approve', [PengajuanTrainingController::class, 'JustifikasiApprove'])->name('ic.training.justifikasi-approve');
+
+        Route::prefix('helper')->group(function() {
+            Route::get('mtraining', [HelperTraininingController::class, 'GetMTraining'])->name('ic.training.helper.master');
+            Route::post('select-mtraining', [HelperTraininingController::class, 'SelectMTraining'])->name('ic.training.helper.select-master');
+            Route::post('cari-mp', [HelperTraininingController::class, 'SelectKaryawan'])->name('ic.training.helper.mp');
+            Route::get('cari-dept', [HelperTraininingController::class, 'SelectDept'])->name('ic.training.helper.cari-dept');
+            Route::get('training-syarat-std', [HelperTraininingController::class, 'SelectSyaratAndStd'])->name('ic.training.helper.training-syarat-std');
+            Route::get('check-pelatihan-mp', [HelperTraininingController::class, 'CheckNIkAndPelatihan'])->name('ic.training.helper.check-pelatihan-mp');
+        });
+
+    });
+
+    Route::prefix('dc')->group(function () {
+        Route::prefix('unbudget')->group(function () {
+            Route::get('/', [UnbudgetController::class, 'Index'])->name('dc.unbudget.index');
+            Route::get('dashboard', [UnbudgetController::class, 'Dashboard'])->name('dc.unbudget.dashboard');
+            Route::get('form', [UnbudgetController::class, 'FormBAUnbudget'])->name('dc.unbudget.form');
+            Route::get('form-edit', [UnbudgetController::class, 'FormEdit'])->name('dc.unbudget.form-edit');
+            Route::post('form-edit', [UnbudgetController::class, 'FormEditSubmit'])->name('dc.unbudget.form-edit-submit');
+            // Route::get('form-cetak', [UnbudgetController::class, 'FormCetak'])->name('dc.unbudget.form-cetak');
+            Route::get('form-info', [UnbudgetController::class, 'FormInfo'])->name('dc.unbudget.form-info');
+            Route::post('form-approval', [UnbudgetController::class, 'FormApproval'])->name('dc.unbudget.form-approval');
+            Route::post('form-submit', [UnbudgetController::class, 'SubmitBA'])->name('dc.unbudget.form-submit');
+            Route::get('form-list', [UnbudgetController::class, 'FormList'])->name('dc.unbudget.form-list');
+            Route::get('helper/coa', [UnbudgetController::class, 'HelperCOA'])->name('dc.unbudget.helper-coa');
+            Route::get('helper/mp', [UnbudgetController::class, 'HelperMP'])->name('dc.unbudget.helper-mp');
+            Route::get('migrasi', [UnbudgetController::class, 'Migrasi']);
+            Route::post('migrasi-submit', [UnbudgetController::class, 'MigrasiSubmit'])->name('dc.unbudget.migrasi-submit');
+        });
+    });
 
     Route::prefix('approval')->group(function () {
         Route::post('/form', [ApprovalFormController::class, 'approveForm'])->name('bss-approval-form');
@@ -456,7 +920,6 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
     });
 
     Route::get('/landing-page-dashboard', [DashboardController::class, 'DashboardIndex']);
-
 });
 
 Route::get('/bss-form/induksi-karyawan/listing-karyawan/{data}', [ICFM05InduksiKaryawanController::class, 'indexFormAddKaryawanListing']);

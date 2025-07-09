@@ -21,20 +21,20 @@ return new class extends Migration
 			/** Informasi umur Vendor */
             $table->string('nama_vendor');
             $table->string('status_pajak_pkp');
-            $table->string('no_npwp');
+            $table->string('no_npwp')->nullable();
             $table->string('bidang_usaha');
             $table->string('alamat_kantor');
             $table->string('kota');
             $table->string('telepon');
+			$table->string('kode_pos');
+			$table->string('email');
             $table->string('pj_1');
+			$table->string('tlp_1');
+			$table->string('jabatan_1');
+			$table->string('jabatan_1_email');
             $table->string('pj_2');
-            $table->string('kode_pos');
-            $table->string('email');
-            $table->string('tlp_1');
             $table->string('tlp_2');
-            $table->string('jabatan_1');
             $table->string('jabatan_2');
-            $table->string('jabatan_1_email');
             $table->string('jabatan_2_email');
 			
 			/** Informasi Referensi Transaksi Pembayaran */
@@ -62,19 +62,21 @@ return new class extends Migration
             $table->string('profile_perusahaan');
             $table->string('surat_lainnya');
 			
-            $table->string('file_npwp');
-            $table->string('file_sppkp');
-            $table->string('file_nib_siup');
-            $table->string('file_akta_perusahaan');
-            $table->string('file_pakta_integritas');
-            $table->string('file_ident_direk');
-            $table->string('file_struktur_org');
-            $table->string('file_profile_per');
-            $table->string('file_lain');
+            $table->string('file_npwp')->nullable();
+            $table->string('file_sppkp')->nullable();
+            $table->string('file_nib_siup')->nullable();
+            $table->string('file_akta_perusahaan')->nullable();
+            $table->string('file_pakta_integritas')->nullable();
+            $table->string('file_ident_direk')->nullable();
+            $table->string('file_struktur_org')->nullable();
+            $table->string('file_profile_per')->nullable();
+            $table->string('file_lain')->nullable();
 			
-            $table->string('diisi_oleh');
-            $table->string('diterima_oleh');
-            $table->string('disetujui_oleh');
+            $table->string('diisi_oleh')->nullable();
+            $table->string('diterima_oleh')->nullable();
+            $table->string('status')->nullable();
+            $table->string('disetujui_oleh')->nullable();
+            $table->string('is_active')->nullable();
         });
     }
 

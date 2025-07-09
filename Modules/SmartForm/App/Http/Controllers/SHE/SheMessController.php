@@ -10,6 +10,7 @@ use Illuminate\Validation\ValidationException;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Modules\SmartForm\helpers\HrdHelper;
 
 class SheMessController extends Controller
 {
@@ -44,24 +45,28 @@ class SheMessController extends Controller
             // Get records
             $records = $query->orderBy('created_at', 'desc')->get();
 
-            // Format dates using Carbon
+            // Format dates using the helper method
             $records->transform(function($record) {
-                if ($record->survey_date) {
-                    try {
-                        // First try parsing the date in the format "Feb 4 2025 12:00:00:AM"
-                        $dateStr = preg_replace('/:([AP]M)/', ' $1', $record->survey_date);
-                        $date = \Carbon\Carbon::createFromFormat('M d Y h:i:s A', $dateStr);
-                    } catch (\Exception $e) {
-                        try {
-                            // If that fails, try parsing it as a standard date format
-                            $date = \Carbon\Carbon::parse($record->survey_date);
-                        } catch (\Exception $e2) {
-                            Log::error('Date parsing error: ' . $e2->getMessage());
-                            $date = now();
-                        }
-                    }
-                    $record->survey_date = $date->format('d/m/Y');
+                // Format survey_date using the helper method
+                $this->formatDateField($record, 'survey_date');
+                
+                // Format other date fields if they exist
+                if (isset($record->completion_date)) {
+                    $this->formatDateField($record, 'completion_date');
                 }
+                if (isset($record->inspection_date)) {
+                    $this->formatDateField($record, 'inspection_date');
+                }
+                if (isset($record->inspection_date2)) {
+                    $this->formatDateField($record, 'inspection_date2');
+                }
+                if (isset($record->inspection_date3)) {
+                    $this->formatDateField($record, 'inspection_date3');
+                }
+                if (isset($record->acknowledgment_date)) {
+                    $this->formatDateField($record, 'acknowledgment_date');
+                }
+                
                 return $record;
             });
 
@@ -84,11 +89,7 @@ class SheMessController extends Controller
     public function AddForm(Request $request, $id = null)
     {
         try {
-            Log::info('AddForm method called with request:', $request->all());
-            Log::info('Route parameters:', $request->route()->parameters());
-            
             if ($id) {
-                Log::info('ID from route parameter: ' . $id);
                 $record = DB::table('she_mess_survey')
                     ->where('id', $id)
                     ->first();
@@ -112,77 +113,18 @@ class SheMessController extends Controller
                     $record->checklist_items = [];
                 }
 
-                // Format survey_date
-                try {
-                    $dateStr = preg_replace(['/::/', '/\s+/'], [':', ' '], $record->survey_date);
-                    $dateStr = trim($dateStr);
-                    
-                    if (strpos($dateStr, 'AM') !== false || strpos($dateStr, 'PM') !== false) {
-                        $record->survey_date = Carbon::createFromFormat('M d Y h:i:s A', $dateStr)->format('Y-m-d');
-                    } else {
-                        $record->survey_date = Carbon::parse($dateStr)->format('Y-m-d');
-                    }
-                } catch (\Exception $e) {
-                    Log::error('Date parsing error for survey_date: ' . $e->getMessage() . ' | Original value: ' . $record->survey_date);
-                    $record->survey_date = now()->format('Y-m-d');
-                }
-
-                // Format completion_date
-                try {
-                    if ($record->completion_date) {
-                        $dateStr = preg_replace(['/::/', '/\s+/'], [':', ' '], $record->completion_date);
-                        $dateStr = trim($dateStr);
-                        
-                        if (strpos($dateStr, 'AM') !== false || strpos($dateStr, 'PM') !== false) {
-                            $record->completion_date = Carbon::createFromFormat('M d Y h:i:s A', $dateStr)->format('Y-m-d');
-                        } else {
-                            $record->completion_date = Carbon::parse($dateStr)->format('Y-m-d');
-                        }
-                    }
-                } catch (\Exception $e) {
-                    Log::error('Date parsing error for completion_date: ' . $e->getMessage() . ' | Original value: ' . $record->completion_date);
-                    $record->completion_date = null;
-                }
-
-                // Format inspection dates
-                foreach (['inspection_date', 'inspection_date2', 'inspection_date3'] as $dateField) {
-                    try {
-                        if ($record->$dateField) {
-                            $dateStr = preg_replace(['/::/', '/\s+/'], [':', ' '], $record->$dateField);
-                            $dateStr = trim($dateStr);
-                            
-                            if (strpos($dateStr, 'AM') !== false || strpos($dateStr, 'PM') !== false) {
-                                $record->$dateField = Carbon::createFromFormat('M d Y h:i:s A', $dateStr)->format('Y-m-d');
-                            } else {
-                                $record->$dateField = Carbon::parse($dateStr)->format('Y-m-d');
-                            }
-                        }
-                    } catch (\Exception $e) {
-                        Log::error("Date parsing error for {$dateField}: " . $e->getMessage() . " | Original value: " . $record->$dateField);
-                        $record->$dateField = null;
-                    }
-                }
-
-                // Format acknowledgment_date
-                try {
-                    if ($record->acknowledgment_date) {
-                        $dateStr = preg_replace(['/::/', '/\s+/'], [':', ' '], $record->acknowledgment_date);
-                        $dateStr = trim($dateStr);
-                        
-                        if (strpos($dateStr, 'AM') !== false || strpos($dateStr, 'PM') !== false) {
-                            $record->acknowledgment_date = Carbon::createFromFormat('M d Y h:i:s A', $dateStr)->format('Y-m-d');
-                        } else {
-                            $record->acknowledgment_date = Carbon::parse($dateStr)->format('Y-m-d');
-                        }
-                    }
-                } catch (\Exception $e) {
-                    Log::error('Date parsing error for acknowledgment_date: ' . $e->getMessage() . ' | Original value: ' . $record->acknowledgment_date);
-                    $record->acknowledgment_date = now()->format('Y-m-d');
-                }
+                // Format all date fields using the helper method
+                $this->formatDateField($record, 'survey_date');
+                $this->formatDateField($record, 'completion_date');
+                $this->formatDateField($record, 'inspection_date');
+                $this->formatDateField($record, 'inspection_date2');
+                $this->formatDateField($record, 'inspection_date3');
+                $this->formatDateField($record, 'acknowledgment_date');
 
                 return view('smartform::she.mess.form', [
                     'data' => $record,
-                    'isShowDetail' => true
+                    'isShowDetail' => true,
+                    'approvalList' => HrdHelper::getApprovalList(),
                 ]);
             }
 
@@ -213,7 +155,7 @@ class SheMessController extends Controller
                 'data' => (object)[
                     'doc_number' => $this->generateDocNumber(),
                     'site_name' => '',
-                    'work_location' => '',
+                    'work_location' => 'Office', // Default value for work_location
                     'department' => '',
                     'shift' => '',
                     'inspector_count' => '',
@@ -235,9 +177,23 @@ class SheMessController extends Controller
                     'inspected_signature2' => 0,
                     'inspected_signature3' => 0,
                     'acknowledged_by' => '',
-                    'acknowledged_signature' => 0
+                    'acknowledged_signature' => 0,
+                    'inspected_by_status' => 'pending',
+                    'inspected_by2_status' => 'pending',
+                    'inspected_by3_status' => 'pending',
+                    'acknowledged_by_status' => 'pending',
+                    'approval_status' => 'pending',
+                    'inspected_by_nik' => session('user_id') ?? '',
+                    'inspected_by2_nik' => '',
+                    'inspected_by3_nik' => '',
+                    'acknowledged_by_nik' => '',
+                    'inspected_by_name' => session('username') ?? '',
+                    'inspected_by2_name' => '',
+                    'inspected_by3_name' => '',
+                    'acknowledged_by_name' => ''
                 ],
-                'isShowDetail' => false
+                'isShowDetail' => false,
+                'approvalList' => HrdHelper::getApprovalList(),
             ]);
 
         } catch (\Exception $e) {
@@ -247,10 +203,73 @@ class SheMessController extends Controller
         }
     }
 
+    /**
+     * Show the form for editing a mess survey record
+     * 
+     * @param int $id
+     * @return \Illuminate\View\View
+     */
+    public function EditForm($id)
+    {
+        try {
+            // Retrieve the record from the database
+            $record = DB::table('she_mess_survey')->where('id', $id)->first();
+            
+            if (!$record) {
+                Log::error('Record not found for editing, ID: ' . $id);
+                return redirect()->route('she.mess.dashboard')
+                    ->with('error', 'Record not found');
+            }
+            
+            // Decode checklist items
+            try {
+                $record->checklist_items = is_string($record->checklist_items) ? 
+                    json_decode($record->checklist_items, true) : 
+                    (is_array($record->checklist_items) ? $record->checklist_items : []);
+                
+                // Ensure checklist_items is always an array
+                if (!is_array($record->checklist_items)) {
+                    $record->checklist_items = [];
+                    Log::warning('Checklist items converted to empty array for record ID: ' . $id);
+                }
+            } catch (\Exception $e) {
+                Log::error('Error decoding checklist items: ' . $e->getMessage());
+                $record->checklist_items = [];
+            }
+            
+            // Format dates for the form using the helper method
+            $this->formatDateField($record, 'survey_date');
+            $this->formatDateField($record, 'completion_date');
+            $this->formatDateField($record, 'inspection_date');
+            $this->formatDateField($record, 'inspection_date2');
+            $this->formatDateField($record, 'inspection_date3');
+            $this->formatDateField($record, 'acknowledgment_date');
+            
+            // Return the edit form view with the record data
+            return view('smartform::she.mess.edit', [
+                'data' => $record,
+                'approvalList' => HrdHelper::getApprovalList(),
+            ]);
+            
+        } catch (\Exception $e) {
+            Log::error('Error in EditForm: ' . $e->getMessage());
+            return redirect()->route('she.mess.dashboard')
+                ->with('error', 'Failed to load edit form: ' . $e->getMessage());
+        }
+    }
+
     public function Store(Request $request)
     {
         try {
             Log::info('Store method called with request:', $request->all());
+            
+            // Validate required fields
+            $request->validate([
+                'site_name' => 'required',
+                'work_location' => 'required',
+                'department' => 'required',
+                'shift' => 'required',
+            ]);
             
             // Format checklist items - store only conditions
             $checklistItems = [];
@@ -261,12 +280,9 @@ class SheMessController extends Controller
             }
 
             // Handle arrays and nullable fields
-            $inspectedBy = $request->input('inspected_by', []);
-            $inspectedSignatures = $request->input('inspected_signature', []);
             $doneBy = $request->input('done_by');
             $riskDescription = $request->input('risk_description');
             $improvementAction = $request->input('improvement_action');
-            $acknowledgedBy = $request->input('acknowledged_by');
 
             // Format dates
             $data = [
@@ -277,23 +293,39 @@ class SheMessController extends Controller
                 'inspector_count' => $request->inspector_count,
                 'survey_date' => $request->survey_date,
                 'completion_date' => $request->completion_date,
-                'inspection_date' => $request->inspection_date,
-                'inspection_date2' => $request->inspection_date2,
-                'inspection_date3' => $request->inspection_date3,
-                'acknowledgment_date' => $request->acknowledgment_date,
                 'checklist_items' => json_encode($checklistItems),
                 'keterangan' => $request->keterangan,
                 'risk_description' => $riskDescription,
                 'improvement_action' => $improvementAction,
                 'done_by' => $doneBy,
-                'inspected_by' => isset($inspectedBy[0]) ? $inspectedBy[0] : null,
-                'inspected_by2' => isset($inspectedBy[1]) ? $inspectedBy[1] : null,
-                'inspected_by3' => isset($inspectedBy[2]) ? $inspectedBy[2] : null,
-                'acknowledged_by' => $acknowledgedBy,
-                'inspected_signature' => isset($inspectedSignatures[0]) ? 1 : 0,
-                'inspected_signature2' => isset($inspectedSignatures[1]) ? 1 : 0,
-                'inspected_signature3' => isset($inspectedSignatures[2]) ? 1 : 0,
-                'acknowledged_signature' => $request->has('acknowledged_signature') ? 1 : 0,
+                
+                // Updated fields for inspector 1
+                'inspected_by_name' => $request->input('inspected_by_name'),
+                'inspected_by_nik' => $request->input('inspected_by_nik'),
+                'inspection_date' => $request->inspection_date,
+                'inspected_by_status' => $request->input('inspected_by_status', 'pending'),
+                
+                // Updated fields for inspector 2
+                'inspected_by2_name' => $request->input('inspected_by2_name'),
+                'inspected_by2_nik' => $request->input('inspected_by2_nik'),
+                'inspection_date2' => $request->inspection_date2,
+                'inspected_by2_status' => $request->input('inspected_by2_status', 'pending'),
+                
+                // Updated fields for inspector 3
+                'inspected_by3_name' => $request->input('inspected_by3_name'),
+                'inspected_by3_nik' => $request->input('inspected_by3_nik'),
+                'inspection_date3' => $request->inspection_date3,
+                'inspected_by3_status' => $request->input('inspected_by3_status', 'pending'),
+                
+                // Updated fields for acknowledger
+                'acknowledged_by_name' => $request->input('acknowledged_by_name'),
+                'acknowledged_by_nik' => $request->input('acknowledged_by_nik'),
+                'acknowledgment_date' => $request->acknowledgment_date,
+                'acknowledged_by_status' => $request->input('acknowledged_by_status', 'pending'),
+                
+                // Overall approval status
+                'approval_status' => $request->input('approval_status', 'pending'),
+                
                 'updated_at' => now()->format('Y-m-d H:i:s')
             ];
 
@@ -332,6 +364,48 @@ class SheMessController extends Controller
                 return redirect()->back()->with('error', 'Record not found');
             }
 
+            // Directly query the database again to get the raw date values
+            $rawDates = DB::select("SELECT 
+                CONVERT(VARCHAR, inspection_date, 120) as raw_inspection_date,
+                CONVERT(VARCHAR, acknowledgment_date, 120) as raw_acknowledgment_date,
+                CONVERT(VARCHAR, survey_date, 120) as raw_survey_date,
+                CONVERT(VARCHAR, inspection_date2, 120) as raw_inspection_date2,
+                CONVERT(VARCHAR, inspection_date3, 120) as raw_inspection_date3
+                FROM she_mess_survey WHERE id = ?", [$id]);
+            
+            if (count($rawDates) > 0) {
+                $rawDate = $rawDates[0];
+                Log::info('Raw dates from direct SQL query:', [
+                    'raw_inspection_date' => $rawDate->raw_inspection_date,
+                    'raw_acknowledgment_date' => $rawDate->raw_acknowledgment_date,
+                    'raw_survey_date' => $rawDate->raw_survey_date
+                ]);
+                
+                // Format dates using the raw values from SQL
+                $record->formatted_inspection_date = !empty($rawDate->raw_inspection_date) ? 
+                    date('d/m/Y', strtotime($rawDate->raw_inspection_date)) : '-';
+                $record->formatted_acknowledgment_date = !empty($rawDate->raw_acknowledgment_date) ? 
+                    date('d/m/Y', strtotime($rawDate->raw_acknowledgment_date)) : '-';
+                $record->formatted_survey_date = !empty($rawDate->raw_survey_date) ? 
+                    date('d/m/Y', strtotime($rawDate->raw_survey_date)) : '-';
+                $record->formatted_inspection_date2 = !empty($rawDate->raw_inspection_date2) ? 
+                    date('d/m/Y', strtotime($rawDate->raw_inspection_date2)) : '-';
+                $record->formatted_inspection_date3 = !empty($rawDate->raw_inspection_date3) ? 
+                    date('d/m/Y', strtotime($rawDate->raw_inspection_date3)) : '-';
+            } else {
+                // Fallback to direct formatting if SQL query fails
+                $record->formatted_inspection_date = $record->inspection_date ? 
+                    date('d/m/Y', strtotime($record->inspection_date)) : '-';
+                $record->formatted_acknowledgment_date = $record->acknowledgment_date ? 
+                    date('d/m/Y', strtotime($record->acknowledgment_date)) : '-';
+                $record->formatted_survey_date = $record->survey_date ? 
+                    date('d/m/Y', strtotime($record->survey_date)) : '-';
+                $record->formatted_inspection_date2 = $record->inspection_date2 ? 
+                    date('d/m/Y', strtotime($record->inspection_date2)) : '-';
+                $record->formatted_inspection_date3 = $record->inspection_date3 ? 
+                    date('d/m/Y', strtotime($record->inspection_date3)) : '-';
+            }
+            
             // Decode and validate JSON fields
             try {
                 $record->checklist_items = is_string($record->checklist_items) ? 
@@ -347,22 +421,7 @@ class SheMessController extends Controller
                 Log::error('Error decoding checklist items: ' . $e->getMessage());
                 $record->checklist_items = [];
             }
-
-            // Format dates for display with error handling
-            try {
-                $record->formatted_inspection_date = $record->inspection_date ? 
-                    Carbon::parse($record->inspection_date)->format('d/m/Y') : '';
-                $record->formatted_acknowledgment_date = $record->acknowledgment_date ? 
-                    Carbon::parse($record->acknowledgment_date)->format('d/m/Y') : '';
-                $record->formatted_survey_date = $record->survey_date ? 
-                    Carbon::parse($record->survey_date)->format('d/m/Y') : '';
-            } catch (\Exception $e) {
-                Log::error('Error formatting dates: ' . $e->getMessage());
-                $record->formatted_inspection_date = '';
-                $record->formatted_acknowledgment_date = '';
-                $record->formatted_survey_date = '';
-            }
-
+            
             // Ensure all necessary fields are present
             $record->site_name = $record->site_name ?? '';
             $record->work_location = $record->work_location ?? '';
@@ -385,6 +444,295 @@ class SheMessController extends Controller
         }
     }
 
+    /**
+     * Approve a mess survey record
+     * 
+     * @param int $id
+     * @param string $role
+     * @return \Illuminate\Http\Response
+     */
+    public function Approve($id, $role)
+    {
+        try {
+            // Get current user ID and username from session
+            $currentUserId = session('user_id') ?? '';
+            $currentUsername = session('username') ?? '';
+            
+            if (empty($currentUserId) || empty($currentUsername)) {
+                return redirect()->route('she.mess.dashboard')
+                    ->with('error', 'Please login first');
+            }
+            
+            // Get the record
+            $record = DB::table('she_mess_survey')->where('id', $id)->first();
+            
+            if (!$record) {
+                return redirect()->route('she.mess.dashboard')
+                    ->with('error', 'Record not found');
+            }
+            
+            // Create user object with session data
+            $user = (object)[
+                'nik' => $currentUserId,
+                'nama' => $currentUsername
+            ];
+            
+            // Check which role is approving and update accordingly
+            $updateData = [];
+            $now = now()->format('Y-m-d');
+            
+            switch ($role) {
+                case 'inspector1':
+                    $updateData = [
+                        'inspected_by_name' => $user->nama,
+                        'inspected_by_nik' => $user->nik,
+                        'inspection_date' => $now,
+                        'inspected_by_status' => 'approved'
+                    ];
+                    break;
+                    
+                case 'inspector2':
+                    // Check if inspector1 has approved
+                    if ($record->inspected_by_status !== 'approved') {
+                        return redirect()->route('she.mess.dashboard')
+                            ->with('error', 'Inspector 1 must approve first');
+                    }
+                    
+                    $updateData = [
+                        'inspected_by2_name' => $user->nama,
+                        'inspected_by2_nik' => $user->nik,
+                        'inspection_date2' => $now,
+                        'inspected_by2_status' => 'approved'
+                    ];
+                    break;
+                    
+                case 'inspector3':
+                    // Check if inspector2 has approved
+                    if ($record->inspected_by2_status !== 'approved') {
+                        return redirect()->route('she.mess.dashboard')
+                            ->with('error', 'Inspector 2 must approve first');
+                    }
+                    
+                    $updateData = [
+                        'inspected_by3_name' => $user->nama,
+                        'inspected_by3_nik' => $user->nik,
+                        'inspection_date3' => $now,
+                        'inspected_by3_status' => 'approved'
+                    ];
+                    break;
+                    
+                case 'acknowledger':
+                    // Check if inspector3 has approved
+                    if ($record->inspected_by3_status !== 'approved') {
+                        return redirect()->route('she.mess.dashboard')
+                            ->with('error', 'Inspector 3 must approve first');
+                    }
+                    
+                    $updateData = [
+                        'acknowledged_by_name' => $user->nama,
+                        'acknowledged_by_nik' => $user->nik,
+                        'acknowledgment_date' => $now,
+                        'acknowledged_by_status' => 'approved'
+                    ];
+                    break;
+                    
+                default:
+                    return redirect()->route('she.mess.dashboard')
+                        ->with('error', 'Invalid approval role');
+            }
+            
+            // Update the overall approval status
+            if ($role === 'acknowledger') {
+                $updateData['approval_status'] = 'approved';
+            } else if ($role === 'inspector1') {
+                $updateData['approval_status'] = 'in_progress';
+            }
+            
+            // Update the record
+            DB::table('she_mess_survey')
+                ->where('id', $id)
+                ->update($updateData);
+                
+            return redirect()->route('she.mess.dashboard')
+                ->with('success', 'Record approved successfully');
+                
+        } catch (\Exception $e) {
+            Log::error('Error in Approve method: ' . $e->getMessage());
+            return redirect()->route('she.mess.dashboard')
+                ->with('error', 'Failed to approve record: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Reject a mess survey record
+     * 
+     * @param int $id
+     * @param string $role
+     * @return \Illuminate\Http\Response
+     */
+    public function Reject($id, $role)
+    {
+        try {
+            // Get current user ID and username from session
+            $currentUserId = session('user_id') ?? '';
+            $currentUsername = session('username') ?? '';
+            
+            if (empty($currentUserId) || empty($currentUsername)) {
+                return redirect()->route('she.mess.dashboard')
+                    ->with('error', 'Please login first');
+            }
+            
+            // Get the record
+            $record = DB::table('she_mess_survey')->where('id', $id)->first();
+            
+            if (!$record) {
+                return redirect()->route('she.mess.dashboard')
+                    ->with('error', 'Record not found');
+            }
+            
+            // Create user object with session data
+            $user = (object)[
+                'nik' => $currentUserId,
+                'nama' => $currentUsername
+            ];
+            
+            // Check which role is rejecting and update accordingly
+            $updateData = [];
+            $now = now()->format('Y-m-d');
+            
+            switch ($role) {
+                case 'inspector1':
+                    $updateData = [
+                        'inspected_by_name' => $user->nama,
+                        'inspected_by_nik' => $user->nik,
+                        'inspection_date' => $now,
+                        'inspected_by_status' => 'rejected'
+                    ];
+                    break;
+                    
+                case 'inspector2':
+                    // Check if inspector1 has approved
+                    if ($record->inspected_by_status !== 'approved') {
+                        return redirect()->route('she.mess.dashboard')
+                            ->with('error', 'Inspector 1 must approve first');
+                    }
+                    
+                    $updateData = [
+                        'inspected_by2_name' => $user->nama,
+                        'inspected_by2_nik' => $user->nik,
+                        'inspection_date2' => $now,
+                        'inspected_by2_status' => 'rejected'
+                    ];
+                    break;
+                    
+                case 'inspector3':
+                    // Check if inspector2 has approved
+                    if ($record->inspected_by2_status !== 'approved') {
+                        return redirect()->route('she.mess.dashboard')
+                            ->with('error', 'Inspector 2 must approve first');
+                    }
+                    
+                    $updateData = [
+                        'inspected_by3_name' => $user->nama,
+                        'inspected_by3_nik' => $user->nik,
+                        'inspection_date3' => $now,
+                        'inspected_by3_status' => 'rejected'
+                    ];
+                    break;
+                    
+                case 'acknowledger':
+                    // Check if inspector3 has approved
+                    if ($record->inspected_by3_status !== 'approved') {
+                        return redirect()->route('she.mess.dashboard')
+                            ->with('error', 'Inspector 3 must approve first');
+                    }
+                    
+                    $updateData = [
+                        'acknowledged_by_name' => $user->nama,
+                        'acknowledged_by_nik' => $user->nik,
+                        'acknowledgment_date' => $now,
+                        'acknowledged_by_status' => 'rejected'
+                    ];
+                    break;
+                    
+                default:
+                    return redirect()->route('she.mess.dashboard')
+                        ->with('error', 'Invalid rejection role');
+            }
+            
+            // Update the overall approval status
+            $updateData['approval_status'] = 'rejected';
+            
+            // Update the record
+            DB::table('she_mess_survey')
+                ->where('id', $id)
+                ->update($updateData);
+                
+            // Log the update for debugging
+            Log::info('Record rejected successfully', [
+                'id' => $id,
+                'role' => $role,
+                'user' => $user->nama,
+                'updateData' => $updateData
+            ]);
+                
+            return redirect()->route('she.mess.dashboard')
+                ->with('success', 'Record rejected successfully');
+                
+        } catch (\Exception $e) {
+            Log::error('Error in Reject method: ' . $e->getMessage());
+            return redirect()->route('she.mess.dashboard')
+                ->with('error', 'Failed to reject record: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Delete a mess survey record
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function Delete(Request $request)
+    {
+        try {
+            // Get the record ID from the request
+            $id = $request->input('id');
+            
+            // Find the record
+            $record = DB::table('she_mess_survey')->where('id', $id)->first();
+            
+            if (!$record) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Record not found'
+                ]);
+            }
+            
+            // Check if the record is in a state that allows deletion
+            if ($record->approval_status === 'approved') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Approved records cannot be deleted'
+                ]);
+            }
+            
+            // Delete the record
+            DB::table('she_mess_survey')->where('id', $id)->delete();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Record deleted successfully'
+            ]);
+            
+        } catch (\Exception $e) {
+            Log::error('Error in Delete method: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to delete record: ' . $e->getMessage()
+            ]);
+        }
+    }
+
     private function generateDocNumber()
     {
         $prefix = 'BSS-FRM-SHE-034';
@@ -400,5 +748,56 @@ class SheMessController extends Controller
         }
 
         return sprintf("%s-%s-%03d", $prefix, $date, $sequence);
+    }
+
+    /**
+     * Helper method to format date fields
+     */
+    private function formatDateField(&$record, $fieldName)
+    {
+        if (empty($record->$fieldName)) {
+            return;
+        }
+
+        try {
+            // Clean up the date string
+            $dateStr = preg_replace(['/::/', '/\s+/'], [':', ' '], $record->$fieldName);
+            $dateStr = str_replace(':AM', ' AM', str_replace(':PM', ' PM', $dateStr));
+            $dateStr = trim($dateStr);
+            
+            if (strpos($dateStr, 'AM') !== false || strpos($dateStr, 'PM') !== false) {
+                // If it's in AM/PM format
+                try {
+                    $record->$fieldName = Carbon::createFromFormat('M d Y h:i:s A', $dateStr)->format('Y-m-d');
+                } catch (\Exception $e) {
+                    // Try another format
+                    try {
+                        $record->$fieldName = Carbon::parse($dateStr)->format('Y-m-d');
+                    } catch (\Exception $e2) {
+                        Log::error("Failed to parse $fieldName: " . $e2->getMessage());
+                        $record->$fieldName = now()->format('Y-m-d');
+                    }
+                }
+            } else {
+                // If it's in regular date format
+                try {
+                    $record->$fieldName = Carbon::parse($dateStr)->format('Y-m-d');
+                } catch (\Exception $e) {
+                    Log::error("Failed to parse $fieldName: " . $e->getMessage());
+                    $record->$fieldName = now()->format('Y-m-d');
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("Date parsing error for $fieldName: " . $e->getMessage() . ' | Original value: ' . $record->$fieldName);
+            $record->$fieldName = now()->format('Y-m-d');
+        }
+    }
+
+    public function getApprovalList(Request $request)
+    {
+        $search = $request->input('search', '');
+        $list = HrdHelper::getApprovalList($search);
+
+        return response()->json($list);
     }
 }

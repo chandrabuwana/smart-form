@@ -50,11 +50,13 @@ class User extends Authenticatable implements JWTSubject
     {
         $user = Auth::user();
 
-        $data_ID = DB::table("MS_HS_LGN_SMART_FORM")->where("nik", $user->username)->first();
-        if (is_null($data_ID)) {
-            redirect('logout');
-        } else {
-            return base64_encode($data_ID->no . '_' . $user->username);
+        if($user) {
+            $data_ID = DB::table("MS_HS_LGN_SMART_FORM")->where("nik", $user->username)->first();
+            if (is_null($data_ID)) {
+                redirect('logout');
+            } else {
+                return base64_encode($data_ID->no . '_' . $user->username);
+            }
         }
     }
 

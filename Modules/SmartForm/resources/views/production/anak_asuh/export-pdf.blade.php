@@ -56,6 +56,16 @@
     </style>
 </head>
 <body>
+    @php
+        $tanggal_items = $record->tanggal_items ?? [];
+        $shift_items = $record->shift_items ?? [];
+        $nama_anak_asuh_items = $record->nama_anak_asuh_items ?? [];
+        $attendance_items = $record->attendance_items ?? [];
+        $review_temuan_items = $record->review_temuan_items ?? [];
+        $disiplin_score_items = $record->disiplin_score_items ?? [];
+        $skill_score_items = $record->skill_score_items ?? [];
+        $attitude_score_items = $record->attitude_score_items ?? [];
+    @endphp
     <!-- Header -->
     <table class="header-table">
         <tr>
@@ -76,23 +86,23 @@
             <td width="39%">{{ $record->name }}</td>
             <td width="15%">DEPARTEMEN</td>
             <td width="1%">:</td>
-            <td width="34%">{{ $record->departemen }}</td>
+            <td width="34%">{{ \Modules\SmartForm\helpers\DepartmentHelper::getDepartmentNameWithCode($record->departemen) }}</td>
         </tr>
         <tr>
             <td>NIK</td>
             <td>:</td>
             <td>{{ $record->nik }}</td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>TANGGAL</td>
+            <td>:</td>
+            <td>{{ $tanggal_items[0]}}</td>
         </tr>
         <tr>
             <td>JABATAN</td>
             <td>:</td>
-            <td>{{ $record->jabatan }}</td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>{{ \Modules\SmartForm\helpers\JabatanHelper::getJabatanNameWithCode($record->jabatan) }}</td>
+            <td>DS/NS</td>
+            <td>:</td>
+            <td>{{ $shift_items[0] }}</td>
         </tr>
     </table>
 
@@ -119,17 +129,7 @@
             </tr>
         </thead>
         <tbody>
-            @php
-                // Values are already decoded in the controller, no need to decode again
-                $tanggal_items = $record->tanggal_items ?? [];
-                $shift_items = $record->shift_items ?? [];
-                $nama_anak_asuh_items = $record->nama_anak_asuh_items ?? [];
-                $attendance_items = $record->attendance_items ?? [];
-                $review_temuan_items = $record->review_temuan_items ?? [];
-                $disiplin_score_items = $record->disiplin_score_items ?? [];
-                $skill_score_items = $record->skill_score_items ?? [];
-                $attitude_score_items = $record->attitude_score_items ?? [];
-            @endphp
+            
 
             @for($i = 0; $i < 10; $i++)
                 <tr>
@@ -176,16 +176,22 @@
     </div>
 
     <!-- Signatures -->
-    <table style="width: 100%; margin-top: 50px;">
+    <table style="width: 100%; margin-top: 50px; border-collapse: collapse;">
         <tr>
-            <td width="40%" style="text-align: center;">
-                Dibuat Oleh,<br><br><br><br>
-                ( {{ $record->created_by }} )
+            <td style="text-align: left; padding-bottom: 10px;">
+                Dibuat Oleh,
             </td>
-            <td width="20%"></td>
-            <td width="40%" style="text-align: center;">
-                Diketahui Oleh,<br><br><br><br>
-                ( {{ $record->acknowledged_by }} )
+        </tr>
+        <tr>
+            <td style="text-align: left;">
+                <div style="display: inline-block; border-bottom: 1px solid #000; width: 150px;">
+                    {{ $record->created_by }}
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align: left; padding-top: 10px;">
+                Foreman Produksi
             </td>
         </tr>
     </table>

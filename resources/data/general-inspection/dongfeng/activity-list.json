@@ -1,0 +1,398 @@
+{
+    "ENGINE SYSTEM": [
+        {
+            "activity": "Check Engine",
+            "critical_point": "Noise & Kebocoran"
+        },
+        {
+            "activity": "Check Oli Engine",
+            "critical_point": "Level & Kebocoran"
+        },
+        {
+            "activity": "Check Fuel System",
+            "critical_point": "Kebocoran"
+        },
+        {
+            "activity": "Check Air Radiator",
+            "critical_point": "Level & Kebocoran"
+        },
+        {
+            "activity": "Check Exhaust System",
+            "critical_point": "Kebocoran & Longgar"
+        },
+        {
+            "activity": "Check Air Cleaner & Related",
+            "critical_point": "Buntu & Kerusakan"
+        },
+        {
+            "activity": "Check Turbocharger",
+            "critical_point": "Noise & Kebocoran"
+        },
+        {
+            "activity": "Check Engine Mounting",
+            "critical_point": "Retak & Kelonggaran"
+        },
+        {
+            "activity": "Check Mounting T/M",
+            "critical_point": "Retak & Kelonggaran"
+        },
+        {
+            "activity": "Check Mounting Radiator",
+            "critical_point": "Retak & Kelonggaran"
+        },
+        {
+            "activity": "Check Intake Manifold",
+            "critical_point": "Kebocoran"
+        },
+        {
+            "activity": "Check Intercooler & Piping",
+            "critical_point": "Retak & Kelonggaran"
+        },
+        {
+            "activity": "Check Water Pump",
+            "critical_point": "Retak & Kelonggaran"
+        },
+        {
+            "activity": "Check Hose Coolant",
+            "critical_point": "Retak & Kelonggaran"
+        },
+        {
+            "activity": "Check V Belts",
+            "critical_point": "Limit & Kekencangan"
+        }
+    ],
+    "STEERING SYSTEM": [
+        {
+            "activity": "Check Steering Cylinder",
+            "critical_point": "Kebocoran"
+        },
+        {
+            "activity": "Check Gear Box Steering",
+            "critical_point": "Kebocoran Oil"
+        },
+        {
+            "activity": "Check Shaft Steering",
+            "critical_point": "Kondisi Shaft"
+        },
+        {
+            "activity": "Check Hose & Connector",
+            "critical_point": "Kebocoran"
+        },
+        {
+            "activity": "Check Ball Joint & Tie Rod",
+            "critical_point": "Kondisi & Fungsi"
+        }
+    ],
+    "CLUTCH": [
+        {
+            "activity": "Check Clutch",
+            "critical_point": "Fungsi"
+        },
+        {
+            "activity": "Check Oil Clutch",
+            "critical_point": "Kebocoran"
+        },
+        {
+            "activity": "Check Clutch Servo",
+            "critical_point": "Kebocoran & Setelan"
+        },
+        {
+            "activity": "Check Clutch Limit",
+            "critical_point": "....mm"
+        },
+        {
+            "activity": "Check Bracket Booster",
+            "critical_point": "Keratakan"
+        }
+    ],
+    "TRANSMISSION": [
+        {
+            "activity": "Check Level Oil",
+            "critical_point": "Level Oil"
+        },
+        {
+            "activity": "Check Seal & Gasket",
+            "critical_point": "Kebocoran"
+        },
+        {
+            "activity": "Check Hose & Piping",
+            "critical_point": "Kebocoran"
+        },
+        {
+            "activity": "Check Bolt Propeller Shaft",
+            "critical_point": "Kekencangan"
+        },
+        {
+            "activity": "Check Shaft PTO Pump",
+            "critical_point": "Kondisi & Fungsi"
+        }
+    ],
+    "DIFFERENTIAL & FINAL DRIVE": [
+        {
+            "activity": "Check Bolt Propeller Shaft",
+            "critical_point": "Kekencangan"
+        },
+        {
+            "activity": "Check Seal & Gasket",
+            "critical_point": "Kebocoran"
+        },
+        {
+            "activity": "Center Propeller Shaft",
+            "critical_point": "Kondisi & Fungsi"
+        },
+        {
+            "activity": "Check Seal Hub",
+            "critical_point": "Keausan"
+        },
+        {
+            "activity": "Check Diff Oil",
+            "critical_point": "Level & Kebocoran"
+        },
+        {
+            "activity": "Check Difflock & Interlock",
+            "critical_point": "Fungsi"
+        }
+    ],
+    "HYDRAULIC SYSTEM": [
+        {
+            "activity": "Check Hydraulic Tank",
+            "critical_point": "Kebocoran & Level Oil"
+        },
+        {
+            "activity": "Check Hose Hoist",
+            "critical_point": "Kebocoran"
+        },
+        {
+            "activity": "Check Joy Stick Hoist",
+            "critical_point": "Kebocoran"
+        },
+        {
+            "activity": "Check Bracket Cyl Hoist",
+            "critical_point": "Retak & Kelonggaran"
+        },
+        {
+            "activity": "Check Hyd PTO Pump",
+            "critical_point": "Kebocoran"
+        },
+        {
+            "activity": "Check Cylinder Hoist",
+            "critical_point": "Kebocoran"
+        }
+    ],
+    "SAFETY EQUIPMENT": [
+        {
+            "activity": "Radio Communication",
+            "critical_point": "Fungsi"
+        },
+        {
+            "activity": "APAR",
+            "critical_point": "Kondisi"
+        },
+        {
+            "activity": "Wheel Chuck",
+            "critical_point": "Kondisi"
+        },
+        {
+            "activity": "Seat Belt",
+            "critical_point": "Kondisi"
+        }
+    ],
+    "SUSPENSION": [
+        {
+            "activity": "Check King Pin & Bearing",
+            "critical_point": "Keausan"
+        },
+        {
+            "activity": "Check Mud Guard",
+            "critical_point": "Kerusakan"
+        },
+        {
+            "activity": "Check Bushing Stabilizer",
+            "critical_point": "Kerusakan"
+        },
+        {
+            "activity": "Check All Nipple Grease",
+            "critical_point": "Buntu / Macet"
+        },
+        {
+            "activity": "Check Front Spring",
+            "critical_point": "Keretakan / Patah"
+        },
+        {
+            "activity": "Check Rear Spring",
+            "critical_point": "Kebocoran & Kerusakan"
+        },
+        {
+            "activity": "Check Sock Absorber All",
+            "critical_point": "Kebocoran & Kerusakan"
+        },
+        {
+            "activity": "Check Torque Rod",
+            "critical_point": "Keausan & Kerusakan"
+        }
+    ],
+    "ELECTRICAL": [
+        {
+            "activity": "Check Battery & Terminal",
+            "critical_point": "Kondisi & Kekencangan"
+        },
+        {
+            "activity": "Check Starting System",
+            "critical_point": "Fungsi"
+        },
+        {
+            "activity": "Check Charging System",
+            "critical_point": "Display Informasi"
+        },
+        {
+            "activity": "Check Instrument & Light",
+            "critical_point": "Kondisi & Fungsi"
+        },
+        {
+            "activity": "Check All Front Light",
+            "critical_point": "Kondisi & Fungsi"
+        },
+        {
+            "activity": "Check All Roof Light",
+            "critical_point": "Kondisi & Fungsi"
+        },
+        {
+            "activity": "Check All In Cabin",
+            "critical_point": "Kondisi & Fungsi"
+        },
+        {
+            "activity": "Check Loading Lamp",
+            "critical_point": "Kondisi & Fungsi"
+        },
+        {
+            "activity": "Check Rear Lamp",
+            "critical_point": "Kondisi & Fungsi"
+        }
+    ],
+    "BRAKE SYSTEM": [
+        {
+            "activity": "Check Foot Brake",
+            "critical_point": "Fungsi"
+        },
+        {
+            "activity": "Check Parking Brake",
+            "critical_point": "Keausan"
+        },
+        {
+            "activity": "Check Linning Brake All",
+            "critical_point": "Keausan"
+        },
+        {
+            "activity": "Check Slack Adjuster",
+            "critical_point": "Fungsi & Setelan"
+        },
+        {
+            "activity": "Chamber & Hose Brake",
+            "critical_point": "Kebocoran Angin"
+        }
+    ],
+    "CABIN": [
+        {
+            "activity": "Check Shock & Mounting",
+            "critical_point": "Kebocoran"
+        },
+        {
+            "activity": "Check Motor Window",
+            "critical_point": "Kondisi & Fungsi"
+        },
+        {
+            "activity": "Check AC & Blower",
+            "critical_point": "Fungsi"
+        },
+        {
+            "activity": "Check Wind Screen Glass",
+            "critical_point": "Keretakan"
+        },
+        {
+            "activity": "Check Window Glass",
+            "critical_point": "Keretakan"
+        },
+        {
+            "activity": "Check Glass Mirror",
+            "critical_point": "Kondisi & Fungsi"
+        },
+        {
+            "activity": "Check Pintu & Lock",
+            "critical_point": "Kondisi & Fungsi"
+        },
+        {
+            "activity": "Check Jack Kabin",
+            "critical_point": "Kondisi & Fungsi"
+        },
+        {
+            "activity": "Check Wiper & Arm",
+            "critical_point": "Kondisi & Fungsi"
+        }
+    ],
+    "CHASSIS": [
+        {
+            "activity": "Check Chasis",
+            "critical_point": "Keretakan"
+        },
+        {
+            "activity": "Check Bolt & Mounting",
+            "critical_point": "Retak & Kelonggaran"
+        },
+        {
+            "activity": "Check Vessel",
+            "critical_point": "Keretakan"
+        },
+        {
+            "activity": "Check Pin & Bracket Vessel",
+            "critical_point": "Keausan"
+        }
+    ],
+    "TYRE": [
+        {
+            "activity": "Check Tyre & Valve",
+            "critical_point": "Thread & Kerusakan"
+        },
+        {
+            "activity": "Check Pressure Tyre",
+            "critical_point": "Standard Pressure"
+        },
+        {
+            "activity": "Check Rim & Bolt",
+            "critical_point": "Retak & Kelonggaran"
+        }
+    ],
+    "WHEN STARTED": [
+        {
+            "activity": "Check Monitor",
+            "critical_point": "Fungsi"
+        },
+        {
+            "activity": "Check AC & Blower",
+            "critical_point": "Kebocoran & Fungsi"
+        },
+        {
+            "activity": "Check Brake System",
+            "critical_point": "Fungsi"
+        },
+        {
+            "activity": "Lighting Symbol",
+            "critical_point": "Fungsi"
+        },
+        {
+            "activity": "Traffic Cone",
+            "critical_point": "Kerusakan"
+        },
+        {
+            "activity": "Rotary Lamp",
+            "critical_point": "Fungsi"
+        },
+        {
+            "activity": "Back Alarm",
+            "critical_point": "Fungsi"
+        },
+        {
+            "activity": "Kotak P3K",
+            "critical_point": "Kelengkapan"
+        }
+    ]
+}

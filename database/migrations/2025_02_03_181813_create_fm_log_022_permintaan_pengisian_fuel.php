@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('no_dok')->nullable();
             $table->string('nama');
             $table->string('jabatan');
-            $table->string('nik');
+            $table->string('dibuat_oleh');
             $table->string('departemen');
             $table->date('tanggal');
             $table->string('no_lambung');
@@ -31,6 +31,8 @@ return new class extends Migration
             $table->string('total_liter');
             $table->string('diserahkan_oleh')->nullable();
             $table->string('diterima_oleh')->nullable();
+            $table->string('is_active')->nullable();
+            $table->string('site')->nullable();
         });
     }
 

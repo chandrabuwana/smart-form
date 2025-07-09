@@ -91,7 +91,7 @@
                 <img src="{{ public_path('img/logo-ct-dark.png') }}" class="logo">
             </td>
             <td width="55%" style="text-align: center;">
-                <div style="font-size: 14px; font-weight: bold;">BSS SHE Management System</div>
+                <div style="font-size: 14px; font-weight: bold;">INTEGRATED BSS EXCELLENT SYSTEM</div>
                 <div style="font-size: 16px; font-weight: bold; margin: 10px 0;">Checklist Maintenance Asset</div>
             </td>
             <td width="30%" style="border: 1px solid #000; text-align: center;">
@@ -156,6 +156,12 @@
             <td>{{ $record->print_test ? 'Ya' : 'Tidak' }}</td>
         </tr>
         <tr>
+            <td>Kabel Power</td>
+            <td>{{ ucfirst($record->kabel_power_condition) }}</td>
+            <td>Level Tinta</td> 
+            <td>{{ $record->toner_level ? 'Ya' : 'Tidak' }}</td>
+        </tr>
+        <tr>
             <td>Paper Tray</td>
             <td>{{ ucfirst($record->paper_tray_condition) }}</td>
             <td>Scan Test</td> 
@@ -179,12 +185,7 @@
             <td>Cable Test</td> 
             <td>{{ $record->cable_test ? 'Ya' : 'Tidak' }}</td>
         </tr>
-        <tr>
-            <td>Kabel Power</td>
-            <td>{{ ucfirst($record->kabel_power_condition) }}</td>
-            <td>Level Tinta</td> 
-            <td>{{ $record->toner_level ? 'Ya' : 'Tidak' }}</td>
-        </tr>
+       
         <tr>
             <td>Touchscreen*</td>
             <td>{{ ucfirst($record->touchscreen_condition) }}</td>

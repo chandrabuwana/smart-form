@@ -19,7 +19,10 @@ return new class extends Migration
             $table->string('jabatan');
             $table->string('departemen');
             $table->string('created_by');
-            $table->string('acknowledged_by');
+            // status
+            $table->boolean('isActive')->default(true);
+            
+            // $table->string('acknowledged_by');
             $table->text('tanggal_items');
             $table->text('attendance_items');
             $table->text('nama_anak_asuh_items');
@@ -28,6 +31,7 @@ return new class extends Migration
             $table->text('skill_score_items');
             $table->text('attitude_score_items');
             $table->text('shift_items');
+            $table->text('site');
             $table->timestamps();
             $table->softDeletes();
         });

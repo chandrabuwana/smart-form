@@ -120,18 +120,9 @@
                                 <div class="col-md-8">
                                     <select class="form-select input-text" aria-label="Default select example" id="inputSite" name="inputSite">
                                         <option value="">-- Pilih Site --</option>
-                                        <option value="AGM">AGM</option>
-                                        <option value="TAJ">TAJ</option>
-                                        <option value="MBL">MBL MINING</option>
-                                        <option value="MBL-HAULING">MBL HAULING</option>
-                                        <option value="BSSR">BSSR</option>
-                                        <option value="MSJ">MSJ</option>
-                                        <option value="TDM">TDM</option>
-                                        <option value="MAS">MAS</option>
-                                        <option value="PMSS">PMSS</option>
-                                        <option value="BRAM">BRAM</option>
-                                        <option value="MME">MME</option>
-                                        <option value="CDI">CDI</option>
+                                        @foreach($sites as $site)
+                                            <option value="{{ $site->KodeST }}">{{ $site->KodeST }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -511,6 +502,9 @@
         let optionKategoriPekerjaan = [];
         let optionApprover = [];
 
+        const yesterday = `{{ date('Y-m-d', strtotime('-1 days')) }}`;
+        const today = `{{ date('Y-m-d') }}`;
+
         $( function() {
             $departement = $('#inputDepartement');
             $site = $('#inputSite');
@@ -679,6 +673,14 @@
                 });
             }
 
+            $shift.change( () => {
+                if( $shift.val() == 'NS' ) {
+                    $('#inputTanggal').attr('min', yesterday);
+                } else {
+                    $('#inputTanggal').attr('min', today);
+                }
+            });
+
             $departement.change( () => {
                 fetchOptionKaryawan();
                 fetchOptionKategoriPekerjaan();
@@ -688,6 +690,14 @@
             $site.change( () => {
                 fetchOptionKaryawan();
                 fetchOptionApprover();
+            });
+
+            $('#btnSubmitForm').click( function(e) {
+                Swal.fire({
+                    title: 'Loading...',
+                    allowOutsideClick: false,
+                    didOpen: () => Swal.showLoading()
+                });
             });
 
             $('#baPekerjaan').change( function() {

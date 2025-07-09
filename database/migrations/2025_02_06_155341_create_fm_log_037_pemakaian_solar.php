@@ -18,8 +18,17 @@ return new class extends Migration
             $table->string('tanggal');
             $table->string('halaman');
             $table->string('job_site');
+            $table->string('no_doc')->nullable();
             $table->string('no_fuel_station');
+			$table->integer('total_pemakaian');
             $table->string('shift');
+            $table->date('created_date');
+            $table->string('hari');
+            $table->string('status');
+            $table->string('is_active')->nullable();
+            $table->integer('stok_awal');
+            $table->integer('masuk');
+            $table->integer('stok_akhir');
             $table->string('dibuat_oleh')->nullable();
             $table->string('disetujui_oleh')->nullable();
             $table->string('diketahui_oleh')->nullable();

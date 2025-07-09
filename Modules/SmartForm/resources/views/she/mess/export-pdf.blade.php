@@ -161,8 +161,8 @@
             <td width="5%">No</td>
             <td width="45%">HAL UNTUK DIPERIKSA</td>
             <td colspan="2" width="20%" class="text-center">Kondisi Actual</td>
-            <td class="gray-bg">Tingkat Resiko</td>
-            <td class="gray-bg">Keterangan</td>
+            <td width="15%" class="gray-bg">Tingkat Resiko</td>
+            <td width="15%" class="gray-bg">Keterangan</td>
         </tr>
         <tr class="gray-bg">
             <td></td>
@@ -174,38 +174,44 @@
         </tr>
         
         @php
-            $checklistItems = [
-                'Bangunan, Atap, dinding, pintu, jendela, aman dan bersih.',
-                'Permukaan tempat jalan, lantai dalam kondis bersih dan didisinfeksi',
-                'Pencahayaan / Penerangan kamar / ruangan memadai',
-                'Ventilasi kamar, segala ruangan Memadai',
-                'Kebersihan dan housekeeping yang baik di dalam rumah dan sekitarnya',
-                'Tempat tidur dan kasur dalam kondisi bersih dan rapi',
-                'Kamar mandi dan toilet bersih dan berfungsi dengan baik',
-                'Tempat sampah tersedia dan dikelola dengan baik',
-                'Peralatan P3K tersedia dan lengkap',
-                'APAR tersedia dan dalam kondisi baik',
-                'Instalasi listrik aman dan rapi',
-                'Area dapur bersih dan tertata rapi',
-                'Peralatan dapur bersih dan tersimpan dengan baik',
-                'Area makan bersih dan nyaman',
-                'Sistem drainase berfungsi dengan baik'
-            ];
+        $checklistItems = [
+                                            'Bangunan, Atap, dinding, pintu, jendela, aman dan bersih.',
+                                            'Permukaan tempat jalan, lantai dalam kondis bersih dan didisinfeksi',
+                                            'Pencahayaan / Penerangan kamar / ruangan memadai',
+                                            'Ventilasi kamar, segala ruangan Memadai',
+                                            'Kebersihan dan housekeeping yang baik di dalam rumah dan sekitarnya',
+                                            'Tempat sampah mencukupi / dikosongkan secara berkala',
+                                            'Tempat tidur / kamar bersih, rapi dan tidak bau lembab, ada kipas / ACnya',
+                                            'Kamar mandi bersih, mnim 3 X seminggu dikuras baknya .',
+                                            'Ada tempat jemuran yang bersih, sinar cukup dan aman',
+                                            'Toilet bersih dan Didisinfeksi, ketersediaan air cukup dan kran air berfungsi baik, ada peralatan kebersihannya.',
+                                            'Atap tidak bocor',
+                                            'Tempat penyiapan makanan yang mencukupi, bersih dan bebas serangga,',
+                                            'Instalasi Gas terkompresi Aman',
+                                            'Kunci pintu - jendela dalam kondisi bagus dan bisa digunakan - ada teralis',
+                                            'Kotak listrik / saklar penggerak / sambungan kabel aman',
+                                            'Furnitur rumah dan Ergonomi',
+                                            'Rak sepatu, tempat air minum, dan peralatan lain bersih dan keadaan baik',
+                                            'Rambu tanda – tanda dan kode warna',
+                                            'Tersedia Kotak P3K dan selalu di cek terkait isinya.',
+                                            'Tersedia APAR, atau alat pencegah dan perlindungan dari kebakaran',
+                                            'Tersedia air bersih yang cukup, dan adanya profiltank / tandon'
+                                        ];
         @endphp
+        
+        <!-- Display all items with individual risk and notes cells -->
         @foreach($checklistItems as $index => $item)
         <tr>
             <td class="text-center">{{ $index + 1 }}</td>
             <td>{{ $item }}</td>
             <td class="text-center check">{!! isset($data->checklist_items[$index]) && $data->checklist_items[$index] === 'OK' ? '✓' : '' !!}</td>
             <td class="text-center check">{!! isset($data->checklist_items[$index]) && $data->checklist_items[$index] === 'NOT OK' ? '✓' : '' !!}</td>
-            @if($index === 0)
-                <td rowspan="{{ count($checklistItems) }}" style="background-color: yellow;">Resiko Sedang</td>
-                <td rowspan="{{ count($checklistItems) }}" class="text-center">{{ $data->keterangan ?? '-' }}</td>
-            @endif
+            <td style="background-color: yellow;">Resiko Sedang</td>
+            <td class="text-center">{{ $data->keterangan ?? '-' }}</td>
         </tr>
         @endforeach
     </table>
-
+    
     <style>
         .checklist-header {
             background-color: #4472c4;
@@ -228,6 +234,10 @@
             border: 1px solid #000;
             vertical-align: middle;
         }
+        /* Add page-break-inside property to prevent table rows from breaking across pages */
+        tr {
+            page-break-inside: avoid;
+        }
     </style>
 
     <!-- Rincian Bahaya & Perbaikan -->
@@ -248,35 +258,43 @@
     <table class="signature-table">
         <tr>
             <td width="25%" style="padding: 10px; background-color: #f5f5f5;">Diinspeksi Oleh</td>
-            <td width="25%" style="padding: 10px;">{{ $data->inspected_by ?? '-' }}</td>
+            <td width="25%" style="padding: 10px;">{{ $data->inspected_by_name ?? '-' }}</td>
             <td width="15%" style="padding: 10px; background-color: #f5f5f5;">Tanda Tangan</td>
-            <td width="10%" style="padding: 10px; text-align: center;">{!! $data->inspected_signature ? '✓' : '' !!}</td>
+            <td width="10%" style="padding: 10px; text-align: center;">{!! $data->inspected_by_status === 'approved' ? '✓' : 'x' !!}</td>
             <td width="10%" style="padding: 10px; background-color: #f5f5f5;">Tanggal</td>
-            <td width="15%" style="padding: 10px;">{{ $data->inspection_date ? date('d/m/Y', strtotime($data->inspection_date)) : '-' }}</td>
+            <td width="15%" style="padding: 10px;">
+                {{ $data->formatted_inspection_date }}
+            </td>
         </tr>
         <tr>
             <td style="padding: 10px; background-color: #f5f5f5;">Diinspeksi Oleh</td>
-            <td style="padding: 10px;">{{ $data->inspected_by2 ?? '-' }}</td>
+            <td style="padding: 10px;">{{ $data->inspected_by2_name ?? '-' }}</td>
             <td style="padding: 10px; background-color: #f5f5f5;">Tanda Tangan</td>
-            <td style="padding: 10px; text-align: center;">{!! $data->inspected_signature2 ? '✓' : '' !!}</td>
+            <td style="padding: 10px; text-align: center;">{!! $data->inspected_by2_status === 'approved' ? '✓' : 'x' !!}</td>
             <td style="padding: 10px; background-color: #f5f5f5;">Tanggal</td>
-            <td style="padding: 10px;">{{ $data->inspection_date2 ? date('d/m/Y', strtotime($data->inspection_date2)) : '-' }}</td>
+            <td style="padding: 10px;">
+                {{ $data->formatted_inspection_date2 }}
+            </td>
         </tr>
         <tr>
             <td style="padding: 10px; background-color: #f5f5f5;">Diinspeksi Oleh</td>
-            <td style="padding: 10px;">{{ $data->inspected_by3 ?? '-' }}</td>
+            <td style="padding: 10px;">{{ $data->inspected_by3_name ?? '-' }}</td>
             <td style="padding: 10px; background-color: #f5f5f5;">Tanda Tangan</td>
-            <td style="padding: 10px; text-align: center;">{!! $data->inspected_signature3 ? '✓' : '' !!}</td>
+            <td style="padding: 10px; text-align: center;">{!! $data->inspected_by3_status === 'approved' ? '✓' : 'x' !!}</td>
             <td style="padding: 10px; background-color: #f5f5f5;">Tanggal</td>
-            <td style="padding: 10px;">{{ $data->inspection_date3 ? date('d/m/Y', strtotime($data->inspection_date3)) : '-' }}</td>
+            <td style="padding: 10px;">
+                {{ $data->formatted_inspection_date3 }}
+            </td>
         </tr>
         <tr>
             <td style="padding: 10px; background-color: #f5f5f5;">Disetujui Oleh</td>
-            <td style="padding: 10px;">{{ $data->acknowledged_by ?? '-' }}</td>
+            <td style="padding: 10px;">{{ $data->acknowledged_by_name ?? '-' }}</td>
             <td style="padding: 10px; background-color: #f5f5f5;">Tanda Tangan</td>
-            <td style="padding: 10px; text-align: center;">{!! $data->acknowledged_signature ? '✓' : '' !!}</td>
+            <td style="padding: 10px; text-align: center;">{!! $data->acknowledged_by_status === 'approved' ? '✓' : 'x' !!}</td>
             <td style="padding: 10px; background-color: #f5f5f5;">Tanggal</td>
-            <td style="padding: 10px;">{{ $data->acknowledgment_date ? date('d/m/Y', strtotime($data->acknowledgment_date)) : '-' }}</td>
+            <td style="padding: 10px;">
+                {{ $data->formatted_acknowledgment_date }}
+            </td>
         </tr>
     </table>
 </body>

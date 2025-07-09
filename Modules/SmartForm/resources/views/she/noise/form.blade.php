@@ -38,30 +38,37 @@
                                     <div class="input-group input-group-static mb-3">
                                         <label>Site Name</label>
                                         <select class="form-control" id="site_name" name="site_name" required {{ $isShowDetail ? 'disabled' : '' }}>
-                                            @foreach(['bss', 'agm', 'mbl', 'mme', 'mas', 'pmss', 'taj', 'bssr', 'tdm', 'msj'] as $site)
-                                                <option value="{{ strtoupper($site) }}" 
-                                                    {{ $isShowDetail && strtolower($maintenanceRecord->site_name) == strtolower($site) ? 'selected' : 
-                                                    (!$isShowDetail && isset($defaultValues['site_name']) && strtolower($defaultValues['site_name']) == strtolower($site) ? 'selected' : '') }}>
-                                                    {{ strtoupper($site) }}
+                                            <option value="">-- Pilih Site --</option>
+                                            @foreach(\Modules\SmartForm\helpers\SiteHelper::getAllSites() as $code => $name)
+                                                <option value="{{ strtoupper($code) }}" 
+                                                    {{ $isShowDetail && strtolower($maintenanceRecord->site_name) == strtolower($code) ? 'selected' : 
+                                                    (!$isShowDetail && isset($defaultValues['site_name']) && strtolower($defaultValues['site_name']) == strtolower($code) ? 'selected' : '') }}>
+                                                    {{ $name }}
                                                 </option>
                                             @endforeach
+                                            <option value="BSS" 
+                                                {{ $isShowDetail && strtolower($maintenanceRecord->site_name) == 'bss' ? 'selected' : 
+                                                (!$isShowDetail && isset($defaultValues['site_name']) && strtolower($defaultValues['site_name']) == 'bss' ? 'selected' : '') }}>
+                                                BSS
+                                            </option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="input-group input-group-static mb-3">
                                         <label>Department</label>
-                                        <input type="text" name="department" class="form-control" 
-                                            value="{{ $isShowDetail ? $maintenanceRecord->department : ($defaultValues['department'] ?? '') }}" 
-                                            >
+                                        <select class="form-control" name="department" id="department" {{ $isShowDetail ? 'disabled' : '' }} required>
+                                            <option value="">-- Pilih Departemen --</option>
+                                            @foreach(\Modules\SmartForm\helpers\DepartmentHelper::getAllDepartments() as $code => $name)
+                                                <option value="{{ $code }}" {{ $isShowDetail && $maintenanceRecord->department == $code ? 'selected' : '' }}>{{ $name }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="input-group input-group-static mb-3">
                                         <label>Shift</label>
-                                        <input type="text" name="shift" class="form-control" 
-                                            value="{{ $isShowDetail ? $maintenanceRecord->shift : ($defaultValues['shift'] ?? 'DS') }}" 
-                                            readonly>
+                                        {!! \Modules\SmartForm\helpers\ShiftHelper::renderShiftSelect('shift', $isShowDetail ? $maintenanceRecord->shift : (isset($defaultValues['shift']) ? $defaultValues['shift'] : null), isset($isShowDetail) && $isShowDetail) !!}
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -77,6 +84,7 @@
                                         <label>Jumlah Inspektor</label>
                                         <input type="number" name="inspector_count" class="form-control" 
                                             value="{{ $isShowDetail ? $maintenanceRecord->inspector_count : ($defaultValues['inspector_count'] ?? 1) }}" 
+                                            min="1" step="1"
                                             required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
                                     </div>
                                 </div>
@@ -157,12 +165,23 @@
 
                                                 @foreach($defaultActivities as $index => $activity)
                                                 <tr class="activity-row">
-                                                    <td>{{ $index + 1 }}</td>
-                                                    <td class="activity-name">{{ $activity }}</td>
-                                                    <td>< 85-100</td>
-                                                    <td>
+                                                    <td class="border text-center">{{ $index + 1 }}</td>
+                                                    <td class="activity-name border">{{ $activity }}</td>
+                                                    <td class="border text-center">< 85-100</td>
+                                                    <td class="border text-center">
                                                         @if($isShowDetail)
-                                                            {{ $maintenanceRecord->activities[$activity]['actual'] != 0 ? $maintenanceRecord->activities[$activity]['actual'] : '' ?? '-' }}
+                                                            @php
+                                                                $activityData = null;
+                                                                if (is_array($maintenanceRecord->activities)) {
+                                                                    foreach ($maintenanceRecord->activities as $act) {
+                                                                        if (isset($act['name']) && $act['name'] === $activity) {
+                                                                            $activityData = $act;
+                                                                            break;
+                                                                        }
+                                                                    }
+                                                                }
+                                                            @endphp
+                                                            {{ $activityData && isset($activityData['actual']) && $activityData['actual'] != 0 ? $activityData['actual'] : '-' }}
                                                         @else
                                                             <input type="number" step="0.1" class="form-control activity-actual" 
                                                                 name="activities[{{ $index }}][actual]">
@@ -170,22 +189,22 @@
                                                                 value="{{ $activity }}">
                                                         @endif
                                                     </td>
-                                                    <td>
+                                                    <td class="border text-center">
                                                         <div class="form-check">
-                                                            <input class="form-check-input" type="radio" 
+                                                            <input class="form-check-input cursor-pointer" type="radio" 
                                                                 name="activities[{{ $index }}][status]" value="below_nab" 
-                                                                {{ $isShowDetail ? ($maintenanceRecord->activities[$activity]['status'] ?? '') === 'below_nab' ? 'checked' : '' : '' }}
+                                                                {{ $isShowDetail && $activityData && ($activityData['status'] ?? '') === 'below_nab' ? 'checked' : '' }}
                                                                 {{ $isShowDetail ? 'disabled' : '' }}>
-                                                            <label class="form-check-label">< NAB</label>
+                                                            <label class="cursor-default">< NAB</label>
                                                         </div>
                                                     </td>
-                                                    <td>
+                                                    <td class="border text-center">
                                                         <div class="form-check">
-                                                            <input class="form-check-input" type="radio" 
-                                                                name="activities[{{ $index }}][status]" value="above_nab"
-                                                                {{ $isShowDetail ? ($maintenanceRecord->activities[$activity]['status'] ?? '') === 'above_nab' ? 'checked' : '' : '' }}
+                                                            <input class="form-check-input cursor-pointer" type="radio" 
+                                                                name="activities[{{ $index }}][status]" value="above_nab" 
+                                                                {{ $isShowDetail && $activityData && ($activityData['status'] ?? '') === 'above_nab' ? 'checked' : '' }}
                                                                 {{ $isShowDetail ? 'disabled' : '' }}>
-                                                            <label class="form-check-label">> NAB</label>
+                                                            <label class="cursor-default">> NAB</label>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -228,10 +247,10 @@
 
                                                 @foreach($defaultWorkAreas as $index => $area)
                                                 <tr class="area-row">
-                                                    <td>{{ $index + 1 }}</td>
-                                                    <td class="area-name">{{ $area }}</td>
-                                                    <td>< 85-100</td>
-                                                    <td>
+                                                    <td class="border text-center">{{ $index + 1 }}</td>
+                                                    <td class="area-name border">{{ $area }}</td>
+                                                    <td class="border text-center">< 85-100</td>
+                                                    <td class="border text-center">
                                                         @if($isShowDetail)
                                                             @php
                                                                 $workAreasData = $maintenanceRecord->work_areas;
@@ -245,26 +264,26 @@
                                                                 value="{{ $area }}">
                                                         @endif
                                                     </td>
-                                                    <td>
+                                                    <td class="border text-center">
                                                         <div class="form-check">
-                                                            <input class="form-check-input" type="radio" 
+                                                            <input class="form-check-input cursor-pointer" type="radio" 
                                                                 name="work_areas[{{ $index }}][status]" value="below_nab"
                                                                 @if($isShowDetail)
-                                                                    {{ ($areaData['status'] ?? '') === 'below_nab' ? 'checked' : '' }}
+                                                                    {{ isset($areaData['status']) && $areaData['status'] === 'below_nab' ? 'checked' : '' }}
                                                                     disabled
                                                                 @endif>
-                                                            <label class="form-check-label">< NAB</label>
+                                                            <label class="cursor-default">< NAB</label>
                                                         </div>
                                                     </td>
-                                                    <td>
+                                                    <td class="border text-center">
                                                         <div class="form-check">
-                                                            <input class="form-check-input" type="radio" 
+                                                            <input class="form-check-input cursor-pointer" type="radio" 
                                                                 name="work_areas[{{ $index }}][status]" value="above_nab"
                                                                 @if($isShowDetail)
-                                                                    {{ ($areaData['status'] ?? '') === 'above_nab' ? 'checked' : '' }}
+                                                                    {{ isset($areaData['status']) && $areaData['status'] === 'above_nab' ? 'checked' : '' }}
                                                                     disabled
                                                                 @endif>
-                                                            <label class="form-check-label">> NAB</label>
+                                                            <label class="cursor-default">> NAB</label>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -291,9 +310,12 @@
                                 <div class="col-md-6">
                                     <div class="input-group input-group-static mb-3">
                                         <label>Diinspeksi Oleh</label>
-                                        <input type="text" name="inspected_by" class="form-control" 
-                                            value="{{ $isShowDetail ? $maintenanceRecord->inspected_by : '' }}" 
-                                            required {{ $isShowDetail ? 'disabled' : '' }}>
+                                        <input type="text" name="inspected_by_name" class="form-control" 
+                                            placeholder="Nama Lengkap"
+                                            value="{{ $isShowDetail ? $maintenanceRecord->inspected_by_name : session('username') }}"
+                                            {{ $isShowDetail ? 'disabled' : '' }} required>
+
+                                        <input type="hidden" name="inspected_by_nik" value="{{ $isShowDetail ? $maintenanceRecord->inspected_by_nik : session('user_id') }}" required>
                                     </div>
                                     <div class="input-group input-group-static mb-3">
                                         <label>Tanggal Inspeksi</label>
@@ -301,21 +323,13 @@
                                             value="{{ $isShowDetail ? $maintenanceRecord->inspection_date : now()->format('Y-m-d') }}" 
                                             required {{ $isShowDetail ? 'disabled' : '' }}>
                                     </div>
-                                    <div class="form-check mb-3 ps-0">
-                                        <input class="form-check-input" type="checkbox" name="inspected_signature" value="1"
-                                            {{ $isShowDetail ? ($maintenanceRecord->inspected_signature ? 'checked' : '') : '' }}
-                                            {{ $isShowDetail ? 'disabled' : '' }} required>
-                                        <label class="form-check-label">
-                                            Signed by Inspector
-                                        </label>
-                                    </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="input-group input-group-static mb-3">
                                         <label>Mengetahui</label>
-                                        <input type="text" name="acknowledged_by" class="form-control" 
-                                            value="{{ $isShowDetail ? $maintenanceRecord->acknowledged_by : '' }}" 
-                                            required {{ $isShowDetail ? 'disabled' : '' }}>
+                                        <select name="acknowledged_by_name" id="acknowledged_by_select" class="form-control text-left px-5" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                        </select>
+                                        <input type="hidden" name="acknowledged_by_nik" id="acknowledged_by_nik" value="{{ $isShowDetail ? $maintenanceRecord->acknowledged_by_nik : '' }}" required>
                                     </div>
                                     <div class="input-group input-group-static mb-3">
                                         <label>Tanggal Mengetahui</label>
@@ -323,21 +337,13 @@
                                             value="{{ $isShowDetail ? $maintenanceRecord->acknowledgment_date : now()->format('Y-m-d') }}" 
                                             required {{ $isShowDetail ? 'disabled' : '' }}>
                                     </div>
-                                    <div class="form-check mb-3 ps-0">
-                                        <input class="form-check-input" type="checkbox" name="acknowledged_signature" value="1"
-                                            {{ $isShowDetail ? ($maintenanceRecord->acknowledged_signature ? 'checked' : '') : '' }}
-                                            {{ $isShowDetail ? 'disabled' : '' }} required>
-                                        <label class="form-check-label">
-                                            Signed by Acknowledger
-                                        </label>
-                                    </div>
                                 </div>
                             </div>
 
                             <!-- Form Actions -->
                             <div class="row">
                                 <div class="col-12 text-end">
-                                    @if($isShowDetail)
+                                    @if($isShowDetail && isset($record->approval_status) && $record->approval_status == 'approved')
                                         <a href="{{ route('she.noise.dashboard') }}" class="btn btn-secondary">Back</a>
                                         <a href="{{ route('she.noise.export', $maintenanceRecord->id) }}" class="btn btn-primary">
                                             <i class="material-icons">download</i> Export
@@ -348,9 +354,11 @@
                                             <div>
                                                 <a href="{{ route('she.noise.dashboard') }}" class="btn btn-secondary">Back</a>
                                             </div>
-                                            <div>
-                                                <button type="submit" class="btn btn-primary">Submit</button>
-                                            </div>
+                                            @if(!$isShowDetail)
+                                                <div>
+                                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                                </div>
+                                            @endif
                                         </div>
                                     </div>
                                     @endif
@@ -363,6 +371,33 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle acknowledged_by_nik population when supervisor is selected
+        const supervisorSelect = document.getElementById('acknowledged_by_select');
+        const nikField = document.getElementById('acknowledged_by_nik');
+        
+        if (supervisorSelect && nikField) {
+            // Set initial value if a supervisor is already selected
+            if (supervisorSelect.selectedIndex > 0) {
+                const selectedOption = supervisorSelect.options[supervisorSelect.selectedIndex];
+                nikField.value = selectedOption.getAttribute('data-nik');
+            }
+            
+            // Update NIK when supervisor selection changes
+            supervisorSelect.addEventListener('change', function() {
+                if (this.selectedIndex > 0) {
+                    const selectedOption = this.options[this.selectedIndex];
+                    nikField.value = selectedOption.getAttribute('data-nik');
+                } else {
+                    nikField.value = '';
+                }
+            });
+        }
+    });
+</script>
+
 @endsection
 
 @section('custom-css')
@@ -384,6 +419,48 @@
 
 @section('custom-js')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    $(function() {
+        $('#acknowledged_by_select').select2({
+            placeholder: '-- Pilih Mengetahui --',
+            width: '100%',
+            ajax: {
+                url: '{{ route("approval.list") }}',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { search: params.term };
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                id: item.nama,
+                                text: item.nama + ' (' + item.nik + ')',
+                                nik: item.nik
+                            };
+                        })
+                    };
+                },
+                cache: true
+            }
+        }).on('select2:select', function (e) {
+            // Get the selected option's data-nik attribute
+            var selectedOption = $(this).find('option:selected');
+            var nik = selectedOption.data('nik');
+            
+            // Update the hidden NIK field
+            $('#acknowledged_by_nik').val(nik);
+        });
+        
+        // Set initial NIK value if option is already selected
+        var initialOption = $('#acknowledged_by_select').find('option:selected');
+        if (initialOption.val()) {
+            $('#acknowledged_by_nik').val(initialOption.data('nik'));
+        }
+    });
+</script>
 <script>
 $(document).ready(function() {
     // Form submission handling

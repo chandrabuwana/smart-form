@@ -264,33 +264,33 @@
     <table class="signature-table">
         <tr>
             <td style="padding: 10px; background-color: #f5f5f5;">Diinspeksi Oleh</td>
-            <td style="padding: 10px;">{{ $record->inspector_1 ?? '-'}}</td>
+            <td style="padding: 10px;">{{ $record->inspector_1_name ?? '-'}}</td>
             <td style="padding: 10px; background-color: #f5f5f5;">Tanda Tangan</td>
-            <td style="padding: 10px;">{{ $record->inspector_1_signature ? 'Signed' : '-' }}</td>
+            <td style="padding: 10px;">{{ $record->inspector_1_status === 'approved' ? 'Signed' : 'Not Signed' }}</td>
             <td style="padding: 10px; background-color: #f5f5f5;">Tanggal</td>
             <td style="padding: 10px;">{{ $record->inspection_date ? \Carbon\Carbon::parse($record->inspection_date)->format('d F Y') : '-' }}</td>
         </tr>
         <tr>
             <td style="padding: 10px; background-color: #f5f5f5;">Diinspeksi Oleh</td>
-            <td style="padding: 10px;">{{ $record->inspector_2 ?? '-'}}</td>
+            <td style="padding: 10px;">{{ $record->inspector_2_name ?? '-'}}</td>
             <td style="padding: 10px; background-color: #f5f5f5;">Tanda Tangan</td>
-            <td style="padding: 10px;">{{ $record->inspector_2_signature ? 'Signed' : '-' }}</td>
+            <td style="padding: 10px;">{{ $record->inspector_2_status === 'approved' ? 'Signed' : 'Not Signed' }}</td>
             <td style="padding: 10px; background-color: #f5f5f5;">Tanggal</td>
             <td style="padding: 10px;">{{ $record->inspection_date ? \Carbon\Carbon::parse($record->inspection_date)->format('d F Y') : '-' }}</td>
         </tr>
         <tr>
             <td style="padding: 10px; background-color: #f5f5f5;">Diinspeksi Oleh</td>
-            <td style="padding: 10px;">{{ $record->inspector_3 ?? '-'}}</td>
+            <td style="padding: 10px;">{{ $record->inspector_3_name ?? '-'}}</td>
             <td style="padding: 10px; background-color: #f5f5f5;">Tanda Tangan</td>
-            <td style="padding: 10px;">{{ $record->inspector_3_signature ? 'Signed' : '-' }}</td>
+            <td style="padding: 10px;">{{ $record->inspector_3_status === 'approved' ? 'Signed' : 'Not Signed' }}</td>
             <td style="padding: 10px; background-color: #f5f5f5;">Tanggal</td>
             <td style="padding: 10px;">{{ $record->inspection_date ? \Carbon\Carbon::parse($record->inspection_date)->format('d F Y') : '-' }}</td>
         </tr>
         <tr>
             <td style="padding: 10px; background-color: #f5f5f5;">Mengetahui</td>
-            <td style="padding: 10px;">{{ $record->acknowledged_by ?? '-'}}</td>
+            <td style="padding: 10px;">{{ $record->acknowledged_by_name ?? '-'}}</td>
             <td style="padding: 10px; background-color: #f5f5f5;">Tanda Tangan</td>
-            <td style="padding: 10px;">{{ $record->acknowledged_by_signature ? 'Signed' : '-' }}</td>
+            <td style="padding: 10px;">{{ $record->acknowledged_status === 'approved' ? 'Signed' : 'Not Signed' }}</td>
             <td style="padding: 10px; background-color: #f5f5f5;">Tanggal</td>
             <td style="padding: 10px;">{{ $record->acknowledged_date ? \Carbon\Carbon::parse($record->acknowledged_date)->format('d F Y') : '-' }}</td>
         </tr>

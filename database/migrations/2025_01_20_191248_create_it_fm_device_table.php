@@ -22,15 +22,17 @@ return new class extends Migration
             $table->string('nama');
             $table->string('nik');
             $table->string('dept');
-            $table->enum('site', ['agm', 'mbl', 'mme', 'mas', 'pmss', 'taj', 'bssr', 'tdm', 'msj']);
+            $table->string('site');
 
             // User Information
             $table->string('user_name');
             $table->string('user_nik');
             $table->string('user_dept');
-            $table->enum('user_site', ['agm', 'mbl', 'mme', 'mas', 'pmss', 'taj', 'bssr', 'tdm', 'msj']);
+            $table->string('user_site');
             $table->string('user_no_asset')->nullable();
             
+            // status
+            $table->boolean('isActive')->default(true);
 
             // Asset Information
             $table->string('jenis_aset');

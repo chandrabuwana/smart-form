@@ -204,6 +204,12 @@
                                             <a href="{{ route('it-ops.form-printer') }}?id={{ $record->id }}" class="btn btn-primary btn-action text-white">
                                                 <i class="fas fa-eye"></i> Detail
                                             </a>
+                                            <a href="{{ route('it-ops.edit-printer') }}?id={{ $record->id }}" class="btn btn-info btn-action text-white">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </a>
+                                            <button type="button" class="btn btn-danger btn-action delete-printer" data-id="{{ $record->id }}">
+                                                <i class="fas fa-trash"></i> Delete
+                                            </button>
                                         </td>
                                     </tr>
                                 @empty
@@ -227,12 +233,11 @@
 
 @section('custom-js')
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.29.0/tableExport.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.29.0/libs/jsPDF/jspdf.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.23.2/dist/extensions/export/bootstrap-table-export.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
-    <script type="text/javascript">
-        document.addEventListener('DOMContentLoaded', function() {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/extensions/filter-control/bootstrap-table-filter-control.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
             const filterForm = document.getElementById('filterForm');
             const btnFilterSubmit = document.getElementById('btnFilterSubmit');
             const btnClearFilter = document.getElementById('btnClearFilter');
@@ -265,6 +270,63 @@
             // Auto-submit on site change
             filterInputs.site.addEventListener('change', function() {
                 btnFilterSubmit.click();
+            });
+
+            // Delete button click handler
+            $('.delete-printer').on('click', function() {
+                const id = $(this).data('id');
+                
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "This record will be marked as inactive and won't appear in the dashboard.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Send AJAX request to delete the record
+                        $.ajax({
+                            url: "{{ route('it-ops.delete-printer') }}",
+                            type: "POST",
+                            data: {
+                                id: id,
+                                _token: "{{ csrf_token() }}"
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    Swal.fire(
+                                        'Deleted!',
+                                        response.message,
+                                        'success'
+                                    ).then(() => {
+                                        // Reload the page to refresh the table
+                                        window.location.reload();
+                                    });
+                                } else {
+                                    Swal.fire(
+                                        'Error!',
+                                        response.message,
+                                        'error'
+                                    );
+                                }
+                            },
+                            error: function(xhr) {
+                                let errorMessage = 'An error occurred while deleting the record';
+                                if (xhr.responseJSON && xhr.responseJSON.message) {
+                                    errorMessage = xhr.responseJSON.message;
+                                }
+                                
+                                Swal.fire(
+                                    'Error!',
+                                    errorMessage,
+                                    'error'
+                                );
+                            }
+                        });
+                    }
+                });
             });
         });
     </script>

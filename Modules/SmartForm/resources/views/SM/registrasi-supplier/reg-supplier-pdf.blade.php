@@ -111,6 +111,10 @@ p.thick {
             <tr> 
                 <table class="w-full">
                     <tr>
+                        <td style="width:150;font-size: 0.875rem;">Jenis Badan Usaha</td>
+                        <td class="w-half">: {{$data->jenis_badan_usaha}}</td>
+                    </tr>
+                    <tr>
                         <td style="width:150;font-size: 0.875rem;">Nama Vendor (CV/PT)</td>
                         <td class="w-half">: {{$data->nama_vendor}}</td>
                     </tr>
@@ -429,16 +433,19 @@ p.thick {
             </tr>
             <tr class="approval">
                 <td>
-                    <div>______________________</div>
-                    <div>Vendor/ Representative</div>
+                    <div><br></div>
+                    <div>Vendor/Representative</div>
+                    <div>{{$data->diisi_oleh}}</div>
                 </td>
                 <td>
-                    <div>_______________________</div>
+                    <div><br></div>
                     <div>Staff Supply Management</div>
+                    <div>{{$data->diterima_oleh}}</div>
                 </td>
                 <td>
-                    <div>_______________________</div>
+                    <div>{{$data->status}}</div>
                     <div>Kadep Supply Management</div>
+                    <div>{{$data->disetujui_oleh}}</div>
                 </td>
             </tr>
         </table>

@@ -26,18 +26,32 @@ return new class extends Migration
             $table->text('improvement_action')->nullable();
             $table->text('done_by')->nullable();
             $table->date('completion_date')->nullable();
-            $table->string('inspected_by')->nullable();
+
+            // Inspection Information
+            $table->string('inspected_by_name')->nullable();
+            $table->string('inspected_by_nik')->nullable();
             $table->date('inspection_date')->nullable();
-            $table->boolean('inspected_signature')->default(false);
-            $table->string('inspected_by2')->nullable();
+
+            $table->string('inspected_by2_name')->nullable();
+            $table->string('inspected_by2_nik')->nullable();
             $table->date('inspection_date2')->nullable();
-            $table->boolean('inspected_signature2')->default(false);
-            $table->string('inspected_by3')->nullable();
+
+            $table->string('inspected_by3_name')->nullable();
+            $table->string('inspected_by3_nik')->nullable();
             $table->date('inspection_date3')->nullable();
-            $table->boolean('inspected_signature3')->default(false);
-            $table->string('acknowledged_by')->nullable();
+
+            $table->string('acknowledged_by_name')->nullable();
+            $table->string('acknowledged_by_nik')->nullable();
             $table->date('acknowledgment_date')->nullable();
-            $table->boolean('acknowledged_signature')->default(false);
+
+            // Individual approval statuses
+            $table->enum('inspected_by_status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->enum('inspected_by2_status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->enum('inspected_by3_status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->enum('acknowledged_by_status', ['pending', 'approved', 'rejected'])->default('pending');
+
+            // Overall approval status
+            $table->enum('approval_status', ['pending', 'in_progress', 'approved', 'rejected'])->default('pending');
             $table->timestamps();
         });
     }

@@ -1,0 +1,181 @@
+{
+    "ENGINE": [
+        {
+            "item": "Engine Speed",
+            "condition": "10th step (High Idle)",
+            "unit": "Rpm",
+            "standard": "1800 ± 20"
+        },
+        {
+            "condition": "9th step",
+            "standard": "1700 ± 20"
+        },
+        {
+            "condition": "8th step",
+            "standard": "1600 ± 20"
+        },
+        {
+            "condition": "7th step",
+            "standard": "1550 ± 20"
+        },
+        {
+            "condition": "6th step",
+            "standard": "1500 ± 20"
+        },
+        {
+            "condition": "5th step",
+            "standard": "1400 ± 20"
+        },
+        {
+            "condition": "4th step",
+            "standard": "1300 ± 20"
+        },
+        {
+            "condition": "Low Idle Speed (1st step - 3rd step)",
+            "standard": "Working 1200 ± 50 rpm <br> stand by 1000 ± 50 rpm"
+        },
+        {
+            "item": "Lub Oil Pressure",
+            "condition": "engine Low Idle",
+            "unit": "Kg/cm2",
+            "standard": "Min 1,2/Min 0,8 (Repair)"
+        },
+        {
+            "condition": "engine High Idle",
+            "standard": "4,0 - 6,0/2,5 (Repair)"
+        },
+        {
+            "item": "Coolant Temperature",
+            "condition": "Operational Temp",
+            "unit": "C",
+            "standard": "83-90"
+        },
+        {
+            "item": "Boost Pressure",
+            "condition": "engine High Idle",
+            "unit": "mm Aq",
+            "standard": "Min. 107/Min. 93 (Repair)"
+        },
+        {
+            "item": "Blow-by Pressure",
+            "condition": "Roted Output (1800 rpm)<br>coolant temp within operating range",
+            "unit": "mm Aq",
+            "standard": "Max 500/Max 800 (Repair)"
+        },
+        {
+            "item": "Exhaust Gas Temp (Cylinder 1)",
+            "condition": "engine High Idle",
+            "unit": "c",
+            "standard": "Max. 680/Max. 700(Repair)"
+        },
+        {
+            "item": "Exhaust Gas Temp (Cylinder 2)",
+            "condition": "engine High Idle",
+            "unit": "c",
+            "standard": "Max. 680/Max. 700(Repair)"
+        },
+        {
+            "item": "Exhaust Gas Temp (Cylinder 3)",
+            "condition": "engine High Idle",
+            "unit": "c",
+            "standard": "Max. 680/Max. 700(Repair)"
+        },
+        {
+            "item": "Exhaust Gas Temp (Cylinder 4)",
+            "condition": "engine High Idle",
+            "unit": "c",
+            "standard": "Max. 680/Max. 700(Repair)"
+        },
+        {
+            "item": "Exhaust Gas Temp (Cylinder 5)",
+            "condition": "engine High Idle",
+            "unit": "c",
+            "standard": "Max. 680/Max. 700(Repair)"
+        },
+        {
+            "item": "Exhaust Gas Temp (Cylinder 6)",
+            "condition": "engine High Idle",
+            "unit": "c",
+            "standard": "Max. 680/Max. 700(Repair)"
+        }
+    ],
+    "HYDRAULIC": [
+        {
+            "item": "Main Pump 1",
+            "condition": "1800 rpm (10th gear)",
+            "unit": "kg/cm³",
+            "standard": "315 - 325"
+        },
+        {
+            "item": "Main Pump 2",
+            "standard": "345 - 355"
+        },
+        {
+            "item": "Main Pump 3",
+            "standard": "345 - 355"
+        },
+        {
+            "item": "Main Pump 4",
+            "standard": "36-44"
+        }
+    ],
+    "WORKING SPEED": [
+        {
+            "item": "Boom Lift (Raise)",
+            "condition": "1800 rpm (10th gear)",
+            "unit": "Sec",
+            "standard": "6.2 ± 0.5"
+        },
+        {
+            "item": "Boom Down (Lower)",
+            "standard": "3.8 ± 0.5"
+        },
+        {
+            "item": "Arm Out",
+            "standard": "3.6 ± 0.5"
+        },
+        {
+            "item": "Arm In",
+            "standard": "3.8 ± 0.5"
+        },
+        {
+            "item": "Bucket Out",
+            "standard": "4.1 ± 0.5"
+        },
+        {
+            "item": "Bucket In",
+            "standard": "3.9 ± 0.5"
+        },
+        {
+            "item": "Travel High Speed (Rabbit Mode)",
+            "standard": "17.07 ± 2 s/20 m"
+        },
+        {
+            "item": "Travel Low Speed",
+            "standard": "24.78 ± 2 s/20 m"
+        },
+        {
+            "item": "Swing Left",
+            "standard": "28 ± 4 (3 round calculated after 1 round not calculated)"
+        },
+        {
+            "item": "Swing Left"
+        }
+    ],
+    "Final": [
+        {
+            "item": "Drain Plug",
+            "condition": "Visual Check (Eng. Stop)",
+            "standard": "No Excressive, Metalic Powder"
+        },
+        {
+            "item": "Oil Leak",
+            "standard": "No Leak"
+        },
+        {
+            "item": "Error Code",
+            "condition": "Function Check",
+            "standard": "No DTC (Diagnostic Trouble Code) Detected"
+        }
+    ]
+}

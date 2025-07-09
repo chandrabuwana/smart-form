@@ -23,17 +23,34 @@ return new class extends Migration
             // Notes
             $table->text('notes')->nullable();
             
-            // Approval information
-            $table->string('created_by');
-            $table->string('checked_by')->nullable();
-            $table->timestamp('checked_at')->nullable();
-            $table->string('approved_by')->nullable();
-            $table->timestamp('approved_at')->nullable();
+            // Creator information
+            $table->string('created_by')->nullable();
             
             // Supervisor and DH information
-            $table->string('supervisor')->nullable();
-            $table->string('dh')->nullable();
-            $table->string('dh_terkait')->nullable();
+            $table->string('hygiene_name')->nullable();
+            $table->string('hygiene_nik')->nullable();
+            $table->timestamp('hygiene_signed_at')->nullable();
+
+            $table->string('supervisor_name')->nullable();
+            $table->string('supervisor_nik')->nullable();
+            $table->timestamp('supervisor_signed_at')->nullable();
+
+            $table->string('dh_name')->nullable();
+            $table->string('dh_nik')->nullable();
+            $table->timestamp('dh_signed_at')->nullable();
+
+            $table->string('dh_terkait_name')->nullable();
+            $table->string('dh_terkait_nik')->nullable();
+            $table->timestamp('dh_terkait_signed_at')->nullable();
+
+            // Individual approval statuses
+            $table->enum('hygiene_status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->enum('supervisor_status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->enum('dh_status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->enum('dh_terkait_status', ['pending', 'approved', 'rejected'])->default('pending');
+
+            // Overall approval status
+            $table->enum('approval_status', ['pending', 'in_progress', 'approved', 'rejected'])->default('pending');
             
             $table->timestamps();
             $table->softDeletes();

@@ -49,7 +49,8 @@ class DeviceFormController extends Controller
                     ELSE 0 END +
                     CASE WHEN battery_condition = \'rusak\' THEN 1   
                     ELSE 0 END) as broken_components')
-            ]);
+            ])
+            ->where('isActive', true);
 
         // Apply search filter if provided
         if ($request->has('search')) {
@@ -85,7 +86,7 @@ class DeviceFormController extends Controller
             ->paginate(10);
 
         // Calculate statistics
-        $totalRecords = DB::table('it_fm_device')->count();
+        $totalRecords = DB::table('it_fm_device')->where('isActive', true)->count();
         $brokenComponents = DB::table('it_fm_device')
             ->where('case_casing_condition', 'rusak')
             ->orWhere('touchscreen_condition', 'rusak')
@@ -101,6 +102,7 @@ class DeviceFormController extends Controller
             ->orWhere('wireless_condition', 'rusak')
             ->orWhere('mic_condition', 'rusak')
             ->orWhere('battery_condition', 'rusak')
+            ->where('isActive', true)
             ->count();
 
         $currentMonth = now()->month;
@@ -108,15 +110,13 @@ class DeviceFormController extends Controller
         $maintenanceThisMonth = DB::table('it_fm_device')
             ->whereMonth('created_at', $currentMonth)
             ->whereYear('created_at', $currentYear)
+            ->where('isActive', true)
             ->count();
 
-        // $completedTasks = DB::table('it_fm_device')
-        //     ->selectRaw('SUM(CAST(cover_area AS INT)) + 
-        //                SUM(CAST(video_quality AS INT)) + 
-        //                SUM(CAST(sound_quality AS INT)) + 
-        //                SUM(CAST(remote_view_nvr AS INT)) + 
-        //                SUM(CAST(remote_playback AS INT)) as total_completed')
-        //     ->first();
+        // Calculate completed maintenance tasks
+        $completedTasks = (object)[
+            'total_completed' => 0
+        ];
 
         $totalCompleted = $completedTasks->total_completed ?? 0;
         $completionRate = $totalRecords > 0 
@@ -148,6 +148,10 @@ class DeviceFormController extends Controller
     public function CreateDeviceForm(Request $request)
     {
         try {
+            $isShowDetail = false;
+            $isEdit = false;
+            $maintenanceRecord = null;
+            
             // If ID is provided, get maintenance data
             if ($request->has('id')) {
                 
@@ -192,16 +196,21 @@ class DeviceFormController extends Controller
                         ->with('error', 'Device maintenance record not found');
                 }
 
-                return view("SmartForm::it.form-device", [
-                    'isShowDetail' => true,
+                $isShowDetail = $request->has('view') && $request->view === 'detail';
+                $isEdit = !$isShowDetail;
+
+                return view("SmartForm::it/form-device", [
+                    'isShowDetail' => $isShowDetail,
+                    'isEdit' => $isEdit,
                     'maintenanceRecord' => $maintenanceRecord
                 ]);
             }
 
             // If no ID, show empty form
-            return view("SmartForm::it.form-device", [
-                'isShowDetail' => false,
-                'maintenanceRecord' => null
+            return view("SmartForm::it/form-device", [
+                'isShowDetail' => $isShowDetail,
+                'isEdit' => $isEdit,
+                'maintenanceRecord' => $maintenanceRecord
             ]);
 
         } catch (\Exception $e) {
@@ -224,13 +233,13 @@ class DeviceFormController extends Controller
             'nama' => 'required|string',
             'nik' => 'required|string',
             'dept' => 'required|string',
-            'site' => 'required|in:agm,mbl,mme,mas,pmss,taj,bssr,tdm,msj',
+            'site' => 'required|string',
 
             // User Information
             'user_name' => 'required|string',
             'user_nik' => 'required|string',
             'user_dept' => 'required|string',
-            'user_site' => 'required|in:agm,mbl,mme,mas,pmss,taj,bssr,tdm,msj',
+            'user_site' => 'required|string',
             'user_no_asset' => 'required|string',
 
             // Device Information
@@ -368,11 +377,17 @@ class DeviceFormController extends Controller
 
         DB::commit();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Device maintenance record has been created successfully',
-            'data' => $deviceMaintenance
-        ]);
+        // Check if request is AJAX
+        if ($request->ajax() || $request->wantsJson() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
+            return response()->json([
+                'success' => true,
+                'message' => 'Device maintenance record has been created successfully',
+                'data' => $deviceMaintenance
+            ]);
+        }
+        
+        return redirect()->route('it-ops.dashboard-device')
+            ->with('success', 'Device maintenance record has been created successfully');
 
         } catch (ValidationException $e) {
             DB::rollBack();
@@ -465,7 +480,7 @@ class DeviceFormController extends Controller
                 ->value('doc_number');
 
             $sequence = 1;
-            if ($lastRecord && preg_match('/-(\d+)$/', $lastRecord->doc_number, $matches)) {
+            if ($lastRecord && preg_match('/-(\d+)$/', $lastRecord, $matches)) {
                 $sequence = intval($matches[1]) + 1;
             }
 
@@ -474,6 +489,272 @@ class DeviceFormController extends Controller
         } catch (\Exception $e) {
             Log::error('Error generating doc number: ' . $e->getMessage());
             throw $e;
+        }
+    }
+
+    /**
+     * Display the edit form for a device maintenance record
+     * 
+     * @param Request $request
+     * @return \Illuminate\View\View
+     */
+    public function EditDeviceForm(Request $request)
+    {
+        try {
+            // Validate the request
+            if (!$request->has('id')) {
+                return redirect()->route('it-ops.dashboard-device')
+                    ->with('error', 'Device maintenance record ID is required');
+            }
+
+            // Get the device maintenance record
+            $maintenanceRecord = DB::table('it_fm_device')
+                ->where('id', $request->id)
+                ->where('isActive', true)
+                ->first();
+
+            if (!$maintenanceRecord) {
+                return redirect()->route('it-ops.dashboard-device')
+                    ->with('error', 'Device maintenance record not found');
+            }
+
+            // Return the edit form view
+            return view('SmartForm::it.form-device', [
+                'isShowDetail' => false,
+                'isEdit' => true,
+                'maintenanceRecord' => $maintenanceRecord
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error in EditDeviceForm: ' . $e->getMessage());
+            return redirect()->route('it-ops.dashboard-device')
+                ->with('error', 'An error occurred while loading the edit form');
+        }
+    }
+
+    /**
+     * Update a device maintenance record
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function UpdateDeviceForm(Request $request)
+    {
+        // Update a device maintenance record
+        try {
+            // Validate the request
+            $validated = $request->validate([
+                'id' => 'required|exists:it_fm_device,id',
+                // Teknisi Information
+                'nama' => 'required|string',
+                'nik' => 'required|string',
+                'dept' => 'required|string',
+                'site' => 'required|string',
+                
+                // User Information
+                'user_name' => 'required|string',
+                'user_nik' => 'required|string',
+                'user_dept' => 'required|string',
+                'user_site' => 'required|string',
+                'user_no_asset' => 'nullable|string',
+                
+                // Asset Information
+                'jenis_aset' => 'required|string',
+                'tipe_aset' => 'required|string',
+                'merk' => 'required|string',
+                'model' => 'required|string',
+                'processor' => 'required|string',
+                'ram' => 'required|string',
+                'hdd' => 'required|string',
+                'vga' => 'required|string',
+                'os' => 'required|string',
+                
+                // Hardware Conditions
+                'case_casing_condition' => 'required|in:baik,rusak',
+                'touchscreen_condition' => 'required|in:baik,rusak',
+                'mouse_condition' => 'required|in:baik,rusak',
+                'adaptor_condition' => 'required|in:baik,rusak',
+                'monitor_condition' => 'required|in:baik,rusak',
+                'keyboard_condition' => 'required|in:baik,rusak',
+                'port_usb_condition' => 'required|in:baik,rusak',
+                'webcam_condition' => 'required|in:baik,rusak',
+                'display_condition' => 'required|in:baik,rusak',
+                'speaker_condition' => 'required|in:baik,rusak',
+                'fan_processor_condition' => 'required|in:baik,rusak',
+                'wireless_condition' => 'required|in:baik,rusak',
+                'mic_condition' => 'required|in:baik,rusak',
+                'battery_condition' => 'required|in:baik,rusak',
+                
+                // Software Conditions
+                'has_ccleaner' => 'required|in:ada,tidak',
+                'has_zoom' => 'required|in:ada,tidak',
+                'has_sap' => 'required|in:ada,tidak',
+                'has_microsoft_office' => 'required|in:ada,tidak',
+                'has_anydesk' => 'required|in:ada,tidak',
+                'has_sisoft' => 'required|in:ada,tidak',
+                'has_erp' => 'required|in:ada,tidak',
+                'has_vnc_remote' => 'required|in:ada,tidak',
+                'has_minning_software' => 'required|in:ada,tidak',
+                'has_pdf_viewer' => 'required|in:ada,tidak',
+                'has_wepresent' => 'required|in:ada,tidak',
+                
+                // Maintenance Tasks
+                'disk_defragment' => 'nullable|boolean',
+                'driver_printer' => 'nullable|boolean',
+                'clean_temp_file' => 'nullable|boolean',
+                'unused_app' => 'nullable|boolean',
+                'scan_antivirus' => 'nullable|boolean',
+                'cleaning_fan_internal' => 'nullable|boolean',
+                'clean_junk_file' => 'nullable|boolean',
+                'brightness_level' => 'nullable|boolean',
+                'speaker' => 'nullable|boolean',
+                'wifi_connection' => 'nullable|boolean',
+                'hdmi' => 'nullable|boolean',
+            ]);
+
+            DB::beginTransaction();
+
+            // Update the device maintenance record
+            DB::table('it_fm_device')
+                ->where('id', $validated['id'])
+                ->update([
+                    // Teknisi Information
+                    'nama' => $validated['nama'],
+                    'nik' => $validated['nik'],
+                    'dept' => $validated['dept'],
+                    'site' => $validated['site'],
+                    
+                    // User Information
+                    'user_name' => $validated['user_name'],
+                    'user_nik' => $validated['user_nik'],
+                    'user_dept' => $validated['user_dept'],
+                    'user_site' => $validated['user_site'],
+                    'user_no_asset' => $validated['user_no_asset'],
+                    
+                    // Asset Information
+                    'jenis_aset' => $validated['jenis_aset'],
+                    'tipe_aset' => $validated['tipe_aset'],
+                    'merk' => $validated['merk'],
+                    'model' => $validated['model'],
+                    'processor' => $validated['processor'],
+                    'ram' => $validated['ram'],
+                    'hdd' => $validated['hdd'],
+                    'vga' => $validated['vga'],
+                    'os' => $validated['os'],
+                    
+                    // Hardware Conditions
+                    'case_casing_condition' => $validated['case_casing_condition'],
+                    'touchscreen_condition' => $validated['touchscreen_condition'],
+                    'mouse_condition' => $validated['mouse_condition'],
+                    'adaptor_condition' => $validated['adaptor_condition'],
+                    'monitor_condition' => $validated['monitor_condition'],
+                    'keyboard_condition' => $validated['keyboard_condition'],
+                    'port_usb_condition' => $validated['port_usb_condition'],
+                    'webcam_condition' => $validated['webcam_condition'],
+                    'display_condition' => $validated['display_condition'],
+                    'speaker_condition' => $validated['speaker_condition'],
+                    'fan_processor_condition' => $validated['fan_processor_condition'],
+                    'wireless_condition' => $validated['wireless_condition'],
+                    'mic_condition' => $validated['mic_condition'],
+                    'battery_condition' => $validated['battery_condition'],
+                    
+                    // Software Conditions
+                    'has_ccleaner' => $validated['has_ccleaner'],
+                    'has_zoom' => $validated['has_zoom'],
+                    'has_sap' => $validated['has_sap'],
+                    'has_microsoft_office' => $validated['has_microsoft_office'],
+                    'has_anydesk' => $validated['has_anydesk'],
+                    'has_sisoft' => $validated['has_sisoft'],
+                    'has_erp' => $validated['has_erp'],
+                    'has_vnc_remote' => $validated['has_vnc_remote'],
+                    'has_minning_software' => $validated['has_minning_software'],
+                    'has_pdf_viewer' => $validated['has_pdf_viewer'],
+                    'has_wepresent' => $validated['has_wepresent'],
+                    
+                    // Maintenance Tasks
+                    'disk_defragment' => $validated['disk_defragment'] ?? false,
+                    'driver_printer' => $validated['driver_printer'] ?? false,
+                    'clean_temp_file' => $validated['clean_temp_file'] ?? false,
+                    'unused_app' => $validated['unused_app'] ?? false,
+                    'scan_antivirus' => $validated['scan_antivirus'] ?? false,
+                    'cleaning_fan_internal' => $validated['cleaning_fan_internal'] ?? false,
+                    'clean_junk_file' => $validated['clean_junk_file'] ?? false,
+                    'brightness_level' => $validated['brightness_level'] ?? false,
+                    'speaker' => $validated['speaker'] ?? false,
+                    'wifi_connection' => $validated['wifi_connection'] ?? false,
+                    'hdmi' => $validated['hdmi'] ?? false,
+                    
+                    'updated_at' => now()
+                ]);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Device maintenance record has been updated successfully'
+            ]);
+
+        } catch (ValidationException $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error updating device maintenance record: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while updating the device maintenance record',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Soft delete a device maintenance record by setting isActive to false
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function DeleteDeviceForm(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'id' => 'required|exists:it_fm_device,id',
+            ]);
+
+            DB::beginTransaction();
+            
+            DB::table('it_fm_device')
+                ->where('id', $validated['id'])
+                ->update([
+                    'isActive' => false, // Set to false to mark as deleted
+                    'updated_at' => now()
+                ]);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Device maintenance record has been deleted successfully',
+            ]);
+
+        } catch (ValidationException $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while deleting the device maintenance record',
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 }
