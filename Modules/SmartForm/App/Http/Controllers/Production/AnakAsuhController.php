@@ -510,4 +510,12 @@ class AnakAsuhController extends Controller
         
         return $prefix . sprintf('%03d', $nextNumber);
     }
+
+    public function getApprovalList(Request $request)
+    {
+        $search = $request->input('search', '');
+        $list = HrdHelper::getApprovalList($search);
+
+        return response()->json($list);
+    }
 }

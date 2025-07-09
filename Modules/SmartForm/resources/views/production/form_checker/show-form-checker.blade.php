@@ -96,15 +96,7 @@
                                         <label for="operator_load" class="ms-0">Nama Operator Loader</label>
                                         <select class="form-control form-select" id="operator_load" name="operator_load"
                                             required>
-                                            <option disabled>-- Select Nama Operator --</option>
-                                            @forelse($users as $user)
-                                                <option value="{{ $user->nama ?? '' }}"
-                                                    {{ $record->operator_leader == $user->nama ? 'selected' : '' }}>
-                                                    {{ $user->nama ?? 'User tidak tersedia' }}
-                                                </option>
-                                            @empty
-                                                <option>Data karyawan tidak ditemukan</option>
-                                            @endforelse
+
                                         </select>
                                     </div>
                                 </div>
@@ -545,37 +537,63 @@
 
                 let operatorRow = document.createElement('tr');
                 operatorRow.innerHTML = `
-            <td colspan="2"><strong>Nama Operator</strong></td>
-            <td colspan="5" class="text-center">
-                <select class="form-control form-select" name="nama_operator_${alat}" id="nama_operator_${alat}" required style="background-color: #eee7e8; color: rgb(11, 10, 10); width: 100%;">
-                    <option disabled selected>-- Select Nama Operator --</option>
-                    ${
-                        users.length > 0
-                        ? users.map(user => `<option value="${user.nik ?? ''}">${user.nama ?? 'User tidak tersedia'}</option>`).join('')
-                        : '<option>Data karyawan tidak ditemukan</option>'
-                    }
-                </select>
-            </td>
-            <td></td>
-        `;
+    <td colspan="2"><strong>Nama Operator</strong></td>
+    <td colspan="5" class="text-center">
+        <select class="form-control form-select nama-operator-select" name="nama_operator_${alat}" id="nama_operator_${alat}" required style="background-color: #eee7e8; color: rgb(11, 10, 10); width: 100%;">
+            <option disabled selected>-- Select Nama Operator --</option>
+        </select>
+    </td>
+    <td></td>
+`;
+
                 container.appendChild(operatorRow);
                 operatorRow.classList.add('operator-row', `operator-${alat}`);
                 operatorRow.style.display = 'none';
 
-
-
-                setTimeout(() => {
-                    const operatorSelect = operatorRow.querySelector(
-                        `select[name="nama_operator_${alat}"]`);
-                    if (operatorSelect) {
-
-                        if (record && record.nama_operator && record.nama_operator[alatIndex]) {
-                            operatorSelect.value = record.nama_operator[alatIndex];
-                        } else if (globalSavedValues[`operator_${alat}`]) {
-                            operatorSelect.value = globalSavedValues[`operator_${alat}`];
-                        }
+                
+                const operatorSelect = operatorRow.querySelector(`#nama_operator_${alat}`);
+                $(operatorSelect).select2({
+                    placeholder: '-- Select Nama Operator --',
+                    width: '100%',
+                    ajax: {
+                        url: '{{ route('checker.approval.list') }}',
+                        dataType: 'json',
+                        delay: 250,
+                        data: function(params) {
+                            return {
+                                search: params.term || ''
+                            };
+                        },
+                        processResults: function(data) {
+                            return {
+                                results: $.map(data, function(item) {
+                                    return {
+                                        id: item.nama,
+                                        text: `${item.nama} (${item.nik})`
+                                    };
+                                })
+                            };
+                        },
+                        cache: true
                     }
-                }, 0);
+                });
+
+
+                const savedValue = record?.nama_operator?.[alatIndex] || globalSavedValues[`operator_${alat}`];
+                if (savedValue) {
+                    $.ajax({
+                        url: '{{ route('checker.approval.list') }}',
+                        dataType: 'json',
+                        success: function(data) {
+                            const matched = data.find(item => item.nama === savedValue);
+                            if (matched) {
+                                const option = new Option(`${matched.nama} (${matched.nik})`, matched
+                                    .nama, true, true);
+                                $(operatorSelect).append(option).trigger('change');
+                            }
+                        }
+                    });
+                }
 
 
                 let dataToShow = [];
@@ -910,6 +928,54 @@
                             const option = new Option(matched.nama + ' (' + matched.nik + ')', matched
                                 .nama, true, true);
                             $('#validated').append(option).trigger('change');
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+    <script>
+        $(function() {
+            const selectedNik = '{{ $record->operator_leader }}';
+
+            $('#operator_load').select2({
+                placeholder: '-- Select Operator --',
+                width: '100%',
+                ajax: {
+                    url: '{{ route('checker.approval.list') }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            search: params.term || ''
+                        };
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(item) {
+                                return {
+                                    id: item.nama,
+                                    text: item.nama + ' (' + item.nik +
+                                        ')',
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+
+
+            if (selectedNik) {
+                $.ajax({
+                    url: '{{ route('checker.approval.list') }}',
+                    dataType: 'json',
+                    success: function(data) {
+                        const matched = data.find(item => item.nama === selectedNik);
+                        if (matched) {
+                            const option = new Option(matched.nama + ' (' + matched.nik + ')', matched
+                                .nama, true, true);
+                            $('#operator_load').append(option).trigger('change');
                         }
                     }
                 });
