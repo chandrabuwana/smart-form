@@ -472,7 +472,7 @@ class PlantWeldingController extends Controller
             $record = DB::table('plant_welding')->where('id', $id)->first();
 
             // Ambil user_id dari session
-            $loggedInUserId = session('user_id');
+            $loggedInUserId = session('username');
 
             if ($record) {
                 // Cek apakah user adalah pemeriksa
@@ -520,7 +520,7 @@ class PlantWeldingController extends Controller
             $record = DB::table('plant_welding')->where('id', $id)->first();
 
             // Ambil user_id dari session
-            $loggedInUserId = session('user_id');
+            $loggedInUserId = session('username');
 
             if ($record) {
                 // Cek apakah user adalah pemeriksa

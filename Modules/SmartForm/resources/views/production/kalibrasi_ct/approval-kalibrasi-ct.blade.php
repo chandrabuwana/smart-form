@@ -406,13 +406,15 @@
                                                             <div class="col-md-4">
                                                                 <div class="input-group input-group-static mb-3">
                                                                     <label for="alat_support_hauler" class="ms-0">Nama Pembuat</label>
-                                                                    <select name="dibuat_hauler" id="dibuat_hauler" class="form-control" required {{ $isShowDetail ? 'disabled' : '' }}>
-                                                                        <option disabled {{ optional($record)->dibuat_hauler == '' ? 'selected' : '' }}>-- Select Pembuat --</option>
-                                                                        @foreach ($approvalList as $user)
-                                                                            <option value="{{ $user->nik }}" {{ optional($record)->dibuat_hauler == $user->nik ? 'selected' : '' }}>
-                                                                                {{ $user->nama }}
+                                                                    @php
+                                                                        $selectedDibuatHauler = $approvalList->firstWhere('nama', $record->dibuat_hauler ?? '');
+                                                                    @endphp
+                                                                    <select name="dibuat_hauler" id="dibuat_hauler" class="form-control text-left" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                        @if($isShowDetail && $selectedDibuatHauler)
+                                                                            <option value="{{ $selectedDibuatHauler->nama }}" selected>
+                                                                                {{ $selectedDibuatHauler->nama }} ({{ $selectedDibuatHauler->nik }})
                                                                             </option>
-                                                                        @endforeach
+                                                                        @endif
                                                                     </select>
                                                                     @if($isShowDetail)
                                                                         <span class="
@@ -424,7 +426,7 @@
                                                                     @endif
                                                                 </div>
                                                                 @php
-                                                                    $loggedInUserId = session('user_id');
+                                                                    $loggedInUserId = session('username');
                                                                 @endphp
                                                                 @if(optional($record)->dibuat_hauler == $loggedInUserId)
                                                                     <div>
@@ -460,13 +462,15 @@
                                                             <div class="col-md-4">
                                                                 <div class="input-group input-group-static mb-3">
                                                                     <label for="alat_support_hauler" class="ms-0">Nama Pemeriksa</label>
-                                                                    <select name="mengetahui_hauler" id="mengetahui_hauler" class="form-control" required {{ $isShowDetail ? 'disabled' : '' }}>
-                                                                        <option disabled {{ optional($record)->mengetahui_hauler == '' ? 'selected' : '' }}>-- Select Pemeriksa --</option>
-                                                                        @foreach ($approvalList as $user)
-                                                                            <option value="{{ $user->nik }}" {{ optional($record)->mengetahui_hauler == $user->nik ? 'selected' : '' }}>
-                                                                                {{ $user->nama }}
+                                                                    @php
+                                                                        $selectedMengetahuiHauler = $approvalList->firstWhere('nama', $record->mengetahui_hauler ?? '');
+                                                                    @endphp
+                                                                    <select name="mengetahui_hauler" id="mengetahui_hauler" class="form-control text-left" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                        @if($isShowDetail && $selectedMengetahuiHauler)
+                                                                            <option value="{{ $selectedMengetahuiHauler->nama }}" selected>
+                                                                                {{ $selectedMengetahuiHauler->nama }} ({{ $selectedMengetahuiHauler->nik }})
                                                                             </option>
-                                                                        @endforeach
+                                                                        @endif
                                                                     </select>
                                                                     @if($isShowDetail)
                                                                         <span class="
@@ -478,7 +482,7 @@
                                                                     @endif
                                                                 </div>
                                                                 @php
-                                                                    $loggedInUserId = session('user_id');
+                                                                    $loggedInUserId = session('username');
                                                                 @endphp
 
                                                                 @if(optional($record)->mengetahui_hauler == $loggedInUserId)
@@ -726,13 +730,16 @@
                                                             <div class="col-md-4">
                                                                 <div class="input-group input-group-static mb-3">
                                                                     <label for="alat_support_hauler" class="ms-0">Nama Pembuat</label>
-                                                                    <select name="dibuat_loader" id="dibuat_loader" class="form-control" required {{ $isShowDetail ? 'disabled' : '' }}>
-                                                                        <option disabled {{ optional($record)->dibuat_loader == '' ? 'selected' : '' }}>-- Select Pembuat --</option>
-                                                                        @foreach ($approvalList as $user)
-                                                                            <option value="{{ $user->nik }}" {{ optional($record)->dibuat_loader == $user->nik ? 'selected' : '' }}>
-                                                                                {{ $user->nama }}
+                                                                    @php
+                                                                        $selectedDibuatLoader = $approvalList->firstWhere('nama', optional($record)->dibuat_loader);
+                                                                        
+                                                                    @endphp
+                                                                    <select name="dibuat_loader" id="dibuat_loader" class="form-control text-left" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                        @if($isShowDetail && $selectedDibuatLoader)
+                                                                            <option value="{{ $selectedDibuatLoader->nama }}" selected>
+                                                                                {{ $selectedDibuatLoader->nama }} ({{ $selectedDibuatLoader->nik }})
                                                                             </option>
-                                                                        @endforeach
+                                                                        @endif
                                                                     </select>
                                                                     @if($isShowDetail)
                                                                         <span class="
@@ -744,7 +751,7 @@
                                                                     @endif
                                                                 </div>
                                                                 @php
-                                                                    $loggedInUserId = session('user_id');
+                                                                    $loggedInUserId = session('username');
                                                                 @endphp
 
                                                                 @if(optional($record)->dibuat_loader == $loggedInUserId)
@@ -778,13 +785,15 @@
                                                             <div class="col-md-4">
                                                                 <div class="input-group input-group-static mb-3">
                                                                     <label for="alat_support_hauler" class="ms-0">Nama Pemeriksa</label>
-                                                                    <select name="mengetahui_loader" id="mengetahui_loader" class="form-control" required {{ $isShowDetail ? 'disabled' : '' }}>
-                                                                        <option disabled {{ optional($record)->mengetahui_loader == '' ? 'selected' : '' }}>-- Select Pemeriksa --</option>
-                                                                        @foreach ($approvalList as $user)
-                                                                            <option value="{{ $user->nik }}" {{ optional($record)->mengetahui_loader == $user->nik ? 'selected' : '' }}>
-                                                                                {{ $user->nama }}
+                                                                    @php
+                                                                        $selectedMengetahuiLoader = $approvalList->firstWhere('nama', optional($record)->mengetahui_loader);
+                                                                    @endphp
+                                                                    <select name="mengetahui_loader" id="mengetahui_loader" class="form-control text-left" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                        @if($isShowDetail && $selectedMengetahuiLoader)
+                                                                            <option value="{{ $selectedMengetahuiLoader->nama }}" selected>
+                                                                                {{ $selectedMengetahuiLoader->nama }} ({{ $selectedMengetahuiLoader->nik }})
                                                                             </option>
-                                                                        @endforeach
+                                                                        @endif
                                                                     </select>
                                                                     @if($isShowDetail)
                                                                         <span class="
@@ -796,7 +805,7 @@
                                                                     @endif
                                                                 </div>
                                                                 @php
-                                                                    $loggedInUserId = session('user_id');
+                                                                    $loggedInUserId = session('username');
                                                                 @endphp
 
                                                                 @if(optional($record)->mengetahui_loader == $loggedInUserId)
@@ -1034,13 +1043,15 @@
                                                             <div class="col-md-4">
                                                                 <div class="input-group input-group-static mb-3">
                                                                     <label for="alat_support_hauler" class="ms-0">Nama Pembuat</label>
-                                                                    <select name="dibuat_dozer" id="dibuat_dozer" class="form-control" required {{ $isShowDetail ? 'disabled' : '' }}>
-                                                                        <option disabled {{ optional($record)->dibuat_dozer == '' ? 'selected' : '' }}>-- Select Pembuat --</option>
-                                                                        @foreach ($approvalList as $user)
-                                                                            <option value="{{ $user->nik }}" {{ optional($record)->dibuat_dozer == $user->nik ? 'selected' : '' }}>
-                                                                                {{ $user->nama }}
+                                                                    @php
+                                                                        $selectedDibuatDozer = $approvalList->firstWhere('nama', optional($record)->dibuat_dozer);
+                                                                    @endphp
+                                                                    <select name="dibuat_dozer" id="dibuat_dozer" class="form-control text-left" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                        @if($isShowDetail && $selectedDibuatDozer)
+                                                                            <option value="{{ $selectedDibuatDozer->nama }}" selected>
+                                                                                {{ $selectedDibuatDozer->nama }} ({{ $selectedDibuatDozer->nik }})
                                                                             </option>
-                                                                        @endforeach
+                                                                        @endif
                                                                     </select>
                                                                     @if($isShowDetail)
                                                                         <span class="
@@ -1052,7 +1063,7 @@
                                                                     @endif
                                                                 </div>
                                                                 @php
-                                                                    $loggedInUserId = session('user_id');
+                                                                    $loggedInUserId = session('username');
                                                                 @endphp
 
                                                                 @if(optional($record)->dibuat_dozer == $loggedInUserId)
@@ -1087,13 +1098,16 @@
                                                             <div class="col-md-4">
                                                                 <div class="input-group input-group-static mb-3">
                                                                     <label for="alat_support_hauler" class="ms-0">Nama Pemeriksa</label>
-                                                                    <select name="mengetahui_dozer" id="mengetahui_dozer" class="form-control" required {{ $isShowDetail ? 'disabled' : '' }}>
-                                                                        <option disabled {{ optional($record)->mengetahui_dozer == '' ? 'selected' : '' }}>-- Select Pemeriksa --</option>
-                                                                        @foreach ($approvalList as $user)
-                                                                            <option value="{{ $user->nik }}" {{ optional($record)->mengetahui_dozer == $user->nik ? 'selected' : '' }}>
-                                                                                {{ $user->nama }}
+                                                                    @php
+                                                                        $selectedMengetahuiDozer = $approvalList->firstWhere('nama', optional($record)->mengetahui_dozer);
+                                                                    @endphp
+                                                                
+                                                                    <select name="mengetahui_dozer" id="mengetahui_dozer" class="form-control text-left" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                        @if($isShowDetail && $selectedMengetahuiDozer)
+                                                                            <option value="{{ $selectedMengetahuiDozer->nama }}" selected>
+                                                                                {{ $selectedMengetahuiDozer->nama }} ({{ $selectedMengetahuiDozer->nik }})
                                                                             </option>
-                                                                        @endforeach
+                                                                        @endif
                                                                     </select>
                                                                     @if($isShowDetail)
                                                                         <span class="
@@ -1105,7 +1119,7 @@
                                                                     @endif
                                                                 </div>
                                                                 @php
-                                                                    $loggedInUserId = session('user_id');
+                                                                    $loggedInUserId = session('username');
                                                                 @endphp
 
                                                                 @if(optional($record)->mengetahui_dozer == $loggedInUserId)

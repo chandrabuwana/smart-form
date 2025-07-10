@@ -143,14 +143,16 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="pemeriksa" class="ms-0">Nama Pemeriksa</label>
-                                            <select name="pemeriksa" id="pemeriksa" class="form-control text-left" required {{ $isShowDetail ? 'disabled' : '' }}>
-                                                <option disabled {{ optional($record)->pemeriksa == '' ? 'selected' : '' }}>-- Select Pemeriksa --</option>
-                                                @foreach ($approvalList as $user)
-                                                    <option value="{{ $user->nik }}" {{ optional($record)->pemeriksa == $user->nik ? 'selected' : '' }}>
-                                                        {{ $user->nama }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
+                                        @php
+                                            $selectedPemeriksa = $approvalList->firstWhere('nama', optional($record)->pemeriksa);
+                                        @endphp
+                                        <select name="operator" id="operator" class="form-control text-left" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                            @if($isShowDetail && $selectedPemeriksa)
+                                                <option value="{{ $selectedPemeriksa->nama }}" selected>
+                                                    {{ $selectedPemeriksa->nama }} ({{ $selectedPemeriksa->nik }})
+                                                </option>
+                                            @endif
+                                        </select>
                                             <span class="
                                                 {{ $record->status_pemeriksa == 'Approve' ? 'text-success' : '' }}
                                                 {{ $record->status_pemeriksa == 'Pending' ? 'text-warning' : '' }}
@@ -160,7 +162,7 @@
 
                                     </div>
                                         @php
-                                            $loggedInUserId = session('user_id');
+                                            $loggedInUserId = session('username');
                                         @endphp
 
                                         @if(optional($record)->pemeriksa == $loggedInUserId)
@@ -173,14 +175,16 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="atasan" class="ms-0">Nama Atasan Langsung</label>
-                                        <select name="atasan" id="atasan" class="form-control" required {{ $isShowDetail ? 'disabled' : '' }}>
-                                                <option disabled {{ optional($record)->atasan == '' ? 'selected' : '' }}>-- Select Atasan --</option>
-                                                @foreach ($approvalList as $user)
-                                                    <option value="{{ $user->nik }}" {{ optional($record)->atasan == $user->nik ? 'selected' : '' }}>
-                                                        {{ $user->nama }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
+                                        @php
+                                            $selectedAtasan = $approvalList->firstWhere('nama', optional($record)->atasan);
+                                        @endphp
+                                        <select name="atasan" id="atasan" class="form-control text-left" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                            @if($isShowDetail && $selectedAtasan)
+                                                <option value="{{ $selectedAtasan->nama }}" selected>
+                                                    {{ $selectedAtasan->nama }} ({{ $selectedAtasan->nik }})
+                                                </option>
+                                            @endif
+                                        </select>
                                             <span class="
                                                 {{ $record->status_atasan == 'Approve' ? 'text-success' : '' }}
                                                 {{ $record->status_atasan == 'Pending' ? 'text-warning' : '' }}
@@ -189,7 +193,7 @@
                                             </span>
                                     </div>
                                         @php
-                                            $loggedInUserId = session('user_id');
+                                            $loggedInUserId = session('username');
                                         @endphp
 
                                         @if(optional($record)->atasan == $loggedInUserId)

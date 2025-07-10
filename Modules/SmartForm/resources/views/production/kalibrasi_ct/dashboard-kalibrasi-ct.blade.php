@@ -331,40 +331,11 @@ function deleteKalibrasi(id) {
 
 <script>
     $(function() {
-        $('#pemeriksa, #atasan').select2({
-            placeholder: '-- Pilih --',
-            width: '50%',
-            ajax: {
-                url: '{{ route('kalibrasi.approval.list') }}',
-                dataType: 'json',
-                delay: 250,
-                data: function (params) {
-                    return { search: params.term };
-                },
-                processResults: function (data) {
-                    return {
-                        results: $.map(data, function (item) {
-                            return {
-                                id: item.nama,
-                                text: item.nama + ' (' + item.nik + ')',
-                                nik: item.nik
-                            };
-                        })
-                    };
-                },
-                cache: true
-            }
-        });
-    });
-</script>
-
-<script>
-    $(function() {
         $('#dibuat_hauler, #mengetahui_hauler, #dibuat_loader, #mengetahui_loader, #dibuat_dozer, #mengetahui_dozer').select2({
             placeholder: '-- Pilih --',
             width: '50%',
             ajax: {
-                url: '{{ route('kalibrasi.approval.list') }}',
+                url: '{{ route('prod.kalibrasi.approval.list') }}',
                 dataType: 'json',
                 delay: 250,
                 data: function (params) {
