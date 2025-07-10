@@ -72,8 +72,9 @@
                                 <div class="col-md-3 mb-3">
                                     <div class="input-group input-group-static mb-4 position-relative">
                                         <label for="operator" class="ms-0">Operator</label>
+
                                         <select class="form-control" id="operator" name="operator">
-                                            <option value="" selected disabled>-- Select Operator --</option>
+                                            <option value="" selected disabled>-- Select --</option>
                                             @foreach ($user as $usr)
                                                 <option value="{{ $usr->nik }}" 
                                                     {{ isset($filters['operator']) && $filters['operator'] == $usr->nik ? 'selected' : '' }}>
@@ -88,7 +89,7 @@
                                     <div class="input-group input-group-static mb-4 position-relative">
                                         <label for="pengawas" class="ms-0">Pengawas</label>
                                         <select class="form-control" id="pengawas" name="pengawas">
-                                            <option value="" selected disabled>-- Select Pengawas --</option>
+                                            <option value="" selected disabled>-- Select --</option>
                                             @foreach ($user as $usr)
                                                 <option value="{{ $usr->nik }}" 
                                                     {{ isset($filters['pengawas']) && $filters['pengawas'] == $usr->nik ? 'selected' : '' }}>
@@ -303,4 +304,34 @@ function deleteA2bBaru(id) {
             }
         }
 </script>
+
+<script>
+    $(function() {
+        $('#operator, #pengawas').select2({
+            placeholder: '-- Pilih --',
+            width: '100%',
+            ajax: {
+                url: '{{ route('prod.a2b.approval.list') }}',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { search: params.term };
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                id: item.nama,
+                                text: item.nama + ' (' + item.nik + ')',
+                                nik: item.nik
+                            };
+                        })
+                    };
+                },
+                cache: true
+            }
+        });
+    });
+</script>
+
 @endsection 

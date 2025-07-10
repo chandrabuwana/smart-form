@@ -1262,7 +1262,7 @@ function convertToTimeFormat(totalSeconds) {
             placeholder: '-- Pilih --',
             width: '50%',
             ajax: {
-                url: '{{ route('kalibrasi.approval.list') }}',
+                url: '{{ route('prod.kalibrasi.approval.list') }}',
                 dataType: 'json',
                 delay: 250,
                 data: function (params) {

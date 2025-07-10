@@ -514,7 +514,7 @@ class A2bBaruController extends Controller
             $record = DB::table('prod_a2b_baru')->where('id', $id)->first();
 
             // Ambil user_id dari session
-            $loggedInUserId = session('user_id');
+            $loggedInUserId = session('username');
 
             if ($record) {
                 // Cek apakah user adalah pemeriksa
@@ -562,7 +562,7 @@ class A2bBaruController extends Controller
             $record = DB::table('prod_a2b_baru')->where('id', $id)->first();
 
             // Ambil user_id dari session
-            $loggedInUserId = session('user_id');
+            $loggedInUserId = session('username');
 
             if ($record) {
                 // Cek apakah user adalah pemeriksa

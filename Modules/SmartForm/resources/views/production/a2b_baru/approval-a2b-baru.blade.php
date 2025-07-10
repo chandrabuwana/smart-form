@@ -150,15 +150,17 @@
                             <div class="row mb-3">
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
-                                        <label for="hmawal2" class="ms-0">Operator</label>
-                                            <select name="operator" id="operator" class="form-control" required {{ $isShowDetail ? 'disabled' : '' }}>
-                                                <option disabled {{ optional($record)->operator == '' ? 'selected' : '' }}>-- Select Operator --</option>
-                                                @foreach ($approvalList as $user)
-                                                    <option value="{{ $user->nik }}" {{ optional($record)->operator == $user->nik ? 'selected' : '' }}>
-                                                        {{ $user->nama }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
+                                        <label for="operator" class="ms-0">Operator</label>
+                                        @php
+                                            $selectedOperator = $approvalList->firstWhere('nama', optional($record)->operator);
+                                        @endphp
+                                        <select name="operator" id="operator" class="form-control text-left" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                            @if($isShowDetail && $selectedOperator)
+                                                <option value="{{ $selectedOperator->nama }}" selected>
+                                                    {{ $selectedOperator->nama }} ({{ $selectedOperator->nik }})
+                                                </option>
+                                            @endif
+                                        </select>
                                             @if($isShowDetail)
                                                 <span class="
                                                     {{ $record->status_operator == 'Approve' ? 'text-success' : '' }}
@@ -169,7 +171,7 @@
                                             @endif
                                     </div>
                                         @php
-                                            $loggedInUserId = session('user_id');
+                                            $loggedInUserId = session('username');
                                         @endphp
 
                                         @if(optional($record)->operator == $loggedInUserId)
@@ -182,14 +184,16 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="hmakhir2" class="ms-0">Pengawas</label>
-                                            <select name="pengawas" id="pengawas" class="form-control" required {{ $isShowDetail ? 'disabled' : '' }}>
-                                                <option disabled {{ optional($record)->pengawas == '' ? 'selected' : '' }}>-- Select Pengawas --</option>
-                                                @foreach ($approvalList as $user)
-                                                    <option value="{{ $user->nik }}" {{ optional($record)->pengawas == $user->nik ? 'selected' : '' }}>
-                                                        {{ $user->nama }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
+                                        @php
+                                            $selectedPengawas = $approvalList->firstWhere('nama', optional($record)->pengawas);
+                                        @endphp
+                                        <select name="operator" id="operator" class="form-control text-left" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                            @if($isShowDetail && $selectedPengawas)
+                                                <option value="{{ $selectedPengawas->nama }}" selected>
+                                                    {{ $selectedPengawas->nama }} ({{ $selectedPengawas->nik }})
+                                                </option>
+                                            @endif
+                                        </select>
                                             @if($isShowDetail)
                                                 <span class="
                                                     {{ $record->status_pengawas == 'Approve' ? 'text-success' : '' }}
@@ -200,7 +204,7 @@
                                             @endif
                                     </div>
                                         @php
-                                            $loggedInUserId = session('user_id');
+                                            $loggedInUserId = session('username');
                                         @endphp
 
                                         @if(optional($record)->pengawas == $loggedInUserId)
