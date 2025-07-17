@@ -475,14 +475,17 @@
                     <div class="col-12">
                         <div class="form-actions">
                             @if ($nik == $inspection['diketahui'] || $nik == $inspection['diperiksa'])
-                                <button type="button" class="btn btn-success btn-sm"
-                                    onclick="approved('{{ $inspection['id'] }}', '{{ $statusJson }}', '{{ $nik }}')">
-                                    <i class="fas fa-check"></i> Approve
-                                </button>
-                                <button type="button" class="btn btn-warning btn-sm"
-                                    onclick="rejected('{{ $inspection['id'] }}', '{{ $statusJson }}', '{{ $nik }}')">
-                                    <i class="fas fa-close"></i> Reject
-                                </button>
+                                @if (collect($status)->contains(fn($s) => $s === 'Rejected'))
+                                @else
+                                    <button type="button" class="btn btn-success btn-sm"
+                                        onclick="approved('{{ $inspection['id'] }}', '{{ $statusJson }}', '{{ $nik }}')">
+                                        <i class="fas fa-check"></i> Approve
+                                    </button>
+                                    <button type="button" class="btn btn-warning btn-sm"
+                                        onclick="rejected('{{ $inspection['id'] }}', '{{ $statusJson }}', '{{ $nik }}')">
+                                        <i class="fas fa-close"></i> Reject
+                                    </button>
+                                @endif
                             @endif
 
                             @if (collect($status)->contains(fn($s) => $s === 'Rejected'))
@@ -694,8 +697,8 @@
         });
 
         function rejected(id, status, nik) {
-            let date2 = nik == "{{ $inspection['diketahui'] }}";
-            let date3 = nik == "{{ $inspection['diperiksa'] }}";
+            let date3 = nik == "{{ $inspection['diketahui'] }}";
+            let date2 = nik == "{{ $inspection['diperiksa'] }}";
             axios.post('{{ route('bss-form.plant.general-inspection.dongfeng.reject') }}', {
                     _token: "{{ csrf_token() }}",
                     id: id,
@@ -703,8 +706,8 @@
                     date3: date3,
                     datesign2: "{{ $inspection['date_sign2'] }}",
                     datesign3: "{{ $inspection['date_sign3'] }}",
-                    diketahui: nik == "{{ $inspection['diketahui'] }}" ? 'Rejected' : "{{ $status[0] }}",
-                    diperiksa: nik == "{{ $inspection['diperiksa'] }}" ? 'Rejected' : "{{ $status[1] }}",
+                    diketahui: nik == "{{ $inspection['diketahui'] }}" ? 'Rejected' : "{{ $status[1] }}",
+                    diperiksa: nik == "{{ $inspection['diperiksa'] }}" ? 'Rejected' : "{{ $status[0] }}",
                 })
                 .then(function(response) {
                     console.log('Response:', response);
@@ -746,8 +749,8 @@
         }
 
         function approved(id, status, nik) {
-            let date2 = nik == "{{ $inspection['diketahui'] }}";
-            let date3 = nik == "{{ $inspection['diperiksa'] }}";
+            let date3 = nik == "{{ $inspection['diketahui'] }}";
+            let date2 = nik == "{{ $inspection['diperiksa'] }}";
 
             axios.post('{{ route('bss-form.plant.general-inspection.dongfeng.approve') }}', {
                     _token: "{{ csrf_token() }}",
@@ -756,8 +759,8 @@
                     date3: date3,
                     datesign2: "{{ $inspection['date_sign2'] }}",
                     datesign3: "{{ $inspection['date_sign3'] }}",
-                    diketahui: nik == "{{ $inspection['diketahui'] }}" ? 'Approved' : "{{ $status[0] }}",
-                    diperiksa: nik == "{{ $inspection['diperiksa'] }}" ? 'Approved' : "{{ $status[1] }}",
+                    diketahui: nik == "{{ $inspection['diketahui'] }}" ? 'Approved' : "{{ $status[1] }}",
+                    diperiksa: nik == "{{ $inspection['diperiksa'] }}" ? 'Approved' : "{{ $status[0] }}",
                 })
                 .then(function(response) {
                     console.log('Response:', response);

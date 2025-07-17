@@ -76,26 +76,30 @@
                                                     <span class="badge blue">{{ $checkerName }}</span>
                                                 @endif
                                                 @if ($nik == $records->validator)
-                                                    <div class="mt-2 d-flex justify-content-center gap-2">
-                                                        <button class="btn btn-success btn-sm btnOGCApprove"
-                                                            data-doc="{{ $data->doc_num }}" data-week="{{ $records->week }}"
-                                                            data-status="{{ $records->status }}"
-                                                            data-cek='{{ $records->checker }}'
-                                                            data-val='{{ $records->validator }}'
-                                                            data-nik="{{ $nik }}">
-                                                            <i class="fas fa-check"></i> Approve
-                                                        </button>
+                                                    @if ($status[0] === 'rejected')
+                                                    @else
+                                                        <div class="mt-2 d-flex justify-content-center gap-2">
+                                                            <button class="btn btn-success btn-sm btnOGCApprove"
+                                                                data-doc="{{ $data->doc_num }}"
+                                                                data-week="{{ $records->week }}"
+                                                                data-status="{{ $records->status }}"
+                                                                data-cek='{{ $records->checker }}'
+                                                                data-val='{{ $records->validator }}'
+                                                                data-nik="{{ $nik }}">
+                                                                <i class="fas fa-check"></i> Approve
+                                                            </button>
 
-                                                        <button class="btn btn-warning btn-sm btnOGCReject"
-                                                            data-doc="{{ $data->doc_num }}"
-                                                            data-week="{{ $records->week }}"
-                                                            data-status="{{ $records->status }}"
-                                                            data-cek='{{ $records->checker }}'
-                                                            data-val='{{ $records->validator }}'
-                                                            data-nik="{{ $nik }}">
-                                                            <i class="fas fa-close"></i> Reject
-                                                        </button>
-                                                    </div>
+                                                            <button class="btn btn-warning btn-sm btnOGCReject"
+                                                                data-doc="{{ $data->doc_num }}"
+                                                                data-week="{{ $records->week }}"
+                                                                data-status="{{ $records->status }}"
+                                                                data-cek='{{ $records->checker }}'
+                                                                data-val='{{ $records->validator }}'
+                                                                data-nik="{{ $nik }}">
+                                                                <i class="fas fa-close"></i> Reject
+                                                            </button>
+                                                        </div>
+                                                    @endif
                                                 @endif
                                             </td>
 
@@ -107,6 +111,8 @@
                                                         : $records->status;
                                                 @endphp
 
+
+
                                                 @if ($status[0] === 'rejected')
                                                     <span class="badge red">{{ $checkerName }}</span>
                                                 @elseif ($status[0] === 'approved')
@@ -117,24 +123,28 @@
 
                                                 @if ($nik == $records->checker)
                                                     <div class="mt-2 d-flex justify-content-center gap-2">
-                                                        <button class="btn btn-success btn-sm btnOGCApprove"
-                                                            data-doc="{{ $data->doc_num }}"data-week="{{ $records->week }}"
-                                                            data-status="{{ $records->status }}"
-                                                            data-cek='{{ $records->checker }}'
-                                                            data-val='{{ $records->validator }}'
-                                                            data-nik="{{ $nik }}">
-                                                            <i class="fas fa-check"></i> Approve
-                                                        </button>
+                                                        @if ($status[0] === 'rejected')
+                                                        @else
+                                                            <button class="btn btn-success btn-sm btnOGCApprove"
+                                                                data-doc="{{ $data->doc_num }}"data-week="{{ $records->week }}"
+                                                                data-status="{{ $records->status }}"
+                                                                data-cek='{{ $records->checker }}'
+                                                                data-val='{{ $records->validator }}'
+                                                                data-nik="{{ $nik }}">
+                                                                <i class="fas fa-check"></i> Approve
+                                                            </button>
 
-                                                        <button class="btn btn-warning btn-sm btnOGCReject"
-                                                            data-doc="{{ $data->doc_num }}"
-                                                            data-week="{{ $records->week }}"
-                                                            data-status="{{ $records->status }}"
-                                                            data-cek='{{ $records->checker }}'
-                                                            data-val='{{ $records->validator }}'
-                                                            data-nik="{{ $nik }}">
-                                                            <i class="fas fa-close"></i> Reject
-                                                        </button>
+                                                            <button class="btn btn-warning btn-sm btnOGCReject"
+                                                                data-doc="{{ $data->doc_num }}"
+                                                                data-week="{{ $records->week }}"
+                                                                data-status="{{ $records->status }}"
+                                                                data-cek='{{ $records->checker }}'
+                                                                data-val='{{ $records->validator }}'
+                                                                data-nik="{{ $nik }}">
+                                                                <i class="fas fa-close"></i> Reject
+                                                            </button>
+                                                        @endif
+
                                                     </div>
                                                 @endif
                                             </td>
@@ -310,7 +320,7 @@
         <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
         <script>
             $(document).ready(function() {
-               
+
                 $('#week').select2();
             });
 

@@ -328,11 +328,13 @@
             </div>
             <div style="display: flex; justify-content: space-around;">
                 <div class="name">
+                    <img src="{{ asset('img/validated.png') }}" class="ttd" style="width: 40px" height="20px">
                     <p>{{ $inspection['dilakukan1'] }}
                     </p>
                     <p>(Mechanic)</p>
                 </div>
                 <div class="name">
+                    <img src="{{ asset('img/validated.png') }}" class="ttd" style="width: 40px" height="20px">
                     <p>{{ $inspection['dilakukan2'] }}
                     </p>
                     <p>(Mechanic)</p>
@@ -340,14 +342,24 @@
             </div>
         </div>
 
+        @php
+            $status = json_decode($inspection['status'], true);
+        @endphp
         <div class="signature-box" style="width: 300px; font-size: 10px;">
             <div class="title">Date :{{ Carbon::parse($inspection['date_sign2'])->format('d M Y') }}</div>
             <div style="text-align: center;">
                 <p>Diperiksa
                     oleh:
                 </p>
+
             </div>
             <div class="name">
+                @if ($status[0] == 'Approved')
+                    <img src="{{ asset('img/checked.png') }}" class="ttd" style="width: 40px" height="20px">
+                @elseif ($status[0] == 'Rejected')
+                    <img src="{{ asset('img/rejected.png') }}" class="ttd" style="width: 40px" height="20px">
+                @else
+                @endif
                 <p>{{ $inspection['diperiksa'] }}</p>
                 <p>(Plant Foreman)</p>
             </div>
@@ -359,8 +371,15 @@
                 <p>Diketahui
                     oleh:
                 </p>
+
             </div>
             <div class="name">
+                @if ($status[1] == 'Approved')
+                    <img src="{{ asset('img/checked.png') }}" class="ttd" style="width: 40px" height="20px">
+                @elseif ($status[1] == 'Rejected')
+                    <img src="{{ asset('img/rejected.png') }}" class="ttd" style="width: 40px" height="20px">
+                @else
+                @endif
                 <p>{{ $inspection['diketahui'] }}</p>
                 <p>(Kabag / Spv Plant)</p>
             </div>

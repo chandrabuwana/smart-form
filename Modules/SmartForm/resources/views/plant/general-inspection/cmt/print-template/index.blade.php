@@ -328,26 +328,36 @@
             </div>
             <div style="display: flex; justify-content: space-around;">
                 <div class="name">
+                    <img src="{{ asset('img/validated.png') }}" class="ttd" style="width: 40px" height="20px">
                     <p>{{ $inspection['dilakukan1'] }}
                     </p>
                     <p>(Mechanic)</p>
                 </div>
                 <div class="name">
+                    <img src="{{ asset('img/validated.png') }}" class="ttd" style="width: 40px" height="20px">
                     <p>{{ $inspection['dilakukan2'] }}
                     </p>
                     <p>(Mechanic)</p>
                 </div>
             </div>
         </div>
-
+        @php
+            $status = json_decode($inspection['status'], true);
+        @endphp
         <div class="signature-box" style="width: 300px; font-size: 10px;">
             <div>
-                <p>Date: {{ Carbon::parse($inspection['date_sign3'])->format('d M Y') }}</p>
+                <p>Date: {{ Carbon::parse($inspection['date_sign2'])->format('d M Y') }}</p>
             </div>
             <div style="text-align: center;">
                 <p>Diperiksa
                     oleh:
                 </p>
+                @if ($status[0] == 'Approved')
+                    <img src="{{ asset('img/checked.png') }}" class="ttd" style="width: 40px" height="20px">
+                @elseif ($status[0] == 'Rejected')
+                    <img src="{{ asset('img/rejected.png') }}" class="ttd" style="width: 40px" height="20px">
+                @else
+                @endif
             </div>
             <div class="name">
                 <p>{{ $inspection['diperiksa'] }}</p>
@@ -357,12 +367,19 @@
 
         <div class="signature-box" style="width: 300px; font-size: 10px;">
             <div>
-                <p>Date: {{ Carbon::parse($inspection['date_sign2'])->format('d M Y') }}</p>
+                <p>Date: {{ Carbon::parse($inspection['date_sign3'])->format('d M Y') }}</p>
             </div>
             <div style="text-align: center;">
                 <p>Diketahui
                     oleh:
                 </p>
+                @if ($status[1] == 'Approved')
+                    <img src="{{ asset('img/checked.png') }}" class="ttd" style="width: 40px" height="20px">
+                @elseif ($status[1] == 'Rejected')
+                    <img src="{{ asset('img/rejected.png') }}" class="ttd" style="width: 40px" height="20px">
+                @else
+                @endif
+
             </div>
             <div class="name">
                 <p>{{ $inspection['diketahui'] }}</p>

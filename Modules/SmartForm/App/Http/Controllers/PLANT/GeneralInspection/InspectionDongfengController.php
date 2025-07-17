@@ -447,8 +447,9 @@ class InspectionDongfengController extends Controller
 
         $data = [
             'status' => json_encode( array_values( [
-                $request->diketahui,
                 $request->diperiksa,
+                $request->diketahui
+
             ] ) ),
             'date_sign2' => $date2,
             'date_sign3' =>$date3,
@@ -502,8 +503,9 @@ class InspectionDongfengController extends Controller
           }
         $data = [
             'status' => json_encode( array_values( [
-                $request->diketahui,
                 $request->diperiksa,
+                $request->diketahui
+
             ] ) ),
             'date_sign2' => $date2,
             'date_sign3' => $date3,
