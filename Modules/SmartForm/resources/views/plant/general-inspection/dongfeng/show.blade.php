@@ -475,17 +475,14 @@
                     <div class="col-12">
                         <div class="form-actions">
                             @if ($nik == $inspection['diketahui'] || $nik == $inspection['diperiksa'])
-                                @if (collect($status)->contains(fn($s) => $s === 'Rejected'))
-                                @else
-                                    <button type="button" class="btn btn-success btn-sm"
-                                        onclick="approved('{{ $inspection['id'] }}', '{{ $statusJson }}', '{{ $nik }}')">
-                                        <i class="fas fa-check"></i> Approve
-                                    </button>
-                                    <button type="button" class="btn btn-warning btn-sm"
-                                        onclick="rejected('{{ $inspection['id'] }}', '{{ $statusJson }}', '{{ $nik }}')">
-                                        <i class="fas fa-close"></i> Reject
-                                    </button>
-                                @endif
+                                <button type="button" class="btn btn-success btn-sm"
+                                    onclick="approved('{{ $inspection['id'] }}', '{{ $statusJson }}', '{{ $nik }}')">
+                                    <i class="fas fa-check"></i> Approve
+                                </button>
+                                <button type="button" class="btn btn-warning btn-sm"
+                                    onclick="rejected('{{ $inspection['id'] }}', '{{ $statusJson }}', '{{ $nik }}')">
+                                    <i class="fas fa-close"></i> Reject
+                                </button>
                             @endif
 
                             @if (collect($status)->contains(fn($s) => $s === 'Rejected'))
