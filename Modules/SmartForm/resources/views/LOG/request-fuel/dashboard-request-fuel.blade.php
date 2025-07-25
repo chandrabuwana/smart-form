@@ -56,7 +56,7 @@
                                 </div>
                                 <div class="text-end pt-1">
                                     <p class="text-sm mb-0 text-capitalize">Total Records</p>
-                                    <h4 class="mb-0">{!! $totalRecords !!}</h4>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -70,7 +70,7 @@
                                 </div>
                                 <div class="text-end pt-1">
                                     <p class="text-sm mb-0 text-capitalize">Records This Month</p>
-                                    <h4 class="mb-0">{!! $totalThisMonth !!}</h4>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -112,7 +112,7 @@
                         <div class="col-6 col-md-3">
                             <div class="input-group input-group-static mb-4">
                                 <label for="filterSite">Site</label>
-                                {!! $siteOptions !!}
+                                
                             </div>
                         </div>
                         <div class="col-md-3 mb-3">
@@ -257,7 +257,7 @@
         function statusFormater(value, row, index) {
             if (value == 1) {
                 return `<button type="button" class="btn btn-success btn-sm" disabled>Active</button>`
-            } else if (value == 2) {
+            } else if (value == 0) {
                 return `<button type="button" class="btn btn-secondary btn-sm" disabled>Deleted</button>`
             } else {
                 return `<button type="button" class="btn btn-success btn-sm" disabled>Yes</button>`
