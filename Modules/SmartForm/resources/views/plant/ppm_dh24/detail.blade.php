@@ -385,8 +385,7 @@
                                             <label for="dibuat" class="ms-0">Checked By1</label>
                                             <select name="checked1_display" class="form-control uppercase" disabled>
                                                 @foreach ($approvalList as $user)
-                                                    <option value="{{ $user->nik }}"
-                                                        {{ old('checked1', $nik ?? '') == $user->nik ? 'selected' : '' }}>
+                                                    <option value="{{ $user->nik }}" {{ old('checked1', $data->creator ?? '') == $user->nik ? 'selected' : '' }}>
                                                         {{ $user->nama }}
                                                     </option>
                                                 @endforeach
