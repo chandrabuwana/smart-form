@@ -48,21 +48,7 @@
                                 <div class="col-md-3">
                                     <div class="input-group input-group-static mb-3">
                                         <label>Site Name</label>
-                                        <select class="form-control" id="site_name" name="site_name" required {{ $isShowDetail ? 'disabled' : '' }}>
-                                            <option value="">-- Pilih Site --</option>
-                                            @foreach(\Modules\SmartForm\helpers\SiteHelper::getAllSites() as $code => $name)
-                                                <option value="{{ strtoupper($code) }}" 
-                                                    {{ $isShowDetail && strtolower($data->site_name) == strtolower($code) ? 'selected' : 
-                                                    (!$isShowDetail && isset($defaultValues['site_name']) && strtolower($defaultValues['site_name']) == strtolower($code) ? 'selected' : '') }}>
-                                                    {{ $name }}
-                                                </option>
-                                            @endforeach
-                                            <option value="BSS" 
-                                                {{ $isShowDetail && strtolower($data->site_name) == 'bss' ? 'selected' : 
-                                                (!$isShowDetail && isset($defaultValues['site_name']) && strtolower($defaultValues['site_name']) == 'bss' ? 'selected' : '') }}>
-                                                BSS
-                                            </option>
-                                        </select>
+                                        {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('site_name', $maintenanceRecord->site_name ?? null, $isShowDetail, true, 'site_name', 'form-control') !!}
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -74,12 +60,14 @@
                                 <div class="col-md-3">
                                     <div class="input-group input-group-static mb-3">
                                         <label>Dept./Section</label>
-                                        <select class="form-control" name="department" id="department" {{ $isShowDetail ? 'disabled' : '' }} required>
-                                            <option value="">-- Pilih Departemen --</option>
-                                            @foreach(\Modules\SmartForm\helpers\DepartmentHelper::getAllDepartments() as $code => $name)
-                                                <option value="{{ $code }}" {{ $isShowDetail && $data->department == $code ? 'selected' : '' }}>{{ $name }}</option>
-                                            @endforeach
-                                        </select>
+                                        {!! \Modules\SmartForm\helpers\DepartmentHelper::renderDepartmentSelect(
+                                            'department',
+                                            $maintenanceRecord->department ?? '',
+                                            $isShowDetail,
+                                            true,
+                                            'department',
+                                            'form-control'
+                                        ) !!}
                                     </div>
                                 </div>
                                 <div class="col-md-3">
