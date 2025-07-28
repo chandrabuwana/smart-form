@@ -51,7 +51,7 @@ class LgmgController extends Controller {
             'no_unit' => DB::table( 'lgmg' )->distinct()->count( 'no_unit' ),
         ];
 
-            $records = $query->paginate( 5 );
+            $records = $query->where('delete_status', '!=', 1)->paginate( 5 );
 
             return view('smartform::production.lgmg.dashboard-lgmg', [ 'record' => $records, 'session'=>$nik_session, 'user'=> HrdHelper::getApprovalList(), 'statistics'=>$statistics, 'filters' => [
             'search' => $request->search,
@@ -66,13 +66,16 @@ class LgmgController extends Controller {
         }
     }
 
-    public function Add() {
+    public function Add(Request $request) {
+        $nik_session = $request->session()->get( 'user_id', '' );
+
         $pertanyaan = DB::table('lgmg_pertanyaan')
         ->select('category', 'pertanyaan', 'id')
         ->get()
         ->groupBy('category');
 
         return view('smartform::production.lgmg.form-lgmg', [
+            'session'=>$nik_session,
             'pertanyaan' => $pertanyaan,
             'approvalList' => HrdHelper::getApprovalList()
         ]);

@@ -82,7 +82,7 @@ class PpmShantuiDH24Controller extends Controller {
             ];
 
             $cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','sn_unit','model','model_engine','sn_engine')->get();
-            $records = $query->paginate(5);
+            $records = $query->where('delete_status', '!=', 1)->paginate(5);
 
             return view('SmartForm::plant.ppm_dh24.dashboard', [
                 'cn'=>$cn_data,

@@ -50,7 +50,7 @@ class Pengajuan003SapController extends Controller {
                 'plant' => DB::table( 'pengajuan_pr_003sap' )->distinct()->count( 'plant' )
             ];
 
-            $records = $query->paginate(10);
+            $records = $query->where('delete_status', '!=', 1)->paginate(10);
 
             return view('SmartForm::LOG/003-sap/dashboard',
             [ 'records' => $records, 'session'=>$nik_session, 'user'=> HrdHelper::getApprovalList(), 'statistics'=>$statistics, 'filters' => [
@@ -66,11 +66,14 @@ class Pengajuan003SapController extends Controller {
         }
     }
 
-    public function createForm() {
-        return view('SmartForm::LOG/003-sap/create-form',
-    [
-        'approvalList' => HrdHelper::getApprovalList()
-    ]);
+    public function createForm(Request $request) {
+        $nik_session = $request->session()->get( 'user_id', '' );
+
+        return view('SmartForm::LOG/003-sap/create-form', [
+
+            'session'=>$nik_session,
+            'approvalList' => HrdHelper::getApprovalList()
+        ]);
     }
 
     public function storeForm(Request $request) {
@@ -84,12 +87,14 @@ class Pengajuan003SapController extends Controller {
                 // 'qty_requested_*' => 'required|numeric',
             ]);
 
+            // dd($request);
+
             $headerData = [
                 'plant' => $request->input('job_site'),
                 'tanggal' => $request->input('date'),
-                'dibuat_oleh' => $request->input('dibuat_oleh'),
+                'dibuat_oleh' => $request->checked,
                 // 'diperiksa_oleh' => $request->input('validated'),
-                'checked_by' => $request->checked_by,
+                'checked_by' => $request->validated,
                 'doc_num' => $this->generateDocNumber(),
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -97,6 +102,9 @@ class Pengajuan003SapController extends Controller {
                 'creator' => $request->session()->get( 'user_id', '' ),
                 'status' => json_encode( array_values( [ null, null] ) )
             ];
+
+            // dd($headerData);
+
 
             $pengajuanPrHeaderId = DB::table('pengajuan_pr_003sap')->insertGetId($headerData);
 

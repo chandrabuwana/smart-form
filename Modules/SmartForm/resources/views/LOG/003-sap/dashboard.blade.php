@@ -134,13 +134,13 @@
                                                     <span class="text-xs font-weight-bold">
                                                         @if ($status[1] === 'approved')
                                                             <span
-                                                                class="badge bg-success">{{ optional(collect($user)->firstWhere('nik', $data->creator))->nama ?? '' }}</span>
+                                                                class="badge bg-success">{{ optional(collect($user)->firstWhere('nik', $data->dibuat_oleh))->nama ?? '' }}</span>
                                                         @elseif ($status[1] === 'rejected')
                                                             <span
-                                                                class="badge bg-danger">{{ optional(collect($user)->firstWhere('nik', $data->creator))->nama ?? '' }}</span>
+                                                                class="badge bg-danger">{{ optional(collect($user)->firstWhere('nik', $data->dibuat_oleh))->nama ?? '' }}</span>
                                                         @elseif ($status[1] == null)
                                                             <span
-                                                                class="badge bg-info">{{ optional(collect($user)->firstWhere('nik', $data->creator))->nama ?? '' }}</span>
+                                                                class="badge bg-info">{{ optional(collect($user)->firstWhere('nik', $data->dibuat_oleh))->nama ?? '' }}</span>
                                                         @endif
                                                     </span>
                                                 </td>
@@ -156,7 +156,7 @@
                                                     </span>
                                                 </td>
                                                 <td>
-                                                    @if ($session == $data->creator)
+                                                    @if ($session == $data->dibuat_oleh)
                                                         <a href="{{ route('003-sap-detail', ['id' => $data->id]) }}"
                                                             class="btn btn-warning btn-sm mt-3"
                                                             style="{{ $data->delete_status == 1 ? 'pointer-events: none; opacity: 0.6;' : '' }}">

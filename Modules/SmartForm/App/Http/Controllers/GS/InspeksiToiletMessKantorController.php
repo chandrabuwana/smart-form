@@ -118,6 +118,7 @@ class InspeksiToiletMessKantorController extends Controller
 
         return view("SmartForm::GS/inspeksi-toilet-mess-kantor/form-create", [
             'questions' => $questions,
+            'isShowDetail' => true,
             'approvalList' => HrdHelper::getApprovalList(),
             'dropdowns' => $dropdowns
         ]);

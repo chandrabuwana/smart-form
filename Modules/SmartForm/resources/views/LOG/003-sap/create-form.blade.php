@@ -137,7 +137,7 @@
                                         <select name="checked" id="dibuat_oleh" class="form-control" required>
                                             <option disabled selected>-- Select Creator --</option>
                                             @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nik }}">{{ $user->nama }}</option>
+                                                <option value="{{ $user->nik }}" {{ $user->nik == $session ? 'selected' : '' }}>{{ $user->nama }}</option>
                                             @endforeach
                                         </select>
                                     </div>
