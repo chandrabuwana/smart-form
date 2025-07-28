@@ -19,7 +19,7 @@ class InspectionDongfengController extends Controller
     public function index()
     {
         try {
-            $nik_session = request()->session()->get('username', '');
+            $nik_session = request()->session()->get('user_id', '');
             $statistics = ( object )[
                 'total_records' => DB::table( 'plant_general_inspection_dongfeng' )->count(),
                 'total_this_month' => DB::table( 'plant_general_inspection_dongfeng' )

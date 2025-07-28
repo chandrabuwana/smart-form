@@ -475,14 +475,6 @@
                                 </div>
                             </div>
                             <div class="row">
-                                {{-- <div class="col-6">
-                                    <div class="input-group input-group-static mb-3">
-                                        <label for="dilakukan1_display" class="ms-0">Dilakukan Oleh 1</label>
-                                        <input type="text" id="dilakukan1_display" class="form-control"
-                                            value="{{ $inspection['nama_dilakukan1'] ?? old('dilakukan1', $inspection['dilakukan1'] ?? '') }}" readonly>
-                                        <input type="hidden" name="dilakukan1" value="{{ $inspection['dilakukan1'] ?? '' }}">
-                                    </div>
-                                </div> --}}
                                 <div class="col-6">
                                     <label for="dibuat" class="ms-0">Dilakukan Oleh 1</label>
 
@@ -509,7 +501,6 @@
                                         </select>
                                     </div>
                                 </div>
-
                                 <div class="col-6 mt-2">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="diperiksa" class="ms-0">Diperiksa Oleh</label>
@@ -523,7 +514,6 @@
                                         </select>
                                     </div>
                                 </div>
-
                                 <div class="col-6 mt-2">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="diketahui" class="ms-0">Diketahui Oleh</label>
@@ -559,149 +549,6 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
     <script>
-        // $(function() {
-        //     const selectedNama = '{{ $inspection['dilakukan2'] }}';
-
-        //     $('#dilakukan2').select2({
-        //         placeholder: '-- Select Creator --',
-        //         width: '100%',
-        //         ajax: {
-        //             url: '{{ route('bss-form.plant.general-inspection.dongfeng.approval.list') }}',
-        //             dataType: 'json',
-        //             delay: 250,
-        //             data: function(params) {
-        //                 return {
-        //                     search: params.term
-        //                 };
-        //             },
-        //             processResults: function(data) {
-        //                 return {
-        //                     results: $.map(data, function(item) {
-        //                         return {
-        //                             id: item.nik,
-        //                             text: item.nama + ' (' + item.nik + ')',
-        //                             nama: item.nama
-        //                         };
-        //                     })
-        //                 };
-        //             },
-        //             cache: true
-        //         }
-        //     });
-
-
-        //     if (selectedNama) {
-        //         $.ajax({
-        //             url: '{{ route('bss-form.plant.general-inspection.dongfeng.approval.list') }}',
-        //             dataType: 'json',
-        //             success: function(data) {
-        //                 const matched = data.find(item => item.nama ===
-        //                     selectedNama);
-        //                 if (matched) {
-        //                     const option = new Option(matched.nama + ' (' + matched.nik + ')', matched
-        //                         .nama, true, true);
-        //                     $('#dilakukan2').append(option).trigger('change');
-        //                 }
-        //             }
-        //         });
-        //     }
-        // });
-
-
-        // $(function() {
-        //     const selectedNik = '{{ $inspection['diketahui']}}';
-
-        //     $('#diketahui').select2({
-        //         placeholder: '-- Select Creator --',
-        //         width: '100%',
-        //         ajax: {
-        //             url: '{{ route('bss-form.plant.general-inspection.dongfeng.approval.list') }}',
-        //             dataType: 'json',
-        //             delay: 250,
-        //             data: function(params) {
-        //                 return {
-        //                     search: params.term || ''
-        //                 };
-        //             },
-        //             processResults: function(data) {
-        //                 return {
-        //                     results: $.map(data, function(item) {
-        //                         return {
-        //                             id: item.nik,
-        //                             text: item.nama + ' (' + item.nik +
-        //                                 ')',
-        //                         };
-        //                     })
-        //                 };
-        //             },
-        //             cache: true
-        //         }
-        //     });
-
-
-        //     if (selectedNik) {
-        //         $.ajax({
-        //             url: '{{ route('bss-form.plant.general-inspection.dongfeng.approval.list') }}',
-        //             dataType: 'json',
-        //             success: function(data) {
-        //                 const matched = data.find(item => item.nama === selectedNik);
-        //                 if (matched) {
-        //                     const option = new Option(matched.nama + ' (' + matched.nik + ')', matched
-        //                         .nama, true, true);
-        //                     $('#diketahui').append(option).trigger('change');
-        //                 }
-        //             }
-        //         });
-        //     }
-        // });
-
-        // $(function() {
-        //     const selectedNik = '{{ $inspection['diperiksa'] }}';
-
-        //     $('#diperiksa').select2({
-        //         placeholder: '-- Select Creator --',
-        //         width: '100%',
-        //         ajax: {
-        //             url: '{{ route('bss-form.plant.general-inspection.dongfeng.approval.list') }}',
-        //             dataType: 'json',
-        //             delay: 250,
-        //             data: function(params) {
-        //                 return {
-        //                     search: params.term || ''
-        //                 };
-        //             },
-        //             processResults: function(data) {
-        //                 return {
-        //                     results: $.map(data, function(item) {
-        //                         return {
-        //                             id: item.nik,
-        //                             text: item.nama + ' (' + item.nik +
-        //                                 ')',
-        //                         };
-        //                     })
-        //                 };
-        //             },
-        //             cache: true
-        //         }
-        //     });
-
-
-        //     if (selectedNik) {
-        //         $.ajax({
-        //             url: '{{ route('bss-form.plant.general-inspection.dongfeng.approval.list') }}',
-        //             dataType: 'json',
-        //             success: function(data) {
-        //                 const matched = data.find(item => item.nama === selectedNik);
-        //                 if (matched) {
-        //                     const option = new Option(matched.nama + ' (' + matched.nik + ')', matched
-        //                         .nama, true, true);
-        //                     $('#diperiksa').append(option).trigger('change');
-        //                 }
-        //             }
-        //         });
-        //     }
-        // });
-
         $(function() {
             function setupApprovalDropdown(selector, initialNik) {
                 const selectElement = $(selector);

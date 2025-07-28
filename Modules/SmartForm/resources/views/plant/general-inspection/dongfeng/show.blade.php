@@ -515,147 +515,6 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
     <script>
-        // $(function() {
-        //     const selectedNama = '{{ $inspection['dilakukan2'] }}';
-
-        //     $('#dilakukan2').select2({
-        //         placeholder: '-- Select Creator --',
-        //         width: '100%',
-        //         ajax: {
-        //             url: '{{ route('bss-form.plant.general-inspection.dongfeng.approval.list') }}',
-        //             dataType: 'json',
-        //             delay: 250,
-        //             data: function(params) {
-        //                 return {
-        //                     search: params.term
-        //                 };
-        //             },
-        //             processResults: function(data) {
-        //                 return {
-        //                     results: $.map(data, function(item) {
-        //                         return {
-        //                             id: item.nik,
-        //                             text: item.nama + ' (' + item.nik + ')',
-        //                             nama: item.nama
-        //                         };
-        //                     })
-        //                 };
-        //             },
-        //             cache: true
-        //         }
-        //     });
-
-
-        //     if (selectedNama) {
-        //         $.ajax({
-        //             url: '{{ route('bss-form.plant.general-inspection.dongfeng.approval.list') }}',
-        //             dataType: 'json',
-        //             success: function(data) {
-        //                 const matched = data.find(item => item.nama ===
-        //                     selectedNama);
-        //                 if (matched) {
-        //                     const option = new Option(matched.nama + ' (' + matched.nik + ')', matched
-        //                         .nama, true, true);
-        //                     $('#dilakukan2').append(option).trigger('change');
-        //                 }
-        //             }
-        //         });
-        //     }
-        // });
-
-
-        // $(function() {
-        //     const selectedNik = '{{ $inspection['diketahui'] }}';
-
-        //     $('#diketahui').select2({
-        //         placeholder: '-- Select Creator --',
-        //         width: '100%',
-        //         ajax: {
-        //             url: '{{ route('bss-form.plant.general-inspection.dongfeng.approval.list') }}',
-        //             dataType: 'json',
-        //             delay: 250,
-        //             data: function(params) {
-        //                 return {
-        //                     search: params.term || ''
-        //                 };
-        //             },
-        //             processResults: function(data) {
-        //                 return {
-        //                     results: $.map(data, function(item) {
-        //                         return {
-        //                             id: item.nama,
-        //                             text: item.nama + ' (' + item.nik +
-        //                                 ')',
-        //                         };
-        //                     })
-        //                 };
-        //             },
-        //             cache: true
-        //         }
-        //     });
-
-
-        //     if (selectedNik) {
-        //         $.ajax({
-        //             url: '{{ route('bss-form.plant.general-inspection.dongfeng.approval.list') }}',
-        //             dataType: 'json',
-        //             success: function(data) {
-        //                 const matched = data.find(item => item.nama === selectedNik);
-        //                 if (matched) {
-        //                     const option = new Option(matched.nama + ' (' + matched.nik + ')', matched
-        //                         .nama, true, true);
-        //                     $('#diketahui').append(option).trigger('change');
-        //                 }
-        //             }
-        //         });
-        //     }
-        // });
-        // $(function() {
-        //     const selectedNik = '{{ $inspection['diperiksa'] }}';
-
-        //     $('#diperiksa').select2({
-        //         placeholder: '-- Select Creator --',
-        //         width: '100%',
-        //         ajax: {
-        //             url: '{{ route('bss-form.plant.general-inspection.dongfeng.approval.list') }}',
-        //             dataType: 'json',
-        //             delay: 250,
-        //             data: function(params) {
-        //                 return {
-        //                     search: params.term || ''
-        //                 };
-        //             },
-        //             processResults: function(data) {
-        //                 return {
-        //                     results: $.map(data, function(item) {
-        //                         return {
-        //                             id: item.nama,
-        //                             text: item.nama + ' (' + item.nik +
-        //                                 ')',
-        //                         };
-        //                     })
-        //                 };
-        //             },
-        //             cache: true
-        //         }
-        //     });
-
-
-        //     if (selectedNik) {
-        //         $.ajax({
-        //             url: '{{ route('bss-form.plant.general-inspection.dongfeng.approval.list') }}',
-        //             dataType: 'json',
-        //             success: function(data) {
-        //                 const matched = data.find(item => item.nama === selectedNik);
-        //                 if (matched) {
-        //                     const option = new Option(matched.nama + ' (' + matched.nik + ')', matched
-        //                         .nama, true, true);
-        //                     $('#diperiksa').append(option).trigger('change');
-        //                 }
-        //             }
-        //         });
-        //     }
-        // });
         $(function() {
             function setupApprovalDropdown(selector, initialNik) {
                 const selectElement = $(selector);
@@ -676,7 +535,6 @@
                             return {
                                 results: $.map(data, function(item) {
                                     return {
-                                        // FIX: 'id' (value yang akan disubmit) diisi dengan NIK
                                         id: item.nik,
                                         text: item.nama + ' (' + item.nik + ')'
                                     };
@@ -687,7 +545,6 @@
                     }
                 });
 
-                // Jika ada NIK awal dari database, tampilkan sebagai nilai terpilih
                 if (initialNik) {
                     $.ajax({
                         type: 'GET',
