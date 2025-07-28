@@ -17,7 +17,7 @@ class PpmXcmgXE1250Controller extends Controller {
 
     public function dashboard(Request $request) {
         try {
-            $nik_session = $request->session()->get( 'user_id', '' );
+            $nik_session = $request->session()->get( 'username', '' );
             $query = DB::table( 'ppm_xcmg_xe1250' )
             ->select( '*' )
             ->orderBy( 'created_at', 'desc' );
@@ -54,11 +54,15 @@ class PpmXcmgXE1250Controller extends Controller {
             'job_site' => DB::table( 'ppm_xcmg_xe1250' )->distinct()->count( 'job_site' ),
         ];
 
-            $cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','sn_unit','model','model_engine','sn_engine')->get();
+        $approvalList = HrdHelper::getApprovalList();
+        $nik = collect($approvalList)->firstWhere('nama', $nik_session)->nik ?? '';
 
-            $records = $query->paginate( 5 );
-            return view( 'smartform::plant.ppm_xe1250.dashboard-xe1250', [
-            'record' => $records, 'session'=>$nik_session, 'user'=> HrdHelper::getApprovalList(),
+        $cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','sn_unit','model','model_engine','sn_engine')->get();
+
+        $records = $query->where('delete_status', '!=', 1)->paginate( 5 );
+
+        return view( 'smartform::plant.ppm_xe1250.dashboard-xe1250', [
+            'record' => $records, 'session'=>$nik, 'user'=> $approvalList,
             'cn'=>$cn_data,
             'statistics'=>$statistics,
             'filters' => [
@@ -77,21 +81,25 @@ class PpmXcmgXE1250Controller extends Controller {
 
     public function Add(Request $request) {
 
-        $nik_session = $request->session()->get( 'user_id', '' );
+        $nik_session = $request->session()->get( 'username', '' );
+        $approvalList = HrdHelper::getApprovalList();
+        $nik = collect($approvalList)->firstWhere('nama', $nik_session)->nik ?? '';
         $json = file_get_contents( resource_path( 'data/ppm-xe1250/ppm-xe1250.json' ) );
         $list = json_decode( $json, true );
         $cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','sn_unit','model','model_engine','sn_engine')->get();
 
-        return view( 'smartform::plant.ppm_xe1250.form-xe1250', [
-            'list' => $list,  'approvalList' => HrdHelper::getApprovalList(),
+        return view( 'smartform::plant.ppm_xe1250.form-xe1250',
+        compact('approvalList'),
+        [
+            'list' => $list,
             'cn'=>$cn_data,
-            'nik'=>$nik_session
+            'nik'=>$nik
         ]);
     }
 
     public function detail($id, Request $request){
 
-        $nik_session = $request->session()->get( 'user_id', '' );
+        $nik_session = $request->session()->get( 'username', '' );
 
         $cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','sn_unit','model','model_engine','sn_engine')->get();
 
@@ -133,12 +141,13 @@ class PpmXcmgXE1250Controller extends Controller {
         $data->fin_taggal = json_decode( $detail->fin_taggal );
         $data->fin_remark = json_decode( $detail->fin_remark );
 
-
-
+        $approvalList = HrdHelper::getApprovalList();
+        $nik = collect($approvalList)->firstWhere('nama', $nik_session)->nik ?? '';
 
         return view( 'smartform::plant.ppm_xe1250.show-xe1250', [
-            'data' => $data, 'list' => $list, 'approvalList' => HrdHelper::getApprovalList(),
-            'nik'=>$nik_session,
+            'data' => $data, 'list' => $list,
+            'approvalList' => $approvalList,
+            'nik'=>$nik,
             'cn'=>$cn_data
         ]);
     }
@@ -374,7 +383,8 @@ class PpmXcmgXE1250Controller extends Controller {
     }
     public function show( Request $request,$id){
 
-        $nik_session = $request->session()->get( 'user_id', '' );
+        // $nik_session = $request->session()->get( 'user_id', '' );
+        $nik_session = $request->session()->get( 'username', '' );
 
         $cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','sn_unit','model','model_engine','sn_engine')->get();
 
@@ -417,9 +427,14 @@ class PpmXcmgXE1250Controller extends Controller {
         $data->fin_taggal = json_decode( $detail->fin_taggal );
         $data->fin_remark = json_decode( $detail->fin_remark );
 
+        $approvalList = HrdHelper::getApprovalList();
+        $nik = collect($approvalList)->firstWhere('nama', $nik_session)->nik ?? '';
+
         return view( 'smartform::plant.ppm_xe1250.detail-xe1250', [
-            'data' => $data, 'nik' =>$nik_session, 'list' => $list,
-            'approvalList' => HrdHelper::getApprovalList(),
+            'data' => $data,
+            'nik' =>$nik,
+            'list' => $list,
+            'approvalList' => $approvalList,
             'cn'=>$cn_data
         ]);
     }
