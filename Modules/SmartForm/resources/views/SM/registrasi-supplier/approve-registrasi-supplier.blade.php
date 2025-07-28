@@ -307,7 +307,7 @@
                                                 </td>
                                                 @if (($data['file_npwp']) != "Tidak ada")
                                                 <td>
-                                                    <img src="{{asset('storage/images/sm/registrasi_supplier/' .$data['file_npwp'])}}" style="width:200px"/>
+                                                    <img src="{{asset('storage/images/SM/registrasi_supplier/' .$data['file_npwp'])}}" style="width:200px"/>
                                                     <a href="/bss-form/sm/file-npwp-supplier-download/{{$data['file_npwp']}}">Download</a>
                                                 </td>
                                                 @else
