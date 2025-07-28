@@ -43,7 +43,7 @@
                                     <tr>
                                         <td>Shift</td>
                                         <td>
-                                            {!! \Modules\SmartForm\helpers\ShiftHelper::renderShiftSelect('shift', $lgmg->shift ?? null, false, true, 'shift', 'form-select form-select-sm input-text') !!}
+                                            {!! \Modules\SmartForm\helpers\ShiftHelper::renderShiftSelect('shift', $lgmg->shift ?? null, false, true, 'shift', 'form-control select2') !!}
                                         </td>
                                     </tr>
                                 </div>
@@ -180,7 +180,7 @@
                                 <div class="col-6">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="diisi_oleh" class="ms-0">Diisi Oleh</label>
-                                        <select name="diisi_oleh" id="diisi_oleh" class="form-control" required>
+                                        <select name="diisi_oleh" id="diisi_oleh" class="form-control select2" required>
                                             <option value="">-- Pilih --</option>
                                             @foreach ($approvalList as $user)
                                                 <option value="{{ $user->nik }}" {{ $lgmg->diisi_oleh == $user->nik ? 'selected' : '' }}>{{ $user->nama }}</option>
@@ -191,7 +191,7 @@
                                 <div class="col-6">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="checked_by" class="ms-0">Diperiksa Oleh</label>
-                                        <select name="checked_by" id="checked_by" class="form-control" required>
+                                        <select name="checked_by" id="checked_by" class="form-control select2" required>
                                             <option value="">-- Pilih Checker --</option>
                                             @foreach ($approvalList as $user)
                                                 <option value="{{ $user->nik }}" {{ $lgmg->checked_by == $user->nik ? 'selected' : '' }}>{{ $user->nama }}</option>
@@ -326,7 +326,8 @@
         });
 
         $(document).ready(function () {
-        $('#shift').select2();
+        // $('#shift').select2();
+        $('.select2').select2();
         $('#btnSubmit').on('click', function (e) {
             e.preventDefault();
 
