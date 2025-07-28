@@ -376,8 +376,9 @@
                                 <div class="col-6 ">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="dibuat" class="ms-0">Dilakukan Oleh 1</label>
-                                        <input type="text" value="{{ $inspection['dilakukan1'] }}"
-                                            class="form-control" readonly>
+                                        <select name="dilakukan1" id="dilakukan1" class="form-control" disabled required>
+
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-6">
@@ -494,146 +495,61 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
         $(function() {
-            const selectedNama = '{{ $inspection['dilakukan2'] }}';
+            function setupApprovalDropdown(selector, initialNik) {
+                const selectElement = $(selector);
 
-            $('#dilakukan2').select2({
-                placeholder: '-- Select Creator --',
-                width: '100%',
-                ajax: {
-                    url: '{{ route('cmt.approval.list') }}',
-                    dataType: 'json',
-                    delay: 250,
-                    data: function(params) {
-                        return {
-                            search: params.term
-                        };
-                    },
-                    processResults: function(data) {
-                        return {
-                            results: $.map(data, function(item) {
-                                return {
-                                    id: item.nama,
-                                    text: item.nama + ' (' + item.nik + ')',
-                                    nama: item.nama
-                                };
-                            })
-                        };
-                    },
-                    cache: true
-                }
-            });
-
-
-            if (selectedNama) {
-                $.ajax({
-                    url: '{{ route('cmt.approval.list') }}',
-                    dataType: 'json',
-                    success: function(data) {
-                        const matched = data.find(item => item.nama ===
-                            selectedNama);
-                        if (matched) {
-                            const option = new Option(matched.nama + ' (' + matched.nik + ')', matched
-                                .nama, true, true);
-                            $('#dilakukan2').append(option).trigger('change');
-                        }
+                selectElement.select2({
+                    placeholder: '-- Pilih Pengguna --',
+                    width: '100%',
+                    ajax: {
+                        url: '{{ route('cmt.approval.list') }}',
+                        dataType: 'json',
+                        delay: 250,
+                        data: function(params) {
+                            return {
+                                search: params.term
+                            };
+                        },
+                        processResults: function(data) {
+                            return {
+                                results: $.map(data, function(item) {
+                                    return {
+                                        // FIX: 'id' (value yang akan disubmit) diisi dengan NIK
+                                        id: item.nik,
+                                        text: item.nama + ' (' + item.nik + ')'
+                                    };
+                                })
+                            };
+                        },
+                        cache: true
                     }
                 });
-            }
-        });
 
-
-        $(function() {
-            const selectedNik = '{{ $inspection['diketahui'] }}';
-
-            $('#diketahui').select2({
-                placeholder: '-- Select Creator --',
-                width: '100%',
-                ajax: {
-                    url: '{{ route('cmt.approval.list') }}',
-                    dataType: 'json',
-                    delay: 250,
-                    data: function(params) {
-                        return {
-                            search: params.term || ''
-                        };
-                    },
-                    processResults: function(data) {
-                        return {
-                            results: $.map(data, function(item) {
-                                return {
-                                    id: item.nama,
-                                    text: item.nama + ' (' + item.nik +
-                                        ')',
-                                };
-                            })
-                        };
-                    },
-                    cache: true
-                }
-            });
-
-
-            if (selectedNik) {
-                $.ajax({
-                    url: '{{ route('cmt.approval.list') }}',
-                    dataType: 'json',
-                    success: function(data) {
-                        const matched = data.find(item => item.nama === selectedNik);
+                // Jika ada NIK awal dari database, tampilkan sebagai nilai terpilih
+                if (initialNik) {
+                    $.ajax({
+                        type: 'GET',
+                        url: '{{ route('cmt.approval.list') }}',
+                        dataType: 'json',
+                    }).then(function(data) {
+                        // FIX: Mencari data berdasarkan NIK, bukan nama
+                        const matched = data.find(item => item.nik === initialNik);
                         if (matched) {
-                            const option = new Option(matched.nama + ' (' + matched.nik + ')', matched
-                                .nama, true, true);
-                            $('#diketahui').append(option).trigger('change');
+                            // FIX: Buat <option> baru dengan NIK sebagai value
+                            const option = new Option(matched.nama + ' (' + matched.nik + ')', matched.nik, true, true);
+                            selectElement.append(option).trigger('change');
                         }
-                    }
-                });
-            }
-        });
-        $(function() {
-            const selectedNik = '{{ $inspection['diperiksa'] }}';
-
-            $('#diperiksa').select2({
-                placeholder: '-- Select Creator --',
-                width: '100%',
-                ajax: {
-                    url: '{{ route('cmt.approval.list') }}',
-                    dataType: 'json',
-                    delay: 250,
-                    data: function(params) {
-                        return {
-                            search: params.term || ''
-                        };
-                    },
-                    processResults: function(data) {
-                        return {
-                            results: $.map(data, function(item) {
-                                return {
-                                    id: item.nama,
-                                    text: item.nama + ' (' + item.nik +
-                                        ')',
-                                };
-                            })
-                        };
-                    },
-                    cache: true
+                    });
                 }
-            });
-
-
-            if (selectedNik) {
-                $.ajax({
-                    url: '{{ route('cmt.approval.list') }}',
-                    dataType: 'json',
-                    success: function(data) {
-                        const matched = data.find(item => item.nama === selectedNik);
-                        if (matched) {
-                            const option = new Option(matched.nama + ' (' + matched.nik + ')', matched
-                                .nama, true, true);
-                            $('#diperiksa').append(option).trigger('change');
-                        }
-                    }
-                });
             }
-        });
+
+            // Panggil fungsi untuk setiap dropdown approval
+            setupApprovalDropdown('#dilakukan1', "{{ $inspection['dilakukan1'] ?? '' }}");
+            setupApprovalDropdown('#dilakukan2', "{{ $inspection['dilakukan2'] ?? '' }}");
+            setupApprovalDropdown('#diperiksa', "{{ $inspection['diperiksa'] ?? '' }}");
+            setupApprovalDropdown('#diketahui', "{{ $inspection['diketahui'] ?? '' }}");
+        })
+
     </script>
     <script>
         $(document).ready(function() {
