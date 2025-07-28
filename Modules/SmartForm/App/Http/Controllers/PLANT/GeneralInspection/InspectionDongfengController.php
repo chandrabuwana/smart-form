@@ -128,6 +128,7 @@ class InspectionDongfengController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request);
         try {
             DB::beginTransaction();
             $validator = Validator::make($request->all(), [
@@ -159,7 +160,7 @@ class InspectionDongfengController extends Controller
                 'dilakukan2' => $request->dilakukan2,
                 'diperiksa'  => $request->diperiksa,
                 'diketahui'  => $request->diketahui,
-                'creator'    => $request->session()->get('username', ''),
+                'creator'    => $request->session()->get('user_id', ''),
                 'date_sign1' => Carbon::now(),
                 'date_sign2' => null,
                 'date_sign3' => null,
@@ -224,7 +225,7 @@ class InspectionDongfengController extends Controller
      */
     public function show(InspectionDongfeng $dongfeng, Request $request)
     {
-        $nik_session = $request->session()->get( 'username', '' );
+        $nik_session = $request->session()->get( 'user_id', '' );
         $sites = ['PMSS', 'MAS', 'MME', 'BRAM', 'TAJ', 'AGM', 'MSJ', 'TDM', 'BSSR', 'MBLM', 'MBLH', 'others'];
         $json = file_get_contents(resource_path('data/general-inspection/dongfeng/activity-list.json'));
         $activityChecklistJson = json_decode($json, true);
@@ -262,6 +263,7 @@ class InspectionDongfengController extends Controller
             'performance' => $inspectionResultData,
             'remark'      => $remarkData
         ];
+        // dd($nik_session);
 
         $status = json_decode($dongfeng->status, true);
         return view('smartform::plant.general-inspection.dongfeng.show', [  'activityChecklistJson' => $activityChecklistJson,
@@ -334,6 +336,7 @@ class InspectionDongfengController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // dd($request);
         try {
             DB::beginTransaction();
 
@@ -419,6 +422,7 @@ class InspectionDongfengController extends Controller
                 'message' => 'Inspection data updated successfully.',
             ]);
         } catch (Exception $e) {
+            // dd($e);
             DB::rollBack();
             $errorMessages = 'Error Occurred';
             if (env('APP_DEBUG')) {
