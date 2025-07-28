@@ -322,7 +322,7 @@
                                                 </td>
                                                 @if (($data['file_sppkp']) != "Tidak ada")
                                                 <td>
-                                                    <img src="{{asset('storage/images/sm/registrasi_supplier/' .$data['file_npwp'])}}" style="width:200px"/>
+                                                    <img src="{{asset('storage/images/SM/registrasi_supplier/' .$data['file_npwp'])}}" style="width:200px"/>
                                                     <a href="/bss-form/sm/file-sppkp-supplier-download/{{$data['file_sppkp']}}">Download</a>
                                                 </td>
                                                 @else
@@ -337,7 +337,7 @@
                                                 </td>
                                                 @if (($data['file_nib_siup']) != "Tidak ada")
                                                 <td>
-                                                    <img src="{{asset('storage/images/sm/registrasi_supplier/' .$data['file_npwp'])}}" style="width:200px"/>
+                                                    <img src="{{asset('storage/images/SM/registrasi_supplier/' .$data['file_npwp'])}}" style="width:200px"/>
                                                     <a href="/bss-form/sm/file-nib-supplier-download/{{$data['file_nib_siup']}}">Download</a>
                                                 </td>
                                                 @else
@@ -352,7 +352,7 @@
                                                 </td>
                                                 @if (($data['file_akta_perusahaan']) != "Tidak ada")
                                                 <td>
-                                                    <img src="{{asset('storage/images/sm/registrasi_supplier/' .$data['file_npwp'])}}" style="width:200px"/>
+                                                    <img src="{{asset('storage/images/SM/registrasi_supplier/' .$data['file_npwp'])}}" style="width:200px"/>
                                                     <a href="/bss-form/sm/file-aktaper-supplier-download/{{$data['file_akta_perusahaan']}}">Download</a>
                                                 </td>
                                                 @else
@@ -367,7 +367,7 @@
                                                 </td>
                                                 @if (($data['file_pakta_integritas']) != "Tidak ada")
                                                 <td>
-                                                    <img src="{{asset('storage/images/sm/registrasi_supplier/' .$data['file_npwp'])}}" style="width:200px"/>
+                                                    <img src="{{asset('storage/images/SM/registrasi_supplier/' .$data['file_npwp'])}}" style="width:200px"/>
                                                     <a href="/bss-form/sm/file-paktaint-supplier-download/{{$data['file_pakta_integritas']}}">Download</a>
                                                 </td>
                                                 @else
@@ -382,7 +382,7 @@
                                                 </td>
                                                 @if (($data['file_ident_direk']) != "Tidak ada")
                                                 <td>
-                                                    <img src="{{asset('storage/images/sm/registrasi_supplier/' .$data['file_npwp'])}}" style="width:200px"/>
+                                                    <img src="{{asset('storage/images/SM/registrasi_supplier/' .$data['file_npwp'])}}" style="width:200px"/>
                                                     <a href="/bss-form/sm/file-identdir-supplier-download/{{$data['file_ident_direk']}}">Download</a>
                                                 </td>
                                                 @else
@@ -397,7 +397,7 @@
                                                 </td>
                                                 @if (($data['file_struktur_org']) != "Tidak ada")
                                                 <td>
-                                                    <img src="{{asset('storage/images/sm/registrasi_supplier/' .$data['file_npwp'])}}" style="width:200px"/>
+                                                    <img src="{{asset('storage/images/SM/registrasi_supplier/' .$data['file_npwp'])}}" style="width:200px"/>
                                                     <a href="/bss-form/sm/file-strukturorg-supplier-download/{{$data['file_struktur_org']}}">Download</a>
                                                 </td>
                                                 @else
@@ -412,7 +412,7 @@
                                                 </td>
                                                 @if (($data['file_profile_per']) != "Tidak ada")
                                                 <td>
-                                                    <img src="{{asset('storage/images/sm/registrasi_supplier/' .$data['file_npwp'])}}" style="width:200px"/>
+                                                    <img src="{{asset('storage/images/SM/registrasi_supplier/' .$data['file_npwp'])}}" style="width:200px"/>
                                                     <a href="/bss-form/sm/file-profilper-supplier-download/{{$data['file_profile_per']}}">Download</a>
                                                 </td>
                                                 @else
@@ -427,7 +427,7 @@
                                                 </td>
                                                 @if (($data['file_lain']) != "Tidak ada")
                                                 <td>
-                                                    <img src="{{asset('storage/images/sm/registrasi_supplier/' .$data['file_npwp'])}}" style="width:200px"/>
+                                                    <img src="{{asset('storage/images/SM/registrasi_supplier/' .$data['file_npwp'])}}" style="width:200px"/>
                                                     <a href="/bss-form/sm/file-lain-supplier-download/{{$data['file_lain']}}">Download</a>
                                                 </td>
                                                 @else
