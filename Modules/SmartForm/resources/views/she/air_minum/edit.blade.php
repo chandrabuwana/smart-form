@@ -127,23 +127,20 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="site_name" class="ms-0">Nama Site</label>
-                                        <select class="form-control" id="site_name" name="site_name" required>
-                                            <option value="">-- Pilih Site --</option>
-                                            @foreach(\Modules\SmartForm\helpers\SiteHelper::getAllSites() as $code => $name)
-                                                <option value="{{ strtoupper($code) }}" {{ strtoupper($maintenanceRecord->site_name) == strtoupper($code) ? 'selected' : '' }}>{{ $name }}</option>
-                                            @endforeach
-                                        </select>
+                                        {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('site_name', $maintenanceRecord->site_name ?? null, $isShowDetail, true, 'site_name', 'form-control') !!}
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="department" class="ms-0">Dept./Section</label>
-                                        <select class="form-control" id="department" name="department" required>
-                                            <option value="">-- Pilih Departemen --</option>
-                                            @foreach(\Modules\SmartForm\helpers\DepartmentHelper::getAllDepartments() as $code => $name)
-                                                <option value="{{ $code }}" {{ $maintenanceRecord->department == $code ? 'selected' : '' }}>{{ $name }}</option>
-                                            @endforeach
-                                        </select>
+                                        {!! \Modules\SmartForm\helpers\DepartmentHelper::renderDepartmentSelect(
+                                            'department',
+                                            $maintenanceRecord->department ?? '',
+                                            $isShowDetail,
+                                            true,
+                                            'department',
+                                            'form-control'
+                                        ) !!}
                                     </div>
                                 </div>
                                 <div class="col-md-4">
