@@ -76,30 +76,26 @@
                                                     <span class="badge blue">{{ $checkerName }}</span>
                                                 @endif
                                                 @if ($nik == $records->validator)
-                                                    @if ($status[0] === 'rejected')
-                                                    @else
-                                                        <div class="mt-2 d-flex justify-content-center gap-2">
-                                                            <button class="btn btn-success btn-sm btnOGCApprove"
-                                                                data-doc="{{ $data->doc_num }}"
-                                                                data-week="{{ $records->week }}"
-                                                                data-status="{{ $records->status }}"
-                                                                data-cek='{{ $records->checker }}'
-                                                                data-val='{{ $records->validator }}'
-                                                                data-nik="{{ $nik }}">
-                                                                <i class="fas fa-check"></i> Approve
-                                                            </button>
+                                                    <div class="mt-2 d-flex justify-content-center gap-2">
+                                                        <button class="btn btn-success btn-sm btnOGCApprove"
+                                                            data-doc="{{ $data->doc_num }}" data-week="{{ $records->week }}"
+                                                            data-status="{{ $records->status }}"
+                                                            data-cek='{{ $records->checker }}'
+                                                            data-val='{{ $records->validator }}'
+                                                            data-nik="{{ $nik }}">
+                                                            <i class="fas fa-check"></i> Approve
+                                                        </button>
 
-                                                            <button class="btn btn-warning btn-sm btnOGCReject"
-                                                                data-doc="{{ $data->doc_num }}"
-                                                                data-week="{{ $records->week }}"
-                                                                data-status="{{ $records->status }}"
-                                                                data-cek='{{ $records->checker }}'
-                                                                data-val='{{ $records->validator }}'
-                                                                data-nik="{{ $nik }}">
-                                                                <i class="fas fa-close"></i> Reject
-                                                            </button>
-                                                        </div>
-                                                    @endif
+                                                        <button class="btn btn-warning btn-sm btnOGCReject"
+                                                            data-doc="{{ $data->doc_num }}"
+                                                            data-week="{{ $records->week }}"
+                                                            data-status="{{ $records->status }}"
+                                                            data-cek='{{ $records->checker }}'
+                                                            data-val='{{ $records->validator }}'
+                                                            data-nik="{{ $nik }}">
+                                                            <i class="fas fa-close"></i> Reject
+                                                        </button>
+                                                    </div>
                                                 @endif
                                             </td>
 

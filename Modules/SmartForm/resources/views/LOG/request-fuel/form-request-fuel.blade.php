@@ -180,20 +180,20 @@
                             <p class="mb-1">Production Foreman</p>
                         </div>
                         <div class="col-md-4">
-                            <h6>Diterima oleh</h6>
+                            <h6>Diserahkan oleh</h6>
                             
                             <div class="mb-3">
-                                <select name="dDiterima" id="dDiterima" class="form-control text-left" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                <select name="dDiserahkan" id="dDiserahkan" class="form-control text-left" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
                                 </select>
                             </div>
                             <input type="hidden" name="acknowledged_by_nik" value="{{ $record->acknowledged_by_nik ?? '' }}">
                             <p class="mb-1">Production Supervisor</p>
                         </div>
                         <div class="col-md-4">
-                            <h6>Disetujui oleh</h6>
+                            <h6>Diterima oleh</h6>
                             
                             <div class="mb-3">
-                                <select name="dApproved" id="dApproved" class="form-control text-left" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                <select name="dDiterima" id="dDiterima" class="form-control text-left" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
                                 </select>
                             </div>
                             <input type="hidden" name="acknowledged_by_nik" value="{{ $record->acknowledged_by_nik ?? '' }}">
@@ -221,7 +221,7 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
         $(function() {
-            $('#dDiterima').select2({
+            $('#dDiserahkan').select2({
                 placeholder: '-- Pilih Pengawas --',
                 width: '50%',
                 ajax: {
@@ -249,7 +249,7 @@
     </script>
     <script>
         $(function() {
-            $('#dApproved').select2({
+            $('#dDiterima').select2({
                 placeholder: '-- Pilih Pengawas --',
                 width: '50%',
                 ajax: {
@@ -352,6 +352,19 @@
             document.getElementById("tglDoc").value=(formatTgl() || "-");
 
             // Handle supervisor selection
+            $('select[name="dDiserahkan"]').change(function() {
+                var selectedText = $(this).find('option:selected').text();
+                var match = selectedText.match(/\(([^)]+)\)/);
+                var nik = match ? match[1] : '';
+                $('input[name="acknowledged_by_nik"]').val(nik);
+            });
+
+            // Trigger change on load if there's a value
+            if ($('select[name="dDiserahkan"]').val()) {
+                $('select[name="dDiserahkan"]').trigger('change');
+            }
+
+            // Handle supervisor selection
             $('select[name="dDiterima"]').change(function() {
                 var selectedText = $(this).find('option:selected').text();
                 var match = selectedText.match(/\(([^)]+)\)/);
@@ -362,19 +375,6 @@
             // Trigger change on load if there's a value
             if ($('select[name="dDiterima"]').val()) {
                 $('select[name="dDiterima"]').trigger('change');
-            }
-
-            // Handle supervisor selection
-            $('select[name="dApproved"]').change(function() {
-                var selectedText = $(this).find('option:selected').text();
-                var match = selectedText.match(/\(([^)]+)\)/);
-                var nik = match ? match[1] : '';
-                $('input[name="acknowledged_by_nik"]').val(nik);
-            });
-
-            // Trigger change on load if there's a value
-            if ($('select[name="dApproved"]').val()) {
-                $('select[name="dApproved"]').trigger('change');
             }
 
         })

@@ -268,6 +268,11 @@
                                                 <td>
                                                     <select name="nama_anak_asuh_{{ $i }}" class="form-control text-center" {{ $isShowDetail ? 'disabled' : '' }}>
                                                         <option value="">-- Pilih Anak Asuh --</option>
+                                                        @foreach($approvalList as $user)
+                                                        <option value="{{ $user->nama }}" {{ (old('nama_anak_asuh_'.$i, isset($record->nama_anak_asuh_items[$i-1]) ? $record->nama_anak_asuh_items[$i-1] : '') == $user->nama) ? 'selected' : '' }}>
+                                                            {{ $user->nama }} ({{ $user->nik }})
+                                                        </option>
+                                                    @endforeach
                                                     </select>
                                                 </td>
                                                 <td class="checkbox-cell">

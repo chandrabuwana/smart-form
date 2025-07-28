@@ -111,27 +111,9 @@
                             <td>: {{ session('username') }} {{ session('user_id') }}
                             </td>
                             <td>Diserahkan Oleh, :</td>
-                            <td>
-                                <select name="dDiserahkan" class="form-control text-center">
-                                    <option value="{{$data['diserahkan_oleh']}}">{{$data['diserahkan_oleh']}}</option>
-                                    @foreach($approvalList as $user)
-                                        <option value="{{ $user->nama }}">
-                                            {{ $user->nama }} ({{ $user->nik }})
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </td>
+                            <td>{{$data['diserahkan_oleh']}}</td>
                             <td>Diterima Oleh, :</td>
-                            <td>
-                                <select name="dDiterima" class="form-control text-center">
-                                    <option value="{{$data['diterima_oleh']}}">{{$data['diterima_oleh']}}</option>
-                                    @foreach($approvalList as $user)
-                                        <option value="{{ $user->nama }}">
-                                            {{ $user->nama }} ({{ $user->nik }})
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </td>
+                            <td>{{$data['diterima_oleh']}}</td>
                           </tr>
                     </table>
 
