@@ -79,6 +79,7 @@ class PemakaianSolarController extends Controller {
             try {
                 $forms_request_sql = DB::table( $TABLE_MASTER )
                 ->select( 'no_doc', 'created_date as tgldibuat', 'dibuat_oleh', 'no_fuel_station as fuel', 'total_pemakaian as total', 'disetujui_oleh as approval', 'status','is_active' )
+                ->where('is_active', 1)
                 ->orderBy( 'no_doc', 'desc' );
 
                 if ( $filterNik ) $forms_request_sql = $forms_request_sql->where( 'dibuat_oleh', $filterNik );
