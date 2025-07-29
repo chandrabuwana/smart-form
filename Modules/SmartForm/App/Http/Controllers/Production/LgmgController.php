@@ -43,12 +43,13 @@ class LgmgController extends Controller {
         }
 
         $statistics = ( object )[
-            'total_records' => DB::table( 'lgmg' )->count(),
+            'total_records' => DB::table( 'lgmg' )->where('delete_status', '!=', 1)->count(),
             'total_this_month' => DB::table( 'lgmg' )
+            ->where('delete_status', '!=', 1)
             ->whereMonth( 'created_at', now()->month )
             ->whereYear( 'created_at', now()->year )
             ->count(),
-            'no_unit' => DB::table( 'lgmg' )->distinct()->count( 'no_unit' ),
+            'no_unit' => DB::table( 'lgmg' )->where('delete_status', '!=', 1)->distinct()->count( 'no_unit' ),
         ];
 
             $records = $query->where('delete_status', '!=', 1)->paginate( 5 );

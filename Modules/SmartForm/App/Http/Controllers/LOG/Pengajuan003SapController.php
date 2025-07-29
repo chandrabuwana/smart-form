@@ -42,12 +42,13 @@ class Pengajuan003SapController extends Controller {
             }
 
             $statistics = ( object )[
-                'total_records' => DB::table( 'pengajuan_pr_003sap' )->count(),
+                'total_records' => DB::table( 'pengajuan_pr_003sap' )->where('delete_status', '!=', 1)->count(),
                 'total_this_month' => DB::table( 'pengajuan_pr_003sap' )
+                ->where('delete_status', '!=', 1)
                 ->whereMonth( 'created_at', now()->month )
                 ->whereYear( 'created_at', now()->year )
                 ->count(),
-                'plant' => DB::table( 'pengajuan_pr_003sap' )->distinct()->count( 'plant' )
+                'plant' => DB::table( 'pengajuan_pr_003sap' )->where('delete_status', '!=', 1)->distinct()->count( 'plant' )
             ];
 
             $records = $query->where('delete_status', '!=', 1)->paginate(10);
