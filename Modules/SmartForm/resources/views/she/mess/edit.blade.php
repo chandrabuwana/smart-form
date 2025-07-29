@@ -261,7 +261,7 @@
                                     <select name="inspected_by_name" id="inspected_by_name" class="form-control text-center" required>
                                         <option value="">-- Pilih Inspektor --</option>
                                         @foreach($approvalList as $user)
-                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $data->inspected_by_name == $user->nama ? 'selected' : '' }}>{{ $user->nama }}</option>
+                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $data->inspected_by_name == $user->nama ? 'selected' : '' }}>{{ $user->nama }} ({{ $user->nik }})</option>
                                         @endforeach
                                     </select>
                                     <input type="hidden" name="inspected_by_nik" value="{{ isset($data) ? $data->inspected_by_nik : '' }}">
@@ -285,7 +285,7 @@
                                     <select name="inspected_by2_name" id="inspected_by2_name" class="form-control text-center" required>
                                         <option value="">-- Pilih Inspektor --</option>
                                         @foreach($approvalList as $user)
-                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $data->inspected_by2_name == $user->nama ? 'selected' : '' }}>{{ $user->nama }}</option>
+                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $data->inspected_by2_name == $user->nama ? 'selected' : '' }}>{{ $user->nama }} ({{ $user->nik }})</option>
                                         @endforeach
                                     </select>
                                     <input type="hidden" name="inspected_by2_nik" value="{{ isset($data) ? $data->inspected_by2_nik : '' }}">
@@ -309,7 +309,7 @@
                                     <select name="inspected_by3_name" id="inspected_by3_name" class="form-control text-center" required>
                                         <option value="">-- Pilih Inspektor --</option>
                                         @foreach($approvalList as $user)
-                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $data->inspected_by3_name == $user->nama ? 'selected' : '' }}>{{ $user->nama }}</option>
+                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $data->inspected_by3_name == $user->nama ? 'selected' : '' }}>{{ $user->nama }} ({{ $user->nik }})</option>
                                         @endforeach
                                     </select>
                                     <input type="hidden" name="inspected_by3_nik" value="{{ isset($data) ? $data->inspected_by3_nik : '' }}">
@@ -333,7 +333,7 @@
                                     <select name="acknowledged_by_name" id="acknowledged_by_name" class="form-control text-center" required>
                                         <option value="">-- Pilih Inspektor --</option>
                                         @foreach($approvalList as $user)
-                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $data->acknowledged_by_name == $user->nama ? 'selected' : '' }}>{{ $user->nama }}</option>
+                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $data->acknowledged_by_name == $user->nama ? 'selected' : '' }}>{{ $user->nama }} ({{ $user->nik }})</option>
                                         @endforeach
                                     </select>
                                     <input type="hidden" name="acknowledged_by_nik" value="{{ isset($data) ? $data->acknowledged_by_nik : '' }}">

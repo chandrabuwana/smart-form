@@ -295,7 +295,7 @@ Tidak ada peraturan yg berlaku atau berdampak kelingkungan perusahaan
                                     <select name="inspected_by_name" id="inspected_by_name" class="form-control text-center" required {{ $isShowDetail ? 'disabled' : '' }}>
                                     @foreach($approvalList as $user)
                                         <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $isShowDetail && $data->inspected_by_name == $user->nama ? 'selected' : '' }}>
-                                            {{ $user->nama }}
+                                            {{ $user->nama }} ({{ $user->nik }})
                                         </option>
                                     @endforeach
                                     </select>
@@ -329,7 +329,7 @@ Tidak ada peraturan yg berlaku atau berdampak kelingkungan perusahaan
                                     <select name="inspected_by2_name" id="inspected_by2_name" class="form-control text-center" {{ $isShowDetail ? 'disabled' : '' }}>
                                     @foreach($approvalList as $user)
                                         <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $isShowDetail && $data->inspected_by2_name == $user->nama ? 'selected' : '' }}>
-                                            {{ $user->nama }}
+                                            {{ $user->nama }} ({{ $user->nik }})
                                         </option>
                                     @endforeach
                                     </select>
@@ -363,7 +363,7 @@ Tidak ada peraturan yg berlaku atau berdampak kelingkungan perusahaan
                                     <select name="inspected_by3_name" id="inspected_by3_name" class="form-control text-center" {{ $isShowDetail ? 'disabled' : '' }}>
                                         @foreach($approvalList as $user)
                                             <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $isShowDetail && $data->inspected_by3_name == $user->nama ? 'selected' : '' }}>
-                                                {{ $user->nama }}
+                                                {{ $user->nama }} ({{ $user->nik }})
                                             </option>
                                         @endforeach
                                     </select>
@@ -397,7 +397,7 @@ Tidak ada peraturan yg berlaku atau berdampak kelingkungan perusahaan
                                     <select name="acknowledged_by_name" id="acknowledged_by_name" class="form-control text-center" {{ $isShowDetail ? 'disabled' : '' }}>
                                         @foreach($approvalList as $user)
                                             <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $isShowDetail && $data->acknowledged_by_name == $user->nama ? 'selected' : '' }}>
-                                                {{ $user->nama }}
+                                                {{ $user->nama }} ({{ $user->nik }})
                                             </option>
                                         @endforeach
                                     </select>
