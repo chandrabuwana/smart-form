@@ -81,7 +81,7 @@ class InspeksiToiletMessKantorController extends Controller
             'dept' => DB::table( 'gs_inspeksi_tmk_jawaban' )->distinct()->count( 'dept' ),
         ];
 
-            $records = $query->paginate( 5 );
+            $records = $query->where('delete_status', '!=', 1)->paginate( 5 );
             return view( 'SmartForm::GS/inspeksi-toilet-mess-kantor/dashboard', [ 'record' => $records, 'session'=>$nik_session, 'user'=> HrdHelper::getApprovalList(), 'statistics'=>$statistics, 'filters' => [
             'search' => $request->search,
             'nama_site' => $request->nama_site,
