@@ -319,70 +319,64 @@
     @endphp
 
     <div class="signature-wrapper">
-        <div class="signature-box" style="width: 400px; font-size: 10px;">
-            <div>
-                <p>Date: {{ Carbon::parse($inspection['date_sign1'])->format('d M Y') }}</p>
-            </div>
+        {{-- TANDA TANGAN DILAKUKAN OLEH --}}
+        <div class="signature-box" style="width: 300px; font-size: 10px;">
+            <div class="title">Date : {{ Carbon::parse($inspection['date_sign1'])->format('d M Y') }}</div>
             <div style="text-align: center;">
                 <p>Dilakukan oleh:</p>
             </div>
             <div style="display: flex; justify-content: space-around;">
                 <div class="name">
                     <img src="{{ asset('img/validated.png') }}" class="ttd" style="width: 40px" height="20px">
-                    <p>{{ $inspection['dilakukan1'] }}
-                    </p>
+                    {{-- Mencari nama di $approvalList berdasarkan NIK --}}
+                    <p>{{ $approvalList->firstWhere('nik', $inspection['dilakukan1'])->nama ?? $inspection['dilakukan1'] }}</p>
                     <p>(Mechanic)</p>
                 </div>
                 <div class="name">
                     <img src="{{ asset('img/validated.png') }}" class="ttd" style="width: 40px" height="20px">
-                    <p>{{ $inspection['dilakukan2'] }}
-                    </p>
+                    {{-- Mencari nama di $approvalList berdasarkan NIK --}}
+                    <p>{{ $approvalList->firstWhere('nik', $inspection['dilakukan2'])->nama ?? $inspection['dilakukan2'] }}</p>
                     <p>(Mechanic)</p>
                 </div>
             </div>
         </div>
+
         @php
             $status = json_decode($inspection['status'], true);
         @endphp
+
+        {{-- TANDA TANGAN DIPERIKSA OLEH --}}
         <div class="signature-box" style="width: 300px; font-size: 10px;">
-            <div>
-                <p>Date: {{ Carbon::parse($inspection['date_sign2'])->format('d M Y') }}</p>
-            </div>
+            <div class="title">Date : {{ $inspection['date_sign2'] ? Carbon::parse($inspection['date_sign2'])->format('d M Y') : '' }}</div>
             <div style="text-align: center;">
-                <p>Diperiksa
-                    oleh:
-                </p>
+                <p>Diperiksa oleh:</p>
+            </div>
+            <div class="name">
                 @if ($status[0] == 'Approved')
                     <img src="{{ asset('img/checked.png') }}" class="ttd" style="width: 40px" height="20px">
                 @elseif ($status[0] == 'Rejected')
                     <img src="{{ asset('img/rejected.png') }}" class="ttd" style="width: 40px" height="20px">
-                @else
                 @endif
-            </div>
-            <div class="name">
-                <p>{{ $inspection['diperiksa'] }}</p>
+                {{-- Mencari nama di $approvalList berdasarkan NIK --}}
+                <p>{{ $approvalList->firstWhere('nik', $inspection['diperiksa'])->nama ?? $inspection['diperiksa'] }}</p>
                 <p>(Plant Foreman)</p>
             </div>
         </div>
 
+        {{-- TANDA TANGAN DIKETAHUI OLEH --}}
         <div class="signature-box" style="width: 300px; font-size: 10px;">
-            <div>
-                <p>Date: {{ Carbon::parse($inspection['date_sign3'])->format('d M Y') }}</p>
-            </div>
+            <div class="title">Date : {{ $inspection['date_sign3'] ? Carbon::parse($inspection['date_sign3'])->format('d M Y') : '' }}</div>
             <div style="text-align: center;">
-                <p>Diketahui
-                    oleh:
-                </p>
+                <p>Diketahui oleh:</p>
+            </div>
+            <div class="name">
                 @if ($status[1] == 'Approved')
                     <img src="{{ asset('img/checked.png') }}" class="ttd" style="width: 40px" height="20px">
                 @elseif ($status[1] == 'Rejected')
                     <img src="{{ asset('img/rejected.png') }}" class="ttd" style="width: 40px" height="20px">
-                @else
                 @endif
-
-            </div>
-            <div class="name">
-                <p>{{ $inspection['diketahui'] }}</p>
+                {{-- Mencari nama di $approvalList berdasarkan NIK --}}
+                <p>{{ $approvalList->firstWhere('nik', $inspection['diketahui'])->nama ?? $inspection['diketahui'] }}</p>
                 <p>(Kabag / Spv Plant)</p>
             </div>
         </div>

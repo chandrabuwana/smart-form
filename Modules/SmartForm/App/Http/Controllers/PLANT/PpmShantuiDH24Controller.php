@@ -136,6 +136,7 @@ class PpmShantuiDH24Controller extends Controller {
             'note' => $request->note,
             'created_at' => DB::raw('GETDATE()'),
             'updated_at' => DB::raw('GETDATE()'),
+            'delete_status' => 0,
             'status' => json_encode( array_values( [ null, null] ) )
         ];
 

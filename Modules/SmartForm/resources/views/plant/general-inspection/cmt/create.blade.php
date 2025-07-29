@@ -331,8 +331,10 @@
                                 <div class="col-6 ">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="dilakukan1" class="ms-0">Dilakukan Oleh 1</label>
-                                        <input type="text" name="dilakukan1" class="form-control"
-                                            value="{{ session('username') }}" readonly>
+                                        <input type="text" id="dilakukan1_display" readonly class="form-control"
+                                            value="{{ session('username') }}">
+
+                                        <input type="hidden" name="dilakukan1" value="{{ session('user_id') }}">
 
                                     </div>
                                 </div>
@@ -395,7 +397,7 @@
                             results: $.map(data, function(item) {
                                 return {
                                     id: item
-                                        .nama,
+                                        .nik,
                                     text: item.nama + ' (' + item.nik + ')'
                                 };
                             })
@@ -425,7 +427,7 @@
                             results: $.map(data, function(item) {
                                 return {
                                     id: item
-                                        .nama,
+                                        .nik,
                                     text: item.nama + ' (' + item.nik + ')'
                                 };
                             })
@@ -455,7 +457,7 @@
                             results: $.map(data, function(item) {
                                 return {
                                     id: item
-                                        .nama,
+                                        .nik,
                                     text: item.nama + ' (' + item.nik + ')'
                                 };
                             })
