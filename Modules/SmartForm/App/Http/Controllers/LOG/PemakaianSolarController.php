@@ -102,6 +102,7 @@ class PemakaianSolarController extends Controller {
                 }
                 LOG::info( 'SQL Forms Data Asset Request : '. $forms_request_sql->toRawSql() );
 
+
                 $response[ 'message' ] = 'Ok';
                 $response[ 'isSuccess' ] = true;
                 $response[ 'data' ] = [ 'total'=> $totalNotFiltered, 'totalNotFiltered'=> $totalNotFiltered, 'rows' => $forms_request_sql->get()->toArray() ];
@@ -240,7 +241,7 @@ class PemakaianSolarController extends Controller {
         // Default limit
         try {
             $master = DB::table( $TABLE_PENGELUARAN_OLI )
-            ->select( 'id', 'shift', 'job_site as site', 'dibuat_oleh', 'no_fuel_station as fuel', 'total_pemakaian', 
+            ->select( 'id', 'shift', 'job_site as site', 'dibuat_oleh', 'no_fuel_station as fuel', 'total_pemakaian',
             'disetujui_oleh as approved', 'dibuat_oleh as request', 'status','is_active' );
 
             $master->orderBy( $sort, $order );
@@ -386,9 +387,9 @@ class PemakaianSolarController extends Controller {
         $data_detail = array();
         try {
             $data = DB::table( $TABLE_MASTER )
-            ->select( 'id', 'no_doc', 'revisi as revisi', 'halaman', 'tanggal', 'job_site as jobsite', 
-            'no_fuel_station as nofuel', 'shift', 'dibuat_oleh as dibuat', 'diketahui_oleh as mengetahui', 
-            'disetujui_oleh as approval', 'total_pemakaian', 'created_date as tgldibuat', 'hari', 'stok_awal', 
+            ->select( 'id', 'no_doc', 'revisi as revisi', 'halaman', 'tanggal', 'job_site as jobsite',
+            'no_fuel_station as nofuel', 'shift', 'dibuat_oleh as dibuat', 'diketahui_oleh as mengetahui',
+            'disetujui_oleh as approval', 'total_pemakaian', 'created_date as tgldibuat', 'hari', 'stok_awal',
             'masuk', 'stok_akhir', 'no_dok','is_active' )
             ->where( 'id', $no_doc )
             ->first();
@@ -403,7 +404,7 @@ class PemakaianSolarController extends Controller {
                 $detail->nomor = $nomor;
                 $nomor++;
             }
-            
+
             $dibuat_nama = DB::connection('sqlsrv2')->table(self::TABLE_KARYAWAN)
                     ->select('Nama')
                     ->where('NIK', $data->dibuat)
