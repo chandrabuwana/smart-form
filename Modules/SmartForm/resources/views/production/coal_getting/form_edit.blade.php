@@ -154,7 +154,12 @@
                                         <div class="card-body">
                                             <h6>Dibuat oleh</h6>
                                             <div class="mb-3">
-                                                <input type="text" class="form-control" name="created_by_name" value="{{ $record->created_by_name }}" readonly>
+                                                <select name="created_by_name" id="created_by_name" class="form-control text-center" required>
+                                                    <option value="">-- Pilih Inspektor --</option>
+                                                    @foreach($approvalList as $user)
+                                                        <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $record->created_by_name == $user->nama ? 'selected' : '' }}>{{ $user->nama }} ({{ $user->nik }})</option>
+                                                    @endforeach
+                                                </select>
                                                 <input type="hidden" name="created_by_nik" value="{{ $record->created_by_nik }}">
                                             </div>
                                             <p class="mb-1">Pengawas Lapangan</p>
@@ -167,8 +172,12 @@
                                             <h6>Diketahui oleh</h6>
                                             
                                             <div class="mb-3">
-                                                <input type="text" class="form-control" value="{{ $record->acknowledged_by_name }}" readonly>
-                                                <input type="hidden" name="acknowledged_by_name" value="{{ $record->acknowledged_by_name }}">
+                                                <select name="acknowledged_by_name" id="acknowledged_by_name" class="form-control text-center" required>
+                                                    <option value="">-- Pilih Inspektor --</option>
+                                                    @foreach($approvalList as $user)
+                                                        <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $record->acknowledged_by_name == $user->nama ? 'selected' : '' }}>{{ $user->nama }} ({{ $user->nik }})</option>
+                                                    @endforeach
+                                                </select>
                                                 <input type="hidden" name="acknowledged_by_nik" value="{{ $record->acknowledged_by_nik }}">
                                             </div>
                                             <p class="mb-1">Production Supervisor</p>
@@ -195,6 +204,7 @@
 
 @section('custom-css')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
 @endsection
 
 @section('custom-js')
@@ -271,4 +281,13 @@
         });
     });
     </script>
+
+<script>
+    $(function() {
+        $('#created_by_name, #acknowledged_by_name').select2({
+            placeholder: '-- Pilih Nama --',
+            width: '100%'
+        });
+    });
+</script>
 @endsection
