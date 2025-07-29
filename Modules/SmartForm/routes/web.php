@@ -174,6 +174,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
                 Route::post('/approve-ppm.xe1250', [Pengajuan003SapController::class, 'Approve'])->name("003-sap-approve");
                 Route::post('/reject-ppm.xe1250', [Pengajuan003SapController::class, 'Reject'])->name("003-sap-reject");
                 Route::post('/reset-ppm.xe1250/{id}', [Pengajuan003SapController::class, 'Reset'])->name("003-sap-reset");
+                Route::get('/approval-list', [Pengajuan003SapController::class, 'getApprovalList'])->name('003-sap.approval.list');
             });
         });
 
@@ -383,6 +384,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/approve-wc', [InspeksiToiletMessKantorController::class, 'Approve'])->name("wc-approve");
             Route::post('/reject-wc', [InspeksiToiletMessKantorController::class, 'Reject'])->name("wc-reject");
             Route::post('/reset-wc/{id}', [InspeksiToiletMessKantorController::class, 'Reset'])->name("wc-reset");
+            Route::get('/approval-list', [InspeksiToiletMessKantorController::class, 'getApprovalList'])->name('wc.approval.list');
         });
 
         Route::prefix('it-ops')->group(function () {
@@ -734,6 +736,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/approve-lgmg', [LgmgController::class, 'Approve'])->name("lgmg.approve");
             Route::post('/reject-lgmg', [LgmgController::class, 'Reject'])->name("lgmg.reject");
             Route::post('/reset-lgmg/{id}', [LgmgController::class, 'Reset'])->name("lgmg.reset");
+            Route::get('/approval-list', [LgmgController::class, 'getApprovalList'])->name('lgmg.approval.list');
         });
     });
 

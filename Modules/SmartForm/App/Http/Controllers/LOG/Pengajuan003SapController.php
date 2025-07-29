@@ -77,6 +77,7 @@ class Pengajuan003SapController extends Controller {
     }
 
     public function storeForm(Request $request) {
+        // dd($request);
         try {
             $request->validate([
                 // 'plant' => 'required',
@@ -408,5 +409,13 @@ class Pengajuan003SapController extends Controller {
             'success' => true,
             'message' => 'Data berhasil di Reject'
         ] );
+    }
+
+    public function getApprovalList(Request $request)
+    {
+        $search = $request->input('search', '');
+        $list = HrdHelper::getApprovalList($search);
+
+        return response()->json($list);
     }
 }

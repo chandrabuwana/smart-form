@@ -414,5 +414,32 @@
             });
         });
     });
+
+    $(function() {
+        $('#diisi_oleh  , #checked_by').select2({
+            placeholder: '-- Pilih --',
+            width: '100%',
+            ajax: {
+                url: '{{ route('lgmg.approval.list') }}',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { search: params.term };
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                id: item.nik,
+                                text: item.nama + ' (' + item.nik + ')',
+                                nik: item.nik
+                            };
+                        })
+                    };
+                },
+                cache: true
+            }
+        });
+    });
     </script>
 @endsection

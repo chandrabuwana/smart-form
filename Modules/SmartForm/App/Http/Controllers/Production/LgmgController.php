@@ -443,4 +443,12 @@ class LgmgController extends Controller {
         return $pdf->stream('BSS-FRM-P2H-UNIT-CMT-LGMG.pdf');
     }
 
+    public function getApprovalList(Request $request)
+    {
+        $search = $request->input('search', '');
+        $list = HrdHelper::getApprovalList($search);
+
+        return response()->json($list);
+    }
+
 }
