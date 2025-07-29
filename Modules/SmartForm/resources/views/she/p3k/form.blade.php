@@ -252,7 +252,7 @@
                                                     <select name="inspector_1_name" id="inspector_1_name" class="form-control text-center select2" {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }} required>
                                                         <option value="">-- Pilih Inspektor 1 --</option>
                                                         @foreach($approvalList as $user)
-                                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $isShowDetail && $maintenanceRecord->inspector_1_name == $user->nama ? 'selected' : '' }}>
+                                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $isShowDetail && $record->inspector_1_name == $user->nama ? 'selected' : '' }}>
                                                                 {{ $user->nama }}
                                                             </option>
                                                         @endforeach
@@ -301,7 +301,7 @@
                                                     <select name="inspector_2_name" id="inspector_2_name" class="form-control text-center" {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
                                                         <option value="">-- Pilih Inspektor 2 --</option>
                                                         @foreach($approvalList as $user)
-                                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $isShowDetail && $maintenanceRecord->inspector_2_name == $user->nama ? 'selected' : '' }}>
+                                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $isShowDetail && $record->inspector_2_name == $user->nama ? 'selected' : '' }}>
                                                                 {{ $user->nama }}
                                                             </option>
                                                         @endforeach
@@ -350,7 +350,7 @@
                                                     <select name="supervisor_name" id="supervisor_name" class="form-control text-center" {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
                                                         <option value="">-- Pilih Supervisor --</option>
                                                         @foreach($approvalList as $user)
-                                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $isShowDetail && $maintenanceRecord->supervisor_name == $user->nama ? 'selected' : '' }}>
+                                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $isShowDetail && $record->supervisor_name == $user->nama ? 'selected' : '' }}>
                                                                 {{ $user->nama }}
                                                             </option>
                                                         @endforeach
@@ -399,7 +399,7 @@
                                                     <select name="dh_name" id="dh_name" class="form-control text-center" {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
                                                         <option value="">-- Pilih Department Head --</option>
                                                         @foreach($approvalList as $user)
-                                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $isShowDetail && $maintenanceRecord->dh_name == $user->nama ? 'selected' : '' }}>
+                                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $isShowDetail && $record->dh_name == $user->nama ? 'selected' : '' }}>
                                                                 {{ $user->nama }}
                                                             </option>
                                                         @endforeach
@@ -448,7 +448,7 @@
                                                     <select name="she_name" id="she_name" class="form-control text-center" {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
                                                     <option value="">-- Pilih SHE --</option>
                                                         @foreach($approvalList as $user)
-                                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $isShowDetail && $maintenanceRecord->she_name == $user->nama ? 'selected' : '' }}>
+                                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $isShowDetail && $record->she_name == $user->nama ? 'selected' : '' }}>
                                                                 {{ $user->nama }}
                                                             </option>
                                                         @endforeach

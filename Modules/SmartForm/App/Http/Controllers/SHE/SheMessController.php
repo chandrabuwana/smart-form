@@ -249,6 +249,7 @@ class SheMessController extends Controller
             return view('smartform::she.mess.edit', [
                 'data' => $record,
                 'approvalList' => HrdHelper::getApprovalList(),
+                'isShowDetail' => true,
             ]);
             
         } catch (\Exception $e) {
