@@ -506,4 +506,11 @@ class InspeksiToiletMessKantorController extends Controller
         ]);
     }
 
+    public function getApprovalList(Request $request)
+    {
+        $search = $request->input('search', '');
+        $list = HrdHelper::getApprovalList($search);
+
+        return response()->json($list);
+    }
 }
