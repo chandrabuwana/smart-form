@@ -50,6 +50,7 @@ class FuelController extends Controller {
             ->whereMonth('tanggal', $currentMonth)
             ->whereYear('tanggal', $currentYear)
             ->where('is_active', 1)
+            ->where('is_active', 1)
             ->count();
 
         return view('SmartForm::LOG/request-fuel/dashboard-request-fuel', [
@@ -79,7 +80,8 @@ class FuelController extends Controller {
         $filter = $request->query('filter', null); // Default limit
         try {
             $master = DB::table($TABLE_REQUEST_FUEL)
-                ->select('id', 'no', 'nama', 'jabatan','dibuat_oleh', 'site','departemen', 'tanggal', 'no_lambung', 'jenis_kendaraan', 'jam', 'shift','hm','awal','akhir','total_liter','is_active');
+                ->select('id', 'no', 'nama', 'jabatan','dibuat_oleh', 'site','departemen', 'tanggal', 'no_lambung', 'jenis_kendaraan', 'jam', 'shift','hm','awal','akhir','total_liter','is_active')
+                ->where('is_active', 1);
 
             if($filterNik == null || $filterNik == 'null') {
             } else {

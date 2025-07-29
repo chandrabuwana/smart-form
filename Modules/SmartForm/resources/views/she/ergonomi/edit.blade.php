@@ -873,12 +873,9 @@
                                             <tr>
                                                 <td class="align-bottom text-center border">
                                                     <select name="paramedic_name" id="paramedic_name" class="form-control text-center" required>
-                                                        <option disabled selected>-- Select Paramedic --</option>
-                                                        @foreach ($approvalList as $paramedic)
-                                                            <option value="{{ $paramedic->nama }}" 
-                                                                data-nik="{{ $paramedic->nik }}"
-                                                                {{ isset($data->paramedic_name) && $data->paramedic_name == $paramedic->nama ? 'selected' : '' }}>
-                                                                {{ $paramedic->nama }} ({{ $paramedic->nik }})
+                                                        @foreach($approvalList as $user)
+                                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $data->paramedic_name == $user->nama ? 'selected' : '' }}>
+                                                                {{ $user->nama }} ({{ $user->nik }})
                                                             </option>
                                                         @endforeach
                                                     </select>
@@ -886,12 +883,9 @@
                                                 </td>
                                                 <td class="align-bottom text-center border">
                                                     <select name="doctor_name" id="doctor_name" class="form-control text-center" required>
-                                                        <option disabled selected>-- Select Doctor --</option>
-                                                        @foreach ($approvalList as $doctor)
-                                                            <option value="{{ $doctor->nama }}" 
-                                                                data-nik="{{ $doctor->nik }}"
-                                                                {{ isset($data->doctor_name) && $data->doctor_name == $doctor->nama ? 'selected' : '' }}>
-                                                                {{ $doctor->nama }} ({{ $doctor->nik }})
+                                                        @foreach($approvalList as $user)
+                                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $data->doctor_name == $user->nama ? 'selected' : '' }}>
+                                                                {{ $user->nama }} ({{ $user->nik }})
                                                             </option>
                                                         @endforeach
                                                     </select>
@@ -899,12 +893,9 @@
                                                 </td>
                                                 <td class="align-bottom text-center border">
                                                     <select name="dept_head_name" id="dept_head_name" class="form-control text-center" required>
-                                                        <option disabled selected>-- Select Department Head --</option>
-                                                        @foreach ($approvalList as $deptHead)
-                                                            <option value="{{ $deptHead->nama }}" 
-                                                                data-nik="{{ $deptHead->nik }}"
-                                                                {{ isset($data->dept_head_name) && $data->dept_head_name == $deptHead->nama ? 'selected' : '' }}>
-                                                                {{ $deptHead->nama }} ({{ $deptHead->nik }})
+                                                        @foreach($approvalList as $user)
+                                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $data->dept_head_name == $user->nama ? 'selected' : '' }}>
+                                                                {{ $user->nama }} ({{ $user->nik }})
                                                             </option>
                                                         @endforeach
                                                     </select>
@@ -974,98 +965,99 @@
 @section('custom-js')
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
     <script>
-    $(function() {
-        var form = $("form");
-        var submitBtn = form.find('button[type="submit"]');
+        $(function() {
+            var form = $("form");
+            var submitBtn = form.find('button[type="submit"]');
 
-        // Function to validate required fields
-        function validateForm() {
-            var isValid = true;
-            var requiredFields = [
-                { name: 'job_position', label: 'Job Position' },
-                { name: 'evaluation_date', label: 'Evaluation Date' },
-                { name: 'total_employee', label: 'Total Employee' },
-                { name: 'employee_name', label: 'Employee Name' },
-                { name: 'reviewer_name', label: 'Reviewer Name' },
-                { name: 'paramedic_name', label: 'Paramedic Name' },
-                { name: 'doctor_name', label: 'Doctor Name' },
-                { name: 'dept_head_name', label: 'Department Head Name' }
-            ];
+            // Function to validate required fields
+            function validateForm() {
+                var isValid = true;
+                var requiredFields = [
+                    { name: 'job_position', label: 'Job Position' },
+                    { name: 'evaluation_date', label: 'Evaluation Date' },
+                    { name: 'total_employee', label: 'Total Employee' },
+                    { name: 'employee_name', label: 'Employee Name' },
+                    { name: 'reviewer_name', label: 'Reviewer Name' },
+                    { name: 'paramedic_name', label: 'Paramedic Name' },
+                    { name: 'doctor_name', label: 'Doctor Name' },
+                    { name: 'dept_head_name', label: 'Department Head Name' }
+                ];
 
-            var missingFields = [];
-            requiredFields.forEach(function(field) {
-                var value = $('[name="' + field.name + '"]').val();
-                if (!value || value.trim() === '') {
-                    isValid = false;
-                    missingFields.push(field.label);
-                }
-            });
-
-            if (!isValid) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Required Fields Missing',
-                    text: 'Please fill in the following fields:\n' + missingFields.join('\n')
+                var missingFields = [];
+                requiredFields.forEach(function(field) {
+                    var value = $('[name="' + field.name + '"]').val();
+                    if (!value || value.trim() === '') {
+                        isValid = false;
+                        missingFields.push(field.label);
+                    }
                 });
+
+                if (!isValid) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Required Fields Missing',
+                        text: 'Please fill in the following fields:\n' + missingFields.join('\n')
+                    });
+                }
+
+                return isValid;
             }
 
-            return isValid;
-        }
+            form.submit(function(e) {
+                e.preventDefault();
 
-        form.submit(function(e) {
-            e.preventDefault();
+                // Validate form before submission
+                if (!validateForm()) {
+                    return false;
+                }
 
-            // Validate form before submission
-            if (!validateForm()) {
-                return false;
-            }
-
-            submitBtn.prop('disabled', true);
-            var formData = new FormData(this);
-            
-            axios.post('{{ route("she.ergonomi.update") }}', formData)
-                .then(function(response) {
-                    if (response.data.success) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Success',
-                            text: response.data.message || 'Ergonomi survey has been updated successfully.'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                window.location.href = '{{ route("she.ergonomi.dashboard") }}';
+                submitBtn.prop('disabled', true);
+                var formData = new FormData(this);
+                
+                axios.post('{{ route("she.ergonomi.update") }}', formData)
+                    .then(function(response) {
+                        if (response.data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: response.data.message || 'Ergonomi survey has been updated successfully.'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = '{{ route("she.ergonomi.dashboard") }}';
+                                }
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: response.data.message || 'Failed to update ergonomi survey.'
+                            });
+                        }
+                    })
+                    .catch(function(error) {
+                        let errorMessage = 'Terjadi kesalahan pada sistem';
+                        
+                        if (error.response) {
+                            if (error.response.data.errors) {
+                                errorMessage = Object.values(error.response.data.errors).flat().join('\n');
+                            } else if (error.response.data.message) {
+                                errorMessage = error.response.data.message;
                             }
-                        });
-                    } else {
+                        }
+
                         Swal.fire({
                             icon: 'error',
                             title: 'Error',
-                            text: response.data.message || 'Failed to update ergonomi survey.'
+                            text: errorMessage
                         });
-                    }
-                })
-                .catch(function(error) {
-                    let errorMessage = 'Terjadi kesalahan pada sistem';
-                    
-                    if (error.response) {
-                        if (error.response.data.errors) {
-                            errorMessage = Object.values(error.response.data.errors).flat().join('\n');
-                        } else if (error.response.data.message) {
-                            errorMessage = error.response.data.message;
-                        }
-                    }
-
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: errorMessage
+                    })
+                    .finally(function() {
+                        submitBtn.prop('disabled', false);
                     });
-                })
-                .finally(function() {
-                    submitBtn.prop('disabled', false);
-                });
+            });
         });
-    });
     </script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -1096,6 +1088,16 @@
                         selectElement.dispatchEvent(new Event('change'));
                     }
                 }
+            });
+        });
+    </script>
+
+    <script>
+        // Initialize Select2
+        $(function() {
+            $('#reviewer_name, #paramedic_name, #doctor_name, #dept_head_name').select2({
+                placeholder: '-- Pilih Nama --',
+                width: '100%'
             });
         });
     </script>

@@ -175,6 +175,11 @@
                                     
                                     <div class="mb-3">
                                         <select name="acknowledged_by_name" id="acknowledged_by_name" class="form-control text-left" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                        @foreach($approvalList as $user)
+                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $isShowDetail && $record->acknowledged_by_name == $user->nama ? 'selected' : '' }}>
+                                                {{ $user->nama }} ({{ $user->nik }})
+                                            </option>
+                                        @endforeach
                                         </select>
                                     </div>
                                     <input type="hidden" name="acknowledged_by_nik" value="{{ $record->acknowledged_by_nik ?? '' }}">

@@ -78,7 +78,8 @@ class PemakaianSolarController extends Controller {
 
             try {
                 $forms_request_sql = DB::table( $TABLE_MASTER )
-                ->select( 'no_doc', 'created_date as tgldibuat', 'dibuat_oleh', 'no_fuel_station as fuel', 'total_pemakaian as total', 'disetujui_oleh as approval', 'status','is_active' )
+                ->select( 'no_doc', 'created_date as tgldibuat', 'dibuat_oleh', 'no_fuel_station as fuel', 'total_pemakaian as total', 'disetujui_oleh as approval', 'status', 'is_active' )
+                ->where( 'is_active', 1 )
                 ->orderBy( 'no_doc', 'desc' );
 
                 if ( $filterNik ) $forms_request_sql = $forms_request_sql->where( 'dibuat_oleh', $filterNik );
@@ -170,7 +171,7 @@ class PemakaianSolarController extends Controller {
             $data = DB::table( $TABLE_MASTER )
             ->select(
                 'no_doc', 'dibuat_oleh', 'no_fuel_station as fuel', 'created_date as tgl_dibuat', 'shift', 'disetujui_oleh', 'job_site as site', 'stok_awal',
-                'stok_akhir', 'masuk', 'total_pemakaian as total_pakai', 'stok_akhir','hari','is_active'
+                'stok_akhir', 'masuk', 'total_pemakaian as total_pakai', 'stok_akhir', 'hari', 'is_active'
             )
             ->where( 'no_doc', $no_doc )
             ->first();
@@ -239,8 +240,8 @@ class PemakaianSolarController extends Controller {
         // Default limit
         try {
             $master = DB::table( $TABLE_PENGELUARAN_OLI )
-            ->select( 'id', 'shift', 'job_site as site', 'dibuat_oleh', 'no_fuel_station as fuel', 'total_pemakaian', 
-            'disetujui_oleh as approved', 'dibuat_oleh as request', 'status','is_active' );
+            ->select( 'id', 'shift', 'job_site as site', 'dibuat_oleh', 'no_fuel_station as fuel', 'total_pemakaian',
+            'disetujui_oleh as approved', 'dibuat_oleh as request', 'status', 'is_active' );
 
             $master->orderBy( $sort, $order );
             $jml = $master->count();
@@ -267,7 +268,7 @@ class PemakaianSolarController extends Controller {
 
     function formPemakaianSolar( Request $req ) {
         $nik_session = $req->session()->get( 'user_id', '' );
-        $sites = DB::connection('sqlsrv2')->table(self::TABLE_SITES)->select(columns: 'KodeST')->get();
+        $sites = DB::connection( 'sqlsrv2' )->table( self::TABLE_SITES )->select( columns: 'KodeST' )->get();
         return view( 'SmartForm::LOG/pemakaian-solar/form-pemakaian-solar', [
             'sites' => $sites,
             'nik_session' => $nik_session,
@@ -300,6 +301,7 @@ class PemakaianSolarController extends Controller {
             'shift' => $data[ 'shift' ],
             'total_pemakaian' => $data[ 'total_pemakaian' ],
             'created_date' => $today,
+            'is_active' => 1,
             'hari' => $hari,
             'stok_awal' => $data[ 'stokAwal' ],
             'stok_akhir' => $data[ 'stokAkhir' ],
@@ -355,7 +357,7 @@ class PemakaianSolarController extends Controller {
         return response()->json( $response );
     }
 
-    public function PdfPemakaianSolar(Request $request) {
+    public function PdfPemakaianSolar( Request $request ) {
         $no_doc = $request->query( 'no_doc' );
         $TABLE_MASTER = 'FM_LOG_037_PEMAKAIAN_SOLAR';
         $TABLE_DETAIL = 'FM_LOG_037_PEMAKAIAN_SOLAR_DETAIL';
@@ -385,10 +387,10 @@ class PemakaianSolarController extends Controller {
         $data_detail = array();
         try {
             $data = DB::table( $TABLE_MASTER )
-            ->select( 'id', 'no_doc', 'revisi as revisi', 'halaman', 'tanggal', 'job_site as jobsite', 
-            'no_fuel_station as nofuel', 'shift', 'dibuat_oleh as dibuat', 'diketahui_oleh as mengetahui', 
-            'disetujui_oleh as approval', 'total_pemakaian', 'created_date as tgldibuat', 'hari', 'stok_awal', 
-            'masuk', 'stok_akhir', 'no_dok','is_active' )
+            ->select( 'id', 'no_doc', 'revisi as revisi', 'halaman', 'tanggal', 'job_site as jobsite',
+            'no_fuel_station as nofuel', 'shift', 'dibuat_oleh as dibuat', 'diketahui_oleh as mengetahui',
+            'disetujui_oleh as approval', 'total_pemakaian', 'created_date as tgldibuat', 'hari', 'stok_awal',
+            'masuk', 'stok_akhir', 'no_dok', 'is_active' )
             ->where( 'id', $no_doc )
             ->first();
 
@@ -402,11 +404,11 @@ class PemakaianSolarController extends Controller {
                 $detail->nomor = $nomor;
                 $nomor++;
             }
-            
-            $dibuat_nama = DB::connection('sqlsrv2')->table(self::TABLE_KARYAWAN)
-                    ->select('Nama')
-                    ->where('NIK', $data->dibuat)
-                    ->value('Nama');
+
+            $dibuat_nama = DB::connection( 'sqlsrv2' )->table( self::TABLE_KARYAWAN )
+            ->select( 'Nama' )
+            ->where( 'NIK', $data->dibuat )
+            ->value( 'Nama' );
 
             $data_master[ 'id' ] = $data->id;
             $data_master[ 'no_doc' ] = $data->no_doc;
@@ -688,19 +690,18 @@ class PemakaianSolarController extends Controller {
         return false;
     }
 
-    public function DeletePemakaianSolar(Request $request)
-    {
-        $nik_session = $request->session()->get('user_id', '');
-        $name_session = $request->session()->get('username', '');
-        $TABLE_MASTER = "FM_LOG_037_PEMAKAIAN_SOLAR";
-        $data = DB::table($TABLE_MASTER)
-                    ->select('*')
-                    ->where('no_doc', $request->no_doc)
-                    ->update([
-                            'is_active' => "0",
-                            ]);
-        return view('SmartForm::LOG/pemakaian-solar/dashboard-pemakaian-solar', [
+    public function DeletePemakaianSolar( Request $request ) {
+        $nik_session = $request->session()->get( 'user_id', '' );
+        $name_session = $request->session()->get( 'username', '' );
+        $TABLE_MASTER = 'FM_LOG_037_PEMAKAIAN_SOLAR';
+        $data = DB::table( $TABLE_MASTER )
+        ->select( '*' )
+        ->where( 'no_doc', $request->no_doc )
+        ->update( [
+            'is_active' => '0',
+        ] );
+        return view( 'SmartForm::LOG/pemakaian-solar/dashboard-pemakaian-solar', [
             'nik_session' => $nik_session,
-            'name_session' => $name_session]);
+            'name_session' => $name_session ] );
+        }
     }
-}

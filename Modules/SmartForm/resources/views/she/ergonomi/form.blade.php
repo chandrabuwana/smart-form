@@ -97,7 +97,11 @@
                                         </td>
                                         <td class="border">
                                             <select name="reviewer_name" id="reviewer_name" class="form-control text-center" required {{ $isShowDetail ? 'disabled' : '' }}>
-                                                <option disabled selected>-- Select Reviewer --</option>
+                                                @foreach($approvalList as $user)
+                                                    <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $isShowDetail && $data->reviewer_name == $user->nama ? 'selected' : '' }}>
+                                                        {{ $user->nama }} ({{ $user->nik }})
+                                                    </option>
+                                                @endforeach
                                             </select>
                                             <input type="hidden" name="reviewer_nik" id="reviewer_nik" value="{{ $isShowDetail ? $data->reviewer_nik : '' }}">
                                         </td>
@@ -1173,19 +1177,31 @@
                                             <tr>
                                                 <td class="align-bottom text-center border">
                                                     <select name="paramedic_name" id="paramedic_name" class="form-control text-center" required {{ $isShowDetail ? 'disabled' : '' }}>
-                                                        <option disabled selected>-- Select Paramedic --</option>
+                                                        @foreach($approvalList as $user)
+                                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $isShowDetail && $data->paramedic_name == $user->nama ? 'selected' : '' }}>
+                                                                {{ $user->nama }} ({{ $user->nik }})
+                                                            </option>
+                                                        @endforeach
                                                     </select>
                                                     <input type="hidden" name="paramedic_nik" id="paramedic_nik" value="{{ $isShowDetail ? $data->paramedic_nik : '' }}">
                                                 </td>
                                                 <td class="align-bottom text-center border">
                                                     <select name="doctor_name" id="doctor_name" class="form-control text-center" required {{ $isShowDetail ? 'disabled' : '' }}>
-                                                        <option disabled selected>-- Select Doctor --</option>
+                                                        @foreach($approvalList as $user)
+                                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $isShowDetail && $data->doctor_name == $user->nama ? 'selected' : '' }}>
+                                                                {{ $user->nama }} ({{ $user->nik }})
+                                                            </option>
+                                                        @endforeach
                                                     </select>
                                                     <input type="hidden" name="doctor_nik" id="doctor_nik" value="{{ $isShowDetail ? $data->doctor_nik : '' }}">
                                                 </td>
                                                 <td class="align-bottom text-center border">
                                                     <select name="dept_head_name" id="dept_head_name" class="form-control text-center" required {{ $isShowDetail ? 'disabled' : '' }}>
-                                                        <option disabled selected>-- Select Department Head --</option>
+                                                        @foreach($approvalList as $user)
+                                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $isShowDetail && $data->dept_head_name == $user->nama ? 'selected' : '' }}>
+                                                                {{ $user->nama }} ({{ $user->nik }})
+                                                            </option>
+                                                        @endforeach
                                                     </select>
                                                     <input type="hidden" name="dept_head_nik" id="dept_head_nik" value="{{ $isShowDetail ? $data->dept_head_nik : '' }}">
                                                 </td>
@@ -1263,6 +1279,15 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
     <script>
+
+        // Initialize Select2
+        $(function() {
+            $('#reviewer_name, #paramedic_name, #doctor_name, #dept_head_name').select2({
+                placeholder: '-- Pilih Nama --',
+                width: '100%'
+            });
+        });
+
         $(function() {
             $('#reviewer_name').select2({
                 placeholder: '-- Pilih Reviewer --',

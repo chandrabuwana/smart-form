@@ -16,84 +16,53 @@ class CoalGettingController extends Controller
 {
     public function Dashboard(Request $request)
     {
-        try {
-            $query = DB::table('she_coal_getting')
+        $query = DB::table('she_coal_getting')
                 ->select([
                     'she_coal_getting.*',
                     DB::raw('FORMAT(inspection_date, \'yyyy-MM-dd\') as formatted_date')
                 ])
                 ->where('isActive', true); // Only show active records
+        
+        // Get unique locations for filter
+        $locations = DB::table('she_coal_getting')
+            ->select('location')
+            ->distinct()
+            ->whereNotNull('location')
+            ->pluck('location');
 
-            // Search functionality
-            if ($request->has('search')) {
-                $searchTerm = $request->search;
-                $query->where(function($q) use ($searchTerm) {
-                    $q->where('doc_number', 'like', '%' . $searchTerm . '%')
-                        ->orWhere('location', 'like', '%' . $searchTerm . '%')
-                        ->orWhere('area_pic', 'like', '%' . $searchTerm . '%')
-                        ->orWhere('created_by', 'like', '%' . $searchTerm . '%');
-                });
-            }
+        // Filter options object
+        $filter_options = (object)[
+            'locations' => $locations,
+        ];
 
-            // Date range filter
-            if ($request->has('start_date') && $request->start_date) {
-                $query->whereDate('inspection_date', '>=', $request->start_date);
-            }
-            if ($request->has('end_date') && $request->end_date) {
-                $query->whereDate('inspection_date', '<=', $request->end_date);
-            }
+        // Calculate statistics
+        $statistics = [
+            'total_records' => DB::table('she_coal_getting')->count(),
+            'total_this_month' => DB::table('she_coal_getting')
+                ->whereMonth('created_at', now()->month)
+                ->whereYear('created_at', now()->year)
+                ->count(),
+            'locations_count' => $locations->count(),
+            'need_attention' => DB::table('she_coal_getting')
+                ->whereJsonContains('checklist_items', 0) // Items marked as "Tidak"
+                ->count()
+        ];
 
-            // Location filter
-            if ($request->has('location') && $request->location) {
-                $query->where('location', $request->location);
-            }
-
-            // Get unique locations for filter
-            $locations = DB::table('she_coal_getting')
-                ->select('location')
-                ->distinct()
-                ->whereNotNull('location')
-                ->pluck('location');
-
-            // Filter options object
-            $filter_options = (object)[
-                'locations' => $locations,
-            ];
-
-            // Get records with pagination
-            $records = $query->orderBy('created_at', 'desc')
-                           ->paginate(10)
-                           ->withQueryString();
-
-            // Calculate statistics
-            $statistics = [
-                'total_records' => DB::table('she_coal_getting')->count(),
-                'total_this_month' => DB::table('she_coal_getting')
-                    ->whereMonth('created_at', now()->month)
-                    ->whereYear('created_at', now()->year)
-                    ->count(),
-                'locations_count' => $locations->count(),
-                'need_attention' => DB::table('she_coal_getting')
-                    ->whereJsonContains('checklist_items', 0) // Items marked as "Tidak"
-                    ->count()
-            ];
-
-            return view('smartform::production/coal_getting/dashboard', [
-                'records' => $records,
-                'statistics' => (object)$statistics,
-                'filter_options' => $filter_options,
-                'filters' => [
-                    'search' => $request->search,
-                    'start_date' => $request->start_date,
-                    'end_date' => $request->end_date,
-                    'location' => $request->location,
-                ]
-            ]);
-
-        } catch (\Exception $e) {
-            Log::error('Error in Dashboard: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Failed to load dashboard data: ' . $e->getMessage());
-        }
+        // Get records with pagination
+        $records = $query->orderBy('created_at', 'desc')
+        ->paginate(10)
+        ->withQueryString();
+        return view('smartform::production/coal_getting/dashboard', [
+            'records' => $records,
+            'statistics' => (object)$statistics,
+            'filter_options' => $filter_options,
+            'filters' => [
+                'search' => $request->search,
+                'start_date' => $request->start_date,
+                'end_date' => $request->end_date,
+                'location' => $request->location,
+            ]
+        ]);
     }
 
     public function AddForm(Request $request)

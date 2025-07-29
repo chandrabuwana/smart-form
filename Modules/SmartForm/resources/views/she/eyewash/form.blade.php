@@ -343,6 +343,11 @@
                                             <tr>
                                                 <td class="border">
                                                     <select name="dh_terkait_name" id="dh_terkait_name" class="form-control text-center select2" {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                                        @foreach($approvalList as $user)
+                                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $isShowDetail && $maintenanceRecord->dh_terkait_name == $user->nama ? 'selected' : '' }}>
+                                                                {{ $user->nama }}
+                                                            </option>
+                                                        @endforeach
                                                     </select>
                                                 </td>
                                                 <td class="border">

@@ -37,32 +37,20 @@
                                 <div class="col-md-3">
                                     <div class="input-group input-group-static mb-3">
                                         <label>Site Name</label>
-                                        <select class="form-control" id="site_name" name="site_name" required {{ $isShowDetail ? 'disabled' : '' }}>
-                                            <option value="">-- Pilih Site --</option>
-                                            @foreach(\Modules\SmartForm\helpers\SiteHelper::getAllSites() as $code => $name)
-                                                <option value="{{ strtoupper($code) }}" 
-                                                    {{ $isShowDetail && strtolower($maintenanceRecord->site_name) == strtolower($code) ? 'selected' : 
-                                                    (!$isShowDetail && isset($defaultValues['site_name']) && strtolower($defaultValues['site_name']) == strtolower($code) ? 'selected' : '') }}>
-                                                    {{ $name }}
-                                                </option>
-                                            @endforeach
-                                            <option value="BSS" 
-                                                {{ $isShowDetail && strtolower($maintenanceRecord->site_name) == 'bss' ? 'selected' : 
-                                                (!$isShowDetail && isset($defaultValues['site_name']) && strtolower($defaultValues['site_name']) == 'bss' ? 'selected' : '') }}>
-                                                BSS
-                                            </option>
-                                        </select>
+                                        {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('site_name', $record->site_name ?? null, $isShowDetail, true, 'site_name', 'form-control') !!}
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="input-group input-group-static mb-3">
                                         <label>Department</label>
-                                        <select class="form-control" name="department" id="department" {{ $isShowDetail ? 'disabled' : '' }} required>
-                                            <option value="">-- Pilih Departemen --</option>
-                                            @foreach(\Modules\SmartForm\helpers\DepartmentHelper::getAllDepartments() as $code => $name)
-                                                <option value="{{ $code }}" {{ $isShowDetail && $maintenanceRecord->department == $code ? 'selected' : '' }}>{{ $name }}</option>
-                                            @endforeach
-                                        </select>
+                                        {!! \Modules\SmartForm\helpers\DepartmentHelper::renderDepartmentSelect(
+                                            'department',
+                                            $record->department ?? '',
+                                            $isShowDetail,
+                                            true,
+                                            'department',
+                                            'form-control'
+                                        ) !!}
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -328,8 +316,13 @@
                                     <div class="input-group input-group-static mb-3">
                                         <label>Mengetahui</label>
                                         <select name="acknowledged_by_name" id="acknowledged_by_select" class="form-control text-left px-5" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                        @foreach($approvalList as $user)
+                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $isShowDetail && $record->acknowledged_by_name == $user->nama ? 'selected' : '' }}>
+                                                {{ $user->nama }}
+                                            </option>
+                                        @endforeach
                                         </select>
-                                        <input type="hidden" name="acknowledged_by_nik" id="acknowledged_by_nik" value="{{ $isShowDetail ? $maintenanceRecord->acknowledged_by_nik : '' }}" required>
+                                        <input type="hidden" name="acknowledged_by_nik" id="acknowledged_by_nik" value="{{ $isShowDetail ? $record->acknowledged_by_nik : '' }}" required>
                                     </div>
                                     <div class="input-group input-group-static mb-3">
                                         <label>Tanggal Mengetahui</label>
@@ -446,19 +439,9 @@
                 cache: true
             }
         }).on('select2:select', function (e) {
-            // Get the selected option's data-nik attribute
-            var selectedOption = $(this).find('option:selected');
-            var nik = selectedOption.data('nik');
-            
-            // Update the hidden NIK field
+            const nik = e.params.data.nik;
             $('#acknowledged_by_nik').val(nik);
-        });
-        
-        // Set initial NIK value if option is already selected
-        var initialOption = $('#acknowledged_by_select').find('option:selected');
-        if (initialOption.val()) {
-            $('#acknowledged_by_nik').val(initialOption.data('nik'));
-        }
+        });     
     });
 </script>
 <script>

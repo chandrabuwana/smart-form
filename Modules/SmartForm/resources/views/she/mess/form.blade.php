@@ -48,7 +48,7 @@
                                 <div class="col-md-3">
                                     <div class="input-group input-group-static mb-3">
                                         <label>Site Name</label>
-                                        {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('site_name', $maintenanceRecord->site_name ?? null, $isShowDetail, true, 'site_name', 'form-control') !!}
+                                        {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('site_name', $data->site_name ?? null, $isShowDetail, true, 'site_name', 'form-control') !!}
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -62,7 +62,7 @@
                                         <label>Dept./Section</label>
                                         {!! \Modules\SmartForm\helpers\DepartmentHelper::renderDepartmentSelect(
                                             'department',
-                                            $maintenanceRecord->department ?? '',
+                                            $data->department ?? '',
                                             $isShowDetail,
                                             true,
                                             'department',
@@ -293,6 +293,11 @@ Tidak ada peraturan yg berlaku atau berdampak kelingkungan perusahaan
                                 <td width="25%">Diinspeksi Oleh</td>
                                 <td width="25%">
                                     <select name="inspected_by_name" id="inspected_by_name" class="form-control text-center" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                    @foreach($approvalList as $user)
+                                        <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $isShowDetail && $data->inspected_by_name == $user->nama ? 'selected' : '' }}>
+                                            {{ $user->nama }} ({{ $user->nik }})
+                                        </option>
+                                    @endforeach
                                     </select>
                                     <input type="hidden" name="inspected_by_nik" id="inspected_by_nik" 
                                            value="{{ $isShowDetail && isset($data->inspected_by_nik) ? $data->inspected_by_nik : session('user_id') }}">
@@ -322,6 +327,11 @@ Tidak ada peraturan yg berlaku atau berdampak kelingkungan perusahaan
                                 <td>Diinspeksi Oleh</td>
                                 <td>
                                     <select name="inspected_by2_name" id="inspected_by2_name" class="form-control text-center" {{ $isShowDetail ? 'disabled' : '' }}>
+                                    @foreach($approvalList as $user)
+                                        <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $isShowDetail && $data->inspected_by2_name == $user->nama ? 'selected' : '' }}>
+                                            {{ $user->nama }} ({{ $user->nik }})
+                                        </option>
+                                    @endforeach
                                     </select>
                                     <input type="hidden" name="inspected_by2_nik" id="inspected_by2_nik" 
                                            value="{{ $isShowDetail && isset($data->inspected_by2_nik) ? $data->inspected_by2_nik : '' }}">
@@ -351,6 +361,11 @@ Tidak ada peraturan yg berlaku atau berdampak kelingkungan perusahaan
                                 <td>Diinspeksi Oleh</td>
                                 <td>
                                     <select name="inspected_by3_name" id="inspected_by3_name" class="form-control text-center" {{ $isShowDetail ? 'disabled' : '' }}>
+                                        @foreach($approvalList as $user)
+                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $isShowDetail && $data->inspected_by3_name == $user->nama ? 'selected' : '' }}>
+                                                {{ $user->nama }} ({{ $user->nik }})
+                                            </option>
+                                        @endforeach
                                     </select>
                                     <input type="hidden" name="inspected_by3_nik" id="inspected_by3_nik" 
                                            value="{{ $isShowDetail && isset($data->inspected_by3_nik) ? $data->inspected_by3_nik : '' }}">
@@ -380,6 +395,11 @@ Tidak ada peraturan yg berlaku atau berdampak kelingkungan perusahaan
                                 <td class="border">Disetujui Oleh</td>
                                 <td class="border">
                                     <select name="acknowledged_by_name" id="acknowledged_by_name" class="form-control text-center" {{ $isShowDetail ? 'disabled' : '' }}>
+                                        @foreach($approvalList as $user)
+                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $isShowDetail && $data->acknowledged_by_name == $user->nama ? 'selected' : '' }}>
+                                                {{ $user->nama }} ({{ $user->nik }})
+                                            </option>
+                                        @endforeach
                                     </select>
                                     <input type="hidden" name="acknowledged_by_nik" id="acknowledged_by_nik" 
                                            value="{{ $isShowDetail && isset($data->acknowledged_by_nik) ? $data->acknowledged_by_nik : '' }}">
@@ -415,13 +435,15 @@ Tidak ada peraturan yg berlaku atau berdampak kelingkungan perusahaan
                                     <a href="{{ route('she.mess.export', ['id' => $data->id]) }}" class="btn btn-primary">Export PDF</a>
                                 @else
                                     <button type="button" class="btn btn-secondary" onclick="window.location.href='{{ route('she.mess.dashboard') }}'">Cancel</button>
-                                    <button type="submit" class="btn btn-primary">
-                                        @if(isset($isEdit) && $isEdit)
-                                            Update
-                                        @else
-                                            Save
-                                        @endif
-                                    </button>
+                                    @if(!$isShowDetail)
+                                        <button type="submit" class="btn btn-primary">
+                                            @if(isset($isEdit) && $isEdit)
+                                                Update
+                                            @else
+                                                Save
+                                            @endif
+                                        </button>
+                                    @endif
                                 @endif
                             </div>
                         </div>

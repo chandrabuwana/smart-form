@@ -53,46 +53,7 @@ class InspeksiCateringController extends Controller {
             
             $records = $query->orderBy('id', 'desc')->get();
             
-            foreach ($records as &$record) {
-                if (isset($record->diinspeksi_oleh_1) && !isset($record->diinspeksi_oleh_1_name)) {
-                    $user = DB::table('users')
-                        ->where('userid', $record->diinspeksi_oleh_1)
-                        ->select('username')
-                        ->first();
-                    $record->diinspeksi_oleh_1_name = $user ? $user->username : null;
-                }
-                
-                if (isset($record->diinspeksi_oleh_2) && !isset($record->diinspeksi_oleh_2_name)) {
-                    $user = DB::table('users')
-                        ->where('userid', $record->diinspeksi_oleh_2)
-                        ->select('username')
-                        ->first();
-                    $record->diinspeksi_oleh_2_name = $user ? $user->username : null;
-                }
-                
-                if (isset($record->diinspeksi_oleh_3) && !isset($record->diinspeksi_oleh_3_name)) {
-                    $user = DB::table('users')
-                        ->where('userid', $record->diinspeksi_oleh_3)
-                        ->select('username')
-                        ->first();
-                    $record->diinspeksi_oleh_3_name = $user ? $user->username : null;
-                }
-                
-                if (isset($record->status) && !empty($record->status)) {
-                    try {
-                        $statusArray = json_decode($record->status, true);
-                        if (is_array($statusArray)) {
-                            $record->status = $statusArray;
-                        } else {
-                            $record->status = [null, null, null];
-                        }
-                    } catch (\Exception $e) {
-                        $record->status = [null, null, null];
-                    }
-                } else {
-                    $record->status = [null, null, null];
-                }
-            }
+            
             
             $locations = DB::table('FM_SHE_048_INSPEKSI_CATERING')
                 ->select('lokasi_kerja')
@@ -195,9 +156,10 @@ class InspeksiCateringController extends Controller {
         $dept = DB::connection('sqlsrv2')->table(self::TABLE_DEPARTEMENT)->select(columns: 'Nama')->get();
 
         return view('SmartForm::she/inspeksi-catering/form-inspeksi-catering', [
-                    'isShowDetail' => true,
+                    'isShowDetail' => false,
                     'sites' => $sites,
                     'dept' => $dept,
+                    'record' => null,
                     'approvalList' => HrdHelper::getApprovalList()
                 ]);
     }
@@ -228,6 +190,9 @@ class InspeksiCateringController extends Controller {
                 'mengetahui' => $requestData['dMengetahui'] ?? null,
                 
                 'dibuat_oleh' => $user_id,
+                'diinspeksi_oleh_1' => $requestData['diinspeksi_oleh_1'] ?? '',
+                'diinspeksi_oleh_2' => $requestData['diinspeksi_oleh_2'] ?? '',
+                'diinspeksi_oleh_3' => $requestData['diinspeksi_oleh_3'] ?? '',
                 
                 'status' => json_encode([null, null, null]),
             ];

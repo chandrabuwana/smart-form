@@ -39,7 +39,7 @@
                                 <div class="col-md-3">
                                     <div class="input-group input-group-static mb-3">
                                         <label>Site Name</label>
-                                        {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('site_name', $maintenanceRecord->site_name ?? null, $isShowDetail, true, 'site_name', 'form-control') !!}
+                                        {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('site_name', $data->site_name ?? null, !$isShowDetail, true, 'site_name', 'form-control') !!}
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -258,8 +258,12 @@
                             <tr>
                                 <td width="15%" class="border">Diinspeksi Oleh</td>
                                 <td width="25%" class="border">
-                                    {{ isset($data) ? $data->inspected_by_name : '' }}
-                                    <input type="hidden" name="inspected_by_name" value="{{ isset($data) ? $data->inspected_by_name : '' }}">
+                                    <select name="inspected_by_name" id="inspected_by_name" class="form-control text-center" required>
+                                        <option value="">-- Pilih Inspektor --</option>
+                                        @foreach($approvalList as $user)
+                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $data->inspected_by_name == $user->nama ? 'selected' : '' }}>{{ $user->nama }} ({{ $user->nik }})</option>
+                                        @endforeach
+                                    </select>
                                     <input type="hidden" name="inspected_by_nik" value="{{ isset($data) ? $data->inspected_by_nik : '' }}">
                                 </td>
                                 <td width="10%" class="border">Status</td>
@@ -278,8 +282,12 @@
                             <tr>
                                 <td width="15%" class="border">Diinspeksi Oleh</td>
                                 <td width="25%" class="border">
-                                    {{ isset($data) ? $data->inspected_by2_name : '' }}
-                                    <input type="hidden" name="inspected_by2_name" value="{{ isset($data) ? $data->inspected_by2_name : '' }}">
+                                    <select name="inspected_by2_name" id="inspected_by2_name" class="form-control text-center" required>
+                                        <option value="">-- Pilih Inspektor --</option>
+                                        @foreach($approvalList as $user)
+                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $data->inspected_by2_name == $user->nama ? 'selected' : '' }}>{{ $user->nama }} ({{ $user->nik }})</option>
+                                        @endforeach
+                                    </select>
                                     <input type="hidden" name="inspected_by2_nik" value="{{ isset($data) ? $data->inspected_by2_nik : '' }}">
                                 </td>
                                 <td width="10%" class="border">Status</td>
@@ -298,8 +306,12 @@
                             <tr>
                                 <td width="15%" class="border">Diinspeksi Oleh</td>
                                 <td width="25%" class="border">
-                                    {{ isset($data) ? $data->inspected_by3_name : '' }}
-                                    <input type="hidden" name="inspected_by3_name" value="{{ isset($data) ? $data->inspected_by3_name : '' }}">
+                                    <select name="inspected_by3_name" id="inspected_by3_name" class="form-control text-center" required>
+                                        <option value="">-- Pilih Inspektor --</option>
+                                        @foreach($approvalList as $user)
+                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $data->inspected_by3_name == $user->nama ? 'selected' : '' }}>{{ $user->nama }} ({{ $user->nik }})</option>
+                                        @endforeach
+                                    </select>
                                     <input type="hidden" name="inspected_by3_nik" value="{{ isset($data) ? $data->inspected_by3_nik : '' }}">
                                 </td>
                                 <td width="10%" class="border">Status</td>
@@ -318,8 +330,12 @@
                             <tr>
                                 <td width="15%" class="border">Disetujui Oleh</td>
                                 <td width="25%" class="border">
-                                    {{ isset($data) ? $data->acknowledged_by_name : '' }}
-                                    <input type="hidden" name="acknowledged_by_name" value="{{ isset($data) ? $data->acknowledged_by_name : '' }}">
+                                    <select name="acknowledged_by_name" id="acknowledged_by_name" class="form-control text-center" required>
+                                        <option value="">-- Pilih Inspektor --</option>
+                                        @foreach($approvalList as $user)
+                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $data->acknowledged_by_name == $user->nama ? 'selected' : '' }}>{{ $user->nama }} ({{ $user->nik }})</option>
+                                        @endforeach
+                                    </select>
                                     <input type="hidden" name="acknowledged_by_nik" value="{{ isset($data) ? $data->acknowledged_by_nik : '' }}">
                                 </td>
                                 <td width="10%" class="border">Status</td>
@@ -382,18 +398,10 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
     $(function() {
-        $('#inspected_by_name').select2({
+        $('#inspected_by_name, #inspected_by2_name, #inspected_by3_name, #acknowledged_by_name').select2({
+            placeholder: '-- Pilih Nama --',
             width: '100%'
-        })
-        $('#inspected_by2_name').select2({
-            width: '100%'
-        })
-        $('#inspected_by3_name').select2({
-            width: '100%'
-        })
-        $('#acknowledged_by_name').select2({
-            width: '100%'
-        })
+        });
     });
 </script>
 <script>

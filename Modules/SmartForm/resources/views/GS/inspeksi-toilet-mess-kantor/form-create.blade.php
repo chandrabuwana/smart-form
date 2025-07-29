@@ -203,7 +203,7 @@
                                 <div class="col-md-6 mb-2">
                                     <div class="d-flex align-items-center">
                                         <label class="form-label col-auto" style="width: 150px;">{{ $label }}</label>
-                                        <select name="{{ $name }}" class="form-select form-select-sm flex-grow-1">
+                                        <select name="{{ $name }}" id="{{ $name }}" class="form-select form-select-sm flex-grow-1">
                                             <option value="">-- Pilih --</option>
                                             @foreach($approvalList as $user)
                                                 <option value="{{ $user->nik }}">
@@ -239,9 +239,9 @@
         $('#job_site').select2({width: '100%'});
         $('#shift').select2({width: '100%'});
         $('#dept').select2({width: '100%'});
-        $('[name="Diinspeksi"]').select2({width: '100%'});
-        $('[name="DiinspeksiUlang"]').select2({width: '100%'});
-        $('[name="Mengetahui"]').select2({width: '100%'});
+        // $('[name="Diinspeksi"]').select2({width: '100%'});
+        // $('[name="DiinspeksiUlang"]').select2({width: '100%'});
+        // $('[name="Mengetahui"]').select2({width: '100%'});
         $('#btnSubmit').on('click', function (e) {
             e.preventDefault();
 
@@ -323,6 +323,33 @@
                     $('#btnSubmit').prop('disabled', false).text('Submit Form');
                 }
             });
+        });
+    });
+
+    $(function() {
+        $('#Diinspeksi, #DiinspeksiUlang, #Mengetahui').select2({
+            placeholder: '-- Pilih --',
+            width: '100%',
+            ajax: {
+                url: '{{ route('wc.approval.list') }}',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { search: params.term };
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                id: item.nik,
+                                text: item.nama + ' (' + item.nik + ')',
+                                nik: item.nik
+                            };
+                        })
+                    };
+                },
+                cache: true
+            }
         });
     });
 </script>
