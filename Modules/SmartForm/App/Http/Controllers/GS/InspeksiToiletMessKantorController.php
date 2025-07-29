@@ -72,13 +72,14 @@ class InspeksiToiletMessKantorController extends Controller
         }
 
         $statistics = ( object )[
-            'total_records' => DB::table( 'gs_inspeksi_tmk_jawaban' )->count(),
+            'total_records' => DB::table( 'gs_inspeksi_tmk_jawaban' )->where('delete_status', '!=', 1)->count(),
             'total_this_month' => DB::table( 'gs_inspeksi_tmk_jawaban' )
+            ->where('delete_status', '!=', 1)
             ->whereMonth( 'created_at', now()->month )
             ->whereYear( 'created_at', now()->year )
             ->count(),
-            'nama_site' => DB::table( 'gs_inspeksi_tmk_jawaban' )->distinct()->count( 'nama_site' ),
-            'dept' => DB::table( 'gs_inspeksi_tmk_jawaban' )->distinct()->count( 'dept' ),
+            'nama_site' => DB::table( 'gs_inspeksi_tmk_jawaban' )->where('delete_status', '!=', 1)->distinct()->count( 'nama_site' ),
+            'dept' => DB::table( 'gs_inspeksi_tmk_jawaban' )->where('delete_status', '!=', 1)->distinct()->count( 'dept' ),
         ];
 
             $records = $query->where('delete_status', '!=', 1)->paginate( 5 );
