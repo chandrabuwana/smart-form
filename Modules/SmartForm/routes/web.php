@@ -384,6 +384,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/approve-wc', [InspeksiToiletMessKantorController::class, 'Approve'])->name("wc-approve");
             Route::post('/reject-wc', [InspeksiToiletMessKantorController::class, 'Reject'])->name("wc-reject");
             Route::post('/reset-wc/{id}', [InspeksiToiletMessKantorController::class, 'Reset'])->name("wc-reset");
+            Route::get('/approval-list', [InspeksiToiletMessKantorController::class, 'getApprovalList'])->name('wc.approval.list');
         });
 
         Route::prefix('it-ops')->group(function () {
