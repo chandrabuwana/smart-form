@@ -539,7 +539,8 @@ class NoiseController extends Controller
             
             return view('smartform::she.noise.edit-form', [
                 'record' => $record,
-                'approvalList' => HrdHelper::getApprovalList()
+                'approvalList' => HrdHelper::getApprovalList(),
+                'isShowDetail' => true
             ]);
             
         } catch (\Exception $e) {
