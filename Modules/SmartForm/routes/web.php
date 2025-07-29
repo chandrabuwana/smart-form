@@ -734,6 +734,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/approve-lgmg', [LgmgController::class, 'Approve'])->name("lgmg.approve");
             Route::post('/reject-lgmg', [LgmgController::class, 'Reject'])->name("lgmg.reject");
             Route::post('/reset-lgmg/{id}', [LgmgController::class, 'Reset'])->name("lgmg.reset");
+            Route::get('/approval-list', [LgmgController::class, 'getApprovalList'])->name('lgmg.approval.list');
         });
     });
 
