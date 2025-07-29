@@ -676,4 +676,104 @@ $(document).ready(function() {
     });
 });
 </script>
+<script>
+    $(function() {
+        $('#inspector_1_name').select2({
+            width: '100%',
+            placeholder: '-- Pilih Inspektor --',
+            ajax: {
+                url: '{{ route("approval.list") }}',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { search: params.term };
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                id: item.nama,
+                                text: item.nama + ' (' + item.nik + ')',
+                                nik: item.nik
+                            };
+                        })
+                    };
+                },
+                cache: true
+            }
+        })
+        $('#inspector_2_name').select2({
+            width: '100%',
+            placeholder: '-- Pilih Inspektor --',
+            ajax: {
+                url: '{{ route("approval.list") }}',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { search: params.term };
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                id: item.nama,
+                                text: item.nama + ' (' + item.nik + ')',
+                                nik: item.nik
+                            };
+                        })
+                    };
+                },
+                cache: true
+            }
+        })
+        $('#inspector_3_name').select2({
+            width: '100%',
+            placeholder: '-- Pilih Inspektor --',
+            ajax: {
+                url: '{{ route("approval.list") }}',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { search: params.term };
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                id: item.nama,
+                                text: item.nama + ' (' + item.nik + ')',
+                                nik: item.nik
+                            };
+                        })
+                    };
+                },
+                cache: true
+            }
+        })
+        $('#acknowledged_by_name').select2({
+            width: '100%',
+            placeholder: '-- Pilih Mengetahui --',
+            ajax: {
+                url: '{{ route("approval.list") }}',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { search: params.term };
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                id: item.nama,
+                                text: item.nama + ' (' + item.nik + ')',
+                                nik: item.nik
+                            };
+                        })
+                    };
+                },
+                cache: true
+            }
+        })
+    });
+</script>
 @endsection
