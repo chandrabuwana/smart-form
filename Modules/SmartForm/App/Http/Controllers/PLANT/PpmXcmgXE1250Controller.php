@@ -45,13 +45,14 @@ class PpmXcmgXE1250Controller extends Controller {
         }
 
         $statistics = ( object )[
-            'total_records' => DB::table( 'ppm_xcmg_xe1250' )->count(),
+            'total_records' => DB::table( 'ppm_xcmg_xe1250' )->where('delete_status', '!=', 1)->count(),
             'total_this_month' => DB::table( 'ppm_xcmg_xe1250' )
+            ->where('delete_status', '!=', 1)
             ->whereMonth( 'created_at', now()->month )
             ->whereYear( 'created_at', now()->year )
             ->count(),
-            'unit_cn' => DB::table( 'ppm_xcmg_xe1250' )->distinct()->count( 'unit_cn' ),
-            'job_site' => DB::table( 'ppm_xcmg_xe1250' )->distinct()->count( 'job_site' ),
+            'unit_cn' => DB::table( 'ppm_xcmg_xe1250' )->where('delete_status', '!=', 1)->distinct()->count( 'unit_cn' ),
+            'job_site' => DB::table( 'ppm_xcmg_xe1250' )->where('delete_status', '!=', 1)->distinct()->count( 'job_site' ),
         ];
 
         $approvalList = HrdHelper::getApprovalList();

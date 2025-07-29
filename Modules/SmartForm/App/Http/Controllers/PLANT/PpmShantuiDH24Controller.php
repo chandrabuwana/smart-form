@@ -72,13 +72,14 @@ class PpmShantuiDH24Controller extends Controller {
             }
 
             $statistics = (object)[
-                'total_records' => DB::table('ppm_dh24')->count(),
+                'total_records' => DB::table('ppm_dh24')->where('delete_status', '!=', 1)->count(),
                 'total_this_month' => DB::table('ppm_dh24')
+                    ->where('delete_status', '!=', 1)
                     ->whereMonth('created_at', now()->month)
                     ->whereYear('created_at', now()->year)
                     ->count(),
-                'unit_cn' => DB::table('ppm_dh24')->distinct()->count('unit_cn'),
-                'job_site' => DB::table('ppm_dh24')->distinct()->count('job_site'),
+                'unit_cn' => DB::table('ppm_dh24')->where('delete_status', '!=', 1)->distinct()->count('unit_cn'),
+                'job_site' => DB::table('ppm_dh24')->where('delete_status', '!=', 1)->distinct()->count('job_site'),
             ];
 
             $cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','sn_unit','model','model_engine','sn_engine')->get();
