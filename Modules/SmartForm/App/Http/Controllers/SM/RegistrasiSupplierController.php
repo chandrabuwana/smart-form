@@ -55,7 +55,8 @@ class RegistrasiSupplierController extends Controller {
         $filter = $request->query('filter', null); // Default limit
         try {
             $master = DB::table($TABLE_MASTER)
-                ->select('id','nama_vendor','status','no_npwp','bidang_usaha','kota','diisi_oleh','is_active','disetujui_oleh','created_at');
+                ->select('id','nama_vendor','status','no_npwp','bidang_usaha','kota','diisi_oleh','is_active','disetujui_oleh','created_at')
+                ->where('is_active', 1);
             
             if($filterTanggal == null || $filterTanggal == 'null') {
             } else {
