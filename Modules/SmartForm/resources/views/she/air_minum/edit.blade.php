@@ -127,7 +127,7 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="site_name" class="ms-0">Nama Site</label>
-                                        {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('site_name', $maintenanceRecord->site_name ?? null, $isShowDetail, true, 'site_name', 'form-control') !!}
+                                        {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect('site_name', $maintenanceRecord->site_name ?? null, !$isShowDetail, true, 'site_name', 'form-control') !!}
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -136,7 +136,7 @@
                                         {!! \Modules\SmartForm\helpers\DepartmentHelper::renderDepartmentSelect(
                                             'department',
                                             $maintenanceRecord->department ?? '',
-                                            $isShowDetail,
+                                            !$isShowDetail,
                                             true,
                                             'department',
                                             'form-control'
