@@ -418,7 +418,7 @@
     $(function() {
         $('#diisi_oleh  , #checked_by').select2({
             placeholder: '-- Pilih --',
-            width: '50%',
+            width: '100%',
             ajax: {
                 url: '{{ route('lgmg.approval.list') }}',
                 dataType: 'json',
@@ -430,7 +430,7 @@
                     return {
                         results: $.map(data, function (item) {
                             return {
-                                id: item.nama,
+                                id: item.nik,
                                 text: item.nama + ' (' + item.nik + ')',
                                 nik: item.nik
                             };
