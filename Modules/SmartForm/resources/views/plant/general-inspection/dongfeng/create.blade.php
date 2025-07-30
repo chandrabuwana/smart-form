@@ -356,11 +356,8 @@
                                 <div class="col-6 ">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="dilakukan1" class="ms-0">Dilakukan Oleh 1</label>
-                                        <input type="text" id="dilakukan1_display" readonly class="form-control"
-                                            value="{{ session('username') }}">
-
-                                        <input type="hidden" name="dilakukan1" value="{{ session('user_id') }}">
-
+                                        <input type="text" name="dilakukan1" class="form-control"
+                                            value="{{ session('username') }}" readonly>
                                     </div>
                                 </div>
                                 <div class="col-6">
@@ -421,7 +418,7 @@
                             results: $.map(data, function(item) {
                                 return {
                                     id: item
-                                        .nik,
+                                        .nama,
                                     text: item.nama + ' (' + item.nik + ')'
                                 };
                             })
@@ -452,7 +449,7 @@
                                 console.log(item)
                                 return {
                                     id: item
-                                        .nik,
+                                        .nama,
                                     text: item.nama + ' (' + item.nik + ')'
                                 };
                             })
@@ -482,7 +479,7 @@
                             results: $.map(data, function(item) {
                                 return {
                                     id: item
-                                        .nik,
+                                        .nama,
                                     text: item.nama + ' (' + item.nik + ')'
                                 };
                             })

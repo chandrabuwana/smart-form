@@ -329,13 +329,13 @@
                 <div class="name">
                     <img src="{{ asset('img/validated.png') }}" class="ttd" style="width: 40px" height="20px">
                     {{-- Mencari nama di $approvalList berdasarkan NIK --}}
-                    <p>{{ $approvalList->firstWhere('nik', $inspection['dilakukan1'])->nama ?? $inspection['dilakukan1'] }}</p>
+                    <p>{{ $inspection['dilakukan1'] }}</p>
                     <p>(Mechanic)</p>
                 </div>
                 <div class="name">
                     <img src="{{ asset('img/validated.png') }}" class="ttd" style="width: 40px" height="20px">
                     {{-- Mencari nama di $approvalList berdasarkan NIK --}}
-                    <p>{{ $approvalList->firstWhere('nik', $inspection['dilakukan2'])->nama ?? $inspection['dilakukan2'] }}</p>
+                    <p>{{ $inspection['dilakukan2'] }}</p>
                     <p>(Mechanic)</p>
                 </div>
             </div>
@@ -347,7 +347,8 @@
 
         {{-- TANDA TANGAN DIPERIKSA OLEH --}}
         <div class="signature-box" style="width: 300px; font-size: 10px;">
-            <div class="title">Date : {{ $inspection['date_sign2'] ? Carbon::parse($inspection['date_sign2'])->format('d M Y') : '' }}</div>
+            <div class="title">Date :
+                {{ $inspection['date_sign2'] ? Carbon::parse($inspection['date_sign2'])->format('d M Y') : '' }}</div>
             <div style="text-align: center;">
                 <p>Diperiksa oleh:</p>
             </div>
@@ -358,14 +359,15 @@
                     <img src="{{ asset('img/rejected.png') }}" class="ttd" style="width: 40px" height="20px">
                 @endif
                 {{-- Mencari nama di $approvalList berdasarkan NIK --}}
-                <p>{{ $approvalList->firstWhere('nik', $inspection['diperiksa'])->nama ?? $inspection['diperiksa'] }}</p>
+                <p>{{ $inspection['diperiksa'] }}</p>
                 <p>(Plant Foreman)</p>
             </div>
         </div>
 
         {{-- TANDA TANGAN DIKETAHUI OLEH --}}
         <div class="signature-box" style="width: 300px; font-size: 10px;">
-            <div class="title">Date : {{ $inspection['date_sign3'] ? Carbon::parse($inspection['date_sign3'])->format('d M Y') : '' }}</div>
+            <div class="title">Date :
+                {{ $inspection['date_sign3'] ? Carbon::parse($inspection['date_sign3'])->format('d M Y') : '' }}</div>
             <div style="text-align: center;">
                 <p>Diketahui oleh:</p>
             </div>
@@ -376,7 +378,7 @@
                     <img src="{{ asset('img/rejected.png') }}" class="ttd" style="width: 40px" height="20px">
                 @endif
                 {{-- Mencari nama di $approvalList berdasarkan NIK --}}
-                <p>{{ $approvalList->firstWhere('nik', $inspection['diketahui'])->nama ?? $inspection['diketahui'] }}</p>
+                <p>{{ $inspection['diketahui'] }}</p>
                 <p>(Kabag / Spv Plant)</p>
             </div>
         </div>

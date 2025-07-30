@@ -794,6 +794,9 @@
             if (selectedNik) {
                 $.ajax({
                     url: '{{ route('900d.approval.list') }}',
+                    data: {
+                        selectedNik: selectedNik
+                    },
                     dataType: 'json',
                     success: function(data) {
                         const matched = data.find(item => item.nama === selectedNik);
@@ -841,6 +844,9 @@
             if (selectedNik) {
                 $.ajax({
                     url: '{{ route('900d.approval.list') }}',
+                    data: {
+                        selectedNik: selectedNik
+                    },
                     dataType: 'json',
                     success: function(data) {
                         const matched = data.find(item => item.nama === selectedNik);

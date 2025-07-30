@@ -818,7 +818,7 @@
                                 true,
                                 true
                             );
-                            $('#validated').append(option).trigger('change');
+                            $('#dibuat_oleh').append(option).trigger('change');
                         }
                     }
                 });
@@ -880,7 +880,7 @@
     </script>
     <script>
         $(document).ready(function() {
-           
+
             $('#job_site').select2();
             $('#checked1').select2();
         });

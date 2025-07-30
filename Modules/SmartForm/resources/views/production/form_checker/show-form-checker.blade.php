@@ -550,7 +550,7 @@
                 operatorRow.classList.add('operator-row', `operator-${alat}`);
                 operatorRow.style.display = 'none';
 
-                
+
                 const operatorSelect = operatorRow.querySelector(`#nama_operator_${alat}`);
                 $(operatorSelect).select2({
                     placeholder: '-- Select Nama Operator --',
@@ -583,6 +583,9 @@
                 if (savedValue) {
                     $.ajax({
                         url: '{{ route('checker.approval.list') }}',
+                        data: {
+                            selectedNik: savedValue
+                        },
                         dataType: 'json',
                         success: function(data) {
                             const matched = data.find(item => item.nama === savedValue);
@@ -921,6 +924,9 @@
             if (selectedNik) {
                 $.ajax({
                     url: '{{ route('checker.approval.list') }}',
+                    data: {
+                        selectedNik: selectedNik
+                    },
                     dataType: 'json',
                     success: function(data) {
                         const matched = data.find(item => item.nama === selectedNik);
@@ -969,6 +975,9 @@
             if (selectedNik) {
                 $.ajax({
                     url: '{{ route('checker.approval.list') }}',
+                    data: {
+                        selectedNik: selectedNik
+                    },
                     dataType: 'json',
                     success: function(data) {
                         const matched = data.find(item => item.nama === selectedNik);

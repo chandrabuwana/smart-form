@@ -726,7 +726,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <script>
         $(function() {
-            const selectedNama = '{{ $data->checked_by }}';
+            const selectedNik = '{{ $data->checked_by }}';
 
             $('#dibuat_oleh').select2({
                 placeholder: '-- Select Creator --',
@@ -737,7 +737,7 @@
                     delay: 250,
                     data: function(params) {
                         return {
-                            search: params.term
+                            search: params.term || ''
                         };
                     },
                     processResults: function(data) {
@@ -745,8 +745,8 @@
                             results: $.map(data, function(item) {
                                 return {
                                     id: item.nama,
-                                    text: item.nama + ' (' + item.nik + ')',
-                                    nama: item.nama
+                                    text: item.nama + ' (' + item.nik +
+                                        ')',
                                 };
                             })
                         };
@@ -773,13 +773,12 @@
                                 true,
                                 true
                             );
-                            $('#validated').append(option).trigger('change');
+                            $('#dibuat_oleh').append(option).trigger('change');
                         }
                     }
                 });
             }
         });
-
 
         $(function() {
             const selectedNik = '{{ $data->validated_by }}';

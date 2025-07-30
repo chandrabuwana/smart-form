@@ -680,7 +680,8 @@
                                 <div class="col-4 ">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="dibuat" class="ms-0">Checked By1</label>
-                                        <input type="text" class="form-control" readonly value="{{$data->creator}}">
+                                        <input type="text" class="form-control" readonly
+                                            value="{{ $data->creator }}">
                                     </div>
                                 </div>
                                 <div class="col-4 ">
@@ -931,6 +932,9 @@
             if (selectedNik) {
                 $.ajax({
                     url: '{{ route('ppu.1250.approval.list') }}',
+                    data: {
+                        selectedNik: selectedNik
+                    },
                     dataType: 'json',
                     success: function(data) {
                         const matched = data.find(item => item.nama === selectedNik);
@@ -978,6 +982,9 @@
             if (selectedNik) {
                 $.ajax({
                     url: '{{ route('ppu.1250.approval.list') }}',
+                    data: {
+                        selectedNik: selectedNik
+                    },
                     dataType: 'json',
                     success: function(data) {
                         const matched = data.find(item => item.nama === selectedNik);

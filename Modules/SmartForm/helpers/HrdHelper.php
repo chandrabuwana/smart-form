@@ -45,8 +45,6 @@ class HrdHelper
                   ->orWhere('Nama', 'like', "%$search%");
             });
         }
-
-
         if (!$selectedNik) {
             $query->limit(50);
         }

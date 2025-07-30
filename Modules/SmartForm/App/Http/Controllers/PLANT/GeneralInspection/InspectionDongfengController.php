@@ -19,7 +19,7 @@ class InspectionDongfengController extends Controller
     public function index()
     {
         try {
-            $nik_session = request()->session()->get('user_id', '');
+            $nik_session = request()->session()->get('username', '');
             $statistics = ( object )[
                 'total_records' => DB::table( 'plant_general_inspection_dongfeng' )->count(),
                 'total_this_month' => DB::table( 'plant_general_inspection_dongfeng' )
@@ -160,7 +160,7 @@ class InspectionDongfengController extends Controller
                 'dilakukan2' => $request->dilakukan2,
                 'diperiksa'  => $request->diperiksa,
                 'diketahui'  => $request->diketahui,
-                'creator'    => $request->session()->get('user_id', ''),
+                'creator'    => $request->session()->get('username', ''),
                 'date_sign1' => Carbon::now(),
                 'date_sign2' => null,
                 'date_sign3' => null,
@@ -225,7 +225,7 @@ class InspectionDongfengController extends Controller
      */
     public function show(InspectionDongfeng $dongfeng, Request $request)
     {
-        $nik_session = $request->session()->get( 'user_id', '' );
+        $nik_session = $request->session()->get( 'username', '' );
         $sites = ['PMSS', 'MAS', 'MME', 'BRAM', 'TAJ', 'AGM', 'MSJ', 'TDM', 'BSSR', 'MBLM', 'MBLH', 'others'];
         $json = file_get_contents(resource_path('data/general-inspection/dongfeng/activity-list.json'));
         $activityChecklistJson = json_decode($json, true);
@@ -598,7 +598,8 @@ class InspectionDongfengController extends Controller
     public function getApprovalList(Request $request)
     {
         $search = $request->input('search', '');
-        $list = HrdHelper::getApprovalList($search);
+        $selectedNik = $request->input('selectedNik', null);
+        $list = HrdHelper::getApprovalList($search, $selectedNik);
 
         return response()->json($list);
     }

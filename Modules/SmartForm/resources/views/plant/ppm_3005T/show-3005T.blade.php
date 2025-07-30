@@ -939,6 +939,9 @@
             if (selectedNama) {
                 $.ajax({
                     url: '{{ route('3005.approval.list') }}',
+                    data: {
+                        selectedNik: selectedNama
+                    },
                     dataType: 'json',
                     success: function(data) {
                         const matched = data.find(item => item.nama ===
@@ -988,6 +991,9 @@
             if (selectedNik) {
                 $.ajax({
                     url: '{{ route('3005.approval.list') }}',
+                    data: {
+                        selectedNik: selectedNik
+                    },
                     dataType: 'json',
                     success: function(data) {
                         const matched = data.find(item => item.nama === selectedNik);

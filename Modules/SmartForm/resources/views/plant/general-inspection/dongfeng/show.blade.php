@@ -402,35 +402,29 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-6 ">
-                    <div class="input-group input-group-static mb-3">
-                        <label for="dilakukan1" class="ms-0">Dilakukan Oleh 1</label>
-                        <select name="dilakukan1" id="dilakukan1" class="form-control" disabled required>
-
-                        </select>
-                    </div>
+                <div class="col-6">
+                    <label for="dibuat" class="ms-0">Dilakukan Oleh 1</label>
+                    <input type="text" name="dilakukan1" id="dibuat" class="form-control"
+                        value="{{ old('dibuat', $inspection['dilakukan1'] ?? '') }}" readonly>
                 </div>
                 <div class="col-6">
                     <div class="input-group input-group-static mb-3">
-                        <label for="dilakukan2" class="ms-0">Dilakukan Oleh 2</label>
-                        <select name="dilakukan2" id="dilakukan2" class="form-control" disabled required>
-
+                        <label for="dibuat" class="ms-0">Dilakukan Oleh 2</label>
+                        <select name="dilakukan2" id="dilakukan2" class="form-control" disabled>
                         </select>
                     </div>
                 </div>
                 <div class="col-6 mt-2">
                     <div class="input-group input-group-static mb-3">
                         <label for="diperiksa" class="ms-0">Diperiksa Oleh</label>
-                        <select name="diperiksa" id="diperiksa" class="form-control" disabled required>
-
+                        <select name="diperiksa" id="diperiksa" class="form-control" disabled>
                         </select>
                     </div>
                 </div>
                 <div class="col-6 mt-2">
                     <div class="input-group input-group-static mb-3">
                         <label for="diketahui" class="ms-0">Diketahui Oleh</label>
-                        <select name="diketahui" id="diketahui" class="form-control" disabled required>
-
+                        <select name="diketahui" id="diketahui" class="form-control" disabled>
                         </select>
                     </div>
                 </div>
@@ -516,58 +510,156 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
     <script>
         $(function() {
-            function setupApprovalDropdown(selector, initialNik) {
-                const selectElement = $(selector);
+            const selectedNama = '{{ $inspection['dilakukan2'] }}';
 
-                selectElement.select2({
-                    placeholder: '-- Pilih Pengguna --',
-                    width: '100%',
-                    ajax: {
-                        url: '{{ route('bss-form.plant.general-inspection.dongfeng.approval.list') }}',
-                        dataType: 'json',
-                        delay: 250,
-                        data: function(params) {
-                            return {
-                                search: params.term
-                            };
-                        },
-                        processResults: function(data) {
-                            return {
-                                results: $.map(data, function(item) {
-                                    return {
-                                        id: item.nik,
-                                        text: item.nama + ' (' + item.nik + ')'
-                                    };
-                                })
-                            };
-                        },
-                        cache: true
-                    }
-                });
-
-                if (initialNik) {
-                    $.ajax({
-                        type: 'GET',
-                        url: '{{ route('bss-form.plant.general-inspection.dongfeng.approval.list') }}',
-                        dataType: 'json',
-                    }).then(function(data) {
-                        // FIX: Mencari data berdasarkan NIK, bukan nama
-                        const matched = data.find(item => item.nik === initialNik);
-                        if (matched) {
-                            // FIX: Buat <option> baru dengan NIK sebagai value
-                            const option = new Option(matched.nama + ' (' + matched.nik + ')', matched.nik, true, true);
-                            selectElement.append(option).trigger('change');
-                        }
-                    });
+            $('#dilakukan2').select2({
+                placeholder: '-- Select Creator --',
+                width: '100%',
+                ajax: {
+                    url: '{{ route('cmt.approval.list') }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            search: params.term
+                        };
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(item) {
+                                return {
+                                    id: item.nama,
+                                    text: item.nama + ' (' + item.nik + ')',
+                                    nama: item.nama
+                                };
+                            })
+                        };
+                    },
+                    cache: true
                 }
-            }
+            });
 
-            // Panggil fungsi untuk setiap dropdown approval
-            setupApprovalDropdown('#dilakukan1', "{{ $inspection['dilakukan1'] ?? '' }}");
-            setupApprovalDropdown('#dilakukan2', "{{ $inspection['dilakukan2'] ?? '' }}");
-            setupApprovalDropdown('#diperiksa', "{{ $inspection['diperiksa'] ?? '' }}");
-            setupApprovalDropdown('#diketahui', "{{ $inspection['diketahui'] ?? '' }}");
-        })
+            if (selectedNama) {
+                $.ajax({
+                    url: '{{ route('cmt.approval.list') }}',
+                    data: {
+                        selectedNik: selectedNama
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        const matched = data.find(item => item.nama ===
+                            selectedNama);
+                        if (matched) {
+                            const option = new Option(matched.nama + ' (' + matched.nik + ')', matched
+                                .nama, true, true);
+                            $('#dilakukan2').append(option).trigger('change');
+                        }
+
+                    }
+                })
+            }
+        });
+
+        $(function() {
+            const selectedNama = '{{ $inspection['diperiksa'] }}';
+
+            $('#diperiksa').select2({
+                placeholder: '-- Select Creator --',
+                width: '100%',
+                ajax: {
+                    url: '{{ route('cmt.approval.list') }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            search: params.term
+                        };
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(item) {
+                                return {
+                                    id: item.nama,
+                                    text: item.nama + ' (' + item.nik + ')',
+                                    nama: item.nama
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+
+            if (selectedNama) {
+                $.ajax({
+                    url: '{{ route('cmt.approval.list') }}',
+                    data: {
+                        selectedNik: selectedNama
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        const matched = data.find(item => item.nama ===
+                            selectedNama);
+                        if (matched) {
+                            const option = new Option(matched.nama + ' (' + matched.nik + ')', matched
+                                .nama, true, true);
+                            $('#diperiksa').append(option).trigger('change');
+                        }
+
+                    }
+                })
+            }
+        });
+        $(function() {
+            const selectedNama = '{{ $inspection['diketahui'] }}';
+
+            $('#diketahui').select2({
+                placeholder: '-- Select Creator --',
+                width: '100%',
+                ajax: {
+                    url: '{{ route('cmt.approval.list') }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            search: params.term
+                        };
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(item) {
+                                return {
+                                    id: item.nama,
+                                    text: item.nama + ' (' + item.nik + ')',
+                                    nama: item.nama
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+
+            if (selectedNama) {
+                $.ajax({
+                    url: '{{ route('cmt.approval.list') }}',
+                    data: {
+                        selectedNik: selectedNama
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        const matched = data.find(item => item.nama ===
+                            selectedNama);
+                        if (matched) {
+                            const option = new Option(matched.nama + ' (' + matched.nik + ')', matched
+                                .nama, true, true);
+                            $('#diketahui').append(option).trigger('change');
+                        }
+
+                    }
+                })
+            }
+        });
     </script>
     <script>
         $(document).ready(function() {

@@ -848,7 +848,7 @@
     </script>
     <script>
         $(function() {
-            const selectedNama = '{{ $data->checked_by }}';
+            const selectedNik = '{{ $data->checked_by }}';
 
             $('#checked2').select2({
                 placeholder: '-- Select Creator --',
@@ -859,7 +859,7 @@
                     delay: 250,
                     data: function(params) {
                         return {
-                            search: params.term
+                            search: params.term || ''
                         };
                     },
                     processResults: function(data) {
@@ -867,8 +867,8 @@
                             results: $.map(data, function(item) {
                                 return {
                                     id: item.nama,
-                                    text: item.nama + ' (' + item.nik + ')',
-                                    nama: item.nama
+                                    text: item.nama + ' (' + item.nik +
+                                        ')',
                                 };
                             })
                         };
@@ -878,13 +878,15 @@
             });
 
 
-            if (selectedNama) {
+            if (selectedNik) {
                 $.ajax({
                     url: '{{ route('900d.approval.list') }}',
+                    data: {
+                        selectedNik: selectedNik
+                    },
                     dataType: 'json',
                     success: function(data) {
-                        const matched = data.find(item => item.nama ===
-                            selectedNama);
+                        const matched = data.find(item => item.nama === selectedNik);
                         if (matched) {
                             const option = new Option(matched.nama + ' (' + matched.nik + ')', matched
                                 .nama, true, true);
@@ -930,6 +932,9 @@
             if (selectedNik) {
                 $.ajax({
                     url: '{{ route('900d.approval.list') }}',
+                    data: {
+                        selectedNik: selectedNik
+                    },
                     dataType: 'json',
                     success: function(data) {
                         const matched = data.find(item => item.nama === selectedNik);

@@ -755,8 +755,7 @@
                                         <label for="dibuat" class="ms-0">Checked By1</label>
 
                                         <input type="text" name="checked1" class="form-control"
-                                            value="{{ $data->creator }}"
-                                            readonly>
+                                            value="{{ $data->creator }}" readonly>
 
                                         </select>
                                     </div>
@@ -931,6 +930,9 @@
             if (selectedNama) {
                 $.ajax({
                     url: '{{ route('ppu.1250.approval.list') }}',
+                    data: {
+                        selectedNik: selectedNama
+                    },
                     dataType: 'json',
                     success: function(data) {
                         const matched = data.find(item => item.nama ===
@@ -980,6 +982,9 @@
             if (selectedNik) {
                 $.ajax({
                     url: '{{ route('ppu.1250.approval.list') }}',
+                    data: {
+                        selectedNik: selectedNik
+                    },
                     dataType: 'json',
                     success: function(data) {
                         const matched = data.find(item => item.nama === selectedNik);
