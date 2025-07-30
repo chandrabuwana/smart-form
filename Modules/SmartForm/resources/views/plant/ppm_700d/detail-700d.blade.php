@@ -801,16 +801,24 @@
             });
 
 
+
             if (selectedNik) {
                 $.ajax({
                     url: '{{ route('700d.approval.list') }}',
+                    data: {
+                        selectedNik: selectedNik
+                    },
                     dataType: 'json',
                     success: function(data) {
                         const matched = data.find(item => item.nama === selectedNik);
                         if (matched) {
-                            const option = new Option(matched.nama + ' (' + matched.nik + ')', matched
-                                .nama, true, true);
-                            $('#dibuat_oleh').append(option).trigger('change');
+                            const option = new Option(
+                                matched.nama + ' (' + matched.nik + ')',
+                                matched.nama,
+                                true,
+                                true
+                            );
+                            $('#validated').append(option).trigger('change');
                         }
                     }
                 });
@@ -837,8 +845,7 @@
                             results: $.map(data, function(item) {
                                 return {
                                     id: item.nama,
-                                    text: item.nama + ' (' + item.nik +
-                                        ')',
+                                    text: item.nama + ' (' + item.nik + ')',
                                 };
                             })
                         };
@@ -851,11 +858,19 @@
             if (selectedNik) {
                 $.ajax({
                     url: '{{ route('700d.approval.list') }}',
+                    data: {
+                        selectedNik: selectedNik
+                    },
                     dataType: 'json',
                     success: function(data) {
                         const matched = data.find(item => item.nama === selectedNik);
                         if (matched) {
-                            const option = new Option(matched.nama + ' (' + matched.nik + ')', matched.nama, true, true);
+                            const option = new Option(
+                                matched.nama + ' (' + matched.nik + ')',
+                                matched.nama,
+                                true,
+                                true
+                            );
                             $('#validated').append(option).trigger('change');
                         }
                     }
@@ -865,8 +880,7 @@
     </script>
     <script>
         $(document).ready(function() {
-            // $('#dibuat_oleh').select2();
-            // $('#diperiksa').select2();
+           
             $('#job_site').select2();
             $('#checked1').select2();
         });

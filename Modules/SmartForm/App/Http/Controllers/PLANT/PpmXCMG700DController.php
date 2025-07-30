@@ -460,11 +460,14 @@ $cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','sn_unit','model
         return $docNumber;
     }
 
- public function getApprovalList(Request $request)
-    {
-        $search = $request->input('search', '');
-        $list = HrdHelper::getApprovalList($search);
 
-        return response()->json($list);
-    }
+public function getApprovalList(Request $request)
+{
+    $search = $request->input('search', '');
+    $selectedNik = $request->input('selectedNik', null);
+
+    $list = HrdHelper::getApprovalList($search, $selectedNik);
+
+    return response()->json($list);
+}
 }
