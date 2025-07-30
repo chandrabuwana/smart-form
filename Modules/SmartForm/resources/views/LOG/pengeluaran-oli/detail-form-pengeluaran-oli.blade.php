@@ -109,6 +109,13 @@ $remarks = $data['remarks'];
                                     <div class="card-body">
                                         <table class="w-100">
                                             <tr>
+<<<<<<< HEAD
+                                                <td class="fw-bold">Foreman/Spv</td>
+                                                <td>
+                                                    <select class="form-select form-select-sm input-text" id="iForeman" name="iForeman" disabled>
+                                                        <option value="{{ $master->diketahui_oleh ?? '-' }}">{{ $master->diketahui_oleh ?? '-' }}</option>
+                                                    </select>
+=======
                                                 <td class="fw-bold" style="width: 10rem">Approval Status</td>
                                                 <td id="requestor">: {{$master->diketahui_oleh ?? '-'}}
                                                 @if($master->status_req == 'approved')
@@ -118,6 +125,7 @@ $remarks = $data['remarks'];
                                                 @else
                                                     <span class="approval-badge pending">Need Approval</span>
                                                 @endif
+>>>>>>> 5999876069c0c9ceb27dda4a7ebc342aed69fc41
                                                 </td>
                                             </tr>
                                             <tr>
