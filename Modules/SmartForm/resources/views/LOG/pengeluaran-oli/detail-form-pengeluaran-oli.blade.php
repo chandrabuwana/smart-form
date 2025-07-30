@@ -167,7 +167,7 @@ $remarks = $data['remarks'];
 
                     <div class="card-footer">
                         <div class="d align-items-center">
-                            @if ( session('user_id') == $master->diketahui_oleh && ($master->status_req == 'NEED_APPROVAL') )
+                            @if ( session('user_id') == $master->diketahui_oleh && ($master->status_req == 'NEED APPROVAL') )
                                 <button class="btn btn-primary ms-auto uploadBtn" style="margin:5px" id="btnApprove">
                                     <i class="fas fa-check"></i> &nbsp;
                                     Approve
