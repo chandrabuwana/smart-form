@@ -587,7 +587,7 @@
     $(function() {
         $('#pemeriksa, #atasan').select2({
             placeholder: '-- Pilih --',
-            width: '50%',
+            width: '100%',
             ajax: {
                 url: '{{ route('plant.welding.approval.list') }}',
                 dataType: 'json',

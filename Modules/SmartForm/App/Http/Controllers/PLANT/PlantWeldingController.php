@@ -474,30 +474,47 @@ class PlantWeldingController extends Controller
             // Ambil user_id dari session
             $loggedInUserId = session('username');
 
-            if ($record) {
-                // Cek apakah user adalah pemeriksa
+            $updated = false;
+            $message = [];
+
+            // CASE: Pemeriksa dan Atasan adalah orang yang sama dan sesuai session
+            if (
+                $record->pemeriksa == $loggedInUserId &&
+                $record->atasan == $loggedInUserId
+            ) {
+                DB::table('plant_welding')
+                    ->where('id', $id)
+                    ->update([
+                        'status_pemeriksa' => 'Approve',
+                        'status_atasan' => 'Approve',
+                    ]);
+                $updated = true;
+                $message[] = 'Status pemeriksa dan atasan berhasil diubah menjadi Approve';
+            } else {
+                // CASE: Pemeriksa saja
                 if ($record->pemeriksa == $loggedInUserId) {
                     DB::table('plant_welding')
                         ->where('id', $id)
                         ->update(['status_pemeriksa' => 'Approve']);
-
-                    return response()->json([
-                        'success' => true,
-                        'message' => 'Status pemeriksa berhasil diubah menjadi Approve'
-                    ]);
+                    $updated = true;
+                    $message[] = 'Status pemeriksa berhasil diubah menjadi Approve';
                 }
 
-                // Cek apakah user adalah atasan
+                // CASE: Atasan saja
                 if ($record->atasan == $loggedInUserId) {
                     DB::table('plant_welding')
                         ->where('id', $id)
                         ->update(['status_atasan' => 'Approve']);
-
-                    return response()->json([
-                        'success' => true,
-                        'message' => 'Status atasan berhasil diubah menjadi Approve'
-                    ]);
+                    $updated = true;
+                    $message[] = 'Status atasan berhasil diubah menjadi Approve';
                 }
+            }
+
+            if ($updated) {
+                return response()->json([
+                    'success' => true,
+                    'message' => implode(' & ', $message)
+                ]);
             }
 
             return response()->json([
@@ -522,30 +539,47 @@ class PlantWeldingController extends Controller
             // Ambil user_id dari session
             $loggedInUserId = session('username');
 
-            if ($record) {
-                // Cek apakah user adalah pemeriksa
+            $updated = false;
+            $message = [];
+
+            // CASE: Pemeriksa dan Atasan adalah orang yang sama dan sesuai session
+            if (
+                $record->pemeriksa == $loggedInUserId &&
+                $record->atasan == $loggedInUserId
+            ) {
+                DB::table('plant_welding')
+                    ->where('id', $id)
+                    ->update([
+                        'status_pemeriksa' => 'Reject',
+                        'status_atasan' => 'Reject',
+                    ]);
+                $updated = true;
+                $message[] = 'Status pemeriksa dan atasan berhasil diubah menjadi Reject';
+            } else {
+                // CASE: Pemeriksa saja
                 if ($record->pemeriksa == $loggedInUserId) {
                     DB::table('plant_welding')
                         ->where('id', $id)
                         ->update(['status_pemeriksa' => 'Reject']);
-
-                    return response()->json([
-                        'success' => true,
-                        'message' => 'Status pemeriksa berhasil diubah menjadi Reject'
-                    ]);
+                    $updated = true;
+                    $message[] = 'Status pemeriksa berhasil diubah menjadi Reject';
                 }
 
-                // Cek apakah user adalah atasan
+                // CASE: Atasan saja
                 if ($record->atasan == $loggedInUserId) {
                     DB::table('plant_welding')
                         ->where('id', $id)
                         ->update(['status_atasan' => 'Reject']);
-
-                    return response()->json([
-                        'success' => true,
-                        'message' => 'Status atasan berhasil diubah menjadi Reject'
-                    ]);
+                    $updated = true;
+                    $message[] = 'Status atasan berhasil diubah menjadi Reject';
                 }
+            }
+
+            if ($updated) {
+                return response()->json([
+                    'success' => true,
+                    'message' => implode(' & ', $message)
+                ]);
             }
 
             return response()->json([
@@ -560,6 +594,7 @@ class PlantWeldingController extends Controller
             ], 500);
         }
     }
+
 
 
 
