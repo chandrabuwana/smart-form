@@ -163,9 +163,11 @@
                                     </div>
                                         @php
                                             $loggedInUserId = session('username');
+                                            $isPemeriksa = optional($record)->pemeriksa == $loggedInUserId;
+                                            $isAtasan = optional($record)->atasan == $loggedInUserId;
                                         @endphp
 
-                                        @if(optional($record)->pemeriksa == $loggedInUserId)
+                                        @if($isPemeriksa && !$isAtasan)
                                             <div>
                                                 <button id="btnApprove" data-id="{{ $record->id }}" class="btn btn-info btn-sm">Approve</button>
                                                 <button id="btnReject" data-id="{{ $record->id }}" class="btn btn-danger btn-sm">Reject</button>
@@ -194,15 +196,28 @@
                                     </div>
                                         @php
                                             $loggedInUserId = session('username');
+                                            $isPemeriksa = optional($record)->pemeriksa == $loggedInUserId;
+                                            $isAtasan = optional($record)->atasan == $loggedInUserId;
                                         @endphp
 
-                                        @if(optional($record)->atasan == $loggedInUserId)
+                                        @if($isAtasan && !$isPemeriksa)
                                             <div>
                                                 <button id="btnApprove" data-id="{{ $record->id }}" class="btn btn-info btn-sm">Approve</button>
                                                 <button id="btnReject" data-id="{{ $record->id }}" class="btn btn-danger btn-sm">Reject</button>
                                             </div>
                                         @endif
                                 </div>
+                                @php
+                                            $loggedInUserId = session('username');
+                                            $isPemeriksa = optional($record)->pemeriksa == $loggedInUserId;
+                                            $isAtasan = optional($record)->atasan == $loggedInUserId;
+                                        @endphp
+                                @if($isPemeriksa && $isAtasan)
+                                    <div>
+                                        <button id="btnApproveAll" data-id="{{ $record->id }}" class="btn btn-success btn-sm">Approve All</button>
+                                        <button id="btnRejectAll" data-id="{{ $record->id }}" class="btn btn-warning btn-sm">Reject All</button>
+                                    </div>
+                                @endif
                             </div>
 
                             <div class="table-responsive mt-4">
@@ -633,6 +648,80 @@
                 });
             });
         });
+
+        $("#btnApproveAll").on("click", function(e) {
+            e.preventDefault();
+            const recordId = $(this).data("id"); // Ambil ID dari atribut data-id
+            const url = `{{ route('plant.welding.approve', ['id' => ':id']) }}`.replace(":id", recordId);
+
+            axios.post(url, {
+                _token: '{{ csrf_token() }}'
+            }).then(function(response) {
+                if (response.data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: response.data.message
+                    }).then(() => {
+                        window.location.href = '{{ route('plant.welding.dashboard') }}';
+                    });
+                }
+            }).catch(function(error) {
+                let errorMessage = 'Terjadi kesalahan pada sistem';
+
+                if (error.response) {
+                    if (error.response.data.errors) {
+                        errorMessage = Object.values(error.response.data.errors).flat().join('\n');
+                    } else if (error.response.data.message) {
+                        errorMessage = error.response.data.message;
+                    }
+                }
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: errorMessage
+                });
+            });
+        });
+
+        $("#btnRejectAll").on("click", function(e) {
+            e.preventDefault();
+            const recordId = $(this).data("id"); // Ambil ID dari atribut data-id
+            const url = `{{ route('plant.welding.reject', ['id' => ':id']) }}`.replace(":id", recordId);
+
+            axios.post(url, {
+                _token: '{{ csrf_token() }}'
+            }).then(function(response) {
+                if (response.data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: response.data.message
+                    }).then(() => {
+                        window.location.href = '{{ route('plant.welding.dashboard') }}';
+                    });
+                }
+            }).catch(function(error) {
+                let errorMessage = 'Terjadi kesalahan pada sistem';
+
+                if (error.response) {
+                    if (error.response.data.errors) {
+                        errorMessage = Object.values(error.response.data.errors).flat().join('\n');
+                    } else if (error.response.data.message) {
+                        errorMessage = error.response.data.message;
+                    }
+                }
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: errorMessage
+                });
+            });
+        });
+
+
     });
 </script>
 
