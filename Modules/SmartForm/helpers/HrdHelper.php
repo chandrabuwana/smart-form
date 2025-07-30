@@ -48,7 +48,7 @@ class HrdHelper
 
 
         if (!$selectedNik) {
-            $query->limit(2);
+            $query->limit(50);
         }
 
         return $query->get();
