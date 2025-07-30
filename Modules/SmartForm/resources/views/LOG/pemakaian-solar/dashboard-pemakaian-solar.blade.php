@@ -10,44 +10,51 @@
             outline: none !important;
             transition: all .15s ease-in-out;
         }
+
         .select2.select2-container .select2-selection .select2-selection__rendered {
             line-height: 32px;
             padding: 8px 0px;
         }
+
         .select2-dropdown.select2-dropdown--below {
             max-height: 300px;
             overflow-x: scroll;
             overflow-y: auto;
         }
-        .select2-container--open .select2-selection.select2-selection--single, .select2-container--focus .select2-selection.select2-selection--single {
+
+        .select2-container--open .select2-selection.select2-selection--single,
+        .select2-container--focus .select2-selection.select2-selection--single {
             border-bottom: 1px solid #D81B60;
         }
-    .status {
-        display: flex;
-        gap: 10px;
-        align-items: center;
-        font-family: Arial, sans-serif;
-        padding: 3px;
-        font-size: 12px;
-    }
-    .box {
-        width: 20px;
-        height: 20px;
-        display: inline-block;
-        border-radius: 4px;
-        font-size: 12px;
-    }
-    .grey {
-        background-color:rgb(134, 132, 132);
-    }
 
-    .green {
-        background-color: #4CAF50;
-    }
+        .status {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            padding: 3px;
+            font-size: 12px;
+        }
 
-    .red {
-        background-color:rgb(255, 38, 0);
-    }
+        .box {
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .grey {
+            background-color: rgb(134, 132, 132);
+        }
+
+        .green {
+            background-color: #4CAF50;
+        }
+
+        .red {
+            background-color: rgb(255, 38, 0);
+        }
     </style>
 @endsection
 
@@ -65,12 +72,13 @@
                     <div class="col-xl-3 col-sm-6 mb-4">
                         <div class="card stats-card">
                             <div class="card-header p-3 pt-2">
-                                <div class="icon icon-lg icon-shape bg-gradient-primary shadow-primary text-center border-radius-xl mt-n4 position-absolute">
+                                <div
+                                    class="icon icon-lg icon-shape bg-gradient-primary shadow-primary text-center border-radius-xl mt-n4 position-absolute">
                                     <i class="material-icons opacity-10">inventory_2</i>
                                 </div>
                                 <div class="text-end pt-1">
                                     <p class="text-sm mb-0 text-capitalize">Total Records</p>
-                                    
+
                                 </div>
                             </div>
                         </div>
@@ -79,12 +87,13 @@
                     <div class="col-xl-3 col-sm-6 mb-4">
                         <div class="card stats-card">
                             <div class="card-header p-3 pt-2">
-                                <div class="icon icon-lg icon-shape bg-gradient-warning shadow-warning text-center border-radius-xl mt-n4 position-absolute">
+                                <div
+                                    class="icon icon-lg icon-shape bg-gradient-warning shadow-warning text-center border-radius-xl mt-n4 position-absolute">
                                     <i class="material-icons opacity-10">build</i>
                                 </div>
                                 <div class="text-end pt-1">
                                     <p class="text-sm mb-0 text-capitalize">Broken Components</p>
-                                    
+
                                 </div>
                             </div>
                         </div>
@@ -93,12 +102,13 @@
                     <div class="col-xl-3 col-sm-6 mb-4">
                         <div class="card stats-card">
                             <div class="card-header p-3 pt-2">
-                                <div class="icon icon-lg icon-shape bg-gradient-success shadow-success text-center border-radius-xl mt-n4 position-absolute">
+                                <div
+                                    class="icon icon-lg icon-shape bg-gradient-success shadow-success text-center border-radius-xl mt-n4 position-absolute">
                                     <i class="material-icons opacity-10">calendar_month</i>
                                 </div>
                                 <div class="text-end pt-1">
                                     <p class="text-sm mb-0 text-capitalize">This Month</p>
-                                    
+
                                 </div>
                             </div>
                         </div>
@@ -107,12 +117,13 @@
                     <div class="col-xl-3 col-sm-6 mb-4">
                         <div class="card stats-card">
                             <div class="card-header p-3 pt-2">
-                                <div class="icon icon-lg icon-shape bg-gradient-info shadow-info text-center border-radius-xl mt-n4 position-absolute">
+                                <div
+                                    class="icon icon-lg icon-shape bg-gradient-info shadow-info text-center border-radius-xl mt-n4 position-absolute">
                                     <i class="material-icons opacity-10">task_alt</i>
                                 </div>
                                 <div class="text-end pt-1">
                                     <p class="text-sm mb-0 text-capitalize">Completion Rate</p>
-                                    
+
                                 </div>
                             </div>
                         </div>
@@ -138,7 +149,7 @@
                         </div>
                         <div class="col-6 col-md-3">
                             <div class="input-group input-group-static mb-4">
-                                
+
                             </div>
                         </div>
                         <div class="col-6 col-md-3">
@@ -148,31 +159,33 @@
                             </div>
                         </div>
                         <div>
-                            <button class="btn btn-primary ms-auto filter-btn" id="btnFilterSubmit" onclick="applyFilter(this)">
+                            <button class="btn btn-primary ms-auto filter-btn" id="btnFilterSubmit"
+                                onclick="applyFilter(this)">
                                 Filter
                             </button>
-                            <button class="btn btn-primary ms-auto filter-btn" id="btnClearFilter" onclick="clearFilter(this)">
+                            <button class="btn btn-primary ms-auto filter-btn" id="btnClearFilter"
+                                onclick="clearFilter(this)">
                                 Clear Filter
                             </button>
                         </div>
                     </div>
                     <div class="col-md-12 d-flex justify-content-end">
                         <div class="status me-2">
-                                <label>Status :</label>
-                            </div>
-                            <div class="status me-2">
-                                <span class="box grey"></span> Need Approval
-                            </div>
-                            <div class="status me-2">
-                                <span class="box green"></span> Approved
-                            </div>
-                            <div class="status me-2">
-                                <span class="box red"></span> Rejected
-                            </div>
+                            <label>Status :</label>
                         </div>
+                        <div class="status me-2">
+                            <span class="box grey"></span> Need Approval
+                        </div>
+                        <div class="status me-2">
+                            <span class="box green"></span> Approved
+                        </div>
+                        <div class="status me-2">
+                            <span class="box red"></span> Rejected
+                        </div>
+                    </div>
                     <div class="table-responsive p-0">
-                        <table class="table table-sm" id="list-form" data-toggle="table" data-ajax="fetchFormsData" data-side-pagination="server"
-                            data-page-list="[10, 25, 50, 100, all]" data-sortable="true"
+                        <table class="table table-sm" id="list-form" data-toggle="table" data-ajax="fetchFormsData"
+                            data-side-pagination="server" data-page-list="[10, 25, 50, 100, all]" data-sortable="true"
                             data-content-type="application/json" data-data-type="json" data-pagination="true"
                             data-unique-id="no_doc">
                             <thead>
@@ -185,9 +198,11 @@
                                     <th data-field="fuel" data-align="center" data-halign="center">No Fuel Station</th>
                                     <th data-field="total" data-align="center" data-halign="center">Total Pemakaian</th>
                                     <th data-field="approval" data-align="center" data-halign="center">Approval</th>
-                                    <th data-field="is_active" data-align="center" data-formatter="statusActive" data-halign="text-center" data-sortable="true">Is Active?</th>
-                                    <th data-field="status" data-align="center" data-formatter="statusFormater" data-halign="text-center" data-sortable="true">Status</th>
-                                    <th data-field="action" data-formatter="actionFormatter" >Actions</th>
+                                    <th data-field="is_active" data-align="center" data-formatter="statusActive"
+                                        data-halign="text-center" data-sortable="true">Is Active?</th>
+                                    <th data-field="status" data-align="center" data-formatter="statusFormater"
+                                        data-halign="text-center" data-sortable="true">Status</th>
+                                    <th data-field="action" data-formatter="actionFormatter">Actions</th>
                                 </tr>
                             </thead>
                         </table>
@@ -209,10 +224,10 @@
             status: null,
         }
 
-        $('#filterNik').on("select2:select", function (e) { 
+        $('#filterNik').on("select2:select", function(e) {
             filter.nik = e.params.data.id
         });
-        $('#filterStatus').on("select2:select", function (e) {
+        $('#filterStatus').on("select2:select", function(e) {
             filter.status = e.params.data.id
         });
 
@@ -242,7 +257,7 @@
                 },
                 cache: true,
             },
-            templateResult: function (data) {
+            templateResult: function(data) {
                 console.log(data)
                 if (!data.id) {
                     return data.text; // Tampilan default jika tidak ada data
@@ -256,11 +271,22 @@
             theme: 'bootstrap-5', // Menggunakan tema Bootstrap 5
             dropdownParent: $('#filterStatus').closest('.input-group'),
             placeholder: '--- Pilih Status ---',
-            data: [
-                {"id": "", "text": "--- Pilih Status ---"},
-                {"id": "Need Approval", "text": "Need Approval"},
-                {"id": "Approved", "text": "Approved"},
-                {"id": "Rejected", "text": "Rejected"},
+            data: [{
+                    "id": "",
+                    "text": "--- Pilih Status ---"
+                },
+                {
+                    "id": "Need Approval",
+                    "text": "Need Approval"
+                },
+                {
+                    "id": "Approved",
+                    "text": "Approved"
+                },
+                {
+                    "id": "Reject",
+                    "text": "Reject"
+                },
             ]
         });
 
@@ -277,21 +303,27 @@
         }
 
         function actionFormatter(value, row, index) {
-            var btn = '<a type="button" class="btn btn-secondary btn-sm me-1" style="--bs-btn-font-size: .60rem;" href="/bss-form/log/get-pemakaian-solar-detail?no_doc=' + row.no_doc + '">Lihat</a>';
-            if(row.status = "Need Approval" || row.status == null) {
-                if(row.dibuat_oleh == users_nik && (row.editable == 0 || row.editable == null)) {
-                    btn = btn + '<a type="button" class="btn btn-info btn-sm me-1" style="--bs-btn-font-size: .60rem;" href="/bss-form/log/edit-pemakaian-solar?no_doc=' + row.no_doc + '">Edit</a>'
-                    + '<a class="btn btn-danger btn-action btn-sm me-1" style="--bs-btn-font-size: .60rem;" href="/bss-form/log/delete-pemakaian-solar?no_doc=' + row.no_doc + '">Delete</a>'
-                    + '<a class="btn btn-primary btn-action btn-sm" style="--bs-btn-font-size: .60rem;" href="/bss-form/log/pdf-pemakaian-solar?no_doc=' + row.no_doc + '">Pdf</a>';
+            var btn =
+                '<a type="button" class="btn btn-secondary btn-sm me-1" style="--bs-btn-font-size: .60rem;" href="/bss-form/log/get-pemakaian-solar-detail?no_doc=' +
+                row.no_doc + '">Lihat</a>';
+            if (row.status = "Need Approval" || row.status == null) {
+                if (row.dibuat_oleh == users_nik && (row.editable == 0 || row.editable == null)) {
+                    btn = btn +
+                        '<a type="button" class="btn btn-info btn-sm me-1" style="--bs-btn-font-size: .60rem;" href="/bss-form/log/edit-pemakaian-solar?no_doc=' +
+                        row.no_doc + '">Edit</a>' +
+                        '<a class="btn btn-danger btn-action btn-sm me-1" style="--bs-btn-font-size: .60rem;" href="/bss-form/log/delete-pemakaian-solar?no_doc=' +
+                        row.no_doc + '">Delete</a>' +
+                        '<a class="btn btn-primary btn-action btn-sm" style="--bs-btn-font-size: .60rem;" href="/bss-form/log/pdf-pemakaian-solar?no_doc=' +
+                        row.no_doc + '">Pdf</a>';
                 }
             }
             return btn;
         }
 
         function fetchFormsData(params) {
-            if(filter.nik) params.data.nik = filter.nik
-            if(filter.status) params.data.status = filter.status
-            if(filter.department) params.data.department = filter.department
+            if (filter.nik) params.data.nik = filter.nik
+            if (filter.status) params.data.status = filter.status
+            if (filter.department) params.data.department = filter.department
             console.log("filter : ", filter)
 
             var url = '/bss-form/log/get-pemakaian-solar-data'
@@ -301,14 +333,15 @@
         }
 
         function statusFormater(value, row, index) {
-            if (value == 1) {
+            if (value == "Approved") {
                 return `<button type="button" style="--bs-btn-font-size: .60rem;" class="btn btn-success btn-sm" disabled>Approved</button>`
-            } else if (value == 2) {
+            } else if (value == "Reject") {
                 return `<button type="button" style="--bs-btn-font-size: .60rem;" class="btn btn-danger btn-sm" disabled>Rejected</button>`
             } else {
                 return `<button type="button" style="--bs-btn-font-size: .60rem;" class="btn btn-secondary btn-sm" disabled>Need Approval</button>`
             }
         }
+
         function statusActive(value, row, index) {
             if (value == 1) {
                 return `<button type="button" style="--bs-btn-font-size: .60rem;" class="btn btn-success btn-sm" disabled>Active</button>`

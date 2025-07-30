@@ -63,13 +63,15 @@ $remarks = $data['remarks'];
                                                 <td id="requestor">{{$master->updated_at ?? '-'}}</td>
                                             </tr>
                                             <tr>
-                                                <td class="fw-bold">Status</td>
+                                                <td class="fw-bold">Aproval Status</td>
                                                 <td id="requestor">{{$master->status_req ?? '-'}}</td>
                                             </tr>
-                                            <tr>
+                                            <!-- <tr>
                                                 <td class="fw-bold">Approve/Reject Reason</td>
-                                                <td id="requestor">{{$master->remark ?? '-'}}</td>
-                                            </tr>
+                                                <input type="text" class="form-control" id="remark" name="remark">
+                                                    {{$master->remark ?? '-'}}
+                                                </td>
+                                            </tr> -->
                                             
                                         </table>
                                     </div>
@@ -84,8 +86,13 @@ $remarks = $data['remarks'];
                                             <tr>
                                                 <td class="fw-bold">Foreman/Spv</td>
                                                 <td>
+<<<<<<< HEAD
                                                     <select class="form-select form-select-sm input-text" id="iForeman" name="iForeman" disabled>
                                                         <option value="{{ $master->diketahui_oleh ?? '-' }}">{{ $master->diketahui_oleh ?? '-' }}</option>
+=======
+                                                    <select class="form-select form-select-sm input-text" id="iForeman" name="iForeman">
+                                                    <option value="{{ $master->diketahui_oleh ?? '' }}">{{ $master->diketahui_oleh}}</option>
+>>>>>>> 5999876069c0c9ceb27dda4a7ebc342aed69fc41
                                                     </select>
                                                 </td>
                                             </tr>
@@ -98,7 +105,7 @@ $remarks = $data['remarks'];
                                             <tr>
                                                 <td class="fw-bold">Shift</td>
                                                 <td>
-                                                    <select class="form-select form-select-sm input-text" aria-label="Default select example" id="iShift" name="iShift" disabled>
+                                                    <select class="form-select form-select-sm input-text" aria-label="Default select example" id="iShift" name="iShift">
                                                         @forelse($shifts as $code => $value)
                                                             <option value="{{ $code }}" {{ $master->shift == $code ? 'selected' : '' }}>
                                                                 {{ $value }}
@@ -112,7 +119,7 @@ $remarks = $data['remarks'];
                                             <tr>
                                                 <td class="fw-bold">Site</td>
                                                 <td>
-                                                    <select class="form-select form-select-sm input-text" id="iJobSite" name="iJobSite" disabled>
+                                                    <select class="form-select form-select-sm input-text" id="iJobSite" name="iJobSite">
                                                         @forelse($sites as $site)
                                                             <option value="{{ $site->KodeST ?? '' }}" {{ $master->site == $site->KodeST ? 'selected' : '' }}>
                                                                 {{ $site->KodeST ?? 'Site tidak tersedia' }}
@@ -431,6 +438,34 @@ $remarks = $data['remarks'];
 @section('custom-js')
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
+    <script>
+        $(function() {
+            $('#iForeman').select2({
+                placeholder: '-- Pilih Pengawas --',
+                width: '50%',
+                ajax: {
+                    url: '{{ route("approval.list") }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return { search: params.term };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    id: item.nama,
+                                    text: item.nama + ' (' + item.nik + ')',
+                                    nik: item.nik
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+        });
+    </script>
     <script>
         var tglNow = new Date()
         var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];

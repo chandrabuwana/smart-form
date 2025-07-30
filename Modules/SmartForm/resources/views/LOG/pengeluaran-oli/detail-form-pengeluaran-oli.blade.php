@@ -9,6 +9,37 @@
     .m-0 {
         margin: 0;
     }
+    .approval-section {
+        margin-top: 2rem;
+        padding: 1rem;
+        border: 1px solid #eee;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+    .approval-badge {
+        display: inline-block;
+        padding: 0.25em 0.4em;
+        font-size: 75%;
+        font-weight: 700;
+        line-height: 1;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: baseline;
+        border-radius: 0.25rem;
+        margin-left: 0.5rem;
+    }
+    .approval-badge.approved {
+        color: #fff;
+        background-color: #28a745;
+    }
+    .approval-badge.rejected {
+        color: #fff;
+        background-color: #dc3545;
+    }
+    .approval-badge.pending {
+        color: #212529;
+        background-color: #ffc107;
+    }
 </style>
 @endsection
 
@@ -44,32 +75,28 @@ $remarks = $data['remarks'];
                                         <table class="w-100">
                                             <tr>
                                                 <td class="fw-bold" style="width: 10rem">No. Doc</td>
-                                                <td >{{$master->no_dok ?? '-'}}</td>
+                                                <td >: {{$master->no_dok ?? '-'}}</td>
                                             </tr>
                                             <tr>
                                                 <td class="fw-bold">Created By</td>
-                                                <td id="requestor">{{$master->created_by ?? '-'}}</td>
+                                                <td id="requestor">: {{$master->created_by ?? '-'}}</td>
                                             </tr>
                                             <tr>
                                                 <td class="fw-bold">Created  Date</td>
-                                                <td>{{$master->created_at ?? '-'}}</td>
+                                                <td>: {{$master->created_at ?? '-'}}</td>
                                             </tr>
                                             <tr>
                                                 <td class="fw-bold">Updated By</td>
-                                                <td id="requestor">{{$master->updated_by ?? '-'}}</td>
+                                                <td id="requestor">: {{$master->updated_by ?? '-'}}</td>
                                             </tr>
                                             <tr>
                                                 <td class="fw-bold">Updated Date</td>
-                                                <td id="requestor">{{$master->updated_at ?? '-'}}</td>
+                                                <td id="requestor">: {{$master->updated_at ?? '-'}}</td>
                                             </tr>
-                                            <tr>
-                                                <td class="fw-bold">Status</td>
-                                                <td id="requestor">{{$master->status_req ?? '-'}}</td>
-                                            </tr>
-                                            <tr>
+                                            <!-- <tr>
                                                 <td class="fw-bold">Approve/Reject Reason</td>
                                                 <td id="requestor">{{$master->remark ?? '-'}}</td>
-                                            </tr>
+                                            </tr> -->
                                             
                                         </table>
                                     </div>
@@ -82,47 +109,37 @@ $remarks = $data['remarks'];
                                     <div class="card-body">
                                         <table class="w-100">
                                             <tr>
+<<<<<<< HEAD
                                                 <td class="fw-bold">Foreman/Spv</td>
                                                 <td>
                                                     <select class="form-select form-select-sm input-text" id="iForeman" name="iForeman" disabled>
                                                         <option value="{{ $master->diketahui_oleh ?? '-' }}">{{ $master->diketahui_oleh ?? '-' }}</option>
                                                     </select>
+=======
+                                                <td class="fw-bold" style="width: 10rem">Approval Status</td>
+                                                <td id="requestor">: {{$master->diketahui_oleh ?? '-'}}
+                                                @if($master->status_req == 'approved')
+                                                    <span class="approval-badge approved">Approved</span>
+                                                @elseif($master->status_req == 'rejected')
+                                                    <span class="approval-badge rejected">Rejected</span>
+                                                @else
+                                                    <span class="approval-badge pending">Need Approval</span>
+                                                @endif
+>>>>>>> 5999876069c0c9ceb27dda4a7ebc342aed69fc41
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td class="fw-bold">No. Lube Station / Lube Truck</td>
-                                                <td>
-                                                    <input type="text" class="form-control" id="iLube" name="iLube" value="{{ $master->lube }}" placeholder="Input no lube station" readonly>
-                                                </td>
+                                                <td class="fw-bold">No. Lube Station / Lube Truck </td>
+                                                <td>: {{ $master->lube }}</td>
                                             </tr>
                                             <tr>
                                                 <td class="fw-bold">Shift</td>
-                                                <td>
-                                                    <select class="form-select form-select-sm input-text" aria-label="Default select example" id="iShift" name="iShift" disabled>
-                                                        <option value="">-- select shift --</option>
-                                                        @forelse($shifts as $code => $value)
-                                                            <option value="{{ $code }}" {{ $master->shift == $code ? 'selected' : '' }}>
-                                                                {{ $value }}
-                                                            </option>
-                                                        @empty
-                                                            <option>Data shift tidak ditemukan</option>
-                                                        @endforelse
-                                                    </select> 
+                                                <td>: {{$master->shift ?? '-'}}
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td class="fw-bold">Site</td>
-                                                <td>
-                                                    <select class="form-select form-select-sm input-text" id="iJobSite" name="iJobSite" disabled>
-                                                        <option value="">-- select site --</option>
-                                                        @forelse($sites as $site)
-                                                            <option value="{{ $site->KodeST ?? '' }}" {{ $master->site == $site->KodeST ? 'selected' : '' }}>
-                                                                {{ $site->KodeST ?? 'Site tidak tersedia' }}
-                                                            </option>
-                                                        @empty
-                                                            <option>Data site tidak ditemukan</option>
-                                                        @endforelse
-                                                    </select>
+                                                <td>: {{$master->site ?? '-'}}
                                                 </td>
                                             </tr>
                                         </table>
@@ -158,7 +175,7 @@ $remarks = $data['remarks'];
 
                     <div class="card-footer">
                         <div class="d align-items-center">
-                            @if ( session('user_id') == $master->diketahui_oleh && ($master->status_req == 'NEED APPROVED') )
+                            @if ( session('user_id') == $master->diketahui_oleh && ($master->status_req == 'NEED APPROVAL') )
                                 <button class="btn btn-primary ms-auto uploadBtn" style="margin:5px" id="btnApprove">
                                     <i class="fas fa-check"></i> &nbsp;
                                     Approve

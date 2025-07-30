@@ -154,6 +154,7 @@ class PengeluaranOilController extends Controller {
                     $TABLE_PENGELUARAN_OLI.'.no_lube_station as lube',
                     $TABLE_PENGELUARAN_OLI.'.status_req',
                     $TABLE_PENGELUARAN_OLI.'.dilaporkan_oleh',
+                    $TABLE_PENGELUARAN_OLI.'.diketahui_oleh',
                     DB::raw('(SELECT Nama FROM '.$TABLE_KARYAWAN.' WHERE NIK = '.$TABLE_PENGELUARAN_OLI.'.dilaporkan_oleh) as reported_by_name'),
                     $TABLE_PENGELUARAN_OLI.'.created_at',
                     DB::raw('(SELECT Nama FROM '.$TABLE_KARYAWAN.' WHERE NIK = '.$TABLE_PENGELUARAN_OLI.'.diketahui_oleh) as approval_by'),
@@ -251,7 +252,7 @@ class PengeluaranOilController extends Controller {
             'shift' => $data['shift'],
             'dilaporkan_oleh' => $requested_by,
             'diketahui_oleh' => $data['foreman'],
-            'status_req' => STATUS::NEED_APPROVED,
+            'status_req' => STATUS::NEED_APPROVAL,
         ];
 
         $spliited_no_doc = explode("/", $data_insert['no_dok']);
@@ -478,12 +479,12 @@ class PengeluaranOilController extends Controller {
             'no_dok' => $data['noDoc'],
             'revisi' => $master->revisi + 1,
             //'created_at' => $data['tglDoc'],
-            //'job_site' => $data['jobSite'],
+            'job_site' => $data['jobSite'],
             //'no_lube_station' => $data['lube'],
-            //'shift' => $data['shift'],
+            'shift' => $data['shift'],
             //'dilaporkan_oleh' => $requested_by,
-            //'diketahui_oleh' => $data['foreman'],
-            'status_req' => STATUS::NEED_APPROVED,
+            'diketahui_oleh' => $data['foreman'],
+            'status_req' => STATUS::NEED_APPROVAL,
             'updated_by' => $requested_by,
             'updated_at' => now()->toDateTimeString(),
         ];

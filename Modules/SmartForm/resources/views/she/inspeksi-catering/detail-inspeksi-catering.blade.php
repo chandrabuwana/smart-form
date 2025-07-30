@@ -515,8 +515,8 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <p>
-                                    <span class="approval-user">Diinspeksi Oleh 1:</span> 
-                                    {{ $data->diinspeksi_oleh_1 ?? 'Belum ditentukan' }}
+                                    <span class="approval-user">Mengetahui:</span> 
+                                    {{ $data->mengetahui ?? 'Belum ditentukan' }}
                                     @php
                                         function parseStatus($statusJson) {
                                             if (empty($statusJson)) return [null, null, null];
@@ -561,68 +561,7 @@
                                     </div>
                                 </p>
                             </div>
-                            <div class="col-md-4">
-                                <p>
-                                    <span class="approval-user">Diinspeksi Oleh 2:</span> 
-                                    {{ $data->diinspeksi_oleh_2 ?? 'Belum ditentukan' }}
-                                    
-                                    @if($diketahui_status === 'approved')
-                                        <span class="approval-badge approved">Approved</span>
-                                    @elseif($diketahui_status === 'rejected')
-                                        <span class="approval-badge rejected">Rejected</span>
-                                    @else
-                                        <span class="approval-badge pending">Pending</span>
-                                    @endif
-                                    
-                                    <div class="mt-2">
-                                        @if($diperiksa_status === 'approved')
-                                            <button type="button" class="btn btn-success btn-sm approve-btn"
-                                                    data-id="{{ $data->id }}"
-                                                    data-position="1">
-                                                <i class="fas fa-check me-1"></i> Approve
-                                            </button>
-                                            <button type="button" class="btn btn-danger btn-sm reject-btn"
-                                                    data-id="{{ $data->id }}"
-                                                    data-position="1">
-                                                <i class="fas fa-times me-1"></i> Reject
-                                            </button>
-                                        @else
-                                            <small class="text-muted">Waiting for previous approval</small>
-                                        @endif
-                                    </div>
-                                </p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>
-                                    <span class="approval-user">Diinspeksi Oleh 3:</span> 
-                                    {{ $data->diinspeksi_oleh_3 ?? 'Belum ditentukan' }}
-                                    
-                                    @if($disetujui_status === 'approved')
-                                        <span class="approval-badge approved">Approved</span>
-                                    @elseif($disetujui_status === 'rejected')
-                                        <span class="approval-badge rejected">Rejected</span>
-                                    @else
-                                        <span class="approval-badge pending">Pending</span>
-                                    @endif
-                                    
-                                    <div class="mt-2">
-                                        @if($diperiksa_status === 'approved' && $diketahui_status === 'approved')
-                                            <button type="button" class="btn btn-success btn-sm approve-btn"
-                                                    data-id="{{ $data->id }}"
-                                                    data-position="2"">
-                                                <i class="fas fa-check me-1"></i> Approve
-                                            </button>
-                                            <button type="button" class="btn btn-danger btn-sm reject-btn"
-                                                    data-id="{{ $data->id }}"
-                                                    data-position="2">
-                                                <i class="fas fa-times me-1"></i> Reject
-                                            </button>
-                                        @else
-                                            <small class="text-muted">Waiting for previous approval</small>
-                                        @endif
-                                    </div>
-                                </p>
-                            </div>
+                            
                         </div>
                         
                         @php

@@ -587,7 +587,7 @@ p.thick {
         <table style="width:100%" class="kop">
           <tr class="itemKop">
             <td style="text-align:left">Diinspeksi Oleh</td>
-            <td style="text-align:left">: ...............</td>
+            <td style="text-align:left">: {{$data->diinspeksi_oleh_1}}</td>
             <td style="text-align:left">Tanda Tangan</td>
             <td style="text-align:left">: Signed</td>
             <td style="text-align:left">Tanggal</td>
@@ -595,7 +595,7 @@ p.thick {
           </tr>
           <tr class="itemKop">
             <td style="text-align:left">Diinspeksi Oleh</td>
-            <td style="text-align:left">: ...............</td>
+            <td style="text-align:left">: {{$data->diinspeksi_oleh_2}}</td>
             <td style="text-align:left">Tanda Tangan</td>
             <td style="text-align:left">: Signed</td>
             <td style="text-align:left">Tanggal</td>
@@ -603,7 +603,7 @@ p.thick {
           </tr>
           <tr class="itemKop">
             <td style="text-align:left">Diinspeksi Oleh</td>
-            <td style="text-align:left">: ...............</td>
+            <td style="text-align:left">: {{$data->diinspeksi_oleh_3}}</td>
             <td style="text-align:left">Tanda Tangan</td>
             <td style="text-align:left">: Signed</td>
             <td style="text-align:left">Tanggal</td>
