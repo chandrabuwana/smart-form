@@ -252,7 +252,7 @@ class PengeluaranOilController extends Controller {
             'shift' => $data['shift'],
             'dilaporkan_oleh' => $requested_by,
             'diketahui_oleh' => $data['foreman'],
-            'status_req' => STATUS::NEED_APPROVED,
+            'status_req' => STATUS::NEED_APPROVAL,
         ];
 
         $spliited_no_doc = explode("/", $data_insert['no_dok']);
@@ -483,7 +483,7 @@ class PengeluaranOilController extends Controller {
             'shift' => $data['shift'],
             //'dilaporkan_oleh' => $requested_by,
             'diketahui_oleh' => $data['foreman'],
-            'status_req' => STATUS::NEED_APPROVED,
+            'status_req' => STATUS::NEED_APPROVAL,
             'updated_by' => $requested_by,
             'updated_at' => now()->toDateTimeString(),
         ];
