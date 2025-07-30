@@ -98,7 +98,7 @@
                                     <th data-field="site" data-sortable="true" class="text-uppercase text-secondary text-xxs font-weight-bolder">Site</th>
                                     <th data-field="reported_by_name" data-sortable="true" class="text-uppercase text-secondary text-xxs font-weight-bolder ">Request by</th>
                                     <th data-field="lube" data-sortable="true" class="text-uppercase text-secondary text-xxs font-weight-bolder">No. Lube Station</th>
-                                    <th data-field="approval_by" data-sortable="true" class="text-uppercase text-secondary text-xxs font-weight-bolder ">Foreman/Spv</th>
+                                    <th data-field="diketahui_oleh" data-sortable="true" class="text-uppercase text-secondary text-xxs font-weight-bolder ">Foreman/Spv</th>
                                     <th data-field="status_req" data-sortable="true" class="text-uppercase text-secondary text-xxs font-weight-bolder ">Status</th>
                                     <th data-field="created_at" data-sortable="true" class="text-uppercase text-secondary text-xxs font-weight-bolder ">Created Date</th>
                                     <th data-field="updated_at" data-sortable="true" class="text-uppercase text-secondary text-xxs font-weight-bolder ">Updated Date</th>
