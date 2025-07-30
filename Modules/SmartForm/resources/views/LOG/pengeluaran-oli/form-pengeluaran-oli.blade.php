@@ -49,9 +49,9 @@
                                             <tr>
                                                 <td class="fw-bold">Pilih Foreman/Spv</td>
                                                 <td>
-                                                    <select class="form-select form-select-sm input-text" id="iForeman" name="iForeman" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                                    <select class="form-select form-select-sm input-text" id="iForeman" name="iForeman">
                                                     </select>
-                                                    <input type="hidden" name="acknowledged_by_nik" value="{{ $record->acknowledged_by_nik ?? '' }}">
+                                                    <input type="hidden" name="foreman" value="{{ $record->acknowledged_by_nik ?? '' }}">
                                                 </td>
                                             </tr>
                                             <tr>
@@ -396,7 +396,7 @@
                         return {
                             results: $.map(data, function (item) {
                                 return {
-                                    id: item.nama,
+                                    id: item.nik,
                                     text: item.nama + ' (' + item.nik + ')',
                                     nik: item.nik
                                 };

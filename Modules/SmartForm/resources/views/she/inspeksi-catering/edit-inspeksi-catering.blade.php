@@ -473,6 +473,58 @@
                         </div>
                     </div>
 
+                    <div class="approval-section">
+                        <div class="row">
+                            <td>Departemen</td>
+                                    <td>
+                                        <select class="form-select form-select-sm input-text" aria-label="Default select example" id="dDept" name="dDept">
+                                            <option value="{{ $data->department ?? '' }}">{{ $data->department}}</option>
+                                            @forelse($dept as $dept)
+                                                <option value="{{ $dept->Nama ?? '' }}">
+                                                        {{ $dept->Nama ?? 'Departement tidak tersedia' }}
+                                                </option>
+                                                @empty
+                                                    <option>Data Departement tidak ditemukan</option>
+                                                @endforelse
+                                            </select>
+                                    </td>
+                            <div class="row mt-4">
+                                <div class="col-md-4">
+                                    <h6>Diinspeksi oleh 1</h6>
+                                    <div class="mb-3">
+                                        <select name="diinspeksi_oleh_1" id="diinspeksi_oleh_1" class="form-control text-left" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                            <option value="{{ $data->diinspeksi_oleh_1 ?? '' }}">{{ $data->diinspeksi_oleh_1}}</option>
+                                        </select>
+                                    </div>
+                                    <input type="hidden" name="created_by_nik" value="{{ $isShowDetail ? $record->created_by_nik : session('user_id') }}" required>
+                                    <!-- <p class="mb-1">Diinspeksi oleh 1</p> -->
+                                </div>
+                                <div class="col-md-4">
+                                    <h6>Diinspeksi oleh 2</h6>
+                                    
+                                    <div class="mb-3">
+                                        <select name="diinspeksi_oleh_2" id="diinspeksi_oleh_2" class="form-control text-left" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                            <option value="{{ $data->diinspeksi_oleh_2 ?? '' }}">{{ $data->diinspeksi_oleh_2}}</option>
+                                        </select>
+                                    </div>
+                                    <input type="hidden" name="acknowledged_by_nik" value="{{ $record->acknowledged_by_nik ?? '' }}">
+                                    <!-- <p class="mb-1">Diinspeksi oleh 2</p> -->
+                                </div>
+                                <div class="col-md-4">
+                                    <h6>Diinspeksi oleh 3</h6>
+                                    
+                                    <div class="mb-3">
+                                        <select name="diinspeksi_oleh_3" id="diinspeksi_oleh_3" class="form-control text-left" required {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }}>
+                                        <option value="{{ $data->diinspeksi_oleh_3 ?? '' }}">{{ $data->diinspeksi_oleh_3}}</option>
+                                        </select>
+                                    </div>
+                                    <input type="hidden" name="acknowledged_by_nik" value="{{ $record->acknowledged_by_nik ?? '' }}">
+                                    <!-- <p class="mb-1">Diinspeksi oleh 3</p> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="card-footer">
                         <div class="d-flex align-items-center">
                             <button type="button" class="btn btn-secondary me-2" onclick="window.history.back()">
@@ -495,6 +547,90 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+    <script>
+        $(function() {
+            $('#diinspeksi_oleh_1').select2({
+                placeholder: '-- Pilih Penginspeksi --',
+                width: '50%',
+                ajax: {
+                    url: '{{ route("approval.list") }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return { search: params.term };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    id: item.nama,
+                                    text: item.nama + ' (' + item.nik + ')',
+                                    nik: item.nik
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+        });
+    </script>
+    <script>
+        $(function() {
+            $('#diinspeksi_oleh_2').select2({
+                placeholder: '-- Pilih Penginspeksi --',
+                width: '50%',
+                ajax: {
+                    url: '{{ route("approval.list") }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return { search: params.term };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    id: item.nama,
+                                    text: item.nama + ' (' + item.nik + ')',
+                                    nik: item.nik
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+        });
+    </script>
+    <script>
+        $(function() {
+            $('#diinspeksi_oleh_3').select2({
+                placeholder: '-- Pilih Penginspeksi --',
+                width: '50%',
+                ajax: {
+                    url: '{{ route("approval.list") }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return { search: params.term };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    id: item.nama,
+                                    text: item.nama + ' (' + item.nik + ')',
+                                    nik: item.nik
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+        });
+    </script>
     <script>
         $(document).ready(function() {
             $('#dDept').select2();

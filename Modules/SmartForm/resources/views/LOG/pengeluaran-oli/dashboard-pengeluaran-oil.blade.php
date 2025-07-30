@@ -25,7 +25,7 @@
             <div class="card my-4">
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                     <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                        <h6 class="text-white text-capitalize ps-3">Dashboard Pengeluaran Oil, Grease & Coolant</h6>
+                        <h6 class="text-white text-capitalize ps-3">Dashboard Pengeluaran Oil, Grease & Coolant BNP</h6>
                     </div>
                 </div>
                 <div class="card-body my-1">
@@ -98,7 +98,7 @@
                                     <th data-field="site" data-sortable="true" class="text-uppercase text-secondary text-xxs font-weight-bolder">Site</th>
                                     <th data-field="reported_by_name" data-sortable="true" class="text-uppercase text-secondary text-xxs font-weight-bolder ">Request by</th>
                                     <th data-field="lube" data-sortable="true" class="text-uppercase text-secondary text-xxs font-weight-bolder">No. Lube Station</th>
-                                    <th data-field="approval_by" data-sortable="true" class="text-uppercase text-secondary text-xxs font-weight-bolder ">Foreman/Spv</th>
+                                    <th data-field="diketahui_oleh" data-sortable="true" class="text-uppercase text-secondary text-xxs font-weight-bolder ">Foreman/Spv</th>
                                     <th data-field="status_req" data-sortable="true" class="text-uppercase text-secondary text-xxs font-weight-bolder ">Status</th>
                                     <th data-field="created_at" data-sortable="true" class="text-uppercase text-secondary text-xxs font-weight-bolder ">Created Date</th>
                                     <th data-field="updated_at" data-sortable="true" class="text-uppercase text-secondary text-xxs font-weight-bolder ">Updated Date</th>
