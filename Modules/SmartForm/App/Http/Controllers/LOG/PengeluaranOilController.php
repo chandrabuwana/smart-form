@@ -154,6 +154,7 @@ class PengeluaranOilController extends Controller {
                     $TABLE_PENGELUARAN_OLI.'.no_lube_station as lube',
                     $TABLE_PENGELUARAN_OLI.'.status_req',
                     $TABLE_PENGELUARAN_OLI.'.dilaporkan_oleh',
+                    $TABLE_PENGELUARAN_OLI.'.diketahui_oleh',
                     DB::raw('(SELECT Nama FROM '.$TABLE_KARYAWAN.' WHERE NIK = '.$TABLE_PENGELUARAN_OLI.'.dilaporkan_oleh) as reported_by_name'),
                     $TABLE_PENGELUARAN_OLI.'.created_at',
                     DB::raw('(SELECT Nama FROM '.$TABLE_KARYAWAN.' WHERE NIK = '.$TABLE_PENGELUARAN_OLI.'.diketahui_oleh) as approval_by'),

@@ -84,15 +84,8 @@ $remarks = $data['remarks'];
                                             <tr>
                                                 <td class="fw-bold">Foreman/Spv</td>
                                                 <td>
-                                                    <select class="form-select form-select-sm input-text" id="iForeman" name="iForeman" disabled>
-                                                        <option value=""> </option>
-                                                        @forelse($users as $user)
-                                                            <option value="{{ $user->NIK ?? '' }}" {{ $master->diketahui_oleh == $user->NIK ? 'selected' : '' }}>
-                                                                {{ $user->nama ?? 'Nama tidak tersedia' }}
-                                                            </option>
-                                                        @empty
-                                                            <option>Data karyawan tidak ditemukan</option>
-                                                        @endforelse
+                                                    <select class="form-select form-select-sm input-text" id="iForeman" name="iForeman">
+                                                    <option value="{{ $master->diketahui_oleh ?? '' }}">{{ $master->diketahui_oleh}}</option>
                                                     </select>
                                                 </td>
                                             </tr>
@@ -105,7 +98,7 @@ $remarks = $data['remarks'];
                                             <tr>
                                                 <td class="fw-bold">Shift</td>
                                                 <td>
-                                                    <select class="form-select form-select-sm input-text" aria-label="Default select example" id="iShift" name="iShift" disabled>
+                                                    <select class="form-select form-select-sm input-text" aria-label="Default select example" id="iShift" name="iShift">
                                                         @forelse($shifts as $code => $value)
                                                             <option value="{{ $code }}" {{ $master->shift == $code ? 'selected' : '' }}>
                                                                 {{ $value }}
@@ -119,7 +112,7 @@ $remarks = $data['remarks'];
                                             <tr>
                                                 <td class="fw-bold">Site</td>
                                                 <td>
-                                                    <select class="form-select form-select-sm input-text" id="iJobSite" name="iJobSite" disabled>
+                                                    <select class="form-select form-select-sm input-text" id="iJobSite" name="iJobSite">
                                                         @forelse($sites as $site)
                                                             <option value="{{ $site->KodeST ?? '' }}" {{ $master->site == $site->KodeST ? 'selected' : '' }}>
                                                                 {{ $site->KodeST ?? 'Site tidak tersedia' }}
