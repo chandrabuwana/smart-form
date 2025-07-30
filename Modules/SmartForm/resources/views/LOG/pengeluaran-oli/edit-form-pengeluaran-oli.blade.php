@@ -85,14 +85,7 @@ $remarks = $data['remarks'];
                                                 <td class="fw-bold">Foreman/Spv</td>
                                                 <td>
                                                     <select class="form-select form-select-sm input-text" id="iForeman" name="iForeman" disabled>
-                                                        <option value=""> </option>
-                                                        @forelse($users as $user)
-                                                            <option value="{{ $user->NIK ?? '' }}" {{ $master->diketahui_oleh == $user->NIK ? 'selected' : '' }}>
-                                                                {{ $user->nama ?? 'Nama tidak tersedia' }}
-                                                            </option>
-                                                        @empty
-                                                            <option>Data karyawan tidak ditemukan</option>
-                                                        @endforelse
+                                                        <option value="{{ $master->diketahui_oleh ?? '-' }}">{{ $master->diketahui_oleh ?? '-' }}</option>
                                                     </select>
                                                 </td>
                                             </tr>
