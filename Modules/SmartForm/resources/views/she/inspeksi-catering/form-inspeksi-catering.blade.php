@@ -774,7 +774,7 @@
 
                         <div class="approval-section">
                         <div class="row">
-                        <div class="row mt-4">
+                            <div class="row mt-4">
                                 <div class="col-md-4">
                                     <h6>Diinspeksi oleh 1</h6>
                                     
@@ -808,7 +808,7 @@
                                     <p class="mb-1">Diinspeksi oleh 3</p>
                                 </div>
                             </div>
-                        </div>
+                            </div>
                         </div>
 
                         <div class="card-footer">

@@ -360,6 +360,7 @@ class InspeksiCateringController extends Controller {
                 'sites' => $sites,
                 'dept' => $dept,
                 'nik' => $user_id,
+                'isShowDetail' => false,
                 'approvalList' => $approvalList
             ]);
         } catch (Exception $e) {
@@ -401,6 +402,9 @@ class InspeksiCateringController extends Controller {
                 'lokasi_kerja' => $request->input('tLoker'),
                 'jumlah_inspektor' => $request->input('tJmlIns'),
                 'mengetahui' => $request->input('dMengetahui'),
+                'diinspeksi_oleh_1' => $request->input('diinspeksi_oleh_1'),
+                'diinspeksi_oleh_2' => $request->input('diinspeksi_oleh_2'),
+                'diinspeksi_oleh_3' => $request->input('diinspeksi_oleh_3'),
             ];
             
             for ($i = 1; $i <= 10; $i++) {
