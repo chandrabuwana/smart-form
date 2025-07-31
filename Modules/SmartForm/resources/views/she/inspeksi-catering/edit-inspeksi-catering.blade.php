@@ -549,11 +549,12 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <script>
         $(function() {
+
             $('#diinspeksi_oleh_1').select2({
                 placeholder: '-- Pilih Penginspeksi --',
                 width: '50%',
                 ajax: {
-                    url: '{{ route("approval.list") }}',
+                    url: '{{ route("inspeksi-catering.approval.list") }}',
                     dataType: 'json',
                     delay: 250,
                     data: function (params) {
@@ -581,7 +582,7 @@
                 placeholder: '-- Pilih Penginspeksi --',
                 width: '50%',
                 ajax: {
-                    url: '{{ route("approval.list") }}',
+                    url: '{{ route("inspeksi-catering.approval.list") }}',
                     dataType: 'json',
                     delay: 250,
                     data: function (params) {
@@ -609,7 +610,7 @@
                 placeholder: '-- Pilih Penginspeksi --',
                 width: '50%',
                 ajax: {
-                    url: '{{ route("approval.list") }}',
+                    url: '{{ route("inspeksi-catering.approval.list") }}',
                     dataType: 'json',
                     delay: 250,
                     data: function (params) {
@@ -629,12 +630,64 @@
                     cache: true
                 }
             });
+            
+        });
+    </script>
+    <script>
+        const selectedNik = '{{ $data->mengetahui }}';
+        $(function() {
+            $('#dMengetahui').select2({
+                placeholder: '-- Pilih Penginspeksi --',
+                width: '50%',
+                ajax: {
+                    url: '{{ route('inspeksi-catering.approval.list') }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return { search: params.term };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    id: item.nama,
+                                    text: item.nama + ' (' + item.nik + ')',
+                                    nik: item.nik
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+
+            if (selectedNik) {
+                $.ajax({
+                    url: '{{ route('inspeksi-catering.approval.list') }}',
+                    data: {
+                        selectedNik: selectedNik
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        const matched = data.find(item => item.nama === selectedNik);
+                        if (matched) {
+                            const option = new Option(
+                                matched.nama + ' (' + matched.nik + ')',
+                                matched.nama,
+                                true,
+                                true
+                            );
+                            $('#dMengetahui').append(option).trigger('change');
+                        }
+                    }
+                });
+            }
+            
         });
     </script>
     <script>
         $(document).ready(function() {
             $('#dDept').select2();
-            $('#dMengetahui').select2();
             $('#tNamaSite').select2();
         });
         $(document).ready(function() {

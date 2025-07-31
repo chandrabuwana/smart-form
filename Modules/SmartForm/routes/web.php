@@ -299,6 +299,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/reject-inspeksi-catering', [InspeksiCateringController::class, 'Reject'])->name('bss-form.she-048.reject-inspeksi-catering');
             Route::post('/reset-inspeksi-catering/{id}', [InspeksiCateringController::class, 'Reset'])->name('bss-form.she-048.reset-inspeksi-catering');
             Route::get('/pdf-inspeksi-catering/{id}', [InspeksiCateringController::class, 'PdfInspeksiCatering'])->name('bss-form.she-048.pdf-inspeksi-catering');
+            Route::get('/approval-list', [InspeksiCateringController::class, 'getApprovalList'])->name('inspeksi-catering.approval.list');
         });
 
         Route::prefix('timesheet')->group(function () {
