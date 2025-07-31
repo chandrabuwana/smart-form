@@ -103,8 +103,8 @@ $serialNumbers = $data['serialNumbers'];
                                                     <select class="form-select form-select-sm input-text" id="idCataloging" name="idCataloging">
                                                         <option value="">-- select cataloger --</option>
                                                             @forelse($users as $cataloger)
-                                                                <option value="{{ $cataloger->nama }}" {{ $master->cataloging_id == $cataloger->nama ? 'selected' : '' }}>
-                                                                    {{ $cataloger->nama }}
+                                                                <option value="{{ $cataloger->NIK }}" {{ $master->cataloging_id == $cataloger->NIK ? 'selected' : '' }}>
+                                                                    {{ $cataloger->NIK }}
                                                                 </option>
                                                             @endforeach
                                                     </select>
