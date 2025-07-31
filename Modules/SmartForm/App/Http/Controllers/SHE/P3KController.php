@@ -304,11 +304,29 @@ class P3KController extends Controller
 
                 $record->items_data = json_decode($record->items_data, true);
 
+                $selectedNames = collect([
+                    $record->inspector_1_name,
+                    $record->inspector_2_name,
+                    $record->supervisor_name,
+                    $record->dh_name,
+                    $record->she_name,
+                ])->filter();
+                $approvalList = HrdHelper::getApprovalList();
+
+                foreach ($selectedNames as $name) {
+                    if (!$approvalList->pluck('nama')->contains($name)) {
+                        $user = HrdHelper::getApprovalList(null, $name)->first(); // Cari user berdasarkan nama
+                        if ($user) {
+                            $approvalList->push($user);
+                        }
+                    }
+                }
+
                 return view('SmartForm::she/p3k/form', [
                     'isShowDetail' => true,
                     'record' => $record,
                     'p3kItems' => $this->p3kItems,
-                    'approvalList' => HrdHelper::getApprovalList(),
+                    'approvalList' => $approvalList,
                 ]);
             }
 
@@ -1180,11 +1198,29 @@ class P3KController extends Controller
             }
             
             $record->items_data = json_decode($record->items_data, true);
+
+            $selectedNames = collect([
+                $record->inspector_1_name,
+                $record->inspector_2_name,
+                $record->supervisor_name,
+                $record->dh_name,
+                $record->she_name,
+            ])->filter();
+            $approvalList = HrdHelper::getApprovalList();
+
+            foreach ($selectedNames as $name) {
+                if (!$approvalList->pluck('nama')->contains($name)) {
+                    $user = HrdHelper::getApprovalList(null, $name)->first(); // Cari user berdasarkan nama
+                    if ($user) {
+                        $approvalList->push($user);
+                    }
+                }
+            }
             
             return view('SmartForm::she/p3k/edit-form', [
                 'record' => $record,
                 'p3kItems' => $this->p3kItems,
-                'approvalList' => HrdHelper::getApprovalList(),
+                'approvalList' => $approvalList,
             ]);
             
         } catch (\Exception $e) {

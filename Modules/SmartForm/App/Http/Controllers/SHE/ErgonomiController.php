@@ -135,20 +135,38 @@ class ErgonomiController extends Controller
                 }
 
                 // Convert stdClass to array to make it easier to work with in the view
-                $data = json_decode(json_encode($data), true);
+                $data = json_decode(json_encode($data));
+
+                $selectedNames = collect([
+                    $data->reviewer_name ?? null,
+                    $data->paramedic_name ?? null,
+                    $data->doctor_name ?? null,
+                    $data->dept_head_name ?? null,
+                ])->filter();
+
+                $approvalList = HrdHelper::getApprovalList();
+                foreach ($selectedNames as $name) {
+                    if (!$approvalList->pluck('nama')->contains($name)) {
+                        $user = HrdHelper::getApprovalList(null, $name)->first(); // Cari user berdasarkan nama
+                        if ($user) {
+                            $approvalList->push($user);
+                        }
+                    }
+            }
+
 
                 // Check if this is an edit request
                 if ($request->has('edit')) {
                     return view('smartform::she.ergonomi.edit', [
                         'data' => (object)$data,
-                        'approvalList' => HrdHelper::getApprovalList(),
+                        'approvalList' => $approvalList,
                     ]);
                 }
 
                 return view('smartform::she.ergonomi.form', [
                     'isShowDetail' => true,
                     'data' => (object)$data,
-                    'approvalList' => HrdHelper::getApprovalList(),
+                    'approvalList' => $approvalList,
                 ]);
             }
 
@@ -474,8 +492,23 @@ class ErgonomiController extends Controller
                     ->with('error', 'Approved records cannot be edited');
             }
 
+            $selectedNames = collect([
+                $data->reviewer_name ?? null,
+                $data->paramedic_name ?? null,
+                $data->doctor_name ?? null,
+                $data->dept_head_name ?? null,
+            ])->filter();
+
             // Get approval list for dropdowns using HrdHelper
             $approvalList = HrdHelper::getApprovalList();
+            foreach ($selectedNames as $name) {
+                if (!$approvalList->pluck('nama')->contains($name)) {
+                    $user = HrdHelper::getApprovalList(null, $name)->first(); // Cari user berdasarkan nama
+                    if ($user) {
+                        $approvalList->push($user);
+                    }
+                }
+            }
 
             return view('smartform::she/ergonomi/edit', [
                 'data' => $data,

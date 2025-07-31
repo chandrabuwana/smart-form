@@ -217,9 +217,28 @@ class NoiseController extends Controller
                     $record->activities = $formattedActivities;
                 }
 
+                $selectedNames = collect([
+                    $record->inspected_by_name,
+                    $record->acknowledged_by_name,
+                ])->filter();
+
+                dd($selectedNames);
+               
+
+                $approvalList = HrdHelper::getApprovalList();
+
+                foreach ($selectedNames as $name) {
+                    if (!$approvalList->pluck('nama')->contains($name)) {
+                        $user = HrdHelper::getApprovalList(null, $name)->first(); // Cari user berdasarkan nama
+                        if ($user) {
+                            $approvalList->push($user);
+                        }
+                    }
+                }
+
                 return view('smartform::she.noise.form', [
                     'maintenanceRecord' => $record,
-                    'approvalList' => HrdHelper::getApprovalList(),
+                    'approvalList' => $approvalList,
                     'isShowDetail' => true
                 ]);
             }
@@ -251,7 +270,7 @@ class NoiseController extends Controller
             return view('smartform::she.noise.form', [
                 'activities' => $activities,
                 'workAreas' => $workAreas,
-                'approvalList' => HrdHelper::getApprovalList(),
+                'approvalList' => $approvalList,
                 'isShowDetail' => false,
                 'defaultValues' => [
                     'site_name' => 'BSS',
@@ -525,6 +544,23 @@ class NoiseController extends Controller
                 $record->inspection_date = $formatDate($record->inspection_date);
                 $record->acknowledgment_date = $formatDate($record->acknowledgment_date);
                 $record->survey_date = $formatDate($record->survey_date);
+
+                $selectedNames = collect([
+                    $record->inspected_by_name,
+                    $record->acknowledged_by_name,
+                ])->filter();
+               
+
+                $approvalList = HrdHelper::getApprovalList();
+
+                foreach ($selectedNames as $name) {
+                    if (!$approvalList->pluck('nama')->contains($name)) {
+                        $user = HrdHelper::getApprovalList(null, $name)->first(); // Cari user berdasarkan nama
+                        if ($user) {
+                            $approvalList->push($user);
+                        }
+                    }
+                }
                 
                 // Log the formatted dates
                 \Log::info('Formatted dates for edit form:', [
@@ -539,7 +575,7 @@ class NoiseController extends Controller
             
             return view('smartform::she.noise.edit-form', [
                 'record' => $record,
-                'approvalList' => HrdHelper::getApprovalList(),
+                'approvalList' => $approvalList,
                 'isShowDetail' => true
             ]);
             
@@ -753,12 +789,29 @@ class NoiseController extends Controller
                 'A2B (EXCA, DOZER, GRADER, COMPACT, DLL)',
                 'Etc'
             ];
+
+            $selectedNames = collect([
+                $record->inspected_by_name,
+                $record->acknowledged_by_name,
+            ])->filter();
+           
+
+            $approvalList = HrdHelper::getApprovalList();
+
+            foreach ($selectedNames as $name) {
+                if (!$approvalList->pluck('nama')->contains($name)) {
+                    $user = HrdHelper::getApprovalList(null, $name)->first(); // Cari user berdasarkan nama
+                    if ($user) {
+                        $approvalList->push($user);
+                    }
+                }
+            }
             
             return view('smartform::she.noise.form', [
                 'record' => $record,
                 'activities' => $activities,
                 'workAreas' => $workAreas,
-                'approvalList' => HrdHelper::getApprovalList(),
+                'approvalList' => $approvalList,
                 'isShowDetail' => true, // Set to true to indicate this is a view-only page
                 'maintenanceRecord' => $record,
                 'defaultValues' => [

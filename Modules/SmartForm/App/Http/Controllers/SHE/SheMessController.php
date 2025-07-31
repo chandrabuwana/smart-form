@@ -121,10 +121,27 @@ class SheMessController extends Controller
                 $this->formatDateField($record, 'inspection_date3');
                 $this->formatDateField($record, 'acknowledgment_date');
 
+                $selectedNames = collect([
+                    $record->inspected_by_name ,
+                    $record->inspected_by2_name,
+                    $record->inspected_by3_name,
+                    $record->acknowledged_by_name,
+                ])->filter();
+
+                $approvalList = HrdHelper::getApprovalList();
+                foreach ($selectedNames as $name) {
+                    if (!$approvalList->pluck('nama')->contains($name)) {
+                        $user = HrdHelper::getApprovalList(null, $name)->first(); // Cari user berdasarkan nama
+                        if ($user) {
+                            $approvalList->push($user);
+                        }
+                    }
+                }
+
                 return view('smartform::she.mess.form', [
                     'data' => $record,
                     'isShowDetail' => true,
-                    'approvalList' => HrdHelper::getApprovalList(),
+                    'approvalList' => $approvalList,
                 ]);
             }
 
@@ -244,11 +261,28 @@ class SheMessController extends Controller
             $this->formatDateField($record, 'inspection_date2');
             $this->formatDateField($record, 'inspection_date3');
             $this->formatDateField($record, 'acknowledgment_date');
+
+            $selectedNames = collect([
+                $record->inspected_by_name ,
+                $record->inspected_by2_name,
+                $record->inspected_by3_name,
+                $record->acknowledged_by_name,
+            ])->filter();
+
+            $approvalList = HrdHelper::getApprovalList();
+            foreach ($selectedNames as $name) {
+                if (!$approvalList->pluck('nama')->contains($name)) {
+                    $user = HrdHelper::getApprovalList(null, $name)->first(); // Cari user berdasarkan nama
+                    if ($user) {
+                        $approvalList->push($user);
+                    }
+                }
+            }
             
             // Return the edit form view with the record data
             return view('smartform::she.mess.edit', [
                 'data' => $record,
-                'approvalList' => HrdHelper::getApprovalList(),
+                'approvalList' => $approvalList,
                 'isShowDetail' => true,
             ]);
             

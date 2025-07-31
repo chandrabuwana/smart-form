@@ -154,7 +154,23 @@ class AirMinumController extends Controller
                 $this->formatDateField($record, 'inspector_3_date');
                 $this->formatDateField($record, 'acknowledged_date');
 
+                $selectedNames = collect([
+                    $record->inspector_1_name,
+                    $record->inspector_2_name,
+                    $record->inspector_3_name,
+                    $record->acknowledged_by_name,
+                ])->filter();
+
                 $approvalList = HrdHelper::getApprovalList();
+
+                foreach ($selectedNames as $name) {
+                    if (!$approvalList->pluck('nama')->contains($name)) {
+                        $user = HrdHelper::getApprovalList(null, $name)->first(); // Cari user berdasarkan nama
+                        if ($user) {
+                            $approvalList->push($user);
+                        }
+                    }
+                }
                 
                 // Check if this is a detail view or edit view
                 $isEditMode = $request->has('edit') && ($request->edit === 'true' || $request->edit === '1' || $request->edit === 1);
@@ -871,7 +887,8 @@ class AirMinumController extends Controller
     public function getApprovalList(Request $request)
     {
         $search = $request->input('search', '');
-        $list = HrdHelper::getApprovalList($search);
+        $selectedNik = $request->input('selectedNik', null);
+        $list = HrdHelper::getApprovalList($search, $selectedNik);
 
         return response()->json($list);
     }

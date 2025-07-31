@@ -94,7 +94,6 @@ class AnakAsuhController extends Controller
     public function AddForm(Request $request)
     {
         try {
-            $approvalList = HrdHelper::getApprovalList();
             
             if ($request->has('id')) {
                 $record = DB::table('prod_anak_asuh_monitoring')
@@ -117,17 +116,29 @@ class AnakAsuhController extends Controller
                 $record->shift_items = json_decode($record->shift_items);
     
                 Log::info('Anak Asuh record loaded for ID: ' . $request->id);
+                $selectedNames = collect($record->nama_anak_asuh_items)->filter();
+
+                $approvalList = HrdHelper::getApprovalList();
+
+                foreach ($selectedNames as $name) {
+                    if (!$approvalList->pluck('nama')->contains($name)) {
+                        $user = HrdHelper::getApprovalList(null, $name)->first(); // Cari user berdasarkan nama
+                        if ($user) {
+                            $approvalList->push($user);
+                        }
+                    }
+                }
     
                 return view('smartform::production.anak_asuh.form', [
                     'record' => $record,
                     'isShowDetail' => true,
-                    'approvalList' => $approvalList
+                    'approvalList' => $approvalList,
                 ]);
             }
     
             return view('smartform::production.anak_asuh.form', [
                 'isShowDetail' => false,
-                'approvalList' => $approvalList
+                'approvalList' => HrdHelper::getApprovalList(),
             ]);
     
         } catch (\Exception $e) {
@@ -146,7 +157,6 @@ class AnakAsuhController extends Controller
     public function EditForm($id)
     {
         try {
-            $approvalList = HrdHelper::getApprovalList();
             
             $record = DB::table('prod_anak_asuh_monitoring')
                 ->where('id', $id)
@@ -168,6 +178,19 @@ class AnakAsuhController extends Controller
             $record->shift_items = json_decode($record->shift_items);
     
             Log::info('Anak Asuh record loaded for editing, ID: ' . $id);
+
+            $selectedNames = collect($record->nama_anak_asuh_items)->filter();
+
+                $approvalList = HrdHelper::getApprovalList();
+
+                foreach ($selectedNames as $name) {
+                    if (!$approvalList->pluck('nama')->contains($name)) {
+                        $user = HrdHelper::getApprovalList(null, $name)->first(); // Cari user berdasarkan nama
+                        if ($user) {
+                            $approvalList->push($user);
+                        }
+                    }
+                }
     
             return view('smartform::production.anak_asuh.edit-form', [
                 'record' => $record,

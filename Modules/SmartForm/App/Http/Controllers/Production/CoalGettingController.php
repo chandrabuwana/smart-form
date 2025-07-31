@@ -90,11 +90,26 @@ class CoalGettingController extends Controller
                 // Decode checklist items
                 $record->checklist_items = json_decode($record->checklist_items, true);
 
+                $selectedNames = collect([
+                    $record->created_by_name,
+                    $record->acknowledged_by_name,
+                ])->filter();
+                
+                $approvalList = HrdHelper::getApprovalList();
+                foreach ($selectedNames as $name) {
+                    if (!$approvalList->pluck('nama')->contains($name)) {
+                        $user = HrdHelper::getApprovalList(null, $name)->first(); // Cari user berdasarkan nama
+                        if ($user) {
+                            $approvalList->push($user);
+                        }
+                    }
+                }
+
                 return view('smartform::production/coal_getting/form', [
                     'isShowDetail' => true,
                     'record' => $record,
                     'checklistItems' => $this->getChecklistItems(),
-                    'approvalList' => HrdHelper::getApprovalList(),
+                    'approvalList' => $approvalList,
                 ]);
             }
 
@@ -136,12 +151,27 @@ class CoalGettingController extends Controller
             // Decode checklist items
             $record->checklist_items = json_decode($record->checklist_items, true);
 
+            $selectedNames = collect([
+                $record->created_by_name,
+                $record->acknowledged_by_name,
+            ])->filter();
+            
+            $approvalList = HrdHelper::getApprovalList();
+            foreach ($selectedNames as $name) {
+                if (!$approvalList->pluck('nama')->contains($name)) {
+                    $user = HrdHelper::getApprovalList(null, $name)->first(); // Cari user berdasarkan nama
+                    if ($user) {
+                        $approvalList->push($user);
+                    }
+                }
+            }
+
             return view('smartform::production/coal_getting/form_edit', [
                 'isShowDetail' => false,
                 'isEdit' => true,
                 'record' => $record,
                 'checklistItems' => $this->getChecklistItems(),
-                'approvalList' => HrdHelper::getApprovalList(),
+                'approvalList' => $approvalList,
             ]);
         } catch (\Exception $e) {
             Log::error('Error in EditForm: ' . $e->getMessage());

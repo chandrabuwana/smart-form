@@ -136,16 +136,34 @@ class EyewashController extends Controller
                 // Decode monthly data
                 $record->monthly_data = json_decode($record->monthly_data, true);
 
+                $selectedNames = collect([
+                    $record->supervisor_name,
+                    $record->dh_name,
+                    $record->dh_terkait_name,
+                ])->filter();
+               
+
+                $approvalList = HrdHelper::getApprovalList();
+
+                foreach ($selectedNames as $name) {
+                    if (!$approvalList->pluck('nama')->contains($name)) {
+                        $user = HrdHelper::getApprovalList(null, $name)->first(); // Cari user berdasarkan nama
+                        if ($user) {
+                            $approvalList->push($user);
+                        }
+                    }
+                }
+
                 return view('SmartForm::she/eyewash/form', [
                     'isShowDetail' => true,
-                    'approvalList' => HrdHelper::getApprovalList(),
+                    'approvalList' => $approvalList,
                     'maintenanceRecord' => $record
                 ]);
             }
 
             return view('SmartForm::she/eyewash/form', [
                 'isShowDetail' => false,
-                'approvalList' => HrdHelper::getApprovalList(),
+                'approvalList' => $approvalList,
                 'maintenanceRecord' => null
             ]);
 
@@ -359,10 +377,28 @@ class EyewashController extends Controller
             
             // Decode monthly data
             $record->monthly_data = json_decode($record->monthly_data, true);
+
+            $selectedNames = collect([
+                $record->supervisor_name,
+                $record->dh_name,
+                $record->dh_terkait_name,
+            ])->filter();
+           
+
+            $approvalList = HrdHelper::getApprovalList();
+
+            foreach ($selectedNames as $name) {
+                if (!$approvalList->pluck('nama')->contains($name)) {
+                    $user = HrdHelper::getApprovalList(null, $name)->first(); // Cari user berdasarkan nama
+                    if ($user) {
+                        $approvalList->push($user);
+                    }
+                }
+            }
             
             return view('SmartForm::she/eyewash/edit', [
                 'maintenanceRecord' => $record,
-                'approvalList' => HrdHelper::getApprovalList()
+                'approvalList' => $approvalList
             ]);
             
         } catch (\Exception $e) {
