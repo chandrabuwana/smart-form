@@ -184,6 +184,7 @@ class FuelController extends Controller {
                 'akhir' =>  $requestData['i_akhir'],
                 'diserahkan_oleh' =>  $requestData['dDiserahkan'],
                 'diterima_oleh' =>  $requestData['dDiterima'],
+                'is_active' =>  1,
                 'total_liter' =>  $requestData['i_total_liter']
 
             ]);
