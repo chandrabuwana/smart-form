@@ -1260,7 +1260,7 @@ function convertToTimeFormat(totalSeconds) {
     $(function() {
         $('#dibuat_haulers, #mengetahui_haulers, #dibuat_loaders, #mengetahui_loaders, #dibuat_dozers, #mengetahui_dozers').select2({
             placeholder: '-- Pilih --',
-            width: '50%',
+            width: '100%',
             ajax: {
                 url: '{{ route('prod.kalibrasi.approval.list') }}',
                 dataType: 'json',

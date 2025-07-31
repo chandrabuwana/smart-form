@@ -333,7 +333,7 @@ function deleteKalibrasi(id) {
     $(function() {
         $('#dibuat_hauler, #mengetahui_hauler, #dibuat_loader, #mengetahui_loader, #dibuat_dozer, #mengetahui_dozer').select2({
             placeholder: '-- Pilih --',
-            width: '50%',
+            width: '100%',
             ajax: {
                 url: '{{ route('prod.kalibrasi.approval.list') }}',
                 dataType: 'json',

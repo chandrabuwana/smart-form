@@ -311,7 +311,7 @@ class PlantWeldingController extends Controller
         }
     }
 
-    public function EditWelding($id)
+    public function EditWelding(Request $request, $id)
     {
         $record = DB::table('plant_welding')
             ->where('id', $id)
@@ -337,6 +337,11 @@ class PlantWeldingController extends Controller
         $record->question18 = json_decode($record->question18);
         $record->question19 = json_decode($record->question19);
         $record->question20 = json_decode($record->question20);
+
+        $search = $request->input('search', '');
+        $selectedNik = $request->input('selectedNik', null);
+
+        $approvalList = HrdHelper::getApprovalList($search, $selectedNik);
 
         return view('smartform::plant.welding.edit-welding', compact('record'), [
             'record' => $record,
@@ -431,7 +436,7 @@ class PlantWeldingController extends Controller
         }
     }
 
-    public function ApprovalWelding($id)
+    public function ApprovalWelding(Request $request, $id)
     {
         $record = DB::table('plant_welding')
             ->where('id', $id)
@@ -457,6 +462,11 @@ class PlantWeldingController extends Controller
         $record->question18 = json_decode($record->question18);
         $record->question19 = json_decode($record->question19);
         $record->question20 = json_decode($record->question20);
+
+        $search = $request->input('search', '');
+        $selectedNik = $request->input('selectedNik', null);
+
+        $approvalList = HrdHelper::getApprovalList($search, $selectedNik);
 
         return view('smartform::plant.welding.approval-welding', compact('record'), [
             'record' => $record,
