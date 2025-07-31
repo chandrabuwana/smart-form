@@ -699,13 +699,5 @@
             $('#inspector_1_nik').val(nik);
         });
     });
-
-     // Initialize Select2
-     $(function() {
-        $('#inspector_1_name, #inspector_2_name, #supervisor_name, #dh_name, #she_name').select2({
-            placeholder: '-- Pilih Nama --',
-            width: '100%'
-        });
-    });
     </script>
 @endsection

@@ -1092,13 +1092,4 @@
         });
     </script>
 
-    <script>
-        // Initialize Select2
-        $(function() {
-            $('#reviewer_name, #paramedic_name, #doctor_name, #dept_head_name').select2({
-                placeholder: '-- Pilih Nama --',
-                width: '100%'
-            });
-        });
-    </script>
 @endsection

@@ -1280,14 +1280,6 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
     <script>
 
-        // Initialize Select2
-        $(function() {
-            $('#reviewer_name, #paramedic_name, #doctor_name, #dept_head_name').select2({
-                placeholder: '-- Pilih Nama --',
-                width: '100%'
-            });
-        });
-
         $(function() {
             $('#reviewer_name').select2({
                 placeholder: '-- Pilih Reviewer --',

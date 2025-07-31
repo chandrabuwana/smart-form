@@ -270,7 +270,7 @@ class NoiseController extends Controller
             return view('smartform::she.noise.form', [
                 'activities' => $activities,
                 'workAreas' => $workAreas,
-                'approvalList' => $approvalList,
+                'approvalList' => HrdHelper::getApprovalList(),
                 'isShowDetail' => false,
                 'defaultValues' => [
                     'site_name' => 'BSS',

@@ -276,12 +276,7 @@
                                             <tr>
                                                 <td class="border">
                                                     <select name="inspector_1_name" id="inspector_1_name" class="form-control text-center select2" {{ isset($isShowDetail) && $isShowDetail ? 'disabled' : '' }} required>
-                                                        <option value="">-- Pilih Inspektor 1 --</option>
-                                                        @foreach($approvalList as $user)
-                                                            <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $isShowDetail && $maintenanceRecord->inspector_1_name == $user->nama ? 'selected' : '' }}>
-                                                                {{ $user->nama }}
-                                                            </option>
-                                                        @endforeach
+                                                       
                                                     </select>
                                                 </td>
                                                 <td class="border">
@@ -666,14 +661,6 @@ $(document).ready(function() {
         });
     });
     @endif
-    
-    // Initialize Select2
-    $(function() {
-        $('#inspector_1_name, #inspector_2_name, #inspector_3_name, #acknowledged_by_name').select2({
-            placeholder: '-- Pilih Nama --',
-            width: '100%'
-        });
-    });
 });
 </script>
 <script>
@@ -689,6 +676,7 @@ $(document).ready(function() {
                     return { search: params.term };
                 },
                 processResults: function (data) {
+                   
                     return {
                         results: $.map(data, function (item) {
                             return {

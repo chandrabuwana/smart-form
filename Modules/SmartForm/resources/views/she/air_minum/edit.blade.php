@@ -478,14 +478,6 @@
 @section('custom-js')
 <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
 <script>
-    $(function() {
-        $('#inspector_1_name, #inspector_2_name, #inspector_3_name, #acknowledged_by_name').select2({
-            placeholder: '-- Pilih Nama --',
-            width: '100%'
-        });
-    });
-</script>
-<script>
     $(document).ready(function() {
         // Helper function to format dates properly
         function formatDate(dateString) {
@@ -549,11 +541,6 @@
             $('#acknowledged_by_nik').val(selectedOption.data('nik'));
         });
         
-        // Trigger change events on page load to ensure NIK fields are populated
-        $('#inspector_1_name').trigger('change');
-        $('#inspector_2_name').trigger('change');
-        $('#inspector_3_name').trigger('change');
-        $('#acknowledged_by_name').trigger('change');
         
         // Form submission handling
         const form = $("#airMinumForm");
@@ -623,6 +610,107 @@
                 }
             });
         });
+    });
+</script>
+<script>
+    $(function() {
+        $('#inspector_1_name').select2({
+            width: '100%',
+            placeholder: '-- Pilih Inspektor --',
+            ajax: {
+                url: '{{ route("approval.list") }}',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { search: params.term };
+                },
+                processResults: function (data) {
+                   
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                id: item.nama,
+                                text: item.nama + ' (' + item.nik + ')',
+                                nik: item.nik
+                            };
+                        })
+                    };
+                },
+                cache: true
+            }
+        })
+        $('#inspector_2_name').select2({
+            width: '100%',
+            placeholder: '-- Pilih Inspektor --',
+            ajax: {
+                url: '{{ route("approval.list") }}',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { search: params.term };
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                id: item.nama,
+                                text: item.nama + ' (' + item.nik + ')',
+                                nik: item.nik
+                            };
+                        })
+                    };
+                },
+                cache: true
+            }
+        })
+        $('#inspector_3_name').select2({
+            width: '100%',
+            placeholder: '-- Pilih Inspektor --',
+            ajax: {
+                url: '{{ route("approval.list") }}',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { search: params.term };
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                id: item.nama,
+                                text: item.nama + ' (' + item.nik + ')',
+                                nik: item.nik
+                            };
+                        })
+                    };
+                },
+                cache: true
+            }
+        })
+        $('#acknowledged_by_name').select2({
+            width: '100%',
+            placeholder: '-- Pilih Mengetahui --',
+            ajax: {
+                url: '{{ route("approval.list") }}',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { search: params.term };
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                id: item.nama,
+                                text: item.nama + ' (' + item.nik + ')',
+                                nik: item.nik
+                            };
+                        })
+                    };
+                },
+                cache: true
+            }
+        })
     });
 </script>
 @endsection
