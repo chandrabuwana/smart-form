@@ -175,7 +175,11 @@ $serialNumbers = $data['serialNumbers'];
                                     <div class="col-md-4 col-lg-2">
                                         <div class="input-group input-group-static mb-4">
                                             <label for="iKodeMaster">Kode Master</label>
-                                            <input type="text" class="form-control" id="iKodeMaster" name="iKodeMaster" disabled>
+                                                @if ( $master->cataloging_id == session('user_id'))
+                                                    <input type="text" class="form-control" id="iKodeMaster" name="iKodeMaster">   
+                                                @else
+                                                    <input type="text" class="form-control" id="iKodeMaster" name="iKodeMaster" disabled>
+                                                @endif
                                             <small class="text-muted">hanya di isi oleh cataloging</small>
                                         </div>
                                     </div>
@@ -379,12 +383,16 @@ $serialNumbers = $data['serialNumbers'];
                                     <form id="editItemForm">
                                         <input type="hidden" id="editIndex">
                                         <div class="row mb-2">
-                                            {{-- <div class="col-12">
+                                            <div class="col-12">
                                                 <div class="input-group input-group-static mb-4">
                                                     <label for="iKodeMaster">Kode Master</label>
-                                                    <input type="text" class="form-control" id="editKodeMaster" name="iKodeMaster" disabled>
+                                                    @if ( $master->cataloging_id == session('user_id'))
+                                                        <input type="text" class="form-control" id="editKodeMaster" name="iKodeMaster">    
+                                                    @else
+                                                        <input type="text" class="form-control" id="editKodeMaster" name="iKodeMaster" disabled>
+                                                    @endif
                                                 </div>
-                                            </div> --}}
+                                            </div>
                                             <div class="col-6">
                                                 <div class="input-group input-group-static mb-4">
                                                     <label for="iPartName">Part Name</label>
