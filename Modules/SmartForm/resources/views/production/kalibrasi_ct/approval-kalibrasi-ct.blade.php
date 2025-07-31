@@ -409,10 +409,10 @@
                                                                     @php
                                                                         $selectedDibuatHauler = $approvalList->firstWhere('nama', $record->dibuat_hauler ?? '');
                                                                     @endphp
-                                                                    <select name="dibuat_hauler" id="dibuat_hauler" class="form-control text-left" required {{ $isShowDetail ? 'disabled' : '' }}>
-                                                                        @if($isShowDetail && $selectedDibuatHauler)
-                                                                            <option value="{{ $selectedDibuatHauler->nama }}" selected>
-                                                                                {{ $selectedDibuatHauler->nama }} ({{ $selectedDibuatHauler->nik }})
+                                                                    <select name="dibuat_hauler" id="dibuat_haulers" class="form-control text-left" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                        @if($record?->dibuat_hauler)
+                                                                            <option value="{{ $record->dibuat_hauler }}" selected>
+                                                                                {{ $selectedDibuatHauler ? $selectedDibuatHauler->nama . ' (' . $selectedDibuatHauler->nik . ')' : $record->dibuat_hauler }}
                                                                             </option>
                                                                         @endif
                                                                     </select>
@@ -465,10 +465,10 @@
                                                                     @php
                                                                         $selectedMengetahuiHauler = $approvalList->firstWhere('nama', $record->mengetahui_hauler ?? '');
                                                                     @endphp
-                                                                    <select name="mengetahui_hauler" id="mengetahui_hauler" class="form-control text-left" required {{ $isShowDetail ? 'disabled' : '' }}>
-                                                                        @if($isShowDetail && $selectedMengetahuiHauler)
-                                                                            <option value="{{ $selectedMengetahuiHauler->nama }}" selected>
-                                                                                {{ $selectedMengetahuiHauler->nama }} ({{ $selectedMengetahuiHauler->nik }})
+                                                                    <select name="mengetahui_hauler" id="mengetahui_haulers" class="form-control text-left" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                        @if($record?->mengetahui_hauler)
+                                                                            <option value="{{ $record->mengetahui_hauler }}" selected>
+                                                                                {{ $selectedMengetahuiHauler ? $selectedMengetahuiHauler->nama . ' (' . $selectedMengetahuiHauler->nik . ')' : $record->mengetahui_hauler }}
                                                                             </option>
                                                                         @endif
                                                                     </select>
@@ -734,13 +734,13 @@
                                                                         $selectedDibuatLoader = $approvalList->firstWhere('nama', optional($record)->dibuat_loader);
                                                                         
                                                                     @endphp
-                                                                    <select name="dibuat_loader" id="dibuat_loader" class="form-control text-left" required {{ $isShowDetail ? 'disabled' : '' }}>
-                                                                        @if($isShowDetail && $selectedDibuatLoader)
-                                                                            <option value="{{ $selectedDibuatLoader->nama }}" selected>
-                                                                                {{ $selectedDibuatLoader->nama }} ({{ $selectedDibuatLoader->nik }})
-                                                                            </option>
-                                                                        @endif
-                                                                    </select>
+                                                                    <select name="dibuat_loader" id="dibuat_loaders" class="form-control text-left" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                            @if($record?->dibuat_loader)
+                                                                                <option value="{{ $record->dibuat_loader }}" selected>
+                                                                                    {{ $selectedDibuatLoader ? $selectedDibuatLoader->nama . ' (' . $selectedDibuatLoader->nik . ')' : $record->dibuat_loader }}
+                                                                                </option>
+                                                                            @endif
+                                                                        </select>
                                                                     @if($isShowDetail)
                                                                         <span class="
                                                                             {{ $record->status_dibuat_loader == 'Approve' ? 'text-success' : '' }}
@@ -788,10 +788,10 @@
                                                                     @php
                                                                         $selectedMengetahuiLoader = $approvalList->firstWhere('nama', optional($record)->mengetahui_loader);
                                                                     @endphp
-                                                                    <select name="mengetahui_loader" id="mengetahui_loader" class="form-control text-left" required {{ $isShowDetail ? 'disabled' : '' }}>
-                                                                        @if($isShowDetail && $selectedMengetahuiLoader)
-                                                                            <option value="{{ $selectedMengetahuiLoader->nama }}" selected>
-                                                                                {{ $selectedMengetahuiLoader->nama }} ({{ $selectedMengetahuiLoader->nik }})
+                                                                    <select name="mengetahui_loader" id="mengetahui_loaders" class="form-control text-left" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                        @if($record?->mengetahui_loader)
+                                                                            <option value="{{ $record->mengetahui_loader }}" selected>
+                                                                                {{ $selectedMengetahuiLoader ? $selectedMengetahuiLoader->nama . ' (' . $selectedMengetahuiLoader->nik . ')' : $record->mengetahui_loader }}
                                                                             </option>
                                                                         @endif
                                                                     </select>
@@ -1046,10 +1046,10 @@
                                                                     @php
                                                                         $selectedDibuatDozer = $approvalList->firstWhere('nama', optional($record)->dibuat_dozer);
                                                                     @endphp
-                                                                    <select name="dibuat_dozer" id="dibuat_dozer" class="form-control text-left" required {{ $isShowDetail ? 'disabled' : '' }}>
-                                                                        @if($isShowDetail && $selectedDibuatDozer)
-                                                                            <option value="{{ $selectedDibuatDozer->nama }}" selected>
-                                                                                {{ $selectedDibuatDozer->nama }} ({{ $selectedDibuatDozer->nik }})
+                                                                    <select name="dibuat_dozer" id="dibuat_dozers" class="form-control text-left" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                        @if($record?->dibuat_dozer)
+                                                                            <option value="{{ $record->dibuat_dozer }}" selected>
+                                                                                {{ $selectedDibuatDozer ? $selectedDibuatDozer->nama . ' (' . $selectedDibuatDozer->nik . ')' : $record->dibuat_dozer }}
                                                                             </option>
                                                                         @endif
                                                                     </select>
@@ -1102,10 +1102,10 @@
                                                                         $selectedMengetahuiDozer = $approvalList->firstWhere('nama', optional($record)->mengetahui_dozer);
                                                                     @endphp
                                                                 
-                                                                    <select name="mengetahui_dozer" id="mengetahui_dozer" class="form-control text-left" required {{ $isShowDetail ? 'disabled' : '' }}>
-                                                                        @if($isShowDetail && $selectedMengetahuiDozer)
-                                                                            <option value="{{ $selectedMengetahuiDozer->nama }}" selected>
-                                                                                {{ $selectedMengetahuiDozer->nama }} ({{ $selectedMengetahuiDozer->nik }})
+                                                                    <select name="mengetahui_dozer" id="mengetahui_dozers" class="form-control text-left" required {{ $isShowDetail ? 'disabled' : '' }}>
+                                                                        @if($record?->dibuat_loader)
+                                                                            <option value="{{ $record->mengetahui_dozer }}" selected>
+                                                                                {{ $selectedMengetahuiDozer ? $selectedMengetahuiDozer->nama . ' (' . $selectedMengetahuiDozer->nik . ')' : $record->mengetahui_dozer }}
                                                                             </option>
                                                                         @endif
                                                                     </select>
