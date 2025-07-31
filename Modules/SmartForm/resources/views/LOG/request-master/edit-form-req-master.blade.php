@@ -100,23 +100,20 @@ $serialNumbers = $data['serialNumbers'];
                                             <tr>
                                                 <td class="fw-bold">Request Cataloging</td>
                                                 <td>
-                                                    <select class="form-select form-select-sm input-text" id="idCataloging" name="idCataloging" disabled>
-                                                        
-                                                        <option value="">-- select user --</option>
-                                                        @forelse($users as $catalog)
-                                                            <option value="{{ $catalog->NIK ?? '' }}" {{ $master->cataloging_id == $catalog->NIK ? 'selected' : '' }}>
-                                                                {{ $catalog->nama ?? 'Nama tidak tersedia' }}
-                                                            </option>
-                                                        @empty
-                                                            <option>Data karyawan tidak ditemukan</option>
-                                                        @endforelse
+                                                    <select class="form-select form-select-sm input-text" id="idCataloging" name="idCataloging">
+                                                        <option value="">-- select cataloger --</option>
+                                                            @forelse($users as $cataloger)
+                                                                <option value="{{ $cataloger->nama }}" {{ $master->cataloging_id == $cataloger->nama ? 'selected' : '' }}>
+                                                                    {{ $cataloger->nama }}
+                                                                </option>
+                                                            @endforeach
                                                     </select>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td  class="fw-bold">Request Approval</td>
                                                 <td>
-                                                    <select class="form-select form-select-sm input-text" id="iApproval" name="iApproval" disabled>
+                                                    <select class="form-select form-select-sm input-text" id="iApproval" name="iApproval">
                                                         
                                                         <option value="">-- select user --</option>
                                                         @forelse($users as $approved)
@@ -579,6 +576,58 @@ $serialNumbers = $data['serialNumbers'];
 @section('custom-js')
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
+    <script>
+        const selectedNik = '{{ $master->cataloging_id }}';
+        $(function() {
+            $('#idCataloging').select2({
+                placeholder: '-- Pilih Penginspeksi --',
+                width: '50%',
+                ajax: {
+                    url: '{{ route('request-master.approval.list') }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return { search: params.term };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    id: item.nama,
+                                    text: item.nama + ' (' + item.nik + ')',
+                                    nik: item.nik
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+
+            if (selectedNik) {
+                $.ajax({
+                    url: '{{ route('request-master.approval.list') }}',
+                    data: {
+                        selectedNik: selectedNik
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        const matched = data.find(item => item.nama === selectedNik);
+                        if (matched) {
+                            const option = new Option(
+                                matched.nama + ' (' + matched.nik + ')',
+                                matched.nama,
+                                true,
+                                true
+                            );
+                            $('#idCataloging').append(option).trigger('change');
+                        }
+                    }
+                });
+            }
+            
+        });
+    </script>
     <script>
         var tglNow = new Date()
         var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];

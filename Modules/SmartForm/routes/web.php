@@ -115,6 +115,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/detail-req-master', [RequestMasterController::class, 'DetailReqMaster'])->name('bss-form.log.detail-request-master');
             Route::post('/approve-reject-request-master', [RequestMasterController::class, 'ApproveRejectRequestMaster'])->name('bss-form.log.approve-reject-request-master');
             Route::post('/delete-request-master', [RequestMasterController::class, 'DeleteRequestMaster'])->name('bss-form.log.delete-request-master');
+            Route::get('/approval-list', [RequestMasterController::class, 'getApprovalList'])->name('request-master.approval.list');
 
             // PERMINTAAN PENGISIAN FUEL
             Route::get('/request-fuel', [FuelController::class, 'FuelDashboard'])->name('bss-form.log.fuel.dashboard');
