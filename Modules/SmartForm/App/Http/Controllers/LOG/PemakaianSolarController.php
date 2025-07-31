@@ -704,4 +704,14 @@ class PemakaianSolarController extends Controller {
             'nik_session' => $nik_session,
             'name_session' => $name_session ] );
         }
+
+        public function getApprovalList(Request $request)
+    {
+        $search = $request->input('search', '');
+        $selectedNik = $request->input('selectedNik', null);
+        
+        $list = HrdHelper::getApprovalList($search, $selectedNik);
+        
+        return response()->json($list);
+    }
     }

@@ -141,6 +141,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/detail-pengeluaran-oli', [PengeluaranOilController::class, 'DetailPengeluaranOli'])->name('bss-form.log.detail-pengeluaran-oli');
             Route::post('/approve-reject-pengeluaran-oli', [PengeluaranOilController::class, 'ApproveRejectPengeluaranOli'])->name('bss-form.log.approve-reject-pengeluaran-oli');
             Route::post('/delete-pengeluaran-oli', [PengeluaranOilController::class, 'DeletePengeluaranOli'])->name('bss-form.log.delete-pengeluaran-oli');
+            Route::get('/approval-list', [PengeluaranOilController::class, 'getApprovalList'])->name('pengeluaran-oli.approval.list');
 
             // PEMAKAIAN SOLAR
             Route::get('/pemakaian-solar', [PemakaianSolarController::class, 'PemakaianSolarDashboard'])->name('bss-form.log.pemakaian-solar.dashboard');
@@ -152,6 +153,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::get('/pdf-pemakaian-solar', [PemakaianSolarController::class, 'PdfPemakaianSolar'])->name('bss-form.log.pdf-pemakaian-solar');
             Route::get('/get-pemakaian-solar-detail', [PemakaianSolarController::class, 'SolarDetailByNoDoc'])->name("bss-form.log.form-detail-by-id");
             Route::get('/get-pemakaian-solar-data', [PemakaianSolarController::class, 'GetPemakaianSolarData'])->name("bss-form.log.get-pemakaian-solar-data");
+            Route::get('/approval-list', [PemakaianSolarController::class, 'getApprovalList'])->name('pemakaian-solar.approval.list');
 
             Route::get('/delete-pemakaian-solar', [PemakaianSolarController::class, 'DeletePemakaianSolar'])->name('bss-form.sm.delete-pemakaian-solar');
             Route::post('/submit-approve-pemakaian-solar', [PemakaianSolarController::class, 'SubmitApprovePemakaianSolar'])->name("bss-form.log.submit-approve-pemakaian-solar");
@@ -285,6 +287,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/reject-inspeksi-apar', [AparController::class, 'Reject'])->name('bss-form.she-036.reject-inspeksi-apar');
             Route::post('/reset-inspeksi-apar/{id}', [AparController::class, 'Reset'])->name('bss-form.she-036.reset-inspeksi-apar');
             Route::get('/pdf-inspeksi-apar/{id}', [AparController::class, 'PdfInspeksiApar'])->name('bss-form.she-036.pdf-inspeksi-apar');
+            Route::get('/approval-list', [AparController::class, 'getApprovalList'])->name('apar.approval.list');
         });
 
         Route::prefix('she-048')->group(function () {
