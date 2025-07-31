@@ -397,14 +397,6 @@
 @section('custom-js')
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
-    $(function() {
-        $('#inspected_by_name, #inspected_by2_name, #inspected_by3_name, #acknowledged_by_name').select2({
-            placeholder: '-- Pilih Nama --',
-            width: '100%'
-        });
-    });
-</script>
-<script>
     $(document).ready(function() {
         // Initialize the form
         initializeForm();
@@ -494,6 +486,106 @@
                 return false;
             }
         });
+    });
+</script>
+<script>
+    $(function() {
+        $('#inspected_by_name').select2({
+            width: '100%',
+            placeholder: '-- Pilih Inspektor --',
+            ajax: {
+                url: '{{ route("approval.list") }}',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { search: params.term };
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                id: item.nama,
+                                text: item.nama + ' (' + item.nik + ')',
+                                nik: item.nik
+                            };
+                        })
+                    };
+                },
+                cache: true
+            }
+        })
+        $('#inspected_by2_name').select2({
+            width: '100%',
+            placeholder: '-- Pilih Inspektor --',
+            ajax: {
+                url: '{{ route("approval.list") }}',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { search: params.term };
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                id: item.nama,
+                                text: item.nama + ' (' + item.nik + ')',
+                                nik: item.nik
+                            };
+                        })
+                    };
+                },
+                cache: true
+            }
+        })
+        $('#inspected_by3_name').select2({
+            width: '100%',
+            placeholder: '-- Pilih Inspektor --',
+            ajax: {
+                url: '{{ route("approval.list") }}',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { search: params.term };
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                id: item.nama,
+                                text: item.nama + ' (' + item.nik + ')',
+                                nik: item.nik
+                            };
+                        })
+                    };
+                },
+                cache: true
+            }
+        })
+        $('#acknowledged_by_name').select2({
+            width: '100%',
+            placeholder: '-- Pilih Mengetahui --',
+            ajax: {
+                url: '{{ route("approval.list") }}',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { search: params.term };
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                id: item.nama,
+                                text: item.nama + ' (' + item.nik + ')',
+                                nik: item.nik
+                            };
+                        })
+                    };
+                },
+                cache: true
+            }
+        })
     });
 </script>
 @endsection

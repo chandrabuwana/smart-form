@@ -447,4 +447,82 @@
             }
         });
     </script>
+
+    <script>
+         $(function() {
+        // Initialize Select2 for dh_terkait_name
+        $('#dh_terkait_name').select2({
+            placeholder: '-- Pilih DH Terkait --',
+            width: '100%',
+            ajax: {
+                url: '{{ route("approval.list") }}',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { search: params.term };
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                id: item.nama,
+                                text: item.nama + ' (' + item.nik + ')',
+                                nik: item.nik
+                            };
+                        })
+                    };
+                },
+                cache: true
+            }
+        });
+        $('#dh_name').select2({
+            placeholder: '-- Pilih DH --',
+            width: '100%',
+            ajax: {
+                url: '{{ route("approval.list") }}',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { search: params.term };
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                id: item.nama,
+                                text: item.nama + ' (' + item.nik + ')',
+                                nik: item.nik
+                            };
+                        })
+                    };
+                },
+                cache: true
+            }
+        });
+        $('#supervisor_name').select2({
+            placeholder: '-- Pilih Supervisor --',
+            width: '100%',
+            ajax: {
+                url: '{{ route("approval.list") }}',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { search: params.term };
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                id: item.nama,
+                                text: item.nama + ' (' + item.nik + ')',
+                                nik: item.nik
+                            };
+                        })
+                    };
+                },
+                cache: true
+            }
+        });
+    });
+    </script>
 @endsection

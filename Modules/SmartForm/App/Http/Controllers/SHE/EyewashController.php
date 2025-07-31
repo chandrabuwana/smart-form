@@ -163,7 +163,7 @@ class EyewashController extends Controller
 
             return view('SmartForm::she/eyewash/form', [
                 'isShowDetail' => false,
-                'approvalList' => $approvalList,
+                'approvalList' => HrdHelper::getApprovalList(),
                 'maintenanceRecord' => null
             ]);
 
