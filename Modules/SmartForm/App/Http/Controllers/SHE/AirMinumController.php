@@ -165,7 +165,7 @@ class AirMinumController extends Controller
 
                 foreach ($selectedNames as $name) {
                     if (!$approvalList->pluck('nama')->contains($name)) {
-                        $user = HrdHelper::getApprovalList(null, $name)->first(); // Cari user berdasarkan nama
+                        $user = HrdHelper::getApprovalList($name, null)->first(); // Cari user berdasarkan nama
                         if ($user) {
                             $approvalList->push($user);
                         }
