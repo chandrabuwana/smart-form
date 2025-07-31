@@ -46,7 +46,7 @@ class HrdHelper
             });
         }
         if (!$selectedNik) {
-            $query->limit(1);
+            $query->limit(20);
         }
 
         return $query->get();
