@@ -208,7 +208,6 @@
 @endsection
 
 @section('custom-js')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <script>
     $(function() {
         // Form submission
@@ -281,13 +280,56 @@
         });
     });
     </script>
-
-<script>
-    $(function() {
-        $('#created_by_name, #acknowledged_by_name').select2({
-            placeholder: '-- Pilih Nama --',
-            width: '100%'
+    <script>
+        $(function() {
+            $('#acknowledged_by_name').select2({
+                placeholder: '-- Pilih Pengawas --',
+                width: '50%',
+                ajax: {
+                    url: '{{ route("approval.list") }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return { search: params.term };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    id: item.nama,
+                                    text: item.nama + ' (' + item.nik + ')',
+                                    nik: item.nik
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+            $('#created_by_name').select2({
+                placeholder: '-- Pilih Pengawas --',
+                width: '50%',
+                ajax: {
+                    url: '{{ route("approval.list") }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return { search: params.term };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    id: item.nama,
+                                    text: item.nama + ' (' + item.nik + ')',
+                                    nik: item.nik
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
         });
-    });
-</script>
+    </script>
 @endsection
