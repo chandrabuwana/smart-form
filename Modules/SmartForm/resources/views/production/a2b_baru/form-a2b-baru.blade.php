@@ -155,9 +155,9 @@
                                             $selectedOperator = $approvalList->firstWhere('nama', optional($record)->operator);
                                         @endphp
                                             <select name="operator" id="operator" class="form-control text-left" required {{ $isShowDetail ? 'disabled' : '' }}>
-                                                @if($isShowDetail && $selectedOperator)
-                                                    <option value="{{ $selectedOperator->nama }}" selected>
-                                                        {{ $selectedOperator->nama }} ({{ $selectedOperator->nik }})
+                                                @if($record?->operator)
+                                                    <option value="{{ $record->operator }}" selected>
+                                                        {{ $selectedOperator ? $selectedOperator->nama . ' (' . $selectedOperator->nik . ')' : $record->operator }}
                                                     </option>
                                                 @endif
                                             </select>
@@ -178,9 +178,9 @@
                                             $selectedPengawas = $approvalList->firstWhere('nama', optional($record)->pengawas);
                                         @endphp
                                             <select name="pengawas" id="pengawas" class="form-control text-left" required {{ $isShowDetail ? 'disabled' : '' }}>
-                                                @if($isShowDetail && $selectedPengawas)
-                                                    <option value="{{ $selectedPengawas->nama }}" selected>
-                                                        {{ $selectedPengawas->nama }} ({{ $selectedPengawas->nik }})
+                                                @if($record?->pengawas)
+                                                    <option value="{{ $record->pengawas }}" selected>
+                                                        {{ $selectedOperator ? $selectedOperator->nama . ' (' . $selectedOperator->nik . ')' : $record->pengawas }}
                                                     </option>
                                                 @endif
                                             </select>

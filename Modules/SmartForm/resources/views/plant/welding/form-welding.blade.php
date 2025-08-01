@@ -146,12 +146,12 @@
                                             $selectedPemeriksa = $approvalList->firstWhere('nama', optional($record)->pemeriksa);
                                         @endphp
                                         <select name="pemeriksa" id="pemeriksa" class="form-control text-left" required {{ $isShowDetail ? 'disabled' : '' }}>
-                                            @if($isShowDetail && $selectedPemeriksa)
-                                                <option value="{{ $selectedPemeriksa->nama }}" selected>
-                                                    {{ $selectedPemeriksa->nama }} ({{ $selectedPemeriksa->nik }})
-                                                </option>
-                                            @endif
-                                        </select>
+                                                @if($record?->pemeriksa)
+                                                    <option value="{{ $record->pemeriksa }}" selected>
+                                                        {{ $selectedPemeriksa ? $selectedPemeriksa->nama . ' (' . $selectedPemeriksa->nik . ')' : $record->pemeriksa }}
+                                                    </option>
+                                                @endif
+                                            </select>
                                             @if($isShowDetail)
                                                 <span class="
                                                     {{ $record->status_pemeriksa == 'Approve' ? 'text-success' : '' }}
@@ -170,12 +170,12 @@
                                         $selectedAtasan = $approvalList->firstWhere('nama', optional($record)->atasan);
                                         @endphp
                                             <select name="atasan" id="atasan" class="form-control text-left" required {{ $isShowDetail ? 'disabled' : '' }}>
-                                                @if($isShowDetail && $selectedAtasan)
-                                                    <option value="{{ $selectedAtasan->nama }}" selected>
-                                                        {{ $selectedAtasan->nama }} ({{ $selectedAtasan->nik }})
-                                                    </option>
-                                                @endif
-                                            </select>
+                                            @if($record?->atasan)
+                                                <option value="{{ $record->atasan }}" selected>
+                                                    {{ $selectedAtasan ? $selectedAtasan->nama . ' (' . $selectedAtasan->nik . ')' : $record->atasan }}
+                                                </option>
+                                            @endif
+                                        </select>
                                             @if($isShowDetail)
                                                 <span class="
                                                     {{ $record->status_atasan == 'Approve' ? 'text-success' : '' }}
