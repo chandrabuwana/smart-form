@@ -86,13 +86,8 @@ $remarks = $data['remarks'];
                                             <tr>
                                                 <td class="fw-bold">Foreman/Spv</td>
                                                 <td>
-<<<<<<< HEAD
-                                                    <select class="form-select form-select-sm input-text" id="iForeman" name="iForeman" disabled>
-                                                        <option value="{{ $master->diketahui_oleh ?? '-' }}">{{ $master->diketahui_oleh ?? '-' }}</option>
-=======
                                                     <select class="form-select form-select-sm input-text" id="iForeman" name="iForeman">
                                                     <option value="{{ $master->diketahui_oleh ?? '' }}">{{ $master->diketahui_oleh}}</option>
->>>>>>> 5999876069c0c9ceb27dda4a7ebc342aed69fc41
                                                     </select>
                                                 </td>
                                             </tr>
