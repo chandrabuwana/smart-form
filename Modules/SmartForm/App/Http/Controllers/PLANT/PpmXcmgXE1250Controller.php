@@ -142,7 +142,23 @@ class PpmXcmgXE1250Controller extends Controller {
         $data->fin_taggal = json_decode( $detail->fin_taggal );
         $data->fin_remark = json_decode( $detail->fin_remark );
 
+        $selectedNames = collect([
+            $data->validated_by,
+            $data->checked_by,
+            $data->creator
+        ])->filter();
+
         $approvalList = HrdHelper::getApprovalList();
+
+        foreach ($selectedNames as $name) {
+            if (!$approvalList->pluck('nama')->contains($name)) {
+                $user = HrdHelper::getApprovalList($name, null)->first(); // Cari user berdasarkan nama
+                if ($user) {
+                    $approvalList->push($user);
+                }
+            }
+        }
+
         $nik = collect($approvalList)->firstWhere('nama', $nik_session)->nik ?? '';
 
         return view( 'smartform::plant.ppm_xe1250.show-xe1250', [
@@ -271,10 +287,27 @@ class PpmXcmgXE1250Controller extends Controller {
         $data->fin_taggal = json_decode( $detail->fin_taggal );
         $data->fin_remark = json_decode( $detail->fin_remark );
 
+        $selectedNames = collect([
+            $data->validated_by,
+            $data->checked_by,
+            $data->creator
+        ])->filter();
+
+        $approvalList = HrdHelper::getApprovalList();
+
+        foreach ($selectedNames as $name) {
+            if (!$approvalList->pluck('nama')->contains($name)) {
+                $user = HrdHelper::getApprovalList($name, null)->first(); // Cari user berdasarkan nama
+                if ($user) {
+                    $approvalList->push($user);
+                }
+            }
+        }
+
         $pdf = PDF::loadView( 'smartform::plant.ppm_xe1250.export-pdf', [
             'data' => $data,
             'list' => $list,
-            'approvalList' => HrdHelper::getApprovalList()
+            'approvalList' => $approvalList
 
         ] );
         $pdf->setPaper('A4', 'landscape');
@@ -428,7 +461,23 @@ class PpmXcmgXE1250Controller extends Controller {
         $data->fin_taggal = json_decode( $detail->fin_taggal );
         $data->fin_remark = json_decode( $detail->fin_remark );
 
+        $selectedNames = collect([
+            $data->validated_by,
+            $data->checked_by,
+            $data->creator
+        ])->filter();
+
         $approvalList = HrdHelper::getApprovalList();
+
+        foreach ($selectedNames as $name) {
+            if (!$approvalList->pluck('nama')->contains($name)) {
+                $user = HrdHelper::getApprovalList($name, null)->first(); // Cari user berdasarkan nama
+                if ($user) {
+                    $approvalList->push($user);
+                }
+            }
+        }
+
         $nik = collect($approvalList)->firstWhere('nama', $nik_session)->nik ?? '';
 
         return view( 'smartform::plant.ppm_xe1250.detail-xe1250', [

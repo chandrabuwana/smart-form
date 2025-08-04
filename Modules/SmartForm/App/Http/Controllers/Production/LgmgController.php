@@ -211,12 +211,27 @@ class LgmgController extends Controller {
 
         $lgmg_detail = DB::table('lgmg_detail')->where('lgmg_id', $lgmg_id)->get();
 
+        $selectedNames = collect([
+            $lgmg->diisi_oleh,
+            $lgmg->checked_by
+        ])->filter();
+
+        $approvalList = HrdHelper::getApprovalList();
+
+        foreach ($selectedNames as $name) {
+            if (!$approvalList->pluck('nama')->contains($name)) {
+                $user = HrdHelper::getApprovalList($name, null)->first(); // Cari user berdasarkan nama
+                if ($user) {
+                    $approvalList->push($user);
+                }
+            }
+        }
 
         return view('smartform::production.lgmg.detail-lgmg', [
             'pertanyaan' => $pertanyaan,
             'lgmg' => $lgmg,
             'lgmg_detail' => $lgmg_detail,
-            'approvalList' => HrdHelper::getApprovalList()
+            'approvalList' => $approvalList,
         ]);
     }
 
@@ -302,13 +317,28 @@ class LgmgController extends Controller {
 
         $lgmg_detail = DB::table('lgmg_detail')->where('lgmg_id', $lgmg_id)->get();
 
+        $selectedNames = collect([
+            $data->diisi_oleh,
+            $data->checked_by
+        ])->filter();
+
+        $approvalList = HrdHelper::getApprovalList();
+
+        foreach ($selectedNames as $name) {
+            if (!$approvalList->pluck('nama')->contains($name)) {
+                $user = HrdHelper::getApprovalList($name, null)->first(); // Cari user berdasarkan nama
+                if ($user) {
+                    $approvalList->push($user);
+                }
+            }
+        }
 
         return view('smartform::production.lgmg.show-lgmg', [
             'pertanyaan' => $pertanyaan,
             'data' => $data,
             'nik' =>$nik_session,
             'lgmg_detail' => $lgmg_detail,
-            'approvalList' => HrdHelper::getApprovalList()
+            'approvalList' => $approvalList
         ]);
     }
 
@@ -447,7 +477,8 @@ class LgmgController extends Controller {
     public function getApprovalList(Request $request)
     {
         $search = $request->input('search', '');
-        $list = HrdHelper::getApprovalList($search);
+        $selectedNik = $request->input('selectedNik', null);
+        $list = HrdHelper::getApprovalList($search, $selectedNik);
 
         return response()->json($list);
     }

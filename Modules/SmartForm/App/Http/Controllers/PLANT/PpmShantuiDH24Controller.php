@@ -311,10 +311,27 @@ class PpmShantuiDH24Controller extends Controller {
             $data->fin_taggal = isset($detail->fin_taggal) ? json_decode($detail->fin_taggal, true) ?? [] : [];
             $data->fin_remark = $detail->fin_remark ?? '';
 
+            $selectedNames = collect([
+                $data->checked_by,
+                $data->validated_by,
+                $data->creator
+            ])->filter();
+
+            $approvalList = HrdHelper::getApprovalList();
+
+            foreach ($selectedNames as $name) {
+                if (!$approvalList->pluck('nama')->contains($name)) {
+                    $user = HrdHelper::getApprovalList($name, null)->first(); // Cari user berdasarkan nama
+                    if ($user) {
+                        $approvalList->push($user);
+                    }
+                }
+            }
+
             $pdf = PDF::loadView('SmartForm::plant.ppm_dh24.pdf', [
                 'data' => $data,
                 'list' => $list,
-                'approvalList' => HrdHelper::getApprovalList(),
+                'approvalList' => $approvalList
             ]);
 
             $pdf->setPaper('A4', 'landscape');
@@ -344,37 +361,55 @@ class PpmShantuiDH24Controller extends Controller {
         $list = json_decode( $json, true );
 
         $data->eng_actual = isset($detail->eng_actual) ? json_decode($detail->eng_actual, true) ?? [] : [];
-            $data->eng_correction_made = isset($detail->eng_correction_made) ? json_decode($detail->eng_correction_made, true) ?? [] : [];
-            $data->eng_result = isset($detail->eng_result) ? json_decode($detail->eng_result, true) ?? [] : [];
-            $data->eng_pr = isset($detail->eng_pr) ? json_decode($detail->eng_pr, true) ?? [] : [];
-            $data->eng_taggal = isset($detail->eng_taggal) ? json_decode($detail->eng_taggal, true) ?? [] : [];
-            $data->eng_remark = $detail->eng_remark ?? '';
+        $data->eng_correction_made = isset($detail->eng_correction_made) ? json_decode($detail->eng_correction_made, true) ?? [] : [];
+        $data->eng_result = isset($detail->eng_result) ? json_decode($detail->eng_result, true) ?? [] : [];
+        $data->eng_pr = isset($detail->eng_pr) ? json_decode($detail->eng_pr, true) ?? [] : [];
+        $data->eng_taggal = isset($detail->eng_taggal) ? json_decode($detail->eng_taggal, true) ?? [] : [];
+        $data->eng_remark = $detail->eng_remark ?? '';
 
-            $data->hyd_actual = isset($detail->hyd_actual) ? json_decode($detail->hyd_actual, true) ?? [] : [];
-            $data->hyd_correction_made = isset($detail->hyd_correction_made) ? json_decode($detail->hyd_correction_made, true) ?? [] : [];
-            $data->hyd_result = isset($detail->hyd_result) ? json_decode($detail->hyd_result, true) ?? [] : [];
-            $data->hyd_pr = isset($detail->hyd_pr) ? json_decode($detail->hyd_pr, true) ?? [] : [];
-            $data->hyd_taggal = isset($detail->hyd_taggal) ? json_decode($detail->hyd_taggal, true) ?? [] : [];
-            $data->hyd_remark = $detail->hyd_remark ?? '';
+        $data->hyd_actual = isset($detail->hyd_actual) ? json_decode($detail->hyd_actual, true) ?? [] : [];
+        $data->hyd_correction_made = isset($detail->hyd_correction_made) ? json_decode($detail->hyd_correction_made, true) ?? [] : [];
+        $data->hyd_result = isset($detail->hyd_result) ? json_decode($detail->hyd_result, true) ?? [] : [];
+        $data->hyd_pr = isset($detail->hyd_pr) ? json_decode($detail->hyd_pr, true) ?? [] : [];
+        $data->hyd_taggal = isset($detail->hyd_taggal) ? json_decode($detail->hyd_taggal, true) ?? [] : [];
+        $data->hyd_remark = $detail->hyd_remark ?? '';
 
-            $data->wo_actual = isset($detail->wo_actual) ? json_decode($detail->wo_actual, true) ?? [] : [];
-            $data->wo_correction_made = isset($detail->wo_correction_made) ? json_decode($detail->wo_correction_made, true) ?? [] : [];
-            $data->wo_result = isset($detail->wo_result) ? json_decode($detail->wo_result, true) ?? [] : [];
-            $data->wo_pr = isset($detail->wo_pr) ? json_decode($detail->wo_pr, true) ?? [] : [];
-            $data->wo_taggal = isset($detail->wo_taggal) ? json_decode($detail->wo_taggal, true) ?? [] : [];
-            $data->wo_remark = $detail->wo_remark ?? '';
+        $data->wo_actual = isset($detail->wo_actual) ? json_decode($detail->wo_actual, true) ?? [] : [];
+        $data->wo_correction_made = isset($detail->wo_correction_made) ? json_decode($detail->wo_correction_made, true) ?? [] : [];
+        $data->wo_result = isset($detail->wo_result) ? json_decode($detail->wo_result, true) ?? [] : [];
+        $data->wo_pr = isset($detail->wo_pr) ? json_decode($detail->wo_pr, true) ?? [] : [];
+        $data->wo_taggal = isset($detail->wo_taggal) ? json_decode($detail->wo_taggal, true) ?? [] : [];
+        $data->wo_remark = $detail->wo_remark ?? '';
 
-            $data->fin_actual = isset($detail->fin_actual) ? json_decode($detail->fin_actual, true) ?? [] : [];
-            $data->fin_correction_made = isset($detail->fin_correction_made) ? json_decode($detail->fin_correction_made, true) ?? [] : [];
-            $data->fin_result = isset($detail->fin_result) ? json_decode($detail->fin_result, true) ?? [] : [];
-            $data->fin_pr = isset($detail->fin_pr) ? json_decode($detail->fin_pr, true) ?? [] : [];
-            $data->fin_taggal = isset($detail->fin_taggal) ? json_decode($detail->fin_taggal, true) ?? [] : [];
-            $data->fin_remark = $detail->fin_remark ?? '';
+        $data->fin_actual = isset($detail->fin_actual) ? json_decode($detail->fin_actual, true) ?? [] : [];
+        $data->fin_correction_made = isset($detail->fin_correction_made) ? json_decode($detail->fin_correction_made, true) ?? [] : [];
+        $data->fin_result = isset($detail->fin_result) ? json_decode($detail->fin_result, true) ?? [] : [];
+        $data->fin_pr = isset($detail->fin_pr) ? json_decode($detail->fin_pr, true) ?? [] : [];
+        $data->fin_taggal = isset($detail->fin_taggal) ? json_decode($detail->fin_taggal, true) ?? [] : [];
+        $data->fin_remark = $detail->fin_remark ?? '';
 
-            $cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','sn_unit','model','model_engine','sn_engine')->get();
+        $cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','sn_unit','model','model_engine','sn_engine')->get();
+
+        $selectedNames = collect([
+            $data->checked_by,
+            $data->validated_by,
+            $data->creator
+        ])->filter();
+
+        $approvalList = HrdHelper::getApprovalList();
+
+        foreach ($selectedNames as $name) {
+            if (!$approvalList->pluck('nama')->contains($name)) {
+                $user = HrdHelper::getApprovalList($name, null)->first(); // Cari user berdasarkan nama
+                if ($user) {
+                    $approvalList->push($user);
+                }
+            }
+        }
 
         return view('SmartForm::plant.ppm_dh24.show', [
-            'data' => $data, 'cn'=>$cn_data, 'list' => $list, 'approvalList' => HrdHelper::getApprovalList(),
+            'data' => $data, 'cn'=>$cn_data, 'list' => $list,
+            'approvalList' => $approvalList,
             'nik'=>$nik_session
         ]);
     }
@@ -394,36 +429,53 @@ class PpmShantuiDH24Controller extends Controller {
         $list = json_decode( $json, true );
 
         $data->eng_actual = isset($detail->eng_actual) ? json_decode($detail->eng_actual, true) ?? [] : [];
-            $data->eng_correction_made = isset($detail->eng_correction_made) ? json_decode($detail->eng_correction_made, true) ?? [] : [];
-            $data->eng_result = isset($detail->eng_result) ? json_decode($detail->eng_result, true) ?? [] : [];
-            $data->eng_pr = isset($detail->eng_pr) ? json_decode($detail->eng_pr, true) ?? [] : [];
-            $data->eng_taggal = isset($detail->eng_taggal) ? json_decode($detail->eng_taggal, true) ?? [] : [];
-            $data->eng_remark = $detail->eng_remark ?? '';
+        $data->eng_correction_made = isset($detail->eng_correction_made) ? json_decode($detail->eng_correction_made, true) ?? [] : [];
+        $data->eng_result = isset($detail->eng_result) ? json_decode($detail->eng_result, true) ?? [] : [];
+        $data->eng_pr = isset($detail->eng_pr) ? json_decode($detail->eng_pr, true) ?? [] : [];
+        $data->eng_taggal = isset($detail->eng_taggal) ? json_decode($detail->eng_taggal, true) ?? [] : [];
+        $data->eng_remark = $detail->eng_remark ?? '';
 
-            $data->hyd_actual = isset($detail->hyd_actual) ? json_decode($detail->hyd_actual, true) ?? [] : [];
-            $data->hyd_correction_made = isset($detail->hyd_correction_made) ? json_decode($detail->hyd_correction_made, true) ?? [] : [];
-            $data->hyd_result = isset($detail->hyd_result) ? json_decode($detail->hyd_result, true) ?? [] : [];
-            $data->hyd_pr = isset($detail->hyd_pr) ? json_decode($detail->hyd_pr, true) ?? [] : [];
-            $data->hyd_taggal = isset($detail->hyd_taggal) ? json_decode($detail->hyd_taggal, true) ?? [] : [];
-            $data->hyd_remark = $detail->hyd_remark ?? '';
+        $data->hyd_actual = isset($detail->hyd_actual) ? json_decode($detail->hyd_actual, true) ?? [] : [];
+        $data->hyd_correction_made = isset($detail->hyd_correction_made) ? json_decode($detail->hyd_correction_made, true) ?? [] : [];
+        $data->hyd_result = isset($detail->hyd_result) ? json_decode($detail->hyd_result, true) ?? [] : [];
+        $data->hyd_pr = isset($detail->hyd_pr) ? json_decode($detail->hyd_pr, true) ?? [] : [];
+        $data->hyd_taggal = isset($detail->hyd_taggal) ? json_decode($detail->hyd_taggal, true) ?? [] : [];
+        $data->hyd_remark = $detail->hyd_remark ?? '';
 
-            $data->wo_actual = isset($detail->wo_actual) ? json_decode($detail->wo_actual, true) ?? [] : [];
-            $data->wo_correction_made = isset($detail->wo_correction_made) ? json_decode($detail->wo_correction_made, true) ?? [] : [];
-            $data->wo_result = isset($detail->wo_result) ? json_decode($detail->wo_result, true) ?? [] : [];
-            $data->wo_pr = isset($detail->wo_pr) ? json_decode($detail->wo_pr, true) ?? [] : [];
-            $data->wo_taggal = isset($detail->wo_taggal) ? json_decode($detail->wo_taggal, true) ?? [] : [];
-            $data->wo_remark = $detail->wo_remark ?? '';
+        $data->wo_actual = isset($detail->wo_actual) ? json_decode($detail->wo_actual, true) ?? [] : [];
+        $data->wo_correction_made = isset($detail->wo_correction_made) ? json_decode($detail->wo_correction_made, true) ?? [] : [];
+        $data->wo_result = isset($detail->wo_result) ? json_decode($detail->wo_result, true) ?? [] : [];
+        $data->wo_pr = isset($detail->wo_pr) ? json_decode($detail->wo_pr, true) ?? [] : [];
+        $data->wo_taggal = isset($detail->wo_taggal) ? json_decode($detail->wo_taggal, true) ?? [] : [];
+        $data->wo_remark = $detail->wo_remark ?? '';
 
-            $data->fin_actual = isset($detail->fin_actual) ? json_decode($detail->fin_actual, true) ?? [] : [];
-            $data->fin_correction_made = isset($detail->fin_correction_made) ? json_decode($detail->fin_correction_made, true) ?? [] : [];
-            $data->fin_result = isset($detail->fin_result) ? json_decode($detail->fin_result, true) ?? [] : [];
-            $data->fin_pr = isset($detail->fin_pr) ? json_decode($detail->fin_pr, true) ?? [] : [];
-            $data->fin_taggal = isset($detail->fin_taggal) ? json_decode($detail->fin_taggal, true) ?? [] : [];
-            $data->fin_remark = $detail->fin_remark ?? '';
+        $data->fin_actual = isset($detail->fin_actual) ? json_decode($detail->fin_actual, true) ?? [] : [];
+        $data->fin_correction_made = isset($detail->fin_correction_made) ? json_decode($detail->fin_correction_made, true) ?? [] : [];
+        $data->fin_result = isset($detail->fin_result) ? json_decode($detail->fin_result, true) ?? [] : [];
+        $data->fin_pr = isset($detail->fin_pr) ? json_decode($detail->fin_pr, true) ?? [] : [];
+        $data->fin_taggal = isset($detail->fin_taggal) ? json_decode($detail->fin_taggal, true) ?? [] : [];
+        $data->fin_remark = $detail->fin_remark ?? '';
 
-            $cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','sn_unit','model','model_engine','sn_engine')->get();
+        $cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','sn_unit','model','model_engine','sn_engine')->get();
 
-        return view('SmartForm::plant.ppm_dh24.detail', [ 'data' => $data, 'cn'=>$cn_data, 'nik' =>$nik_session, 'list' => $list, 'approvalList' => HrdHelper::getApprovalList() ] );
+        $selectedNames = collect([
+            $data->checked_by,
+            $data->validated_by,
+            $data->creator
+        ])->filter();
+
+        $approvalList = HrdHelper::getApprovalList();
+
+        foreach ($selectedNames as $name) {
+            if (!$approvalList->pluck('nama')->contains($name)) {
+                $user = HrdHelper::getApprovalList($name, null)->first(); // Cari user berdasarkan nama
+                if ($user) {
+                    $approvalList->push($user);
+                }
+            }
+        }
+
+        return view('SmartForm::plant.ppm_dh24.detail', [ 'data' => $data, 'cn'=>$cn_data, 'nik' =>$nik_session, 'list' => $list, 'approvalList' => $approvalList ] );
     }
 
     public function Reset( $id ) {
