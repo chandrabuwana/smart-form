@@ -130,16 +130,11 @@ class InspeksiToiletMessKantorController extends Controller
         // dd($request);
 
         $request->validate([
-            // 'job_site' => 'required|string',
             'dept' => 'required|string',
             'shift' => 'required|string',
             'loker' => 'required|string',
             'jml_ins' => 'required|integer',
-            // 'checked_by' => 'required|string',
-            // 'validated_by' => 'required|string',
             'mengetahui' => 'required|string'
-            // 'pertanyaan_id.*' => 'required|integer',
-            // 'jawaban.*' => 'required|string|in:Ya,Tidak'
         ]);
 
         // dd($request);
@@ -389,11 +384,28 @@ class InspeksiToiletMessKantorController extends Controller
             'Mengetahui' => 'Mengetahui'
         ];
 
+        $selectedNames = collect([
+            $data->checked_by,
+            $data->validated_by,
+            $data->mengetahui
+        ])->filter();
+
+        $approvalList = HrdHelper::getApprovalList();
+
+        foreach ($selectedNames as $name) {
+            if (!$approvalList->pluck('nama')->contains($name)) {
+                $user = HrdHelper::getApprovalList($name, null)->first(); // Cari user berdasarkan nama
+                if ($user) {
+                    $approvalList->push($user);
+                }
+            }
+        }
+
         return view('SmartForm::GS/inspeksi-toilet-mess-kantor/detail-wc', [
             'data' => $data,
             'questions' => $pertanyaan,
             'dropdowns' => $dropdowns,
-            'approvalList' => HrdHelper::getApprovalList()
+            'approvalList' => $approvalList
         ]);
     }
 
@@ -510,7 +522,8 @@ class InspeksiToiletMessKantorController extends Controller
     public function getApprovalList(Request $request)
     {
         $search = $request->input('search', '');
-        $list = HrdHelper::getApprovalList($search);
+        $selectedNik = $request->input('selectedNik', null);
+        $list = HrdHelper::getApprovalList($search, $selectedNik);
 
         return response()->json($list);
     }

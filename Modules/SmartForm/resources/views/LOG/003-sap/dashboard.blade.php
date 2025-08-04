@@ -156,7 +156,7 @@
                                                     </span>
                                                 </td>
                                                 <td>
-                                                    @if ($session == $data->dibuat_oleh)
+                                                    @if ($session == $data->creator)
                                                         <a href="{{ route('003-sap-detail', ['id' => $data->id]) }}"
                                                             class="btn btn-warning btn-sm mt-3"
                                                             style="{{ $data->delete_status == 1 ? 'pointer-events: none; opacity: 0.6;' : '' }}">
