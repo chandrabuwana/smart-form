@@ -39,36 +39,11 @@
                                 <div class="col-md-4">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="site_name" class="ms-0">Site Name</label>
-                                        <select class="form-control" name="site_name" id="site_name" required
-                                            {{ $isShowDetail ? 'disabled' : '' }}>
-                                            <option value="agm"
-                                                {{ old('site_name', $record->site_name ?? '') == 'agm' ? 'selected' : '' }}>
-                                                Agm</option>
-                                            <option value="mbl"
-                                                {{ old('site_name', $record->site_name ?? '') == 'mbl' ? 'selected' : '' }}>
-                                                Mbl</option>
-                                            <option value="mme"
-                                                {{ old('site_name', $record->site_name ?? '') == 'mme' ? 'selected' : '' }}>
-                                                Mme</option>
-                                            <option value="mas"
-                                                {{ old('site_name', $record->site_name ?? '') == 'mas' ? 'selected' : '' }}>
-                                                Mas</option>
-                                            <option value="pmss"
-                                                {{ old('site_name', $record->site_name ?? '') == 'pmss' ? 'selected' : '' }}>
-                                                Pmss</option>
-                                            <option value="taj"
-                                                {{ old('site_name', $record->site_name ?? '') == 'taj' ? 'selected' : '' }}>
-                                                Taj</option>
-                                            <option value="bssr"
-                                                {{ old('site_name', $record->site_name ?? '') == 'bssr' ? 'selected' : '' }}>
-                                                Bssr</option>
-                                            <option value="tdm"
-                                                {{ old('site_name', $record->site_name ?? '') == 'tdm' ? 'selected' : '' }}>
-                                                Tdm</option>
-                                            <option value="msj"
-                                                {{ old('site_name', $record->site_name ?? '') == 'msj' ? 'selected' : '' }}>
-                                                Msj</option>
-                                        </select>
+                                        {!! \Modules\SmartForm\helpers\SiteHelper::renderSiteSelect(
+    'site_name',
+    old('site_name', $record->site_name ?? null),
+    $isShowDetail // true kalau detail, false kalau insert/edit
+) !!}
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -723,6 +698,11 @@
 
 
     });
+
+    $(document).ready(function() {
+            $('#site_name').select2({width: '100%'});
+        });
+
 </script>
 
 @endsection
