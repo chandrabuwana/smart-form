@@ -177,9 +177,9 @@ class RegistrasiSupplierController extends Controller {
 	    	    'profile_perusahaan' => $request->rProfile ?? "Tidak",
 	    	    'surat_lainnya' => $request->rSurat ?? "Tidak",
                 // MUDOF
-	    	    'file_npwp' => $files[0] ?? "Tidak ada",
-	    	    'file_sppkp' => $files[1] ?? "Tidak ada",
-	    	    'file_nib_siup' => $files[2] ?? "Tidak ada",
+	    	    'file_npwp' => $files[0] ?: 'Tidak ada',
+	    	    'file_sppkp' => $files[1] ??= 'Tidak ada',
+	    	    'file_nib_siup' => $files[2] ??= 'Tidak ada',
 	    	    'file_akta_perusahaan' => $files[3] ?? "Tidak ada",
 	    	    'file_pakta_integritas' => $files[4] ?? "Tidak ada",
 	    	    'file_ident_direk' => $files[5] ?? "Tidak ada",
@@ -351,6 +351,7 @@ class RegistrasiSupplierController extends Controller {
                 $data_master['jabatan_2_email'] = $data->jabatan_2_email;
                 $data_master['diterima_oleh'] = $data->diterima_oleh;
                 $data_master['disetujui_oleh'] = $data->disetujui_oleh;
+
                 $data_master['file_npwp'] = $data->file_npwp;
                 $data_master['file_sppkp'] = $data->file_sppkp;
                 $data_master['file_nib_siup'] = $data->file_nib_siup;
@@ -360,6 +361,7 @@ class RegistrasiSupplierController extends Controller {
                 $data_master['file_struktur_org'] = $data->file_struktur_org;
                 $data_master['file_profile_per'] = $data->file_profile_per;
                 $data_master['file_lain'] = $data->file_lain;
+                
                 $data_master['status_pajak_pkp'] = $data->status_pajak_pkp;
                 $data_master['metode_pembayaran'] = $data->metode_pembayaran;
                 $data_master['npwp'] = $data->npwp;
