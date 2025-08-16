@@ -192,7 +192,7 @@ class RegistrasiSupplierController extends Controller {
                 'diterima_oleh' => $request->dDiterima,
                 'status' => "3",
                 'created_at' => $today,
-                'is_active' => 1,
+                'is_active' => "1",
                 'disetujui_oleh' => $request->dApproved
 
             ]);
