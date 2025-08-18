@@ -2,6 +2,7 @@
 
 @section('custom-css')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 <style>
     .text-right {
         text-align: right;
@@ -10,8 +11,8 @@
         margin: 0;
     }
     .preview {
-         width: 100px;
-         height: 150px;
+         width: 50px;
+         height: 50px;
       }
 </style>
 @endsection
@@ -339,7 +340,7 @@
                                                 </td>
                                                 <td>
                                                     <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fNpwp" accept="image/*" onchange="previewImage(event)">
-                                                    <img class="preview" id="npwp" alt="NPWP">
+                                                    <img src="{{ asset('images/no-image.png') }}" class="preview" id="npwp" alt="NPWP">
                                                 </td>
                                             </tr>
                                             <tr>
@@ -361,7 +362,7 @@
                                                 <td>
                                                     <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fSppkp" accept="image/*" onchange="previewImageSkpp(event)">
                                                     <!-- <div class="invalid-feedback">Lampiran SPPKP</div> -->
-                                                    <img class="preview" id="skpp" alt="SKPP">
+                                                    <img src="{{ asset('images/no-image.png') }}" class="preview" id="skpp" alt="SKPP">
                                                 </td>
                                             </tr>
                                             <tr>
@@ -382,7 +383,7 @@
                                                 </td>
                                                 <td>
                                                     <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fNib" accept="image/*" onchange="previewImageNib(event)">
-                                                    <img class="preview" id="nibsiup" alt="NIB / SIUP">
+                                                    <img src="{{ asset('images/no-image.png') }}" class="preview" id="nibsiup" alt="NIB / SIUP">
                                                 </td>
                                             </tr>
                                             <tr>
@@ -403,7 +404,7 @@
                                                 </td>
                                                 <td>
                                                     <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fAkta" accept="image/*" onchange="previewImageAkta(event)">
-                                                    <img class="preview" id="aktaper" alt="Akta Perusahaan">
+                                                    <img src="{{ asset('images/no-image.png') }}" class="preview" id="aktaper" alt="Akta Perusahaan">
                                                 </td>
                                             </tr>
                                             <tr>
@@ -424,7 +425,7 @@
                                                 </td>
                                                 <td>
                                                     <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fPakta" accept="image/*" onchange="previewImagePakta(event)">
-                                                    <img class="preview" id="pakta" alt="Pakta Integritas">
+                                                    <img src="{{ asset('images/no-image.png') }}" class="preview" id="pakta" alt="Pakta Integritas">
                                                 </td>
                                             </tr>
                                             <tr>
@@ -445,7 +446,7 @@
                                                 </td>
                                                 <td>
                                                     <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fKartu" accept="image/*" onchange="previewImageKartuIden(event)">
-                                                    <img class="preview" id="kartuiden" alt="Kartu Identitas Direktur">
+                                                    <img src="{{ asset('images/no-image.png') }}" class="preview" id="kartuiden" alt="Kartu Identitas Direktur">
                                                 </td>
                                             </tr>
                                             <tr>
@@ -466,7 +467,7 @@
                                                 </td>
                                                 <td>
                                                     <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fStruktur" accept="image/*" onchange="previewImageStruktur(event)">
-                                                    <img class="preview" id="strukturorg" alt="Struktur Organisasi">
+                                                    <img src="{{ asset('images/no-image.png') }}" class="preview" id="strukturorg" alt="Struktur Organisasi">
                                                 </td>
                                             </tr>
                                             <tr>
@@ -487,7 +488,7 @@
                                                 </td>
                                                 <td>
                                                     <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fProfile" accept="image/*" onchange="previewImageProfile(event)">
-                                                    <img class="preview" id="profileper" alt="Profile Perusahaan">
+                                                    <img src="{{ asset('images/no-image.png') }}" class="preview" id="profileper" alt="Profile Perusahaan">
                                                 </td>
                                             </tr>
                                             <tr>
@@ -508,7 +509,7 @@
                                                 </td>
                                                 <td>
                                                     <input type="file" class="form-control" aria-label="file example" name="filenames[]" id="fSurat" accept="image/*" onchange="previewImageSurat(event)">
-                                                    <img class="preview" id="suratlain" alt="Surat Lainnya">
+                                                    <img src="{{ asset('images/no-image.png') }}" class="preview" id="suratlain" alt="Surat Lainnya">
                                                 </td>
                                             </tr>
                                         </table>

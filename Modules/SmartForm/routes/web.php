@@ -287,7 +287,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/reject-inspeksi-apar', [AparController::class, 'Reject'])->name('bss-form.she-036.reject-inspeksi-apar');
             Route::post('/reset-inspeksi-apar/{id}', [AparController::class, 'Reset'])->name('bss-form.she-036.reset-inspeksi-apar');
             Route::get('/pdf-inspeksi-apar/{id}', [AparController::class, 'PdfInspeksiApar'])->name('bss-form.she-036.pdf-inspeksi-apar');
-            Route::get('/approval-list', [AparController::class, 'getApprovalList'])->name('apar.approval.list');
+            Route::get('/approval-list-apar', [AparController::class, 'getApprovalList'])->name('apar.approval.list');
         });
 
         Route::prefix('she-048')->group(function () {
