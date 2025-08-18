@@ -182,8 +182,11 @@
                                         <label for="diisi_oleh" class="ms-0">Diisi Oleh</label>
                                         <select name="diisi_oleh" id="diisi_oleh" class="form-control select2" required>
                                             <option value="">-- Pilih --</option>
-                                            @foreach ($approvalList as $user)
+                                            {{-- @foreach ($approvalList as $user)
                                                 <option value="{{ $user->nik }}" {{ $lgmg->diisi_oleh == $user->nik ? 'selected' : '' }}>{{ $user->nama }}</option>
+                                            @endforeach --}}
+                                            @foreach($approvalList as $user)
+                                                <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $lgmg->diisi_oleh == $user->nama ? 'selected' : '' }}>{{ $user->nama }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -193,8 +196,11 @@
                                         <label for="checked_by" class="ms-0">Diperiksa Oleh</label>
                                         <select name="checked_by" id="checked_by" class="form-control select2" required>
                                             <option value="">-- Pilih Checker --</option>
-                                            @foreach ($approvalList as $user)
+                                            {{-- @foreach ($approvalList as $user)
                                                 <option value="{{ $user->nik }}" {{ $lgmg->checked_by == $user->nik ? 'selected' : '' }}>{{ $user->nama }}</option>
+                                            @endforeach --}}
+                                            @foreach($approvalList as $user)
+                                                <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $lgmg->checked_by == $user->nama ? 'selected' : '' }}>{{ $user->nama }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -430,7 +436,7 @@
                     return {
                         results: $.map(data, function (item) {
                             return {
-                                id: item.nik,
+                                id: item.nama,
                                 text: item.nama + ' (' + item.nik + ')',
                                 nik: item.nik
                             };

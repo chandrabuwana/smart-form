@@ -256,8 +256,6 @@
 @section('custom-js')
     <script>
         $(document).ready(function() {
-            $('#dibuat_oleh').select2();
-            $('#checked_by').select2();
             $('#job_site').select2({
                 disabled: true
             });
@@ -474,5 +472,32 @@
                 });
         }
     }
+
+    $(function() {
+        $('#dibuat_oleh, #diperiksa').select2({
+            placeholder: '-- Pilih --',
+            width: '100%',
+            ajax: {
+                url: '{{ route('003-sap.approval.list') }}',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { search: params.term };
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                id: item.nama,
+                                text: item.nama + ' (' + item.nik + ')',
+                                nik: item.nik
+                            };
+                        })
+                    };
+                },
+                cache: true
+            }
+        });
+    });
     </script>
 @endsection

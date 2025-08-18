@@ -17,7 +17,7 @@ class Pengajuan003SapController extends Controller {
 
     public function dashboard(Request $request) {
         try {
-            $nik_session = $request->session()->get( 'user_id', '' );
+            $nik_session = $request->session()->get( 'username', '' );
 
             $query = DB::table('pengajuan_pr_003sap')
                 ->select('*')
@@ -101,7 +101,7 @@ class Pengajuan003SapController extends Controller {
                 'created_at' => now(),
                 'updated_at' => now(),
                 'delete_status' => 0,
-                'creator' => $request->session()->get( 'user_id', '' ),
+                'creator' => $request->session()->get( 'username', '' ),
                 'status' => json_encode( array_values( [ null, null] ) )
             ];
 
@@ -241,10 +241,26 @@ class Pengajuan003SapController extends Controller {
             }
         }
 
+        $selectedNames = collect([
+            $data->dibuat_oleh,
+            $data->checked_by
+        ])->filter();
+
+        $approvalList = HrdHelper::getApprovalList();
+
+        foreach ($selectedNames as $name) {
+            if (!$approvalList->pluck('nama')->contains($name)) {
+                $user = HrdHelper::getApprovalList($name, null)->first(); // Cari user berdasarkan nama
+                if ($user) {
+                    $approvalList->push($user);
+                }
+            }
+        }
+
         return view('SmartForm::LOG/003-sap/detail-003sap', [
             'data' => $data,
             'detail' => $detail,
-            'approvalList' => HrdHelper::getApprovalList()
+            'approvalList' => $approvalList
         ]);
     }
 
@@ -269,7 +285,7 @@ class Pengajuan003SapController extends Controller {
                 'created_at' => now(),
                 'updated_at' => now(),
                 'delete_status' => 0,
-                'creator' => $request->session()->get( 'user_id', '' ),
+                // 'creator' => $request->session()->get( 'user_id', '' ),
                 'status' => json_encode( array_values( [ null, null] ) )
             ];
 
@@ -313,7 +329,7 @@ class Pengajuan003SapController extends Controller {
     }
 
     public function show($id, Request $request){
-        $nik_session = $request->session()->get( 'user_id', '' );
+        $nik_session = $request->session()->get( 'username', '' );
 
         $data = DB::table('pengajuan_pr_003sap')
             ->where('id', $id)
@@ -340,11 +356,27 @@ class Pengajuan003SapController extends Controller {
             }
         }
 
+        $selectedNames = collect([
+            $data->dibuat_oleh,
+            $data->checked_by
+        ])->filter();
+
+        $approvalList = HrdHelper::getApprovalList();
+
+        foreach ($selectedNames as $name) {
+            if (!$approvalList->pluck('nama')->contains($name)) {
+                $user = HrdHelper::getApprovalList($name, null)->first(); // Cari user berdasarkan nama
+                if ($user) {
+                    $approvalList->push($user);
+                }
+            }
+        }
+
         return view('SmartForm::LOG/003-sap/show-003sap', [
             'data' => $data,
             'nik' =>$nik_session,
             'detail' => $detail,
-            'approvalList' => HrdHelper::getApprovalList()
+            'approvalList' => $approvalList
         ]);
     }
 
@@ -415,7 +447,8 @@ class Pengajuan003SapController extends Controller {
     public function getApprovalList(Request $request)
     {
         $search = $request->input('search', '');
-        $list = HrdHelper::getApprovalList($search);
+        $selectedNik = $request->input('selectedNik', null);
+        $list = HrdHelper::getApprovalList($search, $selectedNik);
 
         return response()->json($list);
     }

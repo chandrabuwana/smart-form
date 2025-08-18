@@ -17,7 +17,7 @@ class LgmgController extends Controller {
 
     public function Dashboard(Request $request) {
         try {
-            $nik_session = $request->session()->get('user_id', '');
+            $nik_session = $request->session()->get('username', '');
             $query = DB::table( 'lgmg' )
             ->select( '*' )
             ->orderBy( 'created_at', 'desc' );
@@ -68,7 +68,7 @@ class LgmgController extends Controller {
     }
 
     public function Add(Request $request) {
-        $nik_session = $request->session()->get( 'user_id', '' );
+        $nik_session = $request->session()->get( 'username', '' );
 
         $pertanyaan = DB::table('lgmg_pertanyaan')
         ->select('category', 'pertanyaan', 'id')
@@ -106,8 +106,8 @@ class LgmgController extends Controller {
                 'diisi_oleh' => $request->diisi_oleh,
                 'checked_by' => $request->checked_by,
                 'catatan_rm' => $request->catatan_rm,
-                'creator' => $request->session()->get('user_id', ''),
-                'updated_by' => $request->session()->get('user_id', ''),
+                'creator' => $request->session()->get('username', ''),
+                'updated_by' => $request->session()->get('username', ''),
                 'status' => json_encode( array_values( [ null, null] ) )
             ]);
 
@@ -127,8 +127,8 @@ class LgmgController extends Controller {
                     'created_at' => DB::raw('GETDATE()'),
                     'updated_at' => DB::raw('GETDATE()'),
                     'keterangan' => $keterangan,
-                    'created_by' => $request->session()->get('user_id', ''),
-                    'updated_by' => $request->session()->get('user_id', ''),
+                    'created_by' => $request->session()->get('username', ''),
+                    'updated_by' => $request->session()->get('username', ''),
                 ];
             }
 
@@ -256,7 +256,7 @@ class LgmgController extends Controller {
                 'diisi_oleh' => $request->diisi_oleh,
                 'checked_by' => $request->checked_by,
                 'catatan_rm' => $request->catatan_rm,
-                'updated_by' => $request->session()->get('user_id', ''),
+                'updated_by' => $request->session()->get('username', ''),
                 'status' => json_encode(array_values([null, null]))
             ]);
 
@@ -273,7 +273,7 @@ class LgmgController extends Controller {
 
             $detailData = [];
             $keterangan = json_encode($request->keterangan);
-            $userId = $request->session()->get('user_id', '');
+            $userId = $request->session()->get('username', '');
 
             foreach ($request->pertanyaan_id as $index => $pertanyaan_id) {
                 $detailData[] = [
@@ -285,7 +285,7 @@ class LgmgController extends Controller {
                     'created_by' => $oldDetailData[$pertanyaan_id]['created_by'] ?? $userId,
                     'updated_at' => DB::raw('GETDATE()'),
                     'keterangan' => $keterangan,
-                    'updated_by' => $request->session()->get('user_id', ''),
+                    'updated_by' => $request->session()->get('username', ''),
                 ];
             }
 
@@ -305,7 +305,7 @@ class LgmgController extends Controller {
     }
 
     public function show($id, Request $request){
-        $nik_session = $request->session()->get('user_id', '');
+        $nik_session = $request->session()->get('username', '');
 
         $pertanyaan = DB::table('lgmg_pertanyaan')
         ->select('category', 'pertanyaan', 'id')

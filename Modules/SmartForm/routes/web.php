@@ -695,6 +695,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/reject-dh24', [PpmShantuiDH24Controller::class, 'Reject'])->name("plant.dh24.reject");
             Route::post('/reset-dh24/{id}', [PpmShantuiDH24Controller::class, 'Reset'])->name("plant.dh24.reset");
             Route::post('/update', [PpmShantuiDH24Controller::class, 'Update'])->name('plant.dh24.update');
+            Route::get('/approval-list', [PpmShantuiDH24Controller::class, 'getApprovalList'])->name('plant.dh24.approval.list');
         });
         // plant
         Route::prefix('ppm-xe1250')->group(function () {

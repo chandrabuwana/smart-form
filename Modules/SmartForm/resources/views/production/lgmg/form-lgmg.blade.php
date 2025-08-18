@@ -178,7 +178,7 @@
                                             <select name="diisi_oleh" id="diisi_oleh" class="form-control select2" required>
                                                 <option disabled selected>-- Pilih --</option>
                                                 @foreach ($approvalList as $user)
-                                                    <option value="{{ $user->nik }}" {{ $user->nik == $session ? 'selected' : '' }}>{{ $user->nama }}</option>
+                                                    <option value="{{ $user->nama }}" {{ $user->nama == $session ? 'selected' : '' }}>{{ $user->nama }}</option>
                                                 @endforeach
 
                                             </select>
@@ -190,7 +190,7 @@
                                             <select name="checked_by" id="checked_by" class="form-control select2" required>
                                                 <option disabled selected>-- Select Checker --</option>
                                                 @foreach ($approvalList as $user)
-                                                    <option value="{{ $user->nik }}">{{ $user->nama }}</option>
+                                                    <option value="{{ $user->nama }}">{{ $user->nama }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -414,7 +414,7 @@
                     return {
                         results: $.map(data, function (item) {
                             return {
-                                id: item.nik,
+                                id: item.nama,
                                 text: item.nama + ' (' + item.nik + ')',
                                 nik: item.nik
                             };
