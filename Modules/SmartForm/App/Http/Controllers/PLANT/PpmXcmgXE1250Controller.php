@@ -18,6 +18,7 @@ class PpmXcmgXE1250Controller extends Controller {
     public function dashboard(Request $request) {
         try {
             $nik_session = $request->session()->get( 'username', '' );
+            // dd($nik_session);
             $query = DB::table( 'ppm_xcmg_xe1250' )
             ->select( '*' )
             ->orderBy( 'created_at', 'desc' );
@@ -56,14 +57,14 @@ class PpmXcmgXE1250Controller extends Controller {
         ];
 
         $approvalList = HrdHelper::getApprovalList();
-        $nik = collect($approvalList)->firstWhere('nama', $nik_session)->nik ?? '';
+        // $nik = collect($approvalList)->firstWhere('nama', $nik_session)->nik ?? '';
 
         $cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','sn_unit','model','model_engine','sn_engine')->get();
 
         $records = $query->where('delete_status', '!=', 1)->paginate( 5 );
 
         return view( 'smartform::plant.ppm_xe1250.dashboard-xe1250', [
-            'record' => $records, 'session'=>$nik, 'user'=> $approvalList,
+            'record' => $records, 'session'=>$nik_session, 'user'=> $approvalList,
             'cn'=>$cn_data,
             'statistics'=>$statistics,
             'filters' => [
@@ -585,7 +586,8 @@ class PpmXcmgXE1250Controller extends Controller {
     public function getApprovalList(Request $request)
     {
         $search = $request->input('search', '');
-        $list = HrdHelper::getApprovalList($search);
+        $selectedNik = $request->input('selectedNik', null);
+        $list = HrdHelper::getApprovalList($search, $selectedNik);
 
         return response()->json($list);
     }

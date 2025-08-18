@@ -279,13 +279,13 @@
                                                 <td>
                                                     @if ($status[0] === 'approved')
                                                         <span
-                                                            class="badge bg-success">{{ optional(collect($user)->firstWhere('nik', $data->checked_by))->nama ?? '' }}</span>
+                                                            class="badge bg-success">{{ optional(collect($user)->firstWhere('nama', $data->checked_by))->nama ?? '' }}</span>
                                                     @elseif ($status[0] === 'rejected')
                                                         <span
-                                                            class="badge bg-danger">{{ optional(collect($user)->firstWhere('nik', $data->checked_by))->nama ?? '' }}</span>
+                                                            class="badge bg-danger">{{ optional(collect($user)->firstWhere('nama', $data->checked_by))->nama ?? '' }}</span>
                                                     @elseif ($status[0] === null)
                                                         <span
-                                                            class="badge bg-info">{{ optional(collect($user)->firstWhere('nik', $data->checked_by))->nama ?? '' }}</span>
+                                                            class="badge bg-info">{{ optional(collect($user)->firstWhere('nama', $data->checked_by))->nama ?? '' }}</span>
                                                     @endif
 
                                                 </td>
@@ -293,13 +293,13 @@
                                                     <span class="text-xs font-weight-bold">
                                                         @if ($status[1] === 'approved')
                                                             <span
-                                                                class="badge bg-success">{{ optional(collect($user)->firstWhere('nik', $data->validated_by))->nama ?? '' }}</span>
+                                                                class="badge bg-success">{{ optional(collect($user)->firstWhere('nama', $data->validated_by))->nama ?? '' }}</span>
                                                         @elseif ($status[1] === 'rejected')
                                                             <span
-                                                                class="badge bg-danger">{{ optional(collect($user)->firstWhere('nik', $data->validated_by))->nama ?? '' }}</span>
+                                                                class="badge bg-danger">{{ optional(collect($user)->firstWhere('nama', $data->validated_by))->nama ?? '' }}</span>
                                                         @elseif ($status[1] == null)
                                                             <span
-                                                                class="badge bg-info">{{ optional(collect($user)->firstWhere('nik', $data->validated_by))->nama ?? '' }}</span>
+                                                                class="badge bg-info">{{ optional(collect($user)->firstWhere('nama', $data->validated_by))->nama ?? '' }}</span>
                                                         @endif
                                                     </span>
                                                 </td>

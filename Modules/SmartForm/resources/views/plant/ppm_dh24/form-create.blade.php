@@ -384,25 +384,25 @@
                                 <div class="col-4 ">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="dibuat" class="ms-0">Checked By1</label>
-                                        <select name="checked1_display" class="form-control uppercase" disabled>
-                                            @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nik }}"
-                                                    {{ old('checked1', $nik ?? '') == $user->nik ? 'selected' : '' }}>
-                                                    {{ $user->nama }}
-                                                </option>
-                                            @endforeach
+                                        <select name="checked1" id="checked1" class="form-control uppercase">
+                                            {{-- @foreach ($approvalList as $user) --}}
+                                                <option disabled selected>-- Select --</option>
+                                                @foreach ($approvalList as $user)
+                                                    <option value="{{ $user->nama }}">{{ $user->nama }}</option>
+                                                @endforeach
+                                            {{-- @endforeach --}}
                                         </select>
 
-                                        <input type="hidden" name="checked1" value="{{ old('checked1', $nik ?? '') }}">
+                                        {{-- <input type="hidden" name="checked1" value="{{ old('checked1', $nik ?? '') }}"> --}}
                                     </div>
                                 </div>
                                 <div class="col-4 ">
                                     <div class="input-group input-group-static mb-3">
                                         <label for="dibuat" class="ms-0">Checked By2</label>
                                         <select name="checked2" id="dibuat_oleh" class="form-control" required>
-                                            <option disabled selected>-- Select Creator --</option>
+                                            <option disabled selected>-- Select --</option>
                                             @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nik }}">{{ $user->nama }}</option>
+                                                <option value="{{ $user->nama }}">{{ $user->nama }}</option>
                                             @endforeach
 
                                         </select>
@@ -414,7 +414,7 @@
                                         <select name="validated" id="diperiksa" class="form-control uppercase" required>
                                             <option disabled selected>-- Select Approval --</option>
                                             @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nik }}">{{ $user->nama }}</option>
+                                                <option value="{{ $user->nama }}">{{ $user->nama }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -538,8 +538,7 @@
 
     <script>
         $(document).ready(function() {
-            $('#dibuat_oleh').select2();
-            $('#diperiksa').select2();
+            $('#dibuat_oleh, #diperiksa, #checked1').select2();
             $('#job_site').select2();
             $('#unit_cn').select2();
 

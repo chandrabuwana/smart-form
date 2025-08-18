@@ -132,10 +132,13 @@
                                         <label for="dibuat" class="ms-0">Dibuat Oleh</label>
                                         <select name="dibuat_oleh" id="dibuat_oleh" class="form-control" required>
                                             <option disabled selected>-- Select Creator --</option>
-                                            @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nik }}"{{ old('dibuat_oleh', $data->dibuat_oleh ?? '') == $user->nik ? 'selected' : '' }}>
+                                            {{-- @foreach ($approvalList as $user)
+                                                <option value="{{ $user->nama }}"{{ old('dibuat_oleh', $data->dibuat_oleh ?? '') == $user->nik ? 'selected' : '' }}>
                                                     {{ $user->nama }}</option>
 
+                                            @endforeach --}}
+                                            @foreach($approvalList as $user)
+                                                <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $data->dibuat_oleh == $user->nama ? 'selected' : '' }}>{{ $user->nama }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -145,12 +148,14 @@
                                         <label for="dibuat" class="ms-0">Disetujui oleh</label>
                                         <select name="checked_by" id="checked_by" class="form-control" required>
                                             <option disabled selected>-- Select Checked --</option>
-                                            @foreach ($approvalList as $user)
-                                                <option value="{{ $user->nik }}"
+                                            {{-- @foreach ($approvalList as $user)
+                                                <option value="{{ $user->nama }}"
                                                     {{ old('checked', $data->checked_by ?? '') == $user->nik ? 'selected' : '' }}>
                                                     {{ $user->nama }}</option>
+                                            @endforeach --}}
+                                            @foreach($approvalList as $user)
+                                                <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $data->checked_by == $user->nama ? 'selected' : '' }}>{{ $user->nama }}</option>
                                             @endforeach
-
                                         </select>
                                     </div>
                                 </div>
@@ -260,8 +265,6 @@
 @section('custom-js')
     <script>
         $(document).ready(function() {
-            $('#dibuat_oleh').select2();
-            $('#checked_by').select2();
             $('#job_site').select2();
         });
         document.addEventListener("DOMContentLoaded", function () {
@@ -371,7 +374,7 @@
         });
 
         $(function() {
-            $('#dibuat_oleh, #diperiksa').select2({
+            $('#dibuat_oleh, #checked_by').select2({
                 placeholder: '-- Pilih --',
                 width: '100%',
                 ajax: {
@@ -385,7 +388,7 @@
                         return {
                             results: $.map(data, function (item) {
                                 return {
-                                    id: item.nik,
+                                    id: item.nama,
                                     text: item.nama + ' (' + item.nik + ')',
                                     nik: item.nik
                                 };

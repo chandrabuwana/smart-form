@@ -43,7 +43,7 @@ class PpmShantuiDH24Controller extends Controller {
 
     public function dashboard(Request $request) {
         try {
-            $nik_session = $request->session()->get( 'user_id', '' );
+            $nik_session = $request->session()->get( 'username', '' );
             $query = DB::table('ppm_dh24')
                 ->select('*')
                 ->orderBy('created_at', 'desc');
@@ -91,12 +91,11 @@ class PpmShantuiDH24Controller extends Controller {
                 'statistics' => $statistics,
                 'session'=>$nik_session,
                 'user'=> HrdHelper::getApprovalList(), 'statistics'=>$statistics, 'filters' => [
-                'search' => $request->search,
-                'unit_cn' => $request->unit_cn,
-                'job_site' => $request->job_site,
-                'approval' => $request->approval,
-
-            ]
+                    'search' => $request->search,
+                    'unit_cn' => $request->unit_cn,
+                    'job_site' => $request->job_site,
+                    'approval' => $request->approval,
+                ]
             ]);
         } catch(\Exception $e) {
             Log::error('Error in Dashboard: '.$e->getMessage());
@@ -107,7 +106,8 @@ class PpmShantuiDH24Controller extends Controller {
 
     public function Add(Request $request) {
 
-        $nik_session = $request->session()->get( 'user_id', '' );
+        $nik_session = $request->session()->get( 'username', '' );
+        // dd($nik_session);
         $json = file_get_contents( resource_path( 'data/ppm-dh24/ppm-dh24.json' ) );
         $list = json_decode( $json, true );
         $cn_data = DB::table( 'alat_angkut_data' )->select('no_lambung','sn_unit','model','model_engine','sn_engine')->get();
@@ -560,5 +560,14 @@ class PpmShantuiDH24Controller extends Controller {
             ], 500 );
 
         }
+    }
+
+    public function getApprovalList(Request $request)
+    {
+        $search = $request->input('search', '');
+        $selectedNik = $request->input('selectedNik', null);
+        $list = HrdHelper::getApprovalList($search, $selectedNik);
+
+        return response()->json($list);
     }
 }

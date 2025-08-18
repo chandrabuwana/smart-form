@@ -589,16 +589,19 @@
                                     <div class="col-4 ">
                                         <div class="input-group input-group-static mb-3">
                                             <label for="dibuat" class="ms-0">Checked By1</label>
-                                            <select name="checked1_display" class="form-control uppercase" disabled>
-                                                @foreach ($approvalList as $user)
+                                            <select name="checked1" id="checked1" class="form-control uppercase">
+                                                {{-- @foreach ($approvalList as $user)
                                                     <option value="{{ $user->nik }}"
                                                         {{ old('checked1', $nik ?? '') == $user->nik ? 'selected' : '' }}>
                                                         {{ $user->nama }}
                                                     </option>
+                                                @endforeach --}}
+                                                @foreach($approvalList as $user)
+                                                    <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $data->creator == $user->nama ? 'selected' : '' }}>{{ $user->nama }}</option>
                                                 @endforeach
                                             </select>
 
-                                            <input type="hidden" name="checked1" value="{{ old('checked1', $nik ?? '') }}">
+                                            {{-- <input type="hidden" name="checked1" value="{{ old('checked1', $nik ?? '') }}"> --}}
                                         </div>
                                     </div>
                                     <div class="col-4 ">
@@ -606,11 +609,13 @@
                                             <label for="dibuat" class="ms-0">Checked By2</label>
                                             <select name="checked2" id="dibuat_oleh" class="form-control" required>
                                                 <option disabled selected>-- Select Creator --</option>
-                                                @foreach ($approvalList as $user)
-                                                    <option value="{{ $user->nik }}" {{ old('checked', $data->checked_by ?? '') == $user->nik ? 'selected' : '' }}>
+                                                {{-- @foreach ($approvalList as $user)
+                                                    <option value="{{ $user->nama }}" {{ old('checked', $data->checked_by ?? '') == $user->nama ? 'selected' : '' }}>
                                                         {{ $user->nama }}</option>
+                                                @endforeach --}}
+                                                @foreach($approvalList as $user)
+                                                    <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $data->checked_by == $user->nama ? 'selected' : '' }}>{{ $user->nama }}</option>
                                                 @endforeach
-
                                             </select>
                                         </div>
                                     </div>
@@ -619,9 +624,12 @@
                                             <label for="diperiksa" class="ms-0">Validated By</label>
                                             <select name="validated" id="diperiksa" class="form-control" required>
                                                 <option disabled selected>-- Select Approval --</option>
-                                                @foreach ($approvalList as $user)
-                                                    <option value="{{ $user->nik }}" {{ old('validated', $data->validated_by ?? '') == $user->nik ? 'selected' : '' }}>
+                                                {{-- @foreach ($approvalList as $user)
+                                                    <option value="{{ $user->nama }}" {{ old('validated', $data->validated_by ?? '') == $user->nik ? 'selected' : '' }}>
                                                         {{ $user->nama }}</option>
+                                                @endforeach --}}
+                                                @foreach($approvalList as $user)
+                                                    <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $data->validated_by == $user->nama ? 'selected' : '' }}>{{ $user->nama }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -742,8 +750,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <script>
         $(document).ready(function() {
-            $('#dibuat_oleh').select2();
-            $('#diperiksa').select2();
             $('#job_site').select2();
             $('#unit_cn').select2();
 
@@ -849,6 +855,33 @@
                     .finally(function() {
                         submitBtn.prop('disabled', false);
                     });
+            });
+        });
+
+        $(function() {
+            $('#dibuat_oleh, #diperiksa, #checked1').select2({
+                placeholder: '-- Pilih --',
+                width: '100%',
+                ajax: {
+                    url: '{{ route('plant.dh24.approval.list') }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return { search: params.term };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    id: item.nama,
+                                    text: item.nama + ' (' + item.nik + ')',
+                                    nik: item.nik
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
             });
         });
     </script>

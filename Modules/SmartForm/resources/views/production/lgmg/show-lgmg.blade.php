@@ -182,8 +182,11 @@
                                         <label for="diisi_oleh" class="ms-0">Diisi Oleh</label>
                                         <select disabled name="diisi_oleh" id="diisi_oleh" class="form-control" required>
                                             <option value="">-- Pilih --</option>
-                                            @foreach ($approvalList as $user)
+                                            {{-- @foreach ($approvalList as $user)
                                                 <option value="{{ $user->nik }}" {{ $data->diisi_oleh == $user->nik ? 'selected' : '' }}>{{ $user->nama }}</option>
+                                            @endforeach --}}
+                                            @foreach($approvalList as $user)
+                                                <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $data->diisi_oleh == $user->nama ? 'selected' : '' }}>{{ $user->nama }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -193,8 +196,11 @@
                                         <label for="checked_by" class="ms-0">Diperiksa Oleh</label>
                                         <select disabled name="checked_by" id="checked_by" class="form-control" required>
                                             <option value="">-- Pilih Checker --</option>
-                                            @foreach ($approvalList as $user)
+                                            {{-- @foreach ($approvalList as $user)
                                                 <option value="{{ $user->nik }}" {{ $data->checked_by == $user->nik ? 'selected' : '' }}>{{ $user->nama }}</option>
+                                            @endforeach --}}
+                                            @foreach($approvalList as $user)
+                                                <option value="{{ $user->nama }}" data-nik="{{ $user->nik }}" {{ $data->checked_by == $user->nama ? 'selected' : '' }}>{{ $user->nama }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -387,10 +393,35 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
     <script>
         $(document).ready(function() {
-            $('#diisi_oleh').select2();
-            $('#checked_by').select2();
             $('#shift').select2({
                 disabled: true
+            });
+
+            $(function() {
+                $('#diisi_oleh, #checked_by').select2({
+                    placeholder: '-- Pilih --',
+                    width: '100%',
+                    ajax: {
+                        url: '{{ route('lgmg.approval.list') }}',
+                        dataType: 'json',
+                        delay: 250,
+                        data: function (params) {
+                            return { search: params.term };
+                        },
+                        processResults: function (data) {
+                            return {
+                                results: $.map(data, function (item) {
+                                    return {
+                                        id: item.nama,
+                                        text: item.nama + ' (' + item.nik + ')',
+                                        nik: item.nik
+                                    };
+                                })
+                            };
+                        },
+                        cache: true
+                    }
+                });
             });
         });
         document.addEventListener("DOMContentLoaded", function() {
