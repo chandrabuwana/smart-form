@@ -160,7 +160,7 @@ class AparController extends Controller {
         $diperiksa_nama = DB::connection('sqlsrv2')->table(self::TABLE_KARYAWAN)
                     ->select('Nama')
                     ->where('NIK', $req->diperiksa)
-                    ->value('Nama');
+                    ->get('Nama');
         $diketahui_nama = DB::connection('sqlsrv2')->table(self::TABLE_KARYAWAN)
                     ->select('Nama')
                     ->where('NIK', $req->diketahui)
@@ -172,7 +172,7 @@ class AparController extends Controller {
         $data_insert = [
             'dibuat_oleh' => $requested_by,
             'dibuat_oleh_nama' => $dibuat_nama,
-            'diperiksa_oleh' => $data['diperiksa'] ?? null,
+            'diperiksa_oleh' => $data['diperiksa'],
             'diperiksa_oleh_nama' => $diperiksa_nama,
             'diketahui_oleh' => $data['diketahui'] ?? null,
             'diketahui_oleh_nama' => $diketahui_nama,

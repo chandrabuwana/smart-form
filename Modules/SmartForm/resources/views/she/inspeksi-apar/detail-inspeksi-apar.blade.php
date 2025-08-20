@@ -111,7 +111,7 @@
                             <div class="col-md-4">
                                 <p>
                                     <span class="approval-user">Diperiksa Oleh:</span> 
-                                    {{ $data->diperiksa_oleh_name ?? ($data->diperiksa_oleh_name ?? 'Belum ditentukan') }}
+                                    {{ $data->diperiksa_oleh ?? ($data->diperiksa_oleh ?? 'Belum ditentukan') }}
                                     @php
                                         $diperiksa_status = isset($data->status) && is_array($data->status) ? $data->status[0] : null;
                                     @endphp
@@ -143,7 +143,7 @@
                             <div class="col-md-4">
                                 <p>
                                     <span class="approval-user">Diketahui Oleh:</span> 
-                                    {{ $data->diketahui_oleh_name ?? ($data->diketahui_oleh_name ?? 'Belum ditentukan') }}
+                                    {{ $data->diketahui_oleh ?? ($data->diketahui_oleh ?? 'Belum ditentukan') }}
                                     @php
                                         $diketahui_status = isset($data->status) && is_array($data->status) ? $data->status[1] : null;
                                     @endphp
