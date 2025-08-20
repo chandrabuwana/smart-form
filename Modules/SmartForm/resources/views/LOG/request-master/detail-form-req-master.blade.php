@@ -106,7 +106,7 @@ $serialNumbers = $data['serialNumbers'];
                                                         
                                                         <option value="">-- select user --</option>
                                                         @forelse($users as $approved)
-                                                            <option value="{{ $approved->NIK ?? '' }}" {{ $master->disetujui_oleh == $approved->NIK ? 'selected' : '' }}>
+                                                            <option value="{{ $approved->nama ?? '' }}" {{ $master->disetujui_oleh == $approved->nama ? 'selected' : '' }}>
                                                                 {{ $approved->nama ?? 'Nama tidak tersedia' }}
                                                             </option>
                                                         @empty
