@@ -44,7 +44,7 @@ use Modules\SmartForm\App\Http\Controllers\SKL\DashboardSKLController;
 use Modules\SmartForm\App\Http\Controllers\SKL\SKLFormController;
 use Modules\SmartForm\App\Http\Controllers\SM\AssetRequestController;
 use Modules\SmartForm\App\Http\Controllers\SM\RegistrasiSupplierController;
-use Modules\SmartForm\App\Http\Controllers\LOG\CheckOgcComController;
+// use Modules\SmartForm\App\Http\Controllers\LOG\CheckOgcComController;
 use Modules\SmartForm\App\Http\Controllers\LOG\LogController;
 use Modules\SmartForm\App\Http\Controllers\LOG\RequestMasterController;
 use Modules\SmartForm\App\Http\Controllers\LOG\PengeluaranOilController;
@@ -160,9 +160,9 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
             Route::post('/submit-reject-pemakaian-solar', [PemakaianSolarController::class, 'SubmitRejectPemakaianSolar'])->name("bss-form.log.submit-reject-pemakaian-solar");
 
             // // CHECK OGC COMPLIANCE
-            Route::get('/check-ogc-compliance', [CheckOgcComController::class, 'CheckOgcCompDashboard'])->name('bss-form.log.check-ogc-comp.dashboard');
-            Route::get('/list-check-ogc', [CheckOgcComController::class, 'GetListCheckOgc'])->name("bss-form.log.list-check-ogc");
-            Route::get('/form-check-ogc', [CheckOgcComController::class, 'formCheckOgc'])->name('bss-form.log.form-check-ogc');
+            // Route::get('/check-ogc-compliance', [CheckOgcComController::class, 'CheckOgcCompDashboard'])->name('bss-form.log.check-ogc-comp.dashboard');
+            // Route::get('/list-check-ogc', [CheckOgcComController::class, 'GetListCheckOgc'])->name("bss-form.log.list-check-ogc");
+            // Route::get('/form-check-ogc', [CheckOgcComController::class, 'formCheckOgc'])->name('bss-form.log.form-check-ogc');
 
             // 003 PENGAJUAN PR SAP
             Route::prefix('003-sap')->group(function () {
