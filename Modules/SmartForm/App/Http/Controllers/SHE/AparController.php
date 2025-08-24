@@ -924,5 +924,15 @@ class AparController extends Controller {
         }
     }
 
+    public function getApprovalList(Request $request)
+    {
+        $search = $request->input('search', '');
+        $selectedNik = $request->input('selectedNik', null);
+        
+        $list = HrdHelper::getApprovalList($search, $selectedNik);
+        
+        return response()->json($list);
+    }
+
     
 }

@@ -304,7 +304,7 @@
                 placeholder: '-- Pilih Pengawas --',
                 width: '50%',
                 ajax: {
-                    url: '{{ route("approval.list") }}',
+                    url: '{{ route('apar.approval.list') }}',
                     dataType: 'json',
                     delay: 250,
                     data: function (params) {
@@ -332,7 +332,7 @@
                 placeholder: '-- Pilih Pengawas --',
                 width: '50%',
                 ajax: {
-                    url: '{{ route("approval.list") }}',
+                    url: '{{ route('apar.approval.list') }}',
                     dataType: 'json',
                     delay: 250,
                     data: function (params) {
