@@ -464,6 +464,7 @@
 
                     checked: nik == "{{ $data->diisi_oleh }}" ? 'approved' : status[0],
                     validated: nik == "{{ $data->checked_by }}" ? 'approved' : status[1],
+                    nik: nik,
 
                 })
                 .then(response => {
@@ -493,6 +494,7 @@
                     doc_num: docNumber,
                     checked: nik == "{{ $data->diisi_oleh }}" ? 'rejected' : status[0],
                     validated: nik == "{{ $data->checked_by }}" ? 'rejected' : status[1],
+                    nik: nik,
                 })
                 .then(response => {
                     const data = response.data;

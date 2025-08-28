@@ -367,9 +367,34 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <script>
         $(document).ready(function() {
-            $('#approval').select2();
             $('#job_site').select2();
             $('#unit_cn').select2();
+            $(function() {
+                $('#approval').select2({
+                    placeholder: '-- Pilih --',
+                    width: '100%',
+                    ajax: {
+                        url: '{{ route('plant.dh24.approval.list') }}',
+                        dataType: 'json',
+                        delay: 250,
+                        data: function (params) {
+                            return { search: params.term };
+                        },
+                        processResults: function (data) {
+                            return {
+                                results: $.map(data, function (item) {
+                                    return {
+                                        id: item.nama,
+                                        text: item.nama + ' (' + item.nik + ')',
+                                        nik: item.nik
+                                    };
+                                })
+                            };
+                        },
+                        cache: true
+                    }
+                });
+            });
         });
         $(function() {
             // Clear filter button
