@@ -106,6 +106,10 @@ p.thick {
     font-family: 'DejaVu Sans', sans-serif;
 }
 
+.ttd {
+    width: 60px;
+}
+
 
 </style>
 <body>
@@ -487,7 +491,7 @@ p.thick {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                        {{-- <tr>
                             <td>&nbsp;</td>
                             <td>&nbsp;</td>
                             <td>&nbsp;</td>
@@ -511,10 +515,25 @@ p.thick {
                             <td>&nbsp;</td>
                             <td>&nbsp;</td>
                             <td>&nbsp;</td>
+                        </tr> --}}
+                        <tr>
+                            <td colspan="1" style="height: 30px; border-bottom: none; text-align: center"> <img
+                                    src="{{ public_path('img/checked.png') }}" class="ttd"></td>
+                            <td colspan="1" style="height: 30px; border-bottom: none; text-align: center"> <img
+                                    src="{{ public_path('img/checked.png') }}" class="ttd"></td>
+                            @if ($data->status == 'approved')
+                                <td colspan="1" style="height: 30px; border-bottom: none; text-align: center"> <img
+                                        src="{{ public_path('img/validated.png') }}" class="ttd">
+                                </td>
+                            @else
+                                <td colspan="1" style="height: 30px; border-bottom: none; text-align: center"></td>
+                            @endif
+
+                            {{-- <td colspan="5" style="border: none"></td> --}}
                         </tr>
                         <tr>
-                            <td style="text-align: center;">( &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; )</td>
-                            <td style="text-align: center;">( &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; )</td>
+                            <td style="text-align: center;">{{ optional(collect($approvalList)->firstWhere('nama', $data->diisi_oleh))->nama ?? '' }}</td>
+                            <td style="text-align: center;">{{ optional(collect($approvalList)->firstWhere('nama', $data->checked_by))->nama ?? '' }}</td>
                             <td>&nbsp;</td>
                         </tr>
                         <tr>

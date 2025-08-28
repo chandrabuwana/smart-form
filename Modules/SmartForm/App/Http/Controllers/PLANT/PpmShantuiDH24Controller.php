@@ -348,7 +348,7 @@ class PpmShantuiDH24Controller extends Controller {
 
     function detail($id, Request $request) {
 
-        $nik_session = $request->session()->get( 'user_id', '' );
+        $nik_session = $request->session()->get( 'username', '' );
 
         $data = DB::table( 'ppm_dh24' )
         ->where( 'id', $id )
@@ -416,7 +416,7 @@ class PpmShantuiDH24Controller extends Controller {
 
     function show(Request $request, $id) {
 
-        $nik_session = $request->session()->get( 'user_id', '' );
+        $nik_session = $request->session()->get( 'username', '' );
 
         $data = DB::table( 'ppm_dh24' )
         ->where( 'id', $id )

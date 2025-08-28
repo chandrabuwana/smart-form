@@ -538,7 +538,32 @@
 
     <script>
         $(document).ready(function() {
-            $('#dibuat_oleh, #diperiksa, #checked1').select2();
+            $(function() {
+                $('#dibuat_oleh, #diperiksa, #checked1').select2({
+                    placeholder: '-- Pilih --',
+                    width: '100%',
+                    ajax: {
+                        url: '{{ route('plant.dh24.approval.list') }}',
+                        dataType: 'json',
+                        delay: 250,
+                        data: function (params) {
+                            return { search: params.term };
+                        },
+                        processResults: function (data) {
+                            return {
+                                results: $.map(data, function (item) {
+                                    return {
+                                        id: item.nama,
+                                        text: item.nama + ' (' + item.nik + ')',
+                                        nik: item.nik
+                                    };
+                                })
+                            };
+                        },
+                        cache: true
+                    }
+                });
+            });
             $('#job_site').select2();
             $('#unit_cn').select2();
 
