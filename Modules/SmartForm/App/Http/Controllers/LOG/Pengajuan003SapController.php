@@ -382,6 +382,7 @@ class Pengajuan003SapController extends Controller {
 
     public function Approve( Request $request ) {
 
+        // dd($request);
         $data = [
             'status' => json_encode( array_values( [
                 $request->dibuat_oleh,

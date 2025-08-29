@@ -494,6 +494,7 @@ Route::group(['middleware' => ['check.auth', FetchMenu::class, PermissionMenu::c
         });
 
         Route::prefix('prod-coal')->group(function () {
+            Route::get('dashboard1', [CoalGettingController::class, 'Dashboard'])->name('prod.coal.dashboard1');
             Route::get('dashboard', [CoalGettingController::class, 'Dashboard'])->name('prod.coal.dashboard');
             Route::get('form/export/{id}', [CoalGettingController::class, 'ExportForm'])->name('prod.coal.export');
             Route::get('form', [CoalGettingController::class, 'AddForm'])->name('prod.coal.form');

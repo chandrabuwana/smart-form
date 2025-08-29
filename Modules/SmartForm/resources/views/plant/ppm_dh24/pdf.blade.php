@@ -392,12 +392,12 @@
             <tr>
 
                 <td colspan="2"style="border-top: none;">
-                    {{ optional(collect($approvalList)->firstWhere('nik', $data->creator))->nama ?? '' }}</td>
+                    {{ optional(collect($approvalList)->firstWhere('nama', $data->creator))->nama ?? '' }}</td>
                 <td colspan="2" style="border-top: none;">
-                    {{ optional(collect($approvalList)->firstWhere('nik', $data->checked_by))->nama ?? '' }}
+                    {{ optional(collect($approvalList)->firstWhere('nama', $data->checked_by))->nama ?? '' }}
                 </td>
                 <td colspan="2" style="border-top: none;">
-                    {{ optional(collect($approvalList)->firstWhere('nik', $data->validated_by))->nama ?? '' }}</td>
+                    {{ optional(collect($approvalList)->firstWhere('nama', $data->validated_by))->nama ?? '' }}</td>
                 <td colspan="5" style="border: none"></td>
             </tr>
             <tr>

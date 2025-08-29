@@ -471,7 +471,7 @@
                                     <div class="row">
                                         <div class="col-12">
                                             <div class="form-actions">
-                                                @if ($nik == $data->checked_by || $nik == $data->validated_by)
+                                                @if ($nik == $data->checked_by)
                                                     <button class="btn btn-success btn-sm" id="btn900Approve"
                                                         data-doc="{{ $data->doc_num }}"
                                                         data-status='@json($data->status)'

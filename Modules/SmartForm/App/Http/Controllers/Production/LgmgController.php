@@ -464,8 +464,27 @@ class LgmgController extends Controller {
 
         $checkmark = '✔';
 
+        $selectedNames = collect([
+            $data->diisi_oleh,
+            $data->checked_by,
+            $data->creator
+        ])->filter();
+
+        $approvalList = HrdHelper::getApprovalList();
+
+        $approvalList = HrdHelper::getApprovalList();
+
+        foreach ($selectedNames as $name) {
+            if (!$approvalList->pluck('nama')->contains($name)) {
+                $user = HrdHelper::getApprovalList($name, null)->first(); // Cari user berdasarkan nama
+                if ($user) {
+                    $approvalList->push($user);
+                }
+            }
+        }
+
         $pdf = PDF::loadView('smartform::production.lgmg.export-pdf', compact(
-            'data', 'pertanyaan', 'lgmg_detail', 'keteranganArray', 'checkmark'
+            'data', 'pertanyaan', 'lgmg_detail', 'keteranganArray', 'checkmark', 'approvalList'
         ));
 
 

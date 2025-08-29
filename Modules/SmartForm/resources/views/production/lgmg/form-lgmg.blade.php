@@ -402,7 +402,7 @@
     $(function() {
         $('#diisi_oleh  , #checked_by').select2({
             placeholder: '-- Pilih --',
-            width: '50%',
+            width: '100%',
             ajax: {
                 url: '{{ route('lgmg.approval.list') }}',
                 dataType: 'json',
