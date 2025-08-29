@@ -556,7 +556,7 @@
                         return {
                             results: $.map(data, function (item) {
                                 return {
-                                    id: item.nama,
+                                    id: item.nik,
                                     text: item.nama + ' (' + item.nik + ')',
                                     nik: item.nik
                                 };
