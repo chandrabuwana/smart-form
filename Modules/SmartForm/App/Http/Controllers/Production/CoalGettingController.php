@@ -44,7 +44,10 @@ class CoalGettingController extends Controller
                 ->count(),
             'locations_count' => $locations->count(),
             'need_attention' => DB::table('she_coal_getting')
-                ->whereJsonContains('checklist_items', 0) // Items marked as "Tidak"
+                ->where(function($query) {
+                    $query->where('checklist_items', 'like', '%"value":"0"%') // Single value items marked as "Tidak"
+                          ->orWhere('checklist_items', 'like', '%"0"%'); // Array value items with "0"
+                })
                 ->count()
         ];
 
