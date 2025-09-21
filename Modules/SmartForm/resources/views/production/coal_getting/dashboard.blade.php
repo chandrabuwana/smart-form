@@ -210,7 +210,7 @@
                                                 @php
                                                     $user = Auth::user();
                                                 @endphp
-                                                @if($record->approval_status === 'need approval' && trim($record->acknowledged_by_nik) === trim($user->userid))
+                                                @if($record->approval_status === 'need approval' && trim($record->acknowledged_by_nik) === trim($user->username))
                                                     <button type="button" class="btn btn-success btn-sm d-inline-flex align-items-center justify-content-center" onclick="updateStatus({{ $record->id }}, 'approved')">
                                                         <i class="fas fa-check me-1"></i> Approve
                                                     </button>
@@ -218,7 +218,7 @@
                                                         <i class="fas fa-times me-1"></i> Reject
                                                     </button>
                                                 @endif
-                                                @if(trim($record->created_by_nik) === trim($user->userid) && $record->approval_status === 'need approval')
+                                                @if(trim($record->created_by_nik) === trim($user->username) && $record->approval_status === 'need approval')
                                                     <a href="{{ route('prod.coal.form.edit', ['id' => $record->id]) }}" class="btn btn-info btn-sm d-inline-flex align-items-center justify-content-center">
                                                         <i class="fas fa-edit me-1"></i> Edit
                                                     </a>
