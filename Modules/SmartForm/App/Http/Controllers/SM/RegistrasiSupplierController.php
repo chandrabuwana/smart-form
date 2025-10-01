@@ -192,11 +192,7 @@ class RegistrasiSupplierController extends Controller {
                 'diterima_oleh' => $request->dDiterima,
                 'status' => "3",
                 'created_at' => $today,
-<<<<<<< Updated upstream
                 'is_active' => "1",
-=======
-                'is_active' => 1,
->>>>>>> Stashed changes
                 'disetujui_oleh' => $request->dApproved
 
             ]);
